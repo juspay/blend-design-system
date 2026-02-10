@@ -2,12 +2,16 @@
 
 We welcome contributions from the community! Whether you're fixing bugs, adding new components, improving documentation, or proposing new features, your contributions help make Blend better for everyone.
 
+---
+
 ## Before You Start
 
 ### Getting Help
 
 - **GitHub Discussions**: Ask questions and share ideas
 - **Issues**: Report bugs and request features
+
+---
 
 ## Development Setup
 
@@ -16,6 +20,8 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 - **Node.js** 18+
 - **pnpm** (recommended package manager)
 - **Git** for version control
+
+---
 
 ### Fork and Clone
 
@@ -28,10 +34,11 @@ cd blend-design-system
 git remote add upstream https://github.com/juspay/blend-design-system.git
 ```
 
+---
+
 ### Install Dependencies
 
 ```bash
-# Install all dependencies
 pnpm install
 
 # Build the design system
@@ -40,6 +47,8 @@ pnpm build
 # Start development mode
 pnpm dev
 ```
+
+---
 
 ### Development Workflow
 
@@ -53,6 +62,8 @@ git checkout -b feature/your-feature-name
 # Build to ensure everything works
 pnpm build
 ```
+
+---
 
 ## Project Structure
 
@@ -69,8 +80,12 @@ blend-design-system/
 │       │   └── context/       # Theme context and providers
 ├── apps/
 │   ├── ascent/               # Documentation site
-│   └── storybook/            # Component playground
+│   ├── storybook/            # Component playground
+│   ├── site/                 # Marketing / main site
+│   └── blend-monitor/        # Monitoring / analytics app
 ```
+
+---
 
 ## Types of Contributions
 
@@ -83,16 +98,16 @@ blend-design-system/
 **Example Bug Fix Process:**
 
 ```bash
-# Create branch
 git checkout -b fix/button-disabled-state
 
 # Make your fix
 # Update docs if needed
 
-# Commit and push
 git commit -m "fix: button disabled state styling"
 git push origin fix/button-disabled-state
 ```
+
+---
 
 ### Documentation
 
@@ -103,6 +118,8 @@ Documentation improvements are always welcome:
 - Update getting started guides
 - Fix typos and improve clarity
 
+---
+
 ### Design Tokens
 
 When proposing design token changes:
@@ -112,33 +129,44 @@ When proposing design token changes:
 3. **Update all affected components**
 4. **Include design rationale** and use cases
 
+---
+
 ## Documentation Standards
 
 ### Component Documentation
 
 Each component should include:
 
-- **API Reference**: Complete prop documentation
-- **Usage Examples**: Common use cases
-- **Accessibility**: ARIA labels, keyboard navigation
-- **Do's and Don'ts**: Best practices and anti-patterns
+- **API Reference**
+- **Usage Examples**
+- **Accessibility**
+- **Do’s and Don’ts**
+
+---
 
 ### Code Comments
 
 - Document complex logic and business rules
 - Explain design decisions and trade-offs
-- Include links to relevant design specifications
+- Link to relevant design specifications
+
+---
 
 ## Submission Guidelines
 
 ### Before Submitting
 
 1. **Build successfully**: `pnpm build`
-2. **Update documentation** if needed
+2. **Run relevant tests**: for example, `pnpm test:blend` for Blend package changes
+3. **Run lint checks**: `pnpm lint`
+4. **Run formatting checks**: `pnpm format:check`
+5. **Update documentation** if needed
 
-### Pull Request Guidelines
+---
 
-#### PR Title Format
+## Pull Request Guidelines
+
+### PR Title Format
 
 ```
 type(scope): brief description
@@ -149,64 +177,74 @@ fix(modal): resolve focus trap issue
 docs(getting-started): update installation guide
 ```
 
-#### PR Description Template
+---
+
+### PR Description Template
 
 ```markdown
-## Description
+### Summary
 
-Brief description of changes
+<!-- Write a brief summary of your changes -->
 
-## Type of Change
+### Issue Ticket
 
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
-
-## Testing
-
-- [ ] Manually tested the changes
-- [ ] Verified in Storybook (if applicable)
-
-## Screenshots (if applicable)
-
-[Add screenshots for visual changes]
-
-## Breaking Changes
-
-[Describe any breaking changes]
-
-## Related Issues
-
-Closes #[issue number]
+Closes #[issue_number] or Related to #[issue_number]
 ```
+
+---
 
 ### Review Process
 
-1. **Automated checks** must pass
-2. **Design team review** for UI changes
-3. **Code review** by maintainers
-4. **Documentation review** if applicable
-5. **Final approval** and merge
+1. Automated checks must pass
+2. Design team review for UI changes
+3. Code review by maintainers
+4. Documentation review if applicable
+5. Final approval and merge
+
+---
 
 ## Release Process
+
+### Versioning & Changesets
+
+This repository uses **Changesets** to manage versions and release notes.
+
+If your change affects published packages, you **must add a changeset**:
+
+```bash
+pnpm changeset
+```
+
+This will prompt you to:
+
+- Select affected packages
+- Choose patch / minor / major
+- Write a summary for the changelog
+
+Commit the generated file along with your changes.
+
+---
 
 ### Semantic Versioning
 
 We follow [Semantic Versioning](https://semver.org/):
 
 - **Patch** (1.0.1): Bug fixes
-- **Minor** (1.1.0): New features, backward compatible
+- **Minor** (1.1.0): New features (backward compatible)
 - **Major** (2.0.0): Breaking changes
+
+---
 
 ### Release Notes
 
-Contributors are recognized in release notes:
+Release notes are generated from Changesets and include:
 
 - Bug fixes and improvements
 - New features and components
 - Breaking changes
-- Special thanks to contributors
+- Contributor acknowledgements
+
+---
 
 ## Troubleshooting
 
@@ -215,45 +253,56 @@ Contributors are recognized in release notes:
 **Build failures:**
 
 ```bash
-# Clear everything and reinstall
 rm -rf node_modules pnpm-lock.yaml
 pnpm install
 ```
 
+---
+
 **TypeScript errors:**
 
-- Check component exports in `index.ts`
-- Verify type definitions are complete
-- Ensure all imports are properly typed
+- Check exports in `index.ts`
+- Verify type definitions
+- Ensure imports are typed
+
+---
 
 ### Getting Unstuck
 
-If you're stuck:
-
-1. Check existing documentation and issues
+1. Check documentation and issues
 2. Ask in GitHub Discussions
 3. Reach out to maintainers
+
+---
 
 ## Resources
 
 ### Development Tools
 
-- **Storybook**: Component development and testing
-- **TypeScript**: Type safety and IntelliSense
-- **ESLint**: Code linting
+- Storybook
+- TypeScript
+- ESLint
+
+---
 
 ### Design Resources
 
-- **Figma**: Design files and specifications
-- **Design Tokens**: Token definitions and usage
+- Figma
+- Design Tokens
+
+---
 
 ### Learning Materials
 
-- **React**: Component development
-- **TypeScript**: Type system
+- React
+- TypeScript
+
+---
 
 ## Thank You
 
-Thank you for contributing to Blend Design System! Your efforts help create better experiences for developers and users worldwide. Every contribution, no matter how small, makes a difference.
+Thank you for contributing to Blend Design System!
+
+Every contribution—big or small—helps improve the ecosystem for everyone.
 
 Welcome to the community! 🎉
