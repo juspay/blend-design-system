@@ -9,7 +9,7 @@ import {
 } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
-import type { SidebarProps } from './types'
+import type { SidebarProps, SidebarStateChangeType } from './types'
 import type { SidebarTokenType } from './sidebar.tokens'
 import { Topbar } from '../Topbar'
 import TenantPanel from './TenantPanel'
@@ -100,6 +100,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             onActiveItemChange,
             defaultActiveItem,
             showLeftPanel = true,
+            onSidebarStateChange,
         },
         ref
     ) => {
@@ -139,6 +140,15 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             () => getMobileNavigationItems(data),
             [data]
         )
+
+        useEffect(() => {
+            const state: SidebarStateChangeType = isHovering
+                ? 'intermediate'
+                : isExpanded
+                  ? 'expanded'
+                  : 'collapsed'
+            onSidebarStateChange?.(state)
+        }, [isExpanded, isHovering])
 
         // Keyboard shortcut handler with screen reader announcement
         useEffect(() => {
@@ -336,7 +346,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     as="nav"
                     id={skipToNavId}
                     data-sidebar="sidebar"
-                    data-status={isExpanded ? 'expanded' : 'collapsed'}
+                    data-status={
+                        isHovering
+                            ? 'intermediate'
+                            : isExpanded
+                              ? 'expanded'
+                              : 'collapsed'
+                    }
                     role="navigation"
                     aria-label={sidebarLabel}
                     aria-expanded={isExpanded ? true : false}
