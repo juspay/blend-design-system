@@ -37,7 +37,7 @@ const Popover = ({
     height,
     minHeight,
     maxHeight,
-    zIndex = 101,
+    zIndex = 999,
     size = PopoverSize.MEDIUM,
     onClose,
     shadow = 'lg',
