@@ -61,20 +61,11 @@ describe('AvatarV2', () => {
         })
 
         it('renders avatar with custom fallback string', async () => {
-            const { container } = render(<AvatarV2 alt="Test" fallback="AB" />)
-
-            expect(screen.getByText('AB')).toBeInTheDocument()
-
-            expect(await axe(container)).toHaveNoViolations()
-        })
-
-        it('renders avatar with custom fallback icon', async () => {
             const { container } = render(
-                <AvatarV2 alt="Test" fallback={<MockIcon />} />
+                <AvatarV2 alt="Test" fallbackText="AB" />
             )
 
-            const icon = container.querySelector('[data-testid="mock-icon"]')
-            expect(icon).toBeInTheDocument()
+            expect(screen.getByText('AB')).toBeInTheDocument()
 
             expect(await axe(container)).toHaveNoViolations()
         })
@@ -94,7 +85,7 @@ describe('AvatarV2', () => {
             const { container } = render(
                 <AvatarV2
                     alt="Test"
-                    leadingSlot={<MockIcon data-testid="leading-icon" />}
+                    leftSlot={<MockIcon data-testid="leading-icon" />}
                 />
             )
 
@@ -103,10 +94,10 @@ describe('AvatarV2', () => {
             )
             expect(wrapper).toBeInTheDocument()
 
-            const leadingSlot = container.querySelector(
+            const leftSlot = container.querySelector(
                 '[data-element="leading-slot"]'
             )
-            expect(leadingSlot).toBeInTheDocument()
+            expect(leftSlot).toBeInTheDocument()
 
             expect(await axe(container)).toHaveNoViolations()
         })
@@ -115,7 +106,7 @@ describe('AvatarV2', () => {
             const { container } = render(
                 <AvatarV2
                     alt="Test"
-                    trailingSlot={<MockIcon data-testid="trailing-icon" />}
+                    rightSlot={<MockIcon data-testid="trailing-icon" />}
                 />
             )
 
@@ -124,10 +115,10 @@ describe('AvatarV2', () => {
             )
             expect(wrapper).toBeInTheDocument()
 
-            const trailingSlot = container.querySelector(
+            const rightSlot = container.querySelector(
                 '[data-element="trailing-slot"]'
             )
-            expect(trailingSlot).toBeInTheDocument()
+            expect(rightSlot).toBeInTheDocument()
 
             expect(await axe(container)).toHaveNoViolations()
         })
@@ -136,8 +127,8 @@ describe('AvatarV2', () => {
             const { container } = render(
                 <AvatarV2
                     alt="Test"
-                    leadingSlot={<MockIcon data-testid="leading-icon" />}
-                    trailingSlot={<MockIcon data-testid="trailing-icon" />}
+                    leftSlot={<MockIcon data-testid="leading-icon" />}
+                    rightSlot={<MockIcon data-testid="trailing-icon" />}
                 />
             )
 
@@ -160,8 +151,8 @@ describe('AvatarV2', () => {
             const { container } = render(
                 <AvatarV2
                     alt="Test"
-                    leadingSlot={<MockIcon />}
-                    trailingSlot={<MockIcon />}
+                    leftSlot={<MockIcon />}
+                    rightSlot={<MockIcon />}
                     status={{ type: AvatarV2Status.ONLINE }}
                 />
             )
@@ -178,8 +169,8 @@ describe('AvatarV2', () => {
             const { container } = render(
                 <AvatarV2
                     alt="Test"
-                    leadingSlot={<MockIcon />}
-                    trailingSlot={<MockIcon />}
+                    leftSlot={<MockIcon />}
+                    rightSlot={<MockIcon />}
                     status={{ type: AvatarV2Status.NONE }}
                 />
             )
@@ -204,7 +195,7 @@ describe('AvatarV2', () => {
                 const { container } = render(
                     <AvatarV2
                         alt="Test"
-                        leadingSlot={<MockIcon />}
+                        leftSlot={<MockIcon />}
                         status={{ type: status }}
                     />
                 )
@@ -222,8 +213,8 @@ describe('AvatarV2', () => {
             const { container } = render(
                 <AvatarV2
                     alt="Test"
-                    leadingSlot={<MockIcon />}
-                    trailingSlot={<MockIcon />}
+                    leftSlot={<MockIcon />}
+                    rightSlot={<MockIcon />}
                 />
             )
 
@@ -232,14 +223,14 @@ describe('AvatarV2', () => {
             )
             expect(wrapper).toBeInTheDocument()
 
-            const leadingSlot = container.querySelector(
+            const leftSlot = container.querySelector(
                 '[data-element="leading-slot"]'
             )
-            const trailingSlot = container.querySelector(
+            const rightSlot = container.querySelector(
                 '[data-element="trailing-slot"]'
             )
-            expect(leadingSlot).toBeInTheDocument()
-            expect(trailingSlot).toBeInTheDocument()
+            expect(leftSlot).toBeInTheDocument()
+            expect(rightSlot).toBeInTheDocument()
         })
     })
 
@@ -251,7 +242,7 @@ describe('AvatarV2', () => {
             [AvatarV2Size.LG, 'lg'],
             [AvatarV2Size.XL, 'xl'],
             [AvatarV2Size.XXL, 'xxl'],
-        ])('renders %s size correctly', async (size, sizeLabel) => {
+        ])('renders %s size correctly', async (size) => {
             const { container } = render(<AvatarV2 alt="Test" size={size} />)
 
             const avatar = container.querySelector('[data-avatar]')
@@ -266,7 +257,7 @@ describe('AvatarV2', () => {
             [AvatarV2Shape.CIRCLE, 'circle'],
             [AvatarV2Shape.ROUNDED, 'rounded'],
             [AvatarV2Shape.SQUARE, 'square'],
-        ])('renders %s shape correctly', async (shape, shapeLabel) => {
+        ])('renders %s shape correctly', async (shape) => {
             const { container } = render(<AvatarV2 alt="Test" shape={shape} />)
 
             const avatar = container.querySelector('[data-avatar]')
@@ -838,7 +829,7 @@ describe('AvatarV2', () => {
     describe('Edge Cases', () => {
         it('handles undefined status prop', async () => {
             const { container } = render(
-                <AvatarV2 alt="Test" status={undefined as any} />
+                <AvatarV2 alt="Test" status={undefined} />
             )
 
             const avatar = container.querySelector('[data-avatar]')
@@ -847,7 +838,7 @@ describe('AvatarV2', () => {
 
         it('handles null status prop', async () => {
             const { container } = render(
-                <AvatarV2 alt="Test" status={null as any} />
+                <AvatarV2 alt="Test" status={undefined} />
             )
 
             const avatar = container.querySelector('[data-avatar]')
@@ -860,7 +851,7 @@ describe('AvatarV2', () => {
                     alt="Test"
                     width="100px"
                     height="100px"
-                    leadingSlot={<MockIcon />}
+                    leftSlot={<MockIcon />}
                 />
             )
 
@@ -912,9 +903,8 @@ describe('AvatarV2', () => {
         })
 
         it('handles fallback with React element', async () => {
-            const CustomFallback = () => <span>Custom</span>
             const { container } = render(
-                <AvatarV2 alt="Test" fallback={<CustomFallback />} />
+                <AvatarV2 alt="Test" fallbackText="Custom" />
             )
 
             const fallback = container.querySelector(
@@ -924,7 +914,9 @@ describe('AvatarV2', () => {
         })
 
         it('handles fallback with empty string', async () => {
-            const { container } = render(<AvatarV2 alt="Test" fallback="" />)
+            const { container } = render(
+                <AvatarV2 alt="Test" fallbackText="" />
+            )
 
             const fallback = container.querySelector(
                 '[data-avatar-fallback="true"]'
@@ -946,7 +938,7 @@ describe('AvatarV2', () => {
                 const { container } = render(
                     <AvatarV2
                         alt="Test"
-                        leadingSlot={<MockIcon />}
+                        leftSlot={<MockIcon />}
                         status={{
                             type: AvatarV2Status.ONLINE,
                             position,
@@ -973,7 +965,7 @@ describe('AvatarV2', () => {
 
         it('handles ref forwarding with slots', () => {
             const ref = React.createRef<HTMLDivElement>()
-            render(<AvatarV2 alt="Test" ref={ref} leadingSlot={<MockIcon />} />)
+            render(<AvatarV2 alt="Test" ref={ref} leftSlot={<MockIcon />} />)
 
             expect(ref.current).toBeInstanceOf(HTMLDivElement)
             expect(ref.current).toHaveAttribute('data-avatar')

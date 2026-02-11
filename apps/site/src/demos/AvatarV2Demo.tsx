@@ -7,7 +7,7 @@ import {
     AvatarV2StatusPosition,
 } from '../../../../packages/blend/lib/components/AvatarV2'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
-import { User, Mail, Phone, Camera } from 'lucide-react'
+import { Mail, Phone } from 'lucide-react'
 import { ThemeProvider, Theme } from '../../../../packages/blend/lib/context'
 
 const AvatarV2Demo = () => {
@@ -288,7 +288,7 @@ const AvatarV2Demo = () => {
                                     className="w-4 h-4"
                                 />
                                 <label htmlFor="custom-fallback">
-                                    Custom fallback (icon)
+                                    Custom fallback TEXT
                                 </label>
                             </label>
                         </div>
@@ -370,10 +370,10 @@ const AvatarV2Demo = () => {
                                 <AvatarV2
                                     src={imageUrl}
                                     alt={altText}
-                                    fallback={
-                                        useCustomFallback ? (
-                                            <Camera size={20} />
-                                        ) : undefined
+                                    fallbackText={
+                                        useCustomFallback
+                                            ? 'TEST USER'
+                                            : undefined
                                     }
                                     size={selectedSize}
                                     shape={selectedShape}
@@ -431,7 +431,7 @@ const AvatarV2Demo = () => {
                                     <div className="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-lg">
                                         <AvatarV2
                                             alt="Bob"
-                                            fallback={<User size={20} />}
+                                            fallbackText="AB"
                                             size={AvatarV2Size.SM}
                                             shape={AvatarV2Shape.ROUNDED}
                                             status={{
@@ -448,7 +448,7 @@ const AvatarV2Demo = () => {
                                     <div className="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-lg">
                                         <AvatarV2
                                             alt="Alice"
-                                            fallback="AI"
+                                            fallbackText="AI"
                                             size={AvatarV2Size.SM}
                                             status={{
                                                 type: AvatarV2Status.BUSY,
@@ -464,7 +464,7 @@ const AvatarV2Demo = () => {
                                     <div className="flex flex-col items-center gap-2 p-3 bg-gray-50 rounded-lg">
                                         <AvatarV2
                                             alt="Team"
-                                            fallback="TM"
+                                            fallbackText="TM"
                                             size={AvatarV2Size.SM}
                                             shape={AvatarV2Shape.SQUARE}
                                         />

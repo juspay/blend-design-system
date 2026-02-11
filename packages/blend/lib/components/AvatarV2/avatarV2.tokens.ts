@@ -9,6 +9,7 @@ import { getAvatarV2LightTokens } from './avatarV2.light.tokens'
 export type AvatarV2TokensType = {
     gap: CSSObject['gap']
     container: {
+        backgroundColor: CSSObject['backgroundColor']
         width: {
             [key in AvatarV2Size]: CSSObject['width']
         }
@@ -18,16 +19,11 @@ export type AvatarV2TokensType = {
         borderRadius: {
             [key in AvatarV2Shape]: CSSObject['borderRadius']
         }
-        border: {
-            image: CSSObject['border']
-            fallback: CSSObject['border']
+        image: {
+            border: CSSObject['border']
         }
-        backgroundColor: {
-            fallback: CSSObject['backgroundColor']
-        }
-
-        fallback: {
-            backgroundColor: CSSObject['backgroundColor']
+        fallbackText: {
+            border: CSSObject['border']
             fontSize: {
                 [key in AvatarV2Size]: CSSObject['fontSize']
             }

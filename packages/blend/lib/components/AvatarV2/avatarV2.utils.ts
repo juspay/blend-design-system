@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { isValidElement } from 'react'
 import {
     AvatarV2Status,
     AvatarV2StatusPosition,
@@ -8,6 +7,7 @@ import {
 } from './avatarV2.types'
 
 export const DEFAULT_AVATAR_ALT = 'Avatar'
+export const DEFAULT_FALLBACK_COLOR = '#94A3B8'
 
 const AVATAR_COLOR_PALETTE: readonly string[] = [
     '#FF6B6B', // Red
@@ -32,89 +32,50 @@ const AVATAR_COLOR_PALETTE: readonly string[] = [
     '#FF7675', // Coral
 ] as const
 
-/**
- * Default fallback color when no text is provided
- */
-export const DEFAULT_FALLBACK_COLOR = '#94A3B8'
-
-// ============================================================================
-// TEXT UTILITIES
-// ============================================================================
-
-/**
- * Extract initials from text
- * Returns up to 2 uppercase letters from the beginning of words
- *
- * @example
- * getInitialsFromText('John Doe') // 'JD'
- * getInitialsFromText('Alice') // 'A'
- * getInitialsFromText('john doe') // 'JD'
- *
- * @param text - Input text to extract initials from
- * @returns Uppercase initials (max 2 characters)
- */
-export const getInitialsFromText = (text: string): string => {
+export function getInitialsFromText(text?: string): string {
     if (!text || text.trim() === '') {
         return ''
     }
 
     return text
         .trim()
-        .split(/\s+/) // Split by whitespace
-        .map((word) => word.charAt(0).toUpperCase()) // Get first char of each word
-        .slice(0, 2) // Take first 2 initials
+        .split(/\s+/)
+        .map((word) => word.charAt(0).toUpperCase())
+        .slice(0, 2)
         .join('')
 }
 
-/**
- * Sanitize text for accessibility label generation
- * Removes extra whitespace and normalizes format
- *
- * @param text - Text to sanitize
- * @returns Sanitized text
- */
-export const sanitizeTextForLabel = (text: string): string => {
+export function sanitizeTextForLabel(text: string): string {
     if (!text) {
         return ''
     }
-
     return text.trim().replace(/\s+/g, ' ')
 }
 
-// ============================================================================
-// COLOR UTILITIES
-// ============================================================================
+export function renderFallbackContent(
+    fallbackText?: string,
+    alt?: string
+): ReactNode {
+    if (fallbackText !== undefined) {
+        if (typeof fallbackText === 'string') {
+            return fallbackText.substring(0, 2).toUpperCase()
+        }
+        return fallbackText
+    }
+    return getInitialsFromText(alt)
+}
 
-/**
- * Hash function for deterministic color selection
- * Uses DJB2 algorithm for consistent hashing
- *
- * @param str - String to hash
- * @returns Numeric hash value
- */
-const hashString = (str: string): number => {
+function hashString(str: string): number {
     let hash = 0
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i)
         hash = (hash << 5) - hash + char
-        hash = hash & hash // Convert to 32-bit integer
+        hash = hash & hash
     }
     return Math.abs(hash)
 }
 
-/**
- * Get a consistent color for an avatar based on text
- * Uses hashing to ensure the same text always produces the same color
- *
- * @example
- * getColorFromText('John Doe') // Returns a consistent color
- * getColorFromText('John Doe') // Same color as above
- * getColorFromText('Jane Smith') // Different color
- *
- * @param text - Text to generate color from (e.g., name or alt text)
- * @returns Hex color code from the palette
- */
-export const getColorFromText = (text: string): string => {
+export function getColorFromText(text: string): string {
     if (!text || text.trim() === '') {
         return DEFAULT_FALLBACK_COLOR
     }
@@ -126,122 +87,7 @@ export const getColorFromText = (text: string): string => {
     return AVATAR_COLOR_PALETTE[colorIndex]
 }
 
-/**
- * Calculate luminance of a hex color
- * Used for determining appropriate text color (black or white)
- *
- * @param hex - Hex color code
- * @returns Luminance value (0-1)
- */
-export const calculateLuminance = (hex: string): number => {
-    const rgb = hexToRgb(hex)
-    if (!rgb) return 0
-
-    const { r, g, b } = rgb
-
-    // Convert RGB to linear RGB
-    const rLinear = r / 255
-    const gLinear = g / 255
-    const bLinear = b / 255
-
-    const rLum =
-        rLinear <= 0.03928
-            ? rLinear / 12.92
-            : Math.pow((rLinear + 0.055) / 1.055, 2.4)
-    const gLum =
-        gLinear <= 0.03928
-            ? gLinear / 12.92
-            : Math.pow((gLinear + 0.055) / 1.055, 2.4)
-    const bLum =
-        bLinear <= 0.03928
-            ? bLinear / 12.92
-            : Math.pow((bLinear + 0.055) / 1.055, 2.4)
-
-    return 0.2126 * rLum + 0.7152 * gLum + 0.0722 * bLum
-}
-
-/**
- * Determine appropriate text color (black or white) based on background
- *
- * @param backgroundColor - Background hex color
- * @returns 'black' or 'white' based on luminance threshold
- */
-export const getAppropriateTextColor = (
-    backgroundColor: string
-): 'black' | 'white' => {
-    const luminance = calculateLuminance(backgroundColor)
-    return luminance > 0.5 ? 'black' : 'white'
-}
-
-/**
- * Convert hex color to RGB object
- *
- * @param hex - Hex color string (with or without #)
- * @returns RGB object or null if invalid
- */
-export const hexToRgb = (
-    hex: string
-): { r: number; g: number; b: number } | null => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return result && result[1] && result[2] && result[3]
-        ? {
-              r: parseInt(result[1], 16),
-              g: parseInt(result[2], 16),
-              b: parseInt(result[3], 16),
-          }
-        : null
-}
-
-// ============================================================================
-// IMAGE UTILITIES
-// ============================================================================
-
-/**
- * Asynchronously validate if an image URL is loadable
- *
- * @param url - Image URL to validate
- * @returns Promise resolving to boolean indicating validity
- */
-export const isValidImageUrl = (url: string): Promise<boolean> => {
-    if (!url || url.trim() === '') {
-        return Promise.resolve(false)
-    }
-
-    return new Promise((resolve) => {
-        const img = new Image()
-        img.onload = () => resolve(true)
-        img.onerror = () => resolve(false)
-        img.src = url
-    })
-}
-
-/**
- * Generate image loading error
- *
- * @param src - Source URL that failed to load
- * @returns Error object
- */
-export const createImageError = (src: string): Error => {
-    return new Error(`Failed to load image: ${src}`)
-}
-
-// ============================================================================
-// ACCESSIBILITY UTILITIES
-// ============================================================================
-
-/**
- * Generate accessible label for avatar
- * Combines name/status information for screen readers
- *
- * @example
- * getAccessibleLabel('John Doe', AvatarV2Status.ONLINE) // 'John Doe, online'
- * getAccessibleLabel('Jane', AvatarV2Status.OFFLINE) // 'Jane, offline'
- *
- * @param alt - Alt text or fallback text
- * @param status - Avatar status
- * @returns Formatted accessible label
- */
-export const getAccessibleLabel = (alt: string, status: string): string => {
+export function getAccessibleLabel(alt: string, status: string): string {
     const sanitizedAlt = sanitizeTextForLabel(alt) || DEFAULT_AVATAR_ALT
 
     if (!status || status === AvatarV2Status.NONE) {
@@ -256,30 +102,14 @@ export const getAccessibleLabel = (alt: string, status: string): string => {
     return `${sanitizedAlt}, ${statusText}`
 }
 
-/**
- * Generate aria-live region value based on status
- * Returns polite if status changes, undefined otherwise
- *
- * @param status - Avatar status
- * @returns ARIA live value or undefined
- */
-export const getAriaLiveValue = (status: string): 'polite' | undefined => {
+export function getAriaLiveValue(status: string): 'polite' | undefined {
     if (status && status !== AvatarV2Status.NONE) {
         return 'polite'
     }
     return undefined
 }
 
-// ============================================================================
-// STATUS INDICATOR UTILITIES
-// ============================================================================
-
-/**
- * Status indicator position lookup table
- * Matches the original Avatar component's precise positioning
- * Based on size, shape, and responsive breakpoint (sm/lg)
- */
-const INDICATOR_POSITIONS = {
+const STATUS_POSITIONS = {
     sm: {
         [AvatarV2Shape.CIRCLE]: {
             [AvatarV2Size.XS]: { top: '-2px', right: '-2px', bottom: '0px' },
@@ -350,24 +180,13 @@ const INDICATOR_POSITIONS = {
     },
 }
 
-/**
- * Get status indicator position styles
- * Returns position values based on avatar size, shape, indicator position, and breakpoint
- * Matches the original Avatar component's precise positioning
- *
- * @param position - Indicator position relative to avatar
- * @param size - Avatar size
- * @param shape - Avatar shape
- * @param breakpoint - Current breakpoint (sm or lg)
- * @returns Position object with top/right/bottom/left values
- */
-export const getStatusPositionStyles = (
+export function getStatusPositionStyles(
     position: AvatarV2StatusPosition,
     size: AvatarV2Size,
     shape: AvatarV2Shape,
     breakpoint: 'sm' | 'lg' = 'lg'
-): { top?: string; right?: string; bottom?: string; left?: string } => {
-    const basePosition = INDICATOR_POSITIONS[breakpoint]?.[shape]?.[size] || {
+): { top?: string; right?: string; bottom?: string; left?: string } {
+    const basePosition = STATUS_POSITIONS[breakpoint]?.[shape]?.[size] || {
         top: '0',
         right: '0',
         bottom: '0',
@@ -386,61 +205,9 @@ export const getStatusPositionStyles = (
             return { top: basePosition.top, right: basePosition.right }
     }
 }
-
-// ============================================================================
-// FALLBACK UTILITIES
-// ============================================================================
-
-/**
- * Render fallback content
- * Determines whether to show initials or custom fallback
- *
- * @param fallback - Custom fallback or string for initials
- * @param alt - Alt text for automatic initials
- * @returns ReactNode to render as fallback
- */
-export const renderFallbackContent = (
-    fallback: React.ReactNode,
-    alt: string
-): ReactNode => {
-    if (fallback !== undefined) {
-        // If fallback is a string, limit to 2 characters
-        if (typeof fallback === 'string') {
-            return fallback.substring(0, 2).toUpperCase()
-        }
-        // Otherwise return as-is (icon, component, etc.)
-        return fallback
-    }
-
-    // Generate initials from alt text
-    return getInitialsFromText(alt)
-}
-
-/**
- * Determine if custom fallback is an icon (React element)
- *
- * @param fallback - Fallback content
- * @returns True if fallback is a React element
- */
-export const isIconFallback = (fallback: React.ReactNode): boolean => {
-    return isValidElement(fallback)
-}
-
-// ============================================================================
-// KEYBOARD NAVIGATION UTILITIES
-// ============================================================================
-
-/**
- * Create keyboard handler for interactive avatars
- * Handles Enter and Space keys to trigger onClick
- * Matches the original Avatar component's keyboard handling
- *
- * @param onClick - Click handler callback
- * @returns Keyboard event handler
- */
-export const createKeyboardHandler = (
+export function createKeyboardHandler(
     onClick: ((event: React.MouseEvent<HTMLDivElement>) => void) | undefined
-) => {
+) {
     if (!onClick) {
         return undefined
     }
@@ -449,7 +216,7 @@ export const createKeyboardHandler = (
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
             e.stopPropagation()
-            // Create a synthetic mouse event for onClick handler
+
             const syntheticEvent = {
                 ...e,
                 currentTarget: e.currentTarget,
@@ -474,19 +241,14 @@ export const createKeyboardHandler = (
                 timeStamp: Date.now(),
                 type: 'click',
             } as unknown as React.MouseEvent<HTMLDivElement>
+
             onClick(syntheticEvent)
         }
     }
 }
 
-/**
- * Determine if avatar is interactive
- *
- * @param onClick - Click handler
- * @returns True if avatar has click handler
- */
-export const isInteractive = (
+export function isInteractive(
     onClick: ((event: React.MouseEvent<HTMLDivElement>) => void) | undefined
-): boolean => {
+): boolean {
     return onClick !== undefined
 }

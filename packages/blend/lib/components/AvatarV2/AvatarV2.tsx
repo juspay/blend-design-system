@@ -161,7 +161,7 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
         {
             src,
             alt = '',
-            fallback,
+            fallbackText,
             size = AvatarV2Size.MD,
             shape = AvatarV2Shape.CIRCLE,
             status = { type: AvatarV2Status.NONE },
@@ -179,12 +179,10 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
         ref
     ) => {
         const [imageError, setImageError] = useState(false)
-        const [_imageLoaded, setImageLoaded] = useState(false)
 
         const tokens = useResponsiveTokens<AvatarV2TokensType>('AVATARV2')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
-        const isSmallScreen = breakPointLabel === 'sm'
-        const breakpoint: 'sm' | 'lg' = isSmallScreen ? 'sm' : 'lg'
+        const breakpoint: 'sm' | 'lg' = breakPointLabel === 'sm' ? 'sm' : 'lg'
 
         const hasImage = src && !imageError
         const shouldShowSkeleton = skeleton?.show
@@ -195,34 +193,26 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
         const isInteractiveMode = isInteractive(rest.onClick)
         const accessibleLabel = getAccessibleLabel(alt, statusType)
         const ariaLiveValue = getAriaLiveValue(statusType)
-
-        const fallbackContent = renderFallbackContent(fallback, alt)
+        const fallbackContent = renderFallbackContent(fallbackText, alt)
         const fallbackColor = backgroundColor || getColorFromText(alt)
-
-        const handleImageError = () => {
-            setImageError(true)
-            if (onImageError) {
-                onImageError(new Error('Failed to load avatar image'))
-            }
-        }
-
-        const handleImageLoad = () => {
-            setImageLoaded(true)
-            if (onImageLoad) {
-                onImageLoad()
-            }
-        }
-
-        const keyboardHandler = createKeyboardHandler(rest.onClick)
-
-        const filteredProps = filterBlockedProps(rest)
-
         const avatarVariant = hasImage
             ? AvatarV2Variant.IMAGE
             : AvatarV2Variant.TEXT
 
         const containerWidth = width || tokens.container.width[size]
         const containerHeight = height || tokens.container.height[size]
+
+        const handleImageError = () => {
+            setImageError(true)
+            onImageError?.(new Error('Failed to load avatar image'))
+        }
+
+        const handleImageLoad = () => {
+            onImageLoad?.()
+        }
+
+        const keyboardHandler = createKeyboardHandler(rest.onClick)
+        const filteredProps = filterBlockedProps(rest)
 
         const renderAvatarContent = () => {
             return (
@@ -250,8 +240,8 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                     borderRadius={tokens.container.borderRadius[shape]}
                     border={
                         hasImage
-                            ? tokens.container.border.image
-                            : tokens.container.border.fallback
+                            ? tokens.container.image.border
+                            : tokens.container.fallbackText.border
                     }
                     backgroundColor={
                         shouldShowSkeleton
@@ -260,8 +250,6 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                               ? 'transparent'
                               : fallbackColor
                     }
-                    fontSize={tokens.container.fallback.fontSize[size]}
-                    fontWeight={tokens.container.fallback.fontWeight[size]}
                     cursor={
                         isInteractiveMode
                             ? disabled
@@ -308,25 +296,26 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                     ) : (
                         <AvatarFallback
                             backgroundColor={backgroundColor || fallbackColor}
-                            textColor={tokens.container.fallback.color}
+                            textColor={tokens.container.fallbackText.color}
                         >
                             {typeof fallbackContent === 'string' ? (
                                 <Text
                                     as="span"
                                     color="currentColor"
                                     fontSize={
-                                        tokens.container.fallback.fontSize[size]
+                                        tokens.container.fallbackText.fontSize[
+                                            size
+                                        ]
                                     }
                                     fontWeight={
-                                        tokens.container.fallback.fontWeight[
-                                            size
-                                        ]
+                                        tokens.container.fallbackText
+                                            .fontWeight[size]
                                     }
-                                    lineHeight={
-                                        tokens.container.fallback.lineHeight[
-                                            size
-                                        ]
-                                    }
+                                    style={{
+                                        lineHeight: '1',
+                                        maxWidth: '100%',
+                                        overflow: 'hidden',
+                                    }}
                                 >
                                     {fallbackContent}
                                 </Text>

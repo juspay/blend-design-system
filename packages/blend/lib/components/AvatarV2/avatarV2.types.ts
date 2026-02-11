@@ -61,7 +61,7 @@ export type AvatarV2Dimensions = {
 export type AvatarV2Props = {
     src?: string
     alt?: string
-    fallback?: ReactNode
+    fallbackText?: string
     size?: AvatarV2Size
     shape?: AvatarV2Shape
     status?: AvatarV2StatusConfig

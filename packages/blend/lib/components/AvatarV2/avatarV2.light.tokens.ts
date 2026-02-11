@@ -14,6 +14,7 @@ export const getAvatarV2LightTokens = (
         sm: {
             gap: foundationToken.unit[8],
             container: {
+                backgroundColor: foundationToken.colors.gray[100],
                 width: {
                     [AvatarV2Size.XS]: foundationToken.unit[24],
                     [AvatarV2Size.SM]: foundationToken.unit[32],
@@ -35,15 +36,11 @@ export const getAvatarV2LightTokens = (
                     [AvatarV2Shape.ROUNDED]: foundationToken.border.radius[4],
                     [AvatarV2Shape.SQUARE]: foundationToken.border.radius[2],
                 },
-                border: {
-                    image: `1px solid ${foundationToken.colors.gray[0]}`,
-                    fallback: `1px solid ${foundationToken.colors.gray[200]}`,
+                image: {
+                    border: `1px solid ${foundationToken.colors.gray[0]}`,
                 },
-                backgroundColor: {
-                    fallback: foundationToken.colors.gray[100],
-                },
-                fallback: {
-                    backgroundColor: foundationToken.colors.gray[100],
+                fallbackText: {
+                    border: `1px solid ${foundationToken.colors.gray[200]}`,
                     fontSize: {
                         [AvatarV2Size.XS]:
                             foundationToken.font.size.body.xs.fontSize,
@@ -128,8 +125,8 @@ export const getAvatarV2LightTokens = (
         },
         lg: {
             gap: foundationToken.unit[12],
-
             container: {
+                backgroundColor: foundationToken.colors.gray[100],
                 width: {
                     [AvatarV2Size.XS]: foundationToken.unit[28],
                     [AvatarV2Size.SM]: foundationToken.unit[40],
@@ -151,15 +148,11 @@ export const getAvatarV2LightTokens = (
                     [AvatarV2Shape.ROUNDED]: foundationToken.border.radius[6],
                     [AvatarV2Shape.SQUARE]: foundationToken.border.radius[4],
                 },
-                border: {
-                    image: `1px solid ${foundationToken.colors.gray[0]}`,
-                    fallback: `1px solid ${foundationToken.colors.gray[200]}`,
+                image: {
+                    border: `1px solid ${foundationToken.colors.gray[0]}`,
                 },
-                backgroundColor: {
-                    fallback: foundationToken.colors.gray[100],
-                },
-                fallback: {
-                    backgroundColor: foundationToken.colors.gray[100],
+                fallbackText: {
+                    border: `1px solid ${foundationToken.colors.gray[200]}`,
                     fontSize: {
                         [AvatarV2Size.XS]:
                             foundationToken.font.size.body.xs.fontSize,
@@ -237,7 +230,6 @@ export const getAvatarV2LightTokens = (
                     boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.8)',
                 },
             },
-
             slot: {
                 height: foundationToken.unit[20],
                 width: foundationToken.unit[20],
