@@ -22,10 +22,10 @@ import type { DocItem } from '@/docs/utils'
 import { Logo } from '@/app/changelog/icons/Logo'
 import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
 import Gradient from '@/app/changelog/icons/Gradient'
-import { ConnectWithUs } from '@/app/landing/components/connect-with-us/ConnectWithUs'
-import { Footer } from '@/app/landing/components/footer/Footer'
+import { ConnectWithUs } from '@/app/(home)/_components/connect-with-us/ConnectWithUs'
+import { Footer } from '@/app/(home)/_components/footer/Footer'
 import { useTableOfContents } from '@/app/docs/context/TableOfContentsContext'
-import { TOCItem } from '@/app/components/layout/Navigation/TableOfContents'
+import { TOCItem } from '../../components/layout/Navigation/TableOfContents'
 
 // Create a wrapper component for Snackbar that loads dynamically on the client
 const DynamicSnackbar = () => {

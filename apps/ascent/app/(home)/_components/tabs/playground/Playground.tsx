@@ -1,7 +1,7 @@
 import React from 'react'
 import { GradientHeadingBox } from '../../GradientHeadingBox'
 import { InfoBtn } from '../../InfoBtn'
-import Playground from '@/app/landing/icons/Playground'
+import Playground from '@/app/(home)/_icons/Playground'
 
 export const PlaygroundComp = () => {
     return (

@@ -1,4 +1,4 @@
-import { FooterLinksDataType } from '../types/footer-links-data-type'
+import { FooterLinksDataType } from '../_types/footer-links-data-type'
 
 export const FooterLinksData: FooterLinksDataType[] = [
     {

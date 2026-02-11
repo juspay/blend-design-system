@@ -1,4 +1,4 @@
-import { DocumentationCardType } from '../../../types/documentation-card-type'
+import { DocumentationCardType } from '../../../_types/documentation-card-type'
 import { InfoBtn } from '../../InfoBtn'
 import React from 'react'
 

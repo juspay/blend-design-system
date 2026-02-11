@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { DocumentationCardData } from '../../../data/documentation-card-data'
+import { DocumentationCardData } from '../../../_data/documentation-card-data'
 import { DocumentationCard } from './DocumentationCard'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 

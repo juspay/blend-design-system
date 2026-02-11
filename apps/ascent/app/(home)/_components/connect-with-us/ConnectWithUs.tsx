@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ConnectWithUsBox } from '../../icons/ConnectWithUsBox'
+import { ConnectWithUsBox } from '../../_icons/ConnectWithUsBox'
 import { InfoBtn } from '../InfoBtn'
-import { FooterGradientAndSparkles } from '../../icons/FooterGradientAndSparkles'
+import { FooterGradientAndSparkles } from '../../_icons/FooterGradientAndSparkles'
 import { Modal } from './Modal'
 
 export const ConnectWithUs = () => {

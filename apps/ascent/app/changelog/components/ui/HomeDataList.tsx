@@ -1,7 +1,7 @@
 import React from 'react'
 import HomeData from '../../data/home.data'
 import { ChangeLogCard, DateBadge } from './ChangelogBlocks'
-import { InfoBtn } from '@/app/landing/components/InfoBtn'
+import { InfoBtn } from '@/app/(home)/_components/InfoBtn'
 
 const HomeDataList: React.FC = () => {
     return (

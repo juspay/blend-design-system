@@ -1,12 +1,12 @@
 import React from 'react'
-import { CompC1R1 } from '../../../icons/CompC1R1'
-import { CompC1R2 } from '../../../icons/CompC1R2'
-import { CompC2R1 } from '../../../icons/CompC2R1'
-import { CompC2R2 } from '../../../icons/CompC2R2'
-import { CompC3R1 } from '../../../icons/CompC3R1'
-import { CompC3R2 } from '../../../icons/CompC3R2'
-import { CompC4R1 } from '../../../icons/CompC4R1'
-import { CompC4R2 } from '../../../icons/CompC4R2'
+import { CompC1R1 } from '../../../_icons/CompC1R1'
+import { CompC1R2 } from '../../../_icons/CompC1R2'
+import { CompC2R1 } from '../../../_icons/CompC2R1'
+import { CompC2R2 } from '../../../_icons/CompC2R2'
+import { CompC3R1 } from '../../../_icons/CompC3R1'
+import { CompC3R2 } from '../../../_icons/CompC3R2'
+import { CompC4R1 } from '../../../_icons/CompC4R1'
+import { CompC4R2 } from '../../../_icons/CompC4R2'
 
 export const ComponentCards = () => {
     return (

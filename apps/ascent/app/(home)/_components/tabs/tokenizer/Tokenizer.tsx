@@ -1,6 +1,6 @@
 import React from 'react'
 import { BlendBorderHeading } from '../../BlendBorderHeading'
-import { Tokenizer } from '@/app/landing/icons/Tokenizer'
+import { Tokenizer } from '@/app/(home)/_icons/Tokenizer'
 import { InfoBtn } from '../../InfoBtn'
 
 export const TokenizerComp = () => {

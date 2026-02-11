@@ -46,4 +46,4 @@ export {
     BlogSidebar,
     BlogTableOfContents,
     BlogPostWithTOC,
-} from '../components/features/Blog'
+} from '@/components/features/Blog'

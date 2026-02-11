@@ -1,4 +1,4 @@
-import { TabsList } from '../../data/tabs-list'
+import { TabsList } from '../../_data/tabs-list'
 
 export const TabButtons = ({
     text,

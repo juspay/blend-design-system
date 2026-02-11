@@ -1,5 +1,5 @@
-import Intro from './landing/components/Intro'
-import { TabsSection } from './landing/components/tabs/TabsSection'
+import Intro from './(home)/_components/Intro'
+import { TabsSection } from './(home)/_components/tabs/TabsSection'
 
 const page = () => {
     return (

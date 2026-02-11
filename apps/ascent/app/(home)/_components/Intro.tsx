@@ -1,6 +1,6 @@
-import { HeaderGradientAndSparkles } from '../icons/HeaderGradientAndSparkles'
-import Logo from '../icons/Logo'
-import { LogoText } from '../icons/LogoText'
+import { HeaderGradientAndSparkles } from '../_icons/HeaderGradientAndSparkles'
+import Logo from '../_icons/Logo'
+import { LogoText } from '../_icons/LogoText'
 import { GradientHeadingBox } from './GradientHeadingBox'
 
 export default function Intro() {
