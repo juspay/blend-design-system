@@ -15,7 +15,7 @@ const AvatarV2Demo = () => {
         AvatarV2Size.MD
     )
     const [selectedShape, setSelectedShape] = useState<AvatarV2Shape>(
-        AvatarV2Shape.CIRCLE
+        AvatarV2Shape.CIRCULAR
     )
     const [selectedStatus, setSelectedStatus] = useState<AvatarV2Status>(
         AvatarV2Status.ONLINE
@@ -28,22 +28,20 @@ const AvatarV2Demo = () => {
     const [altText, setAltText] = useState('John Doe')
     const [useCustomFallback, setUseCustomFallback] = useState(false)
     const [showSkeleton, setShowSkeleton] = useState(false)
-    const [showLeadingSlot, setShowLeadingSlot] = useState(false)
-    const [showTrailingSlot, setShowTrailingSlot] = useState(false)
+    const [showLeftSlot, setShowLeftSlot] = useState(false)
+    const [showRightSlot, setShowRightSlot] = useState(false)
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT)
 
     const sizes: AvatarV2Size[] = [
-        AvatarV2Size.XS,
         AvatarV2Size.SM,
+        AvatarV2Size.REGULAR,
         AvatarV2Size.MD,
         AvatarV2Size.LG,
         AvatarV2Size.XL,
-        AvatarV2Size.XXL,
     ]
     const shapes: AvatarV2Shape[] = [
-        AvatarV2Shape.CIRCLE,
+        AvatarV2Shape.CIRCULAR,
         AvatarV2Shape.ROUNDED,
-        AvatarV2Shape.SQUARE,
     ]
     const statuses: AvatarV2Status[] = [
         AvatarV2Status.NONE,
@@ -322,31 +320,29 @@ const AvatarV2Demo = () => {
                                 <label className="flex items-center gap-2 text-sm">
                                     <input
                                         type="checkbox"
-                                        checked={showLeadingSlot}
+                                        checked={showLeftSlot}
                                         onChange={(e) =>
-                                            setShowLeadingSlot(e.target.checked)
+                                            setShowLeftSlot(e.target.checked)
                                         }
-                                        id="show-leading-slot"
+                                        id="show-left-slot"
                                         className="w-4 h-4"
                                     />
-                                    <label htmlFor="show-leading-slot">
-                                        left slot
+                                    <label htmlFor="show-left-slot">
+                                        Left Slot
                                     </label>
                                 </label>
                                 <label className="flex items-center gap-2 text-sm">
                                     <input
                                         type="checkbox"
-                                        checked={showTrailingSlot}
+                                        checked={showRightSlot}
                                         onChange={(e) =>
-                                            setShowTrailingSlot(
-                                                e.target.checked
-                                            )
+                                            setShowRightSlot(e.target.checked)
                                         }
-                                        id="show-trailing-slot"
+                                        id="show-right-slot"
                                         className="w-4 h-4"
                                     />
-                                    <label htmlFor="show-trailing-slot">
-                                        right slot
+                                    <label htmlFor="show-right-slot">
+                                        Right Slot
                                     </label>
                                 </label>
                             </div>
@@ -387,12 +383,12 @@ const AvatarV2Demo = () => {
                                             : undefined
                                     }
                                     leftSlot={
-                                        showLeadingSlot ? (
+                                        showLeftSlot ? (
                                             <Mail size={16} />
                                         ) : undefined
                                     }
                                     rightSlot={
-                                        showTrailingSlot ? (
+                                        showRightSlot ? (
                                             <Phone size={16} />
                                         ) : undefined
                                     }
@@ -466,10 +462,10 @@ const AvatarV2Demo = () => {
                                             alt="Team"
                                             fallbackText="TM"
                                             size={AvatarV2Size.SM}
-                                            shape={AvatarV2Shape.SQUARE}
+                                            shape={AvatarV2Shape.ROUNDED}
                                         />
                                         <Text variant="body.xs">
-                                            Square + initials
+                                            Rounded + initials
                                         </Text>
                                     </div>
                                 </div>

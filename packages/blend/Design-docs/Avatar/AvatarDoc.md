@@ -8,8 +8,8 @@ Create a scalable Avatar component that can display:
 - **Fallback**: Custom ReactNode or auto-generated initials from alt text
 - **Status**: Optional online status Status with configurable position (top/bottom)
 - **Leading/Trailing Slots**: Optional icon or content slots positioned before/after avatar
-- **Multiple Sizes**: Support for sm, regular, md, lg, xl sizes
-- **Shapes**: Support for circular and rounded shapes
+- **Multiple Sizes**: Support for SM, REGULAR, MD, LG, XL sizes (5 sizes)
+- **Shapes**: Support for CIRCULAR and ROUNDED shapes (2 shapes)
 - **Skeleton Loading**: Built-in skeleton state support
 - **Interactive States**: Support for clickable avatars with proper accessibility
 - **Responsive Design**: Support for different breakpoints (sm, lg)
@@ -39,7 +39,7 @@ Create a scalable Avatar component that can display:
 ## Props & Types
 
 ```typescript
-enum AvatarSize {
+enum AvatarV2Size {
     SM = 'sm',
     REGULAR = 'regular',
     MD = 'md',
@@ -47,104 +47,104 @@ enum AvatarSize {
     XL = 'xl',
 }
 
-enum AvatarShape {
+enum AvatarV2Shape {
     CIRCULAR = 'circular',
     ROUNDED = 'rounded',
 }
 
-enum AvatarOnlinePosition {
-    TOP = 'top',
-    BOTTOM = 'bottom',
+enum AvatarV2StatusPosition {
+    TOP_RIGHT = 'topRight',
+    BOTTOM_RIGHT = 'bottomRight',
+    TOP_LEFT = 'topLeft',
+    BOTTOM_LEFT = 'bottomLeft',
 }
 
-type AvatarProps = {
+enum AvatarV2Status {
+    NONE = 'none',
+    ONLINE = 'online',
+    OFFLINE = 'offline',
+    AWAY = 'away',
+    BUSY = 'busy',
+}
+
+type AvatarV2Props = {
     src?: string
     alt?: string
-    fallback?: React.ReactNode
-    size?: AvatarSize
-    shape?: AvatarShape
-    online?: boolean
-    onlinePosition?: AvatarOnlinePosition
-    leadingSlot?: React.ReactNode
-    trailingSlot?: React.ReactNode
+    fallbackText?: string
+    size?: AvatarV2Size
+    shape?: AvatarV2Shape
+    status?: AvatarV2StatusConfig
+    leftSlot?: ReactElement
+    rightSlot?: ReactElement
     skeleton?: {
         show: boolean
-        variant?: SkeletonVariant
+        variant?: 'pulse' | 'wave'
     }
-} & Omit<HTMLAttributes<HTMLDivElement>, 'children'>
+    backgroundColor?: string
+    disabled?: boolean
+    onImageError?: (error: Error) => void
+    onImageLoad?: () => void
+} & Omit<HTMLAttributes<HTMLDivElement>, 'children'> &
+    AvatarV2Dimensions
 ```
 
 ## Final Token Type
 
 ```typescript
-type AvatarTokensType = {
+type AvatarV2TokensType = {
     gap: CSSObject['gap']
-
     container: {
-        size: {
-            [key in AvatarSize]: {
-                width: CSSObject['width']
-                height: CSSObject['height']
-            }
+        backgroundColor: CSSObject['backgroundColor']
+        width: {
+            [key in AvatarV2Size]: CSSObject['width']
         }
-
-        backgroundColor: {
-            [key in AvatarVariant]: {
-                [key in AvatarState]: CSSObject['backgroundColor']
-            }
+        height: {
+            [key in AvatarV2Size]: CSSObject['height']
         }
-
-        border: {
-            [key in AvatarVariant]: {
-                [key in AvatarState]: CSSObject['border']
-            }
-        }
-
         borderRadius: {
-            [key in AvatarShape]: CSSObject['borderRadius']
+            [key in AvatarV2Shape]: CSSObject['borderRadius']
         }
-    }
-
-    text: {
-        color: {
-            [key in AvatarState]: CSSObject['color']
+        image: {
+            border: CSSObject['border']
         }
-        fontSize: { [key in AvatarSize]: CSSObject['fontSize'] }
-        fontWeight: { [key in AvatarSize]: CSSObject['fontWeight'] }
-    }
-
-    Status: {
-        backgroundColor: {
-            [key in AvatarState]: CSSObject['backgroundColor']
-        }
-        border: {
-            [key in AvatarSize]: {
-                [key in AvatarState]: {
-                    color: CSSObject['borderColor']
-                    width: CSSObject['borderWidth']
-                }
+        fallbackText: {
+            border: CSSObject['border']
+            fontSize: {
+                [key in AvatarV2Size]: CSSObject['fontSize']
             }
-        }
-        size: {
-            [key in AvatarSize]: {
-                width: CSSObject['width']
-                height: CSSObject['height']
+            fontWeight: {
+                [key in AvatarV2Size]: CSSObject['fontWeight']
             }
+            lineHeight: {
+                [key in AvatarV2Size]: CSSObject['lineHeight']
+            }
+            color: CSSObject['color']
         }
-        borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
+        status: {
+            width: {
+                [key in AvatarV2Size]: CSSObject['width']
+            }
+            height: {
+                [key in AvatarV2Size]: CSSObject['height']
+            }
+            border: {
+                [key in AvatarV2Size]: CSSObject['border']
+            }
+            borderRadius: CSSObject['borderRadius']
+            backgroundColor: {
+                [key in AvatarV2Status]: CSSObject['backgroundColor']
+            }
+            boxShadow: CSSObject['boxShadow']
+        }
     }
-
     slot: {
-        spacing: CSSObject['margin']
-        color: {
-            [key in AvatarState]: CSSObject['color']
-        }
+        height: CSSObject['height']
+        width: CSSObject['width']
     }
 }
 
-type ResponsiveAvatarTokens = {
-    [key in keyof BreakpointType]: AvatarTokensType
+type ResponsiveAvatarV2Tokens = {
+    [key in keyof BreakpointType]: AvatarV2TokensType
 }
 ```
 

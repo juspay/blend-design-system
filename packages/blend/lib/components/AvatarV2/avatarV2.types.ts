@@ -2,24 +2,16 @@ import type { HTMLAttributes, ReactNode, ReactElement } from 'react'
 import { CSSObject } from 'styled-components'
 
 export enum AvatarV2Size {
-    /** Extra small - 24px */
-    XS = 'xs',
-    /** Small - 32px */
     SM = 'sm',
-    /** Medium - 40px (default) */
+    REGULAR = 'regular',
     MD = 'md',
-    /** Large - 56px */
     LG = 'lg',
-    /** Extra large - 80px */
     XL = 'xl',
-    /** 2X Large - 96px */
-    XXL = 'xxl',
 }
 
 export enum AvatarV2Shape {
-    CIRCLE = 'circle',
+    CIRCULAR = 'circular',
     ROUNDED = 'rounded',
-    SQUARE = 'square',
 }
 
 export enum AvatarV2StatusPosition {

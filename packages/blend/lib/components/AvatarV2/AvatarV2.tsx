@@ -163,7 +163,7 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
             alt = '',
             fallbackText,
             size = AvatarV2Size.MD,
-            shape = AvatarV2Shape.CIRCLE,
+            shape = AvatarV2Shape.CIRCULAR,
             status = { type: AvatarV2Status.NONE },
             leftSlot,
             rightSlot,
@@ -191,7 +191,11 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
             status?.position || AvatarV2StatusPosition.TOP_RIGHT
 
         const isInteractiveMode = isInteractive(rest.onClick)
-        const accessibleLabel = getAccessibleLabel(alt, statusType)
+        const accessibleLabel = getAccessibleLabel(
+            alt,
+            fallbackText,
+            statusType
+        )
         const ariaLiveValue = getAriaLiveValue(statusType)
         const fallbackContent = renderFallbackContent(fallbackText, alt)
         const fallbackColor = backgroundColor || getColorFromText(alt)
@@ -225,11 +229,7 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                     aria-label={accessibleLabel}
                     aria-live={ariaLiveValue}
                     tabIndex={
-                        isInteractiveMode && !disabled
-                            ? 0
-                            : disabled
-                              ? -1
-                              : undefined
+                        isInteractiveMode ? (disabled ? -1 : 0) : undefined
                     }
                     position="relative"
                     display="inline-flex"

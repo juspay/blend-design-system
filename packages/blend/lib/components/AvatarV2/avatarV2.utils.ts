@@ -8,6 +8,8 @@ import {
 
 export const DEFAULT_AVATAR_ALT = 'Avatar'
 export const DEFAULT_FALLBACK_COLOR = '#94A3B8'
+export const MAX_INITIALS_LENGTH = 2
+export const DEFAULT_POSITION = { top: '0', right: '0', bottom: '0' } as const
 
 const AVATAR_COLOR_PALETTE: readonly string[] = [
     '#FF6B6B', // Red
@@ -32,6 +34,98 @@ const AVATAR_COLOR_PALETTE: readonly string[] = [
     '#FF7675', // Coral
 ] as const
 
+const STATUS_POSITIONS = {
+    sm: {
+        [AvatarV2Shape.CIRCULAR]: {
+            [AvatarV2Size.SM]: { top: '-2px', right: '-2px', bottom: '0px' },
+            [AvatarV2Size.REGULAR]: {
+                top: '-3px',
+                right: '-3px',
+                bottom: '0px',
+            },
+            [AvatarV2Size.MD]: { top: '-3px', right: '-4px', bottom: '0px' },
+            [AvatarV2Size.LG]: { top: '0.2px', right: '-3px', bottom: '0px' },
+            [AvatarV2Size.XL]: { top: '1.167px', right: '-3px', bottom: '0px' },
+        },
+        [AvatarV2Shape.ROUNDED]: {
+            [AvatarV2Size.SM]: { top: '-2px', right: '-3px', bottom: '-1px' },
+            [AvatarV2Size.REGULAR]: {
+                top: '-2px',
+                right: '-3px',
+                bottom: '-1px',
+            },
+            [AvatarV2Size.MD]: {
+                top: '-3.667px',
+                right: '-5px',
+                bottom: '-3px',
+            },
+            [AvatarV2Size.LG]: {
+                top: '-3.111px',
+                right: '-8.222px',
+                bottom: '-3px',
+            },
+            [AvatarV2Size.XL]: {
+                top: '-3.111px',
+                right: '-10.222px',
+                bottom: '-4px',
+            },
+        },
+    },
+    lg: {
+        [AvatarV2Shape.CIRCULAR]: {
+            [AvatarV2Size.SM]: { top: '-2px', right: '-2px', bottom: '0px' },
+            [AvatarV2Size.REGULAR]: {
+                top: '-3px',
+                right: '-3px',
+                bottom: '0px',
+            },
+            [AvatarV2Size.MD]: { top: '-3px', right: '-3px', bottom: '0px' },
+            [AvatarV2Size.LG]: { top: '0px', right: '2px', bottom: '0px' },
+            [AvatarV2Size.XL]: { top: '8px', right: '3px', bottom: '0px' },
+        },
+        [AvatarV2Shape.ROUNDED]: {
+            [AvatarV2Size.SM]: { top: '-3px', right: '-3px', bottom: '-3px' },
+            [AvatarV2Size.REGULAR]: {
+                top: '-3px',
+                right: '-3px',
+                bottom: '-3px',
+            },
+            [AvatarV2Size.MD]: { top: '-3px', right: '-3px', bottom: '-3px' },
+            [AvatarV2Size.LG]: { top: '-5px', right: '-5px', bottom: '-5px' },
+            [AvatarV2Size.XL]: { top: '-8px', right: '-8px', bottom: '-8px' },
+        },
+    },
+}
+
+const KEYBOARD_KEYS = {
+    ENTER: 'Enter',
+    SPACE: ' ',
+}
+
+const SYNTHETIC_EVENT_DEFAULTS = {
+    BUTTON: 0,
+    BUTTONS: 0,
+    CLIENT_X: 0,
+    CLIENT_Y: 0,
+    PAGE_X: 0,
+    PAGE_Y: 0,
+    SCREEN_X: 0,
+    SCREEN_Y: 0,
+    MOVEMENT_X: 0,
+    MOVEMENT_Y: 0,
+    EVENT_PHASE: 0,
+    IS_TRUSTED: false,
+    BUBBLES: true,
+    CANCELABLE: true,
+    DEFAULT_PREVENTED: false,
+    TYPE: 'click',
+}
+
+const TEXT_PATTERNS = {
+    WHITESPACE: /\s+/g,
+    CAPITAL_LETTERS: /([A-Z])/g,
+}
+
 export function getInitialsFromText(text?: string): string {
     if (!text || text.trim() === '') {
         return ''
@@ -39,9 +133,9 @@ export function getInitialsFromText(text?: string): string {
 
     return text
         .trim()
-        .split(/\s+/)
+        .split(TEXT_PATTERNS.WHITESPACE)
         .map((word) => word.charAt(0).toUpperCase())
-        .slice(0, 2)
+        .slice(0, MAX_INITIALS_LENGTH)
         .join('')
 }
 
@@ -49,7 +143,7 @@ export function sanitizeTextForLabel(text: string): string {
     if (!text) {
         return ''
     }
-    return text.trim().replace(/\s+/g, ' ')
+    return text.trim().replace(TEXT_PATTERNS.WHITESPACE, ' ')
 }
 
 export function renderFallbackContent(
@@ -58,7 +152,7 @@ export function renderFallbackContent(
 ): ReactNode {
     if (fallbackText !== undefined) {
         if (typeof fallbackText === 'string') {
-            return fallbackText.substring(0, 2).toUpperCase()
+            return fallbackText.substring(0, MAX_INITIALS_LENGTH).toUpperCase()
         }
         return fallbackText
     }
@@ -87,19 +181,26 @@ export function getColorFromText(text: string): string {
     return AVATAR_COLOR_PALETTE[colorIndex]
 }
 
-export function getAccessibleLabel(alt: string, status: string): string {
-    const sanitizedAlt = sanitizeTextForLabel(alt) || DEFAULT_AVATAR_ALT
+export function getAccessibleLabel(
+    alt: string,
+    fallbackText: string | undefined,
+    status: string
+): string {
+    const name =
+        alt ||
+        (typeof fallbackText === 'string' ? fallbackText : DEFAULT_AVATAR_ALT)
+    const sanitizedName = sanitizeTextForLabel(name)
 
     if (!status || status === AvatarV2Status.NONE) {
-        return sanitizedAlt
+        return sanitizedName
     }
 
     const statusText = status
-        .replace(/([A-Z])/g, ' $1')
+        .replace(TEXT_PATTERNS.CAPITAL_LETTERS, ' $1')
         .trim()
         .toLowerCase()
 
-    return `${sanitizedAlt}, ${statusText}`
+    return `${sanitizedName}, ${statusText}`
 }
 
 export function getAriaLiveValue(status: string): 'polite' | undefined {
@@ -109,88 +210,14 @@ export function getAriaLiveValue(status: string): 'polite' | undefined {
     return undefined
 }
 
-const STATUS_POSITIONS = {
-    sm: {
-        [AvatarV2Shape.CIRCLE]: {
-            [AvatarV2Size.XS]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.SM]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.MD]: { top: '-3px', right: '-4px', bottom: '0px' },
-            [AvatarV2Size.LG]: { top: '0.2px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.XL]: { top: '1.167px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.XXL]: { top: '2px', right: '-2px', bottom: '0px' },
-        },
-        [AvatarV2Shape.ROUNDED]: {
-            [AvatarV2Size.XS]: { top: '-2px', right: '-2px', bottom: '-1px' },
-            [AvatarV2Size.SM]: { top: '-2px', right: '-3px', bottom: '-1px' },
-            [AvatarV2Size.MD]: {
-                top: '-3.667px',
-                right: '-5px',
-                bottom: '-3px',
-            },
-            [AvatarV2Size.LG]: {
-                top: '-3.111px',
-                right: '-8.222px',
-                bottom: '-3px',
-            },
-            [AvatarV2Size.XL]: {
-                top: '-3.111px',
-                right: '-10.222px',
-                bottom: '-4px',
-            },
-            [AvatarV2Size.XXL]: { top: '-3px', right: '-12px', bottom: '-4px' },
-        },
-        [AvatarV2Shape.SQUARE]: {
-            [AvatarV2Size.XS]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.SM]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.MD]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.LG]: { top: '-3px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.XL]: { top: '-3px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.XXL]: { top: '-4px', right: '-4px', bottom: '0px' },
-        },
-    },
-    lg: {
-        [AvatarV2Shape.CIRCLE]: {
-            [AvatarV2Size.XS]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.SM]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.MD]: { top: '-3px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.LG]: { top: '0px', right: '2px', bottom: '0px' },
-            [AvatarV2Size.XL]: { top: '8px', right: '3px', bottom: '0px' },
-            [AvatarV2Size.XXL]: { top: '10px', right: '4px', bottom: '0px' },
-        },
-        [AvatarV2Shape.ROUNDED]: {
-            [AvatarV2Size.XS]: { top: '-3px', right: '-3px', bottom: '-3px' },
-            [AvatarV2Size.SM]: { top: '-3px', right: '-3px', bottom: '-3px' },
-            [AvatarV2Size.MD]: { top: '-3px', right: '-3px', bottom: '-3px' },
-            [AvatarV2Size.LG]: { top: '-5px', right: '-5px', bottom: '-5px' },
-            [AvatarV2Size.XL]: { top: '-8px', right: '-8px', bottom: '-8px' },
-            [AvatarV2Size.XXL]: {
-                top: '-10px',
-                right: '-10px',
-                bottom: '-10px',
-            },
-        },
-        [AvatarV2Shape.SQUARE]: {
-            [AvatarV2Size.XS]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.SM]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.MD]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.LG]: { top: '-3px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.XL]: { top: '-3px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.XXL]: { top: '-4px', right: '-4px', bottom: '0px' },
-        },
-    },
-}
-
 export function getStatusPositionStyles(
     position: AvatarV2StatusPosition,
     size: AvatarV2Size,
     shape: AvatarV2Shape,
     breakpoint: 'sm' | 'lg' = 'lg'
 ): { top?: string; right?: string; bottom?: string; left?: string } {
-    const basePosition = STATUS_POSITIONS[breakpoint]?.[shape]?.[size] || {
-        top: '0',
-        right: '0',
-        bottom: '0',
-    }
+    const basePosition =
+        STATUS_POSITIONS[breakpoint]?.[shape]?.[size] || DEFAULT_POSITION
 
     switch (position) {
         case AvatarV2StatusPosition.TOP_RIGHT:
@@ -213,7 +240,7 @@ export function createKeyboardHandler(
     }
 
     return (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === KEYBOARD_KEYS.ENTER || e.key === KEYBOARD_KEYS.SPACE) {
             e.preventDefault()
             e.stopPropagation()
 
@@ -221,25 +248,25 @@ export function createKeyboardHandler(
                 ...e,
                 currentTarget: e.currentTarget,
                 target: e.target,
-                button: 0,
-                buttons: 0,
-                clientX: 0,
-                clientY: 0,
-                pageX: 0,
-                pageY: 0,
-                screenX: 0,
-                screenY: 0,
+                button: SYNTHETIC_EVENT_DEFAULTS.BUTTON,
+                buttons: SYNTHETIC_EVENT_DEFAULTS.BUTTONS,
+                clientX: SYNTHETIC_EVENT_DEFAULTS.CLIENT_X,
+                clientY: SYNTHETIC_EVENT_DEFAULTS.CLIENT_Y,
+                pageX: SYNTHETIC_EVENT_DEFAULTS.PAGE_X,
+                pageY: SYNTHETIC_EVENT_DEFAULTS.PAGE_Y,
+                screenX: SYNTHETIC_EVENT_DEFAULTS.SCREEN_X,
+                screenY: SYNTHETIC_EVENT_DEFAULTS.SCREEN_Y,
                 relatedTarget: null,
-                movementX: 0,
-                movementY: 0,
+                movementX: SYNTHETIC_EVENT_DEFAULTS.MOVEMENT_X,
+                movementY: SYNTHETIC_EVENT_DEFAULTS.MOVEMENT_Y,
                 nativeEvent: e.nativeEvent,
-                bubbles: true,
-                cancelable: true,
-                defaultPrevented: false,
-                eventPhase: 0,
-                isTrusted: false,
+                bubbles: SYNTHETIC_EVENT_DEFAULTS.BUBBLES,
+                cancelable: SYNTHETIC_EVENT_DEFAULTS.CANCELABLE,
+                defaultPrevented: SYNTHETIC_EVENT_DEFAULTS.DEFAULT_PREVENTED,
+                eventPhase: SYNTHETIC_EVENT_DEFAULTS.EVENT_PHASE,
+                isTrusted: SYNTHETIC_EVENT_DEFAULTS.IS_TRUSTED,
                 timeStamp: Date.now(),
-                type: 'click',
+                type: SYNTHETIC_EVENT_DEFAULTS.TYPE,
             } as unknown as React.MouseEvent<HTMLDivElement>
 
             onClick(syntheticEvent)
