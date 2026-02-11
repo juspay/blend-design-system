@@ -9,6 +9,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import Text from '../Text/Text'
 import { ChevronDown, X } from 'lucide-react'
 import {
+    MultiSelectMenuAlignment,
     MultiSelectMenuSize,
     type MultiSelectProps,
     MultiSelectSelectionTagType,
@@ -66,7 +67,7 @@ const MultiSelect = ({
     minMenuWidth,
     maxMenuWidth,
     maxMenuHeight,
-    alignment,
+    alignment = MultiSelectMenuAlignment.START,
     side,
     sideOffset,
     alignOffset,
