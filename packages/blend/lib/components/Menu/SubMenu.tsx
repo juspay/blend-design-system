@@ -31,7 +31,7 @@ const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
 const SubContent = styled(RadixMenu.SubContent)`
     background-color: white;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
-    z-index: 99;
+    z-index: 101;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -363,7 +363,7 @@ export const SubMenu = ({
                             top={0}
                             left={0}
                             right={0}
-                            zIndex={50}
+                            zIndex={101}
                             backgroundColor="white"
                         >
                             <SearchInput
