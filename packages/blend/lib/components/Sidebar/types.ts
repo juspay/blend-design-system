@@ -67,6 +67,7 @@ export type SidebarProps = {
     activeItem?: string | null
     onActiveItemChange?: (item: string | null) => void
     defaultActiveItem?: string | null
+    onHoveringChange?: (isHovering: boolean) => void
 }
 
 export type MobileNavigationItem = NavbarItem & {

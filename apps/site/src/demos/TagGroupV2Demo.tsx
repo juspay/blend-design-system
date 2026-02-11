@@ -12,6 +12,8 @@ import { Star, X, Check, AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 import Switch from '../../../../packages/blend/lib/components/Switch/Switch'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const TagGroupV2Demo = () => {
     // TagGroupV2 props
@@ -28,6 +30,7 @@ const TagGroupV2Demo = () => {
     const [showLeftSlot, setShowLeftSlot] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
     const [isClickable, setIsClickable] = useState(false)
+    const { theme } = useTheme()
 
     const tagColorOptions = [
         { value: TagV2Color.NEUTRAL, label: 'Neutral' },
@@ -246,9 +249,21 @@ const TagGroupV2Demo = () => {
                 </div>
 
                 {/* Live Preview */}
-                <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div
+                    className={`space-y-4 p-4 rounded-lg border ${
+                        theme === Theme.DARK
+                            ? 'bg-gray-900 border-gray-700'
+                            : 'bg-gray-50 border-gray-200'
+                    }`}
+                >
                     <h3 className="text-lg font-semibold">Live Preview</h3>
-                    <div className="min-h-32 rounded-xl flex justify-center items-center border-2 border-dashed border-gray-300 bg-white p-8">
+                    <div
+                        className={`min-h-32 rounded-xl flex justify-center items-center border-2 border-dashed p-8 ${
+                            theme === Theme.DARK
+                                ? 'border-gray-700 bg-gray-900'
+                                : 'border-gray-300 bg-white'
+                        }`}
+                    >
                         <TagGroupV2
                             stacked={stacked}
                             gap={stacked ? undefined : Number(gap)}

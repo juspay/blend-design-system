@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react'
+import React, { type ReactNode, useEffect } from 'react'
 
 export const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
@@ -79,4 +79,33 @@ export const flattenChildren = (
         }
         return [child as React.ReactElement<unknown>]
     })
+}
+
+export const useAutofillDetection = (
+    inputRef: React.RefObject<HTMLInputElement | null>,
+    setIsAutofilled: (value: boolean) => void
+) => {
+    useEffect(() => {
+        const input = inputRef.current
+        if (!input) return
+
+        if (input.value && input.value.length > 0) {
+            setIsAutofilled(true)
+        }
+
+        const handleAnimationStart = (e: AnimationEvent) => {
+            if (e.animationName === 'blend-autofill-start') {
+                setIsAutofilled(true)
+            }
+            if (e.animationName === 'blend-autofill-cancel') {
+                setIsAutofilled(false)
+            }
+        }
+
+        input.addEventListener('animationstart', handleAnimationStart)
+
+        return () => {
+            input.removeEventListener('animationstart', handleAnimationStart)
+        }
+    }, [inputRef, setIsAutofilled])
 }
