@@ -5,14 +5,7 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
 import { useState } from 'react'
-import {
-    Menu,
-    MultiSelect,
-    Popover,
-    SingleSelect,
-} from '../../../../packages/blend/lib/main'
-import { LogOut, Settings, User } from 'lucide-react'
-import Text from '../../../../packages/blend/lib/components/Text/Text'
+import { MultiSelect, SingleSelect } from '../../../../packages/blend/lib/main'
 
 const ModalDemo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -602,136 +595,70 @@ const FormModalExample = () => {
                     }}
                     className="space-y-4 h-30 overflow-y-auto position-relative z-0 w-[500px]"
                 >
-                    <Popover
-                        trigger={
-                            <Button
-                                text="Open Popover"
-                                buttonType={ButtonType.PRIMARY}
-                                size={ButtonSize.SMALL}
-                            />
-                        }
-                    >
-                        <div className=" flex flex-col gap-4 p-4">
-                            <SingleSelect
-                                fullWidth={true}
-                                label="Category"
-                                items={[
+                    <SingleSelect
+                        fullWidth={true}
+                        label="Category"
+                        items={[
+                            {
+                                groupLabel: undefined,
+                                items: [
                                     {
-                                        groupLabel: undefined,
-                                        items: [
-                                            {
-                                                label: 'Web Development',
-                                                value: 'web-development',
-                                            },
-                                            {
-                                                label: 'Mobile App',
-                                                value: 'mobile-app',
-                                            },
-                                            {
-                                                label: 'Design',
-                                                value: 'design',
-                                            },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                            { label: 'Other', value: 'other' },
-                                        ],
+                                        label: 'Web Development',
+                                        value: 'web-development',
                                     },
-                                ]}
-                                selected="web-development"
-                                onSelect={(value) => console.log(value)}
-                                placeholder="Select category"
-                                maxMenuHeight={100}
-                            />
-                            <MultiSelect
-                                fullWidth={true}
-                                label="Category"
-                                items={[
                                     {
-                                        groupLabel: undefined,
-                                        items: [
-                                            {
-                                                label: 'Web Development',
-                                                value: 'web-development',
-                                            },
-                                            {
-                                                label: 'Mobile App',
-                                                value: 'mobile-app',
-                                            },
-                                            {
-                                                label: 'Design',
-                                                value: 'design',
-                                            },
-                                            { label: 'Other', value: 'other' },
-                                        ],
+                                        label: 'Mobile App',
+                                        value: 'mobile-app',
                                     },
-                                ]}
-                                selectedValues={['web-development']}
-                                onChange={(value) => console.log(value)}
-                                placeholder="Select category"
-                                maxMenuHeight={100}
-                            />
-                            <Menu
-                                trigger={
-                                    <Button
-                                        text="Open Menu"
-                                        buttonType={ButtonType.PRIMARY}
-                                        size={ButtonSize.SMALL}
-                                    />
-                                }
-                                items={[
+                                    { label: 'Design', value: 'design' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                    { label: 'Other', value: 'other' },
+                                ],
+                            },
+                        ]}
+                        selected="web-development"
+                        onSelect={(value) => console.log(value)}
+                        placeholder="Select category"
+                        maxMenuHeight={100}
+                    />
+                    <MultiSelect
+                        fullWidth={true}
+                        label="Category"
+                        items={[
+                            {
+                                groupLabel: undefined,
+                                items: [
                                     {
-                                        items: [
-                                            {
-                                                label: 'Profile',
-                                                slot1: <User size={16} />,
-                                                onClick: () =>
-                                                    console.log(
-                                                        'Profile clicked'
-                                                    ),
-                                            },
-                                            {
-                                                label: 'Settings',
-                                                slot1: <Settings size={16} />,
-                                                slot2: (
-                                                    <Text
-                                                        fontSize={12}
-                                                        color="gray"
-                                                    >
-                                                        ⌘,
-                                                    </Text>
-                                                ),
-                                                onClick: () =>
-                                                    console.log(
-                                                        'Settings clicked'
-                                                    ),
-                                            },
-                                            {
-                                                label: 'Sign Out',
-                                                slot1: <LogOut size={16} />,
-                                                onClick: () =>
-                                                    console.log(
-                                                        'Sign out clicked'
-                                                    ),
-                                            },
-                                        ],
+                                        label: 'Web Development',
+                                        value: 'web-development',
                                     },
-                                ]}
-                            />
-                        </div>
-                    </Popover>
-
+                                    {
+                                        label: 'Mobile App',
+                                        value: 'mobile-app',
+                                    },
+                                    { label: 'Design', value: 'design' },
+                                    { label: 'Other', value: 'other' },
+                                ],
+                            },
+                        ]}
+                        selectedValues={['web-development']}
+                        onChange={(value) => console.log(value)}
+                        placeholder="Select category"
+                        maxMenuHeight={100}
+                    />
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Description

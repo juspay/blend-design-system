@@ -19,7 +19,6 @@ import {
     Download,
     ChevronDown,
 } from 'lucide-react'
-import { MultiSelect } from '../../../../packages/blend/lib/main'
 
 const PopoverDemo = () => {
     const [config, setConfig] = useState({
@@ -90,23 +89,6 @@ const PopoverDemo = () => {
                             purposes. You can adjust various settings using the
                             controls below.
                         </p>
-                        <MultiSelect
-                            label="Options"
-                            items={[
-                                {
-                                    items: [
-                                        { label: 'Option 1', value: 'option1' },
-                                        { label: 'Option 2', value: 'option2' },
-                                        { label: 'Option 3', value: 'option3' },
-                                    ],
-                                },
-                            ]}
-                            selectedValues={[]}
-                            onChange={(value) => {
-                                console.log(value)
-                            }}
-                            placeholder="Select user"
-                        />
                     </div>
                 )
             case 'form':
