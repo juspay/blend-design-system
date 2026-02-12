@@ -38,6 +38,7 @@ export type SelectorsLabelProps = {
     label: string
     tokens: SelectorsLabelTokensType
     maxLength?: number
+    elementType?: string
 }
 
 export type SelectorsSubLabelProps = {
@@ -48,4 +49,5 @@ export type SelectorsSubLabelProps = {
     error: boolean
     tokens: SelectorsSubLabelTokensType
     maxLength?: number
+    elementType?: string
 }

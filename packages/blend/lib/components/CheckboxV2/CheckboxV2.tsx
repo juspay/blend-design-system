@@ -66,7 +66,12 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
         const tokens = useResponsiveTokens<CheckboxV2TokensType>('CHECKBOXV2')
 
         return (
-            <Block display="flex" alignItems="flex-start" gap={tokens.gap}>
+            <Block
+                display="flex"
+                alignItems="flex-start"
+                gap={tokens.gap}
+                data-checkbox={label ?? 'checkbox'}
+            >
                 <CheckboxV2Root
                     uniqueId={uniqueId}
                     tokens={tokens}
@@ -246,6 +251,7 @@ const CheckboxV2Content = ({
                     label={label ?? ''}
                     tokens={tokens as unknown as SelectorsLabelTokensType}
                     maxLength={labelMaxLength}
+                    elementType="checkbox-label"
                 />
                 {slot && (
                     <Block
@@ -268,6 +274,7 @@ const CheckboxV2Content = ({
                 error={error}
                 tokens={tokens as unknown as SelectorsSubLabelTokensType}
                 maxLength={subLabelMaxLength}
+                elementType="checkbox-description"
             />
         </Block>
     )

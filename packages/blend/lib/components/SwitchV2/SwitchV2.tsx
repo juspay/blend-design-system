@@ -52,6 +52,7 @@ const SwitchV2Content = ({
                     label={label ?? ''}
                     tokens={tokens as unknown as SelectorsLabelTokensType}
                     maxLength={labelMaxLength}
+                    elementType="switch-label"
                 />
                 {slot && (
                     <Block
@@ -74,6 +75,7 @@ const SwitchV2Content = ({
                 error={error}
                 tokens={tokens as unknown as SelectorsSubLabelTokensType}
                 maxLength={subLabelMaxLength}
+                elementType="switch-description"
             />
         </Block>
     )

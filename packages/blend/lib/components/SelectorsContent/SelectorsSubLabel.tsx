@@ -11,6 +11,7 @@ const SelectorsSubLabel = ({
     error,
     tokens,
     maxLength,
+    elementType = 'subLabel',
 }: SelectorsSubLabelProps) => {
     if (!subLabel) return null
 
@@ -21,7 +22,7 @@ const SelectorsSubLabel = ({
 
     const content = (
         <PrimitiveText
-            data-element="switch-description"
+            data-element={elementType}
             data-id={subLabel}
             data-status={disabled ? 'disabled' : 'enabled'}
             id={id}
