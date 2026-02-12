@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 
 let activeLockCount = 0
-let styleInjected = false
 
 let wheelHandler: ((e: WheelEvent) => void) | null = null
 let touchHandler: ((e: TouchEvent) => void) | null = null
@@ -15,9 +14,6 @@ type DropdownController = {
 // Track multiple active dropdowns to allow multiple in same parent container
 let activeDropdownControllers: DropdownController[] = []
 let dropdownIdCounter = 0
-
-const CLASS_NAME = 'dropdown-interaction-locked'
-const STYLE_ID = 'dropdown-interaction-lock-style'
 
 export type DropdownSelectors = {
     content?: string[]
@@ -82,70 +78,26 @@ function findParentContainer(
 }
 
 function findTriggerElement(selectors: ResolvedSelectors): HTMLElement | null {
-    // First, try to find trigger with aria-expanded="true" (most reliable)
+    // Find trigger with aria-expanded="true" — apply qualifier to each selector individually
     const expandedTrigger = document.querySelector<HTMLElement>(
-        `${selectors.trigger.join(', ')}[aria-expanded="true"]`
+        selectors.trigger
+            .map((sel) => `${sel}[aria-expanded="true"]`)
+            .join(', ')
     )
     if (expandedTrigger) return expandedTrigger
 
-    // Fallback: find any trigger that has aria-haspopup
+    // Fallback: find any trigger with aria-haspopup="true"
     const hasPopupTrigger = document.querySelector<HTMLElement>(
-        `${selectors.trigger.join(', ')}[aria-haspopup="true"]`
+        selectors.trigger
+            .map((sel) => `${sel}[aria-haspopup="true"]`)
+            .join(', ')
     )
     if (hasPopupTrigger) return hasPopupTrigger
-
-    // Last resort: find the most recently opened dropdown content and trace back to trigger
-    const dropdownContents = document.querySelectorAll<HTMLElement>(
-        selectors.contentSelectorString
-    )
-    if (dropdownContents.length > 0) {
-        const lastContent =
-            Array.from(dropdownContents)[dropdownContents.length - 1]
-        // Try to find trigger near the content (Radix usually places them close)
-        const possibleTrigger =
-            lastContent.parentElement?.querySelector<HTMLElement>(
-                selectors.trigger.join(', ')
-            )
-        if (possibleTrigger) return possibleTrigger
-    }
 
     return null
 }
 
-function injectStyle(selectors: ResolvedSelectors) {
-    if (styleInjected || typeof document === 'undefined') return
-
-    const contentSelectors = selectors.content
-        .map((sel) => `body.${CLASS_NAME} ${sel}, body.${CLASS_NAME} ${sel} *`)
-        .join(',\n')
-
-    const parentSelectors = selectors.parentContainers
-        .map((sel) => `body.${CLASS_NAME} ${sel}, body.${CLASS_NAME} ${sel} *`)
-        .join(',\n')
-
-    const style = document.createElement('style')
-    style.id = STYLE_ID
-
-    style.textContent = `
-    body.${CLASS_NAME} * {
-      pointer-events: none !important;
-    }
-
-    ${parentSelectors},
-    ${contentSelectors} {
-      pointer-events: auto !important;
-    }
-  `
-
-    document.head.appendChild(style)
-    styleInjected = true
-}
-
 function applyLock(selectors: ResolvedSelectors) {
-    injectStyle(selectors)
-
-    document.body.classList.add(CLASS_NAME)
-
     document.documentElement.style.overflow = 'hidden'
     document.documentElement.style.overscrollBehavior = 'none'
     document.documentElement.style.touchAction = 'none'
@@ -155,6 +107,13 @@ function applyLock(selectors: ResolvedSelectors) {
             matchesClosest(
                 e.target as HTMLElement,
                 selectors.contentSelectorString
+            )
+        )
+            return
+        if (
+            matchesClosest(
+                e.target as HTMLElement,
+                selectors.parentSelectorString
             )
         )
             return
@@ -169,6 +128,13 @@ function applyLock(selectors: ResolvedSelectors) {
             )
         )
             return
+        if (
+            matchesClosest(
+                e.target as HTMLElement,
+                selectors.parentSelectorString
+            )
+        )
+            return
         e.preventDefault()
     }
 
@@ -177,8 +143,6 @@ function applyLock(selectors: ResolvedSelectors) {
 }
 
 function removeLock() {
-    document.body.classList.remove(CLASS_NAME)
-
     document.documentElement.style.overflow = ''
     document.documentElement.style.overscrollBehavior = ''
     document.documentElement.style.touchAction = ''
@@ -224,7 +188,6 @@ export function createOutsideInteractionHandler(options?: {
         }
 
         // Prevent closing when clicking inside parent containers (modals, popovers)
-        // This allows multiple dropdowns in the same modal/popover to stay open
         if (matchesClosest(target, parentSelectorString)) {
             e.preventDefault()
         }
@@ -240,11 +203,16 @@ export default function useDropdownInteractionLock(
     }
 ) {
     const idRef = useRef<string>('')
+    const onCloseRef = useRef(onClose)
 
     if (!idRef.current) {
         dropdownIdCounter++
         idRef.current = `dropdown-${dropdownIdCounter}`
     }
+
+    useEffect(() => {
+        onCloseRef.current = onClose
+    })
 
     const selectorsRef = useRef<ResolvedSelectors>(
         resolveSelectors(options?.selectors)
@@ -296,7 +264,7 @@ export default function useDropdownInteractionLock(
 
             activeDropdownControllers.push({
                 id: idRef.current,
-                close: onClose,
+                close: () => onCloseRef.current(),
                 parentContainer: currentParentContainer,
             })
 
@@ -320,5 +288,5 @@ export default function useDropdownInteractionLock(
                 removeLock()
             }
         }
-    }, [isOpen, onClose, options?.triggerElement])
+    }, [isOpen, options?.triggerElement])
 }

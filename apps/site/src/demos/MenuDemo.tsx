@@ -713,6 +713,14 @@ export const MenuDemo: React.FC = () => {
         useState(false)
     const [isPopoverWithDropdownOpen, setIsPopoverWithDropdownOpen] =
         useState(false)
+    const [modalSingleSelectValue, setModalSingleSelectValue] = useState('')
+    const [modalMultiSelectValues, setModalMultiSelectValues] = useState<
+        string[]
+    >([])
+    const [popoverSingleSelectValue, setPopoverSingleSelectValue] = useState('')
+    const [popoverMultiSelectValues, setPopoverMultiSelectValues] = useState<
+        string[]
+    >([])
     const boundaryRef = useRef<HTMLDivElement>(null)
 
     // Playground state
@@ -2895,9 +2903,10 @@ export const MenuDemo: React.FC = () => {
                                 gap="16px"
                             >
                                 <Text fontSize={14} color="gray.600">
-                                    Click the menu button below, then click
-                                    anywhere inside this modal. The dropdown
-                                    should stay open!
+                                    Click the dropdowns below, then click
+                                    anywhere inside this modal. The dropdowns
+                                    should stay open! You can select items using
+                                    checkboxes.
                                 </Text>
                                 <Menu
                                     trigger={
@@ -2909,6 +2918,78 @@ export const MenuDemo: React.FC = () => {
                                     items={basicMenuItems}
                                     enableSearch={true}
                                     searchPlaceholder="Search options..."
+                                />
+                                <SingleSelect
+                                    label="Select Option"
+                                    placeholder="Choose an option"
+                                    items={[
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Option 1',
+                                                    value: '1',
+                                                },
+                                                {
+                                                    label: 'Option 2',
+                                                    value: '2',
+                                                },
+                                                {
+                                                    label: 'Option 3',
+                                                    value: '3',
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                    selected={modalSingleSelectValue}
+                                    onSelect={(value) => {
+                                        setModalSingleSelectValue(value)
+                                        console.log(
+                                            'Modal SingleSelect:',
+                                            value
+                                        )
+                                    }}
+                                />
+                                <MultiSelect
+                                    label="Multi Select"
+                                    placeholder="Choose multiple options"
+                                    items={[
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Item A',
+                                                    value: 'a',
+                                                },
+                                                {
+                                                    label: 'Item B',
+                                                    value: 'b',
+                                                },
+                                                {
+                                                    label: 'Item C',
+                                                    value: 'c',
+                                                },
+                                                {
+                                                    label: 'Item D',
+                                                    value: 'd',
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                    selectedValues={modalMultiSelectValues}
+                                    onChange={(value) => {
+                                        setModalMultiSelectValues((prev) => {
+                                            if (prev.includes(value)) {
+                                                return prev.filter(
+                                                    (v) => v !== value
+                                                )
+                                            } else {
+                                                return [...prev, value]
+                                            }
+                                        })
+                                        console.log(
+                                            'Modal MultiSelect toggled:',
+                                            value
+                                        )
+                                    }}
                                 />
                             </Block>
                         </Modal>
@@ -2944,7 +3025,8 @@ export const MenuDemo: React.FC = () => {
                         >
                             <Text fontSize={14} color="gray.600">
                                 Open the dropdowns below, then click anywhere
-                                inside this popover. They should stay open!
+                                inside this popover. They should stay open! You
+                                can select items using checkboxes.
                             </Text>
                             <SingleSelect
                                 label="Select Option"
@@ -2967,8 +3049,11 @@ export const MenuDemo: React.FC = () => {
                                         ],
                                     },
                                 ]}
-                                selected=""
-                                onSelect={() => {}}
+                                selected={popoverSingleSelectValue}
+                                onSelect={(value) => {
+                                    setPopoverSingleSelectValue(value)
+                                    console.log('Popover SingleSelect:', value)
+                                }}
                             />
                             <MultiSelect
                                 label="Multi Select"
@@ -2988,11 +3073,29 @@ export const MenuDemo: React.FC = () => {
                                                 label: 'Item C',
                                                 value: 'c',
                                             },
+                                            {
+                                                label: 'Item D',
+                                                value: 'd',
+                                            },
                                         ],
                                     },
                                 ]}
-                                selectedValues={[]}
-                                onChange={() => {}}
+                                selectedValues={popoverMultiSelectValues}
+                                onChange={(value) => {
+                                    setPopoverMultiSelectValues((prev) => {
+                                        if (prev.includes(value)) {
+                                            return prev.filter(
+                                                (v) => v !== value
+                                            )
+                                        } else {
+                                            return [...prev, value]
+                                        }
+                                    })
+                                    console.log(
+                                        'Popover MultiSelect toggled:',
+                                        value
+                                    )
+                                }}
                             />
                         </Block>
                     </Popover>
@@ -3014,20 +3117,24 @@ export const MenuDemo: React.FC = () => {
                         </Text>
                     </Block>
                     <Text fontSize={12} color="green.600" lineHeight="1.6">
-                        1. Click "Open Popover with Dropdowns" above
+                        1. Click "Open Modal with Menu Dropdown" or "Open
+                        Popover with Dropdowns" above
                         <br />
                         2. Open the SingleSelect or MultiSelect dropdown
                         <br />
-                        3. Click anywhere inside the popover (but outside the
-                        dropdown)
+                        3. ✅ Select items using checkboxes - they should work
+                        correctly!
                         <br />
-                        4. ✅ The dropdown should stay open (not close
+                        4. Click anywhere inside the modal/popover (but outside
+                        the dropdown)
+                        <br />
+                        5. ✅ The dropdown should stay open (not close
                         prematurely)
                         <br />
-                        5. Click outside the entire popover to close both
+                        6. Click outside the entire modal/popover to close both
                         <br />
-                        6. Same behavior works with modals - dropdowns respect
-                        parent container boundaries
+                        7. Same behavior works with modals and popovers -
+                        dropdowns respect parent container boundaries
                     </Text>
                 </Block>
 
