@@ -1378,8 +1378,8 @@ const SidebarDemo = () => {
                                 onClick={() => alert('Help clicked!')}
                                 className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
                                 style={{
-                                    width: '36px',
-                                    height: '36px',
+                                    width: '32px',
+                                    height: '32px',
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[100],
                                 }}
@@ -1396,8 +1396,8 @@ const SidebarDemo = () => {
                                 onClick={() => alert('Tips clicked!')}
                                 className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
                                 style={{
-                                    width: '36px',
-                                    height: '36px',
+                                    width: '32px',
+                                    height: '32px',
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[100],
                                 }}
@@ -1416,8 +1416,8 @@ const SidebarDemo = () => {
                                 }
                                 className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
                                 style={{
-                                    width: '36px',
-                                    height: '36px',
+                                    width: '32px',
+                                    height: '32px',
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[100],
                                 }}
@@ -1430,7 +1430,7 @@ const SidebarDemo = () => {
                             </button>
                         ),
                     }}
-                    // showLeftPanel={false}
+                    showLeftPanel={isExpanded ? true : false}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({
                             label: merchant.label,
