@@ -19,7 +19,10 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
 import { menuContentAnimations } from './menu.animations'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
-import { useDropdownInteractionLock } from '../../hooks'
+import {
+    useDropdownInteractionLock,
+    createOutsideInteractionHandler,
+} from '../../hooks'
 import useScrollLock from '../../hooks/useScrollLock'
 
 export const contentBaseStyle: CSSObject = {
@@ -120,10 +123,8 @@ const Menu = ({
             return
         }
 
-        const target = e.target as HTMLElement
-        if (target?.closest('[data-radix-dropdown-menu-trigger]')) {
-            e.preventDefault()
-        }
+        const handler = createOutsideInteractionHandler()
+        handler(e)
     }, [])
 
     const virtualListItems = useMemo(() => {

@@ -17,6 +17,10 @@ import Block from '../../../../packages/blend/lib/components/Primitives/Block/Bl
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { Modal } from '../../../../packages/blend/lib/components/Modal'
+import { Popover } from '../../../../packages/blend/lib/components/Popover'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import { MultiSelect } from '../../../../packages/blend/lib/components/MultiSelect'
 import {
     User,
     Settings,
@@ -705,6 +709,10 @@ const tooltipMenuItems: MenuGroupType[] = [
 export const MenuDemo: React.FC = () => {
     const [isModalMenuOpen, setIsModalMenuOpen] = useState(false)
     const [isControlledMenuOpen, setIsControlledMenuOpen] = useState(false)
+    const [isModalWithDropdownOpen, setIsModalWithDropdownOpen] =
+        useState(false)
+    const [isPopoverWithDropdownOpen, setIsPopoverWithDropdownOpen] =
+        useState(false)
     const boundaryRef = useRef<HTMLDivElement>(null)
 
     // Playground state
@@ -2836,6 +2844,225 @@ export const MenuDemo: React.FC = () => {
                         alignment={MenuAlignment.END}
                         side={MenuSide.BOTTOM}
                     />
+                </Block>
+            </Block>
+
+            {/* 10. Modal/Popover Integration - Dropdown Interaction Lock Fix */}
+            <Block marginBottom="48px">
+                <Block marginBottom="16px">
+                    <Text fontSize={28} fontWeight="semibold">
+                        🔒 10. Modal/Popover Integration - Dropdown Fix
+                    </Text>
+                </Block>
+                <Block marginBottom="24px">
+                    <Text fontSize={14} color="gray.600">
+                        NEW FIX: Dropdowns inside modals/popovers now properly
+                        handle outside clicks. Clicking inside the modal/popover
+                        (but outside the dropdown) no longer closes the dropdown
+                        prematurely.
+                    </Text>
+                </Block>
+
+                <Block display="flex" gap="16px" flexWrap="wrap">
+                    <Block>
+                        <Button
+                            buttonType={ButtonType.PRIMARY}
+                            text="Open Modal with Menu Dropdown"
+                            onClick={() => setIsModalWithDropdownOpen(true)}
+                        />
+                        <Modal
+                            isOpen={isModalWithDropdownOpen}
+                            onClose={() => setIsModalWithDropdownOpen(false)}
+                            title="Modal with Menu Dropdown"
+                            subtitle="Open the menu dropdown and click anywhere inside this modal"
+                            primaryAction={{
+                                text: 'Save',
+                                onClick: () =>
+                                    setIsModalWithDropdownOpen(false),
+                                buttonType: ButtonType.PRIMARY,
+                            }}
+                            secondaryAction={{
+                                text: 'Cancel',
+                                onClick: () =>
+                                    setIsModalWithDropdownOpen(false),
+                                buttonType: ButtonType.SECONDARY,
+                            }}
+                        >
+                            <Block
+                                padding="16px"
+                                display="flex"
+                                flexDirection="column"
+                                gap="16px"
+                            >
+                                <Text fontSize={14} color="gray.600">
+                                    Click the menu button below, then click
+                                    anywhere inside this modal. The dropdown
+                                    should stay open!
+                                </Text>
+                                <Menu
+                                    trigger={
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            text="Open Menu in Modal"
+                                        />
+                                    }
+                                    items={basicMenuItems}
+                                    enableSearch={true}
+                                    searchPlaceholder="Search options..."
+                                />
+                            </Block>
+                        </Modal>
+                    </Block>
+
+                    <Popover
+                        heading="Popover with Select Dropdowns"
+                        description="Test dropdowns inside popovers"
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                text="Open Popover with Dropdowns"
+                            />
+                        }
+                        open={isPopoverWithDropdownOpen}
+                        onOpenChange={setIsPopoverWithDropdownOpen}
+                        primaryAction={{
+                            text: 'Apply',
+                            onClick: () => setIsPopoverWithDropdownOpen(false),
+                            buttonType: ButtonType.PRIMARY,
+                        }}
+                        secondaryAction={{
+                            text: 'Cancel',
+                            onClick: () => setIsPopoverWithDropdownOpen(false),
+                            buttonType: ButtonType.SECONDARY,
+                        }}
+                    >
+                        <Block
+                            padding="16px"
+                            display="flex"
+                            flexDirection="column"
+                            gap="16px"
+                        >
+                            <Text fontSize={14} color="gray.600">
+                                Open the dropdowns below, then click anywhere
+                                inside this popover. They should stay open!
+                            </Text>
+                            <SingleSelect
+                                label="Select Option"
+                                placeholder="Choose an option"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                label: 'Option 1',
+                                                value: '1',
+                                            },
+                                            {
+                                                label: 'Option 2',
+                                                value: '2',
+                                            },
+                                            {
+                                                label: 'Option 3',
+                                                value: '3',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                selected=""
+                                onSelect={() => {}}
+                            />
+                            <MultiSelect
+                                label="Multi Select"
+                                placeholder="Choose multiple options"
+                                items={[
+                                    {
+                                        items: [
+                                            {
+                                                label: 'Item A',
+                                                value: 'a',
+                                            },
+                                            {
+                                                label: 'Item B',
+                                                value: 'b',
+                                            },
+                                            {
+                                                label: 'Item C',
+                                                value: 'c',
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                selectedValues={[]}
+                                onChange={() => {}}
+                            />
+                        </Block>
+                    </Popover>
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="green.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="green.700"
+                        >
+                            ✅ How to Test the Fix:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="green.600" lineHeight="1.6">
+                        1. Click "Open Popover with Dropdowns" above
+                        <br />
+                        2. Open the SingleSelect or MultiSelect dropdown
+                        <br />
+                        3. Click anywhere inside the popover (but outside the
+                        dropdown)
+                        <br />
+                        4. ✅ The dropdown should stay open (not close
+                        prematurely)
+                        <br />
+                        5. Click outside the entire popover to close both
+                        <br />
+                        6. Same behavior works with modals - dropdowns respect
+                        parent container boundaries
+                    </Text>
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="blue.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="blue.700"
+                        >
+                            🔧 Technical Implementation:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="blue.600" lineHeight="1.6">
+                        • <strong>useDropdownInteractionLock:</strong> Updated
+                        to allow pointer events on parent containers (modals,
+                        popovers)
+                        <br />• <strong>onInteractOutside:</strong> Added to
+                        Menu, SingleSelectMenu, and MultiSelectMenu to prevent
+                        closing when clicking inside parent containers
+                        <br />• <strong>Parent Container Detection:</strong>
+                        Checks for [data-modal], [data-popover],
+                        [role="dialog"], and [data-radix-popover-content]
+                        <br />• <strong>Scroll Lock Maintained:</strong> Still
+                        prevents scrolling outside dropdowns while allowing
+                        proper click detection
+                        <br />• <strong>Generic Solution:</strong> Works with
+                        all dropdown components (Menu, SingleSelect,
+                        MultiSelect)
+                    </Text>
                 </Block>
             </Block>
 

@@ -11,6 +11,7 @@ const STYLE_ID = 'dropdown-interaction-lock-style'
 type DropdownSelectors = {
     content?: string[]
     trigger?: string[]
+    parentContainers?: string[]
 }
 
 type DropdownLockHandlers = {
@@ -38,6 +39,13 @@ const DEFAULT_SELECTORS: DropdownSelectors = {
         '[data-element="single-select-button"]',
         '[data-element="multi-select-button"]',
     ],
+    parentContainers: [
+        '[data-modal]',
+        '[data-popover]',
+        '[role="dialog"]',
+        '[data-radix-popover-content]',
+        '[data-radix-popper-content-wrapper]',
+    ],
 }
 
 function injectStyle(selectors: DropdownSelectors) {
@@ -47,6 +55,8 @@ function injectStyle(selectors: DropdownSelectors) {
         selectors.content || DEFAULT_SELECTORS.content || []
     const triggerSelectors =
         selectors.trigger || DEFAULT_SELECTORS.trigger || []
+    const parentContainerSelectors =
+        selectors.parentContainers || DEFAULT_SELECTORS.parentContainers || []
 
     const contentSelectorString = contentSelectors
         .map((sel) => `body.${CLASS_NAME} ${sel}, body.${CLASS_NAME} ${sel} *`)
@@ -56,6 +66,10 @@ function injectStyle(selectors: DropdownSelectors) {
         .map((sel) => `body.${CLASS_NAME} ${sel}`)
         .join(',\n      ')
 
+    const parentContainerSelectorString = parentContainerSelectors
+        .map((sel) => `body.${CLASS_NAME} ${sel}, body.${CLASS_NAME} ${sel} *`)
+        .join(',\n      ')
+
     const style = document.createElement('style')
     style.id = STYLE_ID
 
@@ -63,6 +77,12 @@ function injectStyle(selectors: DropdownSelectors) {
       /* Disable pointer events on all elements */
       body.${CLASS_NAME} * {
         pointer-events: none !important;
+      }
+
+      /* Re-enable pointer events for parent containers (modals, popovers) */
+      /* This allows clicks inside modals/popovers so dropdowns don't close prematurely */
+      ${parentContainerSelectorString} {
+        pointer-events: auto !important;
       }
 
       /* Re-enable pointer events for dropdown content */
@@ -97,6 +117,43 @@ function isTrigger(
     if (!target) return false
 
     return triggerSelectors.some((selector) => target.matches(selector))
+}
+
+function isInsideParentContainer(
+    target: HTMLElement | null,
+    parentContainerSelectors: string[]
+): boolean {
+    if (!target) return false
+
+    const selectorString = parentContainerSelectors.join(', ')
+    return Boolean(target.closest(selectorString))
+}
+
+export function createOutsideInteractionHandler(options?: {
+    preventOnTrigger?: boolean
+    parentContainerSelectors?: string[]
+}) {
+    const parentContainerSelectors =
+        options?.parentContainerSelectors ||
+        DEFAULT_SELECTORS.parentContainers ||
+        []
+    const preventOnTrigger = options?.preventOnTrigger ?? true
+
+    return (e: Event) => {
+        const target = e.target as HTMLElement | null
+
+        if (preventOnTrigger) {
+            const triggerSelectors = DEFAULT_SELECTORS.trigger || []
+            if (isTrigger(target, triggerSelectors)) {
+                e.preventDefault()
+                return
+            }
+        }
+
+        if (isInsideParentContainer(target, parentContainerSelectors)) {
+            e.preventDefault()
+        }
+    }
 }
 
 function preventScroll(e: WheelEvent | TouchEvent, contentSelectors: string[]) {
@@ -153,7 +210,6 @@ function applyLock(selectors: DropdownSelectors) {
     document.body.style.height = '100%'
     document.body.style.overflow = 'hidden'
 
-    // Prevent scroll events
     const handleWheel = (e: WheelEvent) => preventScroll(e, contentSelectors)
     const handleTouchMove = (e: TouchEvent) =>
         preventScroll(e, contentSelectors)

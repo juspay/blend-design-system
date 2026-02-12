@@ -24,7 +24,11 @@ import {
 } from '../Select/selectUtils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll, useScrollLock } from '../../hooks'
+import {
+    usePreventParentScroll,
+    useScrollLock,
+    createOutsideInteractionHandler,
+} from '../../hooks'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
@@ -314,11 +318,8 @@ const MultiSelectMenu = ({
             return
         }
 
-        const target = e.target as HTMLElement
-        const trigger = target?.closest('[data-radix-dropdown-menu-trigger]')
-        if (trigger) {
-            e.preventDefault()
-        }
+        const handler = createOutsideInteractionHandler()
+        handler(e)
     }, [])
 
     // RCA: When customTrigger is a Tooltip wrapping a Button, nested asChild props conflict

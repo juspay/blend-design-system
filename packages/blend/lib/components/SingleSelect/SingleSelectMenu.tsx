@@ -13,7 +13,11 @@ import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
 import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll, useScrollLock } from '../../hooks'
+import {
+    usePreventParentScroll,
+    useScrollLock,
+    createOutsideInteractionHandler,
+} from '../../hooks'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 import {
@@ -584,6 +588,7 @@ const SingleSelectMenu = ({
                             'var(--radix-dropdown-menu-trigger-width)',
                         border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
                     }}
+                    onInteractOutside={createOutsideInteractionHandler()}
                     onKeyDown={(e) => {
                         if (enableSearch && searchInputRef.current) {
                             if (
