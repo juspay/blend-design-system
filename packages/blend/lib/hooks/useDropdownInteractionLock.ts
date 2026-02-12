@@ -12,7 +12,8 @@ type DropdownController = {
     parentContainer: HTMLElement | null
 }
 
-let activeDropdownController: DropdownController | null = null
+// Track multiple active dropdowns to allow multiple in same parent container
+let activeDropdownControllers: DropdownController[] = []
 let dropdownIdCounter = 0
 
 const CLASS_NAME = 'dropdown-interaction-locked'
@@ -78,6 +79,37 @@ function findParentContainer(
 ): HTMLElement | null {
     if (!element) return null
     return element.closest(parentSelectorString)
+}
+
+function findTriggerElement(selectors: ResolvedSelectors): HTMLElement | null {
+    // First, try to find trigger with aria-expanded="true" (most reliable)
+    const expandedTrigger = document.querySelector<HTMLElement>(
+        `${selectors.trigger.join(', ')}[aria-expanded="true"]`
+    )
+    if (expandedTrigger) return expandedTrigger
+
+    // Fallback: find any trigger that has aria-haspopup
+    const hasPopupTrigger = document.querySelector<HTMLElement>(
+        `${selectors.trigger.join(', ')}[aria-haspopup="true"]`
+    )
+    if (hasPopupTrigger) return hasPopupTrigger
+
+    // Last resort: find the most recently opened dropdown content and trace back to trigger
+    const dropdownContents = document.querySelectorAll<HTMLElement>(
+        selectors.contentSelectorString
+    )
+    if (dropdownContents.length > 0) {
+        const lastContent =
+            Array.from(dropdownContents)[dropdownContents.length - 1]
+        // Try to find trigger near the content (Radix usually places them close)
+        const possibleTrigger =
+            lastContent.parentElement?.querySelector<HTMLElement>(
+                selectors.trigger.join(', ')
+            )
+        if (possibleTrigger) return possibleTrigger
+    }
+
+    return null
 }
 
 function injectStyle(selectors: ResolvedSelectors) {
@@ -162,16 +194,37 @@ function removeLock() {
     }
 }
 
-export function createOutsideInteractionHandler(
+export function createOutsideInteractionHandler(options?: {
     parentContainerSelectors?: string[]
-) {
+    preventOnTrigger?: boolean
+    contentSelectors?: string[]
+}) {
     const parentSelectorString = (
-        parentContainerSelectors ?? DEFAULT_SELECTORS.parentContainers
+        options?.parentContainerSelectors ?? DEFAULT_SELECTORS.parentContainers
     ).join(', ')
+    const triggerSelectorString = DEFAULT_SELECTORS.trigger.join(', ')
+    const contentSelectorString = (
+        options?.contentSelectors ?? DEFAULT_SELECTORS.content
+    ).join(', ')
+    const preventOnTrigger = options?.preventOnTrigger ?? true
 
     return (e: Event) => {
         const target = e.target as HTMLElement | null
 
+        // Prevent closing when clicking on dropdown content itself
+        if (matchesClosest(target, contentSelectorString)) {
+            e.preventDefault()
+            return
+        }
+
+        // Prevent closing when clicking on trigger elements
+        if (preventOnTrigger && matchesClosest(target, triggerSelectorString)) {
+            e.preventDefault()
+            return
+        }
+
+        // Prevent closing when clicking inside parent containers (modals, popovers)
+        // This allows multiple dropdowns in the same modal/popover to stay open
         if (matchesClosest(target, parentSelectorString)) {
             e.preventDefault()
         }
@@ -205,34 +258,47 @@ export default function useDropdownInteractionLock(
         if (typeof window === 'undefined') return
 
         if (isOpen) {
-            const trigger = options?.triggerElement ?? null
+            // Find trigger element - prefer passed ref, otherwise auto-detect
+            const trigger =
+                options?.triggerElement ??
+                findTriggerElement(selectorsRef.current)
 
             const currentParentContainer = findParentContainer(
                 trigger,
                 selectorsRef.current.parentSelectorString
             )
 
-            if (
-                activeDropdownController &&
-                activeDropdownController.id !== idRef.current
-            ) {
-                const previousParent = activeDropdownController.parentContainer
+            // Close dropdowns in DIFFERENT parent containers
+            // Allow multiple dropdowns in the SAME parent container
+            activeDropdownControllers = activeDropdownControllers.filter(
+                (controller) => {
+                    if (controller.id === idRef.current) return true
 
-                const sameContext =
-                    currentParentContainer &&
-                    previousParent &&
-                    currentParentContainer === previousParent
+                    const previousParent = controller.parentContainer
 
-                if (!sameContext) {
-                    activeDropdownController.close()
+                    // If both are in the same parent container (or both have no parent), keep both
+                    const sameContext =
+                        currentParentContainer &&
+                        previousParent &&
+                        currentParentContainer === previousParent
+
+                    const bothRootLevel =
+                        !currentParentContainer && !previousParent
+
+                    if (sameContext || bothRootLevel) {
+                        return true
+                    }
+
+                    controller.close()
+                    return false
                 }
-            }
+            )
 
-            activeDropdownController = {
+            activeDropdownControllers.push({
                 id: idRef.current,
                 close: onClose,
                 parentContainer: currentParentContainer,
-            }
+            })
 
             activeLockCount++
             if (activeLockCount === 1) {
@@ -243,12 +309,9 @@ export default function useDropdownInteractionLock(
         return () => {
             if (!isOpen) return
 
-            if (
-                activeDropdownController &&
-                activeDropdownController.id === idRef.current
-            ) {
-                activeDropdownController = null
-            }
+            activeDropdownControllers = activeDropdownControllers.filter(
+                (controller) => controller.id !== idRef.current
+            )
 
             activeLockCount--
 
