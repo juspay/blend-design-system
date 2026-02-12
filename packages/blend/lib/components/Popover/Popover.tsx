@@ -11,6 +11,7 @@ import MobilePopover from './MobilePopover'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { popoverContentAnimations } from './popover.animations'
 import PopoverSkeleton from './PopoverSkeleton'
+import { useScrollLock } from '../../hooks'
 
 const AnimatedPopoverSurface = styled(Block)`
     ${popoverContentAnimations}
@@ -69,6 +70,8 @@ const Popover = ({
             setIsOpen(open)
         }
     }, [open])
+
+    useScrollLock(!isMobile && isOpen)
 
     if (isMobile && useDrawerOnMobile) {
         return (

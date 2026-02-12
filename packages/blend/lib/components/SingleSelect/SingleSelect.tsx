@@ -163,7 +163,7 @@ const SingleSelect = ({
     )
     const shouldShake = useErrorShake(error)
 
-    useDropdownInteractionLock(!isMobile && open)
+    useDropdownInteractionLock(!isMobile && open, () => setOpen(false))
 
     if (isMobile && useDrawerOnMobile) {
         return (

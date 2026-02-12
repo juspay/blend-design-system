@@ -169,7 +169,7 @@ const MultiSelect = ({
         prefix: 'multiselect',
         needsMenuId: true,
     })
-    useDropdownInteractionLock(!isMobile && open)
+    useDropdownInteractionLock(!isMobile && open, () => setOpen(false))
 
     if (isMobile && useDrawerOnMobile) {
         return (

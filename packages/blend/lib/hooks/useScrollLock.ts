@@ -23,26 +23,30 @@ const useScrollLock = (shouldLock?: boolean) => {
                 '[data-radix-popper-content-wrapper]'
             )
 
-            // Priority 3: If dropdown is open, block ALL modal scrolling
+            // Priority 3: If dropdown is open, block ALL modal/popover scrolling
             if (hasOpenDropdown) {
-                const isInsideModalBody =
+                const isInsideModalOrPopoverBody =
                     target.closest('[data-element="body"]') ||
-                    target.closest('[role="dialog"]')
+                    target.closest('[role="dialog"]') ||
+                    target.closest('[data-popover]') ||
+                    target.closest('[data-radix-popover-content]')
 
-                if (isInsideModalBody) {
-                    e.preventDefault() // Block modal scroll when dropdown is open
+                if (isInsideModalOrPopoverBody) {
+                    e.preventDefault() // Block modal/popover scroll when dropdown is open
                     return
                 }
             }
 
-            // Priority 4: Allow scrolling in modal body when no dropdown is open
-            const isInsideModal =
+            // Priority 4: Allow scrolling in modal/popover body when no dropdown is open
+            const isInsideModalOrPopover =
                 target.closest('[role="dialog"]') ||
                 target.closest('[data-modal]') ||
+                target.closest('[data-popover]') ||
+                target.closest('[data-radix-popover-content]') ||
                 target.closest('[data-element="body"]')
 
-            if (isInsideModal && !hasOpenDropdown) {
-                return // Allow scroll in modal when no dropdown
+            if (isInsideModalOrPopover && !hasOpenDropdown) {
+                return // Allow scroll in modal/popover when no dropdown
             }
 
             // Block all other scrolling
@@ -85,25 +89,29 @@ const useScrollLock = (shouldLock?: boolean) => {
                 '[data-radix-dropdown-menu-content]'
             )
 
-            // Priority 4: If dropdown is open, block modal keyboard scrolling
+            // Priority 4: If dropdown is open, block modal/popover keyboard scrolling
             if (hasOpenDropdown && scrollKeys.includes(e.key)) {
-                const isInsideModalBody =
+                const isInsideModalOrPopoverBody =
                     target.closest('[data-element="body"]') ||
-                    target.closest('[role="dialog"]')
+                    target.closest('[role="dialog"]') ||
+                    target.closest('[data-popover]') ||
+                    target.closest('[data-radix-popover-content]')
 
-                if (isInsideModalBody) {
-                    e.preventDefault() // Block modal keyboard scroll when dropdown is open
+                if (isInsideModalOrPopoverBody) {
+                    e.preventDefault() // Block modal/popover keyboard scroll when dropdown is open
                     return
                 }
             }
 
-            // Priority 5: Allow keyboard navigation in modal when no dropdown
-            const isInsideModal =
+            // Priority 5: Allow keyboard navigation in modal/popover when no dropdown
+            const isInsideModalOrPopover =
                 target.closest('[role="dialog"]') ||
                 target.closest('[data-modal]') ||
+                target.closest('[data-popover]') ||
+                target.closest('[data-radix-popover-content]') ||
                 target.closest('[data-element="body"]')
 
-            if (isInsideModal && !hasOpenDropdown) {
+            if (isInsideModalOrPopover && !hasOpenDropdown) {
                 return
             }
 
