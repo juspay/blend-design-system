@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement } from 'react'
 import { CheckboxV2TokensType } from './checkboxV2.tokens'
 import { CSSObject } from 'styled-components'
 
@@ -30,7 +30,6 @@ export type CheckboxV2Props = {
     required?: boolean
     error?: boolean
     size?: CheckboxV2Size
-    children?: ReactNode
     subLabel?: string
     slot?: {
         slot: ReactElement

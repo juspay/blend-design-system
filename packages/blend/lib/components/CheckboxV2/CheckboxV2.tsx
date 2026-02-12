@@ -38,7 +38,6 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
             required = false,
             error = false,
             size = CheckboxV2Size.MEDIUM,
-            children,
             subLabel,
             slot,
             maxLength,
@@ -61,6 +60,7 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
                 subLabelId,
                 customAriaDescribedBy
             ),
+            'aria-disabled': disabled ? true : undefined,
         }
 
         const tokens = useResponsiveTokens<CheckboxV2TokensType>('CHECKBOXV2')
@@ -139,11 +139,26 @@ const CheckboxV2Root = ({
 }: CheckboxV2RootProps) => {
     return (
         <StyledCheckboxRoot
+            role="checkbox"
+            aria-labelledby={`${uniqueId}-label`}
             id={uniqueId}
             name={name}
             ref={ref}
             checked={checked ?? defaultChecked ?? false}
             onCheckedChange={onCheckedChange}
+            onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' && !disabled) {
+                    e.preventDefault()
+                    const current = checked ?? defaultChecked ?? false
+                    const newValue =
+                        current === 'indeterminate' ? true : !current
+                    ;(
+                        onCheckedChange as
+                            | undefined
+                            | ((checked: boolean | 'indeterminate') => void)
+                    )?.(newValue)
+                }
+            }}
             disabled={disabled}
             required={required}
             size={size}
