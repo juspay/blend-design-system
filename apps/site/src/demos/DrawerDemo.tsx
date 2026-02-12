@@ -40,7 +40,7 @@ import {
 } from '../../../../packages/blend/lib/components/SingleSelect'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { Code, Database, Search, Server, User, X } from 'lucide-react'
-import { SearchInput } from '../../../../packages/blend/lib/main'
+import { Modal, SearchInput } from '../../../../packages/blend/lib/main'
 const simpleItems: SelectMenuGroupType[] = [
     {
         items: [
@@ -337,7 +337,7 @@ export const NestedDrawerExample = () => {
 export const SideDrawerExample = () => {
     const [basicIconSelected, setBasicIconSelected] = useState('')
     const [basicSimpleSelected, setBasicSimpleSelected] = useState<string[]>([])
-
+    const [isModalOpen, setIsModalOpen] = useState(false)
     // Helper function to handle multi-select changes
     const handleMultiSelectChange =
         (
@@ -357,7 +357,7 @@ export const SideDrawerExample = () => {
         }
 
     return (
-        <Drawer direction="right">
+        <Drawer direction="right" dismissible={isModalOpen ? false : true}>
             <DrawerTrigger>
                 <button
                     style={{
@@ -401,6 +401,44 @@ export const SideDrawerExample = () => {
                                 gap: '16px',
                             }}
                         >
+                            <Button
+                                text="Open Modal"
+                                onClick={() => {
+                                    setIsModalOpen(!isModalOpen)
+                                }}
+                            />
+                            <Modal
+                                isOpen={isModalOpen}
+                                onClose={() => {
+                                    setIsModalOpen(false)
+                                }}
+                                title="Modal Title"
+                                subtitle="Modal Subtitle"
+                            >
+                                <div>
+                                    <h1
+                                        onClick={(e) => {
+                                            console.log('hello------->>>')
+                                            e.stopPropagation()
+                                        }}
+                                    >
+                                        Modal Content
+                                    </h1>
+                                    <SingleSelect
+                                        items={simpleItems}
+                                        selected={basicIconSelected}
+                                        onSelect={(value) => {
+                                            setBasicIconSelected(value)
+                                            addSnackbar({
+                                                header: `Icon Selected: ${value}`,
+                                            })
+                                        }}
+                                        placeholder="Select user"
+                                        slot={<User size={16} />}
+                                    />
+                                </div>
+                            </Modal>
+
                             <SingleSelect
                                 label="User Selection"
                                 items={simpleItems}
