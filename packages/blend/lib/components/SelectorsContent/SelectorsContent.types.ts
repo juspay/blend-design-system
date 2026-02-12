@@ -1,6 +1,7 @@
 import { SwitchV2Size, SwitchV2State } from '../SwitchV2/switchV2.types'
+import { CheckboxV2Size } from '../CheckboxV2/checkboxV2.types'
 
-export type SelectorsSize = SwitchV2Size
+export type SelectorsSize = SwitchV2Size | CheckboxV2Size
 
 export type SelectorsLabelTokensType = {
     content: {

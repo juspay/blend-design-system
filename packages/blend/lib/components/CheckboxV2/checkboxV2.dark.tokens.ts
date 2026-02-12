@@ -237,14 +237,14 @@ export const getCheckboxV2DarkTokens = (
                 },
             },
             content: {
-                gap: foundationToken.unit[0],
+                gap: foundationToken.unit[6],
                 label: {
-                    gap: foundationToken.unit[0],
+                    gap: foundationToken.unit[6],
                     color: {
-                        default: foundationToken.colors.gray[700],
+                        default: foundationToken.colors.gray[500],
+                        hover: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
-                        hover: foundationToken.colors.gray[700],
                     },
 
                     fontSize: {
@@ -256,7 +256,7 @@ export const getCheckboxV2DarkTokens = (
                         md: foundationToken.font.weight[500],
                     },
                     lineHeight: {
-                        sm: foundationToken.font.lineHeight[14],
+                        sm: foundationToken.font.lineHeight[12],
                         md: foundationToken.font.lineHeight[16],
                     },
                     slot: {
@@ -268,10 +268,10 @@ export const getCheckboxV2DarkTokens = (
                 },
                 subLabel: {
                     color: {
-                        default: foundationToken.colors.gray[400],
-                        disabled: foundationToken.colors.gray[200],
-                        error: foundationToken.colors.red[500],
-                        hover: foundationToken.colors.gray[400],
+                        default: foundationToken.colors.gray[300],
+                        hover: foundationToken.colors.gray[300],
+                        disabled: foundationToken.colors.gray[600],
+                        error: foundationToken.colors.red[400],
                     },
 
                     fontSize: {

@@ -90,7 +90,8 @@ const initTokens = (
         CHECKBOX:
             componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
         CHECKBOXV2:
-            componentTokens.CHECKBOXV2 ?? getCheckboxV2Tokens(foundationTokens),
+            componentTokens.CHECKBOXV2 ??
+            getCheckboxV2Tokens(foundationTokens, theme),
         TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),
         BUTTON: componentTokens.BUTTON ?? getButtonTokens(foundationTokens),
         KEYVALUEPAIR:

@@ -206,8 +206,7 @@ const SidebarDemo = () => {
         | 'textInputV2'
         | 'textInputAutofillTestV2'
         | 'textInputGroup'
-        | 'timeline'
-    >('chartV2')
+    >('checkboxV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
