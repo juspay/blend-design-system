@@ -10,7 +10,7 @@ import Block from '../../../../packages/blend/lib/components/Primitives/Block/Bl
 
 const CheckboxV2Demo = () => {
     const [checked, setChecked] = useState<boolean | 'indeterminate'>(false)
-    const [checkedState, setCheckedState] = useState('Uncheked')
+    const [checkedState, setCheckedState] = useState('Unchecked')
     const [label, setLabel] = useState('CheckboxV2 label')
     const [subLabel, setSubLabel] = useState('CheckboxV2 sub label')
     const [required, setRequired] = useState(false)
