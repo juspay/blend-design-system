@@ -176,10 +176,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             return `Sidebar navigation, ${state}`
         }, [isExpanded])
 
-        const sidebarStatus = useMemo(
-            () => getSidebarStatus(isExpanded, isHovering),
-            [isExpanded, isHovering]
-        )
+        const sidebarStatus = getSidebarStatus(isExpanded, isHovering)
 
         const shouldRenderMobileNavigation =
             isSmallScreen && mobileNavigationItems.length > 0

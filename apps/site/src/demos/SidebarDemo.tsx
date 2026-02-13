@@ -213,6 +213,7 @@ const SidebarDemo = () => {
     const [hideOnIconOnlyToggle, setHideOnIconOnlyToggle] =
         useState<boolean>(false)
     const [isExpanded, setIsExpanded] = useState<boolean>(true)
+    const [sidebarState, setSidebarState] = useState('expanded')
 
     const tenants = [
         {
@@ -1352,9 +1353,7 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
-                    onSidebarStateChange={(state) =>
-                        console.log(state, 'state')
-                    }
+                    onSidebarStateChange={(state) => setSidebarState(state)}
                     // disableIntermediateState={true}
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
@@ -1430,7 +1429,7 @@ const SidebarDemo = () => {
                             </button>
                         ),
                     }}
-                    showLeftPanel={isExpanded ? true : false}
+                    // showLeftPanel={isExpanded ? true : false}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({
                             label: merchant.label,
@@ -1669,7 +1668,7 @@ const SidebarDemo = () => {
                     }
                     footer={
                         <div
-                            className={`flex items-center  ${isExpanded ? 'gap-2 justify-between' : 'gap-0 justify-center'}`}
+                            className={`flex items-center  ${sidebarState === 'collapsed' ? 'gap-0 justify-center' : 'gap-2 justify-between'}`}
                         >
                             <Avatar
                                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
@@ -1677,7 +1676,8 @@ const SidebarDemo = () => {
                                 size={AvatarSize.SM}
                                 shape={AvatarShape.ROUNDED}
                             />
-                            {isExpanded && (
+                            {(sidebarState === 'expanded' ||
+                                sidebarState === 'intermediate') && (
                                 <Text
                                     variant="body.md"
                                     fontWeight={600}

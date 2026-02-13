@@ -2,15 +2,16 @@ import React from 'react'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
+import { SidebarStateChangeType } from './types'
 
 type SidebarFooterProps = {
     footer?: React.ReactNode
-    isExpanded: boolean
+    sidebarState: SidebarStateChangeType
 }
 
 const SidebarFooter: React.FC<SidebarFooterProps> = ({
     footer,
-    isExpanded,
+    sidebarState,
 }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
@@ -30,7 +31,9 @@ const SidebarFooter: React.FC<SidebarFooterProps> = ({
             zIndex="10"
             display="flex"
             alignItems="center"
-            justifyContent={isExpanded ? 'space-between' : 'center'}
+            justifyContent={
+                sidebarState === 'collapsed' ? 'center' : 'space-between'
+            }
             gap="12px"
             padding={`${tokens.footer.padding.y} ${tokens.footer.padding.x}`}
             borderTop={tokens.footer.borderTop}
