@@ -1429,7 +1429,7 @@ const SidebarDemo = () => {
                             </button>
                         ),
                     }}
-                    // showLeftPanel={isExpanded ? true : false}
+                    showLeftPanel={isExpanded ? true : false}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({
                             label: merchant.label,
@@ -1676,16 +1676,26 @@ const SidebarDemo = () => {
                                 size={AvatarSize.SM}
                                 shape={AvatarShape.ROUNDED}
                             />
-                            {(sidebarState === 'expanded' ||
-                                sidebarState === 'intermediate') && (
-                                <Text
-                                    variant="body.md"
-                                    fontWeight={600}
-                                    color={FOUNDATION_THEME.colors.gray[600]}
+                            {
+                                <div
+                                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                        sidebarState === 'expanded' ||
+                                        sidebarState === 'intermediate'
+                                            ? 'max-w-[200px] opacity-100'
+                                            : 'max-w-0 opacity-0'
+                                    }`}
                                 >
-                                    John Doe
-                                </Text>
-                            )}
+                                    <Text
+                                        variant="body.md"
+                                        fontWeight={600}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[600]
+                                        }
+                                    >
+                                        John Doe
+                                    </Text>
+                                </div>
+                            }
                         </div>
                     }
                     showPrimaryActionButton={true}
