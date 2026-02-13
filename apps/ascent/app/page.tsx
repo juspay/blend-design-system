@@ -1,13 +1,5 @@
-import Intro from './(home)/_components/Intro'
-import { TabsSection } from './(home)/_components/tabs/TabsSection'
+import HomePage from './(home)/_components/HomePage'
 
-const page = () => {
-    return (
-        <div className=" [background:var(--landing-background)] flex flex-col items-center justify-center">
-            <Intro />
-            <TabsSection />
-        </div>
-    )
+export default function Page() {
+    return <HomePage />
 }
-
-export default page

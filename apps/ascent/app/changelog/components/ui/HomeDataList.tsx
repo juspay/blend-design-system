@@ -1,7 +1,8 @@
 import React from 'react'
+import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import HomeData from '../../data/home.data'
 import { ChangeLogCard, DateBadge } from './ChangelogBlocks'
-import { InfoBtn } from '@/app/(home)/_components/InfoBtn'
 
 const HomeDataList: React.FC = () => {
     return (
@@ -15,11 +16,13 @@ const HomeDataList: React.FC = () => {
                     <div className="lg:text-2xl md:text-xl sm:text-lg xs:text-base text-sm text-[var(--grey-500)]">
                         {obj.paragraph}
                     </div>
-                    <InfoBtn
-                        text="Read more"
+                    <Link
                         href={obj.link}
-                        openSamePage={true}
-                    />
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-gray-600 border border-gray-300 hover:bg-gray-50 transition-colors"
+                    >
+                        Read more
+                        <ChevronRight size={16} />
+                    </Link>
                 </ChangeLogCard>
             ))}
         </>

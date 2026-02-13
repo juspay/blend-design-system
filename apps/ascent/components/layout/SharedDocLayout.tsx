@@ -22,8 +22,7 @@ import type { DocItem } from '@/docs/utils'
 import { Logo } from '@/app/changelog/icons/Logo'
 import { JuspayLogoTitle } from '@/app/changelog/icons/JuspayLogoTitle'
 import Gradient from '@/app/changelog/icons/Gradient'
-import { ConnectWithUs } from '@/app/(home)/_components/connect-with-us/ConnectWithUs'
-import { Footer } from '@/app/(home)/_components/footer/Footer'
+// Legacy footer components removed - footer functionality can be added back if needed
 import { useTableOfContents } from '@/app/docs/context/TableOfContentsContext'
 import { TOCItem } from '../../components/layout/Navigation/TableOfContents'
 
@@ -62,8 +61,6 @@ export interface SharedDocLayoutProps {
 
     showSidebar?: boolean
 
-    showFooter?: boolean
-
     navbarBorderBottom?: boolean
 }
 
@@ -76,7 +73,6 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
     className = '',
     showThemeToggle = true,
     showSidebar = true,
-    showFooter = false,
     navbarBorderBottom = false,
 }) => {
     // Get headings from context (will be empty array if context is not available)
@@ -255,8 +251,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
                     {/* Main content */}
                     <div className=" overflow-y-auto bg-[var(--sidebar-background)] backdrop-blur-sm w-full lg:rounded-[var(--rounded-100)] md:rounded-[var(--rounded-80)] sm:rounded-[var(--rounded-60)] rounded-[var(--rounded-50)] ">
                         {children}
-                        {showFooter === true && <ConnectWithUs />}
-                        {showFooter === true && <Footer />}
+                        {/* Footer removed - can be re-added with new components if needed */}
                     </div>
 
                     {baseRoute.includes('docs') && (
