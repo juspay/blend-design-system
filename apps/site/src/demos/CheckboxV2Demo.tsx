@@ -183,9 +183,10 @@ const CheckboxV2Demo = () => {
                         id="checkbox-v2-demo"
                         subLabel={subLabel}
                         checked={checked}
-                        onCheckedChange={(checked) =>
+                        onCheckedChange={(checked) => {
+                            setCheckedState(checked ? 'Checked' : 'Unchecked')
                             setChecked(checked as boolean | 'indeterminate')
-                        }
+                        }}
                         required={required}
                         error={error}
                         disabled={disabled}
