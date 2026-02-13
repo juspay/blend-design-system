@@ -48,7 +48,9 @@ const Section = ({
     }, [section.items])
 
     const toggleSection = () => {
-        setIsOpen(!isOpen)
+        if (!iconOnlyMode) {
+            setIsOpen(!isOpen)
+        }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -179,7 +181,7 @@ const Section = ({
                 />
             )}
 
-            {section.items && isOpen && (
+            {section.items && (isOpen || iconOnlyMode) && (
                 <ul
                     style={{
                         width: '100%',
