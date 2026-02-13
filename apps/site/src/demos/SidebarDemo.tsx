@@ -213,6 +213,7 @@ const SidebarDemo = () => {
     const [hideOnIconOnlyToggle, setHideOnIconOnlyToggle] =
         useState<boolean>(false)
     const [isExpanded, setIsExpanded] = useState<boolean>(true)
+    const [sidebarState, setSidebarState] = useState('expanded')
 
     const tenants = [
         {
@@ -1352,9 +1353,7 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
-                    onSidebarStateChange={(state) =>
-                        console.log(state, 'state')
-                    }
+                    onSidebarStateChange={(state) => setSidebarState(state)}
                     // disableIntermediateState={true}
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
@@ -1378,8 +1377,8 @@ const SidebarDemo = () => {
                                 onClick={() => alert('Help clicked!')}
                                 className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
                                 style={{
-                                    width: '36px',
-                                    height: '36px',
+                                    width: '32px',
+                                    height: '32px',
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[100],
                                 }}
@@ -1396,8 +1395,8 @@ const SidebarDemo = () => {
                                 onClick={() => alert('Tips clicked!')}
                                 className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
                                 style={{
-                                    width: '36px',
-                                    height: '36px',
+                                    width: '32px',
+                                    height: '32px',
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[100],
                                 }}
@@ -1416,8 +1415,8 @@ const SidebarDemo = () => {
                                 }
                                 className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
                                 style={{
-                                    width: '36px',
-                                    height: '36px',
+                                    width: '32px',
+                                    height: '32px',
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[100],
                                 }}
@@ -1430,7 +1429,7 @@ const SidebarDemo = () => {
                             </button>
                         ),
                     }}
-                    // showLeftPanel={false}
+                    showLeftPanel={isExpanded ? true : false}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({
                             label: merchant.label,
@@ -1669,7 +1668,7 @@ const SidebarDemo = () => {
                     }
                     footer={
                         <div
-                            className={`flex items-center  ${isExpanded ? 'gap-2 justify-between' : 'gap-0 justify-center'}`}
+                            className={`flex items-center  ${sidebarState === 'collapsed' ? 'gap-0 justify-center' : 'gap-2 justify-between'}`}
                         >
                             <Avatar
                                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
@@ -1677,15 +1676,26 @@ const SidebarDemo = () => {
                                 size={AvatarSize.SM}
                                 shape={AvatarShape.ROUNDED}
                             />
-                            {isExpanded && (
-                                <Text
-                                    variant="body.md"
-                                    fontWeight={600}
-                                    color={FOUNDATION_THEME.colors.gray[600]}
+                            {
+                                <div
+                                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                                        sidebarState === 'expanded' ||
+                                        sidebarState === 'intermediate'
+                                            ? 'max-w-[200px] opacity-100'
+                                            : 'max-w-0 opacity-0'
+                                    }`}
                                 >
-                                    John Doe
-                                </Text>
-                            )}
+                                    <Text
+                                        variant="body.md"
+                                        fontWeight={600}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[600]
+                                        }
+                                    >
+                                        John Doe
+                                    </Text>
+                                </div>
+                            }
                         </div>
                     }
                     showPrimaryActionButton={true}
