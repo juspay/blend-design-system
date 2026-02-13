@@ -5,7 +5,7 @@ import Directory from '../Directory/Directory'
 import SidebarHeader from './SidebarHeader'
 import SidebarFooter from './SidebarFooter'
 import type { DirectoryData } from '../Directory/types'
-import type { SidebarMerchantInfo } from './types'
+import type { SidebarMerchantInfo, SidebarStateChangeType } from './types'
 
 const DirectoryContainer = styled(Block)<{
     $showTopBlur?: boolean
@@ -43,6 +43,7 @@ export type SidebarContentProps = {
     iconOnlyMode?: boolean
     footer?: React.ReactNode
     setIsHovering?: (isHovering: boolean) => void
+    sidebarState?: SidebarStateChangeType
 }
 
 const SidebarContent: React.FC<SidebarContentProps> = ({
@@ -63,6 +64,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
     iconOnlyMode = false,
     footer,
     setIsHovering,
+    sidebarState = 'expanded',
 }) => {
     return (
         <Block
@@ -107,7 +109,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                 />
             </DirectoryContainer>
 
-            <SidebarFooter footer={footer} isExpanded={isExpanded} />
+            <SidebarFooter footer={footer} sidebarState={sidebarState} />
         </Block>
     )
 }

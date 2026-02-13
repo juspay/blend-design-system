@@ -20,7 +20,15 @@ export type SemanticTagType = keyof Pick<
     | 'label'
 >
 
-export type PrimitiveTextProps = {
+type StateStyles = {
+    _hover?: BasePrimitiveTextProps
+    _focus?: BasePrimitiveTextProps
+    _active?: BasePrimitiveTextProps
+    _disabled?: BasePrimitiveTextProps
+    _focusVisible?: BasePrimitiveTextProps
+}
+
+export type BasePrimitiveTextProps = {
     fontWeight?: CSSObject['fontWeight']
     color?: CSSObject['color']
     textAlign?: CSSObject['textAlign']
@@ -47,6 +55,8 @@ export type PrimitiveTextProps = {
     right?: CSSObject['right']
 }
 
+export type PrimitiveTextProps = BasePrimitiveTextProps & StateStyles
+
 export type TextProps = PrimitiveTextProps &
     Omit<React.HTMLAttributes<HTMLElement>, 'color'> & {
         children: React.ReactNode
@@ -58,6 +68,11 @@ export type TextProps = PrimitiveTextProps &
 // --------------------
 
 const blockedProps = [
+    '_hover',
+    '_focus',
+    '_active',
+    '_disabled',
+    '_focusVisible',
     'fontWeight',
     'color',
     'textAlign',
@@ -79,7 +94,7 @@ const blockedProps = [
 
 const shouldForwardProp = (prop: string) => !blockedProps.includes(prop)
 
-const getStyles = (props: PrimitiveTextProps): CSSObject => {
+const getStyles = (props: BasePrimitiveTextProps): CSSObject => {
     const {
         fontWeight = 400,
         color,
@@ -139,9 +154,30 @@ const getStyles = (props: PrimitiveTextProps): CSSObject => {
     return styles
 }
 
+const stateToSelector: Record<keyof StateStyles, string> = {
+    _hover: '&:hover',
+    _focus: '&:focus',
+    _active: '&:active',
+    _disabled: '&:disabled',
+    _focusVisible: '&:focus-visible',
+}
+
 const StyledPrimitiveText = styled.p.withConfig({
     shouldForwardProp,
-})<PrimitiveTextProps>((props) => css(getStyles(props)))
+})<PrimitiveTextProps>((props) => {
+    const base = getStyles(props)
+    const stateStyles = Object.entries(stateToSelector).reduce(
+        (acc, [key, selector]) => {
+            const stateProps = props[key as keyof StateStyles]
+            if (stateProps) {
+                acc[selector] = getStyles(stateProps)
+            }
+            return acc
+        },
+        {} as CSSObject
+    )
+    return css({ ...base, ...stateStyles })
+})
 
 // --------------------
 // Component
