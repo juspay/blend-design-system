@@ -8,6 +8,7 @@ export type TruncatedTextWithTooltipProps = {
     style?: React.CSSProperties
     tooltipSize?: TooltipSize
     delayDuration?: number
+    side?: TooltipSide
     'data-id'?: string
     'data-element'?: string
 } & {
@@ -21,6 +22,7 @@ export const TruncatedTextWithTooltip = ({
     delayDuration = 500,
     'data-id': dataId,
     'data-element': dataElement,
+    side = TooltipSide.RIGHT,
     ...restProps
 }: TruncatedTextWithTooltipProps) => {
     const textRef = useRef<HTMLSpanElement>(null)
@@ -107,7 +109,7 @@ export const TruncatedTextWithTooltip = ({
                 content={text}
                 size={tooltipSize}
                 delayDuration={delayDuration}
-                side={TooltipSide.RIGHT}
+                side={side}
             >
                 {content}
             </Tooltip>

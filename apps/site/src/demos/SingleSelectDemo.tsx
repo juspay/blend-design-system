@@ -111,6 +111,9 @@ const SingleSelectDemo = () => {
     const [playgroundShowSkeleton, setPlaygroundShowSkeleton] = useState(false)
     const [playgroundSkeletonCount, setPlaygroundSkeletonCount] = useState('3')
 
+    const [playgroundAllowDeselect, setPlaygroundAllowDeselect] =
+        useState(false)
+
     // Sample data
     const simpleItems: SelectMenuGroupType[] = [
         {
@@ -559,6 +562,7 @@ const SingleSelectDemo = () => {
 
                             <div className="border rounded-lg p-6 bg-gray-50">
                                 <SingleSelect
+                                    allowDeselect={playgroundAllowDeselect}
                                     skeleton={{
                                         count: parseInt(
                                             playgroundSkeletonCount
@@ -614,6 +618,15 @@ const SingleSelectDemo = () => {
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
+                                <Switch
+                                    label="Allow Deselect"
+                                    checked={playgroundAllowDeselect}
+                                    onChange={() =>
+                                        setPlaygroundAllowDeselect(
+                                            !playgroundAllowDeselect
+                                        )
+                                    }
+                                />
                                 <Switch
                                     label="Show Skeleton"
                                     checked={playgroundShowSkeleton}

@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
         inputs:
             version_type:
-                description: 'Version bump type'
+                description: 'Version bump type (only for first beta of a new version)'
                 required: true
                 default: 'patch'
                 type: choice
@@ -12,6 +12,11 @@ on:
                     - patch
                     - minor
                     - major
+            increment_beta:
+                description: 'Increment existing beta version (beta.0 → beta.1, etc.)'
+                required: true
+                default: true
+                type: boolean
 
 concurrency:
     group: create-beta-release-${{ github.ref }}
@@ -25,6 +30,7 @@ jobs:
         outputs:
             version: ${{ steps.bump_version.outputs.new_version }}
             tag: ${{ steps.bump_version.outputs.tag }}
+            beta_number: ${{ steps.bump_version.outputs.beta_number }}
 
         steps:
             - name: Checkout Repo
@@ -44,15 +50,17 @@ jobs:
                   corepack enable
                   pnpm install --frozen-lockfile
 
-            - name: Get Current Version and Bump
+            - name: Get Current Version and Calculate Beta Version
               id: bump_version
               run: |
                   cd packages/blend
                   CURRENT_VERSION=$(node -p "require('./package.json').version")
                   VERSION_TYPE="${{ inputs.version_type }}"
+                  INCREMENT_BETA="${{ inputs.increment_beta }}"
 
                   echo "Current version: $CURRENT_VERSION"
                   echo "Version type: $VERSION_TYPE"
+                  echo "Increment beta: $INCREMENT_BETA"
 
                   # Validate version type
                   if [[ ! "$VERSION_TYPE" =~ ^(patch|minor|major)$ ]]; then
@@ -60,30 +68,94 @@ jobs:
                     exit 1
                   fi
 
-                  # Remove any existing beta suffix to get base version
-                  BASE_VERSION="${CURRENT_VERSION%-beta}"
-                  echo "Base version (without beta): $BASE_VERSION"
-
-                  # Validate base version format
-                  if [[ ! "$BASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                    echo "ERROR: Invalid base version format '$BASE_VERSION'. Expected format: X.Y.Z"
+                  # Check if current version is already a beta with number (e.g., 0.0.1-beta.0)
+                  if [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta\.([0-9]+)$ ]]; then
+                    BASE_VERSION="${BASH_REMATCH[1]}"
+                    CURRENT_BETA_NUM="${BASH_REMATCH[2]}"
+                    echo "Current is numbered beta: base=$BASE_VERSION, beta number=$CURRENT_BETA_NUM"
+                    
+                    if [[ "$INCREMENT_BETA" == "true" ]]; then
+                      # Increment beta number
+                      NEW_BETA_NUM=$((CURRENT_BETA_NUM + 1))
+                      NEW_VERSION="${BASE_VERSION}-beta.${NEW_BETA_NUM}"
+                      echo "Incremented beta number: $NEW_VERSION"
+                    else
+                      # Start new version with beta.0
+                      echo "{\"version\": \"$BASE_VERSION\"}" > temp_package.json
+                      NEW_BASE_VERSION=$(npm version "$VERSION_TYPE" --no-git-tag-version --prefix . 2>/dev/null | sed 's/^v//' || node -e "
+                        const semver = require('semver');
+                        const v = '$BASE_VERSION';
+                        const type = '$VERSION_TYPE';
+                        console.log(semver.inc(v, type));
+                      ")
+                      rm -f temp_package.json
+                      
+                      # Fallback calculation if npm version fails
+                      if [[ -z "$NEW_BASE_VERSION" || "$NEW_BASE_VERSION" == "null" ]]; then
+                        IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE_VERSION"
+                        case "$VERSION_TYPE" in
+                          major) NEW_BASE_VERSION="$((MAJOR + 1)).0.0" ;;
+                          minor) NEW_BASE_VERSION="$MAJOR.$((MINOR + 1)).0" ;;
+                          patch) NEW_BASE_VERSION="$MAJOR.$MINOR.$((PATCH + 1))" ;;
+                        esac
+                      fi
+                      
+                      NEW_VERSION="${NEW_BASE_VERSION}-beta.0"
+                      NEW_BETA_NUM=0
+                      echo "Started new version with beta.0: $NEW_VERSION"
+                    fi
+                    
+                  # Check if current version is old-style beta (e.g., 0.0.1-beta)
+                  elif [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta$ ]]; then
+                    BASE_VERSION="${BASH_REMATCH[1]}"
+                    echo "Current is old-style beta: base=$BASE_VERSION"
+                    
+                    if [[ "$INCREMENT_BETA" == "true" ]]; then
+                      # Convert old beta format to new format, start at beta.1
+                      # (assuming old -beta was effectively beta.0)
+                      NEW_VERSION="${BASE_VERSION}-beta.1"
+                      NEW_BETA_NUM=1
+                      echo "Converted old beta to new format: $NEW_VERSION"
+                    else
+                      # Start new version with beta.0
+                      IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE_VERSION"
+                      case "$VERSION_TYPE" in
+                        major) NEW_BASE_VERSION="$((MAJOR + 1)).0.0" ;;
+                        minor) NEW_BASE_VERSION="$MAJOR.$((MINOR + 1)).0" ;;
+                        patch) NEW_BASE_VERSION="$MAJOR.$MINOR.$((PATCH + 1))" ;;
+                      esac
+                      NEW_VERSION="${NEW_BASE_VERSION}-beta.0"
+                      NEW_BETA_NUM=0
+                      echo "Started new version with beta.0: $NEW_VERSION"
+                    fi
+                    
+                  # Current version is stable (e.g., 0.0.1)
+                  elif [[ "$CURRENT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                    BASE_VERSION="$CURRENT_VERSION"
+                    echo "Current is stable version: $BASE_VERSION"
+                    
+                    # Always bump and start beta.0 for stable versions
+                    IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE_VERSION"
+                    case "$VERSION_TYPE" in
+                      major) NEW_BASE_VERSION="$((MAJOR + 1)).0.0" ;;
+                      minor) NEW_BASE_VERSION="$MAJOR.$((MINOR + 1)).0" ;;
+                      patch) NEW_BASE_VERSION="$MAJOR.$MINOR.$((PATCH + 1))" ;;
+                    esac
+                    NEW_VERSION="${NEW_BASE_VERSION}-beta.0"
+                    NEW_BETA_NUM=0
+                    echo "Created first beta for new version: $NEW_VERSION"
+                    
+                  else
+                    echo "ERROR: Invalid version format '$CURRENT_VERSION'"
                     exit 1
                   fi
-
-                  # Create a temporary package.json to bump the base version
-                  echo "{\"version\": \"$BASE_VERSION\"}" > temp_package.json
-                  NEW_BASE_VERSION=$(npm version "$VERSION_TYPE" --no-git-tag-version --package temp_package.json | sed 's/^v//')
-                  rm temp_package.json
-
-                  # Create beta version
-                  NEW_VERSION="${NEW_BASE_VERSION}-beta"
 
                   # Update package.json with new beta version
                   npm pkg set version="$NEW_VERSION"
 
-                  echo "New beta version: $NEW_VERSION"
                   echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
                   echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+                  echo "beta_number=$NEW_BETA_NUM" >> $GITHUB_OUTPUT
 
                   # Verify the version was set correctly
                   UPDATED_VERSION=$(node -p "require('./package.json').version")
@@ -92,7 +164,7 @@ jobs:
                     exit 1
                   fi
 
-                  echo "Version successfully updated in package.json"
+                  echo "Version successfully updated to $NEW_VERSION (beta.$NEW_BETA_NUM)"
 
             - name: Clean Existing Tags and Releases
               run: |
@@ -130,6 +202,7 @@ jobs:
             - name: Generate Changelog
               run: |
                   VERSION=${{ steps.bump_version.outputs.new_version }}
+                  BETA_NUMBER=${{ steps.bump_version.outputs.beta_number }}
 
                   # Make the changelog generator executable
                   chmod +x scripts/generate-changelog.js
@@ -168,7 +241,28 @@ jobs:
               with:
                   tag_name: ${{ steps.bump_version.outputs.tag }}
                   name: Beta Release ${{ steps.bump_version.outputs.tag }}
-                  body_path: docs/CHANGELOG.md
+                  body: |
+                      ## 🧪 Beta Release ${{ steps.bump_version.outputs.tag }}
+
+                      **Beta Version:** `${{ steps.bump_version.outputs.new_version }}`
+                      **Beta Number:** `${{ steps.bump_version.outputs.beta_number }}`
+
+                      ### This is a pre-release version for testing purposes
+
+                      Install this beta version:
+                      ```bash
+                      npm install @juspay/blend-design-system@${{ steps.bump_version.outputs.new_version }}
+                      # or
+                      npm install @juspay/blend-design-system@beta
+                      ```
+
+                      ### Changes
+                      See the [CHANGELOG](docs/CHANGELOG.md) for detailed changes.
+
+                      ### Beta Iteration
+                      - This is beta iteration **#${{ steps.bump_version.outputs.beta_number }}**
+                      - If issues are found, run the workflow again with "Increment existing beta version" checked
+                      - When ready for stable release, promote using the stable release workflow
                   draft: false
                   prerelease: true
 
@@ -178,45 +272,94 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   base: dev
                   branch: release/update-beta-version-${{ steps.bump_version.outputs.new_version }}
-                  title: 'chore(release): ${{ steps.bump_version.outputs.tag }} [BETA]'
+                  title: 'chore(release): ${{ steps.bump_version.outputs.tag }} [BETA #${{ steps.bump_version.outputs.beta_number }}]'
                   body: |
-                      Beta Release ${{ steps.bump_version.outputs.tag }}
+                      ## Beta Release ${{ steps.bump_version.outputs.tag }}
 
+                      **Beta Iteration:** #${{ steps.bump_version.outputs.beta_number }}
+                      **Version:** ${{ steps.bump_version.outputs.new_version }}
+
+                      ### Changes
                       - Bump version to ${{ steps.bump_version.outputs.new_version }}
                       - Update changelog
                       - **This is a BETA release from staging branch - ready for NPM publishing**
 
                       This PR was automatically created by the beta release workflow.
 
-                      **Next Steps:**
-                      1. Review and merge this PR to dev branch first
-                      2. Manually create PR from dev → staging and merge
-                      3. Trigger "Publish Beta to NPM" workflow to publish to npm with beta tag
-                      4. After testing, create PR from staging → main for stable release
+                      ### Next Steps (IMPORTANT - Follow in Order)
+                      1. **Review and merge this PR to `dev` branch** (auto-created)
+                      2. **Manually create PR from `dev` → `staging`** and merge (syncs version back to staging)
+                      3. **Trigger "Publish Beta to NPM" workflow** from `staging` branch
+                      4. **Test the beta version thoroughly** using `npm install @juspay/blend-design-system@beta`
+                      5. **If issues found**: Fix in `dev`, merge to `staging`, then run "Create Beta Release" with "Increment existing beta version" = `true`
+                      6. **When stable**: Run "Promote Beta to Stable" workflow from `staging` branch
 
-                      **Changes included:**
-                      - Updated package.json version to beta
-                      - Generated changelog
-                      - Created GitHub release with prerelease flag
+                      ### Beta Versioning System
+                      - **First beta**: `X.Y.Z-beta.0` (increment_beta=false)
+                      - **Subsequent betas**: `X.Y.Z-beta.1`, `X.Y.Z-beta.2`, etc. (increment_beta=true)
+                      - **Stable release**: `X.Y.Z` (removes beta suffix, promoted via promote-to-stable workflow)
 
-                      **Release Branch Strategy:**
+                      ### Release Branch Strategy
                       - Beta releases are created from `staging` branch
-                      - All automatic PRs go to `dev` first, then manually merged to `staging`
-                      - This prevents issues with ongoing development in `dev` branch
+                      - Auto-created PR: `staging` → `dev` (this PR)
+                      - Manual PR required: `dev` → `staging` (to sync version back)
+                      - This ensures `dev` always has the latest version info
+                      - Beta testing happens on `staging` branch
+                      - Stable releases: `staging` → `main` (via promote-to-stable workflow)
                   labels: |
                       automated
                       release
                       beta
                   assignees: ${{ github.actor }}
                   commit-message: |
-                      chore(release): ${{ steps.bump_version.outputs.tag }} [BETA]
+                      chore(release): ${{ steps.bump_version.outputs.tag }} [BETA #${{ steps.bump_version.outputs.beta_number }}]
 
                       - Bump version to ${{ steps.bump_version.outputs.new_version }}
                       - Update changelog
                       - Create beta release from staging branch
+                      - Beta iteration: #${{ steps.bump_version.outputs.beta_number }}
 
                       [skip ci]
                   add-paths: |
                       packages/blend/package.json
                       docs/CHANGELOG.md
                       .
+
+            - name: Create Summary
+              run: |
+                  echo "## Beta Release Created Successfully!" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+                  echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Version** | \`${{ steps.bump_version.outputs.new_version }}\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Beta Number** | \`#${{ steps.bump_version.outputs.beta_number }}\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Tag** | \`${{ steps.bump_version.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 📋 Next Steps (Follow in Order)" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "1. **Merge auto-created PR to \`dev\` branch**" >> $GITHUB_STEP_SUMMARY
+                  echo "   - PR: \`staging\` → \`dev\` (auto-created)" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "2. **Create and merge PR from \`dev\` → \`staging\`**" >> $GITHUB_STEP_SUMMARY
+                  echo "   - This syncs the version back to staging branch" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Required before publishing to NPM" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "3. **Run 'Publish Beta to NPM' workflow** from \`staging\` branch" >> $GITHUB_STEP_SUMMARY
+                  echo "   - Type \"PUBLISH\" to confirm" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "4. **Test the beta version**:" >> $GITHUB_STEP_SUMMARY
+                  echo "   \`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "   npm install @juspay/blend-design-system@beta" >> $GITHUB_STEP_SUMMARY
+                  echo "   \`\`\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Beta Iteration Workflow" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**If issues are found during testing:**" >> $GITHUB_STEP_SUMMARY
+                  echo "1. Fix issues in \`dev\` branch" >> $GITHUB_STEP_SUMMARY
+                  echo "2. Create PR: \`dev\` → \`staging\` and merge" >> $GITHUB_STEP_SUMMARY
+                  echo "3. Run this workflow again with **'Increment existing beta version'** = \`true\`" >> $GITHUB_STEP_SUMMARY
+                  echo "4. This will create: \`${{ steps.bump_version.outputs.new_version }}\` → \`X.Y.Z-beta.$((steps.bump_version.outputs.beta_number + 1))\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**When ready for stable release:**" >> $GITHUB_STEP_SUMMARY
+                  echo "- Run 'Promote Beta to Stable' workflow from \`staging\` branch" >> $GITHUB_STEP_SUMMARY
+                  echo "- This creates PR: \`staging\` → \`main\`" >> $GITHUB_STEP_SUMMARY

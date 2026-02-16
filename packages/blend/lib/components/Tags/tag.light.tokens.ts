@@ -7,7 +7,9 @@ export const getTagLightTokens = (
     return {
         sm: {
             gap: foundationToken.unit[6],
-
+            minWidth: 'fit-content',
+            maxWidth: foundationToken.unit[200],
+            width: 'fit-content',
             // Pattern: backgroundColor.[variant].[subType]
             // Example: backgroundColor.attentive.primary
             backgroundColor: {
@@ -149,7 +151,9 @@ export const getTagLightTokens = (
         },
         lg: {
             gap: foundationToken.unit[6],
-
+            minWidth: 'fit-content',
+            maxWidth: foundationToken.unit[200],
+            width: 'fit-content',
             // Pattern: backgroundColor.[variant].[subType]
             // Example: backgroundColor.attentive.primary
             backgroundColor: {

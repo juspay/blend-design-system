@@ -3,15 +3,17 @@ import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import {
-    type SelectMenuGroupType,
-    type SelectMenuItemType,
-    SelectMenuSize,
-    SelectMenuVariant,
-} from '../Select'
+
 import SingleSelectMenu from './SingleSelectMenu'
 import { ChevronDown } from 'lucide-react'
-import type { SingleSelectProps } from './types'
+import {
+    SelectMenuAlignment,
+    SelectMenuGroupType,
+    SelectMenuItemType,
+    SelectMenuSize,
+    SelectMenuVariant,
+    type SingleSelectProps,
+} from './types'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import type { SingleSelectTokensType } from './singleSelect.tokens'
@@ -27,6 +29,7 @@ import {
 import styled from 'styled-components'
 import { getBorderRadius, setupAccessibility } from './utils'
 import { TruncatedTextWithTooltip } from '../common'
+import { useDropdownInteractionLock } from '../../hooks'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -74,7 +77,7 @@ const SingleSelect = ({
     slot,
     customTrigger,
     useDrawerOnMobile = true,
-    alignment,
+    alignment = SelectMenuAlignment.START,
     side,
     sideOffset,
     alignOffset,
@@ -103,6 +106,7 @@ const SingleSelect = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     singleSelectGroupPosition,
+    allowDeselect = false,
     ...rest
 }: SingleSelectProps) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -153,10 +157,15 @@ const SingleSelect = ({
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
     const handleOnSelect = useCallback(
-        (val: string) => onSelect(val),
-        [onSelect, selected]
+        (val: string) =>
+            allowDeselect
+                ? onSelect(val === selected ? '' : val)
+                : onSelect(val),
+        [onSelect, selected, allowDeselect]
     )
     const shouldShake = useErrorShake(error)
+
+    useDropdownInteractionLock(!isMobile && open)
 
     if (isMobile && useDrawerOnMobile) {
         return (

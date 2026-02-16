@@ -9,6 +9,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import Text from '../Text/Text'
 import { ChevronDown, X } from 'lucide-react'
 import {
+    MultiSelectMenuAlignment,
     MultiSelectMenuSize,
     type MultiSelectProps,
     MultiSelectSelectionTagType,
@@ -34,6 +35,7 @@ import {
 } from '../common/error.animations'
 import styled from 'styled-components'
 import { setupAccessibility } from '../SingleSelect/utils'
+import { useDropdownInteractionLock } from '../../hooks'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -65,7 +67,7 @@ const MultiSelect = ({
     minMenuWidth,
     maxMenuWidth,
     maxMenuHeight,
-    alignment,
+    alignment = MultiSelectMenuAlignment.START,
     side,
     sideOffset,
     alignOffset,
@@ -168,6 +170,7 @@ const MultiSelect = ({
         prefix: 'multiselect',
         needsMenuId: true,
     })
+    useDropdownInteractionLock(!isMobile && open)
 
     if (isMobile && useDrawerOnMobile) {
         return (

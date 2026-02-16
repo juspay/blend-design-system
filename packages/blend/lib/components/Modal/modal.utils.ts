@@ -7,7 +7,8 @@ export const getPortalContainer = (): HTMLElement => {
         portalContainer = document.createElement('div')
         portalContainer.id = PORTAL_ID
         portalContainer.style.position = 'relative'
-        portalContainer.style.zIndex = '99'
+        portalContainer.style.zIndex = '101'
+        portalContainer.style.pointerEvents = 'auto'
         document.body.appendChild(portalContainer)
     }
 

@@ -327,11 +327,7 @@ export const getPresetDateRange = (
             if (!timezone) {
                 const yesterday = new Date(today)
                 yesterday.setDate(yesterday.getDate() - 1)
-                return createSingleDateRange(
-                    yesterday,
-
-                    timezone
-                )
+                return createSingleDateRange(yesterday, timezone)
             }
 
             // Get current date in target timezone and subtract 1 day
@@ -972,10 +968,19 @@ export const isEndDate = (
  */
 export const isInSelectedRange = (
     date: Date,
-    selectedRange: DateRange
+    selectedRange: DateRange,
+    timezone?: string
 ): boolean => {
     if (!selectedRange.startDate || !selectedRange.endDate) return false
-    return date > selectedRange.startDate && date < selectedRange.endDate
+    const startDate = convertLocalDateToTimezoneDate(
+        selectedRange.startDate,
+        timezone
+    )
+    const endDate = convertLocalDateToTimezoneDate(
+        selectedRange.endDate,
+        timezone
+    )
+    return date > startDate && date < endDate
 }
 
 /**
@@ -1509,7 +1514,7 @@ export const getDateCellStates = (
         )
     const isRangeDay =
         !!selectedRange.endDate &&
-        isInSelectedRange(date, selectedRange as DateRange)
+        isInSelectedRange(date, selectedRange as DateRange, timezone)
     const isTodayDay = isDateToday(date, today)
 
     // For single date selection, only show as single date if start and end are the same day

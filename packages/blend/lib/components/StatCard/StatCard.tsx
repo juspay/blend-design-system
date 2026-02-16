@@ -209,6 +209,7 @@ const StatCard = ({
                       <Block
                           display="flex"
                           alignItems="center"
+                          gap={3}
                           color={
                               effectiveChange.valueType === ChangeType.INCREASE
                                   ? statCardToken.textContainer.stats.title
@@ -326,7 +327,14 @@ const StatCard = ({
             </Block>
         )
     }
-
+    const chartFallbackStyle = {
+        paddingLeft:
+            titleIconWidth + toPixels(statCardToken.textContainer.header.gap),
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
     const indexedChartData = useMemo(() => {
         return chartData?.map((point, index) => ({
             ...point,
@@ -1419,16 +1427,7 @@ const StatCard = ({
                                                     .stats.title.value[variant]
                                                     .color
                                             }
-                                            style={{
-                                                paddingLeft:
-                                                    titleIconWidth +
-                                                    toPixels(
-                                                        statCardToken
-                                                            .textContainer
-                                                            .header.gap
-                                                    ),
-                                                width: '100%',
-                                            }}
+                                            style={chartFallbackStyle}
                                         >
                                             --
                                         </Text>
@@ -1549,15 +1548,7 @@ const StatCard = ({
                                             statCardToken.textContainer.stats
                                                 .title.value[variant].color
                                         }
-                                        style={{
-                                            paddingLeft:
-                                                titleIconWidth +
-                                                toPixels(
-                                                    statCardToken.textContainer
-                                                        .header.gap
-                                                ),
-                                            width: '100%',
-                                        }}
+                                        style={chartFallbackStyle}
                                     >
                                         --
                                     </Text>
@@ -1670,15 +1661,7 @@ const StatCard = ({
                                             statCardToken.textContainer.stats
                                                 .title.value[variant].color
                                         }
-                                        style={{
-                                            paddingLeft:
-                                                titleIconWidth +
-                                                toPixels(
-                                                    statCardToken.textContainer
-                                                        .header.gap
-                                                ),
-                                            width: '100%',
-                                        }}
+                                        style={chartFallbackStyle}
                                     >
                                         --
                                     </Text>
@@ -1708,15 +1691,7 @@ const StatCard = ({
                                             statCardToken.textContainer.stats
                                                 .title.value[variant].color
                                         }
-                                        style={{
-                                            paddingLeft:
-                                                titleIconWidth +
-                                                toPixels(
-                                                    statCardToken.textContainer
-                                                        .header.gap
-                                                ),
-                                            width: '100%',
-                                        }}
+                                        style={chartFallbackStyle}
                                     >
                                         --
                                     </Text>
