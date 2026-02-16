@@ -23,7 +23,7 @@ export default function DeveloperDesignerSections() {
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 border-t border-gray-200">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] border-t border-gray-200">
             <div className="lg:border-r border-gray-200 border-l ml-28">
                 {/* Tab Header */}
                 <div className="border-b border-gray-200">
@@ -120,7 +120,13 @@ export default function DeveloperDesignerSections() {
                     </div>
                 </div>
             </div>
-
+            <span
+                className="
+          w-12 h-full
+          border-r border-gray-200
+          bg-[repeating-linear-gradient(135deg,#E0E0E0_0px,#E0E0E0_1px,transparent_1px,transparent_14px)]
+        "
+            />
             {/* Designer Section - Right */}
             <div className="relative overflow-hidden min-h-[400px] border-r border-gray-200 mr-28">
                 <DitherCanvas className="opacity-60" />
