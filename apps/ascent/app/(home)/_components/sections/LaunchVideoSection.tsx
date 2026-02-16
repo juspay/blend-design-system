@@ -2,17 +2,14 @@ import Link from 'next/link'
 
 export default function LaunchVideoSection() {
     return (
-        <div className="flex items-center justify-center py-6 px-8 border-t border-b border-gray-200">
+        <div className="flex items-center justify-center py-5 px-8 border-t border-gray-200 bg-gray-50">
             <Link
                 href="#"
-                className="inline-flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors font-mono text-sm group"
+                className="inline-flex items-center gap-3 text-gray-500 hover:text-gray-800 transition-colors font-mono text-sm group"
             >
                 <span>🎉</span>
-                <span className="group-hover:underline underline-offset-4">
-                    Blend&apos;s Launch Video
-                </span>
+                <span className="text-sm">Blend&apos;s Launch Video</span>
                 <span className="text-gray-400">&rarr;</span>
-                {/* YouTube icon */}
                 <svg
                     width="20"
                     height="14"

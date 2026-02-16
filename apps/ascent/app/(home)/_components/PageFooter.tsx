@@ -4,21 +4,19 @@ import { EXTERNAL_LINKS } from './constants/links'
 export default function PageFooter() {
     return (
         <footer className="w-full border-x border-b border-gray-200">
-            <div className="px-6 lg:px-8 py-6">
+            <div className="px-36 lg:px-42 py-5">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-                    {/* Copyright */}
                     <p>
                         Copyright &copy; 2024. Juspay Technologies. All rights
                         reserved
                     </p>
 
-                    {/* Links */}
                     <div className="flex items-center gap-1.5">
                         <Link
                             href={EXTERNAL_LINKS.privacyPolicy}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-gray-900 transition-colors"
+                            className="transition-colors"
                         >
                             Privacy Policy
                         </Link>

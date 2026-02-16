@@ -1,3 +1,6 @@
 export { JuspayLogo } from './JuspayLogo'
 export { GitHubIcon } from './GitHubIcon'
 export { FigmaIcon } from './FigmaIcon'
+export { FigmaIconSmall } from './FigmaIconSmall'
+export { DesignerIcon } from './DesignerIcon'
+export { ArrowRightIcon } from './ArrowRightIcon'
