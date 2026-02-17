@@ -2,26 +2,48 @@
 
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CardHolderFront } from '../icons/CardHolderFront'
 import { CardHolderBack } from '../icons/CardHolderBack'
 import { DocumentationCard } from '../icons/DocumentationCard'
 import { StorybookCard } from '../icons/StorybookCard'
 import { CodeCard } from '../icons/CodeCard'
 import { FigmaCard } from '../icons/FigmaCard'
-
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const CARDS = [
     {
         id: 'documentation',
         Component: DocumentationCard,
-        rotate: -14,
-        xOffset: -180,
+        rotate: -18,
+        baseOffset: -120, // 👈 new
+        finalOffset: -170,
+        zIndex: 21,
     },
-    { id: 'storybook', Component: StorybookCard, rotate: -5, xOffset: -60 },
-    { id: 'code', Component: CodeCard, rotate: 5, xOffset: 60 },
-    { id: 'figma', Component: FigmaCard, rotate: 14, xOffset: 180 },
+    {
+        id: 'storybook',
+        Component: StorybookCard,
+        rotate: -6,
+        baseOffset: -40,
+        finalOffset: -60,
+        zIndex: 22,
+    },
+    {
+        id: 'code',
+        Component: CodeCard,
+        rotate: 6,
+        baseOffset: 40,
+        finalOffset: 60,
+        zIndex: 23,
+    },
+    {
+        id: 'figma',
+        Component: FigmaCard,
+        rotate: 18,
+        baseOffset: 120,
+        finalOffset: 170,
+        zIndex: 24,
+    },
 ]
 
 const CARD_W = 225
@@ -29,67 +51,51 @@ const CARD_H = 257
 
 export default function ShowcaseSection() {
     const sectionRef = useRef<HTMLDivElement | null>(null)
-    const backHolderRef = useRef<HTMLDivElement | null>(null)
-    const frontHolderRef = useRef<HTMLDivElement | null>(null)
     const cardsRef = useRef<(HTMLDivElement | null)[]>([])
+    const holderFrontRef = useRef<HTMLDivElement | null>(null)
+    const holderBackRef = useRef<HTMLDivElement | null>(null)
 
     const setRef = (i: number) => (el: HTMLDivElement | null) => {
         cardsRef.current[i] = el
     }
-
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
-            const trigger = {
-                trigger: sectionRef.current,
-                start: 'top 80%',
-                end: 'bottom 25%',
-                scrub: true,
-            }
-
-            gsap.fromTo(
-                backHolderRef.current,
-                { scale: 1, y: 90 },
-                {
-                    scale: 0.78,
-                    y: 170,
-                    ease: 'power3.out',
-                    scrollTrigger: trigger,
-                }
-            )
-
-            gsap.fromTo(
-                frontHolderRef.current,
-                { scale: 1, y: 0 },
-                {
-                    scale: 0.75,
-                    y: 190,
-                    ease: 'power3.out',
-                    scrollTrigger: trigger,
-                }
-            )
-
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: 'top 75%',
+                    once: true,
+                },
+                defaults: {
+                    ease: 'expo.inOut',
+                    duration: 1.35,
+                },
+            })
             cardsRef.current.forEach((card, i) => {
                 if (!card) return
                 const cfg = CARDS[i]
 
-                gsap.fromTo(
+                tl.fromTo(
                     card,
                     {
-                        y: 140,
-                        rotate: cfg.rotate * 0.2,
-                        scale: 0.78,
-                        opacity: 1,
+                        x: cfg.finalOffset,
+
+                        y: 70,
+                        rotate: cfg.rotate * 0.4,
+                        scale: 0.86,
                     },
                     {
-                        y: -55,
+                        y: -78,
                         rotate: cfg.rotate,
-                        scale: 1.03,
-                        opacity: 1,
-                        ease: 'power3.out',
-                        scrollTrigger: trigger,
-                    }
+                        scale: 1,
+                    },
+                    i * 0.08
                 )
             })
+
+            tl.fromTo(holderFrontRef.current, { y: 70 }, { y: 120 }, 0)
+
+            tl.fromTo(holderBackRef.current, { y: 55 }, { y: 90 }, 0.06)
         }, sectionRef)
 
         return () => ctx.revert()
@@ -103,8 +109,8 @@ export default function ShowcaseSection() {
                     style={{ height: 420 }}
                 >
                     <div
-                        ref={backHolderRef}
-                        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-0 pointer-events-none origin-bottom"
+                        ref={holderBackRef}
+                        className="absolute -bottom-[90px] left-1/2 -translate-x-1/2 z-0 pointer-events-none origin-bottom"
                     >
                         <CardHolderBack width={480} height={280} />
                     </div>
@@ -115,12 +121,13 @@ export default function ShowcaseSection() {
                             <div
                                 key={card.id}
                                 ref={setRef(i)}
-                                className="absolute z-20 origin-bottom will-change-transform"
+                                className="absolute origin-bottom will-change-transform"
                                 style={{
                                     bottom: 0,
-                                    left: `calc(50% + ${card.xOffset}px - ${CARD_W / 2}px)`,
+                                    left: `calc(50% - ${CARD_W / 2}px)`,
                                     width: CARD_W,
                                     height: CARD_H,
+                                    zIndex: card.zIndex,
                                 }}
                             >
                                 <div className="w-full h-full transition-transform duration-300 ease-out cursor-pointer hover:-translate-y-5">
@@ -131,8 +138,8 @@ export default function ShowcaseSection() {
                     })}
 
                     <div
-                        ref={frontHolderRef}
-                        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 pointer-events-none origin-bottom"
+                        ref={holderFrontRef}
+                        className="absolute -bottom-[65px] left-1/2 -translate-x-1/2 z-30 pointer-events-none origin-bottom"
                     >
                         <CardHolderFront width={480} height={250} />
                     </div>

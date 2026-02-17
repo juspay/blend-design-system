@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
-import Dither from '../effects/Dither'
+import Image from 'next/image'
 
 const PACKAGE_MANAGERS = {
     npm: 'npm i',
@@ -39,17 +39,13 @@ export default function HeroSection() {
             </div>
 
             <div className="relative min-h-[200px] lg:min-h-[280px] overflow-hidden">
-                <div className="absolute inset-0 opacity-50">
-                    <Dither
-                        waveColor={[1, 1, 1]}
-                        disableAnimation={false}
-                        enableMouseInteraction
-                        mouseRadius={0}
-                        colorNum={2}
-                        pixelSize={2}
-                        waveAmplitude={0.85}
-                        waveFrequency={1.5}
-                        waveSpeed={0.02}
+                <div className="absolute inset-0">
+                    <Image
+                        src="/images/map.png"
+                        alt="World map"
+                        fill
+                        className="object-contain opacity-50"
+                        priority
                     />
                 </div>
 
