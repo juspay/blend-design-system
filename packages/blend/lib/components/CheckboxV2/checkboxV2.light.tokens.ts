@@ -104,8 +104,8 @@ export const getCheckboxV2LightTokens = (
                     },
 
                     fontSize: {
-                        sm: `${foundationToken.font.size.body.md.fontSize}px`,
-                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                        sm: foundationToken.font.fontSize[12],
+                        md: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
@@ -131,8 +131,8 @@ export const getCheckboxV2LightTokens = (
                     },
 
                     fontSize: {
-                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                        sm: foundationToken.font.fontSize[12],
+                        md: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],
@@ -244,8 +244,8 @@ export const getCheckboxV2LightTokens = (
                     },
 
                     fontSize: {
-                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                        sm: foundationToken.font.fontSize[12],
+                        md: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
@@ -271,8 +271,8 @@ export const getCheckboxV2LightTokens = (
                     },
 
                     fontSize: {
-                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                        sm: foundationToken.font.fontSize[12],
+                        md: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],

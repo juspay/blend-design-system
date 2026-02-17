@@ -148,10 +148,10 @@ export const getSwitchV2DarkTokens = (
                 label: {
                     gap: foundationToken.unit[6],
                     color: {
-                        default: foundationToken.colors.gray[700],
-                        hover: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[300],
-                        error: foundationToken.colors.red[600],
+                        default: foundationToken.colors.gray[50],
+                        hover: foundationToken.colors.gray[100],
+                        disabled: foundationToken.colors.gray[500],
+                        error: foundationToken.colors.red[400],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
@@ -194,7 +194,7 @@ export const getSwitchV2DarkTokens = (
                     },
                 },
                 required: {
-                    color: foundationToken.colors.red[600],
+                    color: foundationToken.colors.red[400],
                 },
             },
         },
