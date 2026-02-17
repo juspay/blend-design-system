@@ -1429,7 +1429,6 @@ const SidebarDemo = () => {
                             </button>
                         ),
                     }}
-                    showLeftPanel={isExpanded ? true : false}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({
                             label: merchant.label,
