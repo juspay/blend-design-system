@@ -1,12 +1,18 @@
 import { useState } from 'react'
-import { Heart } from 'lucide-react'
-import { SingleSelect, TextInput } from '../../../../packages/blend/lib/main'
+import { Heart, Star } from 'lucide-react'
+import {
+    addSnackbar,
+    SingleSelect,
+    Switch,
+    TextInput,
+} from '../../../../packages/blend/lib/main'
 import { SwitchV2 } from '../../../../packages/blend/lib/components/SwitchV2'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import { RadioV2Size } from '../../../../packages/blend/lib/components/RadioV2/radioV2.types'
 import { RadioV2 } from '../../../../packages/blend/lib/components/RadioV2/RadioV2'
+import RadioGroupV2 from '../../../../packages/blend/lib/components/RadioV2/RadioGroupV2'
 const RadioV2Demo = () => {
     const [checked, setChecked] = useState<boolean>(false)
     const [checkedState, setCheckedState] = useState('Unchecked')
@@ -18,6 +24,9 @@ const RadioV2Demo = () => {
     const [showSlot, setShowSlot] = useState(true)
     const [size, setSize] = useState<RadioV2Size>(RadioV2Size.MEDIUM)
     const [labelMaxLength, setLabelMaxLength] = useState<number | undefined>()
+    const [groupValue, setGroupValue] = useState('option1')
+    const [groupDisabled, setGroupDisabled] = useState(false)
+    const [groupLabel, setGroupLabel] = useState('Select an option')
     const [subLabelMaxLength, setSubLabelMaxLength] = useState<
         number | undefined
     >()
@@ -190,6 +199,75 @@ const RadioV2Demo = () => {
                             subLabel: subLabelMaxLength,
                         }}
                     />
+                </div>
+                <div className="space-y-6">
+                    <h2 className="text-2xl font-bold">
+                        RadioGroup Playground
+                    </h2>
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <TextInput
+                                label="Group Label"
+                                value={groupLabel}
+                                onChange={(e) => setGroupLabel(e.target.value)}
+                                placeholder="Enter group label"
+                            />
+                            <div className="flex items-center gap-6">
+                                <Switch
+                                    label="Group Disabled"
+                                    checked={groupDisabled}
+                                    onChange={() =>
+                                        setGroupDisabled(!groupDisabled)
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="min-h-60 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50">
+                        <RadioGroupV2
+                            name="playground-group"
+                            label={groupLabel}
+                            value={groupValue}
+                            onChange={(value) => {
+                                setGroupValue(value)
+                                addSnackbar({
+                                    header: `Selected: ${value}`,
+                                })
+                            }}
+                            disabled={groupDisabled}
+                        >
+                            <RadioV2
+                                label="Option 1"
+                                value="option1"
+                                size={RadioV2Size.MEDIUM}
+                            >
+                                Option 1
+                            </RadioV2>
+                            <RadioV2
+                                label="Option 2"
+                                value="option2"
+                                size={RadioV2Size.MEDIUM}
+                                subLabel="This option has a description"
+                            >
+                                Option 2
+                            </RadioV2>
+                            <RadioV2
+                                label="Option 3"
+                                value="option3"
+                                size={RadioV2Size.MEDIUM}
+                                slot={{
+                                    slot: (
+                                        <Star
+                                            size={16}
+                                            className="text-yellow-500"
+                                        />
+                                    ),
+                                }}
+                            >
+                                Option 3 with slot
+                            </RadioV2>
+                        </RadioGroupV2>
+                    </div>
                 </div>
             </div>
         </div>

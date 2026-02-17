@@ -91,7 +91,7 @@ export const RadioV2 = ({
     )
 }
 
-const RadioV2Content = ({
+export const RadioV2Content = ({
     uniqueId,
     disabled,
     error,

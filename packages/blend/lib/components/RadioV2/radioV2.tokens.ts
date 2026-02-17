@@ -9,7 +9,7 @@ import {
 } from './radioV2.types'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { getRadioV2LightTokens } from './radiov2.light.tokens'
+import { getRadioV2LightTokens } from './radioV2.light.tokens'
 import { getRadioV2DarkTokens } from './radioV2.dark.tokens'
 
 export type RadioV2TokensType = {
