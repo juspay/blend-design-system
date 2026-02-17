@@ -26,6 +26,7 @@ import {
     MOBILE_NAVIGATION_SAFE_AREA,
 } from './utils'
 import SidebarMobileNavigation from './SidebarMobile'
+import { SectionStateContext } from '../Directory/Section'
 
 const getSidebarStatus = (
     isExpanded: boolean,
@@ -146,6 +147,29 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const [isHovering, setIsHovering] = useState<boolean>(false)
         const [mobileNavigationHeight, setMobileNavigationHeight] =
             useState<string>()
+
+        const [sectionStates, setSectionStates] = useState<
+            Map<number, boolean>
+        >(new Map())
+
+        const setSectionState = useCallback(
+            (index: number, isOpen: boolean) => {
+                setSectionStates((prev) => {
+                    const newMap = new Map(prev)
+                    newMap.set(index, isOpen)
+                    return newMap
+                })
+            },
+            []
+        )
+
+        const sectionStateValue = useMemo(
+            () => ({
+                sectionStates,
+                setSectionState,
+            }),
+            [sectionStates, setSectionState]
+        )
 
         // refs
         const tenantPanelRef = useRef<HTMLDivElement>(null)
@@ -331,197 +355,216 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         }, [isExpanded, data])
 
         return (
-            <Block
-                ref={ref}
-                width="100%"
-                height="100%"
-                display="flex"
-                backgroundColor={tokens.backgroundColor}
-                position="relative"
-                zIndex={99}
-                id={sidebarId}
-            >
-                <SkipLinks aria-hidden="true">
-                    <a href={`#${skipToNavId}`}>Skip to navigation</a>
-                    <a href={`#${skipToContentId}`}>Skip to main content</a>
-                </SkipLinks>
+            <SectionStateContext.Provider value={sectionStateValue}>
                 <Block
-                    as="nav"
-                    id={skipToNavId}
-                    data-sidebar="sidebar"
-                    data-status={sidebarStatus}
-                    role="navigation"
-                    aria-label={sidebarLabel}
-                    aria-expanded={isExpanded}
-                    display={isSmallScreen ? 'none' : 'flex'}
-                    backgroundColor={tokens.backgroundColor}
-                    borderRight={tokens.borderRight}
+                    ref={ref}
+                    width="100%"
                     height="100%"
+                    display="flex"
+                    backgroundColor={tokens.backgroundColor}
                     position="relative"
+                    zIndex={99}
+                    id={sidebarId}
                 >
-                    {!isSmallScreen && (
-                        <>
-                            {/* left panel */}
-                            {isLeftPanelVisible && (
-                                <TenantPanel
-                                    ref={tenantPanelRef}
-                                    items={leftPanel.items}
-                                    selected={leftPanel.selected}
-                                    onSelect={leftPanel.onSelect}
-                                    tenantSlot1={leftPanel.tenantSlot1}
-                                    tenantSlot2={leftPanel.tenantSlot2}
-                                    tenantFooter={leftPanel.tenantFooter}
-                                />
-                            )}
-
-                            {/* Main Sidebar with Icon Only Mode */}
-                            <SidebarContent
-                                sidebarTopSlot={sidebarTopSlot}
-                                merchantInfo={merchantInfo}
-                                isExpanded={isExpanded}
-                                isScrolled={isScrolled}
-                                sidebarCollapseKey={sidebarCollapseKey}
-                                onToggle={toggleSidebar}
-                                sidebarNavId={sidebarNavId}
-                                showTopBlur={showTopBlur}
-                                showBottomBlur={showBottomBlur}
-                                data={data}
-                                idPrefix={`${baseId}-`}
-                                activeItem={activeItem}
-                                onActiveItemChange={onActiveItemChange}
-                                defaultActiveItem={defaultActiveItem}
-                                iconOnlyMode={iconOnlyMode}
-                                footer={footer}
-                                setIsHovering={setIsHovering}
-                            />
-
-                            {/* Intermediate Sidebar */}
-
-                            {!isExpanded && (
-                                <Block
-                                    position="absolute"
-                                    display="flex"
-                                    top={0}
-                                    left={isLeftPanelVisible ? '52px' : 0}
-                                    width={
-                                        isHovering
-                                            ? shouldRenderIntermediateLeftPanel
-                                                ? '302px'
-                                                : '250px'
-                                            : 0
-                                    }
-                                    minWidth={0}
-                                    height="100%"
-                                    overflow="hidden"
-                                    zIndex={99}
-                                    aria-hidden="true"
-                                    backgroundColor={tokens.backgroundColor}
-                                    borderRight={
-                                        isHovering ? tokens.borderRight : 'none'
-                                    }
-                                    boxShadow={
-                                        isHovering
-                                            ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
-                                            : 'none'
-                                    }
-                                    transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
-                                    pointerEvents={isHovering ? 'auto' : 'none'}
-                                    onMouseLeave={() => setIsHovering(false)}
-                                >
-                                    {shouldRenderIntermediateLeftPanel && (
-                                        <TenantPanel
-                                            ref={tenantPanelRef}
-                                            items={leftPanel.items}
-                                            selected={leftPanel.selected}
-                                            onSelect={leftPanel.onSelect}
-                                            tenantSlot1={leftPanel.tenantSlot1}
-                                            tenantSlot2={leftPanel.tenantSlot2}
-                                            tenantFooter={
-                                                leftPanel.tenantFooter
-                                            }
-                                        />
-                                    )}
-                                    <SidebarContent
-                                        sidebarTopSlot={sidebarTopSlot}
-                                        merchantInfo={merchantInfo}
-                                        isExpanded={isExpanded}
-                                        isScrolled={isScrolled}
-                                        sidebarCollapseKey={sidebarCollapseKey}
-                                        onToggle={toggleSidebar}
-                                        sidebarNavId={sidebarNavId}
-                                        showTopBlur={showTopBlur}
-                                        showBottomBlur={showBottomBlur}
-                                        data={data}
-                                        idPrefix={`${baseId}-`}
-                                        activeItem={activeItem}
-                                        onActiveItemChange={onActiveItemChange}
-                                        defaultActiveItem={defaultActiveItem}
-                                        footer={footer}
+                    <SkipLinks aria-hidden="true">
+                        <a href={`#${skipToNavId}`}>Skip to navigation</a>
+                        <a href={`#${skipToContentId}`}>Skip to main content</a>
+                    </SkipLinks>
+                    <Block
+                        as="nav"
+                        id={skipToNavId}
+                        data-sidebar="sidebar"
+                        data-status={sidebarStatus}
+                        role="navigation"
+                        aria-label={sidebarLabel}
+                        aria-expanded={isExpanded}
+                        display={isSmallScreen ? 'none' : 'flex'}
+                        backgroundColor={tokens.backgroundColor}
+                        borderRight={tokens.borderRight}
+                        height="100%"
+                        position="relative"
+                    >
+                        {!isSmallScreen && (
+                            <>
+                                {/* left panel */}
+                                {isLeftPanelVisible && (
+                                    <TenantPanel
+                                        ref={tenantPanelRef}
+                                        items={leftPanel.items}
+                                        selected={leftPanel.selected}
+                                        onSelect={leftPanel.onSelect}
+                                        tenantSlot1={leftPanel.tenantSlot1}
+                                        tenantSlot2={leftPanel.tenantSlot2}
+                                        tenantFooter={leftPanel.tenantFooter}
                                     />
-                                </Block>
+                                )}
+
+                                {/* Main Sidebar with Icon Only Mode */}
+                                <SidebarContent
+                                    sidebarTopSlot={sidebarTopSlot}
+                                    merchantInfo={merchantInfo}
+                                    isExpanded={isExpanded}
+                                    isScrolled={isScrolled}
+                                    sidebarCollapseKey={sidebarCollapseKey}
+                                    onToggle={toggleSidebar}
+                                    sidebarNavId={sidebarNavId}
+                                    showTopBlur={showTopBlur}
+                                    showBottomBlur={showBottomBlur}
+                                    data={data}
+                                    idPrefix={`${baseId}-`}
+                                    activeItem={activeItem}
+                                    onActiveItemChange={onActiveItemChange}
+                                    defaultActiveItem={defaultActiveItem}
+                                    iconOnlyMode={iconOnlyMode}
+                                    footer={footer}
+                                    setIsHovering={setIsHovering}
+                                />
+
+                                {/* Intermediate Sidebar */}
+
+                                {!isExpanded && (
+                                    <Block
+                                        position="absolute"
+                                        display="flex"
+                                        top={0}
+                                        left={isLeftPanelVisible ? '52px' : 0}
+                                        width={
+                                            isHovering
+                                                ? shouldRenderIntermediateLeftPanel
+                                                    ? '302px'
+                                                    : '250px'
+                                                : 0
+                                        }
+                                        minWidth={0}
+                                        height="100%"
+                                        overflow="hidden"
+                                        zIndex={99}
+                                        aria-hidden="true"
+                                        backgroundColor={tokens.backgroundColor}
+                                        borderRight={
+                                            isHovering
+                                                ? tokens.borderRight
+                                                : 'none'
+                                        }
+                                        boxShadow={
+                                            isHovering
+                                                ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
+                                                : 'none'
+                                        }
+                                        transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
+                                        pointerEvents={
+                                            isHovering ? 'auto' : 'none'
+                                        }
+                                        onMouseLeave={() =>
+                                            setIsHovering(false)
+                                        }
+                                    >
+                                        {shouldRenderIntermediateLeftPanel && (
+                                            <TenantPanel
+                                                ref={tenantPanelRef}
+                                                items={leftPanel.items}
+                                                selected={leftPanel.selected}
+                                                onSelect={leftPanel.onSelect}
+                                                tenantSlot1={
+                                                    leftPanel.tenantSlot1
+                                                }
+                                                tenantSlot2={
+                                                    leftPanel.tenantSlot2
+                                                }
+                                                tenantFooter={
+                                                    leftPanel.tenantFooter
+                                                }
+                                            />
+                                        )}
+                                        <SidebarContent
+                                            sidebarTopSlot={sidebarTopSlot}
+                                            merchantInfo={merchantInfo}
+                                            isExpanded={isExpanded}
+                                            isScrolled={isScrolled}
+                                            sidebarCollapseKey={
+                                                sidebarCollapseKey
+                                            }
+                                            onToggle={toggleSidebar}
+                                            sidebarNavId={sidebarNavId}
+                                            showTopBlur={showTopBlur}
+                                            showBottomBlur={showBottomBlur}
+                                            data={data}
+                                            idPrefix={`${baseId}-`}
+                                            activeItem={activeItem}
+                                            onActiveItemChange={
+                                                onActiveItemChange
+                                            }
+                                            defaultActiveItem={
+                                                defaultActiveItem
+                                            }
+                                            iconOnlyMode={false}
+                                            footer={footer}
+                                        />
+                                    </Block>
+                                )}
+                            </>
+                        )}
+                    </Block>
+                    <MainContentContainer
+                        as="main"
+                        id={skipToContentId}
+                        role="main"
+                        aria-label="Main content"
+                        paddingBottom={
+                            shouldRenderMobileNavigation
+                                ? (mobileNavigationHeight ??
+                                  COLLAPSED_MOBILE_PADDING)
+                                : undefined
+                        }
+                    >
+                        <Block
+                            position="sticky"
+                            top="0"
+                            zIndex="90"
+                            style={getTopbarStyles(
+                                enableTopbarAutoHide,
+                                showTopbar
                             )}
-                        </>
+                        >
+                            <Topbar
+                                isExpanded={isExpanded}
+                                onToggleExpansion={toggleSidebar}
+                                showToggleButton={showToggleButton}
+                                sidebarTopSlot={sidebarTopSlot}
+                                topbar={topbar}
+                                leftPanel={leftPanel}
+                                merchantInfo={merchantInfo}
+                                rightActions={rightActions}
+                                isVisible={isTopbarVisible}
+                                ariaControls={sidebarNavId}
+                                onVisibilityChange={onTopbarVisibilityChange}
+                                defaultIsVisible={defaultIsTopbarVisible}
+                            />
+                        </Block>
+
+                        <Block
+                            display="flex"
+                            flexDirection="column"
+                            flexGrow={1}
+                            flexShrink={1}
+                            flexBasis="0"
+                            minHeight="0"
+                            overflow="auto"
+                            data-main-content
+                        >
+                            {children}
+                        </Block>
+                    </MainContentContainer>
+                    {shouldRenderMobileNavigation && (
+                        <SidebarMobileNavigation
+                            items={mobileNavigationItems}
+                            onHeightChange={handleMobileNavigationHeightChange}
+                            showPrimaryActionButton={showPrimaryActionButton}
+                            primaryActionButtonProps={primaryActionButtonProps}
+                        />
                     )}
                 </Block>
-                <MainContentContainer
-                    as="main"
-                    id={skipToContentId}
-                    role="main"
-                    aria-label="Main content"
-                    paddingBottom={
-                        shouldRenderMobileNavigation
-                            ? (mobileNavigationHeight ??
-                              COLLAPSED_MOBILE_PADDING)
-                            : undefined
-                    }
-                >
-                    <Block
-                        position="sticky"
-                        top="0"
-                        zIndex="90"
-                        style={getTopbarStyles(
-                            enableTopbarAutoHide,
-                            showTopbar
-                        )}
-                    >
-                        <Topbar
-                            isExpanded={isExpanded}
-                            onToggleExpansion={toggleSidebar}
-                            showToggleButton={showToggleButton}
-                            sidebarTopSlot={sidebarTopSlot}
-                            topbar={topbar}
-                            leftPanel={leftPanel}
-                            merchantInfo={merchantInfo}
-                            rightActions={rightActions}
-                            isVisible={isTopbarVisible}
-                            ariaControls={sidebarNavId}
-                            onVisibilityChange={onTopbarVisibilityChange}
-                            defaultIsVisible={defaultIsTopbarVisible}
-                        />
-                    </Block>
-
-                    <Block
-                        display="flex"
-                        flexDirection="column"
-                        flexGrow={1}
-                        flexShrink={1}
-                        flexBasis="0"
-                        minHeight="0"
-                        overflow="auto"
-                        data-main-content
-                    >
-                        {children}
-                    </Block>
-                </MainContentContainer>
-                {shouldRenderMobileNavigation && (
-                    <SidebarMobileNavigation
-                        items={mobileNavigationItems}
-                        onHeightChange={handleMobileNavigationHeightChange}
-                        showPrimaryActionButton={showPrimaryActionButton}
-                        primaryActionButtonProps={primaryActionButtonProps}
-                    />
-                )}
-            </Block>
+            </SectionStateContext.Provider>
         )
     }
 )
