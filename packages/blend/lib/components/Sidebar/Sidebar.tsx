@@ -157,7 +157,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
         const iconOnlyMode = !isExpanded
         const showTopbar = useTopbarAutoHide(enableTopbarAutoHide)
-        const isLeftPanelVisible = leftPanel && showLeftPanel
+        const isLeftPanelVisible = leftPanel && showLeftPanel && isExpanded
 
         // Generate unique IDs for ARIA relationships
         const baseId = useId()
@@ -181,7 +181,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const shouldRenderMobileNavigation =
             isSmallScreen && mobileNavigationItems.length > 0
 
-        const shouldRenderIntermediateLeftPanel = leftPanel && !showLeftPanel
+        const shouldRenderIntermediateLeftPanel =
+            leftPanel && showLeftPanel && !isExpanded
 
         const toggleSidebar = useCallback(() => {
             const newValue = !isExpanded
