@@ -210,7 +210,7 @@ const NavItem = ({
     )
 
     const handleClick = () => {
-        if (hasChildren) {
+        if (hasChildren && !iconOnlyMode) {
             setIsExpanded(!isExpanded)
         } else {
             setActiveItem(itemPath)
@@ -302,7 +302,7 @@ const NavItem = ({
                         <Block aria-hidden="true">{item.rightSlot}</Block>
                     )}
                 </Block>
-                {hasChildren && (
+                {hasChildren && !iconOnlyMode && (
                     <ChevronWrapper
                         $isExpanded={isExpanded}
                         $tokens={tokens}
@@ -338,11 +338,17 @@ const NavItem = ({
                 })
             }
             aria-expanded={
-                hasChildren ? (isExpanded ? true : false) : undefined
+                hasChildren && !iconOnlyMode
+                    ? isExpanded
+                        ? true
+                        : false
+                    : undefined
             }
             aria-label={item.label}
             tabIndex={0}
-            data-sidebar-expanded={hasChildren ? isExpanded : undefined}
+            data-sidebar-expanded={
+                hasChildren && !iconOnlyMode ? isExpanded : undefined
+            }
             data-element="sidebar-sub-section"
             data-id={item.label}
             data-status={isActive ? 'selected' : 'not selected'}
@@ -374,7 +380,7 @@ const NavItem = ({
                 itemElement
             )}
 
-            {hasChildren && isExpanded && (
+            {hasChildren && isExpanded && !iconOnlyMode && (
                 <NestedList
                     as="ul"
                     $tokens={tokens}
