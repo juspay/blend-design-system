@@ -143,6 +143,10 @@ import {
     getCheckboxV2Tokens,
     ResponsiveCheckboxV2Tokens,
 } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import {
+    getRadioV2Tokens,
+    ResponsiveRadioV2Tokens,
+} from '../components/RadioV2/radioV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -159,6 +163,7 @@ export type ComponentTokenType = {
     MULTI_VALUE_INPUT?: ResponsiveMultiValueInputTokens
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
     CHECKBOX?: ResponsiveCheckboxTokens
+    RADIOV2?: ResponsiveRadioV2Tokens
     TABS?: ResponsiveTabsTokens
     BUTTON?: ResponsiveButtonTokens
     MODAL?: ResponsiveModalTokens
@@ -225,6 +230,7 @@ const ThemeContext = createContext<ThemeContextType>({
         MULTI_VALUE_INPUT: getMultiValueInputTokens(FOUNDATION_THEME),
         DROPDOWN_INPUT: getDropdownInputTokens(FOUNDATION_THEME),
         CHECKBOX: getCheckboxTokens(FOUNDATION_THEME),
+        RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TABS: getTabsTokens(FOUNDATION_THEME),
         BUTTON: getButtonTokens(FOUNDATION_THEME),
         MODAL: getModalComponentTokens(FOUNDATION_THEME),

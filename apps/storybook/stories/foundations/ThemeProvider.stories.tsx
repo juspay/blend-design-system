@@ -253,6 +253,7 @@ function App() {
                     'CHECKBOX',
                     'CHECKBOXV2',
                     'RADIO',
+                    'RADIOV2',
                     'SWITCH',
                     'TEXT_INPUT',
                     'SEARCH_INPUT',
