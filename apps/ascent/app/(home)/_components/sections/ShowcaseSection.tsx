@@ -39,23 +39,33 @@ export default function ShowcaseSection() {
 
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
-            const holderAnim = {
-                scale: 0.82,
-                y: 50,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: 'top 80%',
-                    end: 'bottom 20%',
-                    scrub: true,
-                },
+            const trigger = {
+                trigger: sectionRef.current,
+                start: 'top 80%',
+                end: 'bottom 25%',
+                scrub: true,
             }
 
-            gsap.fromTo(backHolderRef.current, { scale: 1, y: 0 }, holderAnim)
+            gsap.fromTo(
+                backHolderRef.current,
+                { scale: 1, y: 90 },
+                {
+                    scale: 0.78,
+                    y: 170,
+                    ease: 'power3.out',
+                    scrollTrigger: trigger,
+                }
+            )
+
             gsap.fromTo(
                 frontHolderRef.current,
                 { scale: 1, y: 0 },
-                { ...holderAnim }
+                {
+                    scale: 0.75,
+                    y: 190,
+                    ease: 'power3.out',
+                    scrollTrigger: trigger,
+                }
             )
 
             cardsRef.current.forEach((card, i) => {
@@ -65,23 +75,18 @@ export default function ShowcaseSection() {
                 gsap.fromTo(
                     card,
                     {
-                        y: 100, // pushed down → mostly hidden behind holder
-                        rotate: cfg.rotate * 0.3, // subtle rotation
-                        scale: 0.7,
-                        opacity: 0.5,
+                        y: 140,
+                        rotate: cfg.rotate * 0.2,
+                        scale: 0.78,
+                        opacity: 0.65,
                     },
                     {
-                        y: -90, // rises above holder
-                        rotate: cfg.rotate, // full fan rotation
-                        scale: 1,
+                        y: -55,
+                        rotate: cfg.rotate,
+                        scale: 1.03,
                         opacity: 1,
                         ease: 'power3.out',
-                        scrollTrigger: {
-                            trigger: sectionRef.current,
-                            start: 'top 80%',
-                            end: 'bottom 30%',
-                            scrub: true,
-                        },
+                        scrollTrigger: trigger,
                     }
                 )
             })
@@ -110,7 +115,7 @@ export default function ShowcaseSection() {
                             <div
                                 key={card.id}
                                 ref={setRef(i)}
-                                className="absolute z-20 origin-bottom"
+                                className="absolute z-20 origin-bottom will-change-transform"
                                 style={{
                                     bottom: 0,
                                     left: `calc(50% + ${card.xOffset}px - ${CARD_W / 2}px)`,
@@ -118,7 +123,7 @@ export default function ShowcaseSection() {
                                     height: CARD_H,
                                 }}
                             >
-                                <div className="w-full h-full transition-transform duration-300 cursor-pointer hover:-translate-y-3">
+                                <div className="w-full h-full transition-transform duration-300 ease-out cursor-pointer hover:-translate-y-5">
                                     <CardSvg width={CARD_W} height={CARD_H} />
                                 </div>
                             </div>
