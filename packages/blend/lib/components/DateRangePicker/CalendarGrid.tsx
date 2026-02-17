@@ -25,6 +25,7 @@ import {
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
 
 type CalendarGridProps = {
     selectedRange: DateRange | undefined
@@ -183,7 +184,7 @@ function generateMonthsList(
     const months = []
     const currentYear = today.getFullYear()
     const currentMonth = today.getMonth()
-    const startYear = 2012
+    const startYear = DATE_RANGE_PICKER_CONSTANTS.MIN_YEAR
     const endYear = currentYear + 5
 
     for (let year = startYear; year <= endYear; year++) {

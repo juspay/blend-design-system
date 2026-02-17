@@ -1215,7 +1215,7 @@ export const generateMonthWeeks = (
  * @returns Array of month/year objects
  */
 export const generateCalendarMonths = (
-    startYear: number = 2012,
+    startYear: number = DATE_RANGE_PICKER_CONSTANTS.MIN_YEAR,
     startMonth: number = 0,
     endYear?: number
 ): { month: number; year: number }[] => {
@@ -1294,7 +1294,7 @@ export const getNextChunkParams = (
     currentMonths: { month: number; year: number }[],
     direction: 'past' | 'future'
 ): { startYear: number; startMonth: number } | null => {
-    const MIN_YEAR = 2012
+    const MIN_YEAR = DATE_RANGE_PICKER_CONSTANTS.MIN_YEAR
     const MAX_YEAR = new Date().getFullYear() + 10
 
     if (direction === 'past') {

@@ -125,11 +125,10 @@ const DateRangePickerDemo = () => {
     })
 
     // Example states for different sections
-    const [basicRange, setBasicRange] = useState<DateRange | undefined>(
-        undefined
-    )
-
-    console.log('basicRange', basicRange)
+    const [basicRange, setBasicRange] = useState<DateRange | undefined>({
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    })
 
     const [formatRange, setFormatRange] = useState<DateRange>({
         startDate: new Date(),
@@ -859,9 +858,6 @@ const DateRangePickerDemo = () => {
                                 onChange={handleBasicRangeChange}
                                 showPresets={true}
                                 showDateTimePicker={true}
-                                disableFutureDates={true}
-                                isSingleDatePicker={true}
-                                timezone="Etc/GMT+12"
                             />
                         </div>
                     </div>
