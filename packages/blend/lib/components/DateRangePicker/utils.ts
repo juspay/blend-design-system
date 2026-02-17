@@ -9,7 +9,6 @@ import {
     CustomPresetDefinition,
     PresetsConfig,
     CustomRangeConfig,
-    DateRangeIntermediate,
 } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
@@ -933,13 +932,6 @@ export const isEndDate = (
     timezone?: string
 ): boolean => {
     if (!endDate || !startDate) return false
-    const partsStart = timezone
-        ? getDatePartsInTimezone(startDate, timezone)
-        : {
-              year: startDate.getFullYear(),
-              month: startDate.getMonth(),
-              day: startDate.getDate(),
-          }
 
     const partsEnd = timezone
         ? getDatePartsInTimezone(endDate, timezone)
@@ -948,10 +940,6 @@ export const isEndDate = (
               month: endDate.getMonth(),
               day: endDate.getDate(),
           }
-    // Don't show as end date if it's the same day as start date (single date selection)
-    if (isSameParts(partsStart, partsEnd)) {
-        return false
-    }
 
     return (
         date.getDate() === partsEnd.day &&
@@ -1106,14 +1094,15 @@ const hasCompleteRange = (range: DateRange): boolean => {
  */
 export const handleCalendarDateClick = (
     clickedDate: Date,
-    selectedRange: DateRangeIntermediate,
     allowSingleDateSelection: boolean = false,
     today: Date,
     disableFutureDates: boolean = false,
     disablePastDates: boolean = false,
     isDoubleClick: boolean = false,
-    timezone?: string
-): DateRangeIntermediate | null => {
+    timezone?: string,
+    selectedRange?: DateRange,
+    isSingleDatePicker?: boolean
+): DateRange | null => {
     // Validate date is not disabled
     if (
         (disableFutureDates && clickedDate > today) ||
@@ -1142,7 +1131,8 @@ export const handleCalendarDateClick = (
 
     // Case 1: No selection - first click sets start date
     if (
-        !selectedRange.startDate ||
+        isSingleDatePicker ||
+        !selectedRange ||
         (selectedRange.startDate && selectedRange.endDate)
     ) {
         const startDate = createStartOfDay(
@@ -1496,14 +1486,34 @@ export const getScrollToMonth = (
  */
 export const getDateCellStates = (
     date: Date,
-    selectedRange: DateRangeIntermediate,
+    selectedRange: DateRange | undefined,
     today: Date,
     disableFutureDates: boolean = false,
     disablePastDates: boolean = false,
     customDisableDates?: (date: Date) => boolean,
-    timezone?: string
+    timezone?: string,
+    isSingleDatePicker?: boolean
 ) => {
-    const isStart = isStartDate(date, selectedRange.startDate, timezone)
+    const isTodayDay = isDateToday(date, today)
+    const isDisabled = Boolean(
+        (disableFutureDates && date > today) ||
+        (disablePastDates && date < today) ||
+        (customDisableDates && customDisableDates(date))
+    )
+
+    if (!selectedRange) {
+        return {
+            isStart: false,
+            isEnd: false,
+            isRangeDay: false,
+            isTodayDay: isTodayDay,
+            isSingleDate: false,
+            isDisabled: isDisabled,
+        }
+    }
+
+    const isStart =
+        selectedRange && isStartDate(date, selectedRange.startDate, timezone)
     const isEnd =
         !!selectedRange.endDate &&
         isEndDate(
@@ -1515,20 +1525,20 @@ export const getDateCellStates = (
     const isRangeDay =
         !!selectedRange.endDate &&
         isInSelectedRange(date, selectedRange as DateRange, timezone)
-    const isTodayDay = isDateToday(date, today)
 
     // For single date selection, only show as single date if start and end are the same day
     const isSingleDate =
-        isStart &&
-        selectedRange.startDate &&
-        !!selectedRange.endDate &&
-        isSameDay(selectedRange.startDate, selectedRange.endDate)
-
-    const isDisabled = Boolean(
-        (disableFutureDates && date > today) ||
-        (disablePastDates && date < today) ||
-        (customDisableDates && customDisableDates(date))
-    )
+        (isSingleDatePicker && isStart) ||
+        (isStart &&
+            selectedRange.startDate &&
+            !!selectedRange.endDate &&
+            isSameDay(
+                convertLocalDateToTimezoneDate(
+                    selectedRange.startDate,
+                    timezone
+                ),
+                convertLocalDateToTimezoneDate(selectedRange.endDate, timezone)
+            ))
 
     return {
         isStart,
@@ -1753,12 +1763,13 @@ export const isDateInputComplete = (value: string, format: string): boolean => {
  * @returns Formatted display string
  */
 export const formatDateDisplay = (
-    selectedRange: DateRange,
+    selectedRange: DateRange | undefined,
     allowSingleDateSelection: boolean = false,
-    timezone?: string
+    timezone?: string,
+    isSingleDatePicker?: boolean
 ): string => {
-    if (!selectedRange.startDate) {
-        return 'Select date range'
+    if (!selectedRange || !selectedRange.startDate) {
+        return isSingleDatePicker ? 'Select date' : 'Select date range'
     }
 
     const formatOptions: Intl.DateTimeFormatOptions = {
@@ -1819,7 +1830,7 @@ export const formatDateDisplay = (
 export const handleDateInputChange = (
     value: string,
     dateFormat: string,
-    currentRange: DateRangeIntermediate,
+    currentRange: DateRange | undefined,
     timeValue?: string,
     isStartDate: boolean = true,
     disableFutureDates: boolean = false,
@@ -1827,7 +1838,7 @@ export const handleDateInputChange = (
 ): {
     formattedValue: string
     validation: DateValidationResult
-    updatedRange?: DateRangeIntermediate
+    updatedRange?: DateRange
 } => {
     const formattedValue = formatDateInput(value, dateFormat)
     const validation = validateDateInput(
@@ -1837,7 +1848,7 @@ export const handleDateInputChange = (
         disablePastDates
     )
 
-    let updatedRange: DateRangeIntermediate | undefined
+    let updatedRange: DateRange | undefined
 
     if (validation.isValid && isDateInputComplete(formattedValue, dateFormat)) {
         const parsedDate = parseDate(formattedValue, dateFormat)
@@ -1846,8 +1857,12 @@ export const handleDateInputChange = (
             parsedDate.setHours(hours, minutes)
 
             updatedRange = isStartDate
-                ? { ...currentRange, startDate: parsedDate }
-                : { ...currentRange, endDate: parsedDate }
+                ? currentRange
+                    ? { ...currentRange, startDate: parsedDate }
+                    : { startDate: parsedDate }
+                : currentRange
+                  ? { ...currentRange, endDate: parsedDate }
+                  : undefined
         }
     }
 
@@ -1867,10 +1882,10 @@ export const handleDateInputChange = (
  */
 export const handleTimeChange = (
     time: string,
-    currentRange: DateRangeIntermediate,
+    currentRange: DateRange,
     timezone?: string,
     isStartTime: boolean = true
-): DateRangeIntermediate => {
+): DateRange => {
     const targetDate = isStartTime
         ? currentRange.startDate
         : currentRange.endDate
@@ -1914,13 +1929,13 @@ export const handleTimeChange = (
 export const handleCalendarDateSelect = (
     range: DateRange,
     startTime: string,
-    endTime: string,
     dateFormat: string,
-    timezone?: string
+    timezone?: string,
+    endTime?: string
 ): {
     updatedRange: DateRange
     formattedStartDate: string
-    formattedEndDate: string
+    formattedEndDate?: string
 } => {
     // Check if this is a single date range (same day for start and end)
     const isSingleDateRange =
@@ -1970,7 +1985,7 @@ export const handleCalendarDateSelect = (
         }
     }
 
-    if (range.endDate) {
+    if (range.endDate && endTime) {
         const [endHour, endMinute] = endTime
             ? endTime.split(':').map(Number)
             : []
@@ -2017,7 +2032,8 @@ export const handleCalendarDateSelect = (
     return {
         updatedRange: range,
         formattedStartDate: formatDate(range.startDate, dateFormat, timezone),
-        formattedEndDate: formatDate(range.endDate, dateFormat, timezone),
+        formattedEndDate:
+            range.endDate && formatDate(range.endDate, dateFormat, timezone),
     }
 }
 
@@ -2037,8 +2053,9 @@ export const handlePresetSelection = (
     formattedEndDate: string
     formattedStartTime: string
     formattedEndTime: string
-} => {
+} | null => {
     const range = getPresetDateRange(preset, timezone)
+    if (!range.endDate) return null
 
     return {
         updatedRange: range,
@@ -2046,33 +2063,6 @@ export const handlePresetSelection = (
         formattedEndDate: formatDate(range.endDate, dateFormat, timezone),
         formattedStartTime: formatDate(range.startDate, 'HH:mm', timezone),
         formattedEndTime: formatDate(range.endDate, 'HH:mm', timezone),
-    }
-}
-
-/**
- * Handles cancel action - resets to original values
- * @param originalValue Original date range value
- * @param dateFormat Date format string
- * @returns Object with reset values
- */
-export const handleCancelAction = (
-    originalValue: DateRange | undefined,
-    dateFormat: string
-): {
-    resetRange: DateRange
-    formattedStartDate: string
-    formattedEndDate: string
-    formattedStartTime: string
-    formattedEndTime: string
-} | null => {
-    if (!originalValue) return null
-
-    return {
-        resetRange: originalValue,
-        formattedStartDate: formatDate(originalValue.startDate, dateFormat),
-        formattedEndDate: formatDate(originalValue.endDate, dateFormat),
-        formattedStartTime: formatDate(originalValue.startDate, 'HH:mm'),
-        formattedEndTime: formatDate(originalValue.endDate, 'HH:mm'),
     }
 }
 
@@ -2195,13 +2185,14 @@ export const createCalendarMonthData = (
  */
 export const calculateDayCellProps = (
     date: Date,
-    selectedRange: DateRangeIntermediate,
+    selectedRange: DateRange | undefined,
     today: Date,
     disableFutureDates: boolean,
     disablePastDates: boolean,
     calendarToken: CalendarTokenType,
     customDisableDates?: (date: Date) => boolean,
-    timezone?: string
+    timezone?: string,
+    isSingleDatePicker?: boolean
 ): {
     dateStates: ReturnType<typeof getDateCellStates>
     styles: Record<string, unknown>
@@ -2215,7 +2206,8 @@ export const calculateDayCellProps = (
         disableFutureDates,
         disablePastDates,
         customDisableDates,
-        timezone
+        timezone,
+        isSingleDatePicker
     )
 
     const getCellStyles = () => {
@@ -2303,16 +2295,16 @@ export const calculateDayCellProps = (
     }
 }
 
-const getPickerYearRange = (selectedRange: DateRangeIntermediate) => {
+const getPickerYearRange = (selectedRange: DateRange | undefined) => {
     const { MIN_YEAR, MAX_YEAR_OFFSET } = DATE_RANGE_PICKER_CONSTANTS
     const currentYear = new Date().getFullYear()
     const defaultMaxYear = currentYear + MAX_YEAR_OFFSET
 
     const selectedYears: number[] = []
-    if (selectedRange.startDate && isValidDate(selectedRange.startDate)) {
+    if (selectedRange && isValidDate(selectedRange.startDate)) {
         selectedYears.push(selectedRange.startDate.getFullYear())
     }
-    if (selectedRange.endDate && isValidDate(selectedRange.endDate)) {
+    if (selectedRange?.endDate && isValidDate(selectedRange.endDate)) {
         selectedYears.push(selectedRange.endDate.getFullYear())
     }
 
@@ -2352,12 +2344,12 @@ const buildYearOptions = (minYear: number, maxYear: number): number[] => {
  */
 export const generatePickerData = (
     tabType: 'start' | 'end',
-    selectedRange: DateRangeIntermediate,
-    startTime: string,
+    selectedRange?: DateRange,
+    startTime?: string,
     endTime?: string
 ) => {
     const rawDate =
-        tabType === 'start' ? selectedRange.startDate : selectedRange.endDate
+        tabType === 'start' ? selectedRange?.startDate : selectedRange?.endDate
     const targetTime = tabType === 'start' ? startTime : endTime
 
     const now = new Date()
@@ -2434,20 +2426,20 @@ export const generatePickerData = (
 export const createSelectionHandler = (
     tabType: 'start' | 'end',
     type: 'year' | 'month' | 'date' | 'time',
-    selectedRange: DateRange,
     dateFormat: string,
     handleStartTimeChange: (time: string) => void,
     handleEndTimeChange: (time: string) => void,
     setSelectedRange: (range: DateRange) => void,
     setStartDate: (date: string) => void,
-    setEndDate: (date: string) => void
+    setEndDate: (date: string) => void,
+    selectedRange?: DateRange
 ) => {
     return (index: number) => {
         const now = new Date()
         const baselineDate =
             tabType === 'start'
-                ? selectedRange.startDate
-                : selectedRange.endDate
+                ? selectedRange?.startDate
+                : selectedRange?.endDate
         const safeBaseDate =
             baselineDate && isValidDate(baselineDate)
                 ? baselineDate
@@ -2522,7 +2514,7 @@ export const createSelectionHandler = (
         if (tabType === 'start') {
             setSelectedRange({ ...selectedRange, startDate: newDate })
             setStartDate(formatDate(newDate, dateFormat))
-        } else {
+        } else if (selectedRange) {
             setSelectedRange({ ...selectedRange, endDate: newDate })
             setEndDate(formatDate(newDate, dateFormat))
         }
@@ -2824,7 +2816,10 @@ export const formatDateRangeWithConfig = (
 export const formatTriggerDisplay = (
     range: DateRange | undefined,
     config: DateFormatConfig = {},
-    placeholder: string = 'Select date range',
+    isSingleDatePicker?: boolean,
+    placeholder: string = isSingleDatePicker
+        ? 'Select date'
+        : 'Select date range',
     timezone?: string
 ): string => {
     if (!range || !range.startDate) {
@@ -3321,7 +3316,8 @@ export const formatTimeInput = (input: string): string => {
  * @returns Validation result with specific error information
  */
 export const validateDateTimeRange = (
-    range: DateRange
+    range: DateRange,
+    isSingleDatePicker: boolean
 ): {
     isValid: boolean
     error:
@@ -3331,28 +3327,23 @@ export const validateDateTimeRange = (
         | 'invalid-single-date'
     message?: string
 } => {
-    if (!range.startDate || !range.endDate) {
+    if (!range.startDate || (!isSingleDatePicker && !range.endDate)) {
         return {
             isValid: false,
             error: 'missing-dates',
-            message: 'Both start and end dates are required',
+            message: isSingleDatePicker
+                ? 'A valid date is required for single date selection'
+                : 'Both start and end dates are required',
         }
     }
 
-    const isSingleDate = isSameDay(range.startDate, range.endDate)
-
-    if (range.endDate.getTime() < range.startDate.getTime()) {
+    if (range.endDate && range.endDate.getTime() < range.startDate.getTime()) {
         return {
             isValid: false,
             error: 'invalid-time-order',
-            message: isSingleDate
-                ? 'End time must be after or equal to start time on the same day'
-                : 'End date/time must be after start date/time',
+            message:
+                'End time must be after or equal to start time on the same day',
         }
-    }
-
-    if (isSingleDate) {
-        return { isValid: true, error: 'none' }
     }
 
     return { isValid: true, error: 'none' }
@@ -3526,15 +3517,16 @@ export const validateCustomRangeConfig = (
  */
 export const handleCustomRangeCalendarDateClick = (
     clickedDate: Date,
-    selectedRange: DateRangeIntermediate,
     allowSingleDateSelection: boolean = false,
     today: Date,
     disableFutureDates: boolean = false,
     disablePastDates: boolean = false,
     customRangeConfig?: CustomRangeConfig,
     isDoubleClick: boolean = false,
-    timezone?: string
-): DateRangeIntermediate | null => {
+    timezone?: string,
+    selectedRange?: DateRange,
+    isSingleDatePicker?: boolean
+): DateRange | null => {
     // Validate date is not disabled
     if (
         (disableFutureDates && clickedDate > today) ||
@@ -3547,13 +3539,14 @@ export const handleCustomRangeCalendarDateClick = (
     if (!customRangeConfig) {
         return handleCalendarDateClick(
             clickedDate,
-            selectedRange,
             allowSingleDateSelection,
             today,
             disableFutureDates,
             disablePastDates,
             isDoubleClick,
-            timezone
+            timezone,
+            selectedRange,
+            isSingleDatePicker
         )
     }
 
@@ -3594,12 +3587,14 @@ export const handleCustomRangeCalendarDateClick = (
             // Fallback to standard logic if calculation returns null
             return handleCalendarDateClick(
                 clickedDate,
-                selectedRange,
                 allowSingleDateSelection,
                 today,
                 disableFutureDates,
                 disablePastDates,
-                isDoubleClick
+                isDoubleClick,
+                timezone,
+                selectedRange,
+                isSingleDatePicker
             )
         }
         endDate = calculatedDate
@@ -3607,12 +3602,14 @@ export const handleCustomRangeCalendarDateClick = (
         // Fallback to standard logic
         return handleCalendarDateClick(
             clickedDate,
-            selectedRange,
             allowSingleDateSelection,
             today,
             disableFutureDates,
             disablePastDates,
-            isDoubleClick
+            isDoubleClick,
+            timezone,
+            selectedRange,
+            isSingleDatePicker
         )
     }
 
@@ -3639,7 +3636,7 @@ export const handleCustomRangeCalendarDateClick = (
     // If manual end date selection is allowed and we already have a start date
     if (
         customRangeConfig.allowManualEndDateSelection &&
-        selectedRange.startDate &&
+        selectedRange &&
         !(
             selectedRange.endDate &&
             isSameDay(selectedRange.startDate, selectedRange.endDate)
@@ -3757,6 +3754,7 @@ export const matchesTodayPreset = (
     range: DateRange,
     timezone?: string
 ): boolean => {
+    if (!range.endDate) return false
     const now = new Date()
 
     const startDate = convertLocalDateToTimezoneDate(range.startDate, timezone)
@@ -3784,6 +3782,7 @@ export const matchesYesterdayPreset = (
     range: DateRange,
     timezone?: string
 ): boolean => {
+    if (!range.endDate) return false
     const yesterday_ = new Date()
     yesterday_.setDate(yesterday_.getDate() - 1)
 
@@ -3812,6 +3811,7 @@ export const matchesYesterdayPreset = (
  * Checks if a date range matches "Tomorrow" preset
  */
 export const matchesTomorrowPreset = (range: DateRange): boolean => {
+    if (!range.endDate) return false
     const now = new Date()
     const tomorrow = new Date(
         now.getFullYear(),
@@ -3831,6 +3831,7 @@ export const matchesTomorrowPreset = (range: DateRange): boolean => {
  * Checks if a date range matches "This Month" preset
  */
 export const matchesThisMonthPreset = (range: DateRange): boolean => {
+    if (!range.endDate) return false
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
@@ -3859,6 +3860,7 @@ export const matchesThisMonthPreset = (range: DateRange): boolean => {
  * Checks if a date range matches "Last Month" preset
  */
 export const matchesLastMonthPreset = (range: DateRange): boolean => {
+    if (!range.endDate) return false
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
@@ -3899,7 +3901,7 @@ export const matchesLastMonthPreset = (range: DateRange): boolean => {
  * Robust preset detection that works with both UTC and local timezone dates
  */
 export const detectPresetFromRange = (
-    range: DateRangeIntermediate,
+    range: DateRange,
     timezone?: string
 ): DateRangePreset => {
     if (!range.startDate || !range.endDate) {

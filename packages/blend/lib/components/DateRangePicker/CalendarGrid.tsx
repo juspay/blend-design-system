@@ -9,7 +9,7 @@ import {
 } from 'react'
 import styled, { CSSObject } from 'styled-components'
 import { motion } from 'framer-motion'
-import { DateRangeIntermediate, CustomRangeConfig } from './types'
+import { DateRange, CustomRangeConfig } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import Skeleton from '../Skeleton/Skeleton'
@@ -27,8 +27,8 @@ import { FOUNDATION_THEME } from '../../tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type CalendarGridProps = {
-    selectedRange: DateRangeIntermediate
-    onDateSelect: (range: DateRangeIntermediate) => void
+    selectedRange: DateRange | undefined
+    onDateSelect: (range: DateRange) => void
     today: Date
     allowSingleDateSelection?: boolean
     disableFutureDates?: boolean
@@ -40,6 +40,7 @@ type CalendarGridProps = {
     showDateTimePicker?: boolean
     resetScrollPosition?: number // Used to trigger scroll reset when popover reopens
     timezone?: string
+    isSingleDatePicker?: boolean
 }
 
 const CONTAINER_HEIGHT = 340
@@ -228,6 +229,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             showDateTimePicker = true,
             resetScrollPosition,
             timezone,
+            isSingleDatePicker,
         },
         ref
     ) => {
@@ -354,14 +356,15 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
 
                 const newRange = handleCustomRangeCalendarDateClick(
                     clickedDate,
-                    selectedRange,
                     allowSingleDateSelection,
                     today,
                     disableFutureDates,
                     disablePastDates,
                     customRangeConfig,
                     isDoubleClick,
-                    timezone
+                    timezone,
+                    selectedRange,
+                    isSingleDatePicker
                 )
 
                 if (newRange) {
@@ -638,7 +641,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                         disablePastDates,
                                                         calendarToken,
                                                         customDisableDates,
-                                                        timezone
+                                                        timezone,
+                                                        isSingleDatePicker
                                                     )
 
                                                 const isSelected =
