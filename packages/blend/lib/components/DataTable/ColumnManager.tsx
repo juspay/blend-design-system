@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Block from '../Primitives/Block/Block'
 import { ColumnManagerProps } from './types'
@@ -37,14 +37,6 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     const [pendingSelectedColumns, setPendingSelectedColumns] = useState<
         string[]
     >(() => visibleColumns.map((col) => String(col.field)))
-
-    useEffect(() => {
-        if (hasPrimaryAction) {
-            setPendingSelectedColumns(
-                visibleColumns.map((col) => String(col.field))
-            )
-        }
-    }, [visibleColumns, hasPrimaryAction])
 
     const managableColumns = columns.filter((col) => col.canHide !== false)
     const selectedColumnValues = hasPrimaryAction
@@ -93,6 +85,8 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             const isSelected = pendingSelectedColumns.includes(field)
             const isAlwaysSelected = alwaysSelectedColumns.includes(field)
 
+            skipStateResetRef.current = true
+
             if (
                 isSelected &&
                 !isAlwaysSelected &&
@@ -114,6 +108,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     setPendingSelectedColumns((prev) => [...prev, field])
                 }
             }
+
             return
         }
 
@@ -196,11 +191,9 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             skipStateResetRef.current = false
         } else {
             if (!skipStateResetRef.current) {
-                setTimeout(() => {
-                    setPendingSelectedColumns(
-                        visibleColumns.map((col) => String(col.field))
-                    )
-                }, 0)
+                setPendingSelectedColumns(
+                    visibleColumns.map((col) => String(col.field))
+                )
             }
             skipStateResetRef.current = false
         }
@@ -261,6 +254,19 @@ export const ColumnManager = <T extends Record<string, unknown>>({
           }
         : undefined
 
+    const secondaryAction = columnManagerSecondaryAction
+        ? {
+              ...columnManagerSecondaryAction,
+              onClick: () => {
+                  setPendingSelectedColumns(
+                      visibleColumns.map((col) => String(col.field))
+                  )
+                  skipStateResetRef.current = true
+                  columnManagerSecondaryAction.onClick()
+              },
+          }
+        : undefined
+
     const commonProps = {
         items: multiSelectItems,
         selectedValues: selectedColumnValues,
@@ -273,9 +279,8 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         customTrigger,
         showActionButtons: true,
         primaryAction,
-        secondaryAction: columnManagerSecondaryAction,
+        secondaryAction,
         disabled,
-        onBlur: handleMenuClose,
         onOpenChange: handleOpenChange,
     }
 
