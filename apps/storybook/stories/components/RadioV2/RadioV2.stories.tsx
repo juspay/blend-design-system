@@ -7,15 +7,17 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
 
-import { SwitchV2 } from '../../../../../packages/blend/lib/components/SelectorV2/SwitchV2'
-import { type SwitchV2Props } from '../../../../../packages/blend/lib/components/SelectorV2/SwitchV2/switchV2.types'
-import { SelectorV2Size as SwitchV2Size } from '../../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
+import { RadioV2 } from '../../../../../packages/blend/lib/components/RadioV2/RadioV2'
+import {
+    RadioV2Size,
+    type RadioV2Props,
+} from '../../../../../packages/blend/lib/components/RadioV2/radioV2.types'
 
-type SwitchV2Slot = NonNullable<SwitchV2Props['slot']>
+type RadioV2Slot = NonNullable<RadioV2Props['slot']>
 
 const getSlotContent = (
     slotValue: string | React.ReactNode | null | undefined
-): SwitchV2Slot | undefined => {
+): RadioV2Slot | undefined => {
     if (typeof slotValue === 'string') {
         if (!slotValue || slotValue === 'none') {
             return undefined
@@ -39,9 +41,9 @@ const getSlotContent = (
     return undefined
 }
 
-const meta: Meta<typeof SwitchV2> = {
-    title: 'Components/SwitchV2',
-    component: SwitchV2,
+const meta: Meta<typeof RadioV2> = {
+    title: 'Components/RadioV2',
+    component: RadioV2,
     parameters: {
         layout: 'centered',
         a11y: getA11yConfig('interactive'),
@@ -49,7 +51,7 @@ const meta: Meta<typeof SwitchV2> = {
         docs: {
             description: {
                 component: `
-A next-generation toggle switch component with improved accessibility, theming, and content handling.
+A next-generation radio control with improved accessibility, theming, and content handling.
 
 ## Features
 - Controlled API with \`checked\` and \`onChange\`
@@ -58,22 +60,21 @@ A next-generation toggle switch component with improved accessibility, theming, 
 - Optional decorative \`slot\` icon next to the label
 - Required and error states with ARIA attributes
 - Disabled state with proper \`aria-disabled\` and native \`disabled\`
-- Uses responsive design tokens via \`useResponsiveTokens('SWITCHV2')\`
+- Uses responsive design tokens via \`useResponsiveTokens('RADIOV2')\`
 
 ## Usage
 
 \`\`\`tsx
-import SwitchV2, { SwitchV2Size } from '@juspay/blend-design-system/SwitchV2';
+import RadioV2, { RadioV2Size } from '@juspay/blend-design-system/RadioV2';
 
-const [enabled, setEnabled] = useState(false);
+const [checked, setChecked] = useState(false);
 
-<SwitchV2
-  label="Enable notifications"
-  subLabel="Get alerts about new messages"
-  size={SwitchV2Size.MD}
-  checked={enabled}
-  onChange={setEnabled}
-  slot={<Hash size={16} />}
+<RadioV2
+  label="Option A"
+  size={RadioV2Size.MEDIUM}
+  checked={checked}
+  onChange={() => setChecked(!checked)}
+  slot={<Hash size={16} /> }
   maxLength={{ label: 40, subLabel: 80 }}
 />;
 \`\`\`
@@ -84,7 +85,7 @@ const [enabled, setEnabled] = useState(false);
     argTypes: {
         label: {
             control: 'text',
-            description: 'Primary label text displayed next to the switch',
+            description: 'Primary label text displayed next to the radio',
         },
         subLabel: {
             control: 'text',
@@ -92,16 +93,16 @@ const [enabled, setEnabled] = useState(false);
         },
         size: {
             control: 'select',
-            options: Object.values(SwitchV2Size),
-            description: 'Size variant of the switch',
+            options: Object.values(RadioV2Size),
+            description: 'Size variant of the radio',
         },
         checked: {
             control: 'boolean',
-            description: 'Controlled checked state of the switch',
+            description: 'Controlled checked state of the radio',
         },
         disabled: {
             control: 'boolean',
-            description: 'Whether the switch is disabled',
+            description: 'Whether the radio is disabled',
         },
         required: {
             control: 'boolean',
@@ -109,7 +110,7 @@ const [enabled, setEnabled] = useState(false);
         },
         error: {
             control: 'boolean',
-            description: 'Puts the switch in an error state',
+            description: 'Puts the radio in an error state',
         },
         slot: {
             control: 'select',
@@ -122,19 +123,19 @@ const [enabled, setEnabled] = useState(false);
             description:
                 'Maximum lengths for label and subLabel before truncation + tooltip',
         },
-        onCheckedChange: {
+        onChange: {
             action: 'changed',
-            description: 'Callback fired when the switch toggles',
+            description: 'Callback fired when the radio value changes',
         },
     },
     tags: ['autodocs'],
 }
 
 export default meta
-type Story = StoryObj<typeof SwitchV2>
+type Story = StoryObj<typeof RadioV2>
 
 export const Default: Story = {
-    render: function DefaultSwitchV2(args: Story['args']) {
+    render: function DefaultRadioV2(args: Story['args']) {
         const [checkedState, setCheckedState] = useState<boolean>(
             args?.checked ?? false
         )
@@ -144,18 +145,18 @@ export const Default: Story = {
         }, [args?.checked])
 
         return (
-            <SwitchV2
+            <RadioV2
                 {...args}
                 checked={checkedState}
-                onCheckedChange={(next: boolean) => setCheckedState(next)}
+                onChange={() => setCheckedState((prev: boolean) => !prev)}
                 slot={getSlotContent(args?.slot as string | React.ReactNode)}
             />
         )
     },
     args: {
-        label: 'Enable notifications',
-        subLabel: 'Get alerts about new activity',
-        size: SwitchV2Size.MD,
+        label: 'Option A',
+        subLabel: undefined,
+        size: RadioV2Size.MEDIUM,
         checked: false,
         disabled: false,
         required: false,
@@ -184,25 +185,25 @@ export const Sizes: Story = {
                         gap: 16,
                     }}
                 >
-                    <SwitchV2
-                        label="Small switch"
-                        size={SwitchV2Size.SM}
+                    <RadioV2
+                        label="Small radio"
+                        size={RadioV2Size.SMALL}
                         checked={states.sm}
-                        onCheckedChange={(next: boolean) =>
+                        onChange={() =>
                             setStates((prev: { sm: boolean; md: boolean }) => ({
                                 ...prev,
-                                sm: next,
+                                sm: !prev.sm,
                             }))
                         }
                     />
-                    <SwitchV2
-                        label="Medium switch"
-                        size={SwitchV2Size.MD}
+                    <RadioV2
+                        label="Medium radio"
+                        size={RadioV2Size.MEDIUM}
                         checked={states.md}
-                        onCheckedChange={(next: boolean) =>
+                        onChange={() =>
                             setStates((prev: { sm: boolean; md: boolean }) => ({
                                 ...prev,
-                                md: next,
+                                md: !prev.md,
                             }))
                         }
                     />
@@ -223,13 +224,13 @@ export const States: Story = {
                 gap: 12,
             }}
         >
-            <SwitchV2 label="Default" />
-            <SwitchV2 label="Checked" checked />
-            <SwitchV2 label="Disabled" disabled />
-            <SwitchV2 label="Checked & Disabled" checked disabled />
-            <SwitchV2 label="Required" required />
-            <SwitchV2 label="Error" error />
-            <SwitchV2 label="Required + Error" required error />
+            <RadioV2 label="Default" />
+            <RadioV2 label="Checked" checked />
+            <RadioV2 label="Disabled" disabled />
+            <RadioV2 label="Checked & Disabled" checked disabled />
+            <RadioV2 label="Required" required />
+            <RadioV2 label="Error" error />
+            <RadioV2 label="Required + Error" required error />
         </div>
     ),
 }
@@ -240,11 +241,11 @@ export const WithSlotAndSubLabel: Story = {
             const [checked, setChecked] = useState(false)
 
             return (
-                <SwitchV2
-                    label="Marketing emails"
-                    subLabel="Receive product updates and announcements"
+                <RadioV2
+                    label="Option with slot"
+                    subLabel="Has a decorative icon"
                     checked={checked}
-                    onCheckedChange={setChecked}
+                    onChange={() => setChecked((prev: boolean) => !prev)}
                     slot={{ slot: <Bell size={16} />, maxHeight: 16 }}
                 />
             )
@@ -256,7 +257,7 @@ export const WithSlotAndSubLabel: Story = {
 
 export const TruncationAndTooltip: Story = {
     render: () => (
-        <SwitchV2
+        <RadioV2
             label="A very long label that will be truncated when it exceeds the configured maxLength"
             subLabel="Similarly, this descriptive subLabel will be truncated and show the full value in a tooltip on hover"
             maxLength={{

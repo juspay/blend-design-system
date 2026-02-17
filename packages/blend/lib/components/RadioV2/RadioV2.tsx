@@ -24,11 +24,9 @@ export const RadioV2 = ({
     required = false,
     error = false,
     size = RadioV2Size.MEDIUM,
-    children,
     subLabel,
     slot,
     name,
-    value,
     maxLength,
     ...rest
 }: RadioV2Props) => {
@@ -37,6 +35,7 @@ export const RadioV2 = ({
     const uniqueId = id || generatedId
     const shouldShake = useErrorShake(error)
     const subtextId = subLabel ? `${uniqueId}-subLabel` : undefined
+    const labelId = label ? `${uniqueId}-label` : undefined
     const customAriaDescribedBy = (rest as { 'aria-describedby'?: string })[
         'aria-describedby'
     ]
@@ -45,7 +44,6 @@ export const RadioV2 = ({
             ? `${customAriaDescribedBy} ${subtextId}`
             : subtextId || customAriaDescribedBy
 
-    console.log(checked)
     return (
         <Block
             display="flex"
@@ -72,6 +70,9 @@ export const RadioV2 = ({
                 aria-required={required ? true : undefined}
                 aria-invalid={error ? true : undefined}
                 aria-describedby={ariaDescribedBy}
+                aria-checked={checked}
+                aria-disabled={disabled ? true : undefined}
+                aria-labelledby={labelId}
             />
             <RadioV2Content
                 uniqueId={uniqueId}

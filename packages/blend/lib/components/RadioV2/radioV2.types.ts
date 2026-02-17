@@ -49,8 +49,8 @@ export type RadioV2Props = {
     required?: boolean
     error?: boolean
     size?: RadioV2Size
-    children?: ReactNode
     label?: string
+    children?: ReactNode
     subLabel?: string
     slot?: {
         slot: ReactElement
