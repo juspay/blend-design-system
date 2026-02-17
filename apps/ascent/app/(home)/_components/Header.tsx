@@ -6,8 +6,8 @@ import { EXTERNAL_LINKS, ROUTES } from './constants/links'
 
 export default function Header() {
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-200 px-28">
-            <nav className="w-full px-4 lg:px-6 flex items-center justify-between h-18 border-l border-r border-gray-200">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur-sm border-b border-gray-200">
+            <nav className="px-4 lg:px-6 flex items-center justify-between h-18 border-l border-r border-gray-200 lg:mx-28.25">
                 <Link
                     href={ROUTES.home}
                     className="flex items-center"

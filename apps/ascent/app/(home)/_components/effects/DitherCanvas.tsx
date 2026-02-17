@@ -39,7 +39,6 @@ export default function DitherCanvas({ className = '' }: DitherCanvasProps) {
 
         resize()
 
-        // Use ResizeObserver for better container size tracking
         const resizeObserver = new ResizeObserver(() => {
             resize()
         })
@@ -75,7 +74,7 @@ export default function DitherCanvas({ className = '' }: DitherCanvasProps) {
                     const intensity = Math.max(0, 1 - d / 180)
 
                     const alpha = 0.15 + intensity * 0.6
-                    const r = 0.7 + intensity * 1.6
+                    const r = 0.5 + Math.pow(intensity, 1.8) * 0.5
 
                     ctx.fillStyle = `rgba(30, 30, 30, ${alpha})`
 

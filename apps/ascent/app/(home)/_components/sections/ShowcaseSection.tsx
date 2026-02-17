@@ -78,7 +78,7 @@ export default function ShowcaseSection() {
                         y: 140,
                         rotate: cfg.rotate * 0.2,
                         scale: 0.78,
-                        opacity: 0.65,
+                        opacity: 1,
                     },
                     {
                         y: -55,
@@ -97,7 +97,7 @@ export default function ShowcaseSection() {
 
     return (
         <section ref={sectionRef} className="border-t border-b border-gray-200">
-            <div className="mx-28 border-l border-r border-gray-200 h-[445px] relative overflow-hidden">
+            <div className="lg:mx-28 border-l border-r border-gray-200 h-[445px] relative overflow-hidden">
                 <div
                     className="absolute bottom-0 left-0 right-0"
                     style={{ height: 420 }}
