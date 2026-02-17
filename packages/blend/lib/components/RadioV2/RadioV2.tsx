@@ -1,0 +1,153 @@
+import { RadioV2ContentProps, RadioV2Props, RadioV2Size } from './radioV2.types'
+import { StyledRadioV2Root } from './StyledRadioV2'
+import { RadioV2TokensType } from './radioV2.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import React from 'react'
+import { getRadioV2ErrorShakeStyle } from './radioV2.animation'
+import { useErrorShake } from '../common/useErrorShake'
+import {
+    SelectorsLabelTokensType,
+    SelectorsSubLabelTokensType,
+} from '../SelectorsContent/SelectorsContent.types'
+import SelectorsLabel from '../SelectorsContent/SelectorsLabel'
+import Block from '../Primitives/Block/Block'
+import SelectorsSubLabel from '../SelectorsContent/SelectorsSubLabel'
+import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
+
+export const RadioV2 = ({
+    id,
+    label,
+    checked,
+    defaultChecked = false,
+    onChange,
+    disabled = false,
+    required = false,
+    error = false,
+    size = RadioV2Size.MEDIUM,
+    children,
+    subLabel,
+    slot,
+    name,
+    value,
+    maxLength,
+    ...rest
+}: RadioV2Props) => {
+    const radioTokens = useResponsiveTokens<RadioV2TokensType>('RADIOV2')
+    const generatedId = React.useId()
+    const uniqueId = id || generatedId
+    const shouldShake = useErrorShake(error)
+    const subtextId = subLabel ? `${uniqueId}-subLabel` : undefined
+    const customAriaDescribedBy = (rest as { 'aria-describedby'?: string })[
+        'aria-describedby'
+    ]
+    const ariaDescribedBy =
+        subtextId && customAriaDescribedBy
+            ? `${customAriaDescribedBy} ${subtextId}`
+            : subtextId || customAriaDescribedBy
+
+    console.log(checked)
+    return (
+        <Block
+            display="flex"
+            alignItems="flex-start"
+            gap={radioTokens.gap}
+            data-radio={label ?? 'radio'}
+        >
+            <StyledRadioV2Root
+                type="radio"
+                id={uniqueId}
+                name={name}
+                checked={checked}
+                defaultChecked={defaultChecked}
+                disabled={disabled}
+                required={required}
+                onChange={onChange}
+                size={size}
+                $isDisabled={disabled}
+                $isChecked={checked || false}
+                $error={error}
+                $tokens={radioTokens}
+                style={getRadioV2ErrorShakeStyle(shouldShake)}
+                {...rest}
+                aria-required={required ? true : undefined}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={ariaDescribedBy}
+            />
+            <RadioV2Content
+                uniqueId={uniqueId}
+                disabled={disabled}
+                error={error}
+                required={required}
+                size={size}
+                label={label}
+                subLabel={subLabel}
+                tokens={radioTokens}
+                labelMaxLength={maxLength?.label}
+                subLabelMaxLength={maxLength?.subLabel}
+                subLabelId={subtextId}
+                slot={slot}
+            />
+        </Block>
+    )
+}
+
+const RadioV2Content = ({
+    uniqueId,
+    disabled,
+    error,
+    required,
+    size,
+    label,
+    subLabel,
+    slot,
+    tokens,
+    labelMaxLength,
+    subLabelMaxLength,
+    subLabelId,
+}: RadioV2ContentProps) => {
+    const labelId = `${uniqueId}-label`
+    return (
+        <Block display="flex" flexDirection="column" gap={tokens.content.gap}>
+            <Block
+                display="flex"
+                alignItems="center"
+                gap={tokens.content.label.gap}
+            >
+                <SelectorsLabel
+                    id={labelId}
+                    uniqueId={uniqueId}
+                    disabled={disabled}
+                    error={error}
+                    required={required}
+                    size={size}
+                    label={label ?? ''}
+                    tokens={tokens as unknown as SelectorsLabelTokensType}
+                    maxLength={labelMaxLength}
+                    elementType="Radio-label"
+                />
+                {slot && (
+                    <Block
+                        data-element="slot-icon"
+                        contentCentered
+                        maxHeight={
+                            slot?.maxHeight ||
+                            tokens.content.label.slot.maxHeight[size]
+                        }
+                    >
+                        {addAccessibleAriaAttributes(slot.slot)}
+                    </Block>
+                )}
+            </Block>
+            <SelectorsSubLabel
+                id={subLabelId}
+                subLabel={subLabel ?? ''}
+                size={size}
+                disabled={disabled}
+                error={error}
+                tokens={tokens as unknown as SelectorsSubLabelTokensType}
+                maxLength={subLabelMaxLength}
+                elementType="Radio-description"
+            />
+        </Block>
+    )
+}
