@@ -8,9 +8,7 @@ import {
     AvatarV2Variant,
 } from './avatarV2.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { AvatarV2TokensType } from './avatarV2.tokens'
-import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { Skeleton } from '../Skeleton'
@@ -92,14 +90,12 @@ const StatusIndicator = ({
     position,
     size,
     shape,
-    breakpoint,
     tokens,
 }: {
     status: AvatarV2Status
     position: AvatarV2StatusPosition
     size: AvatarV2Size
     shape: AvatarV2Shape
-    breakpoint: 'sm' | 'lg'
     tokens: AvatarV2TokensType
 }) => {
     if (status === AvatarV2Status.NONE) {
@@ -110,7 +106,7 @@ const StatusIndicator = ({
         position,
         size,
         shape,
-        breakpoint
+        tokens
     )
 
     return (
@@ -181,8 +177,6 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
         const [imageError, setImageError] = useState(false)
 
         const tokens = useResponsiveTokens<AvatarV2TokensType>('AVATARV2')
-        const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
-        const breakpoint: 'sm' | 'lg' = breakPointLabel === 'sm' ? 'sm' : 'lg'
 
         const hasImage = src && !imageError
         const shouldShowSkeleton = skeleton?.show
@@ -274,7 +268,6 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
                             position={statusPosition}
                             size={size}
                             shape={shape}
-                            breakpoint={breakpoint}
                             tokens={tokens}
                         />
                     )}
@@ -366,11 +359,3 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
 AvatarV2.displayName = 'AvatarV2'
 
 export default AvatarV2
-
-export {
-    AvatarV2Size,
-    AvatarV2Shape,
-    AvatarV2Status,
-    AvatarV2StatusPosition,
-    AvatarV2Variant,
-}

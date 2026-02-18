@@ -5,6 +5,7 @@ import {
     AvatarV2Shape,
     AvatarV2Size,
 } from './avatarV2.types'
+import type { AvatarV2TokensType } from './avatarV2.tokens'
 
 export const DEFAULT_AVATAR_ALT = 'Avatar'
 export const DEFAULT_FALLBACK_COLOR = '#94A3B8'
@@ -33,69 +34,6 @@ const AVATAR_COLOR_PALETTE: readonly string[] = [
     '#00CEC9', // Cyan
     '#FF7675', // Coral
 ] as const
-
-const STATUS_POSITIONS = {
-    sm: {
-        [AvatarV2Shape.CIRCULAR]: {
-            [AvatarV2Size.SM]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.REGULAR]: {
-                top: '-3px',
-                right: '-3px',
-                bottom: '0px',
-            },
-            [AvatarV2Size.MD]: { top: '-3px', right: '-4px', bottom: '0px' },
-            [AvatarV2Size.LG]: { top: '0.2px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.XL]: { top: '1.167px', right: '-3px', bottom: '0px' },
-        },
-        [AvatarV2Shape.ROUNDED]: {
-            [AvatarV2Size.SM]: { top: '-2px', right: '-3px', bottom: '-1px' },
-            [AvatarV2Size.REGULAR]: {
-                top: '-2px',
-                right: '-3px',
-                bottom: '-1px',
-            },
-            [AvatarV2Size.MD]: {
-                top: '-3.667px',
-                right: '-5px',
-                bottom: '-3px',
-            },
-            [AvatarV2Size.LG]: {
-                top: '-3.111px',
-                right: '-8.222px',
-                bottom: '-3px',
-            },
-            [AvatarV2Size.XL]: {
-                top: '-3.111px',
-                right: '-10.222px',
-                bottom: '-4px',
-            },
-        },
-    },
-    lg: {
-        [AvatarV2Shape.CIRCULAR]: {
-            [AvatarV2Size.SM]: { top: '-2px', right: '-2px', bottom: '0px' },
-            [AvatarV2Size.REGULAR]: {
-                top: '-3px',
-                right: '-3px',
-                bottom: '0px',
-            },
-            [AvatarV2Size.MD]: { top: '-3px', right: '-3px', bottom: '0px' },
-            [AvatarV2Size.LG]: { top: '0px', right: '2px', bottom: '0px' },
-            [AvatarV2Size.XL]: { top: '8px', right: '3px', bottom: '0px' },
-        },
-        [AvatarV2Shape.ROUNDED]: {
-            [AvatarV2Size.SM]: { top: '-3px', right: '-3px', bottom: '-3px' },
-            [AvatarV2Size.REGULAR]: {
-                top: '-3px',
-                right: '-3px',
-                bottom: '-3px',
-            },
-            [AvatarV2Size.MD]: { top: '-3px', right: '-3px', bottom: '-3px' },
-            [AvatarV2Size.LG]: { top: '-5px', right: '-5px', bottom: '-5px' },
-            [AvatarV2Size.XL]: { top: '-8px', right: '-8px', bottom: '-8px' },
-        },
-    },
-}
 
 const KEYBOARD_KEYS = {
     ENTER: 'Enter',
@@ -214,22 +152,26 @@ export function getStatusPositionStyles(
     position: AvatarV2StatusPosition,
     size: AvatarV2Size,
     shape: AvatarV2Shape,
-    breakpoint: 'sm' | 'lg' = 'lg'
+    tokens: AvatarV2TokensType
 ): { top?: string; right?: string; bottom?: string; left?: string } {
     const basePosition =
-        STATUS_POSITIONS[breakpoint]?.[shape]?.[size] || DEFAULT_POSITION
+        tokens.container.status.position[shape]?.[size] || DEFAULT_POSITION
+
+    const top = basePosition.top?.toString()
+    const right = basePosition.right?.toString()
+    const bottom = basePosition.bottom?.toString()
 
     switch (position) {
         case AvatarV2StatusPosition.TOP_RIGHT:
-            return { top: basePosition.top, right: basePosition.right }
+            return { top, right }
         case AvatarV2StatusPosition.TOP_LEFT:
-            return { top: basePosition.top, left: basePosition.right }
+            return { top, left: right }
         case AvatarV2StatusPosition.BOTTOM_RIGHT:
-            return { bottom: basePosition.bottom, right: basePosition.right }
+            return { bottom, right }
         case AvatarV2StatusPosition.BOTTOM_LEFT:
-            return { bottom: basePosition.bottom, left: basePosition.right }
+            return { bottom, left: right }
         default:
-            return { top: basePosition.top, right: basePosition.right }
+            return { top, right }
     }
 }
 export function createKeyboardHandler(

@@ -107,6 +107,62 @@ export const getAvatarV2DarkTokens = (
                         [AvatarV2Status.BUSY]: foundationToken.colors.red[500],
                     },
                     boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.8)',
+                    position: {
+                        [AvatarV2Shape.CIRCULAR]: {
+                            [AvatarV2Size.SM]: {
+                                top: '-2px',
+                                right: '-2px',
+                                bottom: '0px',
+                            },
+                            [AvatarV2Size.REGULAR]: {
+                                top: '-3px',
+                                right: '-3px',
+                                bottom: '0px',
+                            },
+                            [AvatarV2Size.MD]: {
+                                top: '-3px',
+                                right: '-4px',
+                                bottom: '0px',
+                            },
+                            [AvatarV2Size.LG]: {
+                                top: '0.2px',
+                                right: '-3px',
+                                bottom: '0px',
+                            },
+                            [AvatarV2Size.XL]: {
+                                top: '1.167px',
+                                right: '-3px',
+                                bottom: '0px',
+                            },
+                        },
+                        [AvatarV2Shape.ROUNDED]: {
+                            [AvatarV2Size.SM]: {
+                                top: '-2px',
+                                right: '-3px',
+                                bottom: '-1px',
+                            },
+                            [AvatarV2Size.REGULAR]: {
+                                top: '-2px',
+                                right: '-3px',
+                                bottom: '-1px',
+                            },
+                            [AvatarV2Size.MD]: {
+                                top: '-3.667px',
+                                right: '-5px',
+                                bottom: '-3px',
+                            },
+                            [AvatarV2Size.LG]: {
+                                top: '-3.111px',
+                                right: '-8.222px',
+                                bottom: '-3px',
+                            },
+                            [AvatarV2Size.XL]: {
+                                top: '-3.111px',
+                                right: '-10.222px',
+                                bottom: '-4px',
+                            },
+                        },
+                    },
                 },
             },
             slot: {
@@ -210,6 +266,62 @@ export const getAvatarV2DarkTokens = (
                         [AvatarV2Status.BUSY]: foundationToken.colors.red[500],
                     },
                     boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.8)',
+                    position: {
+                        [AvatarV2Shape.CIRCULAR]: {
+                            [AvatarV2Size.SM]: {
+                                top: '-2px',
+                                right: '-2px',
+                                bottom: '0px',
+                            },
+                            [AvatarV2Size.REGULAR]: {
+                                top: '-3px',
+                                right: '-3px',
+                                bottom: '0px',
+                            },
+                            [AvatarV2Size.MD]: {
+                                top: '-3px',
+                                right: '-3px',
+                                bottom: '0px',
+                            },
+                            [AvatarV2Size.LG]: {
+                                top: '0px',
+                                right: '2px',
+                                bottom: '0px',
+                            },
+                            [AvatarV2Size.XL]: {
+                                top: '8px',
+                                right: '3px',
+                                bottom: '0px',
+                            },
+                        },
+                        [AvatarV2Shape.ROUNDED]: {
+                            [AvatarV2Size.SM]: {
+                                top: '-3px',
+                                right: '-3px',
+                                bottom: '-3px',
+                            },
+                            [AvatarV2Size.REGULAR]: {
+                                top: '-3px',
+                                right: '-3px',
+                                bottom: '-3px',
+                            },
+                            [AvatarV2Size.MD]: {
+                                top: '-3px',
+                                right: '-3px',
+                                bottom: '-3px',
+                            },
+                            [AvatarV2Size.LG]: {
+                                top: '-5px',
+                                right: '-5px',
+                                bottom: '-5px',
+                            },
+                            [AvatarV2Size.XL]: {
+                                top: '-8px',
+                                right: '-8px',
+                                bottom: '-8px',
+                            },
+                        },
+                    },
                 },
             },
             slot: {

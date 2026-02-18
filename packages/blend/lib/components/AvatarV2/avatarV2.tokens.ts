@@ -51,6 +51,16 @@ export type AvatarV2TokensType = {
                 [key in AvatarV2Status]: CSSObject['backgroundColor']
             }
             boxShadow: CSSObject['boxShadow']
+            position: {
+                [key in AvatarV2Shape]: {
+                    [key in AvatarV2Size]: {
+                        top?: CSSObject['top']
+                        right?: CSSObject['right']
+                        bottom?: CSSObject['bottom']
+                        left?: CSSObject['left']
+                    }
+                }
+            }
         }
     }
 

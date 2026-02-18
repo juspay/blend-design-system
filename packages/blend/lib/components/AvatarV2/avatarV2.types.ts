@@ -64,7 +64,10 @@ export type AvatarV2Props = {
     disabled?: boolean
     onImageError?: (error: Error) => void
     onImageLoad?: () => void
-} & Omit<HTMLAttributes<HTMLDivElement>, 'children'> &
+} & Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    'children' | 'className' | 'style'
+> &
     AvatarV2Dimensions
 
 export type AvatarV2ImageProps = {
