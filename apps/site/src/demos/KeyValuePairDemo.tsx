@@ -20,7 +20,7 @@ const KeyValuePairDemo = () => {
         KeyValuePairSize.MEDIUM
     )
     const [playgroundState, setPlaygroundState] =
-        useState<KeyValuePairStateType>(KeyValuePairStateType.horizontal)
+        useState<KeyValuePairStateType>(KeyValuePairStateType.vertical)
     const [showKeySlot, setShowKeySlot] = useState(false)
     const [showValueLeftSlot, setShowValueLeftSlot] = useState(false)
     const [showValueRightSlot, setShowValueRightSlot] = useState(false)

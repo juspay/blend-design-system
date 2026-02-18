@@ -25,7 +25,7 @@ import useScrollLock from '../../hooks/useScrollLock'
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
     boxShadow: FOUNDATION_THEME.shadows.sm,
-    zIndex: 99,
+    zIndex: 101,
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarWidth: 'none',
@@ -38,7 +38,7 @@ export const contentBaseStyle: CSSObject = {
 const Content = styled(RadixMenu.Content)`
     background-color: white;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
-    z-index: 99;
+    z-index: 101;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -319,7 +319,7 @@ const Menu = ({
                                 top={0}
                                 left={0}
                                 right={0}
-                                zIndex={100}
+                                zIndex={101}
                                 backgroundColor="white"
                                 padding="0px"
                                 // paddingBottom="0px"

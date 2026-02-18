@@ -94,7 +94,7 @@ export const getLayoutStyles = (
 
     return {
         display: 'flex',
-        flexDirection: isVertical ? 'row' : 'column',
+        flexDirection: isVertical ? 'column' : 'row',
         justifyContent: isVertical ? 'flex-start' : 'space-between',
         gap: isVertical
             ? keyValuePairTokens.gap.vertical

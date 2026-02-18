@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as RadixAccordion from '@radix-ui/react-accordion'
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { forwardRef } from 'react'
+import { forwardRef, useCallback, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import type { AccordionItemProps } from './types'
 import { AccordionType, AccordionChevronPosition } from './types'
@@ -211,6 +211,7 @@ const StyledSeparator = styled.hr<{
     backgroundColor:
         props.$accordionToken.separator.color[props.$accordionType],
 }))
+
 const AccordionItem = forwardRef<
     HTMLDivElement,
     AccordionItemProps & {
@@ -231,10 +232,11 @@ const AccordionItem = forwardRef<
             leftSlot,
             rightSlot,
             subtextSlot,
+            triggerSlot,
+            triggerSlotWidth,
             isDisabled = false,
             chevronPosition = AccordionChevronPosition.RIGHT,
             accordionType = AccordionType.NO_BORDER,
-            // Position props
             isFirst,
             isLast,
             isIntermediate,
@@ -248,16 +250,96 @@ const AccordionItem = forwardRef<
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
 
-        // Determine if this item is expanded
-        const isExpanded = Array.isArray(currentValue)
-            ? currentValue.includes(value)
-            : currentValue === value
+        const triggerRef = useRef<HTMLButtonElement>(null)
+
+        const isExpanded = useMemo(() => {
+            if (currentValue === undefined) return false
+            return Array.isArray(currentValue)
+                ? currentValue.includes(value)
+                : currentValue === value
+        }, [currentValue, value])
+        const toggle = useCallback(() => {
+            if (!isDisabled) {
+                triggerRef.current?.click()
+            }
+        }, [isDisabled])
+
+        const slotWidth = useMemo(() => {
+            if (triggerSlotWidth !== undefined) {
+                return typeof triggerSlotWidth === 'number'
+                    ? `${triggerSlotWidth}px`
+                    : triggerSlotWidth
+            }
+            return (
+                accordionToken.trigger.slot?.maxWidth ||
+                FOUNDATION_THEME.unit[24]
+            )
+        }, [triggerSlotWidth, accordionToken.trigger.slot?.maxWidth])
+
+        const hasInteractiveSlot = useMemo(() => {
+            if (!triggerSlot) return false
+            if (typeof triggerSlot === 'function') return true
+            if (!React.isValidElement(triggerSlot)) return false
+            const p = triggerSlot.props as Record<string, unknown>
+            return 'onChange' in p || 'onCheckedChange' in p
+        }, [triggerSlot])
+
+        const renderedTriggerSlot = useMemo(() => {
+            if (!triggerSlot) return null
+
+            if (typeof triggerSlot === 'function') {
+                return triggerSlot({ isExpanded, toggle, value, isDisabled })
+            }
+
+            if (React.isValidElement(triggerSlot)) {
+                const elementProps = triggerSlot.props as Record<
+                    string,
+                    unknown
+                >
+                const isInteractive =
+                    'onChange' in elementProps ||
+                    'onCheckedChange' in elementProps
+
+                if (!isInteractive) return triggerSlot
+
+                const enhanced: Record<string, unknown> = {
+                    ...elementProps,
+                    checked: elementProps.checked ?? isExpanded,
+                    disabled: elementProps.disabled ?? isDisabled,
+                }
+
+                if ('onChange' in elementProps) {
+                    const orig = elementProps.onChange as
+                        | ((...a: unknown[]) => void)
+                        | undefined
+                    enhanced.onChange = (...args: unknown[]) => {
+                        orig?.(...args)
+                        toggle()
+                    }
+                }
+                if ('onCheckedChange' in elementProps) {
+                    const orig = elementProps.onCheckedChange as
+                        | ((...a: unknown[]) => void)
+                        | undefined
+                    enhanced.onCheckedChange = (...args: unknown[]) => {
+                        orig?.(...args)
+                        toggle()
+                    }
+                }
+
+                return React.cloneElement(
+                    triggerSlot as React.ReactElement,
+                    enhanced
+                )
+            }
+
+            return triggerSlot
+        }, [triggerSlot, isExpanded, toggle, value, isDisabled])
 
         const getChevronIcon = () => {
             const iconColor = isDisabled
                 ? FOUNDATION_THEME.colors.gray[300]
                 : FOUNDATION_THEME.colors.gray[500]
-            const iconSize = FOUNDATION_THEME.unit[16]
 
             return (
                 <ChevronAnimation
@@ -279,22 +361,38 @@ const AccordionItem = forwardRef<
                 >
                     {chevronPosition === AccordionChevronPosition.RIGHT ? (
                         <ChevronDown
-                            style={{
-                                width: iconSize,
-                                height: iconSize,
-                            }}
+                            style={{ width: slotWidth, height: slotWidth }}
                         />
                     ) : (
                         <ChevronRight
-                            style={{
-                                width: iconSize,
-                                height: iconSize,
-                            }}
+                            style={{ width: slotWidth, height: slotWidth }}
                         />
                     )}
                 </ChevronAnimation>
             )
         }
+
+        const renderChevronSlot = () => (
+            <Block
+                data-element="chevron-icon"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                flexShrink={0}
+                aria-hidden="true"
+                width={slotWidth}
+                maxHeight={slotWidth}
+                maxWidth={slotWidth}
+                style={{ overflow: 'hidden' }}
+                {...(hasInteractiveSlot && {
+                    onClick: (e: React.MouseEvent) => e.stopPropagation(),
+                    onPointerDown: (e: React.PointerEvent) =>
+                        e.stopPropagation(),
+                })}
+            >
+                {renderedTriggerSlot ?? getChevronIcon()}
+            </Block>
+        )
 
         return (
             <StyledAccordionItem
@@ -313,6 +411,7 @@ const AccordionItem = forwardRef<
             >
                 <StyledAccordionHeader>
                     <StyledAccordionTrigger
+                        ref={triggerRef}
                         $accordionType={accordionType}
                         $isDisabled={isDisabled}
                         $accordionToken={accordionToken}
@@ -333,18 +432,8 @@ const AccordionItem = forwardRef<
                                 gap={FOUNDATION_THEME.unit[8]}
                             >
                                 {chevronPosition ===
-                                    AccordionChevronPosition.LEFT && (
-                                    <Block
-                                        data-element="chevron-icon"
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        flexShrink={0}
-                                        aria-hidden="true"
-                                    >
-                                        {getChevronIcon()}
-                                    </Block>
-                                )}
+                                    AccordionChevronPosition.LEFT &&
+                                    renderChevronSlot()}
 
                                 {leftSlot &&
                                     chevronPosition !==
@@ -485,17 +574,15 @@ const AccordionItem = forwardRef<
                                 {chevronPosition ===
                                     AccordionChevronPosition.RIGHT && (
                                     <Block
-                                        data-element="chevron-icon"
                                         position="absolute"
                                         right={0}
                                         top={0}
+                                        height="100%"
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="center"
-                                        height="100%"
-                                        aria-hidden="true"
                                     >
-                                        {getChevronIcon()}
+                                        {renderChevronSlot()}
                                     </Block>
                                 )}
                             </Block>

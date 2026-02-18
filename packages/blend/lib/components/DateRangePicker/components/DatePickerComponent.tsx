@@ -80,13 +80,13 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                             onSelect={createSelectionHandler(
                                 tabType,
                                 'year',
-                                selectedRange,
                                 dateFormat,
                                 handleStartTimeChange,
                                 handleEndTimeChange,
                                 setSelectedRange,
                                 setStartDate,
-                                setEndDate
+                                setEndDate,
+                                selectedRange
                             )}
                             columnId={`${tabType}-year`}
                             isDisabled={isDisabled}
@@ -125,13 +125,13 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                             onSelect={createSelectionHandler(
                                 tabType,
                                 'month',
-                                selectedRange,
                                 dateFormat,
                                 handleStartTimeChange,
                                 handleEndTimeChange,
                                 setSelectedRange,
                                 setStartDate,
-                                setEndDate
+                                setEndDate,
+                                selectedRange
                             )}
                             columnId={`${tabType}-month`}
                             isDisabled={isDisabled}
@@ -170,13 +170,13 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                             onSelect={createSelectionHandler(
                                 tabType,
                                 'date',
-                                selectedRange,
                                 dateFormat,
                                 handleStartTimeChange,
                                 handleEndTimeChange,
                                 setSelectedRange,
                                 setStartDate,
-                                setEndDate
+                                setEndDate,
+                                selectedRange
                             )}
                             columnId={`${tabType}-date`}
                             isDisabled={isDisabled}
@@ -215,13 +215,13 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                             onSelect={createSelectionHandler(
                                 tabType,
                                 'time',
-                                selectedRange,
                                 dateFormat,
                                 handleStartTimeChange,
                                 handleEndTimeChange,
                                 setSelectedRange,
                                 setStartDate,
-                                setEndDate
+                                setEndDate,
+                                selectedRange
                             )}
                             isTimeColumn={true}
                             columnId={`${tabType}-time`}

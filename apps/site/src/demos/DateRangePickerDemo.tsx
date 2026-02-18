@@ -125,7 +125,7 @@ const DateRangePickerDemo = () => {
     })
 
     // Example states for different sections
-    const [basicRange, setBasicRange] = useState<DateRange>({
+    const [basicRange, setBasicRange] = useState<DateRange | undefined>({
         startDate: new Date(),
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     })
@@ -179,15 +179,6 @@ const DateRangePickerDemo = () => {
                 0,
                 0
             ),
-            endDate: new Date(
-                today.getFullYear(),
-                today.getMonth(),
-                today.getDate(),
-                23,
-                59,
-                59,
-                999
-            ),
         }
     })
 
@@ -216,9 +207,11 @@ const DateRangePickerDemo = () => {
     const handlePlaygroundRangeChange = (range: DateRange) => {
         console.log('Playground Range Changed:', {
             startDate: range.startDate.toISOString(),
-            endDate: range.endDate.toISOString(),
+            endDate: range.endDate ? range.endDate.toISOString() : undefined,
             formattedStart: range.startDate.toLocaleString(),
-            formattedEnd: range.endDate.toLocaleString(),
+            formattedEnd: range.endDate
+                ? range.endDate.toLocaleString()
+                : undefined,
         })
         setPlaygroundRange(range)
     }
@@ -243,9 +236,11 @@ const DateRangePickerDemo = () => {
     const handleBasicRangeChange = (range: DateRange) => {
         console.log('Basic Range Changed:', {
             startDate: range.startDate.toISOString(),
-            endDate: range.endDate.toISOString(),
+            endDate: range.endDate ? range.endDate.toISOString() : undefined,
             formattedStart: range.startDate.toLocaleString(),
-            formattedEnd: range.endDate.toLocaleString(),
+            formattedEnd: range.endDate
+                ? range.endDate.toLocaleString()
+                : undefined,
         })
         setBasicRange(range)
     }
@@ -253,9 +248,11 @@ const DateRangePickerDemo = () => {
     const handleFormatRangeChange = (range: DateRange) => {
         console.log('Format Range Changed:', {
             startDate: range.startDate.toISOString(),
-            endDate: range.endDate.toISOString(),
+            endDate: range.endDate ? range.endDate.toISOString() : undefined,
             formattedStart: range.startDate.toLocaleString(),
-            formattedEnd: range.endDate.toLocaleString(),
+            formattedEnd: range.endDate
+                ? range.endDate.toLocaleString()
+                : undefined,
         })
         setFormatRange(range)
     }
@@ -263,9 +260,11 @@ const DateRangePickerDemo = () => {
     const handleCustomRangeChange = (range: DateRange) => {
         console.log('Custom Range Changed:', {
             startDate: range.startDate.toISOString(),
-            endDate: range.endDate.toISOString(),
+            endDate: range.endDate ? range.endDate.toISOString() : undefined,
             formattedStart: range.startDate.toLocaleString(),
-            formattedEnd: range.endDate.toLocaleString(),
+            formattedEnd: range.endDate
+                ? range.endDate.toLocaleString()
+                : undefined,
         })
         setCustomRange(range)
     }
@@ -273,9 +272,11 @@ const DateRangePickerDemo = () => {
     const handleYesterdayRangeChange = (range: DateRange) => {
         console.log('Yesterday Range Changed:', {
             startDate: range.startDate.toISOString(),
-            endDate: range.endDate.toISOString(),
+            endDate: range.endDate ? range.endDate.toISOString() : undefined,
             formattedStart: range.startDate.toLocaleString(),
-            formattedEnd: range.endDate.toLocaleString(),
+            formattedEnd: range.endDate
+                ? range.endDate.toLocaleString()
+                : undefined,
         })
         setYesterdayRange(range)
     }
@@ -283,15 +284,18 @@ const DateRangePickerDemo = () => {
     const handleSingleDateRangeChange = (range: DateRange) => {
         console.log('Single Date Range Changed:', {
             startDate: range.startDate.toISOString(),
-            endDate: range.endDate.toISOString(),
+            endDate: range.endDate ? range.endDate.toISOString() : undefined,
             formattedStart: range.startDate.toLocaleString(),
-            formattedEnd: range.endDate.toLocaleString(),
+            formattedEnd: range.endDate
+                ? range.endDate.toLocaleString()
+                : undefined,
             isSingleDay:
+                range.endDate &&
                 range.startDate.toDateString() === range.endDate.toDateString(),
             isFullDay:
                 range.startDate.getHours() === 0 &&
                 range.startDate.getMinutes() === 0 &&
-                range.endDate.getHours() === 23 &&
+                range.endDate &&
                 range.endDate.getMinutes() === 59,
         })
         setSingleDateRange(range)
@@ -795,19 +799,23 @@ const DateRangePickerDemo = () => {
                                     <strong>Start:</strong>{' '}
                                     {playgroundRange.startDate.toLocaleString()}
                                 </div>
-                                <div>
-                                    <strong>End:</strong>{' '}
-                                    {playgroundRange.endDate.toLocaleString()}
-                                </div>
-                                <div>
-                                    <strong>Duration:</strong>{' '}
-                                    {Math.ceil(
-                                        (playgroundRange.endDate.getTime() -
-                                            playgroundRange.startDate.getTime()) /
-                                            (1000 * 60 * 60 * 24)
-                                    )}{' '}
-                                    days
-                                </div>
+                                {playgroundRange.endDate && (
+                                    <>
+                                        <div>
+                                            <strong>End:</strong>{' '}
+                                            {playgroundRange.endDate.toLocaleString()}
+                                        </div>
+                                        <div>
+                                            <strong>Duration:</strong>{' '}
+                                            {Math.ceil(
+                                                (playgroundRange.endDate.getTime() -
+                                                    playgroundRange.startDate.getTime()) /
+                                                    (1000 * 60 * 60 * 24)
+                                            )}{' '}
+                                            days
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -992,13 +1000,33 @@ const DateRangePickerDemo = () => {
                             Single Date Mode
                         </h3>
                         <p className="text-sm text-gray-600 mb-4 flex-grow">
-                            Allows selection of single dates or ranges
+                            Allows selection of single dates or ranges using
+                            allowSingleDateSelection
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={singleDateRange}
                                 onChange={handleSingleDateRangeChange}
                                 allowSingleDateSelection={true}
+                                showPresets={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* isSingleDatePicker Mode */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            isSingleDatePicker Mode
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Strict single date picker - only allows selecting a
+                            single date, no ranges
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={singleDateRange}
+                                onChange={handleSingleDateRangeChange}
+                                isSingleDatePicker={true}
                                 showPresets={true}
                             />
                         </div>
@@ -1786,42 +1814,54 @@ const DateRangePickerDemo = () => {
                                     Range Comparison Analysis
                                 </h4>
                                 <div className="text-sm text-blue-600 space-y-1">
-                                    <div>
-                                        <strong>Main Period Duration:</strong>{' '}
-                                        {Math.ceil(
-                                            (customRange.endDate.getTime() -
-                                                customRange.startDate.getTime()) /
-                                                (1000 * 60 * 60 * 24)
-                                        )}{' '}
-                                        days
-                                    </div>
-                                    <div>
-                                        <strong>
-                                            Compare Period Duration:
-                                        </strong>{' '}
-                                        {Math.ceil(
-                                            (formatRange.endDate.getTime() -
-                                                formatRange.startDate.getTime()) /
-                                                (1000 * 60 * 60 * 24)
-                                        )}{' '}
-                                        days
-                                    </div>
-                                    <div>
-                                        <strong>Same Day Range (Main):</strong>{' '}
-                                        {customRange.startDate.toDateString() ===
-                                        customRange.endDate.toDateString()
-                                            ? 'Yes'
-                                            : 'No'}
-                                    </div>
-                                    <div>
-                                        <strong>
-                                            Same Day Range (Compare):
-                                        </strong>{' '}
-                                        {formatRange.startDate.toDateString() ===
-                                        formatRange.endDate.toDateString()
-                                            ? 'Yes'
-                                            : 'No'}
-                                    </div>
+                                    {customRange.endDate && (
+                                        <div>
+                                            <strong>
+                                                Main Period Duration:
+                                            </strong>{' '}
+                                            {Math.ceil(
+                                                (customRange.endDate.getTime() -
+                                                    customRange.startDate.getTime()) /
+                                                    (1000 * 60 * 60 * 24)
+                                            )}{' '}
+                                            days
+                                        </div>
+                                    )}
+                                    {formatRange.endDate && (
+                                        <div>
+                                            <strong>
+                                                Compare Period Duration:
+                                            </strong>{' '}
+                                            {Math.ceil(
+                                                (formatRange.endDate.getTime() -
+                                                    formatRange.startDate.getTime()) /
+                                                    (1000 * 60 * 60 * 24)
+                                            )}{' '}
+                                            days
+                                        </div>
+                                    )}
+                                    {customRange.endDate && (
+                                        <div>
+                                            <strong>
+                                                Same Day Range (Main):
+                                            </strong>{' '}
+                                            {customRange.startDate.toDateString() ===
+                                            customRange.endDate.toDateString()
+                                                ? 'Yes'
+                                                : 'No'}
+                                        </div>
+                                    )}
+                                    {formatRange.endDate && (
+                                        <div>
+                                            <strong>
+                                                Same Day Range (Compare):
+                                            </strong>{' '}
+                                            {formatRange.startDate.toDateString() ===
+                                            formatRange.endDate.toDateString()
+                                                ? 'Yes'
+                                                : 'No'}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -3880,10 +3920,12 @@ const DateRangePickerDemo = () => {
                                         <strong>Start:</strong>{' '}
                                         {dateRange36.startDate.toLocaleString()}
                                     </p>
-                                    <p>
-                                        <strong>End:</strong>{' '}
-                                        {dateRange36.endDate.toLocaleString()}
-                                    </p>
+                                    {dateRange36.endDate && (
+                                        <p>
+                                            <strong>End:</strong>{' '}
+                                            {dateRange36.endDate.toLocaleString()}
+                                        </p>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -3908,10 +3950,12 @@ const DateRangePickerDemo = () => {
                                         <strong>Start:</strong>{' '}
                                         {dateRange37.startDate.toLocaleString()}
                                     </p>
-                                    <p>
-                                        <strong>End:</strong>{' '}
-                                        {dateRange37.endDate.toLocaleString()}
-                                    </p>
+                                    {dateRange37.endDate && (
+                                        <p>
+                                            <strong>End:</strong>{' '}
+                                            {dateRange37.endDate.toLocaleString()}
+                                        </p>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -3936,10 +3980,12 @@ const DateRangePickerDemo = () => {
                                         <strong>Start:</strong>{' '}
                                         {dateRange38.startDate.toLocaleString()}
                                     </p>
-                                    <p>
-                                        <strong>End:</strong>{' '}
-                                        {dateRange38.endDate.toLocaleString()}
-                                    </p>
+                                    {dateRange38.endDate && (
+                                        <p>
+                                            <strong>End:</strong>{' '}
+                                            {dateRange38.endDate.toLocaleString()}
+                                        </p>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -3964,10 +4010,12 @@ const DateRangePickerDemo = () => {
                                         <strong>Start:</strong>{' '}
                                         {dateRange39.startDate.toLocaleString()}
                                     </p>
-                                    <p>
-                                        <strong>End:</strong>{' '}
-                                        {dateRange39.endDate.toLocaleString()}
-                                    </p>
+                                    {dateRange39.endDate && (
+                                        <p>
+                                            <strong>End:</strong>{' '}
+                                            {dateRange39.endDate.toLocaleString()}
+                                        </p>
+                                    )}
                                 </div>
                             )}
                         </div>

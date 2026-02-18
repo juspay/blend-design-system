@@ -51,6 +51,7 @@ import { getAccordionV2Tokens } from '../components/AccordionV2'
 import { getSnackbarV2Tokens } from '../components/SnackbarV2'
 import { getSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
 import { getAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
+import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -157,6 +158,9 @@ const initTokens = (
         AVATARV2:
             componentTokens.AVATARV2 ??
             getAvatarV2Tokens(foundationTokens, theme),
+        TEXT_INPUTV2:
+            componentTokens.TEXT_INPUTV2 ??
+            getTextInputV2Tokens(foundationTokens, theme),
     }
 }
 
