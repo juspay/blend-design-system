@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Copy, Check } from 'lucide-react'
+import { Check } from 'lucide-react'
 import Image from 'next/image'
 import { CopyIcon } from '../icons'
 
