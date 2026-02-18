@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { ExternalLink, Copy, Check, X, FileCode } from 'lucide-react'
-import { motion } from 'motion/react'
 import DitherCanvas from '../effects/DitherCanvas'
 import CollaborativeCursor from '../effects/CollaborativeCursor'
 import { FigmaIconSmall, DesignerIcon, ArrowRightIcon } from '../icons'

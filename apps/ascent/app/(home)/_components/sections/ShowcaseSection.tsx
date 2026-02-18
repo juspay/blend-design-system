@@ -10,15 +10,19 @@ import { CodeCard } from '../icons/CodeCard'
 import { FigmaCard } from '../icons/FigmaCard'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
+import Link from 'next/link'
+import { EXTERNAL_LINKS } from '../constants/links'
 
 const CARDS = [
     {
         id: 'documentation',
         Component: DocumentationCard,
         rotate: -18,
-        baseOffset: -120, // 👈 new
+        baseOffset: -120,
         finalOffset: -170,
         zIndex: 21,
+        href: '/docs',
+        type: 'internal',
     },
     {
         id: 'storybook',
@@ -27,6 +31,8 @@ const CARDS = [
         baseOffset: -40,
         finalOffset: -60,
         zIndex: 22,
+        href: EXTERNAL_LINKS.storybook,
+        type: 'external',
     },
     {
         id: 'code',
@@ -35,6 +41,8 @@ const CARDS = [
         baseOffset: 40,
         finalOffset: 60,
         zIndex: 23,
+        href: EXTERNAL_LINKS.github,
+        type: 'external',
     },
     {
         id: 'figma',
@@ -43,6 +51,8 @@ const CARDS = [
         baseOffset: 120,
         finalOffset: 170,
         zIndex: 24,
+        href: EXTERNAL_LINKS.figma,
+        type: 'external',
     },
 ]
 
@@ -130,9 +140,29 @@ export default function ShowcaseSection() {
                                     zIndex: card.zIndex,
                                 }}
                             >
-                                <div className="w-full h-full transition-transform duration-300 ease-out cursor-pointer hover:-translate-y-5">
-                                    <CardSvg width={CARD_W} height={CARD_H} />
-                                </div>
+                                {card.type === 'internal' ? (
+                                    <Link
+                                        href={card.href}
+                                        className="block w-full h-full transition-all duration-300 ease-out cursor-pointer hover:-translate-y-5 active:translate-y-0 active:scale-95"
+                                    >
+                                        <CardSvg
+                                            width={CARD_W}
+                                            height={CARD_H}
+                                        />
+                                    </Link>
+                                ) : (
+                                    <a
+                                        href={card.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block w-full h-full transition-all duration-300 ease-out cursor-pointer hover:-translate-y-5 active:translate-y-0 active:scale-95"
+                                    >
+                                        <CardSvg
+                                            width={CARD_W}
+                                            height={CARD_H}
+                                        />
+                                    </a>
+                                )}
                             </div>
                         )
                     })}

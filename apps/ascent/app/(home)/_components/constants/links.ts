@@ -4,7 +4,7 @@
 export const EXTERNAL_LINKS = {
     github: 'https://github.com/juspay/blend-design-system',
     figma: 'https://www.figma.com/@juspay',
-    storybook: 'https://juspay.design/storybook',
+    storybook: 'https://blend.juspay.design/storybook',
     privacyPolicy: 'https://juspay.io/privacy-policy',
     termsOfService: 'https://juspay.io/terms',
     // GitHub video: 'https://github.com/user-attachments/assets/VIDEO_ID'

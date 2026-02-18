@@ -67,16 +67,19 @@ export default function DitherCanvas({ className = '' }: DitherCanvasProps) {
 
             ctx.clearRect(0, 0, w, h)
 
-            for (let x = 0; x < w; x += spacing) {
-                for (let y = 0; y < h; y += spacing) {
-                    const d = Math.hypot(mouse.x - x, mouse.y - y)
+            for (let x = spacing / 2; x < w; x += spacing) {
+                for (let y = spacing / 2; y < h; y += spacing) {
+                    const dx = mouse.x - x
+                    const dy = mouse.y - y
+                    const d = Math.sqrt(dx * dx + dy * dy)
 
-                    const intensity = Math.max(0, 1 - d / 180)
+                    const spread = 140
+                    const intensity = Math.max(0, 1 - d / spread)
 
-                    const alpha = 0.15 + intensity * 0.6
-                    const r = 0.5 + Math.pow(intensity, 1.8) * 0.5
+                    const alpha = 0.25 + intensity * 0.55
+                    const r = 0.9 + Math.pow(intensity, 1.5) * 0.9
 
-                    ctx.fillStyle = `rgba(30, 30, 30, ${alpha})`
+                    ctx.fillStyle = `rgba(50, 50, 50, ${alpha})`
 
                     ctx.beginPath()
                     ctx.arc(x, y, r, 0, Math.PI * 2)

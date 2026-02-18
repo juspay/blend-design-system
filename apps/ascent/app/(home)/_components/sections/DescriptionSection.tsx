@@ -1,6 +1,6 @@
 'use client'
 
-import DitherCanvas from '../effects/DitherCanvas'
+import { Ellipse } from '../icons/ellipse'
 
 /** Small blue dot at border intersections for editorial grid aesthetic */
 function BlueDot({ className = '' }: { className?: string }) {
@@ -16,11 +16,11 @@ export default function DescriptionSection() {
     return (
         <div>
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr]">
-                <div className="relative lg:border-r border-gray-200 overflow-hidden bg-white">
-                    <DitherCanvas />
+                <div className="relative overflow-hidden bg-white max-h-[400px]">
+                    <Ellipse />
                 </div>
 
-                <div className="relative p-6 lg:p-10">
+                <div className="relative p-6 lg:p-10 border-l border-gray-200">
                     <BlueDot className="-top-[3px] -left-[3px]" />
                     <BlueDot className="-top-[3px] -right-[3px]" />
                     <BlueDot className="-bottom-[3px] -left-[3px]" />
