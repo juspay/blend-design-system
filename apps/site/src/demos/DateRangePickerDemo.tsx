@@ -179,15 +179,6 @@ const DateRangePickerDemo = () => {
                 0,
                 0
             ),
-            endDate: new Date(
-                today.getFullYear(),
-                today.getMonth(),
-                today.getDate(),
-                23,
-                59,
-                59,
-                999
-            ),
         }
     })
 
@@ -1009,13 +1000,33 @@ const DateRangePickerDemo = () => {
                             Single Date Mode
                         </h3>
                         <p className="text-sm text-gray-600 mb-4 flex-grow">
-                            Allows selection of single dates or ranges
+                            Allows selection of single dates or ranges using
+                            allowSingleDateSelection
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
                                 value={singleDateRange}
                                 onChange={handleSingleDateRangeChange}
                                 allowSingleDateSelection={true}
+                                showPresets={true}
+                            />
+                        </div>
+                    </div>
+
+                    {/* isSingleDatePicker Mode */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            isSingleDatePicker Mode
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Strict single date picker - only allows selecting a
+                            single date, no ranges
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={singleDateRange}
+                                onChange={handleSingleDateRangeChange}
+                                isSingleDatePicker={true}
                                 showPresets={true}
                             />
                         </div>

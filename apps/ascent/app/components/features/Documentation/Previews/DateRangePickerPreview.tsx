@@ -44,6 +44,11 @@ function MyComponent() {
         }
 
         const startDate = formatDate(range.startDate)
+
+        if (!range.endDate) {
+            return `Selected: ${startDate}`
+        }
+
         const endDate = formatDate(range.endDate)
 
         if (range.startDate.getTime() === range.endDate.getTime()) {

@@ -196,7 +196,12 @@ export const formatDate = (
  * @param format The format string
  * @returns The parsed date or null if invalid
  */
-export const parseDate = (dateString: string, format: string): Date | null => {
+export const parseDate = (
+    dateString: string,
+    format: string,
+    hour: number,
+    minute: number
+): Date | null => {
     try {
         const formatParts = format.split(/[^a-zA-Z]/)
         const dateParts = dateString.split(/[^0-9]/)
@@ -206,18 +211,18 @@ export const parseDate = (dateString: string, format: string): Date | null => {
         let day = 1,
             month = 1,
             year = new Date().getFullYear(),
-            hours = 0
-        const minutes = 0
+            hours = hour,
+            minutes = minute
 
         formatParts.forEach((part, index) => {
             const value = parseInt(dateParts[index])
             if (isNaN(value)) return null
 
-            switch (part.toLowerCase()) {
+            switch (part) {
                 case 'dd':
                     day = value
                     break
-                case 'mm':
+                case 'MM':
                     month = value
                     break
                 case 'yyyy':
@@ -226,12 +231,16 @@ export const parseDate = (dateString: string, format: string): Date | null => {
                 case 'hh':
                     hours = value
                     break
+                case 'mm':
+                    minutes = value
+                    break
                 default:
                     break
             }
         })
 
         const date = new Date(year, month - 1, day, hours, minutes)
+        // createDateInTimezone(timezone, year, month - 1, day, hours, minutes)
         return isValidDate(date) ? date : null
     } catch {
         return null
@@ -1611,7 +1620,8 @@ export const validateDateInput = (
     value: string,
     format: string,
     disableFutureDates: boolean = false,
-    disablePastDates: boolean = false
+    disablePastDates: boolean = false,
+    timezone?: string
 ): DateValidationResult => {
     if (!value || value.length === 0) {
         return { isValid: true, error: 'none' }
@@ -1658,21 +1668,9 @@ export const validateDateInput = (
         }
 
         const date = new Date(year, month - 1, day)
-        const isValidCalendarDate =
-            date.getFullYear() === year &&
-            date.getMonth() === month - 1 &&
-            date.getDate() === day
-
-        if (!isValidCalendarDate) {
-            return {
-                isValid: false,
-                error: 'invalid-date',
-                message: 'Invalid date',
-            }
-        }
 
         // Check future/past date restrictions
-        const today = new Date()
+        const today = getTodayInTimezone(timezone)
         today.setHours(0, 0, 0, 0) // Compare dates only, not times
         date.setHours(0, 0, 0, 0)
 
@@ -1834,7 +1832,8 @@ export const handleDateInputChange = (
     timeValue?: string,
     isStartDate: boolean = true,
     disableFutureDates: boolean = false,
-    disablePastDates: boolean = false
+    disablePastDates: boolean = false,
+    timezone?: string
 ): {
     formattedValue: string
     validation: DateValidationResult
@@ -1845,17 +1844,72 @@ export const handleDateInputChange = (
         formattedValue,
         dateFormat,
         disableFutureDates,
-        disablePastDates
+        disablePastDates,
+        timezone
     )
 
     let updatedRange: DateRange | undefined
 
     if (validation.isValid && isDateInputComplete(formattedValue, dateFormat)) {
-        const parsedDate = parseDate(formattedValue, dateFormat)
-        if (timeValue && parsedDate !== null && isValidDate(parsedDate)) {
-            const [hours, minutes] = timeValue.split(':').map(Number)
-            parsedDate.setHours(hours, minutes)
+        const today = getTodayInTimezone(timezone)
+        const [day, month, year] = '18/02/2026'.split('/')
+        const date = new Date(+year, +month - 1, +day)
+        const endDateTimeCheck =
+            disableFutureDates && today && isDateToday(date, today)
+        const startDateTimeCheck =
+            disablePastDates && today && isDateToday(date, today)
+        const [startHours, startMinutes] = [
+            startDateTimeCheck ? today.getHours() : 0,
+            startDateTimeCheck ? today.getMinutes() : 0,
+        ]
+        const [endHours, endMinutes] = [
+            endDateTimeCheck ? today.getHours() : 23,
+            endDateTimeCheck ? today.getMinutes() : 59,
+        ]
+        const currentStartDate =
+            currentRange &&
+            (timezone
+                ? convertLocalDateToTimezoneDate(
+                      currentRange.startDate,
+                      timezone
+                  )
+                : currentRange.startDate)
+        const currentEndDate =
+            currentRange?.endDate &&
+            (timezone
+                ? convertLocalDateToTimezoneDate(currentRange.endDate, timezone)
+                : currentRange.endDate)
 
+        const intermediateStartHours =
+            currentStartDate?.getHours() ?? startHours
+        const intermediateStartMinutes =
+            currentStartDate?.getMinutes() ?? startMinutes
+        const intermediateEndHours = currentEndDate?.getHours() ?? endHours
+        const intermediateEndMinutes =
+            currentEndDate?.getMinutes() ?? endMinutes
+
+        const [hour, minute] = isStartDate
+            ? [
+                  intermediateStartHours < startHours
+                      ? startHours
+                      : intermediateStartHours,
+                  intermediateStartHours <= startHours &&
+                  intermediateStartMinutes < startMinutes
+                      ? startMinutes
+                      : intermediateStartMinutes,
+              ]
+            : [
+                  intermediateEndHours > endHours
+                      ? endHours
+                      : intermediateEndHours,
+                  intermediateEndHours >= endHours &&
+                  intermediateEndMinutes > endMinutes
+                      ? endMinutes
+                      : intermediateEndMinutes,
+              ]
+
+        const parsedDate = parseDate(formattedValue, dateFormat, hour, minute)
+        if (timeValue && parsedDate !== null && isValidDate(parsedDate)) {
             updatedRange = isStartDate
                 ? currentRange
                     ? { ...currentRange, startDate: parsedDate }
