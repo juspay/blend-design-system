@@ -52,7 +52,8 @@ export const StyledRadioV2Root = styled.input<{
                     background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
             }
             &:focus-visible {
-                outline: 2px solid
+                outline: ${$tokens.radio.borderWidth[indicatorState][state]}px
+                    solid
                     ${$tokens.radio.indicator[indicatorState].borderColor[
                         state
                     ]};
