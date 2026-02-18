@@ -70,18 +70,22 @@ export default function ShowcaseSection() {
     }
     useLayoutEffect(() => {
         const ctx = gsap.context(() => {
+            const cards = cardsRef.current
+
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: sectionRef.current,
                     start: 'top 75%',
-                    once: true,
+                    end: 'bottom 25%',
+                    toggleActions: 'play reverse play reverse',
                 },
                 defaults: {
                     ease: 'expo.inOut',
                     duration: 1.35,
                 },
             })
-            cardsRef.current.forEach((card, i) => {
+
+            cards.forEach((card, i) => {
                 if (!card) return
                 const cfg = CARDS[i]
 
@@ -89,7 +93,6 @@ export default function ShowcaseSection() {
                     card,
                     {
                         x: cfg.finalOffset,
-
                         y: 70,
                         rotate: cfg.rotate * 0.4,
                         scale: 0.86,
@@ -104,7 +107,6 @@ export default function ShowcaseSection() {
             })
 
             tl.fromTo(holderFrontRef.current, { y: 70 }, { y: 120 }, 0)
-
             tl.fromTo(holderBackRef.current, { y: 55 }, { y: 90 }, 0.06)
         }, sectionRef)
 
