@@ -39,7 +39,6 @@
 
 ```tsx
 import RadioV2, { RadioV2Size } from '@juspay/blend-design-system/RadioV2'
-
 ;<RadioV2
     label="Option A"
     subLabel="Extra info"
