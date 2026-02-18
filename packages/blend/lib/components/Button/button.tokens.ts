@@ -452,11 +452,11 @@ export const getButtonTokens = (
                     primary: {
                         default: {
                             x: '16px',
-                            y: '5px',
+                            y: '4.5px',
                         },
                         iconOnly: {
                             x: '9px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -480,11 +480,11 @@ export const getButtonTokens = (
                     danger: {
                         default: {
                             x: '16px',
-                            y: '5px',
+                            y: '4.5px',
                         },
                         iconOnly: {
                             x: '9px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -494,11 +494,11 @@ export const getButtonTokens = (
                     success: {
                         default: {
                             x: '16px',
-                            y: '5px',
+                            y: '4.5px',
                         },
                         iconOnly: {
                             x: '9px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -510,11 +510,11 @@ export const getButtonTokens = (
                     primary: {
                         default: {
                             x: '16px',
-                            y: '7px',
+                            y: '6.5px',
                         },
                         iconOnly: {
                             x: '10px',
-                            y: '10px',
+                            y: '9.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -538,11 +538,11 @@ export const getButtonTokens = (
                     danger: {
                         default: {
                             x: '16px',
-                            y: '7px',
+                            y: '6.5px',
                         },
                         iconOnly: {
                             x: '10px',
-                            y: '10px',
+                            y: '9.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -552,11 +552,11 @@ export const getButtonTokens = (
                     success: {
                         default: {
                             x: '16px',
-                            y: '7px',
+                            y: '6.5px',
                         },
                         iconOnly: {
                             x: '10px',
-                            y: '10px',
+                            y: '9.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -568,11 +568,11 @@ export const getButtonTokens = (
                     primary: {
                         default: {
                             x: '16px',
-                            y: '13px',
+                            y: '12.5px',
                         },
                         iconOnly: {
                             x: '16px',
-                            y: '16px',
+                            y: '15.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -596,11 +596,11 @@ export const getButtonTokens = (
                     danger: {
                         default: {
                             x: '16px',
-                            y: '13px',
+                            y: '12.5px',
                         },
                         iconOnly: {
                             x: '16px',
-                            y: '16px',
+                            y: '15.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -610,11 +610,11 @@ export const getButtonTokens = (
                     success: {
                         default: {
                             x: '16px',
-                            y: '13px',
+                            y: '12.5px',
                         },
                         iconOnly: {
                             x: '16px',
-                            y: '16px',
+                            y: '15.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -628,16 +628,16 @@ export const getButtonTokens = (
             border: {
                 primary: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -668,16 +668,16 @@ export const getButtonTokens = (
                 },
                 danger: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[500]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[500]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -688,16 +688,16 @@ export const getButtonTokens = (
                 },
                 success: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[500]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.green[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[500]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.green[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1320,11 +1320,11 @@ export const getButtonTokens = (
                     primary: {
                         default: {
                             x: '16px',
-                            y: '5px',
+                            y: '4.5px',
                         },
                         iconOnly: {
                             x: '9px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1348,11 +1348,11 @@ export const getButtonTokens = (
                     danger: {
                         default: {
                             x: '16px',
-                            y: '5px',
+                            y: '4.5px',
                         },
                         iconOnly: {
                             x: '9px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1362,11 +1362,11 @@ export const getButtonTokens = (
                     success: {
                         default: {
                             x: '16px',
-                            y: '5px',
+                            y: '4.5px',
                         },
                         iconOnly: {
                             x: '9px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1378,11 +1378,11 @@ export const getButtonTokens = (
                     primary: {
                         default: {
                             x: '16px',
-                            y: '7px',
+                            y: '6.5px',
                         },
                         iconOnly: {
                             x: '10px',
-                            y: '10px',
+                            y: '9.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1406,11 +1406,11 @@ export const getButtonTokens = (
                     danger: {
                         default: {
                             x: '16px',
-                            y: '7px',
+                            y: '6.5px',
                         },
                         iconOnly: {
                             x: '10px',
-                            y: '10px',
+                            y: '9.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1420,11 +1420,11 @@ export const getButtonTokens = (
                     success: {
                         default: {
                             x: '16px',
-                            y: '7px',
+                            y: '6.5px',
                         },
                         iconOnly: {
                             x: '10px',
-                            y: '10px',
+                            y: '9.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1436,11 +1436,11 @@ export const getButtonTokens = (
                     primary: {
                         default: {
                             x: '16px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         iconOnly: {
                             x: '12px',
-                            y: '12px',
+                            y: '11.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1464,11 +1464,11 @@ export const getButtonTokens = (
                     danger: {
                         default: {
                             x: '16px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         iconOnly: {
                             x: '12px',
-                            y: '12px',
+                            y: '11.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1478,11 +1478,11 @@ export const getButtonTokens = (
                     success: {
                         default: {
                             x: '16px',
-                            y: '9px',
+                            y: '8.5px',
                         },
                         iconOnly: {
                             x: '12px',
-                            y: '12px',
+                            y: '11.5px',
                         },
                         inline: {
                             x: foundationToken.unit[0],
@@ -1496,16 +1496,16 @@ export const getButtonTokens = (
             border: {
                 primary: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[600]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[600]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1536,16 +1536,16 @@ export const getButtonTokens = (
                 },
                 danger: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[600]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[600]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1556,16 +1556,16 @@ export const getButtonTokens = (
                 },
                 success: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[600]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[600]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
                     },
                     inline: {
                         default: `none`,
