@@ -16,6 +16,7 @@ export const getCheckboxV2LightTokens = (
                     sm: foundationToken.unit[16],
                     md: foundationToken.unit[20],
                 },
+                opacity: foundationToken.opacity[70],
                 backgroundColor: {
                     unchecked: {
                         default: foundationToken.colors.gray[0],
@@ -159,6 +160,7 @@ export const getCheckboxV2LightTokens = (
                     sm: foundationToken.unit[14],
                     md: foundationToken.unit[16],
                 },
+                opacity: foundationToken.opacity[70],
                 backgroundColor: {
                     unchecked: {
                         default: foundationToken.colors.gray[0],

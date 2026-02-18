@@ -20,6 +20,7 @@ export type CheckboxV2TokensType = {
         width: {
             [key in CheckboxV2Size]: CSSObject['width']
         }
+        opacity: CSSObject['opacity']
         backgroundColor: {
             [key in CheckboxV2CheckedState]?: {
                 [key in CheckboxV2InteractionState]?: CSSObject['backgroundColor']

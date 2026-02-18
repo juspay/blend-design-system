@@ -76,7 +76,7 @@ export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
 
             ${$isDisabled &&
             css`
-                opacity: 0.7; // Or use token: tokens.opacity.disabled or similar if available
+                opacity: ${tokens.checkbox.opacity};
                 cursor: not-allowed;
             `}
 
