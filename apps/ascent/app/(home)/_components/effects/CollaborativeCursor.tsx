@@ -90,6 +90,39 @@ export default function CollaborativeCursor({
     }
 
     const hasAnimation = animateFrom !== undefined
+    const isUserCursor = name === 'You'
+
+    if (isUserCursor) {
+        return (
+            <div
+                className="absolute pointer-events-none z-30"
+                style={{
+                    left: `${x}px`,
+                    top: `${y}px`,
+                    transform: 'translate(-50%, -50%)',
+                    willChange: 'transform',
+                }}
+            >
+                <div className="relative">
+                    <CursorIcon
+                        color={colors.cursor}
+                        filterId={filterId}
+                        style={{
+                            transform: getTransform(),
+                            transformOrigin: 'center',
+                        }}
+                    />
+                    {name && (
+                        <div
+                            className={`absolute top-4 left-8 -translate-x-1/2 ${colors.bg} ${colors.text} px-2 py-1 rounded text-xs font-medium whitespace-nowrap shadow-sm border border-gray-50`}
+                        >
+                            {name}
+                        </div>
+                    )}
+                </div>
+            </div>
+        )
+    }
 
     return (
         <motion.div

@@ -9,36 +9,52 @@ import { FigmaIconSmall, DesignerIcon, ArrowRightIcon } from '../icons'
 export default function DeveloperDesignerSections() {
     const [copied, setCopied] = useState(false)
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-    const [isMoving, setIsMoving] = useState(false)
-    const moveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+    const [isHovering, setIsHovering] = useState(false)
+    const rafRef = useRef<number | null>(null)
     const designerSectionRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (!designerSectionRef.current) return
-
-            const rect = designerSectionRef.current.getBoundingClientRect()
-            const x = e.clientX - rect.left
-            const y = e.clientY - rect.top
-
-            setMousePosition({ x, y })
-            setIsMoving(true)
-
-            if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current)
-
-            moveTimeoutRef.current = setTimeout(() => {
-                setIsMoving(false)
-            }, 120)
-        }
-
         const section = designerSectionRef.current
         if (!section) return
 
+        const handleMouseMove = (e: MouseEvent) => {
+            if (rafRef.current) {
+                cancelAnimationFrame(rafRef.current)
+            }
+
+            rafRef.current = requestAnimationFrame(() => {
+                if (!designerSectionRef.current) return
+
+                const rect = designerSectionRef.current.getBoundingClientRect()
+                const x = e.clientX - rect.left
+                const y = e.clientY - rect.top
+
+                setMousePosition({ x, y })
+            })
+        }
+
+        const handleMouseEnter = () => {
+            setIsHovering(true)
+        }
+
+        const handleMouseLeave = () => {
+            setIsHovering(false)
+            if (rafRef.current) {
+                cancelAnimationFrame(rafRef.current)
+            }
+        }
+
         section.addEventListener('mousemove', handleMouseMove)
+        section.addEventListener('mouseenter', handleMouseEnter)
+        section.addEventListener('mouseleave', handleMouseLeave)
 
         return () => {
             section.removeEventListener('mousemove', handleMouseMove)
-            if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current)
+            section.removeEventListener('mouseenter', handleMouseEnter)
+            section.removeEventListener('mouseleave', handleMouseLeave)
+            if (rafRef.current) {
+                cancelAnimationFrame(rafRef.current)
+            }
         }
     }, [])
 
@@ -187,7 +203,7 @@ export default function DeveloperDesignerSections() {
                         direction="none"
                         animateFrom={{ x: 820, y: 420 }}
                     />
-                    {isMoving && (
+                    {isHovering && (
                         <CollaborativeCursor
                             name="You"
                             color="red"

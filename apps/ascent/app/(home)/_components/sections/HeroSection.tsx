@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
 import Image from 'next/image'
+import { CopyIcon } from '../icons'
 
 const PACKAGE_MANAGERS = {
     npm: 'npm i',
@@ -27,8 +28,8 @@ export default function HeroSection() {
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 border-b border-gray-200">
-            <div className="flex items-center p-6 lg:p-10 lg:border-r border-gray-200">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] border-b border-gray-200">
+            <div className="flex items-center p-6 lg:p-10">
                 <h1 className="text-4xl lg:text-6xl font-normal text-gray-900 leading-[1.08] tracking-tight">
                     Built to <span className="text-blue-600">Blend,</span>
                     <br />
@@ -38,22 +39,22 @@ export default function HeroSection() {
                 </h1>
             </div>
 
-            <div className="relative min-h-[200px] lg:min-h-[280px] overflow-hidden">
+            <div className="relative min-h-[200px] lg:min-h-[280px] overflow-hidden bg-gray-100">
                 <div className="absolute inset-0">
                     <Image
                         src="/images/map.png"
                         alt="World map"
                         fill
-                        className="object-contain opacity-50"
+                        className="object-cover opacity-50"
                         priority
                     />
                 </div>
 
                 <div className="relative z-10 flex flex-col items-center justify-center h-full p-8 lg:p-12">
-                    <div className="w-full max-w-sm">
+                    <div className="max-w-sm">
                         <div>
                             <select
-                                className="text-sm font-mono text-gray-600 bg-white border border-gray-200 border-b-0 rounded-t-lg px-2.5 py-1 outline-none cursor-pointer"
+                                className="text-xs font-mono text-[#646464] font-medium bg-white border border-gray-200 border-b-0 rounded-t-lg px-2.5 py-1 outline-none cursor-pointer"
                                 aria-label="Package manager"
                                 value={packageManager}
                                 onChange={(e) =>
@@ -68,22 +69,22 @@ export default function HeroSection() {
                             </select>
                         </div>
 
-                        <div className="bg-white border border-gray-200 rounded-b-lg rounded-tr-lg p-3 flex items-center justify-between shadow-sm">
-                            <code className="text-sm font-mono text-gray-800 truncate">
+                        <div className="bg-white border border-gray-200 rounded-b-lg rounded-tr-lg py-2 px-4 flex items-center jus shadow-sm gap-3">
+                            <p className="text-xs text-[#646464] truncate font-medium tracking-wider">
                                 {installCommand}
-                            </code>
+                            </p>
                             <button
                                 onClick={handleCopy}
-                                className="ml-3 p-1.5 hover:bg-gray-100 rounded transition-colors shrink-0"
+                                className="hover:bg-gray-100 rounded transition-colors shrink-0"
                                 aria-label="Copy install command"
                             >
                                 {copied ? (
                                     <Check
                                         size={14}
-                                        className="text-green-600"
+                                        className="text-gray-600"
                                     />
                                 ) : (
-                                    <Copy size={14} className="text-gray-400" />
+                                    <CopyIcon />
                                 )}
                             </button>
                         </div>
