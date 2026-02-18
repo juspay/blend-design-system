@@ -7,7 +7,7 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
 
-import { RadioV2 } from '../../../../../packages/blend/lib/components/RadioV2/RadioV2'
+import RadioV2 from '../../../../../packages/blend/lib/components/RadioV2/RadioV2'
 import {
     RadioV2Size,
     type RadioV2Props,

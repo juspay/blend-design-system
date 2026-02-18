@@ -11,7 +11,7 @@ import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import { RadioV2Size } from '../../../../packages/blend/lib/components/RadioV2/radioV2.types'
-import { RadioV2 } from '../../../../packages/blend/lib/components/RadioV2/RadioV2'
+import RadioV2 from '../../../../packages/blend/lib/components/RadioV2/RadioV2'
 import RadioGroupV2 from '../../../../packages/blend/lib/components/RadioV2/RadioGroupV2'
 const RadioV2Demo = () => {
     const [checked, setChecked] = useState<boolean>(false)
@@ -223,7 +223,13 @@ const RadioV2Demo = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="min-h-60 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50">
+                    <div
+                        className={`min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed ${
+                            theme === Theme.DARK
+                                ? 'border-gray-700 bg-gray-900'
+                                : 'border-gray-300 bg-gray-50'
+                        }`}
+                    >
                         <RadioGroupV2
                             name="playground-group"
                             label={groupLabel}
@@ -240,17 +246,13 @@ const RadioV2Demo = () => {
                                 label="Option 1"
                                 value="option1"
                                 size={RadioV2Size.MEDIUM}
-                            >
-                                Option 1
-                            </RadioV2>
+                            />
                             <RadioV2
                                 label="Option 2"
                                 value="option2"
                                 size={RadioV2Size.MEDIUM}
                                 subLabel="This option has a description"
-                            >
-                                Option 2
-                            </RadioV2>
+                            />
                             <RadioV2
                                 label="Option 3"
                                 value="option3"
@@ -263,9 +265,7 @@ const RadioV2Demo = () => {
                                         />
                                     ),
                                 }}
-                            >
-                                Option 3 with slot
-                            </RadioV2>
+                            />
                         </RadioGroupV2>
                     </div>
                 </div>

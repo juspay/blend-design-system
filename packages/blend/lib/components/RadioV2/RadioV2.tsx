@@ -2,7 +2,7 @@ import { RadioV2ContentProps, RadioV2Props, RadioV2Size } from './radioV2.types'
 import { StyledRadioV2Root } from './StyledRadioV2'
 import { RadioV2TokensType } from './radioV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { getRadioV2ErrorShakeStyle } from './radioV2.animation'
 import { useErrorShake } from '../common/useErrorShake'
 import {
@@ -14,83 +14,94 @@ import Block from '../Primitives/Block/Block'
 import SelectorsSubLabel from '../SelectorsContent/SelectorsSubLabel'
 import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
 
-export const RadioV2 = ({
-    id,
-    label,
-    checked,
-    defaultChecked = false,
-    onChange,
-    disabled = false,
-    required = false,
-    error = false,
-    size = RadioV2Size.MEDIUM,
-    subLabel,
-    slot,
-    name,
-    maxLength,
-    ...rest
-}: RadioV2Props) => {
-    const radioTokens = useResponsiveTokens<RadioV2TokensType>('RADIOV2')
-    const generatedId = React.useId()
-    const uniqueId = id || generatedId
-    const shouldShake = useErrorShake(error)
-    const subtextId = subLabel ? `${uniqueId}-subLabel` : undefined
-    const labelId = label ? `${uniqueId}-label` : undefined
-    const customAriaDescribedBy = (rest as { 'aria-describedby'?: string })[
-        'aria-describedby'
-    ]
-    const ariaDescribedBy =
-        subtextId && customAriaDescribedBy
-            ? `${customAriaDescribedBy} ${subtextId}`
-            : subtextId || customAriaDescribedBy
+const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
+    (
+        {
+            id,
+            label,
+            checked,
+            defaultChecked = false,
+            onChange,
+            disabled = false,
+            required = false,
+            error = false,
+            size = RadioV2Size.MEDIUM,
+            subLabel,
+            slot,
+            name,
+            maxLength,
+            ...rest
+        },
+        ref
+    ) => {
+        const radioTokens = useResponsiveTokens<RadioV2TokensType>('RADIOV2')
+        const generatedId = React.useId()
+        const uniqueId = id || generatedId
+        const shouldShake = useErrorShake(error)
+        const subtextId = subLabel ? `${uniqueId}-subLabel` : undefined
+        const labelId = label ? `${uniqueId}-label` : undefined
+        const customAriaDescribedBy = (rest as { 'aria-describedby'?: string })[
+            'aria-describedby'
+        ]
+        const ariaDescribedBy =
+            subtextId && customAriaDescribedBy
+                ? `${customAriaDescribedBy} ${subtextId}`
+                : subtextId || customAriaDescribedBy
 
-    return (
-        <Block
-            display="flex"
-            alignItems="flex-start"
-            gap={radioTokens.gap}
-            data-radio={label ?? 'radio'}
-        >
-            <StyledRadioV2Root
-                type="radio"
-                id={uniqueId}
-                name={name}
-                checked={checked}
-                defaultChecked={defaultChecked}
-                disabled={disabled}
-                required={required}
-                onChange={onChange}
-                size={size}
-                $isDisabled={disabled}
-                $isChecked={checked || false}
-                $error={error}
-                $tokens={radioTokens}
-                style={getRadioV2ErrorShakeStyle(shouldShake)}
-                {...rest}
-                aria-required={required ? true : undefined}
-                aria-invalid={error ? true : undefined}
-                aria-describedby={ariaDescribedBy}
-                aria-checked={checked}
-                aria-disabled={disabled ? true : undefined}
-                aria-labelledby={labelId}
-            />
-            <RadioV2Content
-                uniqueId={uniqueId}
-                disabled={disabled}
-                error={error}
-                required={required}
-                size={size}
-                label={label}
-                subLabel={subLabel}
-                tokens={radioTokens}
-                labelMaxLength={maxLength?.label}
-                subLabelMaxLength={maxLength?.subLabel}
-                subLabelId={subtextId}
-                slot={slot}
-            />
-        </Block>
-    )
-}
+        const controlProps: Record<string, unknown> =
+            checked !== undefined ? { checked } : { defaultChecked }
+
+        return (
+            <Block
+                display="flex"
+                alignItems="flex-start"
+                gap={radioTokens.gap}
+                data-radio={label ?? 'radio'}
+            >
+                <StyledRadioV2Root
+                    ref={ref}
+                    type="radio"
+                    id={uniqueId}
+                    name={name}
+                    {...controlProps}
+                    disabled={disabled}
+                    required={required}
+                    onChange={onChange}
+                    size={size}
+                    $isDisabled={disabled}
+                    $isChecked={checked || false}
+                    $error={error}
+                    $tokens={radioTokens}
+                    style={getRadioV2ErrorShakeStyle(shouldShake)}
+                    aria-required={required ? true : undefined}
+                    aria-invalid={error ? true : undefined}
+                    aria-describedby={ariaDescribedBy}
+                    aria-checked={checked}
+                    aria-disabled={disabled ? true : undefined}
+                    aria-labelledby={labelId}
+                />
+                <RadioV2Content
+                    uniqueId={uniqueId}
+                    disabled={disabled}
+                    error={error}
+                    required={required}
+                    size={size}
+                    label={label}
+                    subLabel={subLabel}
+                    tokens={radioTokens}
+                    labelMaxLength={maxLength?.label}
+                    subLabelMaxLength={maxLength?.subLabel}
+                    subLabelId={subtextId}
+                    slot={slot}
+                />
+            </Block>
+        )
+    }
+)
+
+RadioV2.displayName = 'RadioV2'
+
+export default RadioV2
 
 export const RadioV2Content = ({
     uniqueId,
