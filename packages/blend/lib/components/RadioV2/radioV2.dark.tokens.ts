@@ -73,15 +73,14 @@ export const getRadioV2DarkTokens = (
                 label: {
                     gap: foundationToken.unit[6],
                     color: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[300],
-                        error: foundationToken.colors.red[600],
+                        default: foundationToken.colors.gray[50],
+                        hover: foundationToken.colors.gray[100],
+                        disabled: foundationToken.colors.gray[500],
+                        error: foundationToken.colors.red[400],
                     },
-
                     fontSize: {
-                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                        sm: foundationToken.font.fontSize[12],
+                        md: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
@@ -100,15 +99,14 @@ export const getRadioV2DarkTokens = (
                 },
                 subLabel: {
                     color: {
-                        default: foundationToken.colors.gray[300],
+                        default: foundationToken.colors.gray[400],
                         hover: foundationToken.colors.gray[300],
                         disabled: foundationToken.colors.gray[600],
                         error: foundationToken.colors.red[400],
                     },
-
                     fontSize: {
-                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                        sm: foundationToken.font.fontSize[12],
+                        md: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],
@@ -120,7 +118,7 @@ export const getRadioV2DarkTokens = (
                     },
                 },
                 required: {
-                    color: foundationToken.colors.red[600],
+                    color: foundationToken.colors.red[400],
                 },
             },
         },
@@ -192,15 +190,14 @@ export const getRadioV2DarkTokens = (
                 label: {
                     gap: foundationToken.unit[6],
                     color: {
-                        default: foundationToken.colors.gray[500],
-                        hover: foundationToken.colors.gray[700],
-                        disabled: foundationToken.colors.gray[300],
-                        error: foundationToken.colors.red[600],
+                        default: foundationToken.colors.gray[50],
+                        hover: foundationToken.colors.gray[100],
+                        disabled: foundationToken.colors.gray[500],
+                        error: foundationToken.colors.red[400],
                     },
-
                     fontSize: {
-                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                        sm: foundationToken.font.fontSize[12],
+                        md: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
@@ -217,17 +214,17 @@ export const getRadioV2DarkTokens = (
                         },
                     },
                 },
+
                 subLabel: {
                     color: {
-                        default: foundationToken.colors.gray[300],
+                        default: foundationToken.colors.gray[400],
                         hover: foundationToken.colors.gray[300],
                         disabled: foundationToken.colors.gray[600],
                         error: foundationToken.colors.red[400],
                     },
-
                     fontSize: {
-                        sm: `${foundationToken.font.size.body.sm.fontSize}px`,
-                        md: `${foundationToken.font.size.body.md.fontSize}px`,
+                        sm: foundationToken.font.fontSize[12],
+                        md: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],
@@ -239,7 +236,7 @@ export const getRadioV2DarkTokens = (
                     },
                 },
                 required: {
-                    color: foundationToken.colors.red[600],
+                    color: foundationToken.colors.red[400],
                 },
             },
         },

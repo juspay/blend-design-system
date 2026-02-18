@@ -2,7 +2,7 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
-import { RadioV2 } from '../../../lib/components/RadioV2/RadioV2'
+import RadioV2 from '../../../lib/components/RadioV2/RadioV2'
 import { RadioV2Size } from '../../../lib/components/RadioV2/radioV2.types'
 import { MockIcon } from '../../test-utils'
 
