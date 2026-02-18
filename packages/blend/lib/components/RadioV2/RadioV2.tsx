@@ -48,6 +48,8 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
                 ? `${customAriaDescribedBy} ${subtextId}`
                 : subtextId || customAriaDescribedBy
 
+        const inputRest = rest as { [key: string]: unknown }
+
         const controlProps: Record<string, unknown> =
             checked !== undefined ? { checked } : { defaultChecked }
 
@@ -64,6 +66,7 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
                     id={uniqueId}
                     name={name}
                     {...controlProps}
+                    {...inputRest}
                     disabled={disabled}
                     required={required}
                     onChange={onChange}

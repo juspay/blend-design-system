@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Heart, Star } from 'lucide-react'
 import {
     addSnackbar,
@@ -44,6 +44,9 @@ const RadioV2Demo = () => {
                 break
         }
     }
+    useEffect(() => {
+        setCheckedState(checked ? 'Checked' : 'Unchecked')
+    }, [checked])
 
     return (
         <div className="space-y-6 p-8">
