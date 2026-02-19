@@ -471,7 +471,12 @@ const TableCell = forwardRef<
 
             if (column.renderCell) {
                 return (
-                    <Block style={{ width: '100%' }}>
+                    <Block
+                        style={{
+                            width: '100%',
+                            minWidth: 0,
+                        }}
+                    >
                         {(
                             column.renderCell as (
                                 value: unknown,
