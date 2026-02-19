@@ -440,16 +440,16 @@ export const getButtonV2LightTokens = (
             border: {
                 primary: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[500]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.primary[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -480,16 +480,16 @@ export const getButtonV2LightTokens = (
                 },
                 danger: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[500]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[500]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -500,16 +500,16 @@ export const getButtonV2LightTokens = (
                 },
                 success: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[500]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.green[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[500]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.green[500]}`,
+                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -947,8 +947,8 @@ export const getButtonV2LightTokens = (
                 top: {
                     sm: {
                         primary: {
-                            default: '5px',
-                            iconOnly: '9px',
+                            default: '4.5px',
+                            iconOnly: '8.5px',
                             inline: foundationToken.unit[0],
                         },
                         secondary: {
@@ -957,20 +957,20 @@ export const getButtonV2LightTokens = (
                             inline: foundationToken.unit[0],
                         },
                         danger: {
-                            default: '5px',
-                            iconOnly: '9px',
+                            default: '4.5px',
+                            iconOnly: '8.5px',
                             inline: foundationToken.unit[0],
                         },
                         success: {
-                            default: '5px',
-                            iconOnly: '9px',
+                            default: '4.5px',
+                            iconOnly: '8.5px',
                             inline: foundationToken.unit[0],
                         },
                     },
                     md: {
                         primary: {
-                            default: '7px',
-                            iconOnly: '10px',
+                            default: '6.5px',
+                            iconOnly: '9.5px',
                             inline: foundationToken.unit[0],
                         },
                         secondary: {
@@ -979,20 +979,20 @@ export const getButtonV2LightTokens = (
                             inline: foundationToken.unit[0],
                         },
                         danger: {
-                            default: '7px',
-                            iconOnly: '10px',
+                            default: '6.5px',
+                            iconOnly: '9.5px',
                             inline: foundationToken.unit[0],
                         },
                         success: {
-                            default: '7px',
-                            iconOnly: '10px',
+                            default: '6.5px',
+                            iconOnly: '9.5px',
                             inline: foundationToken.unit[0],
                         },
                     },
                     lg: {
                         primary: {
-                            default: '9px',
-                            iconOnly: '12px',
+                            default: '8.5px',
+                            iconOnly: '11.5px',
                             inline: foundationToken.unit[0],
                         },
                         secondary: {
@@ -1001,13 +1001,13 @@ export const getButtonV2LightTokens = (
                             inline: foundationToken.unit[0],
                         },
                         danger: {
-                            default: '9px',
-                            iconOnly: '12px',
+                            default: '8.5px',
+                            iconOnly: '11.5px',
                             inline: foundationToken.unit[0],
                         },
                         success: {
-                            default: '9px',
-                            iconOnly: '12px',
+                            default: '8.5px',
+                            iconOnly: '11.5px',
                             inline: foundationToken.unit[0],
                         },
                     },
@@ -1083,8 +1083,8 @@ export const getButtonV2LightTokens = (
                 bottom: {
                     sm: {
                         primary: {
-                            default: '5px',
-                            iconOnly: '9px',
+                            default: '4.5px',
+                            iconOnly: '8.5px',
                             inline: foundationToken.unit[0],
                         },
                         secondary: {
@@ -1093,20 +1093,20 @@ export const getButtonV2LightTokens = (
                             inline: foundationToken.unit[0],
                         },
                         danger: {
-                            default: '5px',
-                            iconOnly: '9px',
+                            default: '4.5px',
+                            iconOnly: '8.5px',
                             inline: foundationToken.unit[0],
                         },
                         success: {
-                            default: '5px',
-                            iconOnly: '9px',
+                            default: '4.5px',
+                            iconOnly: '8.5px',
                             inline: foundationToken.unit[0],
                         },
                     },
                     md: {
                         primary: {
-                            default: '7px',
-                            iconOnly: '10px',
+                            default: '6.5px',
+                            iconOnly: '9.5px',
                             inline: foundationToken.unit[0],
                         },
                         secondary: {
@@ -1115,20 +1115,20 @@ export const getButtonV2LightTokens = (
                             inline: foundationToken.unit[0],
                         },
                         danger: {
-                            default: '7px',
-                            iconOnly: '10px',
+                            default: '6.5px',
+                            iconOnly: '9.5px',
                             inline: foundationToken.unit[0],
                         },
                         success: {
-                            default: '7px',
-                            iconOnly: '10px',
+                            default: '6.5px',
+                            iconOnly: '9.5px',
                             inline: foundationToken.unit[0],
                         },
                     },
                     lg: {
                         primary: {
-                            default: '9px',
-                            iconOnly: '12px',
+                            default: '8.5px',
+                            iconOnly: '11.5px',
                             inline: foundationToken.unit[0],
                         },
                         secondary: {
@@ -1137,13 +1137,13 @@ export const getButtonV2LightTokens = (
                             inline: foundationToken.unit[0],
                         },
                         danger: {
-                            default: '9px',
-                            iconOnly: '12px',
+                            default: '8.5px',
+                            iconOnly: '11.5px',
                             inline: foundationToken.unit[0],
                         },
                         success: {
-                            default: '9px',
-                            iconOnly: '12px',
+                            default: '8.5px',
+                            iconOnly: '11.5px',
                             inline: foundationToken.unit[0],
                         },
                     },
@@ -1222,16 +1222,16 @@ export const getButtonV2LightTokens = (
             border: {
                 primary: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[600]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.primary[600]}`,
-                        hover: `1px solid ${foundationToken.colors.primary[600]}`,
-                        active: `1px solid ${foundationToken.colors.primary[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.primary[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.primary[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.primary[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1262,16 +1262,16 @@ export const getButtonV2LightTokens = (
                 },
                 danger: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[600]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.red[600]}`,
-                        hover: `1px solid ${foundationToken.colors.red[600]}`,
-                        active: `1px solid ${foundationToken.colors.red[500]}`,
-                        disabled: `1px solid ${foundationToken.colors.red[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.red[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.red[500]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.red[300]}`,
                     },
                     inline: {
                         default: `none`,
@@ -1282,16 +1282,16 @@ export const getButtonV2LightTokens = (
                 },
                 success: {
                     default: {
-                        default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[600]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
                     },
                     iconOnly: {
-                        default: `1px solid ${foundationToken.colors.green[600]}`,
-                        hover: `1px solid ${foundationToken.colors.green[600]}`,
-                        active: `1px solid ${foundationToken.colors.green[600]}`,
-                        disabled: `1px solid ${foundationToken.colors.green[300]}`,
+                        default: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        hover: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        active: `1.5px solid ${foundationToken.colors.green[600]}`,
+                        disabled: `1.5px solid ${foundationToken.colors.green[300]}`,
                     },
                     inline: {
                         default: `none`,

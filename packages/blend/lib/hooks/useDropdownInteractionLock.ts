@@ -11,6 +11,7 @@ const STYLE_ID = 'dropdown-interaction-lock-style'
 type DropdownSelectors = {
     content?: string[]
     trigger?: string[]
+    disablePointerEvents?: string[]
 }
 
 type DropdownLockHandlers = {
@@ -38,46 +39,7 @@ const DEFAULT_SELECTORS: DropdownSelectors = {
         '[data-element="single-select-button"]',
         '[data-element="multi-select-button"]',
     ],
-}
-
-function injectStyle(selectors: DropdownSelectors) {
-    if (styleInjected || typeof document === 'undefined') return
-
-    const contentSelectors =
-        selectors.content || DEFAULT_SELECTORS.content || []
-    const triggerSelectors =
-        selectors.trigger || DEFAULT_SELECTORS.trigger || []
-
-    const contentSelectorString = contentSelectors
-        .map((sel) => `body.${CLASS_NAME} ${sel}, body.${CLASS_NAME} ${sel} *`)
-        .join(',\n      ')
-
-    const triggerSelectorString = triggerSelectors
-        .map((sel) => `body.${CLASS_NAME} ${sel}`)
-        .join(',\n      ')
-
-    const style = document.createElement('style')
-    style.id = STYLE_ID
-
-    style.textContent = `
-      /* Disable pointer events on all elements */
-      body.${CLASS_NAME} * {
-        pointer-events: none !important;
-      }
-
-      /* Re-enable pointer events for dropdown content */
-      ${contentSelectorString} {
-        pointer-events: auto !important;
-      }
-
-      /* Re-enable pointer events for triggers */
-      ${triggerSelectorString} {
-        pointer-events: auto !important;
-      }
-    `
-
-    document.head.appendChild(style)
-    styleInjected = true
+    disablePointerEvents: ['[data-sidebar="sidebar"]', '[data-sidebar-item]'],
 }
 
 function isInsideDropdown(
@@ -126,6 +88,32 @@ function preventKeyboardInteraction(
     // Block all other keyboard interactions
     e.preventDefault()
     e.stopPropagation()
+}
+
+function injectStyle(selectors: DropdownSelectors) {
+    if (styleInjected || typeof document === 'undefined') return
+
+    const disableSelectors =
+        selectors.disablePointerEvents ||
+        DEFAULT_SELECTORS.disablePointerEvents ||
+        []
+
+    if (disableSelectors.length === 0) return
+
+    const disableSelectorString = disableSelectors
+        .map((sel) => `body.${CLASS_NAME} ${sel}`)
+        .join(',\n      ')
+
+    const style = document.createElement('style')
+    style.id = STYLE_ID
+    style.textContent = `
+      /* Disable pointer events only on specific elements when dropdown is open */
+      ${disableSelectorString} {
+        pointer-events: none !important;
+      }
+    `
+    document.head.appendChild(style)
+    styleInjected = true
 }
 
 function applyLock(selectors: DropdownSelectors) {

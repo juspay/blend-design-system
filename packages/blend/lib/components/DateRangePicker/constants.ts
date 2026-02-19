@@ -30,7 +30,7 @@ export const DATE_RANGE_PICKER_CONSTANTS = {
     } as const,
 
     // Date ranges
-    MIN_YEAR: 2012,
+    MIN_YEAR: 1940,
     MAX_YEAR_OFFSET: 10, // Current year + 10
 
     // Time increments
