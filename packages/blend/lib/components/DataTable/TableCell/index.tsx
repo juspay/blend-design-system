@@ -474,7 +474,6 @@ const TableCell = forwardRef<
                     <Block
                         style={{
                             width: '100%',
-                            overflow: 'hidden',
                             minWidth: 0,
                         }}
                     >
