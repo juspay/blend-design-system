@@ -785,6 +785,8 @@ export const getDefaultColumnWidth = <T extends Record<string, unknown>>(
             return { minWidth: '120px', maxWidth: '250px' }
         case ColumnType.CUSTOM:
             return { minWidth: '120px', maxWidth: '250px' }
+        case ColumnType.REACT_ELEMENT:
+            return { minWidth: '150px', maxWidth: '300px' }
         default:
             return { minWidth: '120px', maxWidth: '200px' }
     }
@@ -794,6 +796,15 @@ export const getColumnStyles = <T extends Record<string, unknown>>(
     column: ColumnDefinition<T>
 ): React.CSSProperties => {
     const { minWidth, maxWidth } = getDefaultColumnWidth(column)
+
+    if (column.renderCell) {
+        return {
+            minWidth,
+            maxWidth,
+            width: 'auto',
+            boxSizing: 'border-box',
+        }
+    }
 
     return {
         minWidth,
