@@ -5,9 +5,6 @@ import {
 } from './KeyValuePairV2.types'
 import { KeyValuePairV2TokensType } from './KeyValuePairV2.tokens'
 
-/**
- * Get text styles based on overflow mode
- */
 export const getTextStyles = (
     textOverflow: TextOverflowMode,
     maxLines: number,
@@ -108,9 +105,12 @@ export const getLayoutStyles = (
 /**
  * Get slot container styles
  */
-export const getSlotStyles = (): CSSObject => ({
+export const getSlotStyles = (
+    keyValuePairTokens: KeyValuePairV2TokensType
+): CSSObject => ({
     flexShrink: 0,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    color: keyValuePairTokens.value.slot.color,
 })

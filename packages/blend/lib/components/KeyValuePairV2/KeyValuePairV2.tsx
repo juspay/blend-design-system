@@ -136,7 +136,7 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
         ref
     ) => {
         const keyValuePairTokens =
-            useResponsiveTokens<KeyValuePairV2TokensType>('KEYVALUEPAIR')
+            useResponsiveTokens<KeyValuePairV2TokensType>('KEYVALUEPAIRV2')
 
         const containerStyles = {
             ...getLayoutStyles(keyValuePairState, keyValuePairTokens),
@@ -193,7 +193,11 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
                     {keySlot && (
                         <Block
                             data-element="key-slot"
-                            style={getSlotStyles() as React.CSSProperties}
+                            style={
+                                getSlotStyles(
+                                    keyValuePairTokens
+                                ) as React.CSSProperties
+                            }
                         >
                             {keySlot}
                         </Block>
@@ -208,7 +212,11 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
                     {valueLeftSlot && (
                         <Block
                             data-element="value-left-slot"
-                            style={getSlotStyles() as React.CSSProperties}
+                            style={
+                                getSlotStyles(
+                                    keyValuePairTokens
+                                ) as React.CSSProperties
+                            }
                         >
                             {valueLeftSlot}
                         </Block>
@@ -236,7 +244,11 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
                     {valueRightSlot && (
                         <Block
                             data-element="value-right-slot"
-                            style={getSlotStyles() as React.CSSProperties}
+                            style={
+                                getSlotStyles(
+                                    keyValuePairTokens
+                                ) as React.CSSProperties
+                            }
                         >
                             {valueRightSlot}
                         </Block>

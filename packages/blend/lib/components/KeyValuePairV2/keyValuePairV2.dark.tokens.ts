@@ -13,21 +13,24 @@ export const getKeyValuePairV2DarkTokens = (
             },
             key: {
                 color: foundationToken.colors.gray[500],
-                fontSize: foundationToken.font.size.body.md.fontSize, // 14px
-                fontWeight: foundationToken.font.weight[400], // 400
-                gap: foundationToken.unit[8], // 8px
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[400],
+                gap: foundationToken.unit[8],
             },
             value: {
                 color: foundationToken.colors.gray[700],
                 fontSize: {
                     [KeyValuePairV2Size.SMALL]:
-                        foundationToken.font.size.body.md.fontSize, // 14px
+                        foundationToken.font.size.body.md.fontSize,
                     [KeyValuePairV2Size.MEDIUM]:
-                        foundationToken.font.size.body.lg.fontSize, // 16px
-                    [KeyValuePairV2Size.LARGE]: 18, // 18px
+                        foundationToken.font.size.body.lg.fontSize,
+                    [KeyValuePairV2Size.LARGE]: 18,
                 },
-                fontWeight: foundationToken.font.weight[600], // 600
-                gap: foundationToken.unit[8], // 8px
+                fontWeight: foundationToken.font.weight[600],
+                gap: foundationToken.unit[8],
+                slot: {
+                    color: foundationToken.colors.gray[50],
+                },
             },
         },
         lg: {
@@ -36,23 +39,26 @@ export const getKeyValuePairV2DarkTokens = (
                 horizontal: foundationToken.unit[32],
             },
             key: {
-                color: foundationToken.colors.gray[500],
-                fontSize: foundationToken.font.size.body.md.fontSize, // 14px (was lg.fontSize which is 16px)
-                fontWeight: foundationToken.font.weight[400], // 400
-                gap: foundationToken.unit[8], // 8px
+                color: foundationToken.colors.gray[50],
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[400],
+                gap: foundationToken.unit[8],
             },
             value: {
-                color: foundationToken.colors.gray[700],
+                color: foundationToken.colors.gray[400],
                 fontSize: {
                     [KeyValuePairV2Size.SMALL]:
-                        foundationToken.font.size.body.md.fontSize, // 14px
+                        foundationToken.font.size.body.md.fontSize,
                     [KeyValuePairV2Size.MEDIUM]:
-                        foundationToken.font.size.body.lg.fontSize, // 16px
+                        foundationToken.font.size.body.lg.fontSize,
                     [KeyValuePairV2Size.LARGE]:
-                        foundationToken.font.size.heading.sm.fontSize, // 18px
+                        foundationToken.font.size.heading.sm.fontSize,
                 },
-                fontWeight: foundationToken.font.weight[600], // 600
-                gap: foundationToken.unit[8], // 8px
+                fontWeight: foundationToken.font.weight[600],
+                gap: foundationToken.unit[8],
+                slot: {
+                    color: foundationToken.colors.gray[400],
+                },
             },
         },
     }
