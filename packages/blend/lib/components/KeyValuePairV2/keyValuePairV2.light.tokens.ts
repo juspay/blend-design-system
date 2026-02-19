@@ -28,6 +28,9 @@ export const getKeyValuePairV2LightTokens = (
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
                 gap: foundationToken.unit[8], // 8px
+                slot: {
+                    color: foundationToken.colors.gray[400],
+                },
             },
         },
         lg: {
@@ -53,6 +56,9 @@ export const getKeyValuePairV2LightTokens = (
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
                 gap: foundationToken.unit[8], // 8px
+                slot: {
+                    color: foundationToken.colors.gray[700],
+                },
             },
         },
     }

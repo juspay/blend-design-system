@@ -181,6 +181,8 @@ export const useComponentToken = (
             return componentTokens.STEPPER
         case 'KEYVALUEPAIR':
             return componentTokens.KEYVALUEPAIR
+        case 'KEYVALUEPAIRV2':
+            return componentTokens.KEYVALUEPAIRV2
         case 'CARD':
             return componentTokens.CARD
         case 'SKELETON':

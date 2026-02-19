@@ -9,8 +9,11 @@ import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSe
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { KeyValuePairV2 } from '../../../../packages/blend/lib/components/KeyValuePairV2'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const KeyValuePairV2Demo = () => {
+    const { theme } = useTheme()
     // Playground state
     const [playgroundKey, setPlaygroundKey] = useState('A very long Key')
     const [playgroundValue, setPlaygroundValue] = useState(
@@ -169,7 +172,14 @@ const KeyValuePairV2Demo = () => {
                         />
                     </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50">
+                    <div
+                        className={`min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed ${
+                            theme === Theme.DARK
+                                ? 'border-gray-700 bg-gray-900'
+                                : 'border-gray-300 bg-gray-50'
+                        }`}
+                    >
+                        {' '}
                         <KeyValuePairV2
                             keyString={playgroundKey}
                             value={playgroundValue}

@@ -95,6 +95,9 @@ const initTokens = (
         KEYVALUEPAIR:
             componentTokens.KEYVALUEPAIR ??
             getKeyValuePairTokens(foundationTokens),
+        KEYVALUEPAIRV2:
+            componentTokens.KEYVALUEPAIRV2 ??
+            getKeyValuePairV2Tokens(foundationTokens, theme),
         MODAL:
             componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
         BREADCRUMB:
@@ -159,9 +162,6 @@ const initTokens = (
         SWITCHV2:
             componentTokens.SWITCHV2 ??
             getSwitchV2Tokens(foundationTokens, theme),
-        KEYVALUEPAIRV2:
-            componentTokens.KEYVALUEPAIRV2 ??
-            getKeyValuePairV2Tokens(foundationTokens, theme),
         AVATARV2:
             componentTokens.AVATARV2 ??
             getAvatarV2Tokens(foundationTokens, theme),

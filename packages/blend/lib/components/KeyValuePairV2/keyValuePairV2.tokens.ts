@@ -23,6 +23,9 @@ export type KeyValuePairV2TokensType = {
         }
         fontWeight: CSSObject['fontWeight']
         gap: CSSObject['gap']
+        slot: {
+            color: CSSObject['color']
+        }
     }
 }
 
@@ -34,8 +37,6 @@ export const getKeyValuePairV2Tokens = (
     foundationToken: FoundationTokenType,
     theme: Theme | string = Theme.LIGHT
 ): ResponsiveKeyValuePairV2Tokens => {
-    console.log({ theme })
-
     if (theme === Theme.DARK || theme === 'dark') {
         return getKeyValuePairV2DarkTokens(foundationToken)
     }
