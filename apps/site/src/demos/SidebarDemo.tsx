@@ -120,6 +120,7 @@ import AlertV2Demo from './AlertV2Demo'
 import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
+import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
@@ -186,6 +187,7 @@ const SidebarDemo = () => {
         | 'otpInput'
         | 'stepper'
         | 'keyValuePair'
+        | 'keyValuePairV2'
         | 'card'
         | 'dataRangePicker'
         | 'allComponents'
@@ -507,6 +509,8 @@ const SidebarDemo = () => {
                 return <TopbarDemo />
             case 'keyValuePair':
                 return <KeyValuePairDemo />
+            case 'keyValuePairV2':
+                return <KeyValuePairV2Demo />
             case 'card':
                 return <CardDemo />
             case 'skeleton':
@@ -941,6 +945,14 @@ const SidebarDemo = () => {
                     label: 'Key Value Pair',
                     isSelected: activeComponent === 'keyValuePair',
                     onClick: () => setActiveComponent('keyValuePair'),
+                },
+                {
+                    label: 'Key Value Pair V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'keyValuePairV2',
+                    onClick: () => setActiveComponent('keyValuePairV2'),
                 },
             ],
         },
