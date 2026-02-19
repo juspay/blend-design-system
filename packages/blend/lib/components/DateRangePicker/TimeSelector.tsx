@@ -15,10 +15,18 @@ import {
     MenuAlignment,
     MenuSide,
 } from '../Menu/types'
+import { isDateToday, getDatePartsInTimezone } from './utils'
+import { DateRange } from './types'
 
 type TimeSelectorProps = {
     value: string
     onChange: (time: string) => void
+    disablePastDates: boolean
+    disableFutureDates: boolean
+    today: Date
+    isStart: boolean
+    selectedRange?: DateRange
+    timezone?: string
     className?: string
     autoFocus?: boolean
     tabIndex?: number
@@ -38,7 +46,11 @@ const formatTimeStringFor12Hour = (timeString: string): string => {
 }
 
 const parseTimeInput = (
-    input: string
+    input: string,
+    minHour: number,
+    minMunite: number,
+    maxHour: number,
+    maxMinute: number
 ): {
     hour: number
     minute: number
@@ -104,6 +116,14 @@ const parseTimeInput = (
             }
         }
 
+        if (
+            hour < minHour ||
+            hour > maxHour ||
+            minute < (hour === minHour ? minMunite : 0) ||
+            minute > (hour === maxHour ? maxMinute : 59)
+        )
+            continue
+
         return { hour, minute, isValid: true, originalInput }
     }
 
@@ -111,12 +131,20 @@ const parseTimeInput = (
 }
 
 const generateTimeOptions = (
-    onSelect: (timeValue: string) => void
+    onSelect: (timeValue: string) => void,
+    minHour: number,
+    minMunite: number,
+    maxHour: number,
+    maxMinute: number
 ): MenuGroupType[] => {
     const options: MenuItemType[] = []
 
-    for (let hour = 0; hour < 24; hour++) {
-        for (let minute = 0; minute < 60; minute += 15) {
+    for (let hour = minHour; hour <= maxHour; hour++) {
+        for (
+            let minute = hour === minHour ? minMunite : 0;
+            minute <= (hour === maxHour ? maxMinute : 59);
+            minute += 15
+        ) {
             const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
             const displayText = formatTimeFor12Hour(hour, minute)
 
@@ -131,12 +159,87 @@ const generateTimeOptions = (
 }
 
 const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
-    ({ value, onChange, tabIndex, id, 'aria-label': ariaLabel }, ref) => {
+    (
+        {
+            value,
+            onChange,
+            disablePastDates,
+            disableFutureDates,
+            today,
+            isStart,
+            selectedRange,
+            timezone,
+            tabIndex,
+            id,
+            'aria-label': ariaLabel,
+        },
+        ref
+    ) => {
         const [isOpen, setIsOpen] = useState(false)
         const [inputValue, setInputValue] = useState('')
         const [isValidTime, setIsValidTime] = useState(true)
         const [isProcessingSelection, setIsProcessingSelection] =
             useState(false)
+        const stParts =
+            selectedRange &&
+            (timezone
+                ? getDatePartsInTimezone(selectedRange.startDate, timezone)
+                : {
+                      year: selectedRange.startDate.getFullYear(),
+                      month: selectedRange.startDate.getMonth(),
+                      day: selectedRange.startDate.getDate(),
+                      hours: selectedRange.startDate.getHours(),
+                      minutes: selectedRange.startDate.getMinutes(),
+                      seconds: selectedRange.startDate.getSeconds(),
+                  })
+        const startDate =
+            stParts &&
+            new Date(
+                stParts.year,
+                stParts.month,
+                stParts.day,
+                stParts.hours,
+                stParts.minutes,
+                stParts.seconds
+            )
+
+        const edParts = !selectedRange?.endDate
+            ? undefined
+            : timezone
+              ? getDatePartsInTimezone(selectedRange.endDate, timezone)
+              : {
+                    year: selectedRange.endDate.getFullYear(),
+                    month: selectedRange.endDate.getMonth(),
+                    day: selectedRange.endDate.getDate(),
+                    hours: selectedRange.endDate.getHours(),
+                    minutes: selectedRange.endDate.getMinutes(),
+                    seconds: selectedRange.endDate.getSeconds(),
+                }
+        const endDate = edParts
+            ? new Date(
+                  edParts.year,
+                  edParts.month,
+                  edParts.day,
+                  edParts.hours,
+                  edParts.minutes,
+                  edParts.seconds
+              )
+            : selectedRange?.endDate
+
+        const isToday =
+            startDate && isStart
+                ? isDateToday(startDate, today)
+                : endDate
+                  ? isDateToday(endDate, today)
+                  : false
+        const [minHour, minMunite] =
+            disablePastDates && isToday
+                ? [today.getHours(), today.getMinutes()]
+                : [0, 0]
+        const [maxHour, maxMinute] =
+            disableFutureDates && isToday
+                ? [today.getHours(), today.getMinutes()]
+                : [23, 59]
 
         useEffect(() => {
             if (value) {
@@ -162,17 +265,28 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
         )
 
         const timeOptions = useMemo(
-            () => generateTimeOptions(handleTimeSelect),
-            [handleTimeSelect]
+            () =>
+                generateTimeOptions(
+                    handleTimeSelect,
+                    minHour,
+                    minMunite,
+                    maxHour,
+                    maxMinute
+                ),
+            [handleTimeSelect, minHour, minMunite, maxHour, maxMinute]
         )
 
         const handleOpenChange = useCallback(
             (open: boolean) => {
-                if (!isProcessingSelection) {
+                const isDateSelected =
+                    isStart && selectedRange
+                        ? selectedRange.startDate
+                        : selectedRange?.endDate
+                if (!isProcessingSelection && isDateSelected) {
                     setIsOpen(open)
                 }
             },
-            [isProcessingSelection]
+            [isProcessingSelection, selectedRange, isStart]
         )
 
         const handleInputChange = useCallback(
@@ -182,10 +296,16 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 // Allow better typing experience
                 setInputValue(newValue)
 
-                const parsed = parseTimeInput(newValue)
+                const parsed = parseTimeInput(
+                    newValue,
+                    minHour,
+                    minMunite,
+                    maxHour,
+                    maxMinute
+                )
                 setIsValidTime(parsed.isValid || newValue.trim() === '')
             },
-            []
+            [maxHour, maxMinute, minHour, minMunite]
         )
 
         const handleInputFocus = useCallback(() => {}, [])
@@ -205,7 +325,13 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                         return
                     }
 
-                    const parsed = parseTimeInput(trimmedInput)
+                    const parsed = parseTimeInput(
+                        trimmedInput,
+                        minHour,
+                        minMunite,
+                        maxHour,
+                        maxMinute
+                    )
 
                     if (parsed.isValid) {
                         const finalTimeValue = `${parsed.hour.toString().padStart(2, '0')}:${parsed.minute.toString().padStart(2, '0')}`
@@ -221,7 +347,17 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                     }
                 }
             }, 150)
-        }, [inputValue, value, onChange, isOpen, isProcessingSelection])
+        }, [
+            inputValue,
+            value,
+            onChange,
+            isOpen,
+            isProcessingSelection,
+            maxHour,
+            maxMinute,
+            minHour,
+            minMunite,
+        ])
 
         const handleInputKeyDown = useCallback(
             (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -265,6 +401,11 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 <TextInput
                     id={id}
                     type="text"
+                    disabled={
+                        isStart && selectedRange
+                            ? !selectedRange.startDate
+                            : !selectedRange?.endDate
+                    }
                     value={inputValue}
                     onChange={handleInputChange}
                     onBlur={handleInputBlur}
