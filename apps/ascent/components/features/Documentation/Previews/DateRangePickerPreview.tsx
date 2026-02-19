@@ -44,9 +44,9 @@ function MyComponent() {
         }
 
         const startDate = formatDate(range.startDate)
-        const endDate = formatDate(range.endDate)
+        const endDate = range.endDate ? formatDate(range.endDate) : ''
 
-        if (range.startDate.getTime() === range.endDate.getTime()) {
+        if (range.startDate?.getTime() === range.endDate?.getTime()) {
             return `Selected: ${startDate}`
         }
 
