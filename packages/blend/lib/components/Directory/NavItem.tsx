@@ -218,7 +218,6 @@ const NavItem = ({
         }
     }
 
-    const Element = item.href ? 'a' : 'button'
     const elementProps = item.href ? { href: item.href } : {}
 
     const renderContent = () => {
@@ -319,7 +318,7 @@ const NavItem = ({
 
     const itemElement = (
         <StyledElement
-            as={Element}
+            as="a"
             $isLink={!!item.href}
             $isActive={isActive}
             $tokens={tokens}
