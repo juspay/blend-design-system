@@ -16,11 +16,11 @@ export default function HomePage() {
 
             <main className="pt-14">
                 <div className="w-full border-x border-t border-gray-200 relative">
-                    <div className="border-l border-r border-gray-200 lg:mx-28">
-                        <HeroSection />
+                    {/* <div className="border-l border-r border-gray-200"> */}
+                    <HeroSection />
 
-                        <DescriptionSection />
-                    </div>
+                    <DescriptionSection />
+                    {/* </div> */}
 
                     <BrandingDivider />
 

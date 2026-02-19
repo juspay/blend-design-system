@@ -3,7 +3,7 @@ import { EXTERNAL_LINKS } from './constants/links'
 
 export default function PageFooter() {
     return (
-        <footer className="w-full border-x border-b border-gray-200">
+        <footer className="w-full border-x border-t border-gray-200">
             <div className="px-36 lg:px-42 py-5">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-500">
                     <p>

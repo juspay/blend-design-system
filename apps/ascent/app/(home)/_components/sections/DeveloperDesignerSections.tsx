@@ -65,8 +65,8 @@ export default function DeveloperDesignerSections() {
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] border-t border-gray-200">
-            <div className="lg:border-r border-gray-200 border-l lg:ml-28">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] border-gray-200 max-w-[1152px] mx-auto ">
+            <div className="lg:border-r border-gray-200 border-l">
                 <div className="border-b border-gray-200">
                     <div className="border-r border-gray-200 py-2 flex items-center gap-2.5 w-fit px-3">
                         <FileCode color="#A7A8AA" size={14} />
@@ -166,7 +166,7 @@ export default function DeveloperDesignerSections() {
             />
             <div
                 ref={designerSectionRef}
-                className="relative overflow-hidden min-h-[400px] border-r border-gray-200 lg:mr-28 cursor-none"
+                className="relative overflow-hidden min-h-[400px] border-r border-gray-200 cursor-none"
             >
                 <DitherCanvas className="opacity-60" />
 
@@ -187,8 +187,8 @@ export default function DeveloperDesignerSections() {
                     <CollaborativeCursor
                         name="Vimal"
                         color="blue"
-                        x={180}
-                        y={110}
+                        x={130}
+                        y={130}
                         delay={0.3}
                         direction="up"
                         animateFrom={{ x: -50, y: -50 }}
@@ -196,7 +196,7 @@ export default function DeveloperDesignerSections() {
                     <CollaborativeCursor
                         name=""
                         color="green"
-                        x={620}
+                        x={380}
                         y={320}
                         delay={0.7}
                         comment="Can we add gradients?"
@@ -214,7 +214,7 @@ export default function DeveloperDesignerSections() {
                         />
                     )}
 
-                    <div className="w-full max-w-xs">
+                    <div className="w-full max-w-64">
                         <div className="border border-gray-200 rounded-lg bg-white shadow-lg p-2">
                             <div className="flex items-center justify-between pb-3">
                                 <span className="text-sm font-semibold text-gray-800">

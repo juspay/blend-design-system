@@ -55,7 +55,7 @@ export default function LaunchVideoSection() {
     }
 
     return (
-        <div className="border-t border-gray-200 bg-gray-50">
+        <div className="border-t border-gray-200 bg-gray-50 border-b">
             <button
                 onClick={() => setIsExpanded((prev) => !prev)}
                 className="w-full flex items-center justify-center py-5 px-8 hover:bg-gray-100 transition-colors group"

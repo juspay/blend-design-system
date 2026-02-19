@@ -114,8 +114,8 @@ export default function ShowcaseSection() {
     }, [])
 
     return (
-        <section ref={sectionRef} className="border-t border-b border-gray-200">
-            <div className="lg:mx-28 border-l border-r border-gray-200 h-[445px] relative overflow-hidden">
+        <section ref={sectionRef} className="max-w-[1152px] mx-auto">
+            <div className=" border-l border-r border-gray-200 h-[445px] relative overflow-hidden">
                 <div
                     className="absolute bottom-0 left-0 right-0"
                     style={{ height: 420 }}

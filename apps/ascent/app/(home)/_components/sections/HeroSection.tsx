@@ -28,7 +28,7 @@ export default function HeroSection() {
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] border-b border-gray-200">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] border-b border-gray-200 mx-auto max-w-[1152px] border-l border-r">
             <div className="flex items-center p-6 lg:p-10">
                 <h1 className="text-4xl lg:text-6xl font-normal text-gray-900 leading-[1.08] tracking-tight">
                     Built to <span className="text-blue-600">Blend,</span>
