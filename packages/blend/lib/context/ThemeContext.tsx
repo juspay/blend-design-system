@@ -143,6 +143,9 @@ import {
     getCheckboxV2Tokens,
     ResponsiveCheckboxV2Tokens,
 } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import {getKeyValuePairV2Tokens,
+    ResponsiveKeyValuePairV2Tokens,
+} from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -195,6 +198,7 @@ export type ComponentTokenType = {
     ACCORDIONV2?: ResponsiveAccordionV2Tokens
     SNACKBARV2?: ResponsiveSnackbarV2Tokens
     SWITCHV2?: ResponsiveSwitchV2Tokens
+    KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
     AVATARV2?: ResponsiveAvatarV2Tokens
     TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
     CHARTSV2?: ResponsiveChartV2Tokens
@@ -243,6 +247,7 @@ const ThemeContext = createContext<ThemeContextType>({
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
         STEPPER: getStepperTokens(FOUNDATION_THEME),
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
+        KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
