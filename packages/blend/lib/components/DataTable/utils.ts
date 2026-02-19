@@ -749,21 +749,9 @@ export const formatCurrency = (amount: number, currency = 'INR'): string => {
     }).format(amount)
 }
 
-export const getDefaultColumnWidth = <T extends Record<string, unknown>>(
+const getTypeBasedDefaults = <T extends Record<string, unknown>>(
     column: ColumnDefinition<T>
 ): { minWidth: string; maxWidth: string } => {
-    if (column.minWidth && column.maxWidth) {
-        return { minWidth: column.minWidth, maxWidth: column.maxWidth }
-    }
-
-    if (column.minWidth) {
-        return { minWidth: column.minWidth, maxWidth: '300px' }
-    }
-
-    if (column.maxWidth) {
-        return { minWidth: '120px', maxWidth: column.maxWidth }
-    }
-
     switch (column.type) {
         case ColumnType.AVATAR:
             return { minWidth: '200px', maxWidth: '300px' }
@@ -789,6 +777,17 @@ export const getDefaultColumnWidth = <T extends Record<string, unknown>>(
             return { minWidth: '150px', maxWidth: '300px' }
         default:
             return { minWidth: '120px', maxWidth: '200px' }
+    }
+}
+
+export const getDefaultColumnWidth = <T extends Record<string, unknown>>(
+    column: ColumnDefinition<T>
+): { minWidth: string; maxWidth: string } => {
+    const defaults = getTypeBasedDefaults(column)
+
+    return {
+        minWidth: column.minWidth || defaults.minWidth,
+        maxWidth: column.maxWidth || defaults.maxWidth,
     }
 }
 
