@@ -4,7 +4,7 @@ import {
     KeyValuePairV2Size,
     KeyValuePairV2StateType,
     TextOverflowMode,
-} from '../../../../packages/blend/lib/components/KeyValuePairV2/KeyValuePairV2.types'
+} from '../../../../packages/blend/lib/components/KeyValuePairV2/keyValuePairV2.types'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'

@@ -1,10 +1,10 @@
 import type { CSSObject } from 'styled-components'
-import { KeyValuePairV2Size } from './KeyValuePairV2.types'
+import { KeyValuePairV2Size } from './keyValuePairV2.types'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { Theme } from '../../context/theme.enum'
 import { getKeyValuePairV2LightTokens } from './keyValuePairV2.light.tokens'
-import { getKeyValuePairV2DarkTokens } from './KeyValuePairV2.dark.tokens'
+import { getKeyValuePairV2DarkTokens } from './keyValuePairV2.dark.tokens'
 
 export type KeyValuePairV2TokensType = {
     gap: {

@@ -6,7 +6,7 @@ import KeyValuePairV2 from '../../../lib/components/KeyValuePairV2/KeyValuePairV
 import {
     KeyValuePairV2Size,
     KeyValuePairV2StateType,
-} from '../../../lib/components/KeyValuePairV2/KeyValuePairV2.types'
+} from '../../../lib/components/KeyValuePairV2/keyValuePairV2.types'
 import { Info, Star, ArrowRight } from 'lucide-react'
 
 describe('KeyValuePairV2 Accessibility', () => {
