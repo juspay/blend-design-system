@@ -112,7 +112,8 @@ import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
 import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
 import OutageChartsDemo from './OutageChartsDemo'
-import ChartDemoV2 from './ChartDemoV2'
+import OutageChartDemoV2 from './OutageChartDemoV2'
+import BlendChartDemo from './BlendChartDemo'
 import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
@@ -122,6 +123,7 @@ import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
+import ChartV2Demo from './ChartV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -141,7 +143,8 @@ const SidebarDemo = () => {
         | 'alerts'
         | 'avatarGroup'
         | 'charts'
-        | 'chartsV2'
+        | 'blendChart'
+        | 'chartV2'
         | 'fonts'
         | 'datePicker'
         | 'selectors'
@@ -189,6 +192,7 @@ const SidebarDemo = () => {
         | 'codeEditor'
         | 'formElements'
         | 'outageCharts'
+        | 'outageChartV2'
         | 'chartDemoV2'
         | 'textInputAutofillTest'
         | 'alertV2'
@@ -198,7 +202,7 @@ const SidebarDemo = () => {
         | 'textInputV2'
         | 'textInputAutofillTestV2'
         | 'textInputGroup'
-    >('textInputV2')
+    >('chartV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -482,6 +486,8 @@ const SidebarDemo = () => {
                 return <ChartsDemo />
             case 'outageCharts':
                 return <OutageChartsDemo />
+            case 'outageChartV2':
+                return <OutageChartDemoV2 />
             case 'popover':
                 return <PopoverDemo />
             case 'multiValueInput':
@@ -508,14 +514,16 @@ const SidebarDemo = () => {
                 return <CodeEditorDemo />
             case 'formElements':
                 return <FormElementsDemo />
-            case 'chartDemoV2':
-                return <ChartDemoV2 />
+            case 'blendChart':
+                return <BlendChartDemo />
             case 'textInputAutofillTest':
                 return <TextInputAutofillTest />
             case 'textInputV2':
                 return <TextInputV2Demo />
             case 'textInputAutofillTestV2':
                 return <TextInputAutofillTestV2 />
+            case 'chartV2':
+                return <ChartV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -1141,12 +1149,20 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
-                    label: 'Chart Demo V2',
+                    label: 'Blend Chart V2',
                     leftSlot: (
                         <BarChart2 style={{ width: '16px', height: '16px' }} />
                     ),
-                    isSelected: activeComponent === 'chartDemoV2',
-                    onClick: () => setActiveComponent('chartDemoV2'),
+                    isSelected: activeComponent === 'blendChart',
+                    onClick: () => setActiveComponent('blendChart'),
+                },
+                {
+                    label: 'Chart V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'chartV2',
+                    onClick: () => setActiveComponent('chartV2'),
                 },
                 {
                     label: 'Outage Charts',
@@ -1155,6 +1171,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'outageCharts',
                     onClick: () => setActiveComponent('outageCharts'),
+                },
+                {
+                    label: 'Outage Charts V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'outageChartV2',
+                    onClick: () => setActiveComponent('outageChartV2'),
                 },
                 {
                     label: 'Stat Card',
