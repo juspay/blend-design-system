@@ -2,8 +2,8 @@ import type { CSSObject } from 'styled-components'
 import {
     TextOverflowMode,
     KeyValuePairV2StateType,
-} from './KeyValuePairV2.types'
-import { KeyValuePairV2TokensType } from './KeyValuePairV2.tokens'
+} from './keyValuePairV2.types'
+import { KeyValuePairV2TokensType } from './keyValuePairV2.tokens'
 
 export const getTextStyles = (
     textOverflow: TextOverflowMode,

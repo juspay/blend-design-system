@@ -6,10 +6,10 @@ import {
     KeyValuePairV2Size,
     KeyValuePairV2StateType,
     TextOverflowMode,
-} from './KeyValuePairV2.types'
+} from './keyValuePairV2.types'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { KeyValuePairV2TokensType } from './KeyValuePairV2.tokens'
+import { KeyValuePairV2TokensType } from './keyValuePairV2.tokens'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Tooltip from '../Tooltip/Tooltip'
 import { TooltipSide } from '../Tooltip/types'

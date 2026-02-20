@@ -3,8 +3,8 @@ import React from 'react'
 import {
     KeyValuePairV2Size,
     KeyValuePairV2StateType,
-} from '../../../../../packages/blend/lib/components/KeyValuePairV2/KeyValuePairV2.types.js'
-import { KeyValuePairV2 } from '../../../../../packages/blend/lib/components/KeyValuePairV2/index.js'
+} from '../../../../../packages/blend/lib/components/KeyValuePairV2/keyValuePairV2.types'
+import { KeyValuePairV2 } from '../../../../../packages/blend/lib/components/KeyValuePairV2'
 import {
     Info,
     Star,

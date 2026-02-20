@@ -2,7 +2,7 @@ import React from 'react'
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '../../test-utils'
 import KeyValuePairV2 from '../../../lib/components/KeyValuePairV2/KeyValuePairV2'
-import { KeyValuePairV2Size } from '../../../lib/components/KeyValuePairV2/KeyValuePairV2.types'
+import { KeyValuePairV2Size } from '../../../lib/components/KeyValuePairV2/keyValuePairV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('KeyValuePairV2 Component', () => {
