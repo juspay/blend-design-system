@@ -15,16 +15,16 @@ function BlueDot({ className = '' }: { className?: string }) {
 export default function DescriptionSection() {
     return (
         <div>
-            <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] mx-auto max-w-[1152px] border-l border-r border-gray-200">
-                <div className="relative overflow-hidden bg-white max-h-[400px]">
+            <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] mx-auto max-w-[1152px] lg:border-l lg:border-r border-gray-200">
+                <div className="relative overflow-hidden bg-white max-h-[400px] hidden lg:block">
                     <Ellipse />
                 </div>
 
-                <div className="relative p-6 lg:p-10 border-l border-gray-200 ">
-                    <BlueDot className="-top-[3px] -left-[3px]" />
-                    <BlueDot className="-top-[3px] -right-[3px]" />
-                    <BlueDot className="-bottom-[3px] -left-[3px]" />
-                    <BlueDot className="-bottom-[3px] -right-[3px]" />
+                <div className="relative p-6 lg:p-10 lg:border-l border-gray-200 ">
+                    <BlueDot className="-top-[3px] -left-[3px] hidden lg:block" />
+                    <BlueDot className="-top-[3px] -right-[3px] hidden lg:block" />
+                    <BlueDot className="-bottom-[3px] -left-[3px] hidden lg:block" />
+                    <BlueDot className="-bottom-[3px] -right-[3px] hidden lg:block" />
                     <div className="space-y-8">
                         <p className="text-[15px] text-gray-700 leading-relaxed">
                             Some products are consumer-facing. Some are merchant

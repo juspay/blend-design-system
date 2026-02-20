@@ -28,16 +28,13 @@ export default function HeroSection() {
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] border-b border-gray-200 mx-auto max-w-[1152px] border-l border-r">
-            <div className="flex items-center p-6 lg:p-10">
-                <h1 className="text-4xl lg:text-6xl font-normal text-gray-900 leading-[1.08] tracking-tight">
-                    Built to <span className="text-blue-600">Blend,</span>
-                    <br />
-                    Powered by
-                    <br />
-                    Tokens
-                </h1>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] border-b border-gray-200 mx-auto max-w-[1152px] lg:border-l lg:border-r">
+            <h1 className="p-6 text-[42px] lg:px-7 lg:py-8 lg:text-[56px] font-normal text-gray-900 tracking-tight lg:leading-16 leading-12">
+                Built to <span className="text-blue-600">Blend,</span>
+                <br />
+                Powered by <br className="hidden lg:block" />
+                Tokens
+            </h1>
 
             <div className="relative min-h-[200px] lg:min-h-[280px] overflow-hidden bg-gray-100">
                 <div className="absolute inset-0">
@@ -50,7 +47,7 @@ export default function HeroSection() {
                     />
                 </div>
 
-                <div className="relative z-10 flex flex-col items-center justify-center h-full p-8 lg:p-12">
+                <div className="relative z-10 flex flex-col items-center justify-center h-full p-8 lg:p-12 border-t lg:border-t-0 border-gray-200">
                     <div className="max-w-sm">
                         <div>
                             <select

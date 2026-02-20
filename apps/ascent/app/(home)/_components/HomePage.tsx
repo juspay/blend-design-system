@@ -14,13 +14,11 @@ export default function HomePage() {
         <div className="min-h-screen bg-white">
             <Header />
 
-            <main className="pt-14">
-                <div className="w-full border-x border-t border-gray-200 relative">
-                    {/* <div className="border-l border-r border-gray-200"> */}
+            <main className="pt-18">
+                <div className="w-full lg:border-x border-t border-gray-200 relative">
                     <HeroSection />
 
                     <DescriptionSection />
-                    {/* </div> */}
 
                     <BrandingDivider />
 
