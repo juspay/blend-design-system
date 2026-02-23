@@ -3,19 +3,12 @@ import { getAuth, Auth } from 'firebase/auth'
 
 // Fallback configuration for build time when env vars are not available
 const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'dummy-api-key',
-    authDomain:
-        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
-        'dummy-project.firebaseapp.com',
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'dummy-project',
-    storageBucket:
-        process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
-        'dummy-project.appspot.com',
-    messagingSenderId:
-        process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789',
-    appId:
-        process.env.NEXT_PUBLIC_FIREBASE_APP_ID ||
-        '1:123456789:web:dummy-app-id',
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
 // Only initialize Firebase if we're in the browser or have real config
