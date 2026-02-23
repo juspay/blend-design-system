@@ -171,7 +171,6 @@ export type ComponentTokenType = {
     MULTI_VALUE_INPUT?: ResponsiveMultiValueInputTokens
     DROPDOWN_INPUT?: ResponsiveDropdownInputTokens
     CHECKBOX?: ResponsiveCheckboxTokens
-    RADIOV2?: ResponsiveRadioV2Tokens
     TABS?: ResponsiveTabsTokens
     BUTTON?: ResponsiveButtonTokens
     MODAL?: ResponsiveModalTokens
@@ -214,6 +213,7 @@ export type ComponentTokenType = {
     CHECKBOXV2?: ResponsiveCheckboxV2Tokens
     KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
     TOOLTIPV2?: ResponsiveTooltipV2Tokens
+    RADIOV2?: ResponsiveRadioV2Tokens
 }
 
 type ThemeContextType = {
@@ -240,7 +240,6 @@ const ThemeContext = createContext<ThemeContextType>({
         MULTI_VALUE_INPUT: getMultiValueInputTokens(FOUNDATION_THEME),
         DROPDOWN_INPUT: getDropdownInputTokens(FOUNDATION_THEME),
         CHECKBOX: getCheckboxTokens(FOUNDATION_THEME),
-        RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TABS: getTabsTokens(FOUNDATION_THEME),
         BUTTON: getButtonTokens(FOUNDATION_THEME),
         MODAL: getModalComponentTokens(FOUNDATION_THEME),
@@ -283,6 +282,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
