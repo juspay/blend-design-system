@@ -122,6 +122,7 @@ import SwitchV2Demo from './SwitchV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
+import BreadcrumbV2Demo from './BreadCrumbV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -199,7 +200,8 @@ const SidebarDemo = () => {
         | 'textInputV2'
         | 'textInputAutofillTestV2'
         | 'textInputGroup'
-    >('avatarV2')
+        | 'breadcrumbV2'
+    >('breadcrumbV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -519,6 +521,8 @@ const SidebarDemo = () => {
                 return <TextInputV2Demo />
             case 'textInputAutofillTestV2':
                 return <TextInputAutofillTestV2 />
+            case 'breadcrumbV2':
+                return <BreadcrumbV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -779,6 +783,15 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'breadcrumb',
                     onClick: () => setActiveComponent('breadcrumb'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Breadcrumb V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'breadcrumbV2',
+                    onClick: () => setActiveComponent('breadcrumbV2'),
                     showOnMobile: true,
                 },
                 {

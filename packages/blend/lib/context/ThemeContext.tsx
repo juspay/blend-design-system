@@ -131,7 +131,10 @@ import {
     getTextInputV2Tokens,
     ResponsiveTextInputV2Tokens,
 } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
-
+import {
+    getBreadcrumbV2Tokens,
+    ResponsiveBreadcrumbV2Tokens,
+} from '../components/BreadcrumbV2/BreadcrumbV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -184,6 +187,7 @@ export type ComponentTokenType = {
     SWITCHV2?: ResponsiveSwitchV2Tokens
     AVATARV2?: ResponsiveAvatarV2Tokens
     TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
+    BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
 }
 
 type ThemeContextType = {
@@ -247,6 +251,7 @@ const ThemeContext = createContext<ThemeContextType>({
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATARV2: getAvatarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
