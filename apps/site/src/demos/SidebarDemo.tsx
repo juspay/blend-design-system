@@ -127,6 +127,7 @@ import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
 import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
+import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -208,8 +209,9 @@ const SidebarDemo = () => {
         | 'textInputAutofillTestV2'
         | 'keyValuePairV2'
         | 'textInputGroup'
+        | 'breadcrumbV2'
         | 'timeline'
-    >('keyValuePairV2')
+    >('breadcrumbV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -539,6 +541,8 @@ const SidebarDemo = () => {
                 return <TimelineDemo />
             case 'keyValuePairV2':
                 return <KeyValuePairV2Demo />
+            case 'breadcrumbV2':
+                return <BreadcrumbV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -800,6 +804,15 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'breadcrumb',
                     onClick: () => setActiveComponent('breadcrumb'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Breadcrumb V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'breadcrumbV2',
+                    onClick: () => setActiveComponent('breadcrumbV2'),
                     showOnMobile: true,
                 },
                 {

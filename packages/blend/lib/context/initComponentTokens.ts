@@ -56,6 +56,7 @@ import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInp
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
 import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -159,6 +160,9 @@ const initTokens = (
         SWITCHV2:
             componentTokens.SWITCHV2 ??
             getSwitchV2Tokens(foundationTokens, theme),
+        BREADCRUMBV2:
+            componentTokens.BREADCRUMBV2 ??
+            getBreadcrumbV2Tokens(foundationTokens, theme),
         AVATARV2:
             componentTokens.AVATARV2 ??
             getAvatarV2Tokens(foundationTokens, theme),

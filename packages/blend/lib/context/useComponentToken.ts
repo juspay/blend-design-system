@@ -54,6 +54,7 @@ import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { ResponsiveTimelineTokens } from '../components/Timeline/timeline.token'
 import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
+import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -115,6 +116,7 @@ export const useComponentToken = (
     | ResponsiveTimelineTokens
     | ResponsiveCheckboxV2Tokens
     | ResponsiveKeyValuePairV2Tokens
+    | ResponsiveBreadcrumbV2Tokens
     | ResponsiveTextInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -228,6 +230,8 @@ export const useComponentToken = (
             return componentTokens.CHECKBOXV2
         case 'KEYVALUEPAIRV2':
             return componentTokens.KEYVALUEPAIRV2
+        case 'BREADCRUMBV2':
+            return componentTokens.BREADCRUMBV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
