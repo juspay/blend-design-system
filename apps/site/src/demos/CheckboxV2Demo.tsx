@@ -17,7 +17,7 @@ const CheckboxV2Demo = () => {
     const [error, setError] = useState(false)
     const [disabled, setDisabled] = useState(false)
     const [showSlot, setShowSlot] = useState(true)
-    const [size, setSize] = useState<CheckboxV2Size>(CheckboxV2Size.MEDIUM)
+    const [size, setSize] = useState<CheckboxV2Size>(CheckboxV2Size.MD)
     const [labelMaxLength, setLabelMaxLength] = useState<number | undefined>()
     const [subLabelMaxLength, setSubLabelMaxLength] = useState<
         number | undefined
@@ -137,11 +137,11 @@ const CheckboxV2Demo = () => {
                                 items: [
                                     {
                                         label: 'Small',
-                                        value: CheckboxV2Size.SMALL,
+                                        value: CheckboxV2Size.SM,
                                     },
                                     {
                                         label: 'Medium',
-                                        value: CheckboxV2Size.MEDIUM,
+                                        value: CheckboxV2Size.MD,
                                     },
                                 ],
                             },

@@ -63,7 +63,7 @@ describe('CheckboxV2 Accessibility', () => {
         })
 
         it('meets WCAG standards for all sizes', async () => {
-            const sizes = [CheckboxV2Size.SMALL, CheckboxV2Size.MEDIUM]
+            const sizes = [CheckboxV2Size.SM, CheckboxV2Size.MD]
 
             for (const size of sizes) {
                 const { container, unmount } = render(
@@ -583,7 +583,7 @@ describe('CheckboxV2 Accessibility', () => {
                 <CheckboxV2
                     label="Complete Checkbox"
                     subLabel="Complete description"
-                    size={CheckboxV2Size.MEDIUM}
+                    size={CheckboxV2Size.MD}
                     checked={false}
                     onCheckedChange={handleChange}
                     required

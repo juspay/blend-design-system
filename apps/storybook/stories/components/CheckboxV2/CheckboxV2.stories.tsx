@@ -70,7 +70,7 @@ const [checked, setChecked] = useState(false);
 <CheckboxV2
   label="Accept terms"
   subLabel="You must accept terms to continue"
-  size={CheckboxV2Size.MEDIUM}
+  size={CheckboxV2Size.MD}
   checked={checked}
   onCheckedChange={setChecked}
   slot={<Hash size={16} /> }
@@ -158,7 +158,7 @@ export const Default: Story = {
     args: {
         label: 'Accept terms and conditions',
         subLabel: 'You will agree to our terms by checking this box',
-        size: CheckboxV2Size.MEDIUM,
+        size: CheckboxV2Size.MD,
         checked: false,
         disabled: false,
         required: false,
@@ -189,7 +189,7 @@ export const Sizes: Story = {
                 >
                     <CheckboxV2
                         label="Small checkbox"
-                        size={CheckboxV2Size.SMALL}
+                        size={CheckboxV2Size.SM}
                         checked={states.sm}
                         onCheckedChange={(next: boolean | 'indeterminate') =>
                             setStates((prev) => ({
@@ -200,7 +200,7 @@ export const Sizes: Story = {
                     />
                     <CheckboxV2
                         label="Medium checkbox"
-                        size={CheckboxV2Size.MEDIUM}
+                        size={CheckboxV2Size.MD}
                         checked={states.md}
                         onCheckedChange={(next: boolean | 'indeterminate') =>
                             setStates((prev) => ({

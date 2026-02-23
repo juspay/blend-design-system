@@ -3,8 +3,8 @@ import { CheckboxV2TokensType } from './checkboxV2.tokens'
 import { CSSObject } from 'styled-components'
 
 export enum CheckboxV2Size {
-    SMALL = 'sm',
-    MEDIUM = 'md',
+    SM = 'sm',
+    MD = 'md',
 }
 
 export enum CheckboxV2CheckedState {
@@ -24,7 +24,6 @@ export type CheckboxV2Props = {
     id?: string
     name?: string
     checked?: boolean | 'indeterminate'
-    defaultChecked?: boolean
     onCheckedChange?: (checked: boolean | 'indeterminate') => void
     disabled?: boolean
     required?: boolean
@@ -47,7 +46,6 @@ export type CheckboxV2RootProps = {
     name: string
     ref: React.RefObject<HTMLButtonElement>
     checked: boolean | 'indeterminate'
-    defaultChecked: boolean
     onCheckedChange: (checked: boolean | 'indeterminate') => void
     disabled: boolean
     required: boolean

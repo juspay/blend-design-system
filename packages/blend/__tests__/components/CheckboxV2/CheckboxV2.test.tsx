@@ -137,7 +137,7 @@ describe('CheckboxV2 Component', () => {
             render(
                 <CheckboxV2
                     label="Small"
-                    size={CheckboxV2Size.SMALL}
+                    size={CheckboxV2Size.SM}
                     checked={false}
                 />
             )

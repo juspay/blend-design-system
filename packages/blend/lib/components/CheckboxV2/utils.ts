@@ -1,3 +1,4 @@
+import type { KeyboardEvent } from 'react'
 import { CheckboxV2Size, CheckboxV2CheckedState } from './checkboxV2.types'
 import { CheckboxV2TokensType } from './checkboxV2.tokens'
 
@@ -137,6 +138,24 @@ export const mergeAriaDescribedBy = (
     if (!subtextId) return customAriaDescribedBy
     if (!customAriaDescribedBy) return subtextId
     return `${customAriaDescribedBy} ${subtextId}`.trim()
+}
+
+/**
+ * Handles keyboard interaction for checkbox root.
+ * - On Enter: toggles checked state (indeterminate -> true, otherwise toggles boolean)
+ */
+export const handleCheckboxKeyDown = (
+    e: KeyboardEvent<HTMLButtonElement>,
+    checked: boolean | 'indeterminate' | undefined,
+    disabled: boolean,
+    onCheckedChange?: (checked: boolean | 'indeterminate') => void
+): void => {
+    if (e.key === 'Enter' && !disabled) {
+        e.preventDefault()
+        const current = checked || false
+        const newValue = current === 'indeterminate' ? true : !current
+        onCheckedChange?.(newValue)
+    }
 }
 
 // getIconSize is now handled by tokens.indicator.iconSize

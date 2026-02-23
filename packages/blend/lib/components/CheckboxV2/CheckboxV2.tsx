@@ -14,6 +14,7 @@ import {
     getSubtextId,
     mergeAriaDescribedBy,
     getCheckboxIconColor,
+    handleCheckboxKeyDown,
 } from './utils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { CheckboxV2TokensType } from './checkboxV2.tokens'
@@ -32,12 +33,11 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
             id,
             name,
             checked,
-            defaultChecked = false,
             onCheckedChange,
             disabled = false,
             required = false,
             error = false,
-            size = CheckboxV2Size.MEDIUM,
+            size = CheckboxV2Size.MD,
             subLabel,
             slot,
             maxLength,
@@ -77,8 +77,7 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
                     tokens={tokens}
                     name={name || 'checkbox'}
                     ref={ref as React.RefObject<HTMLButtonElement>}
-                    checked={checked ?? defaultChecked ?? false}
-                    defaultChecked={defaultChecked}
+                    checked={checked || false}
                     onCheckedChange={
                         onCheckedChange as (
                             checked: boolean | 'indeterminate'
@@ -127,7 +126,6 @@ const CheckboxV2Root = ({
     name,
     ref,
     checked,
-    defaultChecked,
     onCheckedChange,
     disabled,
     required,
@@ -144,26 +142,23 @@ const CheckboxV2Root = ({
             id={uniqueId}
             name={name}
             ref={ref}
-            checked={checked ?? defaultChecked ?? false}
+            checked={checked || false}
             onCheckedChange={onCheckedChange}
-            onKeyDown={(e: React.KeyboardEvent) => {
-                if (e.key === 'Enter' && !disabled) {
-                    e.preventDefault()
-                    const current = checked ?? defaultChecked ?? false
-                    const newValue =
-                        current === 'indeterminate' ? true : !current
-                    ;(
-                        onCheckedChange as
-                            | undefined
-                            | ((checked: boolean | 'indeterminate') => void)
-                    )?.(newValue)
-                }
-            }}
+            onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) =>
+                handleCheckboxKeyDown(
+                    e,
+                    checked,
+                    Boolean(disabled),
+                    onCheckedChange as
+                        | undefined
+                        | ((checked: boolean | 'indeterminate') => void)
+                )
+            }
             disabled={disabled}
             required={required}
             size={size}
             $isDisabled={disabled}
-            $checked={checked ?? defaultChecked ?? false}
+            $checked={checked || false}
             $error={error}
             style={getErrorShakeStyle(shouldShake)}
             {...ariaAttributes}

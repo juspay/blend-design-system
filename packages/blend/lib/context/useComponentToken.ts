@@ -69,7 +69,6 @@ export const useComponentToken = (
     | ResponsiveMultiValueInputTokens
     | ResponsiveSwitchTokens
     | ResponsiveCheckboxTokens
-    | ResponsiveCheckboxV2Tokens
     | ResponsiveTabsTokens
     | ResponsiveTooltipTokens
     | ResponsiveDropdownInputTokens
@@ -112,7 +111,9 @@ export const useComponentToken = (
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
     | ResponsiveTextInputV2Tokens
-    | ResponsiveTimelineTokens => {
+    | ResponsiveTimelineTokens
+    | ResponsiveCheckboxV2Tokens
+    | ResponsiveTextInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -137,8 +138,6 @@ export const useComponentToken = (
             return componentTokens.SWITCH
         case 'CHECKBOX':
             return componentTokens.CHECKBOX
-        case 'CHECKBOXV2':
-            return componentTokens.CHECKBOXV2
         case 'TABS':
             return componentTokens.TABS
         case 'DROPDOWN_INPUT':
@@ -224,6 +223,8 @@ export const useComponentToken = (
             return componentTokens.CHARTSV2
         case 'TIMELINE':
             return componentTokens.TIMELINE
+        case 'CHECKBOXV2':
+            return componentTokens.CHECKBOXV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
