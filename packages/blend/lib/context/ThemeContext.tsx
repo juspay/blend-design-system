@@ -168,6 +168,9 @@ import {
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
 
+ import {   getBreadcrumbV2Tokens,
+    ResponsiveBreadcrumbV2Tokens,
+} from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -229,6 +232,7 @@ export type ComponentTokenType = {
     TOOLTIPV2?: ResponsiveTooltipV2Tokens
     RADIOV2?: ResponsiveRadioV2Tokens
     POPOVERV2?: ResponsivePopoverV2Tokens
+    BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
 }
 
 type ThemeContextType = {
@@ -304,6 +308,7 @@ const ThemeContext = createContext<ThemeContextType>({
         TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

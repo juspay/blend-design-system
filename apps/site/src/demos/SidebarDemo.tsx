@@ -132,6 +132,7 @@ import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -220,7 +221,8 @@ const SidebarDemo = () => {
         | 'tooltipV2'
         | 'singleSelectV2'
         | 'popoverV2'
-    >('popoverV2')
+        | 'breadcrumbV2'
+    >('breadcrumbV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -560,6 +562,8 @@ const SidebarDemo = () => {
                 return <KeyValuePairV2Demo />
             case 'tooltipV2':
                 return <TooltipV2Demo />
+            case 'breadcrumbV2':
+                return <BreadcrumbV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -821,6 +825,15 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'breadcrumb',
                     onClick: () => setActiveComponent('breadcrumb'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Breadcrumb V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'breadcrumbV2',
+                    onClick: () => setActiveComponent('breadcrumbV2'),
                     showOnMobile: true,
                 },
                 {
