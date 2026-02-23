@@ -140,8 +140,6 @@ export const useComponentToken = (
             return componentTokens.SWITCH
         case 'CHECKBOX':
             return componentTokens.CHECKBOX
-        case 'RADIOV2':
-            return componentTokens.RADIOV2
         case 'TABS':
             return componentTokens.TABS
         case 'DROPDOWN_INPUT':
@@ -229,6 +227,8 @@ export const useComponentToken = (
             return componentTokens.TIMELINE
         case 'CHECKBOXV2':
             return componentTokens.CHECKBOXV2
+        case 'RADIOV2':
+            return componentTokens.RADIOV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

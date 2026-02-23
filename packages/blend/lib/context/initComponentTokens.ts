@@ -70,9 +70,6 @@ const initTokens = (
         TEXT_AREA:
             componentTokens.TEXT_AREA ?? getTextAreaTokens(foundationTokens),
         RADIO: componentTokens.RADIO ?? getRadioTokens(foundationTokens),
-        RADIOV2:
-            componentTokens.RADIOV2 ??
-            getRadioV2Tokens(foundationTokens, theme),
         SWITCH: componentTokens.SWITCH ?? getSwitchTokens(foundationTokens),
         TEXT_INPUT:
             componentTokens.TEXT_INPUT ?? getTextInputTokens(foundationTokens),
@@ -177,6 +174,9 @@ const initTokens = (
         CHECKBOXV2:
             componentTokens.CHECKBOXV2 ??
             getCheckboxV2Tokens(foundationTokens, theme),
+        RADIOV2:
+            componentTokens.RADIOV2 ??
+            getRadioV2Tokens(foundationTokens, theme),
     }
 }
 
