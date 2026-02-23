@@ -1,15 +1,10 @@
 import { forwardRef, useState } from 'react'
 import Block from '../Primitives/Block/Block'
-import Text from '../Text/Text'
+import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TimelineTokensType } from './timeline.token'
 import type { TimelineShowMoreProps } from './types'
 
-/**
- * Generic "show more" trigger. User provides the label (e.g. "Show All Comments (45+)"
- * or "Load more items"). Works with initial data (parent controls max visible and
- * passes count) or with API (onShowMore fetches more; optional async, spinner shown).
- */
 const TimelineShowMore = forwardRef<HTMLDivElement, TimelineShowMoreProps>(
     ({ count, label, onShowMore, isLoading = false }, ref) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
@@ -73,13 +68,13 @@ const TimelineShowMore = forwardRef<HTMLDivElement, TimelineShowMoreProps>(
                             }}
                         />
                     )}
-                    <Text
+                    <PrimitiveText
                         fontSize={tokens.showMore.fontSize}
                         fontWeight={tokens.showMore.fontWeight}
                         color={tokens.showMore.color}
                     >
                         {loading ? 'Loading…' : displayText}
-                    </Text>
+                    </PrimitiveText>
                 </Block>
             </Block>
         )

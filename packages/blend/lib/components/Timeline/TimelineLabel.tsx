@@ -1,14 +1,10 @@
 import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
-import Text from '../Text/Text'
+import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TimelineTokensType } from './timeline.token'
 import type { TimelineLabelProps } from './types'
 
-/**
- * A date / group separator label rendered on the vertical timeline line.
- * Displays a small hollow circle indicator and date text.
- */
 const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
     ({ date }, ref) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
@@ -23,7 +19,6 @@ const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
                 marginBottom={tokens.label.marginBottom}
                 data-timeline-label="true"
             >
-                {/* Hollow circle centred on the vertical line */}
                 <Block
                     position="absolute"
                     left={tokens.layout.circleOffset}
@@ -37,13 +32,13 @@ const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
                     flexShrink={0}
                 />
 
-                <Text
+                <PrimitiveText
                     fontSize={tokens.label.fontSize}
                     fontWeight={tokens.label.fontWeight}
                     color={tokens.label.color}
                 >
                     {date}
-                </Text>
+                </PrimitiveText>
             </Block>
         )
     }

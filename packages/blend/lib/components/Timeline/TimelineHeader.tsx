@@ -6,11 +6,6 @@ import { TimelineTokensType } from './timeline.token'
 import { TimelineNodeStatus } from './types'
 import type { TimelineHeaderProps } from './types'
 
-/**
- * A primary node on the timeline.
- * Renders a status-coloured dot on the vertical line, a title and optional
- * timestamp.  Pass `TimelineSubstep` elements as children to create leaf nodes.
- */
 const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
     (
         {
@@ -45,7 +40,6 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                         children ? tokens.header.title.marginBottom : undefined
                     }
                 >
-                    {/* Status dot — absolutely centred on the vertical line */}
                     <Block
                         position="absolute"
                         left={tokens.layout.circleOffset}
@@ -68,7 +62,7 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                         fontSize={tokens.header.title.fontSize}
                         fontWeight={tokens.header.title.fontWeight}
                         color={tokens.header.title.color}
-                        flexGrow={1}
+                        style={{ flexGrow: 1 }}
                     >
                         {title}
                     </Text>
@@ -93,7 +87,6 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                     </Block>
                 </Block>
 
-                {/* ---- Substeps / children ---- */}
                 {children && (
                     <Block paddingLeft={tokens.layout.gutter}>{children}</Block>
                 )}

@@ -8,13 +8,6 @@ import { TimelineTokensType } from './timeline.token'
 import { TimelineNodeStatus } from './types'
 import type { TimelineNodeProps } from './types'
 
-/**
- * Generic timeline leaf node (not comment-specific).
- * Layout:
- *   Row 1: leftSlot | title | headerRightSlot, and top-right: datetimeLeftSlot | datetime | datetimeRightSlot
- *   Row 2: text or children (body)
- *   Row 3: avatar (AvatarV2) + user name + time
- */
 const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
     (
         {
@@ -131,7 +124,6 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                             <Text
                                 fontSize={tokens.node.text.fontSize}
                                 color={tokens.node.text.color}
-                                // lineHeight={tokens.node.text.lineHeight}
                                 style={{
                                     display: '-webkit-box',
                                     WebkitLineClamp: maxLines,
@@ -147,7 +139,6 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                     </Block>
                 )}
 
-                {/* Row 3: avatar + user name + time */}
                 {(user || time) && (
                     <Block display="flex" alignItems="center">
                         {user && (
