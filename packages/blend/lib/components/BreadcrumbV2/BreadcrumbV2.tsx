@@ -143,7 +143,12 @@ const Breadcrumb = ({
 
     const restItems = shouldShowMenu ? items.slice(-3) : items.slice(1)
     return (
-        <Block as="nav" width={'full'} aria-label="Breadcrumb navigation">
+        <Block
+            as="nav"
+            width={'full'}
+            aria-label="Breadcrumb navigation"
+            style={{ overflowX: 'auto', scrollbarWidth: 'none' }}
+        >
             <ol
                 style={{
                     display: 'flex',
