@@ -96,7 +96,7 @@ const buildTokens = (
         },
         description: {
             fontSize: foundationToken.font.size.body.md.fontSize,
-            color: foundationToken.colors.gray[400],
+            color: foundationToken.colors.gray[600],
             marginTop: foundationToken.unit[4],
             marginBottom: foundationToken.unit[8],
             lineHeight: foundationToken.font.size.body.md.lineHeight,
@@ -118,25 +118,25 @@ const buildTokens = (
             marginTop: foundationToken.unit[8],
         },
         user: {
-            fontSize: foundationToken.font.size.body.xs.fontSize,
+            fontSize: foundationToken.font.size.body.sm.fontSize,
             color: foundationToken.colors.gray[600],
             marginLeft: foundationToken.unit[6],
         },
         time: {
-            fontSize: foundationToken.font.size.body.xs.fontSize,
-            color: foundationToken.colors.gray[500],
+            fontSize: foundationToken.font.size.body.sm.fontSize,
+            color: foundationToken.colors.gray[600],
         },
         separator: {
             width: foundationToken.unit[4],
             height: foundationToken.unit[4],
-            color: foundationToken.colors.gray[400],
-            marginLeft: foundationToken.unit[8],
-            marginRight: foundationToken.unit[8],
+            color: foundationToken.colors.gray[600],
+            marginLeft: foundationToken.unit[6],
+            marginRight: foundationToken.unit[6],
         },
     },
 
     showMore: {
-        paddingLeft: foundationToken.unit[28],
+        paddingLeft: foundationToken.unit[40],
         marginTop: foundationToken.unit[8],
     },
 })

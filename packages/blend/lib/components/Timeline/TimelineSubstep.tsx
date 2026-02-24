@@ -104,6 +104,12 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                                     fontSize={subsection.title.fontSize}
                                     fontWeight={subsection.title.fontWeight}
                                     color={subsection.title.color}
+                                    style={{
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        minWidth: 0,
+                                    }}
                                 >
                                     {title}
                                 </Text>

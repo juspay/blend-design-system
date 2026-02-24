@@ -12,7 +12,6 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
     (
         {
             title,
-            leftSlot,
             headerRightSlot,
             datetime,
             datetimeLeftSlot,
