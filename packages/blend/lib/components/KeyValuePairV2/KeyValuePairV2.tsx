@@ -110,7 +110,7 @@ const ResponsiveText = ({
     if (showTooltipOnTruncate && isTruncated) {
         return (
             <Tooltip content={children} side={TooltipSide.TOP}>
-                <Block style={{ width: '100%' }}>{textElement}</Block>
+                {textElement}
             </Tooltip>
         )
     }
@@ -153,6 +153,7 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
             display: 'flex',
             gap: keyValuePairTokens.value.gap,
             alignItems: textOverflow !== 'truncate' ? 'self-start' : 'center',
+            overflow: textOverflow === 'truncate' ? 'hidden' : 'visible',
         }
 
         const baseId = useId()
