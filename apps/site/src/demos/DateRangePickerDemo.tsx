@@ -853,6 +853,28 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
 
+                    {/* Max Year Offfset Example */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Max Yea Offset Usage
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Using maxYearOffset to limit year selection to 7
+                            years in the future It can be anything above or
+                            equal to 0. Negative will be ignored and default max
+                            year offset (10) will be used
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={basicRange}
+                                onChange={handleBasicRangeChange}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                                maxYearOffset={7}
+                            />
+                        </div>
+                    </div>
+
                     {/* Format Example */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
