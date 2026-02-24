@@ -23,7 +23,7 @@ export type ChartV2NoDataProps = {
     button?: ButtonProps
 }
 
-export type ChartV2Props = ChartV2ReactProps & {
+export type ChartV2Props = Omit<ChartV2ReactProps, 'className' | 'style'> & {
     highcharts?: ChartV2Type
     skeleton?: ChartV2SkeletonProps
     noData?: ChartV2NoDataProps
