@@ -134,7 +134,7 @@ import {
 import {
     getBreadcrumbV2Tokens,
     ResponsiveBreadcrumbV2Tokens,
-} from '../components/BreadcrumbV2/BreadcrumbV2.tokens'
+} from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens

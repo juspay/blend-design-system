@@ -122,7 +122,7 @@ import SwitchV2Demo from './SwitchV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
-import BreadcrumbV2Demo from './BreadCrumbV2Demo'
+import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<

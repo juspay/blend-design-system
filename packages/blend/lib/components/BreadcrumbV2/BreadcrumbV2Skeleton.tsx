@@ -1,6 +1,6 @@
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
-import { BreadcrumbV2TokensType } from './BreadcrumbV2.tokens'
+import { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
 
 const BreadcrumbV2Skeleton = ({

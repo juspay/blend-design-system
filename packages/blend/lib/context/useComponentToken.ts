@@ -50,7 +50,7 @@ import { ResponsiveSnackbarV2Tokens } from '../components/SnackbarV2'
 import { ResponsiveSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
 import { ResponsiveAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
-import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/BreadcrumbV2.tokens'
+import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
