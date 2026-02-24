@@ -1,6 +1,7 @@
 import BreadcrumbV2 from '../../../../packages/blend/lib/components/BreadcrumbV2/BreadcrumbV2'
 import { BreadcrumbV2ItemType } from '../../../../packages/blend/lib/components/BreadcrumbV2/breadcrumbV2.types'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import {
     Home,
     Folder,
@@ -12,8 +13,10 @@ import {
     Star,
 } from 'lucide-react'
 import { useState } from 'react'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const BreadcrumbV2Demo = () => {
+    const { theme } = useTheme()
     const [playgroundItems] = useState<BreadcrumbV2ItemType[]>([
         {
             label: 'Home',
@@ -233,7 +236,14 @@ const BreadcrumbV2Demo = () => {
                         />
                     </div>
 
-                    <div className="min-h-20 rounded-2xl w-full flex items-center p-4 outline-1 outline-gray-200">
+                    <div
+                        className={`min-h-32 p-4 rounded-xl flex justify-center items-center border-2 ${
+                            theme === Theme.DARK
+                                ? 'border-gray-700 bg-gray-900'
+                                : 'border-gray-300 bg-gray-50'
+                        }`}
+                    >
+                        {' '}
                         <BreadcrumbV2
                             items={
                                 showSlots
