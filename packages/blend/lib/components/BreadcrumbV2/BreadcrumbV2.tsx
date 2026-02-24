@@ -4,7 +4,7 @@ import PrimitiveLink from '../Primitives/PrimitiveLink'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { FOUNDATION_THEME } from '../../tokens'
-import type { BreadcrumbV2TokensType } from './BreadcrumbV2.tokens'
+import type { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
 import type {
     BreadcrumbV2ItemType,
     BreadcrumbV2SkeletonProps,
