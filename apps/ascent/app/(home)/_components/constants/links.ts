@@ -3,7 +3,7 @@
  */
 export const EXTERNAL_LINKS = {
     github: 'https://github.com/juspay/blend-design-system',
-    figma: 'https://www.figma.com/@juspay',
+    figma: 'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System',
     storybook: 'https://blend.juspay.design/storybook',
     privacyPolicy: 'https://juspay.io/privacy-policy',
     termsOfService: 'https://juspay.io/terms',
@@ -21,5 +21,6 @@ export const ROUTES = {
     home: '/',
     docs: '/docs',
     blog: '/blog',
+    blogWhyWeNamedItBlend: '/blog/why-we-named-it-blend',
     changelog: '/changelog',
 } as const

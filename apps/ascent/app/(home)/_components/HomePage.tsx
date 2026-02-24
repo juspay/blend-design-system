@@ -15,7 +15,7 @@ export default function HomePage() {
             <Header />
 
             <main className="pt-18">
-                <div className="w-full lg:border-x border-t border-gray-200 relative">
+                <div className="w-full lg:border-x border-gray-200 relative">
                     <HeroSection />
 
                     <DescriptionSection />

@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { Ellipse } from '../icons/ellipse'
+import { ROUTES } from '../constants/links'
 
 /** Small blue dot at border intersections for editorial grid aesthetic */
 function BlueDot({ className = '' }: { className?: string }) {
@@ -51,12 +53,12 @@ export default function DescriptionSection() {
                             </p>
                             <p className="text-[15px] text-gray-700 leading-relaxed">
                                 Read why we named it &ldquo;
-                                <a
-                                    href="/blog"
+                                <Link
+                                    href={ROUTES.blogWhyWeNamedItBlend}
                                     className="text-gray-900 underline underline-offset-4 transition-colors"
                                 >
                                     Blend
-                                </a>
+                                </Link>
                                 &rdquo;.
                             </p>
                         </div>

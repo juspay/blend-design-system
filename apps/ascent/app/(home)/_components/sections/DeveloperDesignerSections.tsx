@@ -5,6 +5,7 @@ import { ExternalLink, Copy, Check, X, FileCode } from 'lucide-react'
 import DitherCanvas from '../effects/DitherCanvas'
 import CollaborativeCursor from '../effects/CollaborativeCursor'
 import { FigmaIconSmall, DesignerIcon, ArrowRightIcon } from '../icons'
+import { EXTERNAL_LINKS } from '../constants/links'
 
 export default function DeveloperDesignerSections() {
     const [copied, setCopied] = useState(false)
@@ -81,7 +82,7 @@ export default function DeveloperDesignerSections() {
                     </div>
                 </div>
 
-                <div className="p-4 pb-12 lg:pb-0">
+                <div className="p-4 pb-12">
                     <div className="font-mono text-sm">
                         <div className="flex gap-4">
                             <div className="text-blue-300 select-none text-right w-4">
@@ -241,7 +242,7 @@ export default function DeveloperDesignerSections() {
                             </div>
 
                             <a
-                                href="https://www.figma.com"
+                                href={EXTERNAL_LINKS.figma}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 justify-center w-full px-2 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"

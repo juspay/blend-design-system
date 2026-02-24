@@ -74,7 +74,7 @@ export default function LaunchVideoSection() {
             </button>
 
             {isExpanded && (
-                <div className="px-8 pb-8">
+                <div className="lg:px-44 pb-20 lg:pb-8 px-8">
                     <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black shadow-lg">
                         <video
                             src={videoInfo.url}
