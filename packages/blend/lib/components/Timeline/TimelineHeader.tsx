@@ -21,7 +21,7 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
         ref
     ) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
-        const { header } = tokens
+        const { header, indicator } = tokens
         const dotColor = tokens.statusColors[status]
 
         const childrenWithNestedFlag = children
@@ -38,7 +38,9 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
             <Block
                 ref={ref}
                 position="relative"
-                marginBottom={children ? undefined : header.sectionMarginBottom}
+                marginBottom={
+                    children ? undefined : header.section.marginBottom
+                }
                 data-timeline-header="true"
                 {...rest}
             >
@@ -46,25 +48,25 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                     position="relative"
                     display="flex"
                     alignItems="center"
-                    paddingLeft={header.paddingLeft}
+                    paddingLeft={header.row.paddingLeft}
                     marginBottom={
-                        children ? header.toSubsectionMarginBottom : undefined
+                        children ? header.row.marginBottom : undefined
                     }
                 >
                     <Block
                         position="absolute"
-                        left={header.circle.left}
+                        left={indicator.left}
                         top="50%"
                         style={{ transform: 'translateY(-50%)' }}
-                        width={header.circle.width}
-                        height={header.circle.height}
+                        width={indicator.width}
+                        height={indicator.height}
                         borderRadius="50%"
                         backgroundColor={dotColor}
                         flexShrink={0}
                     />
 
                     {leftSlot && (
-                        <Block flexShrink={0} marginRight={header.gap}>
+                        <Block flexShrink={0} marginRight={header.row.gap}>
                             {leftSlot}
                         </Block>
                     )}
@@ -84,7 +86,7 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                         gap={header.timestamp.gap}
                         flexShrink={0}
                         marginLeft="auto"
-                        paddingLeft={header.gap}
+                        paddingLeft={header.row.gap}
                     >
                         {timestamp != null && timestamp !== '' && (
                             <Text
@@ -103,7 +105,7 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                 {childrenWithNestedFlag ? (
                     <Block
                         paddingLeft={0}
-                        marginBottom={header.sectionMarginBottom}
+                        marginBottom={header.section.marginBottom}
                     >
                         {childrenWithNestedFlag}
                     </Block>

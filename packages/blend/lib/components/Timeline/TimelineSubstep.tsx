@@ -24,8 +24,8 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
         ref
     ) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
-        const { substep, track } = tokens
-        const { connector, circle } = substep
+        const { subsection, track, indicator } = tokens
+        const { connector } = subsection
         const showDot = !isNestedUnderHeader && showIndicator
         const dotColor = tokens.statusColors[TimelineNodeStatus.NEUTRAL]
 
@@ -40,18 +40,18 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
             <Block
                 ref={ref}
                 position="relative"
-                marginTop={substep.marginTop}
-                marginBottom={substep.marginBottom}
+                marginTop={subsection.marginTop}
+                marginBottom={subsection.marginBottom}
                 data-timeline-substep="true"
                 {...rest}
             >
                 {showDot && (
                     <Block
                         position="absolute"
-                        left={circle.left}
+                        left={indicator.left}
                         top={0}
-                        width={circle.width}
-                        height={circle.height}
+                        width={indicator.width}
+                        height={indicator.height}
                         borderRadius="50%"
                         backgroundColor={dotColor}
                         flexShrink={0}
@@ -78,32 +78,32 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                     >
                         <path
                             d={CONNECTOR_PATH}
-                            stroke={connector.strokeColor}
+                            stroke={connector.color}
                             strokeLinecap="round"
                         />
                     </svg>
                 </Block>
 
-                <Block marginLeft={substep.marginLeft}>
+                <Block marginLeft={subsection.marginLeft}>
                     {hasTitleRow && (
                         <Block
                             display="flex"
                             alignItems="flex-end"
                             justifyContent="space-between"
                             flexWrap="wrap"
-                            gap={substep.gap}
+                            gap={subsection.titleRow.gap}
                         >
                             <Block
                                 display="flex"
                                 alignItems="center"
-                                gap={substep.title.gap}
+                                gap={subsection.title.gap}
                                 flexGrow={1}
                                 minWidth={0}
                             >
                                 <Text
-                                    fontSize={substep.title.fontSize}
-                                    fontWeight={substep.title.fontWeight}
-                                    color={substep.title.color}
+                                    fontSize={subsection.title.fontSize}
+                                    fontWeight={subsection.title.fontWeight}
+                                    color={subsection.title.color}
                                 >
                                     {title}
                                 </Text>
@@ -115,7 +115,7 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                             <Block
                                 display="flex"
                                 alignItems="center"
-                                gap={substep.timestamp.gap}
+                                gap={subsection.datetime.gap}
                                 flexShrink={0}
                             >
                                 {datetimeLeftSlot != null && (
@@ -125,8 +125,8 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                                 )}
                                 {timestamp != null && timestamp !== '' && (
                                     <Text
-                                        fontSize={substep.timestamp.fontSize}
-                                        color={substep.timestamp.color}
+                                        fontSize={subsection.datetime.fontSize}
+                                        color={subsection.datetime.color}
                                     >
                                         {timestamp}
                                     </Text>
@@ -144,13 +144,13 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                         <Block
                             marginTop={
                                 hasTitleRow
-                                    ? substep.description.marginTop
+                                    ? subsection.description.marginTop
                                     : undefined
                             }
                         >
                             <Text
-                                fontSize={substep.description.fontSize}
-                                color={substep.description.color}
+                                fontSize={subsection.description.fontSize}
+                                color={subsection.description.color}
                             >
                                 {description}
                             </Text>

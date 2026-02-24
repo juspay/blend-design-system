@@ -18,21 +18,18 @@ const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
                 display="flex"
                 alignItems="center"
                 paddingLeft={label.paddingLeft}
-                marginTop={label.marginTop}
                 marginBottom={label.marginBottom}
-                minHeight={label.minHeight}
                 data-timeline-label="true"
                 {...rest}
             >
-                {/* Mask behind circle only: when label is in center we see line → circle → line */}
                 <Block
                     position="absolute"
                     left={label.circle.left}
                     top="50%"
                     style={{ transform: 'translateY(-50%)' }}
                     width={label.circle.width}
-                    height={label.circle.maskHeight}
-                    backgroundColor={label.circle.maskBackground}
+                    height={label.mask.height}
+                    backgroundColor={label.mask.backgroundColor}
                 />
                 <Block
                     position="absolute"

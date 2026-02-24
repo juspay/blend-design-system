@@ -29,7 +29,7 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
         ref
     ) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
-        const { node } = tokens
+        const { subsection, indicator } = tokens
         const dotColor = tokens.statusColors[status]
         const body = text ?? (typeof children === 'string' ? children : null)
         const hasBody = Boolean(
@@ -47,18 +47,18 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
             <Block
                 ref={ref}
                 position="relative"
-                paddingLeft={node.paddingLeft}
-                marginBottom={node.marginBottom}
+                paddingLeft={subsection.paddingLeft}
+                marginBottom={subsection.marginBottom}
                 data-timeline-node="true"
                 style={{ minWidth: 0 }}
                 {...rest}
             >
                 <Block
                     position="absolute"
-                    left={node.circle.left}
-                    top={node.circle.top}
-                    width={node.circle.width}
-                    height={node.circle.height}
+                    left={indicator.left}
+                    top={subsection.rootIndicator.top}
+                    width={indicator.width}
+                    height={indicator.height}
                     borderRadius="50%"
                     backgroundColor={dotColor}
                     flexShrink={0}
@@ -70,23 +70,25 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                         alignItems="flex-start"
                         justifyContent="space-between"
                         flexWrap="wrap"
-                        gap={node.gap}
+                        gap={subsection.headerRow.gap}
                         marginBottom={
-                            hasBody ? node.text.marginBottom : undefined
+                            hasBody
+                                ? subsection.description.marginBottom
+                                : undefined
                         }
                     >
                         <Block
                             display="flex"
                             alignItems="center"
-                            gap={node.gap}
+                            gap={subsection.headerRow.gap}
                             flexGrow={1}
                             minWidth={0}
                         >
                             {title != null && title !== '' && (
                                 <Text
-                                    fontSize={node.header.fontSize}
-                                    fontWeight={node.header.fontWeight}
-                                    color={node.header.color}
+                                    fontSize={subsection.title.fontSize}
+                                    fontWeight={subsection.title.fontWeight}
+                                    color={subsection.title.color}
                                 >
                                     {title}
                                 </Text>
@@ -99,7 +101,7 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                         <Block
                             display="flex"
                             alignItems="center"
-                            gap={node.gapSmall}
+                            gap={subsection.datetimeGroup.gap}
                             flexShrink={0}
                         >
                             {datetimeLeftSlot != null && (
@@ -107,8 +109,8 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                             )}
                             {datetime != null && datetime !== '' && (
                                 <Text
-                                    fontSize={node.datetime.fontSize}
-                                    color={node.datetime.color}
+                                    fontSize={subsection.datetime.fontSize}
+                                    color={subsection.datetime.color}
                                 >
                                     {datetime}
                                 </Text>
@@ -125,14 +127,17 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                 {hasBody && (
                     <Block
                         marginBottom={
-                            user || time ? node.text.marginBottom : undefined
+                            user || time
+                                ? subsection.description.marginBottom
+                                : undefined
                         }
                         style={{ minWidth: 0 }}
                     >
                         {body != null ? (
                             <Text
-                                fontSize={node.text.fontSize}
-                                color={node.text.color}
+                                fontSize={subsection.description.fontSize}
+                                color={subsection.description.color}
+                                // lineHeight={subsection.description.lineHeight}
                                 style={{
                                     display: '-webkit-box',
                                     WebkitLineClamp: maxLines,
@@ -152,7 +157,7 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                     <Block
                         display="flex"
                         alignItems="center"
-                        marginTop={node.avatar.marginTop}
+                        marginTop={subsection.avatar.marginTop}
                     >
                         {user && (
                             <>
@@ -162,15 +167,15 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                                         user.fallbackText ?? user.name
                                     }
                                     size={AvatarV2Size.SM}
-                                    width={node.avatar.width}
-                                    height={node.avatar.height}
+                                    width={subsection.avatar.width}
+                                    height={subsection.avatar.height}
                                     {...avatarProps}
                                 />
                                 <Text
-                                    fontSize={node.user.fontSize}
-                                    color={node.user.color}
+                                    fontSize={subsection.user.fontSize}
+                                    color={subsection.user.color}
                                     style={{
-                                        marginLeft: node.user
+                                        marginLeft: subsection.user
                                             .marginLeft as string,
                                     }}
                                 >
@@ -179,22 +184,22 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                                 {time != null && time !== '' && (
                                     <>
                                         <Block
-                                            width={node.separator.width}
-                                            height={node.separator.height}
+                                            width={subsection.separator.width}
+                                            height={subsection.separator.height}
                                             borderRadius="50%"
                                             backgroundColor={
-                                                node.separator.color
+                                                subsection.separator.color
                                             }
                                             marginLeft={
-                                                node.separator.marginLeft
+                                                subsection.separator.marginLeft
                                             }
                                             marginRight={
-                                                node.separator.marginRight
+                                                subsection.separator.marginRight
                                             }
                                         />
                                         <Text
-                                            fontSize={node.time.fontSize}
-                                            color={node.time.color}
+                                            fontSize={subsection.time.fontSize}
+                                            color={subsection.time.color}
                                         >
                                             {time}
                                         </Text>
@@ -204,8 +209,8 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                         )}
                         {!user && time != null && time !== '' && (
                             <Text
-                                fontSize={node.time.fontSize}
-                                color={node.time.color}
+                                fontSize={subsection.time.fontSize}
+                                color={subsection.time.color}
                             >
                                 {time}
                             </Text>

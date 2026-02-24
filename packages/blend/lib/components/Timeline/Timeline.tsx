@@ -39,11 +39,8 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
             if (!first) {
                 setLineTop(0)
             } else if (first.getAttribute('data-timeline-label') === 'true') {
-                // Line starts after the label row so we see: circle → line
                 setLineTop(first.offsetTop + first.offsetHeight)
             } else if (first.getAttribute('data-timeline-header') === 'true') {
-                // Line starts after the header row (substep SVG connectors
-                // branch from track.left, so the track line begins below)
                 setLineTop(first.offsetTop + first.offsetHeight)
             } else if (first.getAttribute('data-timeline-substep') === 'true')
                 setLineTop(LINE_TOP_FALLBACK_SUBSTEP)
@@ -52,6 +49,19 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
             if (last) {
                 if (last.getAttribute('data-timeline-show-more') === 'true') {
                     setLineBottom(last.offsetTop)
+                } else if (
+                    last.getAttribute('data-timeline-header') === 'true'
+                ) {
+                    const childEls = Array.from(last.children) as HTMLElement[]
+                    const bottomOfLastChild =
+                        childEls.length > 0
+                            ? Math.max(
+                                  ...childEls.map(
+                                      (el) => el.offsetTop + el.offsetHeight
+                                  )
+                              )
+                            : 0
+                    setLineBottom(last.offsetTop + bottomOfLastChild)
                 } else {
                     setLineBottom(last.offsetTop + last.offsetHeight)
                 }

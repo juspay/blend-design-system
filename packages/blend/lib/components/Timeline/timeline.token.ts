@@ -17,21 +17,27 @@ export type TimelineTokensType = {
         left: CSSObject['left']
     }
 
+    indicator: {
+        left: CSSObject['left']
+        width: CSSObject['width']
+        height: CSSObject['height']
+    }
+
     statusColors: TimelineStatusColors
 
     label: {
         paddingLeft: CSSObject['paddingLeft']
-        marginTop: CSSObject['marginTop']
         marginBottom: CSSObject['marginBottom']
-        minHeight: CSSObject['minHeight']
         circle: {
             left: CSSObject['left']
             width: CSSObject['width']
             height: CSSObject['height']
             backgroundColor: CSSObject['backgroundColor']
             border: CSSObject['border']
-            maskBackground: CSSObject['backgroundColor']
-            maskHeight: CSSObject['height']
+        }
+        mask: {
+            backgroundColor: CSSObject['backgroundColor']
+            height: CSSObject['height']
         }
         text: {
             fontSize: CSSObject['fontSize']
@@ -41,14 +47,13 @@ export type TimelineTokensType = {
     }
 
     header: {
-        paddingLeft: CSSObject['paddingLeft']
-        toSubsectionMarginBottom: CSSObject['marginBottom']
-        sectionMarginBottom: CSSObject['marginBottom']
-        gap: CSSObject['gap']
-        circle: {
-            left: CSSObject['left']
-            width: CSSObject['width']
-            height: CSSObject['height']
+        row: {
+            paddingLeft: CSSObject['paddingLeft']
+            marginBottom: CSSObject['marginBottom']
+            gap: CSSObject['gap']
+        }
+        section: {
+            marginBottom: CSSObject['marginBottom']
         }
         title: {
             fontSize: CSSObject['fontSize']
@@ -62,15 +67,22 @@ export type TimelineTokensType = {
         }
     }
 
-    substep: {
+    subsection: {
+        paddingLeft: CSSObject['paddingLeft']
         marginTop: CSSObject['marginTop']
         marginBottom: CSSObject['marginBottom']
         marginLeft: CSSObject['marginLeft']
-        gap: CSSObject['gap']
-        circle: {
-            left: CSSObject['left']
-            width: CSSObject['width']
-            height: CSSObject['height']
+        rootIndicator: {
+            top: CSSObject['top']
+        }
+        headerRow: {
+            gap: CSSObject['gap']
+        }
+        titleRow: {
+            gap: CSSObject['gap']
+        }
+        datetimeGroup: {
+            gap: CSSObject['gap']
         }
         title: {
             fontSize: CSSObject['fontSize']
@@ -82,47 +94,19 @@ export type TimelineTokensType = {
             fontSize: CSSObject['fontSize']
             color: CSSObject['color']
             marginTop: CSSObject['marginTop']
+            marginBottom: CSSObject['marginBottom']
+            lineHeight: CSSObject['lineHeight']
         }
-        timestamp: {
+        datetime: {
             fontSize: CSSObject['fontSize']
             color: CSSObject['color']
             gap: CSSObject['gap']
         }
         connector: {
-            width: CSSObject['width']
-            height: CSSObject['height']
-            strokeColor: CSSObject['color']
-            left: CSSObject['left']
-        }
-    }
-
-    node: {
-        paddingLeft: CSSObject['paddingLeft']
-        marginBottom: CSSObject['marginBottom']
-        /** Gap between title / right-slot group items */
-        gap: CSSObject['gap']
-        /** Smaller gap used inside the datetime slot group */
-        gapSmall: CSSObject['gap']
-        circle: {
             left: CSSObject['left']
             width: CSSObject['width']
             height: CSSObject['height']
-            top: CSSObject['top']
-        }
-        header: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
-        }
-        datetime: {
-            fontSize: CSSObject['fontSize']
-            color: CSSObject['color']
-        }
-        text: {
-            fontSize: CSSObject['fontSize']
-            color: CSSObject['color']
-            lineHeight: CSSObject['lineHeight']
-            marginBottom: CSSObject['marginBottom']
         }
         avatar: {
             width: CSSObject['width']
