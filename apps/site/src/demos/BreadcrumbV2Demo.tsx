@@ -221,7 +221,7 @@ const BreadcrumbV2Demo = () => {
         <div className="p-8 space-y-12">
             {/* Playground Section */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Playground</h2>
+                <h2 className="text-2xl font-bold">BreadcrumbV2 Playground</h2>
                 <div className="space-y-6">
                     <div className="flex items-center gap-6">
                         <Switch
@@ -237,10 +237,10 @@ const BreadcrumbV2Demo = () => {
                     </div>
 
                     <div
-                        className={`min-h-32 p-4 rounded-xl flex justify-center items-center border-2 ${
+                        className={`p-4 rounded-xl flex justify-center items-center ${
                             theme === Theme.DARK
                                 ? 'border-gray-700 bg-gray-900'
-                                : 'border-gray-300 bg-gray-50'
+                                : 'border bg-gray-50'
                         }`}
                     >
                         {' '}
