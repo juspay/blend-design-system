@@ -50,6 +50,7 @@ import { ResponsiveSnackbarV2Tokens } from '../components/SnackbarV2'
 import { ResponsiveSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
 import { ResponsiveAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
+import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -105,6 +106,7 @@ export const useComponentToken = (
     | ResponsiveSnackbarV2Tokens
     | ResponsiveSwitchV2Tokens
     | ResponsiveAvatarV2Tokens
+    | ResponsiveBreadcrumbV2Tokens
     | ResponsiveTextInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -211,6 +213,8 @@ export const useComponentToken = (
             return componentTokens.AVATARV2
         case 'TEXT_INPUTV2':
             return componentTokens.TEXT_INPUTV2
+        case 'BREADCRUMBV2':
+            return componentTokens.BREADCRUMBV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
