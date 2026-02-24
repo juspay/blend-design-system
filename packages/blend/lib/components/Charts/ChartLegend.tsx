@@ -448,7 +448,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                             display="flex"
                                             alignItems="center"
                                             justifyContent="center"
-                                            gap={FOUNDATION_THEME.unit[3]}
+                                            gap={FOUNDATION_THEME.unit[4]}
                                         >
                                             <Text
                                                 fontSize={
@@ -476,10 +476,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                 }
                                                 color={
                                                     legendTokens.item.color
-                                                        .default
+                                                        .total
                                                 }
                                             >
-                                                :
+                                                I
                                             </Text>
                                             <Text
                                                 fontSize={
@@ -490,7 +490,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                 }
                                                 color={
                                                     legendTokens.item.color
-                                                        .active
+                                                        .total
                                                 }
                                             >
                                                 {legend.total}
