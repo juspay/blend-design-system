@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 import type { AvatarV2Props } from '../AvatarV2/avatarV2.types'
+import type { ButtonV2Props } from '../ButtonV2/buttonV2.types'
 
 // ---- Enums ----
 
@@ -28,8 +29,10 @@ export interface TimelineRootProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export interface TimelineLabelProps {
-    /** Date or group label text, e.g. "JAN 15, 2025" */
-    date: string
+    /** Label text (e.g. date "JAN 15, 2025" or section "Comments"). Rendered in label row. */
+    text: string
+    /** @deprecated Use `text` instead */
+    date?: string
 }
 
 export interface TimelineHeaderProps extends HTMLAttributes<HTMLDivElement> {
@@ -47,12 +50,19 @@ export interface TimelineHeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface TimelineSubstepProps extends HTMLAttributes<HTMLDivElement> {
     title: string
+    /** @internal Set by Timeline.Header when Substep is a child */
+    isNestedUnderHeader?: boolean
+    /** @internal Set by Timeline when Substep is first child (hide dot where connector meets line) */
+    showIndicator?: boolean
     description?: string
+    /** Date/time (body sm, gray 500); row has datetimeLeftSlot then timestamp */
     timestamp?: string
-    /** Optional element before the title */
-    leftSlot?: ReactNode
-    /** Optional element after the timestamp */
+    /** React element next to title (body md, gray 800, normal weight) — no left slot on title */
     rightSlot?: ReactNode
+    /** Optional element before the date/time */
+    datetimeLeftSlot?: ReactNode
+    /** Optional element after the date/time */
+    datetimeRightSlot?: ReactNode
 }
 
 /**
@@ -79,6 +89,8 @@ export interface TimelineNodeProps extends HTMLAttributes<HTMLDivElement> {
     maxLines?: number
     /** Optional avatar + name row below text (uses AvatarV2) */
     user?: TimelineUser
+    /** Props passed to AvatarV2 when user is set (e.g. size, shape) */
+    avatarProps?: Omit<AvatarV2Props, 'src' | 'fallbackText'>
     /** Time shown next to avatar (e.g. "04:30 PM") */
     time?: string
     /** Status dot color */
@@ -97,11 +109,10 @@ export interface TimelineShowMoreProps {
      */
     label?: string
     /**
-     * Called when the user clicks. Use for:
-     * - Revealing more when all data is already loaded (sync).
-     * - Fetching more from API (async); spinner is shown while the Promise is pending.
+     * Called when the user clicks. Composable: parent owns loading state
+     * and shows a loader below/elsewhere until more items are rendered.
      */
-    onShowMore?: () => void | Promise<void>
-    /** External loading flag (e.g. data fetch in progress) */
-    isLoading?: boolean
+    onShowMore?: () => void
+    /** Props passed to the underlying ButtonV2 (e.g. size, buttonType, subType, disabled) */
+    buttonProps?: Partial<Omit<ButtonV2Props, 'text' | 'onClick'>>
 }

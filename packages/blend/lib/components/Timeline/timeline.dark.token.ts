@@ -10,79 +10,106 @@ type ResponsiveTimelineTokens = {
 const buildTokens = (
     foundationToken: FoundationTokenType
 ): TimelineTokensType => ({
-    layout: {
-        circleOffset: foundationToken.unit[7],
-        gutter: foundationToken.unit[28],
-    },
-    line: {
+    track: {
         width: '1px',
         backgroundColor: foundationToken.colors.gray[700],
-        marginLeft: foundationToken.unit[11],
+        left: '12.5px',
     },
+
     statusColors: {
-        [TimelineNodeStatus.SUCCESS]: foundationToken.colors.green[500],
+        [TimelineNodeStatus.SUCCESS]: foundationToken.colors.green[600],
         [TimelineNodeStatus.WARNING]: foundationToken.colors.orange[500],
         [TimelineNodeStatus.ERROR]: foundationToken.colors.red[500],
         [TimelineNodeStatus.NEUTRAL]: foundationToken.colors.gray[600],
     },
+
     label: {
-        fontSize: foundationToken.font.size.body.sm.fontSize,
-        fontWeight: 500,
-        color: foundationToken.colors.gray[400],
-        marginBottom: foundationToken.unit[16],
+        paddingLeft: foundationToken.unit[28],
+        marginTop: foundationToken.unit[10],
+        marginBottom: foundationToken.unit[12],
+        minHeight: foundationToken.unit[20],
         circle: {
-            size: foundationToken.unit[8],
-            backgroundColor: foundationToken.colors.gray[700],
-            border: 'none',
+            left: foundationToken.unit[8],
+            width: foundationToken.unit[10],
+            height: foundationToken.unit[10],
+            backgroundColor: 'transparent',
+            border: `1px solid ${foundationToken.colors.gray[600]}`,
+            maskBackground: foundationToken.colors.gray[900],
+            maskHeight: foundationToken.unit[10],
+        },
+        text: {
+            fontSize: foundationToken.font.size.body.sm.fontSize,
+            fontWeight: 500,
+            color: foundationToken.colors.gray[400],
         },
     },
+
     header: {
-        marginBottom: foundationToken.unit[16],
+        paddingLeft: foundationToken.unit[28],
+        toSubsectionMarginBottom: foundationToken.unit[20],
+        sectionMarginBottom: foundationToken.unit[20],
+        gap: foundationToken.unit[8],
+        circle: {
+            left: foundationToken.unit[8],
+            width: foundationToken.unit[8],
+            height: foundationToken.unit[8],
+        },
         title: {
             fontSize: foundationToken.font.size.body.md.fontSize,
             fontWeight: 500,
             color: foundationToken.colors.gray[100],
-            marginBottom: foundationToken.unit[4],
         },
         timestamp: {
-            fontSize: foundationToken.font.size.body.xs.fontSize,
-            color: foundationToken.colors.gray[500],
-        },
-        circle: {
-            size: foundationToken.unit[8],
+            fontSize: foundationToken.font.size.body.sm.fontSize,
+            color: foundationToken.colors.gray[400],
+            gap: foundationToken.unit[8],
         },
     },
+
     substep: {
-        marginLeft: foundationToken.unit[16],
-        marginTop: foundationToken.unit[8],
-        marginBottom: foundationToken.unit[8],
-        paddingLeft: foundationToken.unit[20],
+        marginTop: foundationToken.unit[0],
+        marginBottom: foundationToken.unit[20],
+        marginLeft: foundationToken.unit[40],
+        gap: foundationToken.unit[4],
+        circle: {
+            left: foundationToken.unit[8],
+            width: foundationToken.unit[8],
+            height: foundationToken.unit[8],
+        },
         title: {
-            fontSize: foundationToken.font.size.body.sm.fontSize,
+            fontSize: foundationToken.font.size.body.md.fontSize,
             fontWeight: 500,
-            color: foundationToken.colors.gray[100],
+            color: foundationToken.colors.gray[200],
+            gap: foundationToken.unit[8],
         },
         description: {
-            fontSize: foundationToken.font.size.body.xs.fontSize,
-            color: foundationToken.colors.gray[400],
+            fontSize: foundationToken.font.size.body.md.fontSize,
+            color: foundationToken.colors.gray[500],
             marginTop: foundationToken.unit[4],
         },
         timestamp: {
-            fontSize: foundationToken.font.size.body.xs.fontSize,
-            color: foundationToken.colors.gray[500],
+            fontSize: foundationToken.font.size.body.sm.fontSize,
+            color: foundationToken.colors.gray[400],
+            gap: foundationToken.unit[8],
         },
         connector: {
-            width: '14px',
-            height: '14px',
-            borderColor: foundationToken.colors.gray[700],
-            borderRadius: '0 0 0 4px',
+            width: foundationToken.unit[22],
+            height: foundationToken.unit[12],
+            strokeColor: foundationToken.colors.gray[700],
+            left: foundationToken.unit[0.5],
         },
     },
+
     node: {
+        paddingLeft: foundationToken.unit[28],
         marginBottom: foundationToken.unit[20],
+        gap: foundationToken.unit[8],
+        gapSmall: foundationToken.unit[6],
         circle: {
-            size: foundationToken.unit[8],
-            topOffset: '6px',
+            left: foundationToken.unit[10],
+            width: foundationToken.unit[6],
+            height: foundationToken.unit[6],
+            top: foundationToken.unit[6],
         },
         header: {
             fontSize: foundationToken.font.size.body.md.fontSize,
@@ -90,42 +117,41 @@ const buildTokens = (
             color: foundationToken.colors.gray[100],
         },
         datetime: {
-            fontSize: foundationToken.font.size.body.xs.fontSize,
-            color: foundationToken.colors.gray[500],
+            fontSize: foundationToken.font.size.body.sm.fontSize,
+            color: foundationToken.colors.gray[400],
         },
         text: {
-            fontSize: foundationToken.font.size.body.sm.fontSize,
-            color: foundationToken.colors.gray[100],
-            lineHeight: foundationToken.font.size.body.sm.lineHeight,
+            fontSize: foundationToken.font.size.body.md.fontSize,
+            color: foundationToken.colors.gray[500],
+            lineHeight: foundationToken.font.size.body.md.lineHeight,
             marginBottom: foundationToken.unit[8],
+        },
+        avatar: {
+            width: foundationToken.unit[20],
+            height: foundationToken.unit[20],
+            marginTop: foundationToken.unit[8],
         },
         user: {
             fontSize: foundationToken.font.size.body.xs.fontSize,
             color: foundationToken.colors.gray[400],
-            marginLeft: foundationToken.unit[8],
+            marginLeft: foundationToken.unit[6],
         },
         time: {
             fontSize: foundationToken.font.size.body.xs.fontSize,
             color: foundationToken.colors.gray[500],
         },
-        avatar: {
-            size: foundationToken.unit[20],
-        },
         separator: {
-            size: foundationToken.unit[4],
+            width: foundationToken.unit[4],
+            height: foundationToken.unit[4],
             color: foundationToken.colors.gray[600],
-            marginX: foundationToken.unit[4],
+            marginLeft: foundationToken.unit[8],
+            marginRight: foundationToken.unit[8],
         },
     },
+
     showMore: {
-        fontSize: foundationToken.font.size.body.sm.fontSize,
-        fontWeight: 500,
-        color: foundationToken.colors.primary[400],
+        paddingLeft: foundationToken.unit[28],
         marginTop: foundationToken.unit[8],
-        cursor: 'pointer',
-        hover: {
-            color: foundationToken.colors.primary[300],
-        },
     },
 })
 

@@ -1,9 +1,10 @@
-import { forwardRef } from 'react'
+import { forwardRef, Children, cloneElement, isValidElement } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TimelineTokensType } from './timeline.token'
 import { TimelineNodeStatus } from './types'
+import TimelineSubstep from './TimelineSubstep'
 import type { TimelineHeaderProps } from './types'
 
 const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
@@ -20,48 +21,58 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
         ref
     ) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
+        const { header } = tokens
         const dotColor = tokens.statusColors[status]
+
+        const childrenWithNestedFlag = children
+            ? Children.map(children, (child) =>
+                  isValidElement(child) && child.type === TimelineSubstep
+                      ? cloneElement(child, {
+                            isNestedUnderHeader: true,
+                        } as { isNestedUnderHeader: boolean })
+                      : child
+              )
+            : null
 
         return (
             <Block
                 ref={ref}
                 position="relative"
-                marginBottom={tokens.header.marginBottom}
+                marginBottom={children ? undefined : header.sectionMarginBottom}
                 data-timeline-header="true"
                 {...rest}
             >
-                {/* ---- Header title row ---- */}
                 <Block
                     position="relative"
                     display="flex"
                     alignItems="center"
-                    paddingLeft={tokens.layout.gutter}
+                    paddingLeft={header.paddingLeft}
                     marginBottom={
-                        children ? tokens.header.title.marginBottom : undefined
+                        children ? header.toSubsectionMarginBottom : undefined
                     }
                 >
                     <Block
                         position="absolute"
-                        left={tokens.layout.circleOffset}
+                        left={header.circle.left}
                         top="50%"
                         style={{ transform: 'translateY(-50%)' }}
-                        width={tokens.header.circle.size}
-                        height={tokens.header.circle.size}
+                        width={header.circle.width}
+                        height={header.circle.height}
                         borderRadius="50%"
                         backgroundColor={dotColor}
                         flexShrink={0}
                     />
 
                     {leftSlot && (
-                        <Block flexShrink={0} marginRight="8px">
+                        <Block flexShrink={0} marginRight={header.gap}>
                             {leftSlot}
                         </Block>
                     )}
 
                     <Text
-                        fontSize={tokens.header.title.fontSize}
-                        fontWeight={tokens.header.title.fontWeight}
-                        color={tokens.header.title.color}
+                        fontSize={header.title.fontSize}
+                        fontWeight={header.title.fontWeight}
+                        color={header.title.color}
                         style={{ flexGrow: 1 }}
                     >
                         {title}
@@ -70,26 +81,33 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap="8px"
+                        gap={header.timestamp.gap}
                         flexShrink={0}
                         marginLeft="auto"
-                        paddingLeft="8px"
+                        paddingLeft={header.gap}
                     >
-                        {timestamp && (
+                        {timestamp != null && timestamp !== '' && (
                             <Text
-                                fontSize={tokens.header.timestamp.fontSize}
-                                color={tokens.header.timestamp.color}
+                                fontSize={header.timestamp.fontSize}
+                                color={header.timestamp.color}
                             >
                                 {timestamp}
                             </Text>
                         )}
-                        {rightSlot && <Block flexShrink={0}>{rightSlot}</Block>}
+                        {rightSlot != null && (
+                            <Block flexShrink={0}>{rightSlot}</Block>
+                        )}
                     </Block>
                 </Block>
 
-                {children && (
-                    <Block paddingLeft={tokens.layout.gutter}>{children}</Block>
-                )}
+                {childrenWithNestedFlag ? (
+                    <Block
+                        paddingLeft={0}
+                        marginBottom={header.sectionMarginBottom}
+                    >
+                        {childrenWithNestedFlag}
+                    </Block>
+                ) : null}
             </Block>
         )
     }

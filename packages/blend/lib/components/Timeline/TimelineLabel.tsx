@@ -1,13 +1,15 @@
 import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
-import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
+import Text from '../Text/Text'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TimelineTokensType } from './timeline.token'
 import type { TimelineLabelProps } from './types'
 
 const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
-    ({ date }, ref) => {
+    ({ text, date, ...rest }, ref) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
+        const { label } = tokens
+        const labelText = text ?? date ?? ''
 
         return (
             <Block
@@ -15,30 +17,43 @@ const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
                 position="relative"
                 display="flex"
                 alignItems="center"
-                paddingLeft={tokens.layout.gutter}
-                marginBottom={tokens.label.marginBottom}
+                paddingLeft={label.paddingLeft}
+                marginTop={label.marginTop}
+                marginBottom={label.marginBottom}
+                minHeight={label.minHeight}
                 data-timeline-label="true"
+                {...rest}
             >
+                {/* Mask behind circle only: when label is in center we see line → circle → line */}
                 <Block
                     position="absolute"
-                    left={tokens.layout.circleOffset}
+                    left={label.circle.left}
                     top="50%"
                     style={{ transform: 'translateY(-50%)' }}
-                    width={tokens.label.circle.size}
-                    height={tokens.label.circle.size}
+                    width={label.circle.width}
+                    height={label.circle.maskHeight}
+                    backgroundColor={label.circle.maskBackground}
+                />
+                <Block
+                    position="absolute"
+                    left={label.circle.left}
+                    top="50%"
+                    style={{ transform: 'translateY(-50%)' }}
+                    width={label.circle.width}
+                    height={label.circle.height}
                     borderRadius="50%"
-                    backgroundColor={tokens.label.circle.backgroundColor}
-                    border={tokens.label.circle.border}
+                    backgroundColor={label.circle.backgroundColor}
+                    border={label.circle.border}
                     flexShrink={0}
                 />
 
-                <PrimitiveText
-                    fontSize={tokens.label.fontSize}
-                    fontWeight={tokens.label.fontWeight}
-                    color={tokens.label.color}
+                <Text
+                    fontSize={label.text.fontSize}
+                    fontWeight={label.text.fontWeight}
+                    color={label.text.color}
                 >
-                    {date}
-                </PrimitiveText>
+                    {labelText}
+                </Text>
             </Block>
         )
     }

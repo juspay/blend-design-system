@@ -22,108 +22,117 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
             user,
             time,
             status = TimelineNodeStatus.NEUTRAL,
+            avatarProps,
             children,
             ...rest
         },
         ref
     ) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
+        const { node } = tokens
         const dotColor = tokens.statusColors[status]
         const body = text ?? (typeof children === 'string' ? children : null)
         const hasBody = Boolean(
             body || (children && typeof children !== 'string')
         )
 
+        const hasHeaderRow =
+            (title != null && title !== '') ||
+            headerRightSlot != null ||
+            datetimeLeftSlot != null ||
+            (datetime != null && datetime !== '') ||
+            datetimeRightSlot != null
+
         return (
             <Block
                 ref={ref}
                 position="relative"
-                paddingLeft={tokens.layout.gutter}
-                marginBottom={tokens.node.marginBottom}
+                paddingLeft={node.paddingLeft}
+                marginBottom={node.marginBottom}
                 data-timeline-node="true"
+                style={{ minWidth: 0 }}
                 {...rest}
             >
-                {/* Status dot */}
                 <Block
                     position="absolute"
-                    left={tokens.layout.circleOffset}
-                    top={tokens.node.circle.topOffset}
-                    width={tokens.node.circle.size}
-                    height={tokens.node.circle.size}
+                    left={node.circle.left}
+                    top={node.circle.top}
+                    width={node.circle.width}
+                    height={node.circle.height}
                     borderRadius="50%"
                     backgroundColor={dotColor}
                     flexShrink={0}
                 />
 
-                {/* Row 1: header + header right slot; top-right: datetime group */}
-                <Block
-                    display="flex"
-                    alignItems="flex-start"
-                    justifyContent="space-between"
-                    flexWrap="wrap"
-                    gap="8px"
-                    marginBottom={
-                        hasBody ? tokens.node.text.marginBottom : undefined
-                    }
-                >
+                {hasHeaderRow && (
                     <Block
                         display="flex"
-                        alignItems="center"
-                        gap="8px"
-                        flexGrow={1}
-                        minWidth={0}
+                        alignItems="flex-start"
+                        justifyContent="space-between"
+                        flexWrap="wrap"
+                        gap={node.gap}
+                        marginBottom={
+                            hasBody ? node.text.marginBottom : undefined
+                        }
                     >
-                        {leftSlot && <Block flexShrink={0}>{leftSlot}</Block>}
-                        {title != null && title !== '' && (
-                            <Text
-                                fontSize={tokens.node.header.fontSize}
-                                fontWeight={tokens.node.header.fontWeight}
-                                color={tokens.node.header.color}
-                            >
-                                {title}
-                            </Text>
-                        )}
-                        {headerRightSlot && (
-                            <Block flexShrink={0}>{headerRightSlot}</Block>
-                        )}
-                    </Block>
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            gap={node.gap}
+                            flexGrow={1}
+                            minWidth={0}
+                        >
+                            {title != null && title !== '' && (
+                                <Text
+                                    fontSize={node.header.fontSize}
+                                    fontWeight={node.header.fontWeight}
+                                    color={node.header.color}
+                                >
+                                    {title}
+                                </Text>
+                            )}
+                            {headerRightSlot != null && (
+                                <Block flexShrink={0}>{headerRightSlot}</Block>
+                            )}
+                        </Block>
 
-                    <Block
-                        display="flex"
-                        alignItems="center"
-                        gap="6px"
-                        flexShrink={0}
-                    >
-                        {datetimeLeftSlot && (
-                            <Block flexShrink={0}>{datetimeLeftSlot}</Block>
-                        )}
-                        {datetime != null && datetime !== '' && (
-                            <Text
-                                fontSize={tokens.node.datetime.fontSize}
-                                color={tokens.node.datetime.color}
-                            >
-                                {datetime}
-                            </Text>
-                        )}
-                        {datetimeRightSlot && (
-                            <Block flexShrink={0}>{datetimeRightSlot}</Block>
-                        )}
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            gap={node.gapSmall}
+                            flexShrink={0}
+                        >
+                            {datetimeLeftSlot != null && (
+                                <Block flexShrink={0}>{datetimeLeftSlot}</Block>
+                            )}
+                            {datetime != null && datetime !== '' && (
+                                <Text
+                                    fontSize={node.datetime.fontSize}
+                                    color={node.datetime.color}
+                                >
+                                    {datetime}
+                                </Text>
+                            )}
+                            {datetimeRightSlot != null && (
+                                <Block flexShrink={0}>
+                                    {datetimeRightSlot}
+                                </Block>
+                            )}
+                        </Block>
                     </Block>
-                </Block>
+                )}
 
-                {/* Row 2: text or children */}
                 {hasBody && (
                     <Block
                         marginBottom={
-                            user || time
-                                ? tokens.node.text.marginBottom
-                                : undefined
+                            user || time ? node.text.marginBottom : undefined
                         }
+                        style={{ minWidth: 0 }}
                     >
                         {body != null ? (
                             <Text
-                                fontSize={tokens.node.text.fontSize}
-                                color={tokens.node.text.color}
+                                fontSize={node.text.fontSize}
+                                color={node.text.color}
                                 style={{
                                     display: '-webkit-box',
                                     WebkitLineClamp: maxLines,
@@ -140,7 +149,11 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                 )}
 
                 {(user || time) && (
-                    <Block display="flex" alignItems="center">
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        marginTop={node.avatar.marginTop}
+                    >
                         {user && (
                             <>
                                 <AvatarV2
@@ -149,14 +162,15 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                                         user.fallbackText ?? user.name
                                     }
                                     size={AvatarV2Size.SM}
-                                    width={tokens.node.avatar.size}
-                                    height={tokens.node.avatar.size}
+                                    width={node.avatar.width}
+                                    height={node.avatar.height}
+                                    {...avatarProps}
                                 />
                                 <Text
-                                    fontSize={tokens.node.user.fontSize}
-                                    color={tokens.node.user.color}
+                                    fontSize={node.user.fontSize}
+                                    color={node.user.color}
                                     style={{
-                                        marginLeft: tokens.node.user
+                                        marginLeft: node.user
                                             .marginLeft as string,
                                     }}
                                 >
@@ -165,22 +179,22 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                                 {time != null && time !== '' && (
                                     <>
                                         <Block
-                                            width={tokens.node.separator.size}
-                                            height={tokens.node.separator.size}
+                                            width={node.separator.width}
+                                            height={node.separator.height}
                                             borderRadius="50%"
                                             backgroundColor={
-                                                tokens.node.separator.color
+                                                node.separator.color
                                             }
                                             marginLeft={
-                                                tokens.node.separator.marginX
+                                                node.separator.marginLeft
                                             }
                                             marginRight={
-                                                tokens.node.separator.marginX
+                                                node.separator.marginRight
                                             }
                                         />
                                         <Text
-                                            fontSize={tokens.node.time.fontSize}
-                                            color={tokens.node.time.color}
+                                            fontSize={node.time.fontSize}
+                                            color={node.time.color}
                                         >
                                             {time}
                                         </Text>
@@ -190,8 +204,8 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                         )}
                         {!user && time != null && time !== '' && (
                             <Text
-                                fontSize={tokens.node.time.fontSize}
-                                color={tokens.node.time.color}
+                                fontSize={node.time.fontSize}
+                                color={node.time.color}
                             >
                                 {time}
                             </Text>

@@ -190,7 +190,7 @@ const TimelineDemo = () => {
                 >
                     <Timeline>
                         {/* ---- Group 1 ---- */}
-                        <Timeline.Label date="JAN 15, 2025" />
+                        <Timeline.Label text="JAN 15, 2025" />
 
                         <Timeline.Header
                             title="Payment Initiated"
@@ -201,7 +201,20 @@ const TimelineDemo = () => {
                                 title="Transaction Created"
                                 description="Geddit initiated the transaction on behalf of merchant."
                                 timestamp="4:00:04 PM"
-                                leftSlot={
+                                datetimeLeftSlot={
+                                    showSubstepSlots ? (
+                                        <span
+                                            style={{
+                                                fontSize: 12,
+                                                opacity: 0.8,
+                                                marginRight: 4,
+                                            }}
+                                        >
+                                            ID
+                                        </span>
+                                    ) : undefined
+                                }
+                                datetimeRightSlot={
                                     showSubstepSlots ? (
                                         <StatusBadge color="#a78bfa" />
                                     ) : undefined
@@ -216,7 +229,7 @@ const TimelineDemo = () => {
                                 title="Gateway Selected"
                                 description="Pinelabs chosen as preferred gateway based on Gateway score: 89"
                                 timestamp="4:00:04 PM"
-                                leftSlot={
+                                datetimeRightSlot={
                                     showSubstepSlots ? (
                                         <StatusBadge color="#6ee7b7" />
                                     ) : undefined
@@ -230,7 +243,7 @@ const TimelineDemo = () => {
                         </Timeline.Header>
 
                         {/* ---- Group 2 ---- */}
-                        <Timeline.Label date="JAN 23, 2025" />
+                        <Timeline.Label text="JAN 23, 2025" />
 
                         <Timeline.Header
                             title="Pay / Start Triggered"
@@ -272,6 +285,51 @@ const TimelineDemo = () => {
                                 timestamp="4:00:04 PM"
                             />
                         </Timeline.Header>
+                    </Timeline>
+                </div>
+            </section>
+
+            {/* ------------------------------------------------------------------ */}
+            {/* Section 1b — Substeps only (no header) + Show more after group     */}
+            {/* ------------------------------------------------------------------ */}
+            <section className="space-y-4">
+                <h2 className="text-xl font-semibold">
+                    Substeps only + Show more after group
+                </h2>
+                <p
+                    className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+                >
+                    Label then substeps only (no header). Show more / custom
+                    text can be placed after any substep group, not only after
+                    generic nodes.
+                </p>
+
+                <div
+                    style={{
+                        background: containerBg,
+                        border: `1px solid ${borderColor}`,
+                        borderRadius: 12,
+                        padding: '24px 32px',
+                        maxWidth: 640,
+                    }}
+                >
+                    <Timeline>
+                        <Timeline.Label text="MAR 01, 2025" />
+                        <Timeline.Substep
+                            title="First step"
+                            description="Substeps can sit directly under a label with no header."
+                            timestamp="2:00 PM"
+                        />
+                        <Timeline.Substep
+                            title="Second step"
+                            description="Show more appears after the last substep in this group."
+                            timestamp="2:01 PM"
+                        />
+                        <Timeline.ShowMore
+                            count={3}
+                            label="Show more steps"
+                            onShowMore={() => {}}
+                        />
                     </Timeline>
                 </div>
             </section>
@@ -358,7 +416,7 @@ const TimelineDemo = () => {
                     }}
                 >
                     <Timeline>
-                        <Timeline.Label date="JAN 23, 2025" />
+                        <Timeline.Label text="JAN 23, 2025" />
 
                         <Timeline.Header
                             title="Refund Requested"
@@ -462,7 +520,7 @@ const TimelineDemo = () => {
                             timestamp="4:03 PM"
                         />
 
-                        <Timeline.Label date="Comments" />
+                        <Timeline.Label text="Comments" />
 
                         <Timeline.Node
                             text="Green dot — all good, nothing to action here."

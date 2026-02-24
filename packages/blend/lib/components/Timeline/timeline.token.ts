@@ -6,65 +6,77 @@ import { Theme } from '../../context/theme.enum'
 import { getTimelineDarkTokens } from './timeline.dark.token'
 import { getTimelineLightTokens } from './timeline.light.token'
 
-/** Shared map of status → background color used by header and comment dots */
 export type TimelineStatusColors = {
     [key in TimelineNodeStatus]: CSSObject['backgroundColor']
 }
 
 export type TimelineTokensType = {
-    /**
-     * Layout helpers — used to align all circles onto the vertical line.
-     * circleOffset: absolute left of the 8 px circle so its centre sits
-     *               exactly on the line (lineLeft - circleSize/2).
-     * gutter:       paddingLeft applied to every content row so text
-     *               starts to the right of the circle.
-     */
-    layout: {
-        circleOffset: CSSObject['left']
-        gutter: CSSObject['paddingLeft']
-    }
-    line: {
+    track: {
         width: CSSObject['width']
         backgroundColor: CSSObject['backgroundColor']
-        marginLeft: CSSObject['marginLeft']
+        left: CSSObject['left']
     }
+
     statusColors: TimelineStatusColors
+
     label: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
+        paddingLeft: CSSObject['paddingLeft']
+        marginTop: CSSObject['marginTop']
         marginBottom: CSSObject['marginBottom']
+        minHeight: CSSObject['minHeight']
         circle: {
-            size: CSSObject['width']
+            left: CSSObject['left']
+            width: CSSObject['width']
+            height: CSSObject['height']
             backgroundColor: CSSObject['backgroundColor']
             border: CSSObject['border']
+            maskBackground: CSSObject['backgroundColor']
+            maskHeight: CSSObject['height']
+        }
+        text: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: CSSObject['color']
         }
     }
+
     header: {
-        marginBottom: CSSObject['marginBottom']
+        paddingLeft: CSSObject['paddingLeft']
+        toSubsectionMarginBottom: CSSObject['marginBottom']
+        sectionMarginBottom: CSSObject['marginBottom']
+        gap: CSSObject['gap']
+        circle: {
+            left: CSSObject['left']
+            width: CSSObject['width']
+            height: CSSObject['height']
+        }
         title: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
-            marginBottom: CSSObject['marginBottom']
         }
         timestamp: {
             fontSize: CSSObject['fontSize']
             color: CSSObject['color']
-        }
-        circle: {
-            size: CSSObject['width']
+            gap: CSSObject['gap']
         }
     }
+
     substep: {
-        marginLeft: CSSObject['marginLeft']
         marginTop: CSSObject['marginTop']
         marginBottom: CSSObject['marginBottom']
-        paddingLeft: CSSObject['paddingLeft']
+        marginLeft: CSSObject['marginLeft']
+        gap: CSSObject['gap']
+        circle: {
+            left: CSSObject['left']
+            width: CSSObject['width']
+            height: CSSObject['height']
+        }
         title: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: CSSObject['color']
+            gap: CSSObject['gap']
         }
         description: {
             fontSize: CSSObject['fontSize']
@@ -74,22 +86,28 @@ export type TimelineTokensType = {
         timestamp: {
             fontSize: CSSObject['fontSize']
             color: CSSObject['color']
+            gap: CSSObject['gap']
         }
         connector: {
-            /** Width of the horizontal leg of the L-connector */
             width: CSSObject['width']
-            /** Height covers from the top down to the centre of the first title line */
             height: CSSObject['height']
-            borderColor: CSSObject['borderColor']
-            borderRadius: CSSObject['borderRadius']
+            strokeColor: CSSObject['color']
+            left: CSSObject['left']
         }
     }
-    /** Generic node (e.g. comment, note, event) — header row, text, avatar + time */
+
     node: {
+        paddingLeft: CSSObject['paddingLeft']
         marginBottom: CSSObject['marginBottom']
+        /** Gap between title / right-slot group items */
+        gap: CSSObject['gap']
+        /** Smaller gap used inside the datetime slot group */
+        gapSmall: CSSObject['gap']
         circle: {
-            size: CSSObject['width']
-            topOffset: CSSObject['top']
+            left: CSSObject['left']
+            width: CSSObject['width']
+            height: CSSObject['height']
+            top: CSSObject['top']
         }
         header: {
             fontSize: CSSObject['fontSize']
@@ -106,6 +124,11 @@ export type TimelineTokensType = {
             lineHeight: CSSObject['lineHeight']
             marginBottom: CSSObject['marginBottom']
         }
+        avatar: {
+            width: CSSObject['width']
+            height: CSSObject['height']
+            marginTop: CSSObject['marginTop']
+        }
         user: {
             fontSize: CSSObject['fontSize']
             color: CSSObject['color']
@@ -115,24 +138,18 @@ export type TimelineTokensType = {
             fontSize: CSSObject['fontSize']
             color: CSSObject['color']
         }
-        avatar: {
-            size: CSSObject['width']
-        }
         separator: {
-            size: CSSObject['width']
+            width: CSSObject['width']
+            height: CSSObject['height']
             color: CSSObject['color']
-            marginX: CSSObject['marginLeft']
+            marginLeft: CSSObject['marginLeft']
+            marginRight: CSSObject['marginRight']
         }
     }
+
     showMore: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
+        paddingLeft: CSSObject['paddingLeft']
         marginTop: CSSObject['marginTop']
-        cursor: CSSObject['cursor']
-        hover: {
-            color: CSSObject['color']
-        }
     }
 }
 
