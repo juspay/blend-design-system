@@ -80,6 +80,9 @@ export type AccordionTokenType = {
                 }
             }
         }
+        slot?: {
+            maxWidth: CSSObject['maxWidth']
+        }
     }
 
     // Pattern: separator.color.[variant]
@@ -182,6 +185,9 @@ export const getAccordionToken = (
                         },
                     },
                 },
+                slot: {
+                    maxWidth: foundationToken.unit[24],
+                },
             },
 
             // Pattern: separator.color.[variant]
@@ -275,6 +281,9 @@ export const getAccordionToken = (
                             open: foundationToken.colors.gray[600],
                         },
                     },
+                },
+                slot: {
+                    maxWidth: foundationToken.unit[24],
                 },
             },
 

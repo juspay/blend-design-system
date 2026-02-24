@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 import type { BlockProps } from '../Primitives/Block/Block'
+import { CSSObject } from 'styled-components'
 
 export enum TagVariant {
     NO_FILL = 'noFill',
@@ -30,6 +31,8 @@ export enum TagShape {
 }
 
 export type TagProps = Omit<BlockProps, 'children'> & {
+    maxWidth?: CSSObject['maxWidth']
+    width?: CSSObject['width']
     text: string
     variant?: TagVariant
     color?: TagColor

@@ -35,15 +35,6 @@ type InputLabelsProps<TTokens extends InputLabelTokens = InputLabelTokens> = {
     labelId?: string
 }
 
-/**
- * @description InputLabels is a component that displays a label and sublabel for an input field.
- * @param {string} label - The label for the input field.
- * @param {string} sublabel - The sublabel for the input field.
- * @param {boolean} disabled - Whether the input field is disabled.
- * @param {string} helpIconHintText - The hint text for the help icon.
- * @param {string} inputId - Unique ID for proper label association (WCAG 3.3.2).
- * @param {boolean} required - Whether the input field is required.
- */
 const InputLabels = <TTokens extends InputLabelTokens>({
     label,
     sublabel,

@@ -15,6 +15,8 @@ import { Star, X } from 'lucide-react'
 import { useState } from 'react'
 import Switch from '../../../../packages/blend/lib/components/Switch/Switch'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 const TagV2Demo = () => {
     const [tagText, setTagText] = useState('TagV2')
     const [tagColor, setTagColor] = useState(TagV2Color.PRIMARY)
@@ -26,6 +28,7 @@ const TagV2Demo = () => {
     const [showSkeleton, setShowSkeleton] = useState(false)
     const [skeletonVariant, setSkeletonVariant] = useState('pulse')
     const [isClickable, setIsClickable] = useState(false)
+    const { theme } = useTheme()
 
     const tagColorOptions = [
         { value: TagV2Color.NEUTRAL, label: 'Neutral' },
@@ -149,7 +152,13 @@ const TagV2Demo = () => {
                     </div>
                 </div>
 
-                <div className="min-h-32 rounded-xl flex justify-center items-center border-2 border-dashed border-gray-300 bg-gray-50">
+                <div
+                    className={`min-h-32 rounded-xl flex justify-center items-center border-2 border-dashed ${
+                        theme === Theme.DARK
+                            ? 'border-gray-700 bg-gray-900'
+                            : 'border-gray-300 bg-gray-50'
+                    }`}
+                >
                     <TagV2
                         aria-label="TagV2"
                         text={tagText}

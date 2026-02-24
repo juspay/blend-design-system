@@ -121,7 +121,7 @@ export const getSidebarTokens = (
 
             // Left Panel section (tenant switching panel)
             leftPanel: {
-                width: 'fit-content',
+                width: '52px',
                 backgroundColor: foundationToken.colors.gray[25],
                 borderRight: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
@@ -200,7 +200,7 @@ export const getSidebarTokens = (
 
             // Left Panel section (tenant switching panel)
             leftPanel: {
-                width: 'fit-content',
+                width: '52px',
                 backgroundColor: foundationToken.colors.gray[25],
                 borderRight: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
@@ -211,7 +211,7 @@ export const getSidebarTokens = (
 
                 // Tenant selection items
                 item: {
-                    width: foundationToken.unit[36],
+                    width: foundationToken.unit[32],
                     borderRadius: foundationToken.border.radius[6],
 
                     // State-based tenant item styling

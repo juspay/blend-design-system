@@ -9,6 +9,8 @@ import {
 import Switch from '../../../../packages/blend/lib/components/Switch/Switch'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
 import { User } from 'lucide-react'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const AlertDemoV2 = () => {
     const [alertType, setAlertType] = useState(AlertV2Type.PRIMARY)
@@ -21,6 +23,7 @@ const AlertDemoV2 = () => {
     const [showCloseButton, setShowCloseButton] = useState(true)
     const [actionsPosition, setActionsPosition] =
         useState<AlertV2ActionPosition>(AlertV2ActionPosition.BOTTOM)
+    const { theme } = useTheme()
 
     const alertTypeOptions = [
         { value: AlertV2Type.PRIMARY, label: 'Primary' },
@@ -147,7 +150,13 @@ const AlertDemoV2 = () => {
                     </div>
                 </div>
 
-                <div className="min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed border-gray-300 bg-gray-50">
+                <div
+                    className={`min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed ${
+                        theme === Theme.DARK
+                            ? 'border-gray-700 bg-gray-900'
+                            : 'border-gray-300 bg-gray-50'
+                    }`}
+                >
                     <AlertV2
                         type={alertType}
                         subType={alertSubType}

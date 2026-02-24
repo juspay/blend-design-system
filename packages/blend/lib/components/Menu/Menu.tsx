@@ -19,11 +19,13 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
 import { menuContentAnimations } from './menu.animations'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
+import { useDropdownInteractionLock } from '../../hooks'
+import useScrollLock from '../../hooks/useScrollLock'
 
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
     boxShadow: FOUNDATION_THEME.shadows.sm,
-    zIndex: 99,
+    zIndex: 101,
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarWidth: 'none',
@@ -36,7 +38,7 @@ export const contentBaseStyle: CSSObject = {
 const Content = styled(RadixMenu.Content)`
     background-color: white;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
-    z-index: 99;
+    z-index: 101;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -75,17 +77,22 @@ const Menu = ({
     },
 }: MenuProps) => {
     const [searchText, setSearchText] = useState<string>('')
+    const [isOpen, setIsOpen] = useState(false)
     const searchInputRef = useRef<HTMLInputElement>(null)
     const justOpenedRef = useRef(false)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
     const filteredItems = filterMenuGroups(items, searchText)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
 
+    const menuIsOpen = open ?? isOpen
+    useDropdownInteractionLock(menuIsOpen)
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value)
     }
 
     const handleOpenChange = (newOpen: boolean) => {
+        setIsOpen(newOpen)
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current)
             timeoutRef.current = null
@@ -163,6 +170,8 @@ const Menu = ({
     const shouldUseVirtualScrolling =
         enableVirtualScrolling && totalItemCount >= virtualScrollThreshold
 
+    useScrollLock(menuIsOpen)
+
     const renderVirtualItem = useCallback(
         ({ item }: { item: VirtualListItem; index: number }) => {
             const data = item.data || {}
@@ -231,242 +240,257 @@ const Menu = ({
             onOpenChange={handleOpenChange}
         >
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
-            <Content
-                data-menu="menu"
-                data-dropdown="dropdown"
-                sideOffset={sideOffset}
-                alignOffset={alignOffset}
-                side={side}
-                align={alignment}
-                collisionBoundary={collisonBoundaryRef}
-                onInteractOutside={handleOutsideInteraction}
-                onPointerDownOutside={handleOutsideInteraction}
-                style={{
-                    maxHeight: maxHeight
-                        ? `${maxHeight}px`
-                        : 'var(--radix-popper-available-height)',
-                    minWidth: minWidth ? `${minWidth}px` : '200px',
-                    maxWidth: maxWidth ? `${maxWidth}px` : '280px',
-                    paddingTop: enableSearch ? 0 : menuTokens.padding.y,
+            <RadixMenu.Portal>
+                <Content
+                    data-menu="menu"
+                    data-dropdown="dropdown"
+                    sideOffset={sideOffset}
+                    alignOffset={alignOffset}
+                    side={side}
+                    align={alignment}
+                    collisionBoundary={collisonBoundaryRef}
+                    onInteractOutside={handleOutsideInteraction}
+                    onPointerDownOutside={handleOutsideInteraction}
+                    style={{
+                        maxHeight: maxHeight
+                            ? `${maxHeight}px`
+                            : 'var(--radix-popper-available-height)',
+                        minWidth: minWidth ? `${minWidth}px` : '200px',
+                        maxWidth: maxWidth ? `${maxWidth}px` : '280px',
+                        paddingTop: enableSearch ? 0 : menuTokens.padding.y,
 
-                    border: menuTokens.border,
-                }}
-                onFocusCapture={(e) => {
-                    if (enableSearch && searchInputRef.current) {
-                        if (
-                            e.target !== searchInputRef.current &&
-                            !searchInputRef.current.contains(e.target as Node)
-                        ) {
-                            e.preventDefault()
-                            searchInputRef.current.focus()
+                        border: menuTokens.border,
+                    }}
+                    onFocusCapture={(e) => {
+                        if (enableSearch && searchInputRef.current) {
+                            if (
+                                e.target !== searchInputRef.current &&
+                                !searchInputRef.current.contains(
+                                    e.target as Node
+                                )
+                            ) {
+                                e.preventDefault()
+                                searchInputRef.current.focus()
+                            }
                         }
-                    }
-                }}
-                onKeyDown={(e) => {
-                    if (enableSearch && searchInputRef.current) {
-                        if (
-                            e.target !== searchInputRef.current &&
-                            !searchInputRef.current.contains(
-                                e.target as Node
-                            ) &&
-                            e.key.length === 1
-                        ) {
-                            searchInputRef.current.focus()
+                    }}
+                    onKeyDown={(e) => {
+                        if (enableSearch && searchInputRef.current) {
+                            if (
+                                e.target !== searchInputRef.current &&
+                                !searchInputRef.current.contains(
+                                    e.target as Node
+                                ) &&
+                                e.key.length === 1
+                            ) {
+                                searchInputRef.current.focus()
+                            }
                         }
-                    }
-                }}
-            >
-                {skeleton.show ? (
-                    <Block
-                        display="flex"
-                        paddingX={menuTokens.item.padding.x}
-                        paddingY={menuTokens.item.padding.y}
-                        marginY={menuTokens.item.margin.y}
-                        marginX={menuTokens.item.margin.x}
-                        borderRadius={menuTokens.item.borderRadius}
-                        flexDirection="column"
-                        gap={menuTokens.item.gap}
-                    >
-                        {Array.from({ length: skeleton.count || 3 }).map(
-                            (_, index) => (
-                                <Skeleton
-                                    key={index}
+                    }}
+                >
+                    {skeleton.show ? (
+                        <Block
+                            display="flex"
+                            paddingX={menuTokens.item.padding.x}
+                            paddingY={menuTokens.item.padding.y}
+                            marginY={menuTokens.item.margin.y}
+                            marginX={menuTokens.item.margin.x}
+                            borderRadius={menuTokens.item.borderRadius}
+                            flexDirection="column"
+                            gap={menuTokens.item.gap}
+                        >
+                            {Array.from({ length: skeleton.count || 3 }).map(
+                                (_, index) => (
+                                    <Skeleton
+                                        key={index}
+                                        width="100%"
+                                        height="33px"
+                                        variant={
+                                            (skeleton.variant as SkeletonVariant) ||
+                                            'pulse'
+                                        }
+                                    />
+                                )
+                            )}
+                        </Block>
+                    ) : (
+                        <>
+                            {enableSearch && (
+                                <Block
                                     width="100%"
-                                    height="33px"
-                                    variant={
-                                        (skeleton.variant as SkeletonVariant) ||
-                                        'pulse'
-                                    }
-                                />
-                            )
-                        )}
-                    </Block>
-                ) : (
-                    <>
-                        {enableSearch && (
-                            <Block
-                                width="100%"
-                                position="sticky"
-                                top={0}
-                                left={0}
-                                right={0}
-                                zIndex={100}
-                                backgroundColor="white"
-                                padding="0px"
-                                // paddingBottom="0px"
-                            >
-                                <SearchInput
-                                    ref={searchInputRef}
-                                    leftSlot={
-                                        <Search
-                                            color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[400]
-                                            }
-                                            size={16}
-                                            aria-hidden="true"
-                                        />
-                                    }
-                                    placeholder={searchPlaceholder}
-                                    value={searchText}
-                                    onChange={handleSearchChange}
-                                    autoFocus
-                                    aria-label={`Search menu items${searchPlaceholder ? `: ${searchPlaceholder}` : ''}`}
-                                />
-                            </Block>
-                        )}
+                                    position="sticky"
+                                    top={0}
+                                    left={0}
+                                    right={0}
+                                    zIndex={101}
+                                    backgroundColor="white"
+                                    padding="0px"
+                                    // paddingBottom="0px"
+                                >
+                                    <SearchInput
+                                        ref={searchInputRef}
+                                        leftSlot={
+                                            <Search
+                                                color={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[400]
+                                                }
+                                                size={16}
+                                                aria-hidden="true"
+                                            />
+                                        }
+                                        placeholder={searchPlaceholder}
+                                        value={searchText}
+                                        onChange={handleSearchChange}
+                                        autoFocus
+                                        aria-label={`Search menu items${searchPlaceholder ? `: ${searchPlaceholder}` : ''}`}
+                                    />
+                                </Block>
+                            )}
 
-                        {shouldUseVirtualScrolling ? (
-                            <Block
-                                padding={FOUNDATION_THEME.unit[6]}
-                                style={{
-                                    paddingTop: enableSearch
-                                        ? 0
-                                        : FOUNDATION_THEME.unit[6],
-                                }}
-                            >
-                                <VirtualList
-                                    items={virtualListItems}
-                                    height={
-                                        (maxHeight || 400) -
-                                        (enableSearch ? 80 : 20)
-                                    }
-                                    itemHeight={
-                                        typeof virtualItemHeight === 'number'
-                                            ? virtualItemHeight
-                                            : 40
-                                    }
-                                    overscan={virtualOverscan}
-                                    renderItem={renderVirtualItem}
-                                />
-                            </Block>
-                        ) : (
-                            <Block
-                                style={{
-                                    paddingTop: enableSearch
-                                        ? FOUNDATION_THEME.unit[6]
-                                        : 0,
-                                }}
-                            >
-                                {filteredItems &&
-                                    filteredItems.map((group, groupId) => (
-                                        <React.Fragment key={groupId}>
-                                            {group.label && (
-                                                <RadixMenu.Label asChild>
-                                                    <PrimitiveText
-                                                        data-element="menu-group-label"
-                                                        data-id={
-                                                            group.label ||
-                                                            'menu-group-label'
-                                                        }
-                                                        fontSize={
-                                                            menuTokens.item
-                                                                .optionsLabel
-                                                                .fontSize
-                                                        }
-                                                        paddingY={
-                                                            menuTokens.item
-                                                                .optionsLabel
-                                                                .padding.y
-                                                        }
-                                                        paddingX={
-                                                            menuTokens.item
-                                                                .optionsLabel
-                                                                .padding.x
-                                                        }
-                                                        userSelect="none"
-                                                        marginY={
-                                                            menuTokens.item
-                                                                .optionsLabel
-                                                                .margin.y
-                                                        }
-                                                        marginX={
-                                                            menuTokens.item
-                                                                .optionsLabel
-                                                                .margin.x
-                                                        }
-                                                        textTransform="uppercase"
-                                                        color={
-                                                            menuTokens.item
-                                                                .optionsLabel
-                                                                .color
-                                                        }
-                                                        aria-label={group.label}
-                                                    >
-                                                        {group.label}
-                                                    </PrimitiveText>
-                                                </RadixMenu.Label>
-                                            )}
-                                            {group.items.map(
-                                                (item, itemIndex) => (
-                                                    <MenuItem
-                                                        key={`${groupId}-${itemIndex}`}
-                                                        item={item}
-                                                        idx={itemIndex}
-                                                        maxHeight={maxHeight}
-                                                    />
-                                                )
-                                            )}
-                                            {groupId !==
-                                                filteredItems.length - 1 &&
-                                                group.showSeparator && (
-                                                    <RadixMenu.Separator
-                                                        asChild
-                                                    >
-                                                        <Block
-                                                            as="div"
-                                                            role="separator"
-                                                            height={
-                                                                menuTokens.item
-                                                                    .seperator
-                                                                    .height
+                            {shouldUseVirtualScrolling ? (
+                                <Block
+                                    padding={FOUNDATION_THEME.unit[6]}
+                                    style={{
+                                        paddingTop: enableSearch
+                                            ? 0
+                                            : FOUNDATION_THEME.unit[6],
+                                    }}
+                                >
+                                    <VirtualList
+                                        items={virtualListItems}
+                                        height={
+                                            (maxHeight || 400) -
+                                            (enableSearch ? 80 : 20)
+                                        }
+                                        itemHeight={
+                                            typeof virtualItemHeight ===
+                                            'number'
+                                                ? virtualItemHeight
+                                                : 40
+                                        }
+                                        overscan={virtualOverscan}
+                                        renderItem={renderVirtualItem}
+                                    />
+                                </Block>
+                            ) : (
+                                <Block
+                                    style={{
+                                        paddingTop: enableSearch
+                                            ? FOUNDATION_THEME.unit[6]
+                                            : 0,
+                                    }}
+                                >
+                                    {filteredItems &&
+                                        filteredItems.map((group, groupId) => (
+                                            <React.Fragment key={groupId}>
+                                                {group.label && (
+                                                    <RadixMenu.Label asChild>
+                                                        <PrimitiveText
+                                                            data-element="menu-group-label"
+                                                            data-id={
+                                                                group.label ||
+                                                                'menu-group-label'
                                                             }
-                                                            backgroundColor={
+                                                            fontSize={
                                                                 menuTokens.item
-                                                                    .seperator
-                                                                    .color
+                                                                    .optionsLabel
+                                                                    .fontSize
                                                             }
+                                                            paddingY={
+                                                                menuTokens.item
+                                                                    .optionsLabel
+                                                                    .padding.y
+                                                            }
+                                                            paddingX={
+                                                                menuTokens.item
+                                                                    .optionsLabel
+                                                                    .padding.x
+                                                            }
+                                                            userSelect="none"
                                                             marginY={
                                                                 menuTokens.item
-                                                                    .seperator
+                                                                    .optionsLabel
                                                                     .margin.y
                                                             }
                                                             marginX={
                                                                 menuTokens.item
-                                                                    .seperator
+                                                                    .optionsLabel
                                                                     .margin.x
                                                             }
-                                                            aria-hidden="true"
-                                                        ></Block>
-                                                    </RadixMenu.Separator>
+                                                            textTransform="uppercase"
+                                                            color={
+                                                                menuTokens.item
+                                                                    .optionsLabel
+                                                                    .color
+                                                            }
+                                                            aria-label={
+                                                                group.label
+                                                            }
+                                                        >
+                                                            {group.label}
+                                                        </PrimitiveText>
+                                                    </RadixMenu.Label>
                                                 )}
-                                        </React.Fragment>
-                                    ))}
-                            </Block>
-                        )}
-                    </>
-                )}
-            </Content>
+                                                {group.items.map(
+                                                    (item, itemIndex) => (
+                                                        <MenuItem
+                                                            key={`${groupId}-${itemIndex}`}
+                                                            item={item}
+                                                            idx={itemIndex}
+                                                            maxHeight={
+                                                                maxHeight
+                                                            }
+                                                        />
+                                                    )
+                                                )}
+                                                {groupId !==
+                                                    filteredItems.length - 1 &&
+                                                    group.showSeparator && (
+                                                        <RadixMenu.Separator
+                                                            asChild
+                                                        >
+                                                            <Block
+                                                                as="div"
+                                                                role="separator"
+                                                                height={
+                                                                    menuTokens
+                                                                        .item
+                                                                        .seperator
+                                                                        .height
+                                                                }
+                                                                backgroundColor={
+                                                                    menuTokens
+                                                                        .item
+                                                                        .seperator
+                                                                        .color
+                                                                }
+                                                                marginY={
+                                                                    menuTokens
+                                                                        .item
+                                                                        .seperator
+                                                                        .margin
+                                                                        .y
+                                                                }
+                                                                marginX={
+                                                                    menuTokens
+                                                                        .item
+                                                                        .seperator
+                                                                        .margin
+                                                                        .x
+                                                                }
+                                                                aria-hidden="true"
+                                                            ></Block>
+                                                        </RadixMenu.Separator>
+                                                    )}
+                                            </React.Fragment>
+                                        ))}
+                                </Block>
+                            )}
+                        </>
+                    )}
+                </Content>
+            </RadixMenu.Portal>
         </RadixMenu.Root>
     )
 }

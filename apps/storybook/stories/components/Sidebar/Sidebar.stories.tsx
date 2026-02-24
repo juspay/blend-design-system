@@ -229,6 +229,19 @@ const navigationData = [
                 category: 'Behavior',
             },
         },
+        onSidebarStateChange: {
+            description:
+                'Callback fired when the sidebar transitions between collapsed, intermediate (hover), and expanded states.',
+            control: false,
+            action: 'onSidebarStateChange',
+            table: {
+                type: {
+                    summary:
+                        '(state: "collapsed" | "intermediate" | "expanded") => void',
+                },
+                category: 'Events',
+            },
+        },
     },
     tags: ['autodocs'],
 }
@@ -278,6 +291,9 @@ export const Default: Story = {
     render: () => {
         const DefaultComponent = () => {
             const [activeTenant, setActiveTenant] = useState('Retail Corp')
+            const [sidebarState, setSidebarState] = useState<
+                'collapsed' | 'expanded' | 'intermediate'
+            >('expanded')
 
             const navigationData: DirectoryData[] = [
                 {
@@ -365,6 +381,10 @@ export const Default: Story = {
             return (
                 <div style={{ height: '100vh', display: 'flex' }}>
                     <Sidebar
+                        onSidebarStateChange={(state) => {
+                            setSidebarState(state)
+                            console.log('[Sidebar state]', state)
+                        }}
                         leftPanel={{
                             items: [
                                 {
@@ -523,6 +543,9 @@ export const Accessibility: Story = {
         const AccessibilityComponent = () => {
             const [activeTenant, setActiveTenant] = useState('Retail Corp')
             const [isExpanded, setIsExpanded] = useState(true)
+            const [sidebarState, setSidebarState] = useState<
+                'collapsed' | 'expanded' | 'intermediate'
+            >('expanded')
 
             const navigationData: DirectoryData[] = [
                 {
@@ -607,6 +630,10 @@ export const Accessibility: Story = {
             return (
                 <div style={{ height: '100vh', display: 'flex' }}>
                     <Sidebar
+                        onSidebarStateChange={(state) => {
+                            setSidebarState(state)
+                            console.log('[Sidebar state]', state)
+                        }}
                         isExpanded={isExpanded}
                         onExpandedChange={setIsExpanded}
                         leftPanel={{
@@ -1151,6 +1178,9 @@ export const WithoutIntermediateState: Story = {
     render: () => {
         const WithoutIntermediateStateComponent = () => {
             const [activeTenant, setActiveTenant] = useState('Retail Corp')
+            const [sidebarState, setSidebarState] = useState<
+                'collapsed' | 'expanded' | 'intermediate'
+            >('expanded')
 
             const navigationData: DirectoryData[] = [
                 {
@@ -1197,6 +1227,10 @@ export const WithoutIntermediateState: Story = {
             return (
                 <div style={{ height: '100vh', display: 'flex' }}>
                     <Sidebar
+                        onSidebarStateChange={(state) => {
+                            setSidebarState(state)
+                            console.log('[Sidebar state]', state)
+                        }}
                         disableIntermediateState={true}
                         defaultIsExpanded={false}
                         leftPanel={{

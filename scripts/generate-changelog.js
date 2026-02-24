@@ -173,10 +173,39 @@ function categorizeCommits(commits) {
     return { categories, breakingChanges }
 }
 
+function getRepositoryUrl() {
+    if (process.env.GITHUB_REPOSITORY) {
+        return `https://github.com/${process.env.GITHUB_REPOSITORY}`
+    }
+
+    try {
+        const remoteUrl = execCommand('git config --get remote.origin.url')
+        if (remoteUrl && remoteUrl.trim()) {
+            const httpsMatch = remoteUrl.match(
+                /github\.com[/:]([^/]+\/[^/]+?)(?:\.git)?\/?$/
+            )
+            const sshMatch = remoteUrl.match(
+                /git@github\.com[:]([^/]+\/[^/]+?)(?:\.git)?\/?$/
+            )
+
+            const match = httpsMatch || sshMatch
+            if (match && match[1]) {
+                return `https://github.com/${match[1]}`
+            }
+        }
+    } catch (error) {
+        console.error(`Error getting repository URL: ${error.message}`)
+        return 'https://github.com/juspay/blend-design-system'
+    }
+
+    return 'https://github.com/juspay/blend-design-system'
+}
+
 function formatCommit(commit) {
     const scope = commit.scope ? `**${commit.scope}**: ` : ''
     const breaking = commit.isBreaking ? ' ⚠️ **BREAKING**' : ''
-    return `- ${scope}${commit.description}${breaking} ([${commit.hash}](../../commit/${commit.hash}))`
+    const repoUrl = getRepositoryUrl()
+    return `- ${scope}${commit.description}${breaking} ([${commit.hash}](${repoUrl}/commit/${commit.hash}))`
 }
 
 function generateChangelog(version, isBeta = false, fromTag = null) {

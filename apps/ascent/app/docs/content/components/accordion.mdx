@@ -249,11 +249,74 @@ function MyComponent() {
             { content: 'AccordionChevronPosition', hintText: 'enum' },
             { content: 'LEFT, RIGHT' },
         ],
+        [
+            {
+                content: 'triggerSlot',
+                hintText:
+                    'Optional React element or render function to replace the default chevron icon. When provided, this custom element will be displayed instead of the default chevron. The slot container has a default width of 24px (from tokens), which can be overridden using triggerSlotWidth. If a render function is provided, it receives SlotRenderProps ({ isExpanded, toggle, value, isDisabled }) as props. The toggle function can be called to toggle the accordion state. If not provided, the default chevron icon will be used.',
+            },
+            {
+                content: 'ReactNode | ((props: SlotRenderProps) => ReactNode)',
+                hintText:
+                    'Any React element to display as the trigger indicator (icon, text, or custom component), or a render function that receives SlotRenderProps',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'triggerSlotWidth',
+                hintText:
+                    'Optional width value for the triggerSlot container. Overrides the default token value (24px). Accepts CSS width values as a string (e.g., "32px", "2rem") or a number (which will be converted to pixels). If not provided, uses the default token value.',
+            },
+            {
+                content: 'string | number',
+                hintText:
+                    'CSS width value as string (e.g., "32px", "2rem") or number (converted to pixels)',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
+
+## SlotRenderProps
+
+When using `triggerSlot` as a render function, you receive a `SlotRenderProps` object with the following properties:
+
+```tsx
+export type SlotRenderProps = {
+    /** Whether this accordion item is currently expanded */
+    isExpanded: boolean
+    /** Function to toggle this accordion item's expansion state */
+    toggle: () => void
+    /** The value identifier of this accordion item */
+    value: string
+    /** Whether this accordion item is disabled */
+    isDisabled: boolean
+}
+```
+
+### Example Usage
+
+```tsx
+<AccordionItem
+    value="item1"
+    title="Custom Trigger"
+    triggerSlot={({ isExpanded, toggle, value, isDisabled }) => (
+        <Switch
+            checked={isExpanded}
+            onChange={() => toggle()}
+            disabled={isDisabled}
+            size={SwitchSize.SMALL}
+            label=""
+        />
+    )}
+>
+    Content here
+</AccordionItem>
+```
 
 ## Component Tokens
 
@@ -309,6 +372,10 @@ export type AccordionTokenType = {
         color: {
             [key in AccordionType]: CSSObject['color']
         }
+    }
+    chevron: {
+        width: CSSObject['width']
+        height: CSSObject['height']
     }
 }
 ```

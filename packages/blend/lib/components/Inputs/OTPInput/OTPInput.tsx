@@ -74,6 +74,7 @@ const OTPInput = ({
             .join(' ') || undefined
 
     useEffect(() => {
+        if (!disabled) return
         const val = value || ''
         const otpArray = val.split('').slice(0, length)
         const paddedOtp = [
@@ -82,6 +83,17 @@ const OTPInput = ({
         ]
         setOtp(paddedOtp)
     }, [disabled, value, length])
+
+    useEffect(() => {
+        setOtp((prevOtp) => {
+            if (prevOtp.length === length) return prevOtp
+            const newOtp = prevOtp.slice(0, length)
+            return [
+                ...newOtp,
+                ...new Array(Math.max(length - newOtp.length, 0)).fill(''),
+            ]
+        })
+    }, [length])
 
     useEffect(() => {
         if (autoFocus && inputRefs.current[0] && !disabled) {

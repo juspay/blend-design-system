@@ -20,6 +20,10 @@ import { Theme } from '../../context/theme.enum'
  * Size-dependent properties: borderRadius, padding, fontSize, fontWeight, gap, height
  */
 export type TagTokensType = Readonly<{
+    minWidth: CSSObject['minWidth']
+    maxWidth: CSSObject['maxWidth']
+    width: CSSObject['width']
+
     gap: CSSObject['gap']
     // Pattern: backgroundColor.[variant].[subType]
     backgroundColor: {
