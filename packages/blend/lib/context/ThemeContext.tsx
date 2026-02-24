@@ -180,7 +180,6 @@ export type ComponentTokenType = {
     SNACKBAR?: ResponsiveSnackbarTokens
     STEPPER?: ResponsiveStepperTokens
     KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
-    KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
     CARD?: ResponsiveCardTokens
     SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
@@ -203,6 +202,7 @@ export type ComponentTokenType = {
     TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
     CHARTSV2?: ResponsiveChartV2Tokens
     CHECKBOXV2?: ResponsiveCheckboxV2Tokens
+    KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
 }
 
 type ThemeContextType = {
@@ -247,7 +247,6 @@ const ThemeContext = createContext<ThemeContextType>({
         SNACKBAR: getSnackbarTokens(FOUNDATION_THEME),
         STEPPER: getStepperTokens(FOUNDATION_THEME),
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
-        KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CARD: getCardTokens(FOUNDATION_THEME),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
@@ -270,6 +269,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CHARTSV2: getChartV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
         CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

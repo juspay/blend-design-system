@@ -95,9 +95,6 @@ const initTokens = (
         KEYVALUEPAIR:
             componentTokens.KEYVALUEPAIR ??
             getKeyValuePairTokens(foundationTokens),
-        KEYVALUEPAIRV2:
-            componentTokens.KEYVALUEPAIRV2 ??
-            getKeyValuePairV2Tokens(foundationTokens, theme),
         MODAL:
             componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
         BREADCRUMB:
@@ -177,6 +174,9 @@ const initTokens = (
         CHECKBOXV2:
             componentTokens.CHECKBOXV2 ??
             getCheckboxV2Tokens(foundationTokens, theme),
+        KEYVALUEPAIRV2:
+            componentTokens.KEYVALUEPAIRV2 ??
+            getKeyValuePairV2Tokens(foundationTokens, theme),
     }
 }
 
