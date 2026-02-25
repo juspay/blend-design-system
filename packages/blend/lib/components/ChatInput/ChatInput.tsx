@@ -289,10 +289,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 cursor={disabled ? 'not-allowed' : 'default'}
                 boxShadow={tokens.container.boxShadow.default}
             >
-                {slot2}
                 {hiddenFileInput}
                 {/* Files container */}
-                {attachedFiles.length > 0 && !slot2 && (
+                {attachedFiles.length > 0 && (
                     <AttachmentFile
                         attachedFiles={attachedFiles}
                         onFileRemove={onFileRemove}
@@ -301,6 +300,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         containerRef={containerRef}
                     />
                 )}
+                {slot2}
                 <Block
                     backgroundColor={
                         attachedFiles.length > 0 || slot2
@@ -310,7 +310,19 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                     borderRadius={
                         attachedFiles.length > 0 || slot2
                             ? tokens.attachmentContainer.borderRadius
-                            : 0
+                            : isTextareaFocused
+                              ? tokens.attachmentContainer.borderRadius
+                              : 0
+                    }
+                    border={
+                        isTextareaFocused
+                            ? tokens.container.border.focus
+                            : 'none'
+                    }
+                    boxShadow={
+                        isTextareaFocused
+                            ? tokens.container.boxShadow.focus
+                            : 'none'
                     }
                 >
                     <PrimitiveTextarea
@@ -347,14 +359,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         overflowY={tokens.textarea.overflowY}
                         cursor={disabled ? 'not-allowed' : 'text'}
                         style={{ lineHeight: tokens.textarea.lineHeight }}
-                        onFocus={(e) => {
+                        onFocus={() => {
                             setIsTextareaFocused(true)
-                            const container =
-                                e.currentTarget.parentElement!.parentElement!
-                            container.style.boxShadow = tokens.container
-                                .boxShadow.focus as string
-                            container.style.border = tokens.container.border
-                                .focus as string
                         }}
                         onBlur={(e) => {
                             setIsTextareaFocused(false)
@@ -414,13 +420,12 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         id={topQueriesId}
                     >
                         <Block
-                            borderTop={tokens.topQueries.container.borderTop}
                             backgroundColor={
                                 tokens.topQueries.header.backgroundColor
                             }
                             flexShrink={tokens.topQueries.header.flexShrink}
                             paddingX={tokens.topQueries.header.paddingX}
-                            paddingY={tokens.topQueries.header.paddingY}
+                            paddingBottom={tokens.topQueries.header.paddingY}
                         >
                             <Text
                                 color={tokens.topQueries.header.color}
@@ -430,6 +435,12 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                     tokens.topQueries.header.textTransform
                                 }
                                 id={`${topQueriesId}-label`}
+                                style={{
+                                    borderTop:
+                                        tokens.topQueries.container.borderTop,
+                                    paddingTop:
+                                        tokens.topQueries.header.paddingY,
+                                }}
                             >
                                 Top Queries
                             </Text>
@@ -445,7 +456,10 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             }
                             role="listbox"
                             aria-labelledby={`${topQueriesId}-label`}
-                            // backgroundColor={tokens.topQueries.scrollContainer.backgroundColor}
+                            backgroundColor={
+                                tokens.topQueries.scrollContainer
+                                    .backgroundColor
+                            }
                         >
                             {topQueries.map((query, index) => {
                                 const isFocused = focusedQueryIndex === index

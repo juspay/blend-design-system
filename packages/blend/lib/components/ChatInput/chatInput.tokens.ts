@@ -465,7 +465,7 @@ export const getChatInputTokens = (
                 lineHeight: '1.5',
                 paddingTop: foundationToken.unit[12],
                 paddingRight: foundationToken.unit[12],
-                paddingBottom: foundationToken.unit[6],
+                paddingBottom: foundationToken.unit[8],
                 paddingLeft: foundationToken.unit[12],
                 border: 'none',
                 borderRadius: foundationToken.unit[0],
