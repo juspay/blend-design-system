@@ -136,7 +136,6 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                             <Text
                                 fontSize={subsection.description.fontSize}
                                 color={subsection.description.color}
-                                // lineHeight={subsection.description.lineHeight}
                                 style={{
                                     display: '-webkit-box',
                                     WebkitLineClamp: maxLines,

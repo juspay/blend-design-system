@@ -219,11 +219,7 @@ const TimelineDemo = () => {
                                         <StatusBadge color="#a78bfa" />
                                     ) : undefined
                                 }
-                                rightSlot={
-                                    showSubstepSlots ? (
-                                        <StatusBadge color="#a78bfa" />
-                                    ) : undefined
-                                }
+                                rightSlot={<StatusBadge color="#a78bfa" />}
                             />
                             <Timeline.Substep
                                 title="Gateway Selected"

@@ -114,7 +114,7 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                                     {title}
                                 </Text>
                                 {rightSlot != null && (
-                                    <Block flexShrink={0}>{rightSlot}</Block>
+                                    <Block>{rightSlot}</Block>
                                 )}
                             </Block>
 

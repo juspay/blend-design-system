@@ -1,14 +1,15 @@
+import type {
+    LineLayout,
+    LinePositionOptions,
+    TimelineItemData,
+    TimelineLabelData,
+} from './types'
+
 const DATA_LABEL = 'data-timeline-label'
 const DATA_HEADER = 'data-timeline-header'
 const DATA_SUBSTEP = 'data-timeline-substep'
 const DATA_NODE = 'data-timeline-node'
 const DATA_SHOW_MORE = 'data-timeline-show-more'
-
-export type LinePositionOptions = {
-    indicatorHeightPx: number
-    indicatorTopPx: number
-    labelCircleHeightPx: number
-}
 
 export function parsePx(value: string | number | undefined): number {
     if (value == null) return 0
@@ -46,16 +47,18 @@ function getIndicatorBottomForElement(
     return el.offsetTop + el.offsetHeight
 }
 
-/**
- * Line starts at the bottom of the first item's indicator (circle then line).
- * No line segment above the first circle; line connects to the circle with no gap.
- */
+const getTimelineItems = (container: HTMLElement): HTMLElement[] =>
+    Array.from(container.children).filter(
+        (el) =>
+            (el as HTMLElement).getAttribute?.('data-timeline-line') !== 'true'
+    ) as HTMLElement[]
+
 export function getLineTop(
     container: HTMLElement,
     options: LinePositionOptions
 ): number {
     const { indicatorHeightPx, indicatorTopPx, labelCircleHeightPx } = options
-    const children = Array.from(container.children) as HTMLElement[]
+    const children = getTimelineItems(container)
     const first = children[0]
     if (!first) return 0
 
@@ -89,7 +92,7 @@ export function getLineBottom(
     options: LinePositionOptions
 ): number | null {
     const { indicatorHeightPx, indicatorTopPx } = options
-    const children = Array.from(container.children) as HTMLElement[]
+    const children = getTimelineItems(container)
     const last = children[children.length - 1]
     if (!last) return null
 
@@ -125,7 +128,7 @@ export function getLineBottom(
 export function clampLineHeight(
     lineTop: number,
     lineBottom: number | null
-): { top: number; height: number } | null {
+): LineLayout | null {
     if (lineBottom == null) return null
     const top = lineTop
     let height = lineBottom - lineTop
@@ -133,4 +136,34 @@ export function clampLineHeight(
         height = 1
     }
     return { top, height }
+}
+
+export const organizeTimelineItems = (
+    items: TimelineItemData[]
+): TimelineLabelData[] => {
+    const labelsMap = new Map<string, TimelineLabelData>()
+
+    items.forEach((item) => {
+        if (item.label) {
+            labelsMap.set(item.label.id, {
+                ...item.label,
+                headers: item.label.headers || [],
+                comments: item.label.comments || [],
+            })
+        } else if (item.header) {
+            const lastLabel = Array.from(labelsMap.values()).pop()
+            if (lastLabel) {
+                if (!lastLabel.headers) lastLabel.headers = []
+                lastLabel.headers.push(item.header!)
+            }
+        } else if (item.comment) {
+            const lastLabel = Array.from(labelsMap.values()).pop()
+            if (lastLabel) {
+                if (!lastLabel.comments) lastLabel.comments = []
+                lastLabel.comments.push(item.comment)
+            }
+        }
+    })
+
+    return Array.from(labelsMap.values())
 }

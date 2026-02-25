@@ -6,10 +6,10 @@ import { TimelineTokensType } from './timeline.token'
 import type { TimelineLabelProps } from './types'
 
 const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
-    ({ text, date, ...rest }, ref) => {
+    ({ text, ...rest }, ref) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
         const { label } = tokens
-        const labelText = text ?? date ?? ''
+        const labelText = text ?? ''
 
         return (
             <Block
