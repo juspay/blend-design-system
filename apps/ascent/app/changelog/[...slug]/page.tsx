@@ -4,7 +4,7 @@ import {
     compileMDXFromSlug,
     generateMetadataFromFrontmatter,
     generateStaticParamsFromMDX,
-} from '../../lib/utils/mdx'
+} from '@/lib/utils/mdx'
 import { CHANGELOG_CONFIG } from '../config'
 
 interface PageProps {

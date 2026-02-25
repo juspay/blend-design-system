@@ -124,6 +124,7 @@ import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
 import ChartV2Demo from './ChartV2Demo'
+import TimelineDemo from './TimelineDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -203,6 +204,7 @@ const SidebarDemo = () => {
         | 'textInputV2'
         | 'textInputAutofillTestV2'
         | 'textInputGroup'
+        | 'timeline'
     >('chartV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -527,6 +529,8 @@ const SidebarDemo = () => {
                 return <TextInputAutofillTestV2 />
             case 'chartV2':
                 return <ChartV2Demo />
+            case 'timeline':
+                return <TimelineDemo />
             default:
                 return (
                     <div className="p-8">
@@ -1263,6 +1267,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'codeEditor',
                     onClick: () => setActiveComponent('codeEditor'),
+                },
+                {
+                    label: 'Timeline',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'timeline',
+                    onClick: () => setActiveComponent('timeline'),
                 },
             ],
         },

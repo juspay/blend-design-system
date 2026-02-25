@@ -52,3 +52,4 @@ export * from './tokens'
 //V2 Components
 
 export * from './components/ChartsV2'
+export * from './components/Timeline'

@@ -8,7 +8,7 @@ import type {
     BlogPost,
     BlogPostWithContent,
     TOCItem,
-} from '../components/features/Blog/types'
+} from '@/components/features/Blog/types'
 
 export type { BlogPost, BlogPostWithContent, TOCItem }
 

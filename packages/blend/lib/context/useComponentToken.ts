@@ -51,6 +51,7 @@ import { ResponsiveSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens
 import { ResponsiveAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
+import { ResponsiveTimelineTokens } from '../components/Timeline/timeline.token'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -108,7 +109,8 @@ export const useComponentToken = (
     | ResponsiveTextInputV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
-    | ResponsiveTextInputV2Tokens => {
+    | ResponsiveTextInputV2Tokens
+    | ResponsiveTimelineTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -216,6 +218,8 @@ export const useComponentToken = (
             return componentTokens.TEXT_INPUTV2
         case 'CHARTSV2':
             return componentTokens.CHARTSV2
+        case 'TIMELINE':
+            return componentTokens.TIMELINE
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

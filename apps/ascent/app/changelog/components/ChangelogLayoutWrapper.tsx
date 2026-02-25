@@ -9,7 +9,6 @@ interface ChangelogLayoutWrapperProps {
     sidebarItems: any[]
     showThemeToggle: boolean
     showSidebar: boolean
-    showFooter: boolean
     children: React.ReactNode
 }
 
@@ -18,7 +17,6 @@ export const ChangelogLayoutWrapper: React.FC<ChangelogLayoutWrapperProps> = ({
     sidebarItems,
     showThemeToggle,
     showSidebar,
-    showFooter,
     children,
 }) => {
     // Use the hook to force dark theme
@@ -30,7 +28,6 @@ export const ChangelogLayoutWrapper: React.FC<ChangelogLayoutWrapperProps> = ({
             sidebarItems={sidebarItems}
             showThemeToggle={showThemeToggle}
             showSidebar={showSidebar}
-            showFooter={showFooter}
         >
             {children}
         </SharedDocLayout>
