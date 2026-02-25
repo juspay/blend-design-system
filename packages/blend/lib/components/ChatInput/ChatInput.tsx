@@ -68,6 +68,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         {
             value = '',
             slot1,
+            slot2,
             onChange,
             onAttachFiles,
             onFileRemove,
@@ -250,6 +251,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         value={value}
                         onChange={onChange || (() => {})}
                         slot1={slot1}
+                        slot2={slot2}
                         placeholder={placeholder}
                         attachedFiles={attachedFiles}
                         handleAttachClick={handleAttachClick}
@@ -273,16 +275,13 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 backgroundColor={
                     disabled
                         ? tokens.container.backgroundColor.disabled
-                        : attachedFiles.length > 0
+                        : attachedFiles.length > 0 || slot2
                           ? FOUNDATION_THEME.colors.gray[50]
                           : tokens.container.backgroundColor.default
                 }
                 border={tokens.container.border.default}
                 borderRadius={tokens.container.borderRadius}
-                paddingTop={tokens.container.paddingTop}
-                paddingRight={tokens.container.paddingRight}
-                paddingBottom={tokens.container.paddingBottom}
-                paddingLeft={tokens.container.paddingLeft}
+                padding={tokens.container.padding}
                 gap={tokens.container.gap}
                 minHeight={tokens.container.minHeight}
                 position="relative"
@@ -290,9 +289,10 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 cursor={disabled ? 'not-allowed' : 'default'}
                 boxShadow={tokens.container.boxShadow.default}
             >
+                {slot2}
                 {hiddenFileInput}
                 {/* Files container */}
-                {attachedFiles.length > 0 && (
+                {attachedFiles.length > 0 && !slot2 && (
                     <AttachmentFile
                         attachedFiles={attachedFiles}
                         onFileRemove={onFileRemove}
@@ -303,18 +303,13 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 )}
                 <Block
                     backgroundColor={
-                        attachedFiles.length > 0
+                        attachedFiles.length > 0 || slot2
                             ? tokens.attachmentContainer.backgroundColor
                             : 'transparent'
                     }
                     borderRadius={
-                        attachedFiles.length > 0
+                        attachedFiles.length > 0 || slot2
                             ? tokens.attachmentContainer.borderRadius
-                            : 0
-                    }
-                    padding={
-                        attachedFiles.length > 0
-                            ? tokens.attachmentContainer.padding
                             : 0
                     }
                 >
@@ -337,8 +332,10 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         backgroundColor={tokens.textarea.backgroundColor}
                         color={tokens.textarea.color}
                         fontSize={tokens.textarea.fontSize}
-                        paddingX={tokens.textarea.paddingX}
-                        paddingY={tokens.textarea.paddingY}
+                        paddingTop={tokens.textarea.paddingTop}
+                        paddingRight={tokens.textarea.paddingRight}
+                        paddingBottom={tokens.textarea.paddingBottom}
+                        paddingLeft={tokens.textarea.paddingLeft}
                         border={tokens.textarea.border}
                         borderRadius={tokens.textarea.borderRadius}
                         outline="none"
@@ -370,13 +367,16 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         }}
                         {...textAreaProps}
                     />
+
                     <Block
                         data-element="chat-input-actions"
                         display="flex"
                         alignItems="center"
                         justifyContent={tokens.bottomActions.justifyContent}
-                        paddingX={tokens.bottomActions.paddingX}
-                        paddingY={tokens.bottomActions.paddingY}
+                        paddingTop={tokens.textarea.paddingTop}
+                        paddingRight={tokens.textarea.paddingRight}
+                        paddingBottom={tokens.textarea.paddingBottom}
+                        paddingLeft={tokens.textarea.paddingLeft}
                         gap={tokens.bottomActions.gap}
                         marginTop={tokens.bottomActions.gap}
                         role="toolbar"
@@ -401,7 +401,6 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
                 {topQueries && topQueries.length > 0 && isTextareaFocused && (
                     <Block
-                        borderTop={tokens.topQueries.container.borderTop}
                         paddingTop={tokens.topQueries.container.paddingTop}
                         display="flex"
                         flexDirection="column"
@@ -415,6 +414,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         id={topQueriesId}
                     >
                         <Block
+                            borderTop={tokens.topQueries.container.borderTop}
                             backgroundColor={
                                 tokens.topQueries.header.backgroundColor
                             }
@@ -445,6 +445,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             }
                             role="listbox"
                             aria-labelledby={`${topQueriesId}-label`}
+                            // backgroundColor={tokens.topQueries.scrollContainer.backgroundColor}
                         >
                             {topQueries.map((query, index) => {
                                 const isFocused = focusedQueryIndex === index

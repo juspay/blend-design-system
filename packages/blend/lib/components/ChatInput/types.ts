@@ -21,6 +21,7 @@ export type ChatInputProps = Omit<
 > & {
     value?: string
     slot1?: ReactNode
+    slot2?: ReactNode
     onChange?: (value: string) => void
     onSend?: (message: string, files: AttachedFile[]) => void
     onAttachFiles?: (files: File[]) => void
