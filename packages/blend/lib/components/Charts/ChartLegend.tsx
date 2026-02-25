@@ -468,6 +468,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                 {dataKey}
                                             </Text>
                                             <Text
+                                                aria-hidden={true}
                                                 fontSize={
                                                     legendTokens.item.fontSize
                                                 }
