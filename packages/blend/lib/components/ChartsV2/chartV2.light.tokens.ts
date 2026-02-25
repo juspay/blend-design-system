@@ -21,20 +21,34 @@ export const getChartV2LightTokens = (
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
             },
             legends: {
-                name: {
-                    fontSize: foundationToken.font.fontSize[12],
-                    fontWeight: foundationToken.font.weight[500],
-                    lineHeight: foundationToken.font.lineHeight[18],
-                    color: foundationToken.colors.gray[700],
-                },
-                value: {
-                    fontSize: foundationToken.font.fontSize[12],
-                    fontWeight: foundationToken.font.weight[500],
-                    lineHeight: foundationToken.font.lineHeight[18],
-                    color: foundationToken.colors.gray[500],
-                },
-                separator: {
-                    color: foundationToken.colors.gray[500],
+                gap: foundationToken.unit[16],
+                legendItem: {
+                    gap: foundationToken.unit[8],
+                    shape: {
+                        width: foundationToken.unit[12],
+                        height: foundationToken.unit[12],
+                        borderRadius: foundationToken.border.radius[12],
+                    },
+                    text: {
+                        gap: foundationToken.unit[4],
+                        name: {
+                            fontSize: foundationToken.font.fontSize[12],
+                            fontWeight: foundationToken.font.weight[500],
+                            lineHeight: foundationToken.font.lineHeight[18],
+                            color: foundationToken.colors.gray[700],
+                        },
+                        value: {
+                            fontSize: foundationToken.font.fontSize[12],
+                            fontWeight: foundationToken.font.weight[500],
+                            lineHeight: foundationToken.font.lineHeight[18],
+                            color: foundationToken.colors.gray[500],
+                        },
+                        separator: {
+                            color: foundationToken.colors.gray[500],
+                            width: foundationToken.unit[1],
+                            height: foundationToken.unit[9],
+                        },
+                    },
                 },
             },
             chart: {
@@ -101,20 +115,34 @@ export const getChartV2LightTokens = (
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
             },
             legends: {
-                name: {
-                    fontSize: foundationToken.font.fontSize[12],
-                    fontWeight: foundationToken.font.weight[500],
-                    lineHeight: foundationToken.font.lineHeight[18],
-                    color: foundationToken.colors.gray[700],
-                },
-                value: {
-                    fontSize: foundationToken.font.fontSize[12],
-                    fontWeight: foundationToken.font.weight[500],
-                    lineHeight: foundationToken.font.lineHeight[18],
-                    color: foundationToken.colors.gray[500],
-                },
-                separator: {
-                    color: foundationToken.colors.gray[500],
+                gap: foundationToken.unit[16],
+                legendItem: {
+                    gap: foundationToken.unit[8],
+                    shape: {
+                        width: foundationToken.unit[12],
+                        height: foundationToken.unit[12],
+                        borderRadius: foundationToken.border.radius[12],
+                    },
+                    text: {
+                        gap: foundationToken.unit[4],
+                        name: {
+                            fontSize: foundationToken.font.fontSize[12],
+                            fontWeight: foundationToken.font.weight[500],
+                            lineHeight: foundationToken.font.lineHeight[18],
+                            color: foundationToken.colors.gray[700],
+                        },
+                        value: {
+                            fontSize: foundationToken.font.fontSize[12],
+                            fontWeight: foundationToken.font.weight[500],
+                            lineHeight: foundationToken.font.lineHeight[18],
+                            color: foundationToken.colors.gray[500],
+                        },
+                        separator: {
+                            color: foundationToken.colors.gray[500],
+                            width: foundationToken.unit[1],
+                            height: foundationToken.unit[9],
+                        },
+                    },
                 },
             },
             chart: {

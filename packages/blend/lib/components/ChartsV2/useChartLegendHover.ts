@@ -47,12 +47,33 @@ export const useChartLegendHover = (
                                   (p as Highcharts.Point).name
                           ) ?? item)
                         : canonicalItem
+
+                    const handlePointOver = () => {
+                        setHoveredItem(canonical)
+                        if (isPie) {
+                            const items = getLegendItems(ch)
+                            applyHoverState(items, canonical)
+                        }
+                    }
+
+                    const handlePointOut = () => {
+                        setHoveredItem(null)
+                        if (isPie) {
+                            const items = getLegendItems(ch)
+                            applyHoverState(items, null)
+                        }
+                    }
+
                     unsubs.push(
-                        Highcharts.addEvent(p, 'mouseOver', () =>
-                            setHoveredItem(canonical)
+                        Highcharts.addEvent(
+                            p,
+                            'mouseOver',
+                            handlePointOver
                         ) as () => void,
-                        Highcharts.addEvent(p, 'mouseOut', () =>
-                            setHoveredItem(null)
+                        Highcharts.addEvent(
+                            p,
+                            'mouseOut',
+                            handlePointOut
                         ) as () => void
                     )
                 })

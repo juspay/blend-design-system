@@ -21,20 +21,35 @@ export type ChartV2TokensType = {
         borderBottom: CSSObject['borderBottom']
     }
     legends: {
-        name: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            lineHeight: CSSObject['lineHeight']
-            color: CSSObject['color']
-        }
-        value: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            lineHeight: CSSObject['lineHeight']
-            color: CSSObject['color']
-        }
-        separator: {
-            color: CSSObject['color']
+        gap: CSSObject['gap']
+        legendItem: {
+            gap: CSSObject['gap']
+            shape: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+                borderRadius: CSSObject['borderRadius']
+            }
+            text: {
+                gap: CSSObject['gap']
+                name: {
+                    fontSize: CSSObject['fontSize']
+
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                    color: CSSObject['color']
+                }
+                value: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                    color: CSSObject['color']
+                }
+                separator: {
+                    color: CSSObject['color']
+                    width: CSSObject['width']
+                    height: CSSObject['height']
+                }
+            }
         }
     }
     chart: {

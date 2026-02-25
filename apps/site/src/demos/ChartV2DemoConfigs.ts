@@ -44,7 +44,7 @@ export const customLegendItemsForPie: ChartV2CustomLegendItem[] = [
 
 export const columnChartOptions = {
     xAxis: { type: 'datetime' as const },
-    legend: { enabled: true, align: 'left', verticalAlign: 'top' },
+    legend: { enabled: false },
     series: [
         {
             type: 'column' as const,
@@ -136,7 +136,7 @@ export const scatterChartOptions = {
 
 export const pieChartOptions = {
     legend: {
-        enabled: true,
+        enabled: false,
         align: 'right',
         verticalAlign: 'middle',
         layout: 'vertical',

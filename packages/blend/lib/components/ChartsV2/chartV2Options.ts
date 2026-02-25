@@ -49,7 +49,7 @@ export const mergeChartOptions = (
             ...legend,
             ...LEGEND_DEFAULTS,
             enabled: legend?.enabled ?? true,
-            itemStyle: toAxisStyle(legendsTokens.name),
+            itemStyle: toAxisStyle(legendsTokens.legendItem.text.name),
         },
         xAxis: {
             ...xAxisOpt,

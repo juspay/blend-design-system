@@ -5,7 +5,7 @@ import ChartV2Fullscreen from '../../../../packages/blend/lib/components/ChartsV
 import ChartV2Legend from '../../../../packages/blend/lib/components/ChartsV2/ChartV2Legend'
 import ChartHeaderV2 from '../../../../packages/blend/lib/components/ChartsV2/ChartHeaderV2'
 import type { ChartV2ReactRefObject } from '../../../../packages/blend/lib/components/ChartsV2/chartV2.types'
-import { ChevronsDownUp } from 'lucide-react'
+import { ChevronsDownUp, Expand } from 'lucide-react'
 import {
     areaChartOptions,
     columnChartOptions,
@@ -20,6 +20,7 @@ import {
     sankeyChartOptions,
     scatterChartOptions,
 } from './ChartV2DemoConfigs'
+import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 
 const ColumnChartSection = () => {
     const [showChart, setShowChart] = useState(true)
@@ -38,6 +39,10 @@ const ColumnChartSection = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <ChevronsDownUp
+                                        size={20}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                         onClick={() =>
                                             setShowChart((prev) => !prev)
                                         }
@@ -54,23 +59,48 @@ const ColumnChartSection = () => {
                                                 ? exitFullscreen
                                                 : enterFullscreen
                                         }
-                                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50"
+                                        className="flex h-8 w-8 items-center justify-center "
                                     >
-                                        <span aria-hidden="true">
-                                            {isFullscreen ? '×' : '⤢'}
-                                        </span>
+                                        <Expand
+                                            size={18}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            aria-hidden="true"
+                                        />
                                     </button>
                                 </div>
                             </div>
                         </ChartHeaderV2>
-                        <div className={showChart ? 'p-4' : 'p-0'}>
-                            {showChart && (
+
+                        {showChart && (
+                            <div className="pt-5 p-4 flex flex-col gap-6">
+                                {/* <ChartV2Legend
+                                    chartRef={chartRef}
+                                    customLegendItems={[
+                                        {
+                                            key: 'Overall',
+                                            name: 'Overall',
+                                            color: FOUNDATION_THEME.colors
+                                                .primary[500],
+                                            value: 54,
+                                        },
+                                        {
+                                            key: 'goindigo',
+                                            name: 'goindigo',
+                                            color: FOUNDATION_THEME.colors
+                                                .red[500],
+                                            value: 10,
+                                        },
+                                    ]}
+                                /> */}
                                 <ChartV2
                                     ref={chartRef}
                                     options={columnChartOptions}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </ChartV2Container>
                 )}
             </ChartV2Fullscreen>
@@ -95,6 +125,10 @@ const LineChartSection = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <ChevronsDownUp
+                                        size={20}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                         onClick={() =>
                                             setShowChart((prev) => !prev)
                                         }
@@ -111,23 +145,48 @@ const LineChartSection = () => {
                                                 ? exitFullscreen
                                                 : enterFullscreen
                                         }
-                                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50"
+                                        className="flex h-8 w-8 items-center justify-center "
                                     >
-                                        <span aria-hidden="true">
-                                            {isFullscreen ? '×' : '⤢'}
-                                        </span>
+                                        <Expand
+                                            size={18}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            aria-hidden="true"
+                                        />
                                     </button>
                                 </div>
                             </div>
                         </ChartHeaderV2>
-                        <div className={showChart ? 'p-4' : 'p-0'}>
-                            {showChart && (
+
+                        {showChart && (
+                            <div className="pt-5 p-4 flex flex-col gap-6">
+                                <ChartV2Legend
+                                    chartRef={chartRef}
+                                    customLegendItems={[
+                                        {
+                                            key: 'Overall',
+                                            name: 'Overall',
+                                            color: FOUNDATION_THEME.colors
+                                                .primary[500],
+                                            value: 54,
+                                        },
+                                        {
+                                            key: 'goindigo',
+                                            name: 'goindigo',
+                                            color: FOUNDATION_THEME.colors
+                                                .red[500],
+                                            value: 10,
+                                        },
+                                    ]}
+                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={lineChartOptions}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </ChartV2Container>
                 )}
             </ChartV2Fullscreen>
@@ -152,6 +211,10 @@ const AreaChartSection = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <ChevronsDownUp
+                                        size={20}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                         onClick={() =>
                                             setShowChart((prev) => !prev)
                                         }
@@ -168,23 +231,47 @@ const AreaChartSection = () => {
                                                 ? exitFullscreen
                                                 : enterFullscreen
                                         }
-                                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50"
+                                        className="flex h-8 w-8 items-center justify-center "
                                     >
-                                        <span aria-hidden="true">
-                                            {isFullscreen ? '×' : '⤢'}
-                                        </span>
+                                        <Expand
+                                            size={18}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            aria-hidden="true"
+                                        />
                                     </button>
                                 </div>
                             </div>
                         </ChartHeaderV2>
-                        <div className={showChart ? 'p-4' : 'p-0'}>
-                            {showChart && (
+                        {showChart && (
+                            <div className="pt-5 p-4 flex flex-col gap-6">
+                                <ChartV2Legend
+                                    chartRef={chartRef}
+                                    customLegendItems={[
+                                        {
+                                            key: 'Overall',
+                                            name: 'Overall',
+                                            color: FOUNDATION_THEME.colors
+                                                .primary[500],
+                                            value: 54,
+                                        },
+                                        {
+                                            key: 'goindigo',
+                                            name: 'goindigo',
+                                            color: FOUNDATION_THEME.colors
+                                                .red[500],
+                                            value: 10,
+                                        },
+                                    ]}
+                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={areaChartOptions}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </ChartV2Container>
                 )}
             </ChartV2Fullscreen>
@@ -209,6 +296,10 @@ const PieChartSection = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <ChevronsDownUp
+                                        size={20}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                         onClick={() =>
                                             setShowChart((prev) => !prev)
                                         }
@@ -225,23 +316,49 @@ const PieChartSection = () => {
                                                 ? exitFullscreen
                                                 : enterFullscreen
                                         }
-                                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50"
+                                        className="flex h-8 w-8 items-center justify-center "
                                     >
-                                        <span aria-hidden="true">
-                                            {isFullscreen ? '×' : '⤢'}
-                                        </span>
+                                        <Expand
+                                            size={18}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            aria-hidden="true"
+                                        />
                                     </button>
                                 </div>
                             </div>
                         </ChartHeaderV2>
-                        <div className={showChart ? 'p-4' : 'p-0'}>
-                            {showChart && (
+                        {showChart && (
+                            <div className=" flex items-center pt-5 p-4 justify-center flex items-center ">
                                 <ChartV2
                                     ref={chartRef}
                                     options={pieChartOptions}
                                 />
-                            )}
-                        </div>
+
+                                <ChartV2Legend
+                                    layout="vertical"
+                                    chartRef={chartRef}
+                                    customLegendItems={[
+                                        {
+                                            key: 'Overall',
+                                            name: 'Overall',
+                                            color: FOUNDATION_THEME.colors
+                                                .primary[500],
+                                            value: 54,
+                                        },
+                                        {
+                                            key: 'goindigo',
+                                            name: 'goindigo',
+                                            color: FOUNDATION_THEME.colors
+                                                .red[500],
+                                            value: 10,
+                                        },
+                                    ]}
+                                />
+                            </div>
+                        )}
                     </ChartV2Container>
                 )}
             </ChartV2Fullscreen>
@@ -266,6 +383,10 @@ const ScatterChartSection = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <ChevronsDownUp
+                                        size={20}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                         onClick={() =>
                                             setShowChart((prev) => !prev)
                                         }
@@ -282,23 +403,47 @@ const ScatterChartSection = () => {
                                                 ? exitFullscreen
                                                 : enterFullscreen
                                         }
-                                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50"
+                                        className="flex h-8 w-8 items-center justify-center "
                                     >
-                                        <span aria-hidden="true">
-                                            {isFullscreen ? '×' : '⤢'}
-                                        </span>
+                                        <Expand
+                                            size={18}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            aria-hidden="true"
+                                        />
                                     </button>
                                 </div>
                             </div>
                         </ChartHeaderV2>
-                        <div className={showChart ? 'p-4' : 'p-0'}>
-                            {showChart && (
+                        {showChart && (
+                            <div className="pt-5 p-4 flex flex-col gap-6">
+                                <ChartV2Legend
+                                    chartRef={chartRef}
+                                    customLegendItems={[
+                                        {
+                                            key: 'Overall',
+                                            name: 'Overall',
+                                            color: FOUNDATION_THEME.colors
+                                                .primary[500],
+                                            value: 54,
+                                        },
+                                        {
+                                            key: 'goindigo',
+                                            name: 'goindigo',
+                                            color: FOUNDATION_THEME.colors
+                                                .red[500],
+                                            value: 10,
+                                        },
+                                    ]}
+                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={scatterChartOptions}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </ChartV2Container>
                 )}
             </ChartV2Fullscreen>
@@ -323,6 +468,10 @@ const SankeyChartSection = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <ChevronsDownUp
+                                        size={20}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                         onClick={() =>
                                             setShowChart((prev) => !prev)
                                         }
@@ -339,23 +488,47 @@ const SankeyChartSection = () => {
                                                 ? exitFullscreen
                                                 : enterFullscreen
                                         }
-                                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50"
+                                        className="flex h-8 w-8 items-center justify-center "
                                     >
-                                        <span aria-hidden="true">
-                                            {isFullscreen ? '×' : '⤢'}
-                                        </span>
+                                        <Expand
+                                            size={18}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            aria-hidden="true"
+                                        />
                                     </button>
                                 </div>
                             </div>
                         </ChartHeaderV2>
-                        <div className={showChart ? 'p-4' : 'p-0'}>
-                            {showChart && (
+                        {showChart && (
+                            <div className="pt-5 p-4 flex flex-col gap-6">
+                                <ChartV2Legend
+                                    chartRef={chartRef}
+                                    customLegendItems={[
+                                        {
+                                            key: 'Overall',
+                                            name: 'Overall',
+                                            color: FOUNDATION_THEME.colors
+                                                .primary[500],
+                                            value: 54,
+                                        },
+                                        {
+                                            key: 'goindigo',
+                                            name: 'goindigo',
+                                            color: FOUNDATION_THEME.colors
+                                                .red[500],
+                                            value: 10,
+                                        },
+                                    ]}
+                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={sankeyChartOptions}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </ChartV2Container>
                 )}
             </ChartV2Fullscreen>
@@ -380,6 +553,10 @@ const LineColumnChartSection = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <ChevronsDownUp
+                                        size={20}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                         onClick={() =>
                                             setShowChart((prev) => !prev)
                                         }
@@ -396,23 +573,47 @@ const LineColumnChartSection = () => {
                                                 ? exitFullscreen
                                                 : enterFullscreen
                                         }
-                                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50"
+                                        className="flex h-8 w-8 items-center justify-center "
                                     >
-                                        <span aria-hidden="true">
-                                            {isFullscreen ? '×' : '⤢'}
-                                        </span>
+                                        <Expand
+                                            size={18}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            aria-hidden="true"
+                                        />
                                     </button>
                                 </div>
                             </div>
                         </ChartHeaderV2>
-                        <div className={showChart ? 'p-4' : 'p-0'}>
-                            {showChart && (
+                        {showChart && (
+                            <div className="pt-5 p-4 flex flex-col gap-6">
+                                <ChartV2Legend
+                                    chartRef={chartRef}
+                                    customLegendItems={[
+                                        {
+                                            key: 'Overall',
+                                            name: 'Overall',
+                                            color: FOUNDATION_THEME.colors
+                                                .primary[500],
+                                            value: 54,
+                                        },
+                                        {
+                                            key: 'goindigo',
+                                            name: 'goindigo',
+                                            color: FOUNDATION_THEME.colors
+                                                .red[500],
+                                            value: 10,
+                                        },
+                                    ]}
+                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={lineColumnChartOptions}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </ChartV2Container>
                 )}
             </ChartV2Fullscreen>
@@ -437,6 +638,10 @@ const LineWithOutageMarkerSection = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <ChevronsDownUp
+                                        size={20}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[400]
+                                        }
                                         onClick={() =>
                                             setShowChart((prev) => !prev)
                                         }
@@ -453,23 +658,47 @@ const LineWithOutageMarkerSection = () => {
                                                 ? exitFullscreen
                                                 : enterFullscreen
                                         }
-                                        className="flex h-8 w-8 items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-50"
+                                        className="flex h-8 w-8 items-center justify-center "
                                     >
-                                        <span aria-hidden="true">
-                                            {isFullscreen ? '×' : '⤢'}
-                                        </span>
+                                        <Expand
+                                            size={18}
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                            aria-hidden="true"
+                                        />
                                     </button>
                                 </div>
                             </div>
                         </ChartHeaderV2>
-                        <div className={showChart ? 'p-4' : 'p-0'}>
-                            {showChart && (
+                        {showChart && (
+                            <div className="pt-5 p-4 flex flex-col gap-6">
+                                <ChartV2Legend
+                                    chartRef={chartRef}
+                                    customLegendItems={[
+                                        {
+                                            key: 'Overall',
+                                            name: 'Overall',
+                                            color: FOUNDATION_THEME.colors
+                                                .primary[500],
+                                            value: 54,
+                                        },
+                                        {
+                                            key: 'goindigo',
+                                            name: 'goindigo',
+                                            color: FOUNDATION_THEME.colors
+                                                .red[500],
+                                            value: 10,
+                                        },
+                                    ]}
+                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={lineWithOutageMarkerOptions}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </ChartV2Container>
                 )}
             </ChartV2Fullscreen>

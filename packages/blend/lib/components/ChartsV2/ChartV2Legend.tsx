@@ -28,7 +28,7 @@ const ChartV2Legend = ({
             display="flex"
             flexDirection={isVertical ? 'column' : 'row'}
             flexWrap="wrap"
-            gap={isVertical ? 8 : 16}
+            gap={legends.gap}
             alignItems={isVertical ? 'stretch' : 'center'}
             role="list"
             aria-label="Chart legend"
@@ -80,9 +80,7 @@ const ChartV2Legend = ({
                         key={`${key}-${i}`}
                         display="inline-flex"
                         alignItems="center"
-                        gap={8}
-                        padding={0}
-                        margin={0}
+                        gap={legends.legendItem.gap}
                         backgroundColor="transparent"
                         border="none"
                         cursor="pointer"
@@ -107,30 +105,49 @@ const ChartV2Legend = ({
                             as="span"
                             display="inline-flex"
                             alignItems="center"
-                            gap={4}
+                            gap={legends.legendItem.text.gap}
                         >
                             <Text
                                 data-legend="label"
-                                fontSize={legends.name.fontSize}
-                                fontWeight={legends.name.fontWeight}
-                                color={legends.name.color}
-                                lineHeight={`${legends.name.lineHeight}px`}
+                                fontSize={legends.legendItem.text.name.fontSize}
+                                fontWeight={
+                                    legends.legendItem.text.name.fontWeight
+                                }
+                                color={legends.legendItem.text.name.color}
+                                lineHeight={`${legends.legendItem.text.name.lineHeight}px`}
                             >
                                 {name}
                             </Text>
                             {hasValue && (
                                 <>
                                     <Seperator
-                                        color={legends.separator.color}
-                                        height="9px"
-                                        width="1px"
+                                        color={
+                                            legends.legendItem.text.separator
+                                                .color
+                                        }
+                                        height={
+                                            legends.legendItem.text.separator
+                                                .height
+                                        }
+                                        width={
+                                            legends.legendItem.text.separator
+                                                .width
+                                        }
                                     />
                                     <Text
                                         data-legend="value"
-                                        fontSize={legends.value.fontSize}
-                                        fontWeight={legends.value.fontWeight}
-                                        color={legends.value.color}
-                                        lineHeight={`${legends.value.lineHeight}px`}
+                                        fontSize={
+                                            legends.legendItem.text.value
+                                                .fontSize
+                                        }
+                                        fontWeight={
+                                            legends.legendItem.text.value
+                                                .fontWeight
+                                        }
+                                        color={
+                                            legends.legendItem.text.value.color
+                                        }
+                                        lineHeight={`${legends.legendItem.text.value.lineHeight}px`}
                                     >
                                         {value}
                                     </Text>

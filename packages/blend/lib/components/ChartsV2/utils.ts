@@ -29,6 +29,48 @@ export const applyHoverState = (
     items: ChartV2LegendItem[],
     hovered: ChartV2LegendItem | null
 ) => {
+    const firstPoint = items[0] as Highcharts.Point | undefined
+    const pieSeries =
+        firstPoint &&
+        firstPoint.series &&
+        (firstPoint.series.type === 'pie' ||
+            (firstPoint.series.options?.type as string) === 'pie')
+            ? firstPoint.series
+            : undefined
+
+    if (pieSeries) {
+        const hoveredPoint = hovered as Highcharts.Point | null
+
+        pieSeries.points.forEach((p) => {
+            const samePoint =
+                hoveredPoint &&
+                (p === hoveredPoint ||
+                    (typeof p.name !== 'undefined' &&
+                        typeof hoveredPoint.name !== 'undefined' &&
+                        p.name === hoveredPoint.name))
+
+            const targetOpacity = hoveredPoint ? (samePoint ? 1 : 0.2) : 1
+
+            if (p.graphic) {
+                // Use a short animation for smoother transitions to avoid jitter.
+                // Highcharts' animate falls back gracefully if called repeatedly.
+                p.graphic.animate({ opacity: targetOpacity }, { duration: 150 })
+            }
+
+            if (typeof p.setState === 'function') {
+                try {
+                    p.setState(samePoint ? 'hover' : undefined)
+                } catch {
+                    // Ignore invalid states for points
+                }
+            }
+        })
+
+        return
+    }
+
+    // Default behaviour for non-pie charts: use Highcharts series states
+    // so the hovered series stays normal and others are dimmed.
     items.forEach((item) => {
         const isHovered = hovered === item
         const series = item as Highcharts.Series
@@ -43,7 +85,7 @@ export const applyHoverState = (
                 if (isHovered) point.setState('hover')
                 else if (!hovered) point.setState(undefined)
             } catch {
-                /* Pie: setState('inactive') throws */
+                /* Safeguard for unsupported states */
             }
         }
     })
