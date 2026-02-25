@@ -31,11 +31,9 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
             const container = containerRef.current
             if (!container) return
 
-            const indicatorHeightPx = parsePx(tokens.indicator.height) || 6
-            const indicatorTopPx =
-                parsePx(tokens.subsection.rootIndicator.top) || 6
-            const labelCircleHeightPx =
-                parsePx(tokens.label.circle.height) || 10
+            const indicatorHeightPx = parsePx(tokens.indicator.height)
+            const indicatorTopPx = parsePx(tokens.subsection.rootIndicator.top)
+            const labelCircleHeightPx = parsePx(tokens.label.circle.height)
             const options = {
                 indicatorHeightPx,
                 indicatorTopPx,
