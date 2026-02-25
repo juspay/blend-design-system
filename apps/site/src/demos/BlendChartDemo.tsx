@@ -17,7 +17,7 @@ import {
 } from './ChartV2Data'
 import { useState } from 'react'
 
-const ChartDemoV2 = () => {
+const BlendChartDemo = () => {
     const chartType = ['column', 'line', 'area', 'pie']
     const [selectedChartType, setSelectedChartType] = useState('column')
 
@@ -351,4 +351,4 @@ const ChartDemoV2 = () => {
     )
 }
 
-export default ChartDemoV2
+export default BlendChartDemo
