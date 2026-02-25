@@ -131,6 +131,10 @@ import {
     getTextInputV2Tokens,
     ResponsiveTextInputV2Tokens,
 } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
+import {
+    getTimelineTokens,
+    ResponsiveTimelineTokens,
+} from '../components/Timeline/timeline.token'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -176,6 +180,7 @@ export type ComponentTokenType = {
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
+    TIMELINE?: ResponsiveTimelineTokens
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
     ALERTV2?: ResponsiveAlertV2Tokens
@@ -247,6 +252,7 @@ const ThemeContext = createContext<ThemeContextType>({
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATARV2: getAvatarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
