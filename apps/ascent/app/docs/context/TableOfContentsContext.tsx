@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, ReactNode } from 'react'
-import { TOCItem } from '@/app/components/layout/Navigation/TableOfContents'
+import { TOCItem } from '../../../components/layout/Navigation/TableOfContents'
 
 interface TableOfContentsContextType {
     headings: TOCItem[]

@@ -1,12 +1,13 @@
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
+import { CSSObject } from 'styled-components'
 
 type SeperatorProps = {
     orientation?: 'horizontal' | 'vertical'
-    height?: string
-    width?: string
-    color?: string
+    height?: CSSObject['height']
+    width?: CSSObject['width']
+    color?: CSSObject['color']
 }
 
 const Seperator = ({
@@ -20,7 +21,7 @@ const Seperator = ({
             aria-hidden="true"
             role="separator"
             width={width}
-            height={height}
+            height={addPxToValue(height)}
             backgroundColor={color}
         />
     )
