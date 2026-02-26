@@ -4,9 +4,9 @@ import { CheckboxV2CheckedState } from './checkboxV2.types'
 import {
     SelectorV2Size,
     SelectorV2InteractionState,
-} from '../SelectorV2/selectorV2.types'
+} from '../../SelectorV2/selectorV2.types'
 import type { CheckboxV2TokensType } from './checkboxV2.tokens'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import {
     checkboxRootAnimations,
     checkboxIndicatorAnimations,

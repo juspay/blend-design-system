@@ -1,7 +1,7 @@
-import { SwitchV2Size, SwitchV2State } from '../SwitchV2/switchV2.types'
+import { SwitchV2State } from '../SelectorV2/SwitchV2/switchV2.types'
 import { SelectorV2Size } from '../SelectorV2/selectorV2.types'
 
-export type SelectorsSize = SwitchV2Size | SelectorV2Size
+export type SelectorsSize = SelectorV2Size
 
 export type SelectorsLabelTokensType = {
     content: {

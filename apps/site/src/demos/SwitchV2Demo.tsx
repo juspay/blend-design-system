@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Hash } from 'lucide-react'
 import { SingleSelect, TextInput } from '../../../../packages/blend/lib/main'
-import { SwitchV2 } from '../../../../packages/blend/lib/components/SwitchV2'
-import { SwitchV2Size } from '../../../../packages/blend/lib/components/SwitchV2/switchV2.types'
+import { SwitchV2 } from '../../../../packages/blend/lib/components/SelectorV2/SwitchV2'
+import { SelectorV2Size } from '../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
@@ -14,7 +14,7 @@ const SwitchV2Demo = () => {
     const [error, setError] = useState(false)
     const [disabled, setDisabled] = useState(false)
     const [showSlot, setShowSlot] = useState(true)
-    const [size, setSize] = useState<SwitchV2Size>(SwitchV2Size.MD)
+    const [size, setSize] = useState<SelectorV2Size>(SelectorV2Size.MD)
     const [labelMaxLength, setLabelMaxLength] = useState<number | undefined>()
     const [subLabelMaxLength, setSubLabelMaxLength] = useState<
         number | undefined
@@ -83,27 +83,27 @@ const SwitchV2Demo = () => {
                         <SwitchV2
                             label="Checked"
                             checked={checked}
-                            onChange={setChecked}
+                            onCheckedChange={setChecked}
                         />
                         <SwitchV2
                             label="Required"
                             checked={required}
-                            onChange={setRequired}
+                            onCheckedChange={setRequired}
                         />
                         <SwitchV2
                             label="Error"
                             checked={error}
-                            onChange={setError}
+                            onCheckedChange={setError}
                         />
                         <SwitchV2
                             label="Disabled"
                             checked={disabled}
-                            onChange={setDisabled}
+                            onCheckedChange={setDisabled}
                         />
                         <SwitchV2
                             label="Show Icon Slot"
                             checked={showSlot}
-                            onChange={() => setShowSlot(!showSlot)}
+                            onCheckedChange={() => setShowSlot(!showSlot)}
                         />
                     </div>
                 </div>
@@ -114,13 +114,13 @@ const SwitchV2Demo = () => {
                     items={[
                         {
                             items: [
-                                { label: 'Small', value: SwitchV2Size.SM },
-                                { label: 'Medium', value: SwitchV2Size.MD },
+                                { label: 'Small', value: SelectorV2Size.SM },
+                                { label: 'Medium', value: SelectorV2Size.MD },
                             ],
                         },
                     ]}
                     selected={size}
-                    onSelect={(value) => setSize(value as SwitchV2Size)}
+                    onSelect={(value) => setSize(value as SelectorV2Size)}
                 />
 
                 <div
@@ -134,7 +134,7 @@ const SwitchV2Demo = () => {
                         label={label}
                         subLabel={subLabel}
                         checked={checked}
-                        onChange={setChecked}
+                        onCheckedChange={setChecked}
                         required={required}
                         error={error}
                         disabled={disabled}

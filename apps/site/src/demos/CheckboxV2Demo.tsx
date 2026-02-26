@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Heart } from 'lucide-react'
 import { SingleSelect, TextInput } from '../../../../packages/blend/lib/main'
-import { SwitchV2 } from '../../../../packages/blend/lib/components/SwitchV2'
+import { SwitchV2 } from '../../../../packages/blend/lib/components/SelectorV2/SwitchV2'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
-import CheckboxV2 from '../../../../packages/blend/lib/components/CheckboxV2/CheckboxV2'
+import CheckboxV2 from '../../../../packages/blend/lib/components/SelectorV2/CheckboxV2/CheckboxV2'
 import { SelectorV2Size } from '../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 
@@ -103,27 +103,27 @@ const CheckboxV2Demo = () => {
                         <SwitchV2
                             label="Checked"
                             checked={checked as boolean}
-                            onChange={setChecked}
+                            onCheckedChange={setChecked}
                         />
                         <SwitchV2
                             label="Required"
                             checked={required}
-                            onChange={setRequired}
+                            onCheckedChange={setRequired}
                         />
                         <SwitchV2
                             label="Error"
                             checked={error}
-                            onChange={setError}
+                            onCheckedChange={setError}
                         />
                         <SwitchV2
                             label="Disabled"
                             checked={disabled}
-                            onChange={setDisabled}
+                            onCheckedChange={setDisabled}
                         />
                         <SwitchV2
                             label="Show Icon Slot"
                             checked={showSlot}
-                            onChange={() => setShowSlot(!showSlot)}
+                            onCheckedChange={() => setShowSlot(!showSlot)}
                         />
                     </div>
                 </div>

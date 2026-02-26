@@ -122,7 +122,7 @@ import {
 import {
     getSwitchV2Tokens,
     ResponsiveSwitchV2Tokens,
-} from '../components/SwitchV2/switchV2.tokens'
+} from '../components/SelectorV2/SwitchV2/switchV2.tokens'
 import {
     getAvatarV2Tokens,
     ResponsiveAvatarV2Tokens,
@@ -142,7 +142,7 @@ import {
 import {
     getCheckboxV2Tokens,
     ResponsiveCheckboxV2Tokens,
-} from '../components/CheckboxV2/checkboxV2.tokens'
+} from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens

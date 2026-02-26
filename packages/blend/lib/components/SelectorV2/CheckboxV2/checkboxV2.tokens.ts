@@ -1,13 +1,13 @@
-import { Theme } from '../../context/theme.enum'
+import { Theme } from '../../../context/theme.enum'
 
 import { CSSObject } from 'styled-components'
 import { CheckboxV2CheckedState } from './checkboxV2.types'
 import {
     SelectorV2Size,
     SelectorV2InteractionState,
-} from '../SelectorV2/selectorV2.types'
-import { BreakpointType } from '../../breakpoints/breakPoints'
-import { FoundationTokenType } from '../../tokens/theme.token'
+} from '../../SelectorV2/selectorV2.types'
+import { BreakpointType } from '../../../breakpoints/breakPoints'
+import { FoundationTokenType } from '../../../tokens/theme.token'
 import { getCheckboxV2LightTokens } from './checkboxV2.light.tokens'
 import { getCheckboxV2DarkTokens } from './checkboxV2.dark.tokens'
 

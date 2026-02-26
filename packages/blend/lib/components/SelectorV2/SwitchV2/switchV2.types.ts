@@ -1,11 +1,7 @@
 import { ButtonHTMLAttributes, ReactElement } from 'react'
 import { SwitchV2TokensType } from './switchV2.tokens'
 import { CSSObject } from 'styled-components'
-
-export enum SwitchV2Size {
-    SM = 'sm',
-    MD = 'md',
-}
+import { SelectorV2Size } from '../selectorV2.types'
 
 export type SwitchV2State = 'default' | 'hover' | 'disabled' | 'error'
 export type SwitchV2Variant = 'checked' | 'unchecked'
@@ -14,7 +10,7 @@ export type SwitchV2ButtonProps = {
     id: string
     checked?: boolean
     disabled: boolean
-    size: SwitchV2Size
+    size: SelectorV2Size
     tokens: SwitchV2TokensType
     onToggle: () => void
     buttonProps?: Record<string, unknown>
@@ -26,7 +22,7 @@ export type SwitchV2ContentProps = {
     disabled: boolean
     error: boolean
     required: boolean
-    size: SwitchV2Size
+    size: SelectorV2Size
     label?: string
     subLabel?: string
     slot?: {
@@ -41,12 +37,12 @@ export type SwitchV2ContentProps = {
 
 export type SwitchV2Props = {
     checked?: boolean
-    onChange?: (checked: boolean) => void
+    onCheckedChange?: (checked: boolean) => void
     required?: boolean
     error?: boolean
     label?: string
     subLabel?: string
-    size?: SwitchV2Size
+    size?: SelectorV2Size
     slot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']

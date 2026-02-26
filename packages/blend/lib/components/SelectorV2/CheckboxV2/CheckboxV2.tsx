@@ -5,11 +5,11 @@ import {
     CheckboxV2Props,
     CheckboxV2RootProps,
 } from './checkboxV2.types'
-import { SelectorV2Size } from '../SelectorV2/selectorV2.types'
-import Block from '../Primitives/Block/Block'
+import { SelectorV2Size } from '../../SelectorV2/selectorV2.types'
+import Block from '../../Primitives/Block/Block'
 import { StyledCheckboxRoot, StyledCheckboxIndicator } from './StyledCheckboxV2'
-import { getErrorShakeStyle } from '../common/error.animations'
-import { useErrorShake } from '../common/useErrorShake'
+import { getErrorShakeStyle } from '../../common/error.animations'
+import { useErrorShake } from '../../common/useErrorShake'
 import {
     getSubtextId,
     mergeAriaDescribedBy,
@@ -17,15 +17,16 @@ import {
     handleCheckboxKeyDown,
     getCheckboxState,
 } from './utils'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import type { CheckboxV2TokensType } from './checkboxV2.tokens'
-import SelectorsLabel from '../SelectorsContent/SelectorsLabel'
+import SelectorsLabel from '../../SelectorsContent/SelectorsLabel'
 import {
     SelectorsLabelTokensType,
     SelectorsSubLabelTokensType,
-} from '../SelectorsContent/SelectorsContent.types'
-import SelectorsSubLabel from '../SelectorsContent/SelectorsSubLabel'
-import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
+} from '../../SelectorsContent/SelectorsContent.types'
+import SelectorsSubLabel from '../../SelectorsContent/SelectorsSubLabel'
+import { addAccessibleAriaAttributes } from '../../../utils/accessibility/icon-helpers'
+import { filterBlockedProps } from '../../../utils/prop-helpers'
 
 const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
     (
@@ -54,6 +55,7 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
         const { 'aria-describedby': customAriaDescribedBy, ...restProps } =
             rest as { 'aria-describedby'?: string; [key: string]: unknown }
 
+        const filteredRest = filterBlockedProps(restProps)
         const ariaAttributes = {
             'aria-required': required ? true : undefined,
             'aria-invalid': error ? true : undefined,
@@ -96,7 +98,7 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
                             'aria-describedby': string
                         }
                     }
-                    restProps={restProps}
+                    restProps={filteredRest}
                 />
                 <CheckboxV2Content
                     uniqueId={uniqueId}

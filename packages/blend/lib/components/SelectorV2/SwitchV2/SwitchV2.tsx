@@ -1,24 +1,24 @@
 import { forwardRef, useId } from 'react'
-import Block from '../Primitives/Block/Block'
+import Block from '../../Primitives/Block/Block'
 import {
     SwitchV2ButtonProps,
     SwitchV2ContentProps,
     SwitchV2Props,
-    SwitchV2Size,
 } from './switchV2.types'
-import { filterBlockedProps } from '../../utils/prop-helpers'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { filterBlockedProps } from '../../../utils/prop-helpers'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { SwitchV2TokensType } from './switchV2.tokens'
-import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { getSubtextId, mergeAriaDescribedBy } from '../Switch/utils'
-import SelectorsLabel from '../SelectorsContent/SelectorsLabel'
-import SelectorsSubLabel from '../SelectorsContent/SelectorsSubLabel'
+import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
+import { getSubtextId, mergeAriaDescribedBy } from '../../Switch/utils'
+import SelectorsLabel from '../../SelectorsContent/SelectorsLabel'
+import SelectorsSubLabel from '../../SelectorsContent/SelectorsSubLabel'
 import {
     SelectorsLabelTokensType,
     SelectorsSubLabelTokensType,
-} from '../SelectorsContent/SelectorsContent.types'
-import { FOUNDATION_THEME } from '../../tokens'
-import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
+} from '../../SelectorsContent/SelectorsContent.types'
+import { FOUNDATION_THEME } from '../../../tokens'
+import { addAccessibleAriaAttributes } from '../../../utils/accessibility/icon-helpers'
+import { SelectorV2Size } from '../selectorV2.types'
 
 const SwitchV2Content = ({
     uniqueId,
@@ -142,7 +142,7 @@ const SwitchV2Button = ({
                 border={tokens.switch.thumb.border}
                 width={tokens.switch.thumb.width[size]}
                 height={tokens.switch.thumb.height[size]}
-                transform={`translateX( ${checked ? (size === SwitchV2Size.SM ? '12px' : '16px') : '0px'})`}
+                transform={`translateX( ${checked ? (size === SelectorV2Size.SM ? '12px' : '16px') : '0px'})`}
                 willChange="transform, left"
                 transition="transform 250ms cubic-bezier(0.4, 0, 0.2, 1), left 250ms cubic-bezier(0.4, 0, 0.2, 1), background-color 200ms cubic-bezier(0.4, 0, 0.2, 1)"
                 transformOrigin="center"
@@ -156,11 +156,11 @@ const SwitchV2 = forwardRef<HTMLButtonElement, SwitchV2Props>(
         {
             id,
             checked,
-            onChange,
+            onCheckedChange,
             required = false,
             disabled = false,
             error = false,
-            size = SwitchV2Size.MD,
+            size = SelectorV2Size.MD,
             label,
             subLabel,
             slot,
@@ -212,7 +212,7 @@ const SwitchV2 = forwardRef<HTMLButtonElement, SwitchV2Props>(
                     disabled={disabled}
                     size={size}
                     tokens={tokens}
-                    onToggle={() => onChange?.(!checked)}
+                    onToggle={() => onCheckedChange?.(!checked)}
                     buttonProps={rootButtonProps}
                 />
                 <SwitchV2Content

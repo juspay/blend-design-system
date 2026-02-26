@@ -1,6 +1,6 @@
 import type { KeyboardEvent } from 'react'
 import { CheckboxV2CheckedState } from './checkboxV2.types'
-import { SelectorV2Size } from '../SelectorV2/selectorV2.types'
+import { SelectorV2Size } from '../../SelectorV2/selectorV2.types'
 import { CheckboxV2TokensType } from './checkboxV2.tokens'
 
 export const getCheckboxDataState = (

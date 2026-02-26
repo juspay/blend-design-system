@@ -1,7 +1,7 @@
-import { ReactElement } from 'react'
+import { ButtonHTMLAttributes, ReactElement } from 'react'
 import { CheckboxV2TokensType } from './checkboxV2.tokens'
 import { CSSObject } from 'styled-components'
-import { SelectorV2Size } from '../SelectorV2/selectorV2.types'
+import { SelectorV2Size } from '../../SelectorV2/selectorV2.types'
 
 export enum CheckboxV2CheckedState {
     CHECKED = 'checked',
@@ -9,16 +9,13 @@ export enum CheckboxV2CheckedState {
     INDETERMINATE = 'indeterminate',
 }
 export type CheckboxV2Props = {
-    label?: string
-    id?: string
-    name?: string
     checked?: boolean | 'indeterminate'
     onCheckedChange?: (checked: boolean | 'indeterminate') => void
-    disabled?: boolean
     required?: boolean
     error?: boolean
-    size?: SelectorV2Size
+    label?: string
     subLabel?: string
+    size?: SelectorV2Size
     slot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
@@ -27,7 +24,10 @@ export type CheckboxV2Props = {
         label?: number
         subLabel?: number
     }
-}
+} & Omit<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    'className' | 'style' | 'slot' | 'onChange'
+>
 
 export type CheckboxV2RootProps = {
     tokens: CheckboxV2TokensType
