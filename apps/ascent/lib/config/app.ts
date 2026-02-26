@@ -35,7 +35,7 @@ export const APP_CONFIG = {
     // External links
     links: {
         github: 'https://github.com/juspay/blend-design-system',
-        storybook: 'https://juspay.design/storybook',
+        storybook: 'https://blend.juspay.design/storybook',
         website: 'https://juspay.in',
     },
 

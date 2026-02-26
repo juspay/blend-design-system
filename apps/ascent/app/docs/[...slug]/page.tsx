@@ -250,8 +250,8 @@ const PageHeader = ({ metadata }: { metadata: PageMetadata }) => {
                 <a
                     href={
                         metadata.storybookLink && metadata.storybookLink !== ''
-                            ? `https://juspay.design/storybook/?path=/docs/${metadata.StorybookLink}`
-                            : 'https://juspay.design/storybook/?path=/docs/components-accordion--docs'
+                            ? `https://blend.juspay.design/storybook/?path=/docs/${metadata.StorybookLink}`
+                            : 'https://blend.juspay.design/storybook/?path=/docs/components-accordion--docs'
                     }
                     target="_blank"
                     rel="noopener noreferrer"
