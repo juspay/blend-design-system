@@ -2,7 +2,7 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
-import CheckboxV2 from '../../../lib/components/CheckboxV2/CheckboxV2'
+import CheckboxV2 from '../../../lib/components/SelectorV2/CheckboxV2/CheckboxV2'
 import { SelectorV2Size } from '../../../lib/components/SelectorV2/selectorV2.types'
 import { MockIcon } from '../../test-utils'
 
