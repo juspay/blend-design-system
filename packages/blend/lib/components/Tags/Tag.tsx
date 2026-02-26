@@ -21,13 +21,16 @@ const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
         splitTagPosition,
         style: inlineStyle,
         className,
+        maxWidth,
+        minWidth,
+        width,
         ...blockProps
     } = props
 
     const tagTokens = useResponsiveTokens<TagTokensType>('TAGS')
     const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
-    const { width: blockWidth, ...restBlockProps } = blockProps as {
+    const { ...restBlockProps } = blockProps as {
         width?: string | number
         pointerEvents?: CSSProperties['pointerEvents']
         [key: string]: unknown
@@ -42,7 +45,7 @@ const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
               ? `${baseRadius} 0 0 ${baseRadius}`
               : `0 ${baseRadius} ${baseRadius} 0`
 
-    const skeletonWidth = blockWidth ?? inlineStyle?.width ?? 'fit-content'
+    const skeletonWidth = width ?? inlineStyle?.width ?? 'fit-content'
 
     if (shouldShowSkeleton) {
         return (
@@ -98,8 +101,10 @@ const Tag = forwardRef<HTMLDivElement, TagWithSkeletonProps>((props, ref) => {
             tokens={tagTokens}
             style={inlineStyle}
             className={className}
-            width={blockWidth}
             pointerEvents={pointerEvents}
+            maxWidth={maxWidth}
+            minWidth={minWidth}
+            width={width}
             {...layoutBlockProps}
         />
     )

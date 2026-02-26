@@ -240,7 +240,6 @@ const DropdownInput = ({
                             maxMenuWidth={maxMenuWidth}
                             items={dropDownItems}
                             enableSearch={true}
-                            alignment={SelectMenuAlignment.END}
                             alignOffset={-(paddingX + 2)}
                             sideOffset={paddingX}
                             selected={dropDownValue || ''}

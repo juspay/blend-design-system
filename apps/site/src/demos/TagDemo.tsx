@@ -145,6 +145,7 @@ const TagDemo = () => {
 
                     <div className="min-h-32 rounded-xl flex justify-center items-center border-2 border-dashed border-gray-300 bg-gray-50">
                         <Tag
+                            // maxWidth={'50px'}
                             text={tagText}
                             color={tagColor}
                             variant={tagVariant}

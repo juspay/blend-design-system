@@ -21,12 +21,14 @@ import {
     createCalendarMonthData,
     calculateDayCellProps,
     shouldHideDateFromCalendar,
+    getDatePartsInTimezone,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
 
 type CalendarGridProps = {
-    selectedRange: DateRange
+    selectedRange: DateRange | undefined
     onDateSelect: (range: DateRange) => void
     today: Date
     allowSingleDateSelection?: boolean
@@ -38,6 +40,9 @@ type CalendarGridProps = {
     customRangeConfig?: CustomRangeConfig
     showDateTimePicker?: boolean
     resetScrollPosition?: number // Used to trigger scroll reset when popover reopens
+    timezone?: string
+    isSingleDatePicker?: boolean
+    maxYearOffset?: number
 }
 
 const CONTAINER_HEIGHT = 340
@@ -175,13 +180,18 @@ const CalendarSkeleton = ({
 function generateMonthsList(
     today: Date,
     hideFutureDates: boolean = false,
-    hidePastDates: boolean = false
+    hidePastDates: boolean = false,
+    maxYearOffset?: number
 ): { month: number; year: number }[] {
     const months = []
     const currentYear = today.getFullYear()
     const currentMonth = today.getMonth()
-    const startYear = 2012
-    const endYear = currentYear + 5
+    const startYear = DATE_RANGE_PICKER_CONSTANTS.MIN_YEAR
+    const endYear =
+        currentYear +
+        (maxYearOffset && maxYearOffset >= 0
+            ? maxYearOffset
+            : DATE_RANGE_PICKER_CONSTANTS.MAX_YEAR_OFFSET)
 
     for (let year = startYear; year <= endYear; year++) {
         for (let month = 0; month <= 11; month++) {
@@ -225,6 +235,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             customRangeConfig,
             showDateTimePicker = true,
             resetScrollPosition,
+            timezone,
+            isSingleDatePicker,
+            maxYearOffset,
         },
         ref
     ) => {
@@ -245,8 +258,14 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         }, [])
 
         const months = useMemo(
-            () => generateMonthsList(today, hideFutureDates, hidePastDates),
-            [today, hideFutureDates, hidePastDates]
+            () =>
+                generateMonthsList(
+                    today,
+                    hideFutureDates,
+                    hidePastDates,
+                    maxYearOffset
+                ),
+            [today, hideFutureDates, hidePastDates, maxYearOffset]
         )
 
         const dayNames = useMemo(() => getDayNames(), [])
@@ -272,7 +291,21 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             if (monthData.length === 0) return 0
 
             const targetDate = selectedRange?.startDate || today
-            const currentMonthIndex = findCurrentMonthIndex(months, targetDate)
+            const parts = timezone
+                ? getDatePartsInTimezone(
+                      selectedRange?.startDate || today,
+                      timezone
+                  )
+                : {
+                      year: targetDate.getFullYear(),
+                      month: targetDate.getMonth(),
+                      day: targetDate.getDate(),
+                  }
+            const currentMonthIndex = findCurrentMonthIndex(
+                months,
+                parts.month,
+                parts.year
+            )
 
             if (currentMonthIndex !== -1) {
                 const monthInfo = monthData[currentMonthIndex]
@@ -286,7 +319,14 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 }
             }
             return 0
-        }, [monthData, months, selectedRange, today, resetScrollPosition])
+        }, [
+            monthData,
+            months,
+            selectedRange,
+            today,
+            resetScrollPosition,
+            timezone,
+        ])
 
         const [scrollTop, setScrollTop] = useState(initialScrollTop)
         const [isScrollPositioned, setIsScrollPositioned] = useState(false)
@@ -330,13 +370,15 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
 
                 const newRange = handleCustomRangeCalendarDateClick(
                     clickedDate,
-                    selectedRange,
                     allowSingleDateSelection,
                     today,
                     disableFutureDates,
                     disablePastDates,
                     customRangeConfig,
-                    isDoubleClick
+                    isDoubleClick,
+                    timezone,
+                    selectedRange,
+                    isSingleDatePicker
                 )
 
                 if (newRange) {
@@ -351,6 +393,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 disablePastDates,
                 customRangeConfig,
                 onDateSelect,
+                timezone,
             ]
         )
 
@@ -361,11 +404,14 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         useEffect(() => {
             if (selectedRange?.startDate) {
                 const activeDate = selectedRange.startDate
-                const key = getCellKey(
-                    activeDate.getFullYear(),
-                    activeDate.getMonth(),
-                    activeDate.getDate()
-                )
+                const parts = timezone
+                    ? getDatePartsInTimezone(activeDate, timezone)
+                    : {
+                          year: activeDate.getFullYear(),
+                          month: activeDate.getMonth(),
+                          day: activeDate.getDate(),
+                      }
+                const key = getCellKey(parts.year, parts.month, parts.day)
                 const cell = cellsRef.current.get(key)
                 if (cell) {
                     activeCellRef.current = cell
@@ -377,7 +423,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                     }
                 }
             }
-        }, [selectedRange])
+        }, [selectedRange, timezone])
 
         const findNextCell = useCallback(
             (
@@ -403,11 +449,14 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                         break
                 }
 
-                const key = getCellKey(
-                    date.getFullYear(),
-                    date.getMonth(),
-                    date.getDate()
-                )
+                const parts = timezone
+                    ? getDatePartsInTimezone(date, timezone)
+                    : {
+                          year: date.getFullYear(),
+                          month: date.getMonth(),
+                          day: date.getDate(),
+                      }
+                const key = getCellKey(parts.year, parts.month, parts.day)
                 const cell = cellsRef.current.get(key)
 
                 if (cell && cell.getAttribute('aria-disabled') !== 'true') {
@@ -416,7 +465,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
 
                 return null
             },
-            []
+            [timezone]
         )
 
         const handleCellKeyDown = useCallback(
@@ -605,7 +654,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                         disableFutureDates,
                                                         disablePastDates,
                                                         calendarToken,
-                                                        customDisableDates
+                                                        customDisableDates,
+                                                        timezone,
+                                                        isSingleDatePicker
                                                     )
 
                                                 const isSelected =
@@ -854,6 +905,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 customDisableDates,
                 handleDateClick,
                 calendarToken,
+                timezone,
             ]
         )
 

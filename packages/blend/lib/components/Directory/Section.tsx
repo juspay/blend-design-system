@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createContext, useContext, useCallback } from 'react'
 import type { SectionProps } from './types'
 import { ChevronDown } from 'lucide-react'
 import NavItem from './NavItem'
@@ -7,6 +7,20 @@ import Text from '../Text/Text'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
+
+type SectionStateContextValue = {
+    sectionStates: Map<number, boolean>
+    setSectionState: (index: number, isOpen: boolean) => void
+}
+
+const SectionStateContext = createContext<SectionStateContextValue | null>(null)
+
+const useSectionState = () => {
+    const context = useContext(SectionStateContext)
+    return context
+}
+
+export { SectionStateContext }
 
 const ChevronWrapper = styled(Block)<{ $isOpen: boolean }>`
     display: flex;
@@ -32,7 +46,24 @@ const Section = ({
     iconOnlyMode = false,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
-    const [isOpen, setIsOpen] = React.useState(section.defaultOpen !== false)
+    const sectionStateContext = useSectionState()
+
+    const defaultIsOpen = section.defaultOpen !== false
+    const sharedIsOpen = sectionStateContext?.sectionStates.get(sectionIndex)
+    const [localIsOpen, setLocalIsOpen] = React.useState(defaultIsOpen)
+
+    const isOpen = sharedIsOpen !== undefined ? sharedIsOpen : localIsOpen
+
+    const setIsOpen = useCallback(
+        (value: boolean) => {
+            if (sectionStateContext) {
+                sectionStateContext.setSectionState(sectionIndex, value)
+            } else {
+                setLocalIsOpen(value)
+            }
+        },
+        [sectionIndex, sectionStateContext]
+    )
     const sectionRef = React.useRef<HTMLDivElement>(null)
     const headerRef = React.useRef<HTMLDivElement>(null)
     const itemRefs = React.useRef<Array<React.RefObject<HTMLElement | null>>>(
@@ -48,7 +79,9 @@ const Section = ({
     }, [section.items])
 
     const toggleSection = () => {
-        setIsOpen(!isOpen)
+        if (!iconOnlyMode) {
+            setIsOpen(!isOpen)
+        }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -179,7 +212,7 @@ const Section = ({
                 />
             )}
 
-            {section.items && isOpen && (
+            {section.items && (isOpen || iconOnlyMode) && (
                 <ul
                     style={{
                         width: '100%',

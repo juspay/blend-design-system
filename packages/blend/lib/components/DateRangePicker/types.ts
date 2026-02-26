@@ -83,7 +83,7 @@ export enum CalendarInteractionMode {
 
 export type DateRange = {
     startDate: Date
-    endDate: Date
+    endDate?: Date
     showTimePicker?: boolean
 }
 
@@ -312,6 +312,7 @@ export type DateRangePickerProps = {
     maxDate?: Date
     dateFormat?: string
     allowSingleDateSelection?: boolean
+    isSingleDatePicker?: boolean
     disableFutureDates?: boolean
     disablePastDates?: boolean
     hideFutureDates?: boolean
@@ -336,6 +337,7 @@ export type DateRangePickerProps = {
      * @see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
      */
     timezone?: string
+    maxYearOffset?: number
 }
 
 export type PresetItemProps = {
@@ -366,9 +368,9 @@ export type ScrollablePickerProps = {
 }
 
 export type DatePickerComponentProps = {
-    selectedRange: DateRange
-    startTime: string
-    endTime: string
+    selectedRange?: DateRange
+    startTime?: string
+    endTime?: string
     dateFormat: string
     handleStartTimeChange: (time: string) => void
     handleEndTimeChange: (time: string) => void
@@ -378,6 +380,7 @@ export type DatePickerComponentProps = {
     isDisabled?: boolean
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    maxYearOffset?: number
 }
 
 export type MobileDrawerPresetsProps = {
@@ -387,9 +390,9 @@ export type MobileDrawerPresetsProps = {
     showPresets: boolean
     availablePresets: DateRangePreset[]
     activePreset: DateRangePreset
-    selectedRange: DateRange
-    startTime: string
-    endTime: string
+    selectedRange?: DateRange
+    startTime?: string
+    endTime?: string
     dateFormat: string
     handlePresetSelect: (preset: DateRangePreset) => void
     handleStartTimeChange: (time: string) => void
@@ -405,4 +408,5 @@ export type MobileDrawerPresetsProps = {
     applyDisabledMessage?: string
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    maxYearOffset?: number
 }

@@ -72,6 +72,12 @@ import {
     SelectMenuVariant,
 } from '../../../../packages/blend/lib/components/Select'
 import MenuDemo from './MenuDemo'
+import Menu from '../../../../packages/blend/lib/components/Menu/Menu'
+import type { MenuGroupType } from '../../../../packages/blend/lib/components/Menu/types'
+import {
+    MenuSide,
+    MenuAlignment,
+} from '../../../../packages/blend/lib/components/Menu/types'
 import SingleSelectDemo from './SingleSelectDemo'
 import SingleSelectGroupDemo from './SingleSelectGroupDemo'
 import TextInputGroupDemo from './TextInputGroupDemo'
@@ -87,18 +93,11 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
-import {
-    Avatar,
-    AvatarShape,
-    AvatarSize,
-    TextInput,
-    Button,
-} from '../../../../packages/blend/lib/main'
+import { TextInput, Button } from '../../../../packages/blend/lib/main'
 import {
     ButtonType,
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button/types'
-import Text from '../../../../packages/blend/lib/components/Text/Text'
 import StepperDemo from './StepperDemo'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
@@ -112,7 +111,8 @@ import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
 import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
 import OutageChartsDemo from './OutageChartsDemo'
-import ChartDemoV2 from './ChartDemoV2'
+import OutageChartDemoV2 from './OutageChartDemoV2'
+import BlendChartDemo from './BlendChartDemo'
 import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
@@ -121,6 +121,11 @@ import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
 import SingleSelectDemoV2 from './SingleSelectDemoV2'
+import AvatarV2Demo from './AvatarV2Demo'
+import TextInputV2Demo from './TextInputV2Demo'
+import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
+import ChartV2Demo from './ChartV2Demo'
+import TimelineDemo from './TimelineDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -140,13 +145,15 @@ const SidebarDemo = () => {
         | 'alerts'
         | 'avatarGroup'
         | 'charts'
-        | 'chartsV2'
+        | 'blendChart'
+        | 'chartV2'
         | 'fonts'
         | 'datePicker'
         | 'selectors'
         | 'buttonGroups'
         | 'buttonGroupV2'
         | 'avatars'
+        | 'avatarV2'
         | 'menu'
         | 'dropdown'
         | 'accordion'
@@ -188,15 +195,19 @@ const SidebarDemo = () => {
         | 'codeEditor'
         | 'formElements'
         | 'outageCharts'
+        | 'outageChartV2'
         | 'chartDemoV2'
         | 'textInputAutofillTest'
         | 'alertV2'
         | 'accordionV2'
         | 'snackbarV2'
         | 'switchV2'
+        | 'textInputV2'
+        | 'textInputAutofillTestV2'
         | 'textInputGroup'
         | 'singleSelectV2'
-    >('buttons')
+        | 'timeline'
+    >('chartV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -211,6 +222,7 @@ const SidebarDemo = () => {
     const [hideOnIconOnlyToggle, setHideOnIconOnlyToggle] =
         useState<boolean>(false)
     const [isExpanded, setIsExpanded] = useState<boolean>(true)
+    const [, setSidebarState] = useState('expanded')
 
     const tenants = [
         {
@@ -407,6 +419,8 @@ const SidebarDemo = () => {
                 return <TagGroupV2Demo />
             case 'avatars':
                 return <AvatarDemo />
+            case 'avatarV2':
+                return <AvatarV2Demo />
             case 'breadcrumb':
                 return <BreadcrumbDemo />
             case 'input':
@@ -481,6 +495,8 @@ const SidebarDemo = () => {
                 return <ChartsDemo />
             case 'outageCharts':
                 return <OutageChartsDemo />
+            case 'outageChartV2':
+                return <OutageChartDemoV2 />
             case 'popover':
                 return <PopoverDemo />
             case 'multiValueInput':
@@ -507,10 +523,18 @@ const SidebarDemo = () => {
                 return <CodeEditorDemo />
             case 'formElements':
                 return <FormElementsDemo />
-            case 'chartDemoV2':
-                return <ChartDemoV2 />
+            case 'blendChart':
+                return <BlendChartDemo />
             case 'textInputAutofillTest':
                 return <TextInputAutofillTest />
+            case 'textInputV2':
+                return <TextInputV2Demo />
+            case 'textInputAutofillTestV2':
+                return <TextInputAutofillTestV2 />
+            case 'chartV2':
+                return <ChartV2Demo />
+            case 'timeline':
+                return <TimelineDemo />
             default:
                 return (
                     <div className="p-8">
@@ -742,6 +766,20 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Avatar V2',
+                    leftSlot: (
+                        <UserIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'avatarV2',
+                    onClick: () => {
+                        setActiveComponent('avatarV2')
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
+                },
+                {
                     label: 'Avatar Group',
                     leftSlot: (
                         <Users style={{ width: '16px', height: '16px' }} />
@@ -796,12 +834,29 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('textInputAutofillTest'),
                 },
                 {
+                    label: 'Text Input Autofill Test V2',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputAutofillTestV2',
+                    onClick: () =>
+                        setActiveComponent('textInputAutofillTestV2'),
+                },
+                {
                     label: 'Text Input777',
                     leftSlot: (
                         <FormInput style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'input',
                     onClick: () => setActiveComponent('input'),
+                },
+                {
+                    label: 'Text Input V2',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputV2',
+                    onClick: () => setActiveComponent('textInputV2'),
                 },
                 {
                     label: 'Text Input Group',
@@ -1127,12 +1182,20 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
-                    label: 'Chart Demo V2',
+                    label: 'Blend Chart V2',
                     leftSlot: (
                         <BarChart2 style={{ width: '16px', height: '16px' }} />
                     ),
-                    isSelected: activeComponent === 'chartDemoV2',
-                    onClick: () => setActiveComponent('chartDemoV2'),
+                    isSelected: activeComponent === 'blendChart',
+                    onClick: () => setActiveComponent('blendChart'),
+                },
+                {
+                    label: 'Chart V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'chartV2',
+                    onClick: () => setActiveComponent('chartV2'),
                 },
                 {
                     label: 'Outage Charts',
@@ -1141,6 +1204,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'outageCharts',
                     onClick: () => setActiveComponent('outageCharts'),
+                },
+                {
+                    label: 'Outage Charts V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'outageChartV2',
+                    onClick: () => setActiveComponent('outageChartV2'),
                 },
                 {
                     label: 'Stat Card',
@@ -1208,6 +1279,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'codeEditor',
                     onClick: () => setActiveComponent('codeEditor'),
+                },
+                {
+                    label: 'Timeline',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'timeline',
+                    onClick: () => setActiveComponent('timeline'),
                 },
             ],
         },
@@ -1339,7 +1418,10 @@ const SidebarDemo = () => {
         <div className="w-screen h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
+                    onSidebarStateChange={(state) => setSidebarState(state)}
+                    // showLeftPanel={false}
                     // disableIntermediateState={true}
+
                     enableTopbarAutoHide={true}
                     panelOnlyMode={panelOnlyMode}
                     hideOnIconOnlyToggle={hideOnIconOnlyToggle}
@@ -1362,8 +1444,8 @@ const SidebarDemo = () => {
                                 onClick={() => alert('Help clicked!')}
                                 className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
                                 style={{
-                                    width: '36px',
-                                    height: '36px',
+                                    width: '32px',
+                                    height: '32px',
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[100],
                                 }}
@@ -1380,8 +1462,8 @@ const SidebarDemo = () => {
                                 onClick={() => alert('Tips clicked!')}
                                 className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
                                 style={{
-                                    width: '36px',
-                                    height: '36px',
+                                    width: '32px',
+                                    height: '32px',
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[100],
                                 }}
@@ -1394,27 +1476,108 @@ const SidebarDemo = () => {
                             </button>
                         ),
                         tenantFooter: (
-                            <button
-                                onClick={() =>
-                                    alert('Tenant settings clicked!')
+                            <Menu
+                                trigger={
+                                    <button
+                                        className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-gray-200"
+                                        style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            backgroundColor:
+                                                FOUNDATION_THEME.colors
+                                                    .gray[100],
+                                        }}
+                                        title="Tenant Settings"
+                                    >
+                                        <Settings
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    </button>
                                 }
-                                className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
-                                style={{
-                                    width: '36px',
-                                    height: '36px',
-                                    backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[100],
-                                }}
-                                title="Tenant Settings"
-                            >
-                                <Settings
-                                    color={FOUNDATION_THEME.colors.gray[600]}
-                                    size={20}
-                                />
-                            </button>
+                                items={
+                                    [
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Tenant Settings',
+                                                    slot1: (
+                                                        <Settings size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Tenant settings clicked!'
+                                                        ),
+                                                },
+                                                {
+                                                    label: 'User Management',
+                                                    slot1: <Users size={16} />,
+                                                    onClick: () =>
+                                                        alert(
+                                                            'User management clicked!'
+                                                        ),
+                                                },
+                                                {
+                                                    label: 'Security',
+                                                    slot1: <Shield size={16} />,
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Security clicked!'
+                                                        ),
+                                                },
+                                            ],
+                                            showSeparator: true,
+                                        },
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Preferences',
+                                                    slot1: (
+                                                        <Settings size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Preferences clicked!'
+                                                        ),
+                                                },
+                                                {
+                                                    label: 'Notifications',
+                                                    slot1: (
+                                                        <BellIcon size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Notifications clicked!'
+                                                        ),
+                                                },
+                                            ],
+                                            showSeparator: true,
+                                        },
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Help & Support',
+                                                    slot1: (
+                                                        <HelpCircle size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Help & Support clicked!'
+                                                        ),
+                                                },
+                                            ],
+                                        },
+                                    ] as MenuGroupType[]
+                                }
+                                side={MenuSide.TOP}
+                                alignment={MenuAlignment.END}
+                                sideOffset={8}
+                            />
                         ),
                     }}
-                    // showLeftPanel={false}
                     merchantInfo={{
                         items: merchants.map((merchant) => ({
                             label: merchant.label,
@@ -1652,25 +1815,94 @@ const SidebarDemo = () => {
                         </div>
                     }
                     footer={
-                        <div
-                            className={`flex items-center  ${isExpanded ? 'gap-2 justify-between' : 'gap-0 justify-center'}`}
-                        >
-                            <Avatar
-                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-                                alt="John Doe"
-                                size={AvatarSize.SM}
-                                shape={AvatarShape.ROUNDED}
-                            />
-                            {isExpanded && (
-                                <Text
-                                    variant="body.md"
-                                    fontWeight={600}
-                                    color={FOUNDATION_THEME.colors.gray[600]}
+                        <Menu
+                            trigger={
+                                <button
+                                    className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-gray-200"
+                                    style={{
+                                        width: '36px',
+                                        height: '36px',
+                                        backgroundColor:
+                                            FOUNDATION_THEME.colors.gray[100],
+                                    }}
+                                    title="Tenant Settings"
                                 >
-                                    John Doe
-                                </Text>
-                            )}
-                        </div>
+                                    <Settings
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[600]
+                                        }
+                                        size={20}
+                                    />
+                                </button>
+                            }
+                            items={
+                                [
+                                    {
+                                        items: [
+                                            {
+                                                label: 'Tenant Settings',
+                                                slot1: <Settings size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'Tenant settings clicked!'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'User Management',
+                                                slot1: <Users size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'User management clicked!'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Security',
+                                                slot1: <Shield size={16} />,
+                                                onClick: () =>
+                                                    alert('Security clicked!'),
+                                            },
+                                        ],
+                                        showSeparator: true,
+                                    },
+                                    {
+                                        items: [
+                                            {
+                                                label: 'Preferences',
+                                                slot1: <Settings size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'Preferences clicked!'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Notifications',
+                                                slot1: <BellIcon size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'Notifications clicked!'
+                                                    ),
+                                            },
+                                        ],
+                                        showSeparator: true,
+                                    },
+                                    {
+                                        items: [
+                                            {
+                                                label: 'Help & Support',
+                                                slot1: <HelpCircle size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'Help & Support clicked!'
+                                                    ),
+                                            },
+                                        ],
+                                    },
+                                ] as MenuGroupType[]
+                            }
+                            side={MenuSide.TOP}
+                            alignment={MenuAlignment.END}
+                            sideOffset={8}
+                        />
                     }
                     showPrimaryActionButton={true}
                     primaryActionButtonProps={{

@@ -11,6 +11,8 @@ import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const ButtonV2Demo = () => {
     const [text, setText] = useState('Click me')
@@ -30,6 +32,7 @@ const ButtonV2Demo = () => {
         'pulse' | 'wave' | 'shimmer'
     >('pulse')
     const [width, setWidth] = useState<string>('')
+    const { theme } = useTheme()
 
     const typeOptions = [
         { value: ButtonV2Type.PRIMARY, label: 'Primary' },
@@ -153,7 +156,13 @@ const ButtonV2Demo = () => {
                     </div>
                 </div>
 
-                <div className="min-h-36 rounded-xl w-full flex justify-center items-center border-2 border-dashed border-gray-200 bg-gray-50">
+                <div
+                    className={`min-h-36 rounded-xl w-full flex justify-center items-center border-2 border-dashed ${
+                        theme === Theme.DARK
+                            ? 'border-gray-700 bg-gray-900'
+                            : 'border-gray-200 bg-gray-50'
+                    }`}
+                >
                     <ButtonV2
                         text={
                             subType === ButtonV2SubType.ICON_ONLY

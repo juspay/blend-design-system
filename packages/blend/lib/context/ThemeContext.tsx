@@ -123,7 +123,26 @@ import {
     getSwitchV2Tokens,
     ResponsiveSwitchV2Tokens,
 } from '../components/SwitchV2/switchV2.tokens'
-import { ResponsiveSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
+import {
+    getSingleSelectV2Tokens,
+    ResponsiveSingleSelectV2Tokens,
+} from '../components/SingleSelectV2/singleSelectV2.tokens'
+import {
+    getAvatarV2Tokens,
+    ResponsiveAvatarV2Tokens,
+} from '../components/AvatarV2/avatarV2.tokens'
+import {
+    getTextInputV2Tokens,
+    ResponsiveTextInputV2Tokens,
+} from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
+import {
+    getChartV2Tokens,
+    ResponsiveChartV2Tokens,
+} from '../components/ChartsV2/chartV2.tokens'
+import {
+    getTimelineTokens,
+    ResponsiveTimelineTokens,
+} from '../components/Timeline/timeline.token'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -169,6 +188,7 @@ export type ComponentTokenType = {
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
+    TIMELINE?: ResponsiveTimelineTokens
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
     ALERTV2?: ResponsiveAlertV2Tokens
@@ -176,6 +196,9 @@ export type ComponentTokenType = {
     SNACKBARV2?: ResponsiveSnackbarV2Tokens
     SWITCHV2?: ResponsiveSwitchV2Tokens
     SINGLE_SELECT_V2?: ResponsiveSingleSelectV2Tokens
+    AVATARV2?: ResponsiveAvatarV2Tokens
+    TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
+    CHARTSV2?: ResponsiveChartV2Tokens
 }
 
 type ThemeContextType = {
@@ -237,6 +260,14 @@ const ThemeContext = createContext<ThemeContextType>({
         ACCORDIONV2: getAccordionV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         SNACKBARV2: getSnackbarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        AVATARV2: getAvatarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHARTSV2: getChartV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
+        SINGLE_SELECT_V2: getSingleSelectV2Tokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

@@ -203,6 +203,7 @@ export const last7daysHourlyData = [
     {
         x: 1759190400000,
         y: 14.74,
+        outage: true,
     },
     {
         x: 1759194000000,
@@ -211,14 +212,17 @@ export const last7daysHourlyData = [
     {
         x: 1759197600000,
         y: 3.92,
+        outage: true,
     },
     {
         x: 1759201200000,
         y: 5.71,
+        outage: true,
     },
     {
         x: 1759204800000,
         y: 4.14,
+        outage: true,
     },
     {
         x: 1759208400000,
@@ -231,6 +235,7 @@ export const last7daysHourlyData = [
     {
         x: 1759215600000,
         y: 7.12,
+        outage: true,
     },
     {
         x: 1759219200000,
@@ -239,6 +244,7 @@ export const last7daysHourlyData = [
     {
         x: 1759222800000,
         y: 13.99,
+        outage: true,
     },
     {
         x: 1759226400000,
@@ -287,6 +293,7 @@ export const last7daysHourlyData = [
     {
         x: 1759266000000,
         y: 9.87,
+        outage: true,
     },
     {
         x: 1759269600000,
@@ -319,6 +326,7 @@ export const last7daysHourlyData = [
     {
         x: 1759294800000,
         y: 1.28,
+        outage: true,
     },
     {
         x: 1759298400000,
@@ -471,6 +479,7 @@ export const last7daysHourlyData = [
     {
         x: 1759431600000,
         y: 5.34,
+        outage: true,
     },
     {
         x: 1759435200000,
@@ -607,6 +616,7 @@ export const last7daysHourlyData = [
     {
         x: 1759554000000,
         y: 0.64,
+        outage: true,
     },
     {
         x: 1759557600000,
@@ -807,6 +817,7 @@ export const last7daysHourlyData = [
     {
         x: 1759734000000,
         y: 2.43,
+        outage: true,
     },
     {
         x: 1759737600000,
@@ -851,6 +862,7 @@ export const last7daysHourlyData = [
     {
         x: 1759773600000,
         y: 23.42,
+        outage: true,
     },
     {
         x: 1759777200000,
