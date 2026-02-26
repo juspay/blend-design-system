@@ -218,8 +218,13 @@ const NavItem = ({
         }
     }
 
-    const Element = item.href ? 'a' : 'button'
-    const elementProps = item.href ? { href: item.href } : {}
+    const isLink = !!item.href
+    const elementProps = isLink
+        ? { href: item.href }
+        : {
+              role: 'button',
+              tabIndex: 0,
+          }
 
     const renderContent = () => {
         if (iconOnlyMode) {
@@ -319,8 +324,8 @@ const NavItem = ({
 
     const itemElement = (
         <StyledElement
-            as={Element}
-            $isLink={!!item.href}
+            as="a"
+            $isLink={isLink}
             $isActive={isActive}
             $tokens={tokens}
             $iconOnlyMode={iconOnlyMode}
@@ -338,7 +343,7 @@ const NavItem = ({
                 })
             }
             aria-expanded={
-                hasChildren && !iconOnlyMode
+                !isLink && hasChildren && !iconOnlyMode
                     ? isExpanded
                         ? true
                         : false
@@ -347,7 +352,7 @@ const NavItem = ({
             aria-label={item.label}
             tabIndex={0}
             data-sidebar-expanded={
-                hasChildren && !iconOnlyMode ? isExpanded : undefined
+                !isLink && hasChildren && !iconOnlyMode ? isExpanded : undefined
             }
             data-element="sidebar-sub-section"
             data-id={item.label}
