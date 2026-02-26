@@ -120,7 +120,7 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
             gap={10}
             ref={containerRef}
         >
-            {attachedFiles && attachedFiles.length > 0 && !slot2 && (
+            {attachedFiles && attachedFiles.length > 0 && (
                 <Block
                     display="flex"
                     gap={attachmentButtonDimensions.gap}
