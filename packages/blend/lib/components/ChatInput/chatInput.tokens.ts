@@ -107,12 +107,6 @@ export type ChatInputTokensType = Readonly<{
         minHeight: CSSObject['minHeight']
         maxHeight: CSSObject['maxHeight']
         overflowY: CSSObject['overflowY']
-        focused: {
-            paddingTop: CSSObject['paddingTop']
-            paddingRight: CSSObject['paddingRight']
-            paddingBottom: CSSObject['paddingBottom']
-            paddingLeft: CSSObject['paddingLeft']
-        }
     }
 
     filesContainer: {
@@ -171,6 +165,7 @@ export type ChatInputTokensType = Readonly<{
             overflowY: CSSObject['overflowY']
             maxHeightOffset: number
             backgroundColor: CSSObject['backgroundColor']
+            scrollbarColor: string
         }
         item: {
             backgroundColor: {
@@ -302,12 +297,6 @@ export const getChatInputTokens = (
                 minHeight: '44px',
                 maxHeight: '100px',
                 overflowY: 'auto',
-                focused: {
-                    paddingTop: foundationToken.unit[15],
-                    paddingRight: foundationToken.unit[11],
-                    paddingBottom: foundationToken.unit[15],
-                    paddingLeft: foundationToken.unit[11],
-                },
             },
 
             filesContainer: {
@@ -366,6 +355,7 @@ export const getChatInputTokens = (
                     overflowY: 'auto',
                     maxHeightOffset: 40,
                     backgroundColor: foundationToken.colors.gray[0],
+                    scrollbarColor: `${foundationToken.colors.gray[300]} ${foundationToken.colors.gray[50]}`,
                 },
                 item: {
                     backgroundColor: {
@@ -489,12 +479,6 @@ export const getChatInputTokens = (
                 minHeight: '24px',
                 maxHeight: '120px',
                 overflowY: 'auto',
-                focused: {
-                    paddingTop: foundationToken.unit[15],
-                    paddingRight: foundationToken.unit[11],
-                    paddingBottom: foundationToken.unit[13],
-                    paddingLeft: foundationToken.unit[11],
-                },
             },
 
             filesContainer: {
@@ -553,6 +537,7 @@ export const getChatInputTokens = (
                     overflowY: 'auto',
                     maxHeightOffset: 40,
                     backgroundColor: foundationToken.colors.gray[0],
+                    scrollbarColor: `${foundationToken.colors.gray[300]} ${foundationToken.colors.gray[50]}`,
                 },
                 item: {
                     backgroundColor: {

@@ -337,21 +337,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             backgroundColor={tokens.textarea.backgroundColor}
                             color={tokens.textarea.color}
                             fontSize={tokens.textarea.fontSize}
-                            paddingTop={
-                                !isTextareaFocused
-                                    ? tokens.textarea.paddingTop
-                                    : tokens.textarea.focused.paddingTop
-                            }
-                            paddingRight={
-                                !isTextareaFocused
-                                    ? tokens.textarea.paddingRight
-                                    : tokens.textarea.focused.paddingRight
-                            }
-                            paddingLeft={
-                                !isTextareaFocused
-                                    ? tokens.textarea.paddingLeft
-                                    : tokens.textarea.focused.paddingLeft
-                            }
+                            paddingTop={tokens.textarea.paddingTop}
+                            paddingRight={tokens.textarea.paddingRight}
+                            paddingLeft={tokens.textarea.paddingLeft}
                             border={tokens.textarea.border}
                             borderRadius={tokens.textarea.borderRadius}
                             outline="none"
@@ -368,8 +356,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 const container =
                                     e.currentTarget.parentElement!
                                         .parentElement!
-                                container.style.border = tokens.container.border
-                                    .focus as string
+                                container.style.outline = tokens.container
+                                    .border.focus as string
                                 container.style.boxShadow = tokens.container
                                     .boxShadow.focus as string
                             }}
@@ -379,7 +367,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                     e.currentTarget.parentElement!
                                         .parentElement!
                                 container.style.boxShadow = 'none'
-                                container.style.border = 'none'
+                                container.style.outline = 'none'
                             }}
                             {...textAreaProps}
                         />
@@ -390,17 +378,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             alignItems="center"
                             justifyContent={tokens.bottomActions.justifyContent}
                             paddingTop={tokens.textarea.paddingTop}
-                            paddingRight={
-                                !isTextareaFocused
-                                    ? tokens.textarea.paddingRight
-                                    : tokens.textarea.focused.paddingRight
-                            }
+                            paddingRight={tokens.textarea.paddingRight}
                             paddingBottom={tokens.textarea.paddingBottom}
-                            paddingLeft={
-                                !isTextareaFocused
-                                    ? tokens.textarea.paddingLeft
-                                    : tokens.textarea.focused.paddingLeft
-                            }
+                            paddingLeft={tokens.textarea.paddingLeft}
                             gap={tokens.bottomActions.gap}
                             role="toolbar"
                             aria-label="Chat input actions"
@@ -448,7 +428,6 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                         tokens.topQueries.header.flexShrink
                                     }
                                     paddingX={tokens.topQueries.header.paddingX}
-                                    paddingY={tokens.topQueries.header.paddingY}
                                 >
                                     <Text
                                         color={tokens.topQueries.header.color}
@@ -468,8 +447,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                                 tokens.topQueries.container
                                                     .borderTop,
                                             paddingTop:
-                                                tokens.topQueries.header
-                                                    .paddingY,
+                                                FOUNDATION_THEME.unit[14],
                                             paddingLeft:
                                                 tokens.topQueries.header
                                                     .paddingX,
@@ -497,6 +475,11 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                         tokens.topQueries.scrollContainer
                                             .backgroundColor
                                     }
+                                    style={{
+                                        scrollbarColor:
+                                            tokens.topQueries.scrollContainer
+                                                .scrollbarColor,
+                                    }}
                                 >
                                     {topQueries.map((query, index) => {
                                         const isFocused =
