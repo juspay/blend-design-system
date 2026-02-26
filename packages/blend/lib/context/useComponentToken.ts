@@ -48,6 +48,7 @@ import { ResponsiveAlertV2Tokens } from '../components/AlertV2'
 import { ResponsiveAccordionV2Tokens } from '../components/AccordionV2'
 import { ResponsiveSnackbarV2Tokens } from '../components/SnackbarV2'
 import { ResponsiveSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
+import { ResponsiveSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
 import { ResponsiveAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
@@ -106,6 +107,7 @@ export const useComponentToken = (
     | ResponsiveAccordionV2Tokens
     | ResponsiveSnackbarV2Tokens
     | ResponsiveSwitchV2Tokens
+    | ResponsiveSingleSelectV2Tokens
     | ResponsiveTextInputV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
@@ -212,6 +214,8 @@ export const useComponentToken = (
             return componentTokens.SNACKBARV2
         case 'SWITCHV2':
             return componentTokens.SWITCHV2
+        case 'SINGLE_SELECT_V2':
+            return componentTokens.SINGLE_SELECT_V2
         case 'AVATARV2':
             return componentTokens.AVATARV2
         case 'TEXT_INPUTV2':

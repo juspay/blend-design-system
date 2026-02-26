@@ -417,6 +417,9 @@ importers:
             '@radix-ui/react-tooltip':
                 specifier: ^1.2.7
                 version: 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+            '@tanstack/react-virtual':
+                specifier: ^3.11.0
+                version: 3.13.18(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             '@types/styled-components':
                 specifier: ^5.1.34
                 version: 5.1.36
@@ -4682,6 +4685,21 @@ packages:
         resolution:
             {
                 integrity: sha512-Ce0GFnzAOuPyfV5SxjXGn0CubwGcuDB0zcdaPuCSzAa/2vII24JTkH+I6jcbXLb1ctjZMZZI6OjDaLPJQL1S0g==,
+            }
+
+    '@tanstack/react-virtual@3.13.18':
+        resolution:
+            {
+                integrity: sha512-dZkhyfahpvlaV0rIKnvQiVoWPyURppl6w4m9IwMDpuIjcJ1sD9YGWrt0wISvgU7ewACXx2Ct46WPgI6qAD4v6A==,
+            }
+        peerDependencies:
+            react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+            react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+    '@tanstack/virtual-core@3.13.18':
+        resolution:
+            {
+                integrity: sha512-Mx86Hqu1k39icq2Zusq+Ey2J6dDWTjDvEv43PJtRCoEYTLyfaPnxIQ6iy7YAOK0NV/qOEmZQ/uCufrppZxTgcg==,
             }
 
     '@testing-library/dom@10.4.0':
@@ -15494,6 +15512,14 @@ snapshots:
             '@tailwindcss/oxide': 4.1.18
             postcss: 8.5.6
             tailwindcss: 4.1.18
+
+    '@tanstack/react-virtual@3.13.18(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+        dependencies:
+            '@tanstack/virtual-core': 3.13.18
+            react: 19.2.3
+            react-dom: 19.2.3(react@19.2.3)
+
+    '@tanstack/virtual-core@3.13.18': {}
 
     '@testing-library/dom@10.4.0':
         dependencies:
