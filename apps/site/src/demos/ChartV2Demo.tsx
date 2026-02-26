@@ -76,25 +76,6 @@ const ColumnChartSection = () => {
 
                         {showChart && (
                             <div className="pt-5 p-4 flex flex-col gap-6">
-                                {/* <ChartV2Legend
-                                    chartRef={chartRef}
-                                    customLegendItems={[
-                                        {
-                                            key: 'Overall',
-                                            name: 'Overall',
-                                            color: FOUNDATION_THEME.colors
-                                                .primary[500],
-                                            value: 54,
-                                        },
-                                        {
-                                            key: 'goindigo',
-                                            name: 'goindigo',
-                                            color: FOUNDATION_THEME.colors
-                                                .red[500],
-                                            value: 10,
-                                        },
-                                    ]}
-                                /> */}
                                 <ChartV2
                                     ref={chartRef}
                                     options={columnChartOptions}
@@ -162,25 +143,6 @@ const LineChartSection = () => {
 
                         {showChart && (
                             <div className="pt-5 p-4 flex flex-col gap-6">
-                                <ChartV2Legend
-                                    chartRef={chartRef}
-                                    customLegendItems={[
-                                        {
-                                            key: 'Overall',
-                                            name: 'Overall',
-                                            color: FOUNDATION_THEME.colors
-                                                .primary[500],
-                                            value: 54,
-                                        },
-                                        {
-                                            key: 'goindigo',
-                                            name: 'goindigo',
-                                            color: FOUNDATION_THEME.colors
-                                                .red[500],
-                                            value: 10,
-                                        },
-                                    ]}
-                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={lineChartOptions}
@@ -247,25 +209,6 @@ const AreaChartSection = () => {
                         </ChartHeaderV2>
                         {showChart && (
                             <div className="pt-5 p-4 flex flex-col gap-6">
-                                <ChartV2Legend
-                                    chartRef={chartRef}
-                                    customLegendItems={[
-                                        {
-                                            key: 'Overall',
-                                            name: 'Overall',
-                                            color: FOUNDATION_THEME.colors
-                                                .primary[500],
-                                            value: 54,
-                                        },
-                                        {
-                                            key: 'goindigo',
-                                            name: 'goindigo',
-                                            color: FOUNDATION_THEME.colors
-                                                .red[500],
-                                            value: 10,
-                                        },
-                                    ]}
-                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={areaChartOptions}
@@ -419,25 +362,6 @@ const ScatterChartSection = () => {
                         </ChartHeaderV2>
                         {showChart && (
                             <div className="pt-5 p-4 flex flex-col gap-6">
-                                <ChartV2Legend
-                                    chartRef={chartRef}
-                                    customLegendItems={[
-                                        {
-                                            key: 'Overall',
-                                            name: 'Overall',
-                                            color: FOUNDATION_THEME.colors
-                                                .primary[500],
-                                            value: 54,
-                                        },
-                                        {
-                                            key: 'goindigo',
-                                            name: 'goindigo',
-                                            color: FOUNDATION_THEME.colors
-                                                .red[500],
-                                            value: 10,
-                                        },
-                                    ]}
-                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={scatterChartOptions}
@@ -504,25 +428,6 @@ const SankeyChartSection = () => {
                         </ChartHeaderV2>
                         {showChart && (
                             <div className="pt-5 p-4 flex flex-col gap-6">
-                                <ChartV2Legend
-                                    chartRef={chartRef}
-                                    customLegendItems={[
-                                        {
-                                            key: 'Overall',
-                                            name: 'Overall',
-                                            color: FOUNDATION_THEME.colors
-                                                .primary[500],
-                                            value: 54,
-                                        },
-                                        {
-                                            key: 'goindigo',
-                                            name: 'goindigo',
-                                            color: FOUNDATION_THEME.colors
-                                                .red[500],
-                                            value: 10,
-                                        },
-                                    ]}
-                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={sankeyChartOptions}
@@ -589,25 +494,6 @@ const LineColumnChartSection = () => {
                         </ChartHeaderV2>
                         {showChart && (
                             <div className="pt-5 p-4 flex flex-col gap-6">
-                                <ChartV2Legend
-                                    chartRef={chartRef}
-                                    customLegendItems={[
-                                        {
-                                            key: 'Overall',
-                                            name: 'Overall',
-                                            color: FOUNDATION_THEME.colors
-                                                .primary[500],
-                                            value: 54,
-                                        },
-                                        {
-                                            key: 'goindigo',
-                                            name: 'goindigo',
-                                            color: FOUNDATION_THEME.colors
-                                                .red[500],
-                                            value: 10,
-                                        },
-                                    ]}
-                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={lineColumnChartOptions}
@@ -674,25 +560,6 @@ const LineWithOutageMarkerSection = () => {
                         </ChartHeaderV2>
                         {showChart && (
                             <div className="pt-5 p-4 flex flex-col gap-6">
-                                <ChartV2Legend
-                                    chartRef={chartRef}
-                                    customLegendItems={[
-                                        {
-                                            key: 'Overall',
-                                            name: 'Overall',
-                                            color: FOUNDATION_THEME.colors
-                                                .primary[500],
-                                            value: 54,
-                                        },
-                                        {
-                                            key: 'goindigo',
-                                            name: 'goindigo',
-                                            color: FOUNDATION_THEME.colors
-                                                .red[500],
-                                            value: 10,
-                                        },
-                                    ]}
-                                />
                                 <ChartV2
                                     ref={chartRef}
                                     options={lineWithOutageMarkerOptions}

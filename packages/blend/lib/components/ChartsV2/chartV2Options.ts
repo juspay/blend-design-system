@@ -42,14 +42,28 @@ export const mergeChartOptions = (
 
     return {
         ...options,
-        chart: { backgroundColor: 'transparent', ...chart },
+        chart: {
+            backgroundColor: 'transparent',
+            ...chart,
+            spacingLeft: 0,
+        },
         title: { text: '', ...title },
         subtitle: { text: '', ...subtitle },
         legend: {
             ...legend,
             ...LEGEND_DEFAULTS,
             enabled: legend?.enabled ?? true,
-            itemStyle: toAxisStyle(legendsTokens.legendItem.text.name),
+            align: legend?.align ?? 'left',
+            verticalAlign: legend?.verticalAlign ?? 'top',
+            itemStyle:
+                legend?.itemStyle ??
+                toAxisStyle(legendsTokens.legendItem.text.name),
+            x: legend?.x ?? 0,
+            y: legend?.y ?? -5,
+            padding: legend?.padding ?? 0,
+            margin: legend?.margin ?? 0,
+            itemMarginTop: legend?.itemMarginTop ?? 0,
+            itemMarginBottom: legend?.itemMarginBottom ?? 34,
         },
         xAxis: {
             ...xAxisOpt,
