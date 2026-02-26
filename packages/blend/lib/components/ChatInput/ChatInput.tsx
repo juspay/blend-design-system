@@ -370,6 +370,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                         .parentElement!
                                 container.style.border = tokens.container.border
                                     .focus as string
+                                container.style.boxShadow = tokens.container
+                                    .boxShadow.focus as string
                             }}
                             onBlur={(e) => {
                                 setIsTextareaFocused(false)
@@ -465,9 +467,15 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                             borderTop:
                                                 tokens.topQueries.container
                                                     .borderTop,
-                                            paddingTop: 8,
-                                            paddingLeft: 8,
-                                            paddingRight: 8,
+                                            paddingTop:
+                                                tokens.topQueries.header
+                                                    .paddingY,
+                                            paddingLeft:
+                                                tokens.topQueries.header
+                                                    .paddingX,
+                                            paddingRight:
+                                                tokens.topQueries.header
+                                                    .paddingX,
                                         }}
                                     >
                                         Top Queries

@@ -273,7 +273,7 @@ export const getChatInputTokens = (
                 boxShadow: {
                     default: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
                     hover: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
-                    focus: `0px 0px 0px 3px ${foundationToken.colors.primary[50]}`,
+                    focus: `0 2px 8px 0 ${foundationToken.colors.primary[50]}, 0 0 0 3px ${foundationToken.colors.primary[50]}`,
                 },
             },
 
@@ -460,7 +460,7 @@ export const getChatInputTokens = (
                 boxShadow: {
                     default: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
                     hover: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
-                    focus: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                    focus: `0 2px 8px 0 ${foundationToken.colors.primary[50]}, 0 0 0 3px ${foundationToken.colors.primary[50]}`,
                 },
             },
 
