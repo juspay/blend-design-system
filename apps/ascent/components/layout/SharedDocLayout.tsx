@@ -206,7 +206,7 @@ const SharedDocLayout: React.FC<SharedDocLayoutProps> = ({
 
                         {/* Storybook link */}
                         <a
-                            href="https://juspay.design/storybook"
+                            href="https://blend.juspay.design/storybook"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-2 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--sidebar-item-hover)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2"
