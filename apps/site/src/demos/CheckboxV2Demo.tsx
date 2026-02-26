@@ -5,7 +5,7 @@ import { SwitchV2 } from '../../../../packages/blend/lib/components/SwitchV2'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import CheckboxV2 from '../../../../packages/blend/lib/components/CheckboxV2/CheckboxV2'
-import { CheckboxV2Size } from '../../../../packages/blend/lib/components/CheckboxV2/checkboxV2.types'
+import { SelectorV2Size } from '../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 
 const CheckboxV2Demo = () => {
@@ -17,7 +17,7 @@ const CheckboxV2Demo = () => {
     const [error, setError] = useState(false)
     const [disabled, setDisabled] = useState(false)
     const [showSlot, setShowSlot] = useState(true)
-    const [size, setSize] = useState<CheckboxV2Size>(CheckboxV2Size.MD)
+    const [size, setSize] = useState<SelectorV2Size>(SelectorV2Size.MD)
     const [labelMaxLength, setLabelMaxLength] = useState<number | undefined>()
     const [subLabelMaxLength, setSubLabelMaxLength] = useState<
         number | undefined
@@ -137,17 +137,17 @@ const CheckboxV2Demo = () => {
                                 items: [
                                     {
                                         label: 'Small',
-                                        value: CheckboxV2Size.SM,
+                                        value: SelectorV2Size.SM,
                                     },
                                     {
                                         label: 'Medium',
-                                        value: CheckboxV2Size.MD,
+                                        value: SelectorV2Size.MD,
                                     },
                                 ],
                             },
                         ]}
                         selected={size}
-                        onSelect={(value) => setSize(value as CheckboxV2Size)}
+                        onSelect={(value) => setSize(value as SelectorV2Size)}
                     />
                     <SingleSelect
                         label="Checked"

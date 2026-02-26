@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import CheckboxV2 from '../../../lib/components/CheckboxV2/CheckboxV2'
-import { CheckboxV2Size } from '../../../lib/components/CheckboxV2/checkboxV2.types'
+import { SelectorV2Size } from '../../../lib/components/SelectorV2/selectorV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('CheckboxV2 Accessibility', () => {
@@ -63,7 +63,7 @@ describe('CheckboxV2 Accessibility', () => {
         })
 
         it('meets WCAG standards for all sizes', async () => {
-            const sizes = [CheckboxV2Size.SM, CheckboxV2Size.MD]
+            const sizes = [SelectorV2Size.SM, SelectorV2Size.MD]
 
             for (const size of sizes) {
                 const { container, unmount } = render(
@@ -583,7 +583,7 @@ describe('CheckboxV2 Accessibility', () => {
                 <CheckboxV2
                     label="Complete Checkbox"
                     subLabel="Complete description"
-                    size={CheckboxV2Size.MD}
+                    size={SelectorV2Size.MD}
                     checked={false}
                     onCheckedChange={handleChange}
                     required

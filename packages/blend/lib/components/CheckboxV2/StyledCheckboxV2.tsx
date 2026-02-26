@@ -1,29 +1,28 @@
 import styled, { css } from 'styled-components'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
+import { CheckboxV2CheckedState } from './checkboxV2.types'
 import {
-    CheckboxV2Size,
-    CheckboxV2CheckedState,
-    CheckboxV2InteractionState,
-} from './checkboxV2.types'
+    SelectorV2Size,
+    SelectorV2InteractionState,
+} from '../SelectorV2/selectorV2.types'
 import type { CheckboxV2TokensType } from './checkboxV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import {
     checkboxRootAnimations,
     checkboxIndicatorAnimations,
 } from './checkboxV2.animations'
-// import { CheckboxV2Size } from '../CheckboxV2/checkboxV2.types'
 
 const getInteractionState = (
     isDisabled: boolean,
     error?: boolean
-): Exclude<CheckboxV2InteractionState, CheckboxV2InteractionState.HOVER> => {
-    if (isDisabled) return CheckboxV2InteractionState.DISABLED
-    if (error) return CheckboxV2InteractionState.ERROR
-    return CheckboxV2InteractionState.DEFAULT
+): Exclude<SelectorV2InteractionState, SelectorV2InteractionState.HOVER> => {
+    if (isDisabled) return SelectorV2InteractionState.DISABLED
+    if (error) return SelectorV2InteractionState.ERROR
+    return SelectorV2InteractionState.DEFAULT
 }
 
 export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
-    size: CheckboxV2Size
+    size: SelectorV2Size
     $isDisabled: boolean
     $checked: boolean | 'indeterminate'
     $error?: boolean
@@ -89,7 +88,7 @@ export const StyledCheckboxRoot = styled(CheckboxPrimitive.Root)<{
 `
 
 export const StyledCheckboxIndicator = styled(CheckboxPrimitive.Indicator)<{
-    size: CheckboxV2Size
+    size: SelectorV2Size
 }>`
     display: flex;
     align-items: center;

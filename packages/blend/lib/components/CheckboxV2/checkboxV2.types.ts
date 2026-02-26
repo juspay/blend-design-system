@@ -1,23 +1,12 @@
 import { ReactElement } from 'react'
 import { CheckboxV2TokensType } from './checkboxV2.tokens'
 import { CSSObject } from 'styled-components'
-
-export enum CheckboxV2Size {
-    SM = 'sm',
-    MD = 'md',
-}
+import { SelectorV2Size } from '../SelectorV2/selectorV2.types'
 
 export enum CheckboxV2CheckedState {
     CHECKED = 'checked',
     UNCHECKED = 'unchecked',
     INDETERMINATE = 'indeterminate',
-}
-
-export enum CheckboxV2InteractionState {
-    DEFAULT = 'default',
-    HOVER = 'hover',
-    DISABLED = 'disabled',
-    ERROR = 'error',
 }
 export type CheckboxV2Props = {
     label?: string
@@ -28,7 +17,7 @@ export type CheckboxV2Props = {
     disabled?: boolean
     required?: boolean
     error?: boolean
-    size?: CheckboxV2Size
+    size?: SelectorV2Size
     subLabel?: string
     slot?: {
         slot: ReactElement
@@ -49,7 +38,7 @@ export type CheckboxV2RootProps = {
     onCheckedChange: (checked: boolean | 'indeterminate') => void
     disabled: boolean
     required: boolean
-    size: CheckboxV2Size
+    size: SelectorV2Size
     error: boolean
     shouldShake: boolean
     ariaAttributes: {
@@ -67,7 +56,7 @@ export type CheckboxV2ContentProps = {
     disabled: boolean
     error: boolean
     required: boolean
-    size: CheckboxV2Size
+    size: SelectorV2Size
     label?: string
     subLabel?: string
     slot?: {

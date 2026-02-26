@@ -2,7 +2,7 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import CheckboxV2 from '../../../lib/components/CheckboxV2/CheckboxV2'
-import { CheckboxV2Size } from '../../../lib/components/CheckboxV2/checkboxV2.types'
+import { SelectorV2Size } from '../../../lib/components/SelectorV2/selectorV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('CheckboxV2 Component', () => {
@@ -137,7 +137,7 @@ describe('CheckboxV2 Component', () => {
             render(
                 <CheckboxV2
                     label="Small"
-                    size={CheckboxV2Size.SM}
+                    size={SelectorV2Size.SM}
                     checked={false}
                 />
             )

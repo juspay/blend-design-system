@@ -11,10 +11,12 @@ export const getCheckboxV2LightTokens = (
                 width: {
                     sm: foundationToken.unit[16],
                     md: foundationToken.unit[20],
+                    lg: foundationToken.unit[24],
                 },
                 height: {
                     sm: foundationToken.unit[16],
                     md: foundationToken.unit[20],
+                    lg: foundationToken.unit[24],
                 },
                 opacity: foundationToken.opacity[70],
                 backgroundColor: {
@@ -41,6 +43,7 @@ export const getCheckboxV2LightTokens = (
                 borderRadius: {
                     sm: foundationToken.border.radius[4],
                     md: foundationToken.border.radius[4],
+                    lg: foundationToken.border.radius[4],
                 },
                 border: {
                     unchecked: {
@@ -81,14 +84,17 @@ export const getCheckboxV2LightTokens = (
                     width: {
                         sm: foundationToken.unit[12],
                         md: foundationToken.unit[14],
+                        lg: foundationToken.unit[16],
                     },
                     height: {
                         sm: foundationToken.unit[12],
                         md: foundationToken.unit[14],
+                        lg: foundationToken.unit[16],
                     },
                     strokeWidth: {
                         sm: 2.5,
                         md: 2.5,
+                        lg: 2.5,
                     },
                 },
             },
@@ -102,24 +108,29 @@ export const getCheckboxV2LightTokens = (
                         hover: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
+                        focus: foundationToken.colors.gray[700],
                     },
 
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[16],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
                         md: foundationToken.font.weight[500],
+                        lg: foundationToken.font.weight[500],
                     },
                     lineHeight: {
                         sm: foundationToken.font.lineHeight[14],
                         md: foundationToken.font.lineHeight[16],
+                        lg: foundationToken.font.lineHeight[16],
                     },
                     slot: {
                         maxHeight: {
                             sm: foundationToken.unit[12],
                             md: foundationToken.unit[14],
+                            lg: foundationToken.unit[16],
                         },
                     },
                 },
@@ -129,19 +140,23 @@ export const getCheckboxV2LightTokens = (
                         disabled: foundationToken.colors.gray[200],
                         error: foundationToken.colors.red[500],
                         hover: foundationToken.colors.gray[400],
+                        focus: foundationToken.colors.gray[700],
                     },
 
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[16],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],
                         md: foundationToken.font.weight[400],
+                        lg: foundationToken.font.weight[400],
                     },
                     lineHeight: {
                         sm: foundationToken.font.lineHeight[12],
                         md: foundationToken.font.lineHeight[16],
+                        lg: foundationToken.font.lineHeight[16],
                     },
                 },
                 required: {
@@ -155,10 +170,12 @@ export const getCheckboxV2LightTokens = (
                 height: {
                     sm: foundationToken.unit[14],
                     md: foundationToken.unit[16],
+                    lg: foundationToken.unit[24],
                 },
                 width: {
                     sm: foundationToken.unit[14],
                     md: foundationToken.unit[16],
+                    lg: foundationToken.unit[24],
                 },
                 opacity: foundationToken.opacity[70],
                 backgroundColor: {
@@ -184,6 +201,7 @@ export const getCheckboxV2LightTokens = (
                 borderRadius: {
                     sm: foundationToken.border.radius[4],
                     md: foundationToken.border.radius[4],
+                    lg: foundationToken.border.radius[4],
                 },
                 border: {
                     unchecked: {
@@ -223,14 +241,17 @@ export const getCheckboxV2LightTokens = (
                     width: {
                         sm: foundationToken.unit[10],
                         md: foundationToken.unit[12],
+                        lg: foundationToken.unit[16],
                     },
                     height: {
                         sm: foundationToken.unit[10],
                         md: foundationToken.unit[12],
+                        lg: foundationToken.unit[16],
                     },
                     strokeWidth: {
                         sm: 2.5,
                         md: 2.5,
+                        lg: 2.5,
                     },
                 },
             },
@@ -243,24 +264,29 @@ export const getCheckboxV2LightTokens = (
                         hover: foundationToken.colors.gray[800],
                         disabled: foundationToken.colors.gray[300],
                         error: foundationToken.colors.red[600],
+                        focus: foundationToken.colors.gray[700],
                     },
 
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[16],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
                         md: foundationToken.font.weight[500],
+                        lg: foundationToken.font.weight[500],
                     },
                     lineHeight: {
                         sm: foundationToken.font.lineHeight[12],
                         md: foundationToken.font.lineHeight[16],
+                        lg: foundationToken.font.lineHeight[16],
                     },
                     slot: {
                         maxHeight: {
                             sm: foundationToken.unit[12],
                             md: foundationToken.unit[14],
+                            lg: foundationToken.unit[16],
                         },
                     },
                 },
@@ -270,19 +296,23 @@ export const getCheckboxV2LightTokens = (
                         hover: foundationToken.colors.gray[500],
                         disabled: foundationToken.colors.gray[200],
                         error: foundationToken.colors.red[500],
+                        focus: foundationToken.colors.gray[700],
                     },
 
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[16],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],
                         md: foundationToken.font.weight[400],
+                        lg: foundationToken.font.weight[400],
                     },
                     lineHeight: {
                         sm: foundationToken.font.lineHeight[12],
                         md: foundationToken.font.lineHeight[16],
+                        lg: foundationToken.font.lineHeight[16],
                     },
                 },
                 required: {

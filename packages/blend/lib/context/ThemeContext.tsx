@@ -139,7 +139,8 @@ import {
     getTimelineTokens,
     ResponsiveTimelineTokens,
 } from '../components/Timeline/timeline.token'
-  import {  getCheckboxV2Tokens,
+import {
+    getCheckboxV2Tokens,
     ResponsiveCheckboxV2Tokens,
 } from '../components/CheckboxV2/checkboxV2.tokens'
 

@@ -4,8 +4,8 @@ import {
     CheckboxV2ContentProps,
     CheckboxV2Props,
     CheckboxV2RootProps,
-    CheckboxV2Size,
 } from './checkboxV2.types'
+import { SelectorV2Size } from '../SelectorV2/selectorV2.types'
 import Block from '../Primitives/Block/Block'
 import { StyledCheckboxRoot, StyledCheckboxIndicator } from './StyledCheckboxV2'
 import { getErrorShakeStyle } from '../common/error.animations'
@@ -15,6 +15,7 @@ import {
     mergeAriaDescribedBy,
     getCheckboxIconColor,
     handleCheckboxKeyDown,
+    getCheckboxState,
 } from './utils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { CheckboxV2TokensType } from './checkboxV2.tokens'
@@ -37,7 +38,7 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
             disabled = false,
             required = false,
             error = false,
-            size = CheckboxV2Size.MD,
+            size = SelectorV2Size.MD,
             subLabel,
             slot,
             maxLength,
@@ -164,25 +165,13 @@ const CheckboxV2Root = ({
             {...ariaAttributes}
             {...restProps}
             data-element="checkbox"
-            data-state={
-                checked === 'indeterminate'
-                    ? 'indeterminate'
-                    : checked
-                      ? 'checked'
-                      : 'unchecked'
-            }
+            data-state={getCheckboxState(checked)}
         >
             <StyledCheckboxIndicator
                 forceMount={true}
                 size={size}
                 aria-hidden="true"
-                data-state={
-                    checked === 'indeterminate'
-                        ? 'indeterminate'
-                        : checked
-                          ? 'checked'
-                          : 'unchecked'
-                }
+                data-state={getCheckboxState(checked)}
             >
                 {checked ? (
                     <Block

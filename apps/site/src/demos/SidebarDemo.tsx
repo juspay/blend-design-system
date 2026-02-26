@@ -206,6 +206,7 @@ const SidebarDemo = () => {
         | 'textInputV2'
         | 'textInputAutofillTestV2'
         | 'textInputGroup'
+        | 'timeline'
     >('checkboxV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')

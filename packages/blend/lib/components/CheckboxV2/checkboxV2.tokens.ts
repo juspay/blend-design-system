@@ -1,11 +1,11 @@
 import { Theme } from '../../context/theme.enum'
 
 import { CSSObject } from 'styled-components'
+import { CheckboxV2CheckedState } from './checkboxV2.types'
 import {
-    CheckboxV2Size,
-    CheckboxV2InteractionState,
-    CheckboxV2CheckedState,
-} from './checkboxV2.types'
+    SelectorV2Size,
+    SelectorV2InteractionState,
+} from '../SelectorV2/selectorV2.types'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { getCheckboxV2LightTokens } from './checkboxV2.light.tokens'
@@ -15,23 +15,23 @@ export type CheckboxV2TokensType = {
     gap: CSSObject['gap']
     checkbox: {
         height: {
-            [key in CheckboxV2Size]: CSSObject['height']
+            [key in SelectorV2Size]: CSSObject['height']
         }
         width: {
-            [key in CheckboxV2Size]: CSSObject['width']
+            [key in SelectorV2Size]: CSSObject['width']
         }
         opacity: CSSObject['opacity']
         backgroundColor: {
             [key in CheckboxV2CheckedState]?: {
-                [key in CheckboxV2InteractionState]?: CSSObject['backgroundColor']
+                [key in SelectorV2InteractionState]?: CSSObject['backgroundColor']
             }
         }
 
-        borderRadius: { [key in CheckboxV2Size]: CSSObject['borderRadius'] }
+        borderRadius: { [key in SelectorV2Size]: CSSObject['borderRadius'] }
 
         border: {
             [key in CheckboxV2CheckedState]?: {
-                [key in CheckboxV2InteractionState]?: CSSObject['border']
+                [key in SelectorV2InteractionState]?: CSSObject['border']
             }
         }
 
@@ -42,14 +42,14 @@ export type CheckboxV2TokensType = {
             color: {
                 [key in CheckboxV2CheckedState]?: {
                     [key in Extract<
-                        CheckboxV2InteractionState,
+                        SelectorV2InteractionState,
                         'default' | 'disabled'
                     >]?: CSSObject['color']
                 }
             }
-            width: { [key in CheckboxV2Size]: CSSObject['width'] }
-            height: { [key in CheckboxV2Size]: CSSObject['height'] }
-            strokeWidth: { [key in CheckboxV2Size]: CSSObject['strokeWidth'] }
+            width: { [key in SelectorV2Size]: CSSObject['width'] }
+            height: { [key in SelectorV2Size]: CSSObject['height'] }
+            strokeWidth: { [key in SelectorV2Size]: CSSObject['strokeWidth'] }
         }
     }
     content: {
@@ -57,24 +57,24 @@ export type CheckboxV2TokensType = {
         label: {
             gap: CSSObject['gap']
             color: {
-                [key in CheckboxV2InteractionState]: CSSObject['color']
+                [key in SelectorV2InteractionState]: CSSObject['color']
             }
-            fontSize: { [key in CheckboxV2Size]: CSSObject['fontSize'] }
-            fontWeight: { [key in CheckboxV2Size]: CSSObject['fontWeight'] }
-            lineHeight: { [key in CheckboxV2Size]: CSSObject['lineHeight'] }
+            fontSize: { [key in SelectorV2Size]: CSSObject['fontSize'] }
+            fontWeight: { [key in SelectorV2Size]: CSSObject['fontWeight'] }
+            lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
             slot: {
                 maxHeight: {
-                    [key in CheckboxV2Size]: CSSObject['maxHeight']
+                    [key in SelectorV2Size]: CSSObject['maxHeight']
                 }
             }
         }
         subLabel: {
             color: {
-                [key in CheckboxV2InteractionState]: CSSObject['color']
+                [key in SelectorV2InteractionState]: CSSObject['color']
             }
-            fontSize: { [key in CheckboxV2Size]: CSSObject['fontSize'] }
-            fontWeight: { [key in CheckboxV2Size]: CSSObject['fontWeight'] }
-            lineHeight: { [key in CheckboxV2Size]: CSSObject['lineHeight'] }
+            fontSize: { [key in SelectorV2Size]: CSSObject['fontSize'] }
+            fontWeight: { [key in SelectorV2Size]: CSSObject['fontWeight'] }
+            lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
         }
         required: {
             color: CSSObject['color']

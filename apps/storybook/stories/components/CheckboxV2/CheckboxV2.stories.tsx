@@ -8,10 +8,8 @@ import {
 } from '../../../.storybook/a11y.config'
 
 import CheckboxV2 from '../../../../../packages/blend/lib/components/CheckboxV2/CheckboxV2'
-import {
-    CheckboxV2Size,
-    type CheckboxV2Props,
-} from '../../../../../packages/blend/lib/components/CheckboxV2/checkboxV2.types'
+import { type CheckboxV2Props } from '../../../../../packages/blend/lib/components/CheckboxV2/checkboxV2.types'
+import { SelectorV2Size } from '../../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 
 type CheckboxV2Slot = NonNullable<CheckboxV2Props['slot']>
 
@@ -63,14 +61,14 @@ A modern checkbox component with improved accessibility, theming, and flexible c
 ## Usage
 
 \`\`\`tsx
-import CheckboxV2, { CheckboxV2Size } from '@juspay/blend-design-system/CheckboxV2';
+import CheckboxV2, { SelectorV2Size } from '@juspay/blend-design-system/CheckboxV2';
 
 const [checked, setChecked] = useState(false);
 
 <CheckboxV2
   label="Accept terms"
   subLabel="You must accept terms to continue"
-  size={CheckboxV2Size.MD}
+  size={SelectorV2Size.MD}
   checked={checked}
   onCheckedChange={setChecked}
   slot={<Hash size={16} /> }
@@ -92,7 +90,7 @@ const [checked, setChecked] = useState(false);
         },
         size: {
             control: 'select',
-            options: Object.values(CheckboxV2Size),
+            options: Object.values(SelectorV2Size),
             description: 'Size variant of the checkbox',
         },
         checked: {
@@ -158,7 +156,7 @@ export const Default: Story = {
     args: {
         label: 'Accept terms and conditions',
         subLabel: 'You will agree to our terms by checking this box',
-        size: CheckboxV2Size.MD,
+        size: SelectorV2Size.MD,
         checked: false,
         disabled: false,
         required: false,
@@ -189,7 +187,7 @@ export const Sizes: Story = {
                 >
                     <CheckboxV2
                         label="Small checkbox"
-                        size={CheckboxV2Size.SM}
+                        size={SelectorV2Size.SM}
                         checked={states.sm}
                         onCheckedChange={(next: boolean | 'indeterminate') =>
                             setStates((prev) => ({
@@ -200,7 +198,7 @@ export const Sizes: Story = {
                     />
                     <CheckboxV2
                         label="Medium checkbox"
-                        size={CheckboxV2Size.MD}
+                        size={SelectorV2Size.MD}
                         checked={states.md}
                         onCheckedChange={(next: boolean | 'indeterminate') =>
                             setStates((prev) => ({

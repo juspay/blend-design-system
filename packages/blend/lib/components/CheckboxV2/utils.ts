@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from 'react'
-import { CheckboxV2Size, CheckboxV2CheckedState } from './checkboxV2.types'
+import { CheckboxV2CheckedState } from './checkboxV2.types'
+import { SelectorV2Size } from '../SelectorV2/selectorV2.types'
 import { CheckboxV2TokensType } from './checkboxV2.tokens'
 
 export const getCheckboxDataState = (
@@ -60,7 +61,7 @@ export const getCheckboxSubtextColor = (
  */
 export const getCheckboxTextProps = (
     tokens: CheckboxV2TokensType,
-    size: CheckboxV2Size,
+    size: SelectorV2Size,
     disabled: boolean,
     error: boolean
 ): {
@@ -78,7 +79,7 @@ export const getCheckboxTextProps = (
  */
 export const getCheckboxSubtextProps = (
     tokens: CheckboxV2TokensType,
-    size: CheckboxV2Size,
+    size: SelectorV2Size,
     disabled: boolean,
     error: boolean
 ): {
@@ -161,3 +162,10 @@ export const handleCheckboxKeyDown = (
 // getIconSize is now handled by tokens.indicator.iconSize
 // getSpacingBySize is now handled by tokens.subtext.spacing and tokens.slotGap
 // getFocusRingStyles is now handled by tokens.root.focus
+
+export const getCheckboxState = (checked: boolean | 'indeterminate') => {
+    if (checked === 'indeterminate') return CheckboxV2CheckedState.INDETERMINATE
+    return checked
+        ? CheckboxV2CheckedState.CHECKED
+        : CheckboxV2CheckedState.UNCHECKED
+}
