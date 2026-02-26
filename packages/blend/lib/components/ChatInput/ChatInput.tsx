@@ -302,11 +302,6 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 )}
                 {slot2}
                 <Block
-                    backgroundColor={
-                        attachedFiles.length > 0 || slot2
-                            ? tokens.attachmentContainer.backgroundColor
-                            : 'transparent'
-                    }
                     borderRadius={
                         attachedFiles.length > 0 || slot2
                             ? tokens.attachmentContainer.borderRadius
@@ -314,224 +309,273 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                               ? tokens.attachmentContainer.borderRadius
                               : 0
                     }
-                    border={
-                        isTextareaFocused
-                            ? tokens.container.border.focus
-                            : 'none'
-                    }
-                    boxShadow={
-                        isTextareaFocused
-                            ? tokens.container.boxShadow.focus
-                            : 'none'
-                    }
+                    overflow="hidden"
                 >
-                    <PrimitiveTextarea
-                        ref={textareaElement}
-                        value={value}
-                        onChange={handleTextareaChange}
-                        placeholder={placeholder}
-                        disabled={disabled}
-                        maxLength={maxLength}
-                        aria-label={ariaLabel || 'Message input'}
-                        aria-describedby={textareaAriaDescribedBy}
-                        aria-invalid={
-                            maxLength && value.length > maxLength
-                                ? true
-                                : undefined
-                        }
-                        id={chatInputId}
-                        rows={1}
-                        backgroundColor={tokens.textarea.backgroundColor}
-                        color={tokens.textarea.color}
-                        fontSize={tokens.textarea.fontSize}
-                        paddingTop={tokens.textarea.paddingTop}
-                        paddingRight={tokens.textarea.paddingRight}
-                        paddingBottom={tokens.textarea.paddingBottom}
-                        paddingLeft={tokens.textarea.paddingLeft}
-                        border={tokens.textarea.border}
-                        borderRadius={tokens.textarea.borderRadius}
-                        outline="none"
-                        resize={tokens.textarea.resize}
-                        fontFamily={tokens.textarea.fontFamily}
-                        width="100%"
-                        minHeight={tokens.textarea.minHeight}
-                        maxHeight={tokens.textarea.maxHeight}
-                        overflowY={tokens.textarea.overflowY}
-                        cursor={disabled ? 'not-allowed' : 'text'}
-                        style={{ lineHeight: tokens.textarea.lineHeight }}
-                        onFocus={() => {
-                            setIsTextareaFocused(true)
-                        }}
-                        onBlur={(e) => {
-                            setIsTextareaFocused(false)
-                            const container =
-                                e.currentTarget.parentElement!.parentElement!
-                            container.style.boxShadow = tokens.container
-                                .boxShadow.default as string
-                            container.style.border = tokens.container.border
-                                .default as string
-                        }}
-                        {...textAreaProps}
-                    />
-
                     <Block
-                        data-element="chat-input-actions"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent={tokens.bottomActions.justifyContent}
-                        paddingTop={tokens.textarea.paddingTop}
-                        paddingRight={tokens.textarea.paddingRight}
-                        paddingBottom={tokens.textarea.paddingBottom}
-                        paddingLeft={tokens.textarea.paddingLeft}
-                        gap={tokens.bottomActions.gap}
-                        marginTop={tokens.bottomActions.gap}
-                        role="toolbar"
-                        aria-label="Chat input actions"
+                        backgroundColor={
+                            attachedFiles.length > 0 || slot2
+                                ? tokens.attachmentContainer.backgroundColor
+                                : 'transparent'
+                        }
                     >
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.SMALL}
-                            subType={ButtonSubType.ICON_ONLY}
-                            leadingIcon={
-                                attachButtonIcon || <Paperclip size={14} />
-                            }
-                            onClick={handleAttachClick}
+                        <PrimitiveTextarea
+                            ref={textareaElement}
+                            value={value}
+                            onChange={handleTextareaChange}
+                            placeholder={placeholder}
                             disabled={disabled}
-                            aria-label="Attach files"
-                            aria-describedby={fileInputLabelId}
-                        />
-
-                        {slot1}
-                    </Block>
-                </Block>
-
-                {topQueries && topQueries.length > 0 && isTextareaFocused && (
-                    <Block
-                        paddingTop={tokens.topQueries.container.paddingTop}
-                        display="flex"
-                        flexDirection="column"
-                        maxHeight={
-                            topQueriesMaxHeight
-                                ? `${topQueriesMaxHeight}px`
-                                : undefined
-                        }
-                        role="region"
-                        aria-label="Suggested queries"
-                        id={topQueriesId}
-                    >
-                        <Block
-                            backgroundColor={
-                                tokens.topQueries.header.backgroundColor
-                            }
-                            flexShrink={tokens.topQueries.header.flexShrink}
-                            paddingX={tokens.topQueries.header.paddingX}
-                            paddingBottom={tokens.topQueries.header.paddingY}
-                        >
-                            <Text
-                                color={tokens.topQueries.header.color}
-                                fontSize={tokens.topQueries.header.fontSize}
-                                fontWeight={tokens.topQueries.header.fontWeight}
-                                textTransform={
-                                    tokens.topQueries.header.textTransform
-                                }
-                                id={`${topQueriesId}-label`}
-                                style={{
-                                    borderTop:
-                                        tokens.topQueries.container.borderTop,
-                                    paddingTop:
-                                        tokens.topQueries.header.paddingY,
-                                }}
-                            >
-                                Top Queries
-                            </Text>
-                        </Block>
-                        <Block
-                            overflowY={
-                                tokens.topQueries.scrollContainer.overflowY
-                            }
-                            maxHeight={
-                                topQueriesMaxHeight
-                                    ? `${topQueriesMaxHeight - tokens.topQueries.scrollContainer.maxHeightOffset}px`
+                            maxLength={maxLength}
+                            aria-label={ariaLabel || 'Message input'}
+                            aria-describedby={textareaAriaDescribedBy}
+                            aria-invalid={
+                                maxLength && value.length > maxLength
+                                    ? true
                                     : undefined
                             }
-                            role="listbox"
-                            aria-labelledby={`${topQueriesId}-label`}
-                            backgroundColor={
-                                tokens.topQueries.scrollContainer
-                                    .backgroundColor
+                            id={chatInputId}
+                            rows={1}
+                            backgroundColor={tokens.textarea.backgroundColor}
+                            color={tokens.textarea.color}
+                            fontSize={tokens.textarea.fontSize}
+                            paddingTop={
+                                !isTextareaFocused
+                                    ? tokens.textarea.paddingTop
+                                    : tokens.textarea.focused.paddingTop
                             }
+                            paddingRight={
+                                !isTextareaFocused
+                                    ? tokens.textarea.paddingRight
+                                    : tokens.textarea.focused.paddingRight
+                            }
+                            paddingLeft={
+                                !isTextareaFocused
+                                    ? tokens.textarea.paddingLeft
+                                    : tokens.textarea.focused.paddingLeft
+                            }
+                            border={tokens.textarea.border}
+                            borderRadius={tokens.textarea.borderRadius}
+                            outline="none"
+                            resize={tokens.textarea.resize}
+                            fontFamily={tokens.textarea.fontFamily}
+                            width="100%"
+                            minHeight={tokens.textarea.minHeight}
+                            maxHeight={tokens.textarea.maxHeight}
+                            overflowY={tokens.textarea.overflowY}
+                            cursor={disabled ? 'not-allowed' : 'text'}
+                            style={{ lineHeight: tokens.textarea.lineHeight }}
+                            onFocus={(e) => {
+                                setIsTextareaFocused(true)
+                                const container =
+                                    e.currentTarget.parentElement!
+                                        .parentElement!
+                                container.style.border = tokens.container.border
+                                    .focus as string
+                            }}
+                            onBlur={(e) => {
+                                setIsTextareaFocused(false)
+                                const container =
+                                    e.currentTarget.parentElement!
+                                        .parentElement!
+                                container.style.boxShadow = 'none'
+                                container.style.border = 'none'
+                            }}
+                            {...textAreaProps}
+                        />
+
+                        <Block
+                            data-element="chat-input-actions"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent={tokens.bottomActions.justifyContent}
+                            paddingTop={tokens.textarea.paddingTop}
+                            paddingRight={
+                                !isTextareaFocused
+                                    ? tokens.textarea.paddingRight
+                                    : tokens.textarea.focused.paddingRight
+                            }
+                            paddingBottom={tokens.textarea.paddingBottom}
+                            paddingLeft={
+                                !isTextareaFocused
+                                    ? tokens.textarea.paddingLeft
+                                    : tokens.textarea.focused.paddingLeft
+                            }
+                            gap={tokens.bottomActions.gap}
+                            role="toolbar"
+                            aria-label="Chat input actions"
                         >
-                            {topQueries.map((query, index) => {
-                                const isFocused = focusedQueryIndex === index
-                                const itemTokens = tokens.topQueries.item
-                                return (
-                                    <PrimitiveButton
-                                        key={query.id}
-                                        data-query-index={index}
-                                        onClick={(e) => {
-                                            e.preventDefault()
-                                            handleTopQueryClick(query)
-                                        }}
-                                        onKeyDown={(e) =>
-                                            handleTopQueryKeyDown(e, query)
-                                        }
-                                        disabled={disabled}
-                                        tabIndex={isFocused ? 0 : -1}
-                                        role="option"
-                                        aria-selected={isFocused}
-                                        aria-label={`Query: ${query.text}`}
-                                        style={{
-                                            display: 'block',
-                                            width: '100%',
-                                            textAlign: 'left',
-                                            background: disabled
-                                                ? (itemTokens.backgroundColor
-                                                      .disabled as string)
-                                                : (itemTokens.backgroundColor
-                                                      .default as string),
-                                            border: itemTokens.border,
-                                            color: disabled
-                                                ? (itemTokens.color
-                                                      .disabled as string)
-                                                : (itemTokens.color
-                                                      .default as string),
-                                            fontSize: itemTokens.fontSize,
-                                            fontWeight: itemTokens.fontWeight,
-                                            padding: `${itemTokens.paddingY} ${itemTokens.paddingX}`,
-                                            cursor: disabled
-                                                ? 'not-allowed'
-                                                : itemTokens.cursor,
-                                            transition: itemTokens.transition,
-                                            opacity: disabled
-                                                ? itemTokens.opacity.disabled
-                                                : itemTokens.opacity.default,
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (!disabled) {
-                                                e.currentTarget.style.backgroundColor =
-                                                    itemTokens.backgroundColor
-                                                        .hover as string
-                                                e.currentTarget.style.color =
-                                                    itemTokens.color
-                                                        .hover as string
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor =
-                                                itemTokens.backgroundColor
-                                                    .default as string
-                                            e.currentTarget.style.color =
-                                                itemTokens.color
-                                                    .default as string
-                                        }}
-                                    >
-                                        {query.text}
-                                    </PrimitiveButton>
-                                )
-                            })}
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.ICON_ONLY}
+                                leadingIcon={
+                                    attachButtonIcon || <Paperclip size={14} />
+                                }
+                                onClick={handleAttachClick}
+                                disabled={disabled}
+                                aria-label="Attach files"
+                                aria-describedby={fileInputLabelId}
+                            />
+
+                            {slot1}
                         </Block>
                     </Block>
-                )}
+
+                    {topQueries &&
+                        topQueries.length > 0 &&
+                        isTextareaFocused && (
+                            <Block
+                                paddingTop={
+                                    tokens.topQueries.container.paddingTop
+                                }
+                                display="flex"
+                                flexDirection="column"
+                                maxHeight={
+                                    topQueriesMaxHeight
+                                        ? `${topQueriesMaxHeight}px`
+                                        : undefined
+                                }
+                                role="region"
+                                aria-label="Suggested queries"
+                                id={topQueriesId}
+                            >
+                                <Block
+                                    backgroundColor={
+                                        tokens.topQueries.header.backgroundColor
+                                    }
+                                    flexShrink={
+                                        tokens.topQueries.header.flexShrink
+                                    }
+                                    paddingX={tokens.topQueries.header.paddingX}
+                                    paddingY={tokens.topQueries.header.paddingY}
+                                >
+                                    <Text
+                                        color={tokens.topQueries.header.color}
+                                        fontSize={
+                                            tokens.topQueries.header.fontSize
+                                        }
+                                        fontWeight={
+                                            tokens.topQueries.header.fontWeight
+                                        }
+                                        textTransform={
+                                            tokens.topQueries.header
+                                                .textTransform
+                                        }
+                                        id={`${topQueriesId}-label`}
+                                        style={{
+                                            borderTop:
+                                                tokens.topQueries.container
+                                                    .borderTop,
+                                            paddingTop: 8,
+                                            paddingLeft: 8,
+                                            paddingRight: 8,
+                                        }}
+                                    >
+                                        Top Queries
+                                    </Text>
+                                </Block>
+                                <Block
+                                    overflowY={
+                                        tokens.topQueries.scrollContainer
+                                            .overflowY
+                                    }
+                                    maxHeight={
+                                        topQueriesMaxHeight
+                                            ? `${topQueriesMaxHeight - tokens.topQueries.scrollContainer.maxHeightOffset}px`
+                                            : undefined
+                                    }
+                                    role="listbox"
+                                    aria-labelledby={`${topQueriesId}-label`}
+                                    backgroundColor={
+                                        tokens.topQueries.scrollContainer
+                                            .backgroundColor
+                                    }
+                                >
+                                    {topQueries.map((query, index) => {
+                                        const isFocused =
+                                            focusedQueryIndex === index
+                                        const itemTokens =
+                                            tokens.topQueries.item
+                                        return (
+                                            <PrimitiveButton
+                                                key={query.id}
+                                                data-query-index={index}
+                                                onClick={(e) => {
+                                                    e.preventDefault()
+                                                    handleTopQueryClick(query)
+                                                }}
+                                                onKeyDown={(e) =>
+                                                    handleTopQueryKeyDown(
+                                                        e,
+                                                        query
+                                                    )
+                                                }
+                                                disabled={disabled}
+                                                tabIndex={isFocused ? 0 : -1}
+                                                role="option"
+                                                aria-selected={isFocused}
+                                                aria-label={`Query: ${query.text}`}
+                                                style={{
+                                                    display: 'block',
+                                                    width: '100%',
+                                                    textAlign: 'left',
+                                                    background: disabled
+                                                        ? (itemTokens
+                                                              .backgroundColor
+                                                              .disabled as string)
+                                                        : (itemTokens
+                                                              .backgroundColor
+                                                              .default as string),
+                                                    border: itemTokens.border,
+                                                    color: disabled
+                                                        ? (itemTokens.color
+                                                              .disabled as string)
+                                                        : (itemTokens.color
+                                                              .default as string),
+                                                    fontSize:
+                                                        itemTokens.fontSize,
+                                                    fontWeight:
+                                                        itemTokens.fontWeight,
+                                                    padding: `${itemTokens.paddingY} ${itemTokens.paddingX}`,
+                                                    cursor: disabled
+                                                        ? 'not-allowed'
+                                                        : itemTokens.cursor,
+                                                    transition:
+                                                        itemTokens.transition,
+                                                    opacity: disabled
+                                                        ? itemTokens.opacity
+                                                              .disabled
+                                                        : itemTokens.opacity
+                                                              .default,
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    if (!disabled) {
+                                                        e.currentTarget.style.backgroundColor =
+                                                            itemTokens
+                                                                .backgroundColor
+                                                                .hover as string
+                                                        e.currentTarget.style.color =
+                                                            itemTokens.color
+                                                                .hover as string
+                                                    }
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.backgroundColor =
+                                                        itemTokens
+                                                            .backgroundColor
+                                                            .default as string
+                                                    e.currentTarget.style.color =
+                                                        itemTokens.color
+                                                            .default as string
+                                                }}
+                                            >
+                                                {query.text}
+                                            </PrimitiveButton>
+                                        )
+                                    })}
+                                </Block>
+                            </Block>
+                        )}
+                </Block>
             </Block>
         )
     }

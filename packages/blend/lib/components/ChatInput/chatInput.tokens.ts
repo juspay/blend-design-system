@@ -107,6 +107,12 @@ export type ChatInputTokensType = Readonly<{
         minHeight: CSSObject['minHeight']
         maxHeight: CSSObject['maxHeight']
         overflowY: CSSObject['overflowY']
+        focused: {
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+        }
     }
 
     filesContainer: {
@@ -296,6 +302,12 @@ export const getChatInputTokens = (
                 minHeight: '44px',
                 maxHeight: '100px',
                 overflowY: 'auto',
+                focused: {
+                    paddingTop: foundationToken.unit[15],
+                    paddingRight: foundationToken.unit[11],
+                    paddingBottom: foundationToken.unit[15],
+                    paddingLeft: foundationToken.unit[11],
+                },
             },
 
             filesContainer: {
@@ -463,9 +475,9 @@ export const getChatInputTokens = (
                 color: foundationToken.colors.gray[600],
                 fontSize: '16px',
                 lineHeight: '1.5',
-                paddingTop: foundationToken.unit[12],
+                paddingTop: foundationToken.unit[16],
                 paddingRight: foundationToken.unit[12],
-                paddingBottom: foundationToken.unit[8],
+                paddingBottom: foundationToken.unit[16],
                 paddingLeft: foundationToken.unit[12],
                 border: 'none',
                 borderRadius: foundationToken.unit[0],
@@ -477,6 +489,12 @@ export const getChatInputTokens = (
                 minHeight: '24px',
                 maxHeight: '120px',
                 overflowY: 'auto',
+                focused: {
+                    paddingTop: foundationToken.unit[15],
+                    paddingRight: foundationToken.unit[11],
+                    paddingBottom: foundationToken.unit[13],
+                    paddingLeft: foundationToken.unit[11],
+                },
             },
 
             filesContainer: {
@@ -551,7 +569,7 @@ export const getChatInputTokens = (
                     },
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: '500',
-                    paddingX: foundationToken.unit[8],
+                    paddingX: foundationToken.unit[16],
                     paddingY: foundationToken.unit[6],
                     border: 'none',
                     transition: 'all 0.2s ease',
