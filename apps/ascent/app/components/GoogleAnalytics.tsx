@@ -10,7 +10,11 @@ declare global {
     }
 }
 
-export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
+export function GoogleAnalytics({
+    measurementId: _measurementId,
+}: {
+    measurementId: string
+}) {
     const pathname = usePathname()
 
     useEffect(() => {
