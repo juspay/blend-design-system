@@ -7,8 +7,8 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
 
-import CheckboxV2 from '../../../../../packages/blend/lib/components/CheckboxV2/CheckboxV2'
-import { type CheckboxV2Props } from '../../../../../packages/blend/lib/components/CheckboxV2/checkboxV2.types'
+import CheckboxV2 from '../../../../../packages/blend/lib/components/SelectorV2/CheckboxV2/CheckboxV2'
+import { type CheckboxV2Props } from '../../../../../packages/blend/lib/components/SelectorV2/CheckboxV2/checkboxV2.types'
 import { SelectorV2Size } from '../../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 
 type CheckboxV2Slot = NonNullable<CheckboxV2Props['slot']>
