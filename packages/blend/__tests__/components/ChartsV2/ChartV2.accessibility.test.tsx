@@ -3,30 +3,32 @@ import { describe, it, expect, vi } from 'vitest'
 import { render } from '../../test-utils'
 import { axe } from 'jest-axe'
 import ChartV2 from '../../../lib/components/ChartsV2/ChartV2'
-import type { ChartV2Options } from '../../../lib/components/ChartsV2/chartV2.types'
+import { ChartV2Options } from '../../../lib/components/ChartsV2/chartV2.types'
 
 // For accessibility tests we don't need real Highcharts rendering; just the DOM wrapper.
 vi.mock('highcharts-react-official', () => {
     const MockHighchartsReact = (props: {
         options?: ChartV2Options
         containerProps?: Record<string, unknown>
-    }) => (
-        <div
-            data-testid="highcharts-react"
-            role="img"
-            aria-label={props.options?.title?.text ?? 'Chart'}
-            {...props.containerProps}
-        />
-    )
+    }) => {
+        const titleText = props.options?.title?.text
+        const ariaLabel =
+            titleText && titleText.trim().length > 0 ? titleText : 'Chart'
+
+        return (
+            <div
+                data-testid="highcharts-react"
+                role="img"
+                aria-label={ariaLabel}
+                {...props.containerProps}
+            />
+        )
+    }
     return {
         __esModule: true,
         default: MockHighchartsReact,
     }
 })
-
-vi.mock('../../../lib/hooks/useResponsiveTokens', () => ({
-    useResponsiveTokens: vi.fn(() => ({})),
-}))
 
 describe('ChartV2 Accessibility', () => {
     describe('WCAG 2.x / 3.x core checks via axe', () => {
