@@ -251,6 +251,7 @@ function App() {
                     'MODAL',
                     'TOOLTIP',
                     'CHECKBOX',
+                    'CHECKBOXV2',
                     'RADIO',
                     'SWITCH',
                     'TEXT_INPUT',

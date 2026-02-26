@@ -1,15 +1,18 @@
 import { useState } from 'react'
-import { Hash } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import { SingleSelect, TextInput } from '../../../../packages/blend/lib/main'
 import { SwitchV2 } from '../../../../packages/blend/lib/components/SelectorV2/SwitchV2'
-import { SelectorV2Size } from '../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
+import CheckboxV2 from '../../../../packages/blend/lib/components/SelectorV2/CheckboxV2/CheckboxV2'
+import { SelectorV2Size } from '../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
+import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 
-const SwitchV2Demo = () => {
-    const [checked, setChecked] = useState(false)
-    const [label, setLabel] = useState('SwitchV2 label')
-    const [subLabel, setSubLabel] = useState('SwitchV2 sub label')
+const CheckboxV2Demo = () => {
+    const [checked, setChecked] = useState<boolean | 'indeterminate'>(false)
+    const [checkedState, setCheckedState] = useState('Unchecked')
+    const [label, setLabel] = useState('CheckboxV2 label')
+    const [subLabel, setSubLabel] = useState('CheckboxV2 sub label')
     const [required, setRequired] = useState(false)
     const [error, setError] = useState(false)
     const [disabled, setDisabled] = useState(false)
@@ -21,9 +24,26 @@ const SwitchV2Demo = () => {
     >()
     const { theme } = useTheme()
 
+    const handlePlaygroundStateChange = (state: string) => {
+        switch (state) {
+            case 'checked':
+                setChecked(true)
+                setCheckedState('Checked')
+                break
+            case 'unchecked':
+                setChecked(false)
+                setCheckedState('Unchecked')
+                break
+            case 'indeterminate':
+                setChecked('indeterminate')
+                setCheckedState('Indeterminate')
+                break
+        }
+    }
+
     return (
         <div className="space-y-6 p-8">
-            <h2 className="text-2xl font-bold">🔀 SwitchV2 Playground</h2>
+            <h2 className="text-2xl font-bold">🔀 CheckboxV2 Playground</h2>
 
             <div className="space-y-6">
                 <div className="space-y-4">
@@ -82,7 +102,7 @@ const SwitchV2Demo = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <SwitchV2
                             label="Checked"
-                            checked={checked}
+                            checked={checked as boolean}
                             onCheckedChange={setChecked}
                         />
                         <SwitchV2
@@ -108,20 +128,48 @@ const SwitchV2Demo = () => {
                     </div>
                 </div>
 
-                <SingleSelect
-                    label="Size"
-                    placeholder="Select size"
-                    items={[
-                        {
-                            items: [
-                                { label: 'Small', value: SelectorV2Size.SM },
-                                { label: 'Medium', value: SelectorV2Size.MD },
-                            ],
-                        },
-                    ]}
-                    selected={size}
-                    onSelect={(value) => setSize(value as SelectorV2Size)}
-                />
+                <Block display="flex" gap={20}>
+                    <SingleSelect
+                        label="Size"
+                        placeholder="Select size"
+                        items={[
+                            {
+                                items: [
+                                    {
+                                        label: 'Small',
+                                        value: SelectorV2Size.SM,
+                                    },
+                                    {
+                                        label: 'Medium',
+                                        value: SelectorV2Size.MD,
+                                    },
+                                ],
+                            },
+                        ]}
+                        selected={size}
+                        onSelect={(value) => setSize(value as SelectorV2Size)}
+                    />
+                    <SingleSelect
+                        label="Checked"
+                        placeholder="Select size"
+                        items={[
+                            {
+                                items: [
+                                    { label: 'Checked', value: 'checked' },
+                                    { label: 'Unchecked', value: 'unchecked' },
+                                    {
+                                        label: 'Indeterminate',
+                                        value: 'indeterminate',
+                                    },
+                                ],
+                            },
+                        ]}
+                        selected={checkedState as string}
+                        onSelect={(value) =>
+                            handlePlaygroundStateChange(value as string)
+                        }
+                    />
+                </Block>
 
                 <div
                     className={`min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed ${
@@ -130,17 +178,21 @@ const SwitchV2Demo = () => {
                             : 'border-gray-300 bg-gray-50'
                     }`}
                 >
-                    <SwitchV2
+                    <CheckboxV2
                         label={label}
+                        id="checkbox-v2-demo"
                         subLabel={subLabel}
                         checked={checked}
-                        onCheckedChange={setChecked}
+                        onCheckedChange={(checked) => {
+                            setCheckedState(checked ? 'Checked' : 'Unchecked')
+                            setChecked(checked as boolean | 'indeterminate')
+                        }}
                         required={required}
                         error={error}
                         disabled={disabled}
                         size={size}
                         slot={
-                            showSlot ? { slot: <Hash size={16} /> } : undefined
+                            showSlot ? { slot: <Heart size={16} /> } : undefined
                         }
                         maxLength={{
                             label: labelMaxLength,
@@ -153,4 +205,4 @@ const SwitchV2Demo = () => {
     )
 }
 
-export default SwitchV2Demo
+export default CheckboxV2Demo

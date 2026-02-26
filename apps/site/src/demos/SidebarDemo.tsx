@@ -125,6 +125,7 @@ import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
 import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
+import CheckboxV2Demo from './CheckboxV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -138,6 +139,7 @@ const SidebarDemo = () => {
         | 'breadcrumb'
         | 'tabs'
         | 'checkbox'
+        | 'checkboxV2'
         | 'radio'
         | 'switch'
         | 'textInput'
@@ -205,7 +207,7 @@ const SidebarDemo = () => {
         | 'textInputAutofillTestV2'
         | 'textInputGroup'
         | 'timeline'
-    >('chartV2')
+    >('checkboxV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -465,6 +467,8 @@ const SidebarDemo = () => {
                 return <SwitchDemo />
             case 'switchV2':
                 return <SwitchV2Demo />
+            case 'checkboxV2':
+                return <CheckboxV2Demo />
             case 'menu':
                 return <MenuDemo />
             case 'singleSelect':
@@ -1306,6 +1310,14 @@ const SidebarDemo = () => {
                     ), // Using Square as a placeholder icon
                     isSelected: activeComponent === 'checkbox',
                     onClick: () => setActiveComponent('checkbox'),
+                },
+                {
+                    label: 'Checkbox V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ), // Using Square as a placeholder icon
+                    isSelected: activeComponent === 'checkboxV2',
+                    onClick: () => setActiveComponent('checkboxV2'),
                 },
                 {
                     label: 'Switch',
