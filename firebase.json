@@ -1,4 +1,7 @@
 {
+    "storage": {
+        "rules": "storage.rules"
+    },
     "hosting": [
         {
             "target": "blend-prod",
@@ -24,7 +27,7 @@
                         },
                         {
                             "key": "Content-Security-Policy",
-                            "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://vitals.vercel-insights.com; frame-ancestors 'self';"
+                            "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://vitals.vercel-insights.com https://firebasestorage.googleapis.com; frame-ancestors 'self';"
                         }
                     ]
                 },
@@ -72,6 +75,19 @@
                         {
                             "key": "Cache-Control",
                             "value": "public, max-age=86400"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(mp4|webm|mov|avi)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=2592000, immutable"
+                        },
+                        {
+                            "key": "Accept-Ranges",
+                            "value": "bytes"
                         }
                     ]
                 }
