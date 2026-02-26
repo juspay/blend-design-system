@@ -27,6 +27,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
     setStartDate,
     setEndDate,
     isDisabled = false,
+    maxYearOffset,
 }) => {
     const { innerWidth } = useBreakpoints()
     const tokens =
@@ -37,7 +38,8 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
             tabType,
             selectedRange,
             startTime,
-            endTime
+            endTime,
+            maxYearOffset
         )
 
         return (
@@ -86,7 +88,8 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                                 setSelectedRange,
                                 setStartDate,
                                 setEndDate,
-                                selectedRange
+                                selectedRange,
+                                maxYearOffset
                             )}
                             columnId={`${tabType}-year`}
                             isDisabled={isDisabled}
@@ -131,7 +134,8 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                                 setSelectedRange,
                                 setStartDate,
                                 setEndDate,
-                                selectedRange
+                                selectedRange,
+                                maxYearOffset
                             )}
                             columnId={`${tabType}-month`}
                             isDisabled={isDisabled}
@@ -176,7 +180,8 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                                 setSelectedRange,
                                 setStartDate,
                                 setEndDate,
-                                selectedRange
+                                selectedRange,
+                                maxYearOffset
                             )}
                             columnId={`${tabType}-date`}
                             isDisabled={isDisabled}
@@ -221,7 +226,8 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                                 setSelectedRange,
                                 setStartDate,
                                 setEndDate,
-                                selectedRange
+                                selectedRange,
+                                maxYearOffset
                             )}
                             isTimeColumn={true}
                             columnId={`${tabType}-time`}
