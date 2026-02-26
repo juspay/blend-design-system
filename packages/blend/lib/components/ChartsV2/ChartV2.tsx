@@ -29,7 +29,7 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
         ref
     ) => {
         const tokens = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
-        const { options } = props
+        const { options, ...restProps } = props
 
         const hasSeriesData =
             (options.series as ChartV2SeriesOptionsType[] | undefined)?.some(
@@ -63,7 +63,15 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
                 <HighchartsReact
                     ref={ref}
                     highcharts={highcharts}
-                    {...filterBlockedProps(props)}
+                    {...filterBlockedProps(restProps)}
+                    containerProps={{
+                        'data-chart':
+                            ((
+                                options.series?.[0] as {
+                                    type?: string
+                                }
+                            )?.type as string | undefined) || 'Chart',
+                    }}
                     options={mergeChartOptions(options, tokens)}
                 />
             </>
