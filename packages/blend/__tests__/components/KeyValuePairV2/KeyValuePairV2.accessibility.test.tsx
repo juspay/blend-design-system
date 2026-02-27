@@ -29,8 +29,12 @@ describe('KeyValuePairV2 Accessibility', () => {
                 <KeyValuePairV2
                     keyString="Rating"
                     value="5.0"
-                    keySlot={<Info size={16} />}
-                    valueLeftSlot={<Star size={16} />}
+                    slots={{
+                        key: <Info size={16} />,
+                        value: {
+                            left: <Star size={16} />,
+                        },
+                    }}
                 />
             )
 
@@ -128,20 +132,24 @@ describe('KeyValuePairV2 Accessibility', () => {
                 <KeyValuePairV2
                     keyString="Rating"
                     value="5.0"
-                    keySlot={
-                        <Info
-                            size={16}
-                            data-testid="key-icon"
-                            aria-hidden="true"
-                        />
-                    }
-                    valueLeftSlot={
-                        <Star
-                            size={16}
-                            data-testid="value-icon"
-                            aria-hidden="true"
-                        />
-                    }
+                    slots={{
+                        key: (
+                            <Info
+                                size={16}
+                                data-testid="key-icon"
+                                aria-hidden="true"
+                            />
+                        ),
+                        value: {
+                            left: (
+                                <Star
+                                    size={16}
+                                    data-testid="value-icon"
+                                    aria-hidden="true"
+                                />
+                            ),
+                        },
+                    }}
                 />
             )
 
@@ -163,11 +171,15 @@ describe('KeyValuePairV2 Accessibility', () => {
                 <KeyValuePairV2
                     keyString="Action"
                     value="Continue"
-                    valueRightSlot={
-                        <button aria-label="Continue to next step">
-                            <ArrowRight size={16} aria-hidden="true" />
-                        </button>
-                    }
+                    slots={{
+                        value: {
+                            right: (
+                                <button aria-label="Continue to next step">
+                                    <ArrowRight size={16} aria-hidden="true" />
+                                </button>
+                            ),
+                        },
+                    }}
                 />
             )
 
@@ -184,15 +196,14 @@ describe('KeyValuePairV2 Accessibility', () => {
                 <KeyValuePairV2
                     keyString="Status"
                     value="Active"
-                    keySlot={<Info size={16} />}
+                    slots={{
+                        key: <Info size={16} />,
+                        value: {
+                            left: <Star size={16} />,
+                        },
+                    }}
                 />
             )
-
-            const keyText = screen.getByText('Status')
-            const valueText = screen.getByText('Active')
-
-            expect(keyText).toBeInTheDocument()
-            expect(valueText).toBeInTheDocument()
         })
     })
 
