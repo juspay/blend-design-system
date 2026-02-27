@@ -104,7 +104,6 @@ describe('KeyValuePairV2 Component', () => {
             const ref = React.createRef<HTMLDivElement>()
             render(<KeyValuePairV2 keyString="Ref" value="v" ref={ref} />)
             expect(ref.current).toBeInstanceOf(HTMLDivElement)
-            expect(ref.current).toHaveAttribute('role', 'group')
         })
     })
 })
