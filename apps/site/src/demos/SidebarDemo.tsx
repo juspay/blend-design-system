@@ -187,7 +187,6 @@ const SidebarDemo = () => {
         | 'otpInput'
         | 'stepper'
         | 'keyValuePair'
-        | 'keyValuePairV2'
         | 'card'
         | 'dataRangePicker'
         | 'allComponents'
@@ -207,9 +206,10 @@ const SidebarDemo = () => {
         | 'switchV2'
         | 'textInputV2'
         | 'textInputAutofillTestV2'
+        | 'keyValuePairV2'
         | 'textInputGroup'
         | 'timeline'
-    >('checkboxV2')
+    >('keyValuePairV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -509,8 +509,6 @@ const SidebarDemo = () => {
                 return <TopbarDemo />
             case 'keyValuePair':
                 return <KeyValuePairDemo />
-            case 'keyValuePairV2':
-                return <KeyValuePairV2Demo />
             case 'card':
                 return <CardDemo />
             case 'skeleton':
@@ -539,6 +537,8 @@ const SidebarDemo = () => {
                 return <ChartV2Demo />
             case 'timeline':
                 return <TimelineDemo />
+            case 'keyValuePairV2':
+                return <KeyValuePairV2Demo />
             default:
                 return (
                     <div className="p-8">
