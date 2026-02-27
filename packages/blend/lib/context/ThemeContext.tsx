@@ -143,7 +143,8 @@ import {
     getCheckboxV2Tokens,
     ResponsiveCheckboxV2Tokens,
 } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
-import {getKeyValuePairV2Tokens,
+import {
+    getKeyValuePairV2Tokens,
     ResponsiveKeyValuePairV2Tokens,
 } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 
