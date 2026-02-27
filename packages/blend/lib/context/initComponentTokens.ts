@@ -50,6 +50,7 @@ import { getAlertV2Tokens } from '../components/AlertV2'
 import { getAccordionV2Tokens } from '../components/AccordionV2'
 import { getSnackbarV2Tokens } from '../components/SnackbarV2'
 import { getSwitchV2Tokens } from '../components/SelectorV2/SwitchV2/switchV2.tokens'
+import { getKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import { getAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
@@ -173,6 +174,9 @@ const initTokens = (
         CHECKBOXV2:
             componentTokens.CHECKBOXV2 ??
             getCheckboxV2Tokens(foundationTokens, theme),
+        KEYVALUEPAIRV2:
+            componentTokens.KEYVALUEPAIRV2 ??
+            getKeyValuePairV2Tokens(foundationTokens, theme),
     }
 }
 

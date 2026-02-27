@@ -120,6 +120,7 @@ import AlertV2Demo from './AlertV2Demo'
 import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
+import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
@@ -205,9 +206,10 @@ const SidebarDemo = () => {
         | 'switchV2'
         | 'textInputV2'
         | 'textInputAutofillTestV2'
+        | 'keyValuePairV2'
         | 'textInputGroup'
         | 'timeline'
-    >('checkboxV2')
+    >('keyValuePairV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -535,6 +537,8 @@ const SidebarDemo = () => {
                 return <ChartV2Demo />
             case 'timeline':
                 return <TimelineDemo />
+            case 'keyValuePairV2':
+                return <KeyValuePairV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -941,6 +945,14 @@ const SidebarDemo = () => {
                     label: 'Key Value Pair',
                     isSelected: activeComponent === 'keyValuePair',
                     onClick: () => setActiveComponent('keyValuePair'),
+                },
+                {
+                    label: 'Key Value Pair V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'keyValuePairV2',
+                    onClick: () => setActiveComponent('keyValuePairV2'),
                 },
             ],
         },
