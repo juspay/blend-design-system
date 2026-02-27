@@ -57,7 +57,7 @@ import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
 import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
-import { getRadioV2Tokens } from '../components/RadioV2/radioV2.tokens'
+import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,

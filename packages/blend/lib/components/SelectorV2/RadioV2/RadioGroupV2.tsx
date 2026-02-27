@@ -1,15 +1,15 @@
 import React, { forwardRef, useState, useCallback, useId, useMemo } from 'react'
 import type { RadioV2GroupProps } from './radioV2.types'
 import { isRadioElement, isValidRadioValue, getRadioTextProps } from './utils'
-import Block from '../Primitives/Block/Block'
-import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
+import Block from '../../Primitives/Block/Block'
+import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import RadioV2 from './RadioV2'
 import type { RadioV2TokensType } from './radioV2.tokens'
 import { RadioV2Size } from './radioV2.types'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { FOUNDATION_THEME } from '../../tokens'
-import { useErrorShake } from '../common/useErrorShake'
-import { getErrorShakeStyle } from '../common/error.animations'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { FOUNDATION_THEME } from '../../../tokens'
+import { useErrorShake } from '../../common/useErrorShake'
+import { getErrorShakeStyle } from '../../common/error.animations'
 
 const RadioGroupV2 = forwardRef<HTMLDivElement, RadioV2GroupProps>(
     (

@@ -1,18 +1,18 @@
 import { RadioV2ContentProps, RadioV2Props, RadioV2Size } from './radioV2.types'
 import { StyledRadioV2Root } from './StyledRadioV2'
 import { RadioV2TokensType } from './radioV2.tokens'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import React, { forwardRef } from 'react'
 import { getRadioV2ErrorShakeStyle } from './radioV2.animation'
-import { useErrorShake } from '../common/useErrorShake'
+import { useErrorShake } from '../../common/useErrorShake'
 import {
     SelectorsLabelTokensType,
     SelectorsSubLabelTokensType,
-} from '../SelectorsContent/SelectorsContent.types'
-import SelectorsLabel from '../SelectorsContent/SelectorsLabel'
-import Block from '../Primitives/Block/Block'
-import SelectorsSubLabel from '../SelectorsContent/SelectorsSubLabel'
-import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
+} from '../../SelectorsContent/SelectorsContent.types'
+import SelectorsLabel from '../../SelectorsContent/SelectorsLabel'
+import Block from '../../Primitives/Block/Block'
+import SelectorsSubLabel from '../../SelectorsContent/SelectorsSubLabel'
+import { addAccessibleAriaAttributes } from '../../../utils/accessibility/icon-helpers'
 
 const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
     (
