@@ -924,8 +924,17 @@ const TableBody = forwardRef<
                                                           )
 
                                                       let fixedWidth = 140
-
-                                                      if (column.minWidth) {
+                                                      if (column.maxWidth) {
+                                                          fixedWidth =
+                                                              parseInt(
+                                                                  column.maxWidth.replace(
+                                                                      /px|%|em|rem/g,
+                                                                      ''
+                                                                  )
+                                                              ) || 140
+                                                      } else if (
+                                                          column.minWidth
+                                                      ) {
                                                           fixedWidth =
                                                               parseInt(
                                                                   column.minWidth.replace(
@@ -934,11 +943,13 @@ const TableBody = forwardRef<
                                                                   )
                                                               ) || 140
                                                       } else if (
-                                                          column.maxWidth
+                                                          currentColumnStyles.maxWidth
                                                       ) {
                                                           fixedWidth =
                                                               parseInt(
-                                                                  column.maxWidth.replace(
+                                                                  String(
+                                                                      currentColumnStyles.maxWidth
+                                                                  ).replace(
                                                                       /px|%|em|rem/g,
                                                                       ''
                                                                   )
@@ -970,9 +981,23 @@ const TableBody = forwardRef<
                                                       ) {
                                                           const prevColumn =
                                                               visibleColumns[i]
+                                                          const prevStyles =
+                                                              getColumnWidth(
+                                                                  prevColumn,
+                                                                  i
+                                                              )
                                                           let columnWidth = 140
-
                                                           if (
+                                                              prevColumn.maxWidth
+                                                          ) {
+                                                              columnWidth =
+                                                                  parseInt(
+                                                                      prevColumn.maxWidth.replace(
+                                                                          /px|%|em|rem/g,
+                                                                          ''
+                                                                      )
+                                                                  ) || 140
+                                                          } else if (
                                                               prevColumn.minWidth
                                                           ) {
                                                               columnWidth =
@@ -983,48 +1008,30 @@ const TableBody = forwardRef<
                                                                       )
                                                                   ) || 140
                                                           } else if (
-                                                              prevColumn.maxWidth
+                                                              prevStyles.maxWidth
                                                           ) {
                                                               columnWidth =
                                                                   parseInt(
-                                                                      prevColumn.maxWidth.replace(
+                                                                      String(
+                                                                          prevStyles.maxWidth
+                                                                      ).replace(
                                                                           /px|%|em|rem/g,
                                                                           ''
                                                                       )
                                                                   ) || 140
-                                                          } else {
-                                                              const prevStyles =
-                                                                  getColumnWidth(
-                                                                      prevColumn,
-                                                                      i
-                                                                  )
-                                                              if (
-                                                                  prevStyles.minWidth
-                                                              ) {
-                                                                  columnWidth =
-                                                                      parseInt(
-                                                                          String(
-                                                                              prevStyles.minWidth
-                                                                          ).replace(
-                                                                              /px|%|em|rem/g,
-                                                                              ''
-                                                                          )
-                                                                      ) || 140
-                                                              } else if (
-                                                                  prevStyles.maxWidth
-                                                              ) {
-                                                                  columnWidth =
-                                                                      parseInt(
-                                                                          String(
-                                                                              prevStyles.maxWidth
-                                                                          ).replace(
-                                                                              /px|%|em|rem/g,
-                                                                              ''
-                                                                          )
-                                                                      ) || 140
-                                                              }
+                                                          } else if (
+                                                              prevStyles.minWidth
+                                                          ) {
+                                                              columnWidth =
+                                                                  parseInt(
+                                                                      String(
+                                                                          prevStyles.minWidth
+                                                                      ).replace(
+                                                                          /px|%|em|rem/g,
+                                                                          ''
+                                                                      )
+                                                                  ) || 140
                                                           }
-
                                                           leftOffset +=
                                                               columnWidth
                                                       }

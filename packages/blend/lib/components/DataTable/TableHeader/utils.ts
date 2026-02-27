@@ -121,13 +121,17 @@ export const getFrozenColumnStyles = (
     const currentColumnStyles = getColumnWidth(currentColumn, index)
 
     let fixedWidth = 140
-
-    if (currentColumn.minWidth) {
-        fixedWidth =
-            parseInt(currentColumn.minWidth.replace(/px|%|em|rem/g, '')) || 140
-    } else if (currentColumn.maxWidth) {
+    if (currentColumn.maxWidth) {
         fixedWidth =
             parseInt(currentColumn.maxWidth.replace(/px|%|em|rem/g, '')) || 140
+    } else if (currentColumn.minWidth) {
+        fixedWidth =
+            parseInt(currentColumn.minWidth.replace(/px|%|em|rem/g, '')) || 140
+    } else if (currentColumnStyles.maxWidth) {
+        fixedWidth =
+            parseInt(
+                String(currentColumnStyles.maxWidth).replace(/px|%|em|rem/g, '')
+            ) || 140
     } else if (currentColumnStyles.minWidth) {
         fixedWidth =
             parseInt(
@@ -141,29 +145,25 @@ export const getFrozenColumnStyles = (
 
     for (let i = 0; i < index; i++) {
         const prevColumn = visibleColumns[i]
+        const prevStyles = getColumnWidth(prevColumn, i)
         let columnWidth = 140
-
-        if (prevColumn.minWidth) {
-            columnWidth =
-                parseInt(prevColumn.minWidth.replace(/px|%|em|rem/g, '')) || 140
-        } else if (prevColumn.maxWidth) {
+        if (prevColumn.maxWidth) {
             columnWidth =
                 parseInt(prevColumn.maxWidth.replace(/px|%|em|rem/g, '')) || 140
-        } else {
-            const prevStyles = getColumnWidth(prevColumn, i)
-            if (prevStyles.minWidth) {
-                columnWidth =
-                    parseInt(
-                        String(prevStyles.minWidth).replace(/px|%|em|rem/g, '')
-                    ) || 120
-            } else if (prevStyles.maxWidth) {
-                columnWidth =
-                    parseInt(
-                        String(prevStyles.maxWidth).replace(/px|%|em|rem/g, '')
-                    ) || 140
-            }
+        } else if (prevColumn.minWidth) {
+            columnWidth =
+                parseInt(prevColumn.minWidth.replace(/px|%|em|rem/g, '')) || 140
+        } else if (prevStyles.maxWidth) {
+            columnWidth =
+                parseInt(
+                    String(prevStyles.maxWidth).replace(/px|%|em|rem/g, '')
+                ) || 140
+        } else if (prevStyles.minWidth) {
+            columnWidth =
+                parseInt(
+                    String(prevStyles.minWidth).replace(/px|%|em|rem/g, '')
+                ) || 120
         }
-
         leftOffset += columnWidth
     }
 
