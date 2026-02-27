@@ -20,7 +20,7 @@ const KeyValuePairV2Demo = () => {
         'This is a very long value that demonstrates text overflow behavior'
     )
     const [playgroundSize, setPlaygroundSize] = useState<KeyValuePairV2Size>(
-        KeyValuePairV2Size.MEDIUM
+        KeyValuePairV2Size.MD
     )
     const [playgroundState, setPlaygroundState] =
         useState<KeyValuePairV2StateType>(KeyValuePairV2StateType.vertical)
@@ -34,9 +34,9 @@ const KeyValuePairV2Demo = () => {
 
     // Options for selects
     const sizeOptions = [
-        { value: KeyValuePairV2Size.SMALL as string, label: 'Small' },
-        { value: KeyValuePairV2Size.MEDIUM as string, label: 'Medium' },
-        { value: KeyValuePairV2Size.LARGE as string, label: 'Large' },
+        { value: KeyValuePairV2Size.SM as string, label: 'Small' },
+        { value: KeyValuePairV2Size.MD as string, label: 'Medium' },
+        { value: KeyValuePairV2Size.LG as string, label: 'Large' },
     ]
 
     const stateOptions = [
@@ -189,19 +189,19 @@ const KeyValuePairV2Demo = () => {
                             maxLines={maxLines}
                             showTooltipOnTruncate={showTooltip}
                             maxWidth="300px"
-                            keySlot={
-                                showKeySlot ? <Info size={16} /> : undefined
-                            }
-                            valueLeftSlot={
-                                showValueLeftSlot ? (
-                                    <Star size={16} />
-                                ) : undefined
-                            }
-                            valueRightSlot={
-                                showValueRightSlot ? (
-                                    <ArrowRight size={16} />
-                                ) : undefined
-                            }
+                            slots={{
+                                key: showKeySlot ? (
+                                    <Info size={16} />
+                                ) : undefined,
+                                value: {
+                                    left: showValueLeftSlot ? (
+                                        <Star size={16} />
+                                    ) : undefined,
+                                    right: showValueRightSlot ? (
+                                        <ArrowRight size={16} />
+                                    ) : undefined,
+                                },
+                            }}
                         />
                     </div>
                 </div>

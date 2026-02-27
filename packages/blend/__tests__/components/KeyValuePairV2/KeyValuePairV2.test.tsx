@@ -26,9 +26,13 @@ describe('KeyValuePairV2 Component', () => {
                 <KeyValuePairV2
                     keyString="Status"
                     value="Active"
-                    keySlot={<MockIcon />}
-                    valueLeftSlot={<MockIcon />}
-                    valueRightSlot={<MockIcon />}
+                    slots={{
+                        key: <MockIcon />,
+                        value: {
+                            left: <MockIcon />,
+                            right: <MockIcon />,
+                        },
+                    }}
                 />
             )
             expect(
@@ -52,7 +56,7 @@ describe('KeyValuePairV2 Component', () => {
                 <KeyValuePairV2
                     keyString="S"
                     value="v"
-                    size={KeyValuePairV2Size.SMALL}
+                    size={KeyValuePairV2Size.SM}
                 />
             )
             expect(screen.getByText('v')).toBeInTheDocument()
@@ -61,7 +65,7 @@ describe('KeyValuePairV2 Component', () => {
                 <KeyValuePairV2
                     keyString="M"
                     value="v"
-                    size={KeyValuePairV2Size.MEDIUM}
+                    size={KeyValuePairV2Size.MD}
                 />
             )
             expect(screen.getByText('v')).toBeInTheDocument()

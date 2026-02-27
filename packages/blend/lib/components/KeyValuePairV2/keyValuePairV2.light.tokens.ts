@@ -20,17 +20,14 @@ export const getKeyValuePairV2LightTokens = (
             value: {
                 color: foundationToken.colors.gray[700],
                 fontSize: {
-                    [KeyValuePairV2Size.SMALL]:
+                    [KeyValuePairV2Size.SM]:
                         foundationToken.font.size.body.md.fontSize, // 14px
-                    [KeyValuePairV2Size.MEDIUM]:
+                    [KeyValuePairV2Size.MD]:
                         foundationToken.font.size.body.lg.fontSize, // 16px
-                    [KeyValuePairV2Size.LARGE]: 18, // 18px
+                    [KeyValuePairV2Size.LG]: 18, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
                 gap: foundationToken.unit[8], // 8px
-                slot: {
-                    color: foundationToken.colors.gray[400],
-                },
             },
         },
         lg: {
@@ -47,18 +44,15 @@ export const getKeyValuePairV2LightTokens = (
             value: {
                 color: foundationToken.colors.gray[700],
                 fontSize: {
-                    [KeyValuePairV2Size.SMALL]:
+                    [KeyValuePairV2Size.SM]:
                         foundationToken.font.size.body.md.fontSize, // 14px
-                    [KeyValuePairV2Size.MEDIUM]:
+                    [KeyValuePairV2Size.MD]:
                         foundationToken.font.size.body.lg.fontSize, // 16px
-                    [KeyValuePairV2Size.LARGE]:
+                    [KeyValuePairV2Size.LG]:
                         foundationToken.font.size.heading.sm.fontSize, // 18px
                 },
                 fontWeight: foundationToken.font.weight[600], // 600
                 gap: foundationToken.unit[8], // 8px
-                slot: {
-                    color: foundationToken.colors.gray[700],
-                },
             },
         },
     }
