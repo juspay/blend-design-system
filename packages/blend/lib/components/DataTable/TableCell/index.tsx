@@ -18,7 +18,7 @@ import { SelectMenuGroupType } from '../../Select/types'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import Tooltip from '../../Tooltip/Tooltip'
-import { TooltipSize } from '../../Tooltip/types'
+import { TooltipSize, TooltipAlign } from '../../Tooltip/types'
 
 const StyledTableCell = styled.td<{
     width?: React.CSSProperties
@@ -145,8 +145,17 @@ const TruncatedTextWithTooltip = ({
                 size={TooltipSize.SMALL}
                 delayDuration={500}
                 maxWidth={tooltipMaxWidth}
+                align={TooltipAlign.END}
             >
-                {truncatedContent}
+                <span
+                    style={{
+                        display: 'block',
+                        width: '100%',
+                        minWidth: 0,
+                    }}
+                >
+                    {truncatedContent}
+                </span>
             </Tooltip>
         )
     }
