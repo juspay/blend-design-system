@@ -1,5 +1,5 @@
 import { css } from 'styled-components'
-import { errorShakeAnimation } from '../common/error.animations'
+import { errorShakeAnimation } from '../../common/error.animations'
 
 const easing = 'cubic-bezier(0.4, 0, 0.2, 1)'
 

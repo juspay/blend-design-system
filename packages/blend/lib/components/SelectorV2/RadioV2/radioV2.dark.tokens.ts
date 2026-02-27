@@ -1,4 +1,4 @@
-import { FoundationTokenType } from '../../tokens/theme.token'
+import { FoundationTokenType } from '../../../tokens/theme.token'
 import { ResponsiveRadioV2Tokens } from './radioV2.tokens'
 
 export const getRadioV2DarkTokens = (

@@ -1,4 +1,4 @@
-import { Theme } from '../../context/theme.enum'
+import { Theme } from '../../../context/theme.enum'
 
 import { CSSObject } from 'styled-components'
 import {
@@ -7,8 +7,8 @@ import {
     RadioV2State,
     RadioV2IndicatorState,
 } from './radioV2.types'
-import { BreakpointType } from '../../breakpoints/breakPoints'
-import { FoundationTokenType } from '../../tokens/theme.token'
+import { BreakpointType } from '../../../breakpoints/breakPoints'
+import { FoundationTokenType } from '../../../tokens/theme.token'
 import { getRadioV2LightTokens } from './radioV2.light.tokens'
 import { getRadioV2DarkTokens } from './radioV2.dark.tokens'
 

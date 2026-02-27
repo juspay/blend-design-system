@@ -146,7 +146,7 @@ import {
 import {
     getRadioV2Tokens,
     ResponsiveRadioV2Tokens,
-} from '../components/RadioV2/radioV2.tokens'
+} from '../components/SelectorV2/RadioV2/radioV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens

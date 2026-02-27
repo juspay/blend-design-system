@@ -6,13 +6,13 @@ import {
     Switch,
     TextInput,
 } from '../../../../packages/blend/lib/main'
-import { SwitchV2 } from '../../../../packages/blend/lib/components/SwitchV2'
+import { SwitchV2 } from '../../../../packages/blend/lib/components/SelectorV2/SwitchV2'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
-import { RadioV2Size } from '../../../../packages/blend/lib/components/RadioV2/radioV2.types'
-import RadioV2 from '../../../../packages/blend/lib/components/RadioV2/RadioV2'
-import RadioGroupV2 from '../../../../packages/blend/lib/components/RadioV2/RadioGroupV2'
+import { RadioV2Size } from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/radioV2.types'
+import RadioV2 from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/RadioV2'
+import RadioGroupV2 from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/RadioGroupV2'
 const RadioV2Demo = () => {
     const [checked, setChecked] = useState<boolean>(false)
     const [checkedState, setCheckedState] = useState('Unchecked')
@@ -110,27 +110,27 @@ const RadioV2Demo = () => {
                         <SwitchV2
                             label="Checked"
                             checked={checked as boolean}
-                            onChange={setChecked}
+                            onCheckedChange={setChecked}
                         />
                         <SwitchV2
                             label="Required"
                             checked={required}
-                            onChange={setRequired}
+                            onCheckedChange={setRequired}
                         />
                         <SwitchV2
                             label="Error"
                             checked={error}
-                            onChange={setError}
+                            onCheckedChange={setError}
                         />
                         <SwitchV2
                             label="Disabled"
                             checked={disabled}
-                            onChange={setDisabled}
+                            onCheckedChange={setDisabled}
                         />
                         <SwitchV2
                             label="Show Icon Slot"
                             checked={showSlot}
-                            onChange={() => setShowSlot(!showSlot)}
+                            onCheckedChange={() => setShowSlot(!showSlot)}
                         />
                     </div>
                 </div>
