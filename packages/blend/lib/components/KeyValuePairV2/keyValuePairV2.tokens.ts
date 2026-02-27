@@ -23,9 +23,6 @@ export type KeyValuePairV2TokensType = {
         }
         fontWeight: CSSObject['fontWeight']
         gap: CSSObject['gap']
-        slot: {
-            color: CSSObject['color']
-        }
     }
 }
 

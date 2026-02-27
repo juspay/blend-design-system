@@ -56,7 +56,7 @@ describe('KeyValuePairV2 Accessibility', () => {
                 <KeyValuePairV2
                     keyString="Description"
                     value="This is a long description text"
-                    size={KeyValuePairV2Size.MEDIUM}
+                    size={KeyValuePairV2Size.MD}
                 />
             )
 
@@ -254,7 +254,7 @@ describe('KeyValuePairV2 Accessibility', () => {
                 <KeyValuePairV2
                     keyString="Small"
                     value="Small value"
-                    size={KeyValuePairV2Size.SMALL}
+                    size={KeyValuePairV2Size.SM}
                 />
             )
 
@@ -267,7 +267,7 @@ describe('KeyValuePairV2 Accessibility', () => {
                 <KeyValuePairV2
                     keyString="Medium"
                     value="Medium value"
-                    size={KeyValuePairV2Size.MEDIUM}
+                    size={KeyValuePairV2Size.MD}
                 />
             )
 
@@ -280,7 +280,7 @@ describe('KeyValuePairV2 Accessibility', () => {
                 <KeyValuePairV2
                     keyString="Large"
                     value="Large value"
-                    size={KeyValuePairV2Size.LARGE}
+                    size={KeyValuePairV2Size.LG}
                 />
             )
 

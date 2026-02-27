@@ -88,7 +88,7 @@ export const Default: Story = {
     args: {
         keyString: 'Name',
         value: 'John Doe',
-        size: KeyValuePairV2Size.MEDIUM,
+        size: KeyValuePairV2Size.MD,
         keyValuePairState: KeyValuePairV2StateType.vertical,
     },
     parameters: { a11y: getA11yConfig('content') },
@@ -125,17 +125,17 @@ export const Sizes: Story = {
             <KeyValuePairV2
                 keyString="Small Size"
                 value="This is small text"
-                size={KeyValuePairV2Size.SMALL}
+                size={KeyValuePairV2Size.SM}
             />
             <KeyValuePairV2
                 keyString="Medium Size"
                 value="This is medium text"
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Large Size"
                 value="This is large text"
-                size={KeyValuePairV2Size.LARGE}
+                size={KeyValuePairV2Size.LG}
             />
         </div>
     ),
@@ -234,25 +234,25 @@ export const UserProfile: Story = {
                 keyString="Full Name"
                 value="John Doe"
                 keySlot={<User size={16} />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Email"
                 value="john.doe@example.com"
                 keySlot={<Mail size={16} />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Phone"
                 value="+1 (555) 123-4567"
                 keySlot={<Phone size={16} />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Location"
                 value="San Francisco, CA"
                 keySlot={<MapPin size={16} />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
         </div>
     ),
@@ -285,25 +285,25 @@ export const FinancialData: Story = {
                 keyString="Balance"
                 value="$12,345.67"
                 keySlot={<DollarSign size={16} />}
-                size={KeyValuePairV2Size.LARGE}
+                size={KeyValuePairV2Size.LG}
             />
             <KeyValuePairV2
                 keyString="Monthly Income"
                 value="$5,000.00"
                 keySlot={<TrendingUp size={16} color="#10b981" />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Monthly Expenses"
                 value="$3,200.00"
                 keySlot={<TrendingDown size={16} color="#ef4444" />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Payment Method"
                 value="**** **** **** 1234"
                 keySlot={<CreditCard size={16} />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
         </div>
     ),
@@ -336,25 +336,25 @@ export const StatusIndicators: Story = {
                 keyString="Server Status"
                 value="Online"
                 valueLeftSlot={<CheckCircle size={16} color="#10b981" />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Database"
                 value="Connected"
                 valueLeftSlot={<CheckCircle size={16} color="#10b981" />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="API Status"
                 value="Warning"
                 valueLeftSlot={<AlertCircle size={16} color="#f59e0b" />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Security"
                 value="Locked"
                 valueLeftSlot={<Info size={16} />}
-                size={KeyValuePairV2Size.MEDIUM}
+                size={KeyValuePairV2Size.MD}
             />
         </div>
     ),
@@ -386,7 +386,7 @@ export const Accessibility: Story = {
                     <KeyValuePairV2
                         keyString="Term"
                         value="Definition"
-                        size={KeyValuePairV2Size.MEDIUM}
+                        size={KeyValuePairV2Size.MD}
                     />
                     <p
                         style={{
@@ -414,7 +414,7 @@ export const Accessibility: Story = {
                     <KeyValuePairV2
                         keyString="Label"
                         value="Value with aria-labelledby"
-                        size={KeyValuePairV2Size.MEDIUM}
+                        size={KeyValuePairV2Size.MD}
                     />
                     <p
                         style={{
@@ -445,7 +445,7 @@ export const Accessibility: Story = {
                         textOverflow="truncate"
                         maxWidth="200px"
                         showTooltipOnTruncate={true}
-                        size={KeyValuePairV2Size.MEDIUM}
+                        size={KeyValuePairV2Size.MD}
                     />
                     <p
                         style={{
