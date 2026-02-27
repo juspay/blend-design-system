@@ -14,6 +14,7 @@ export const getRadioV2DarkTokens = (
                 height: {
                     sm: foundationToken.unit[16],
                     md: foundationToken.unit[20],
+                    lg: foundationToken.unit[20],
                 },
                 borderWidth: {
                     inactive: {
@@ -75,25 +76,30 @@ export const getRadioV2DarkTokens = (
                     color: {
                         default: foundationToken.colors.gray[50],
                         hover: foundationToken.colors.gray[100],
+                        focus: foundationToken.colors.gray[100],
                         disabled: foundationToken.colors.gray[500],
                         error: foundationToken.colors.red[400],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
                         md: foundationToken.font.weight[500],
+                        lg: foundationToken.font.weight[500],
                     },
                     lineHeight: {
                         sm: foundationToken.font.lineHeight[12],
                         md: foundationToken.font.lineHeight[16],
+                        lg: foundationToken.font.lineHeight[16],
                     },
                     slot: {
                         maxHeight: {
                             sm: foundationToken.unit[12],
                             md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
                         },
                     },
                 },
@@ -101,20 +107,24 @@ export const getRadioV2DarkTokens = (
                     color: {
                         default: foundationToken.colors.gray[400],
                         hover: foundationToken.colors.gray[300],
+                        focus: foundationToken.colors.gray[300],
                         disabled: foundationToken.colors.gray[600],
                         error: foundationToken.colors.red[400],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],
                         md: foundationToken.font.weight[400],
+                        lg: foundationToken.font.weight[400],
                     },
                     lineHeight: {
                         sm: foundationToken.font.lineHeight[12],
                         md: foundationToken.font.lineHeight[16],
+                        lg: foundationToken.font.lineHeight[16],
                     },
                 },
                 required: {
@@ -131,6 +141,7 @@ export const getRadioV2DarkTokens = (
                 height: {
                     sm: foundationToken.unit[14],
                     md: foundationToken.unit[16],
+                    lg: foundationToken.unit[16],
                 },
                 borderWidth: {
                     inactive: {
@@ -192,25 +203,30 @@ export const getRadioV2DarkTokens = (
                     color: {
                         default: foundationToken.colors.gray[50],
                         hover: foundationToken.colors.gray[100],
+                        focus: foundationToken.colors.gray[100],
                         disabled: foundationToken.colors.gray[500],
                         error: foundationToken.colors.red[400],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
                         md: foundationToken.font.weight[500],
+                        lg: foundationToken.font.weight[500],
                     },
                     lineHeight: {
                         sm: foundationToken.font.lineHeight[12],
                         md: foundationToken.font.lineHeight[16],
+                        lg: foundationToken.font.lineHeight[16],
                     },
                     slot: {
                         maxHeight: {
                             sm: foundationToken.unit[12],
                             md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
                         },
                     },
                 },
@@ -219,20 +235,24 @@ export const getRadioV2DarkTokens = (
                     color: {
                         default: foundationToken.colors.gray[400],
                         hover: foundationToken.colors.gray[300],
+                        focus: foundationToken.colors.gray[300],
                         disabled: foundationToken.colors.gray[600],
                         error: foundationToken.colors.red[400],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[14],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],
                         md: foundationToken.font.weight[400],
+                        lg: foundationToken.font.weight[400],
                     },
                     lineHeight: {
                         sm: foundationToken.font.lineHeight[12],
                         md: foundationToken.font.lineHeight[16],
+                        lg: foundationToken.font.lineHeight[16],
                     },
                 },
                 required: {

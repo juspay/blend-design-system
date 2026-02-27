@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import RadioV2 from '../../../lib/components/SelectorV2/RadioV2/RadioV2'
-import { RadioV2Size } from '../../../lib/components/SelectorV2/RadioV2/radioV2.types'
+import { SelectorV2Size } from '../../../lib/components/SelectorV2/selectorV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('RadioV2 Accessibility', () => {
@@ -55,7 +55,7 @@ describe('RadioV2 Accessibility', () => {
         })
 
         it('meets WCAG standards for all sizes', async () => {
-            const sizes = [RadioV2Size.SMALL, RadioV2Size.MEDIUM]
+            const sizes = [SelectorV2Size.SM, SelectorV2Size.MD]
 
             for (const size of sizes) {
                 const { container, unmount } = render(
@@ -87,7 +87,7 @@ describe('RadioV2 Accessibility', () => {
                 <RadioV2
                     label="Space Radio"
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -117,7 +117,7 @@ describe('RadioV2 Accessibility', () => {
                     label="Disabled Keyboard Radio"
                     disabled
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -159,7 +159,7 @@ describe('RadioV2 Accessibility', () => {
                     <RadioV2
                         label="State Change Radio"
                         checked={checked}
-                        onChange={() => setChecked(true)}
+                        onCheckedChange={(e) => setChecked(e.target.checked)}
                     />
                 )
             }
@@ -268,7 +268,7 @@ describe('RadioV2 Accessibility', () => {
                 <RadioV2
                     label="Clickable Label Radio"
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -320,9 +320,9 @@ describe('RadioV2 Accessibility', () => {
                 <RadioV2
                     label="Complete Radio"
                     subLabel="Complete description"
-                    size={RadioV2Size.MEDIUM}
+                    size={SelectorV2Size.MD}
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                     required
                     error
                     slot={{ slot: <MockIcon /> }}

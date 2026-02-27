@@ -1,5 +1,6 @@
 import { RadioV2TokensType } from './radioV2.tokens'
-import { RadioV2Props, RadioV2Size } from './radioV2.types'
+import { RadioV2Props } from './radioV2.types'
+import { SelectorV2Size } from '../selectorV2.types'
 
 export const isRadioElement = (
     child: React.ReactElement,
@@ -26,7 +27,7 @@ export const getRadioTextColor = (
 }
 export const getRadioTextProps = (
     radioTokens: RadioV2TokensType,
-    size: RadioV2Size,
+    size: SelectorV2Size,
     isDisabled: boolean,
     error: boolean,
     isSubtext: boolean = false

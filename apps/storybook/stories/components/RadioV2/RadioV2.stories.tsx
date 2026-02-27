@@ -7,11 +7,9 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
 
-import RadioV2 from '../../../../../packages/blend/lib/components/RadioV2/RadioV2'
-import {
-    RadioV2Size,
-    type RadioV2Props,
-} from '../../../../../packages/blend/lib/components/RadioV2/radioV2.types'
+import RadioV2 from '../../../../../packages/blend/lib/components/SelectorV2/RadioV2/RadioV2'
+import { type RadioV2Props } from '../../../../../packages/blend/lib/components/SelectorV2/RadioV2/radioV2.types'
+import { SelectorV2Size } from '../../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 
 type RadioV2Slot = NonNullable<RadioV2Props['slot']>
 
@@ -65,13 +63,13 @@ A next-generation radio control with improved accessibility, theming, and conten
 ## Usage
 
 \`\`\`tsx
-import RadioV2, { RadioV2Size } from '@juspay/blend-design-system/RadioV2';
+import RadioV2, { SelectorV2Size } from '@juspay/blend-design-system/RadioV2';
 
 const [checked, setChecked] = useState(false);
 
 <RadioV2
   label="Option A"
-  size={RadioV2Size.MEDIUM}
+  size={SelectorV2Size.MD}
   checked={checked}
   onChange={() => setChecked(!checked)}
   slot={<Hash size={16} /> }
@@ -93,7 +91,7 @@ const [checked, setChecked] = useState(false);
         },
         size: {
             control: 'select',
-            options: Object.values(RadioV2Size),
+            options: Object.values(SelectorV2Size),
             description: 'Size variant of the radio',
         },
         checked: {
@@ -156,7 +154,7 @@ export const Default: Story = {
     args: {
         label: 'Option A',
         subLabel: undefined,
-        size: RadioV2Size.MEDIUM,
+        size: SelectorV2Size.MD,
         checked: false,
         disabled: false,
         required: false,
@@ -187,7 +185,7 @@ export const Sizes: Story = {
                 >
                     <RadioV2
                         label="Small radio"
-                        size={RadioV2Size.SMALL}
+                        size={SelectorV2Size.SM}
                         checked={states.sm}
                         onChange={() =>
                             setStates((prev: { sm: boolean; md: boolean }) => ({
@@ -198,7 +196,7 @@ export const Sizes: Story = {
                     />
                     <RadioV2
                         label="Medium radio"
-                        size={RadioV2Size.MEDIUM}
+                        size={SelectorV2Size.MD}
                         checked={states.md}
                         onChange={() =>
                             setStates((prev: { sm: boolean; md: boolean }) => ({

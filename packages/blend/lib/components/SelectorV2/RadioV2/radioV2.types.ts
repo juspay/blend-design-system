@@ -1,23 +1,13 @@
-import type { ReactElement, ReactNode } from 'react'
+import type { InputHTMLAttributes, ReactElement, ReactNode } from 'react'
 import { RadioV2TokensType } from './radioV2.tokens'
 import { CSSObject } from 'styled-components'
-
-export enum RadioV2Size {
-    SMALL = 'sm',
-    MEDIUM = 'md',
-}
+import { SelectorV2Size } from '../selectorV2.types'
 
 export enum RadioV2CheckedState {
     CHECKED = 'checked',
     UNCHECKED = 'unchecked',
 }
 
-export enum RadioV2InteractionState {
-    DEFAULT = 'default',
-    HOVER = 'hover',
-    DISABLED = 'disabled',
-    ERROR = 'error',
-}
 export type RadioV2State = 'default' | 'hover' | 'disabled' | 'error'
 export type RadioV2IndicatorState = 'active' | 'inactive'
 
@@ -26,7 +16,7 @@ export type RadioV2ContentProps = {
     disabled: boolean
     error: boolean
     required: boolean
-    size: RadioV2Size
+    size: SelectorV2Size
     label?: string
     subLabel?: string
     slot?: {
@@ -42,25 +32,28 @@ export type RadioV2ContentProps = {
 export type RadioV2Props = {
     id?: string
     value?: string
-    checked?: boolean
     defaultChecked?: boolean
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onCheckedChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     disabled?: boolean
+    name?: string
+    checked?: boolean
     required?: boolean
     error?: boolean
-    size?: RadioV2Size
     label?: string
     subLabel?: string
+    size?: SelectorV2Size
     slot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
     }
-    name?: string
     maxLength?: {
         label?: number
         subLabel?: number
     }
-}
+} & Omit<
+    InputHTMLAttributes<HTMLInputElement>,
+    'className' | 'style' | 'slot' | 'onChange' | 'size' | 'maxLength'
+>
 
 export type RadioV2GroupProps = {
     id?: string

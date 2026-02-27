@@ -38,11 +38,12 @@
 ## Usage Example
 
 ```tsx
-import RadioV2, { RadioV2Size } from '@juspay/blend-design-system/RadioV2'
+import { RadioV2 } from '@juspay/blend-design-system'
+import { SelectorV2Size } from '@juspay/blend-design-system/SelectorV2'
 ;<RadioV2
     label="Option A"
     subLabel="Extra info"
-    size={RadioV2Size.MEDIUM}
+    size={SelectorV2Size.MD}
     checked={isSelected}
     onChange={(e) => setSelected(e.target.checked)}
     slot={{ slot: <Icon />, maxHeight: 16 }}
@@ -62,9 +63,8 @@ export type RadioV2Props = {
     disabled?: boolean
     required?: boolean
     error?: boolean
-    size?: RadioV2Size
+    size?: SelectorV2Size
     label?: string
-    children?: React.ReactNode
     subLabel?: string
     slot?: { slot: ReactElement; maxHeight?: CSSObject['maxHeight'] }
     name?: string
@@ -83,23 +83,49 @@ Representative token areas that style RadioV2:
 
 ```typescript
 type RadioV2TokensType = {
-  gap: CSSObject['gap']
-  group: { gap: CSSObject['gap'] }
-  radio: {
-    indicator: {
-      active: { backgroundColor: Record<RadioV2State, string>; borderColor: Record<RadioV2State, string> }
-      inactive: { backgroundColor: Record<RadioV2State, string>; borderColor: Record<RadioV2State, string> }
-    }
-    activeIndicator: { active: { backgroundColor: Record<'default' | 'disabled', string> } }
-    height: Record<RadioV2Size, CSSObject['height']>
-    borderWidth: Record<RadioV2IndicatorState, Record<RadioV2State, number>>
-  }
-  content: {
     gap: CSSObject['gap']
-    label: { gap: CSSObject['gap']; color: Record<RadioV2InteractionState, string>; fontSize: Record<RadioV2Size, string>; ... }
-    subLabel: { color: Record<RadioV2InteractionState, string>; ... }
-    required: { color: string }
-  }
+    group: { gap: CSSObject['gap'] }
+    radio: {
+        indicator: {
+            [k in RadioV2IndicatorState]: {
+                backgroundColor: Record<
+                    RadioV2State,
+                    CSSObject['backgroundColor']
+                >
+                borderColor: Record<RadioV2State, CSSObject['borderColor']>
+            }
+        }
+        activeIndicator: {
+            active: {
+                backgroundColor: Record<
+                    Exclude<RadioV2State, 'hover' | 'error'>,
+                    CSSObject['backgroundColor']
+                >
+            }
+        }
+        height: Record<SelectorV2Size, CSSObject['height']>
+        borderWidth: Record<RadioV2IndicatorState, Record<RadioV2State, number>>
+    }
+    content: {
+        gap: CSSObject['gap']
+        label: {
+            gap: CSSObject['gap']
+            color: Record<SelectorV2InteractionState, CSSObject['color']>
+            fontSize: Record<SelectorV2Size, CSSObject['fontSize']>
+            fontWeight: Record<SelectorV2Size, CSSObject['fontWeight']>
+            lineHeight: Record<SelectorV2Size, CSSObject['lineHeight']>
+            slot: {
+                maxHeight: Record<SelectorV2Size, CSSObject['maxHeight']>
+            }
+        }
+        subLabel: {
+            color: Record<SelectorV2InteractionState, CSSObject['color']>
+            fontSize: Record<SelectorV2Size, CSSObject['fontSize']>
+            fontWeight: Record<SelectorV2Size, CSSObject['fontWeight']>
+            lineHeight: Record<SelectorV2Size, CSSObject['lineHeight']>
+        }
+        required: { color: CSSObject['color'] }
+    }
 }
 ```
 

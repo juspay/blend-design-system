@@ -5,7 +5,7 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import RadioV2 from './RadioV2'
 import type { RadioV2TokensType } from './radioV2.tokens'
-import { RadioV2Size } from './radioV2.types'
+import { SelectorV2Size } from '../selectorV2.types'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { useErrorShake } from '../../common/useErrorShake'
@@ -143,7 +143,9 @@ const RadioGroupV2 = forwardRef<HTMLDivElement, RadioV2GroupProps>(
                 return React.cloneElement(child, {
                     name,
                     checked: isChecked,
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                    onCheckedChange: (
+                        e: React.ChangeEvent<HTMLInputElement>
+                    ) => {
                         if (e.target.checked) {
                             handleGroupChange(childValue)
                         }
@@ -215,7 +217,7 @@ const GroupLabel: React.FC<{
 }> = ({ children, radioTokens, required, id }) => {
     const textProps = getRadioTextProps(
         radioTokens,
-        RadioV2Size.MEDIUM,
+        SelectorV2Size.MD,
         false,
         false
     )
