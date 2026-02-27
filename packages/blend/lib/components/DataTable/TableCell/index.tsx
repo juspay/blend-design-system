@@ -35,7 +35,6 @@ const StyledTableCell = styled.td<{
             ? $customBackgroundColor
             : FOUNDATION_THEME.colors.gray[0]} !important;
     box-sizing: border-box;
-    max-width: 0;
     ${({ $isFirstRow }) => $isFirstRow && 'border-top: none'}
 `
 
@@ -125,6 +124,8 @@ const TruncatedTextWithTooltip = ({
             ref={textRef}
             style={{
                 display: 'block',
+                width: '100%',
+                minWidth: 0,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
@@ -475,6 +476,8 @@ const TableCell = forwardRef<
                         style={{
                             width: '100%',
                             minWidth: 0,
+                            maxWidth: '100%',
+                            overflow: 'hidden',
                         }}
                     >
                         {(
@@ -545,6 +548,7 @@ const TableCell = forwardRef<
                 <Block
                     style={{
                         width: '100%',
+                        minWidth: 0,
                         minHeight: `${FOUNDATION_THEME.unit[52]}`,
                         display: 'flex',
                         alignItems: 'center',
