@@ -6,8 +6,9 @@ export const getChartV2DarkTokens = (
 ): ResponsiveChartV2Tokens => {
     return {
         sm: {
-            border: `1px solid ${foundationToken.colors.gray[150]}`,
-            backgroundColor: foundationToken.colors.gray[0],
+            // Dark surface similar to shadcn dark charts (card on dark bg)
+            border: `1px solid ${foundationToken.colors.gray[800]}`,
+            backgroundColor: foundationToken.colors.gray[950],
             borderRadius: foundationToken.border.radius[12],
             boxShadow: foundationToken.shadows.sm,
             header: {
@@ -17,8 +18,8 @@ export const getChartV2DarkTokens = (
                     bottom: foundationToken.unit[8],
                     left: foundationToken.unit[16],
                 },
-                backgroundColor: foundationToken.colors.gray[25],
-                borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                backgroundColor: foundationToken.colors.gray[900],
+                borderBottom: `1px solid ${foundationToken.colors.gray[800]}`,
             },
             legends: {
                 gap: foundationToken.unit[16],
@@ -35,16 +36,18 @@ export const getChartV2DarkTokens = (
                             fontSize: foundationToken.font.fontSize[12],
                             fontWeight: foundationToken.font.weight[500],
                             lineHeight: foundationToken.font.lineHeight[18],
-                            color: foundationToken.colors.gray[700],
+                            // Primary legend label – light text on dark
+                            color: foundationToken.colors.gray[100],
                         },
                         value: {
                             fontSize: foundationToken.font.fontSize[12],
                             fontWeight: foundationToken.font.weight[500],
                             lineHeight: foundationToken.font.lineHeight[18],
-                            color: foundationToken.colors.gray[500],
+                            // Secondary legend value – muted light text
+                            color: foundationToken.colors.gray[400],
                         },
                         separator: {
-                            color: foundationToken.colors.gray[500],
+                            color: foundationToken.colors.gray[700],
                             width: foundationToken.unit[1],
                             height: foundationToken.unit[9],
                         },
@@ -68,11 +71,11 @@ export const getChartV2DarkTokens = (
                     },
                     line: {
                         width: 1,
-                        color: foundationToken.colors.gray[150],
+                        color: foundationToken.colors.gray[800],
                     },
                     gridLine: {
                         width: 0,
-                        color: foundationToken.colors.gray[150],
+                        color: foundationToken.colors.gray[800],
                     },
                 },
                 yAxis: {
@@ -90,18 +93,18 @@ export const getChartV2DarkTokens = (
                     },
                     line: {
                         width: 0,
-                        color: foundationToken.colors.gray[150],
+                        color: foundationToken.colors.gray[800],
                     },
                     gridLine: {
                         width: 1,
-                        color: foundationToken.colors.gray[150],
+                        color: foundationToken.colors.gray[800],
                     },
                 },
             },
         },
         lg: {
-            border: `1px solid ${foundationToken.colors.gray[150]}`,
-            backgroundColor: foundationToken.colors.gray[0],
+            border: `1px solid ${foundationToken.colors.gray[800]}`,
+            backgroundColor: foundationToken.colors.gray[950],
             borderRadius: foundationToken.border.radius[12],
             boxShadow: foundationToken.shadows.sm,
             header: {
@@ -111,8 +114,8 @@ export const getChartV2DarkTokens = (
                     bottom: foundationToken.unit[8],
                     left: foundationToken.unit[16],
                 },
-                backgroundColor: foundationToken.colors.gray[25],
-                borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                backgroundColor: foundationToken.colors.gray[900],
+                borderBottom: `1px solid ${foundationToken.colors.gray[800]}`,
             },
             legends: {
                 gap: foundationToken.unit[16],
@@ -129,16 +132,16 @@ export const getChartV2DarkTokens = (
                             fontSize: foundationToken.font.fontSize[12],
                             fontWeight: foundationToken.font.weight[500],
                             lineHeight: foundationToken.font.lineHeight[18],
-                            color: foundationToken.colors.gray[700],
+                            color: foundationToken.colors.gray[100],
                         },
                         value: {
                             fontSize: foundationToken.font.fontSize[12],
                             fontWeight: foundationToken.font.weight[500],
                             lineHeight: foundationToken.font.lineHeight[18],
-                            color: foundationToken.colors.gray[500],
+                            color: foundationToken.colors.gray[400],
                         },
                         separator: {
-                            color: foundationToken.colors.gray[500],
+                            color: foundationToken.colors.gray[700],
                             width: foundationToken.unit[1],
                             height: foundationToken.unit[9],
                         },
@@ -162,11 +165,11 @@ export const getChartV2DarkTokens = (
                     },
                     line: {
                         width: 1,
-                        color: foundationToken.colors.gray[150],
+                        color: foundationToken.colors.gray[800],
                     },
                     gridLine: {
                         width: 0,
-                        color: foundationToken.colors.gray[150],
+                        color: foundationToken.colors.gray[800],
                     },
                 },
                 yAxis: {
@@ -184,11 +187,11 @@ export const getChartV2DarkTokens = (
                     },
                     line: {
                         width: 0,
-                        color: foundationToken.colors.gray[150],
+                        color: foundationToken.colors.gray[800],
                     },
                     gridLine: {
                         width: 1,
-                        color: foundationToken.colors.gray[150],
+                        color: foundationToken.colors.gray[800],
                     },
                 },
             },

@@ -16,6 +16,9 @@ const ChartV2NoData = ({
 
     return (
         <Block
+            data-chart="No-Data"
+            role="status"
+            aria-live="polite"
             display="flex"
             flexDirection="column"
             alignItems="center"

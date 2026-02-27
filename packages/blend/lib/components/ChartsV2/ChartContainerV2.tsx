@@ -7,6 +7,10 @@ const ChartContainerV2 = ({ children }: ChartV2ContainerProps) => {
     const chartTokens = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
     return (
         <Block
+            as="section"
+            role="group"
+            aria-roledescription="Chart container"
+            data-chart="Chart-Container"
             display="flex"
             flexDirection="column"
             border={chartTokens.border}

@@ -44,7 +44,7 @@ export const customLegendItemsForPie: ChartV2CustomLegendItem[] = [
 
 export const columnChartOptions = {
     xAxis: { type: 'datetime' as const },
-    legend: { enabled: false },
+
     series: [
         {
             type: 'column' as const,
@@ -67,7 +67,6 @@ export const columnChartOptions = {
 
 export const lineChartOptions = {
     xAxis: { type: 'datetime' as const },
-    legend: { enabled: true, align: 'left', verticalAlign: 'top' },
     series: [
         {
             type: 'line' as const,
@@ -90,7 +89,6 @@ export const lineChartOptions = {
 
 export const areaChartOptions = {
     xAxis: { type: 'datetime' as const },
-    legend: { enabled: true, align: 'left', verticalAlign: 'top' },
     series: [
         {
             type: 'area' as const,
@@ -113,7 +111,6 @@ export const areaChartOptions = {
 
 export const scatterChartOptions = {
     xAxis: { type: 'datetime' as const },
-    legend: { enabled: true, align: 'left', verticalAlign: 'top' },
     series: [
         {
             type: 'scatter' as const,
@@ -178,11 +175,7 @@ export const sankeyChartOptions = {
 
 export const lineColumnChartOptions = {
     xAxis: { type: 'datetime' as const },
-    legend: {
-        enabled: true,
-        align: 'left',
-        verticalAlign: 'top',
-    },
+
     plotOptions: {
         column: {
             stacking: 'normal' as const,
