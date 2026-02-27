@@ -155,7 +155,7 @@ describe('RadioV2 Component', () => {
                 <RadioV2
                     label="Controlled Radio"
                     checked={true}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -186,7 +186,7 @@ describe('RadioV2 Component', () => {
                 <RadioV2
                     label="Clickable Radio"
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -204,7 +204,7 @@ describe('RadioV2 Component', () => {
                     label="Disabled Radio"
                     disabled
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
