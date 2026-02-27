@@ -42,6 +42,7 @@ type CalendarGridProps = {
     resetScrollPosition?: number // Used to trigger scroll reset when popover reopens
     timezone?: string
     isSingleDatePicker?: boolean
+    maxYearOffset?: number
 }
 
 const CONTAINER_HEIGHT = 340
@@ -179,13 +180,18 @@ const CalendarSkeleton = ({
 function generateMonthsList(
     today: Date,
     hideFutureDates: boolean = false,
-    hidePastDates: boolean = false
+    hidePastDates: boolean = false,
+    maxYearOffset?: number
 ): { month: number; year: number }[] {
     const months = []
     const currentYear = today.getFullYear()
     const currentMonth = today.getMonth()
     const startYear = DATE_RANGE_PICKER_CONSTANTS.MIN_YEAR
-    const endYear = currentYear + 5
+    const endYear =
+        currentYear +
+        (maxYearOffset && maxYearOffset >= 0
+            ? maxYearOffset
+            : DATE_RANGE_PICKER_CONSTANTS.MAX_YEAR_OFFSET)
 
     for (let year = startYear; year <= endYear; year++) {
         for (let month = 0; month <= 11; month++) {
@@ -231,6 +237,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             resetScrollPosition,
             timezone,
             isSingleDatePicker,
+            maxYearOffset,
         },
         ref
     ) => {
@@ -251,8 +258,14 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         }, [])
 
         const months = useMemo(
-            () => generateMonthsList(today, hideFutureDates, hidePastDates),
-            [today, hideFutureDates, hidePastDates]
+            () =>
+                generateMonthsList(
+                    today,
+                    hideFutureDates,
+                    hidePastDates,
+                    maxYearOffset
+                ),
+            [today, hideFutureDates, hidePastDates, maxYearOffset]
         )
 
         const dayNames = useMemo(() => getDayNames(), [])

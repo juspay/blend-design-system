@@ -301,10 +301,16 @@ const DataTable = forwardRef(
         }, [serverSidePagination, isLoading, internalLoading])
 
         const [activeId, setActiveId] = useState<string | null>(null)
+        const lastReorderedColumnsRef = useRef<ColumnDefinition<T>[] | null>(
+            null
+        )
         const [focusedCell, setFocusedCell] = useState<{
             rowIndex: number
             colIndex: number
         } | null>(null)
+        const [measuredFrozenWidths, setMeasuredFrozenWidths] = useState<
+            number[]
+        >([])
 
         const sensors = useSensors(
             useSensor(PointerSensor),
@@ -340,6 +346,7 @@ const DataTable = forwardRef(
                         newIndex
                     )
                     setVisibleColumns(reorderedColumns)
+                    lastReorderedColumnsRef.current = reorderedColumns
                 }
             }
         }
@@ -348,9 +355,33 @@ const DataTable = forwardRef(
             const { active, over } = event
 
             if (over && active.id !== over.id) {
-                onColumnReorder?.(visibleColumns as ColumnDefinition<T>[])
+                const oldIndex = visibleColumns.findIndex(
+                    (col) => String(col.field) === active.id
+                )
+                const newIndex = visibleColumns.findIndex(
+                    (col) => String(col.field) === over.id
+                )
+
+                if (
+                    oldIndex !== -1 &&
+                    newIndex !== -1 &&
+                    oldIndex >= columnFreeze &&
+                    newIndex >= columnFreeze
+                ) {
+                    const reorderedColumns = arrayMove(
+                        visibleColumns,
+                        oldIndex,
+                        newIndex
+                    )
+                    onColumnReorder?.(reorderedColumns as ColumnDefinition<T>[])
+                }
+            } else if (lastReorderedColumnsRef.current) {
+                onColumnReorder?.(
+                    lastReorderedColumnsRef.current as ColumnDefinition<T>[]
+                )
             }
 
+            lastReorderedColumnsRef.current = null
             setActiveId(null)
         }
 
@@ -1548,6 +1579,12 @@ const DataTable = forwardRef(
                                                 ) => React.CSSProperties
                                             }
                                             columnFreeze={effectiveColumnFreeze}
+                                            measuredFrozenWidths={
+                                                measuredFrozenWidths
+                                            }
+                                            onFrozenWidthsMeasured={
+                                                setMeasuredFrozenWidths
+                                            }
                                         />
                                         {currentData.length > 0 && (
                                             <TableBodyComponent
@@ -1588,6 +1625,9 @@ const DataTable = forwardRef(
                                                 }
                                                 columnFreeze={
                                                     effectiveColumnFreeze
+                                                }
+                                                measuredFrozenWidths={
+                                                    measuredFrozenWidths
                                                 }
                                                 focusedCell={focusedCell}
                                                 onCellFocus={(

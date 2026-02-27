@@ -7,11 +7,9 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
 
-import { SwitchV2 } from '../../../../../packages/blend/lib/components/SwitchV2'
-import {
-    SwitchV2Size,
-    type SwitchV2Props,
-} from '../../../../../packages/blend/lib/components/SwitchV2/switchV2.types'
+import { SwitchV2 } from '../../../../../packages/blend/lib/components/SelectorV2/SwitchV2'
+import { type SwitchV2Props } from '../../../../../packages/blend/lib/components/SelectorV2/SwitchV2/switchV2.types'
+import { SelectorV2Size as SwitchV2Size } from '../../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 
 type SwitchV2Slot = NonNullable<SwitchV2Props['slot']>
 
@@ -124,7 +122,7 @@ const [enabled, setEnabled] = useState(false);
             description:
                 'Maximum lengths for label and subLabel before truncation + tooltip',
         },
-        onChange: {
+        onCheckedChange: {
             action: 'changed',
             description: 'Callback fired when the switch toggles',
         },
@@ -143,7 +141,7 @@ export const Default: Story = {
             <SwitchV2
                 {...args}
                 checked={checked}
-                onChange={(next: boolean) => setChecked(next)}
+                onCheckedChange={(next: boolean) => setChecked(next)}
                 slot={getSlotContent(args?.slot as string | React.ReactNode)}
             />
         )
@@ -184,7 +182,7 @@ export const Sizes: Story = {
                         label="Small switch"
                         size={SwitchV2Size.SM}
                         checked={states.sm}
-                        onChange={(next: boolean) =>
+                        onCheckedChange={(next: boolean) =>
                             setStates((prev) => ({ ...prev, sm: next }))
                         }
                     />
@@ -192,7 +190,7 @@ export const Sizes: Story = {
                         label="Medium switch"
                         size={SwitchV2Size.MD}
                         checked={states.md}
-                        onChange={(next: boolean) =>
+                        onCheckedChange={(next: boolean) =>
                             setStates((prev) => ({ ...prev, md: next }))
                         }
                     />
@@ -234,7 +232,7 @@ export const WithSlotAndSubLabel: Story = {
                     label="Marketing emails"
                     subLabel="Receive product updates and announcements"
                     checked={checked}
-                    onChange={setChecked}
+                    onCheckedChange={setChecked}
                     slot={{ slot: <Bell size={16} />, maxHeight: 16 }}
                 />
             )

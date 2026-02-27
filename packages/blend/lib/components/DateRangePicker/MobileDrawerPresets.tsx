@@ -39,6 +39,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
     applyDisabledMessage,
     disableFutureDates = false,
     disablePastDates = false,
+    maxYearOffset,
 }) => {
     const [isCustomExpanded, setIsCustomExpanded] = useState(
         showCustomDropdownOnly
@@ -58,6 +59,7 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
             isDisabled={isDisabled}
             disableFutureDates={disableFutureDates}
             disablePastDates={disablePastDates}
+            maxYearOffset={maxYearOffset}
         />
     )
 

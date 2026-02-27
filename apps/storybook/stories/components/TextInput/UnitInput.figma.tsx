@@ -145,7 +145,7 @@ figma.connect(
             },
             {
                 name: 'Storybook',
-                url: 'https://juspay.design/storybook/?path=/docs/components-inputs-unitinput--docs',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-unitinput--docs',
             },
         ],
     }

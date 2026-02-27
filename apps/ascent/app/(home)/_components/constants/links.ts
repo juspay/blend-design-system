@@ -11,7 +11,8 @@ export const EXTERNAL_LINKS = {
     // Local video: Place your video file in public/videos/ and use path like '/videos/launch-video.mp4'
     // YouTube: 'https://www.youtube.com/watch?v=VIDEO_ID'
     // Vimeo: 'https://vimeo.com/VIDEO_ID'
-    launchVideo: '/videos/launch-video.mp4',
+    launchVideo:
+        'https://firebasestorage.googleapis.com/v0/b/storybook-452807.firebasestorage.app/o/videos%2Fpublic%2Fdemos%2Flaunch_video.mp4?alt=media&token=bfeec020-b0e9-4216-842a-21db170f1e33',
 } as const
 
 /**

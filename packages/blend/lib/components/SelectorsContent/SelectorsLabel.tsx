@@ -13,6 +13,7 @@ const SelectorsLabel = ({
     label,
     tokens,
     maxLength,
+    elementType = 'label',
 }: SelectorsLabelProps) => {
     if (!label) return null
 
@@ -39,7 +40,7 @@ const SelectorsLabel = ({
                 ],
                 userSelect: 'none',
             }}
-            data-element="switch-label"
+            data-element={elementType}
             data-id={label}
             data-status={disabled ? 'disabled' : 'enabled'}
         >

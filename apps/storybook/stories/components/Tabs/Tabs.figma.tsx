@@ -71,7 +71,7 @@ figma.connect(
             },
             {
                 name: 'Storybook',
-                url: 'https://juspay.design/storybook/?path=/docs/components-tabs--docs',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-tabs--docs',
             },
         ],
     }
@@ -171,7 +171,7 @@ figma.connect(
             },
             {
                 name: 'Storybook',
-                url: 'https://juspay.design/storybook/?path=/docs/components-tabs--docs',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-tabs--docs',
             },
         ],
     }

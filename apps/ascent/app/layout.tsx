@@ -1,7 +1,11 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { METADATA_CONFIG } from '@/lib/config'
+import { GoogleAnalytics } from '@/app/components/GoogleAnalytics'
 import './globals.css'
+
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -52,6 +56,23 @@ export default function RootLayout({
                 suppressHydrationWarning
             >
                 {children}
+                {GA_MEASUREMENT_ID ? (
+                    <>
+                        <Script
+                            src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+                            strategy="afterInteractive"
+                        />
+                        <Script id="ga4-config" strategy="afterInteractive">
+                            {`
+                                window.dataLayer = window.dataLayer || [];
+                                function gtag(){dataLayer.push(arguments);}
+                                gtag('js', new Date());
+                                gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: true });
+                            `}
+                        </Script>
+                        <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} />
+                    </>
+                ) : null}
             </body>
         </html>
     )

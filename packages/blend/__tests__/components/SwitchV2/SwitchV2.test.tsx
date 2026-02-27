@@ -1,8 +1,8 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
-import SwitchV2 from '../../../lib/components/SwitchV2/SwitchV2'
-import { SwitchV2Size } from '../../../lib/components/SwitchV2/switchV2.types'
+import SwitchV2 from '../../../lib/components/SelectorV2/SwitchV2/SwitchV2'
+import { SelectorV2Size } from '../../../lib/components/SelectorV2/selectorV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('SwitchV2 Component', () => {
@@ -127,7 +127,7 @@ describe('SwitchV2 Component', () => {
             render(
                 <SwitchV2
                     label="Small Switch"
-                    size={SwitchV2Size.SM}
+                    size={SelectorV2Size.SM}
                     checked={false}
                 />
             )
@@ -143,7 +143,7 @@ describe('SwitchV2 Component', () => {
             expect(switchElement).toBeInTheDocument()
         })
 
-        it.each([SwitchV2Size.SM, SwitchV2Size.MD])(
+        it.each([SelectorV2Size.SM, SelectorV2Size.MD])(
             'renders %s size correctly',
             (size) => {
                 const { unmount } = render(
@@ -166,7 +166,7 @@ describe('SwitchV2 Component', () => {
                 <SwitchV2
                     label="Controlled Switch"
                     checked={true}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -196,7 +196,7 @@ describe('SwitchV2 Component', () => {
                 <SwitchV2
                     label="Clickable Switch"
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -213,7 +213,7 @@ describe('SwitchV2 Component', () => {
                 <SwitchV2
                     label="Toggle Switch"
                     checked={true}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -230,7 +230,7 @@ describe('SwitchV2 Component', () => {
                     label="Disabled Switch"
                     disabled
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -396,7 +396,7 @@ describe('SwitchV2 Component', () => {
                 <SwitchV2
                     label="Rapid Click Switch"
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -455,9 +455,9 @@ describe('SwitchV2 Component', () => {
                 <SwitchV2
                     label="Complete Switch"
                     subLabel="Complete description"
-                    size={SwitchV2Size.MD}
+                    size={SelectorV2Size.MD}
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                     required
                     error
                     slot={{ slot: <MockIcon />, maxHeight: 16 }}

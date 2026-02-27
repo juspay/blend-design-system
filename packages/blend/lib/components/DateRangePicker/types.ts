@@ -337,6 +337,7 @@ export type DateRangePickerProps = {
      * @see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
      */
     timezone?: string
+    maxYearOffset?: number
 }
 
 export type PresetItemProps = {
@@ -379,6 +380,7 @@ export type DatePickerComponentProps = {
     isDisabled?: boolean
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    maxYearOffset?: number
 }
 
 export type MobileDrawerPresetsProps = {
@@ -406,4 +408,5 @@ export type MobileDrawerPresetsProps = {
     applyDisabledMessage?: string
     disableFutureDates?: boolean
     disablePastDates?: boolean
+    maxYearOffset?: number
 }

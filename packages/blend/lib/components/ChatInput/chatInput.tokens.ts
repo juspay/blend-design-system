@@ -71,10 +71,7 @@ export type ChatInputTokensType = Readonly<{
             focus: CSSObject['border']
         }
         borderRadius: CSSObject['borderRadius']
-        paddingTop: CSSObject['paddingTop']
-        paddingRight: CSSObject['paddingRight']
-        paddingBottom: CSSObject['paddingBottom']
-        paddingLeft: CSSObject['paddingLeft']
+        padding: CSSObject['padding']
         gap: CSSObject['gap']
         minHeight: CSSObject['minHeight']
         transition: CSSObject['transition']
@@ -96,8 +93,10 @@ export type ChatInputTokensType = Readonly<{
         color: CSSObject['color']
         fontSize: CSSObject['fontSize']
         lineHeight: CSSObject['lineHeight']
-        paddingX: CSSObject['padding']
-        paddingY: CSSObject['padding']
+        paddingTop: CSSObject['paddingTop']
+        paddingRight: CSSObject['paddingRight']
+        paddingBottom: CSSObject['paddingBottom']
+        paddingLeft: CSSObject['paddingLeft']
         border: CSSObject['border']
         borderRadius: CSSObject['borderRadius']
         placeholder: {
@@ -116,6 +115,7 @@ export type ChatInputTokensType = Readonly<{
         paddingY: CSSObject['padding']
         maxHeight: CSSObject['maxHeight']
         overflowY: CSSObject['overflowY']
+        margin: CSSObject['margin']
     }
 
     bottomActions: {
@@ -165,6 +165,8 @@ export type ChatInputTokensType = Readonly<{
         scrollContainer: {
             overflowY: CSSObject['overflowY']
             maxHeightOffset: number
+            backgroundColor: CSSObject['backgroundColor']
+            scrollbarColor: string
         }
         item: {
             backgroundColor: {
@@ -260,17 +262,14 @@ export const getChatInputTokens = (
                     focus: `1px solid ${foundationToken.colors.primary[500]}`,
                 },
                 borderRadius: foundationToken.unit[12],
-                paddingTop: foundationToken.unit[12],
-                paddingRight: foundationToken.unit[12],
-                paddingBottom: foundationToken.unit[8],
-                paddingLeft: foundationToken.unit[12],
+                padding: foundationToken.unit[4],
                 gap: foundationToken.unit[8],
                 minHeight: '52px',
                 transition: 'all 0.2s ease',
                 boxShadow: {
                     default: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
                     hover: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
-                    focus: `0px 0px 0px 3px ${foundationToken.colors.primary[50]}`,
+                    focus: `0 2px 8px 0 ${foundationToken.colors.primary[50]}, 0 0 0 3px ${foundationToken.colors.primary[50]}`,
                 },
             },
 
@@ -285,8 +284,10 @@ export const getChatInputTokens = (
                 color: foundationToken.colors.gray[600],
                 fontSize: foundationToken.font.size.body.md.fontSize,
                 lineHeight: '1.5',
-                paddingX: foundationToken.unit[0],
-                paddingY: foundationToken.unit[0],
+                paddingTop: foundationToken.unit[12],
+                paddingRight: foundationToken.unit[12],
+                paddingBottom: foundationToken.unit[6],
+                paddingLeft: foundationToken.unit[12],
                 border: 'none',
                 borderRadius: foundationToken.unit[0],
                 placeholder: {
@@ -305,6 +306,7 @@ export const getChatInputTokens = (
                 paddingY: foundationToken.unit[8],
                 maxHeight: '140px',
                 overflowY: 'auto',
+                margin: foundationToken.unit[1],
             },
 
             bottomActions: {
@@ -354,6 +356,8 @@ export const getChatInputTokens = (
                 scrollContainer: {
                     overflowY: 'auto',
                     maxHeightOffset: 40,
+                    backgroundColor: foundationToken.colors.gray[0],
+                    scrollbarColor: `${foundationToken.colors.gray[300]} ${foundationToken.colors.gray[50]}`,
                 },
                 item: {
                     backgroundColor: {
@@ -441,17 +445,14 @@ export const getChatInputTokens = (
                     focus: `1px solid ${foundationToken.colors.primary[500]}`,
                 },
                 borderRadius: foundationToken.unit[12],
-                paddingTop: foundationToken.unit[12],
-                paddingRight: foundationToken.unit[12],
-                paddingBottom: foundationToken.unit[8],
-                paddingLeft: foundationToken.unit[12],
-                gap: foundationToken.unit[8],
+                padding: foundationToken.unit[4],
+                gap: foundationToken.unit[4],
                 minHeight: '52px',
                 transition: 'all 0.2s ease',
                 boxShadow: {
                     default: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
                     hover: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
-                    focus: `inset 0 0 0 3px ${foundationToken.colors.gray[50]}`,
+                    focus: `0 2px 8px 0 ${foundationToken.colors.primary[50]}, 0 0 0 3px ${foundationToken.colors.primary[50]}`,
                 },
             },
 
@@ -466,8 +467,10 @@ export const getChatInputTokens = (
                 color: foundationToken.colors.gray[600],
                 fontSize: '16px',
                 lineHeight: '1.5',
-                paddingX: foundationToken.unit[0],
-                paddingY: foundationToken.unit[0],
+                paddingTop: foundationToken.unit[16],
+                paddingRight: foundationToken.unit[12],
+                paddingBottom: foundationToken.unit[16],
+                paddingLeft: foundationToken.unit[12],
                 border: 'none',
                 borderRadius: foundationToken.unit[0],
                 placeholder: {
@@ -486,6 +489,7 @@ export const getChatInputTokens = (
                 paddingY: foundationToken.unit[8],
                 maxHeight: '140px',
                 overflowY: 'auto',
+                margin: foundationToken.unit[1],
             },
 
             bottomActions: {
@@ -535,6 +539,8 @@ export const getChatInputTokens = (
                 scrollContainer: {
                     overflowY: 'auto',
                     maxHeightOffset: 40,
+                    backgroundColor: foundationToken.colors.gray[0],
+                    scrollbarColor: `${foundationToken.colors.gray[300]} ${foundationToken.colors.gray[50]}`,
                 },
                 item: {
                     backgroundColor: {
@@ -551,7 +557,7 @@ export const getChatInputTokens = (
                     },
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: '500',
-                    paddingX: foundationToken.unit[8],
+                    paddingX: foundationToken.unit[16],
                     paddingY: foundationToken.unit[6],
                     border: 'none',
                     transition: 'all 0.2s ease',

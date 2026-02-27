@@ -134,9 +134,9 @@ function App() {
 
 ## 📖 Documentation
 
-- **[Component Documentation](https://juspay.design/)** - Complete component API and examples
-- **[Storybook](https://storybook.juspay.design/)** - Interactive component playground
-- **[Design Guidelines](https://juspay.design/guidelines)** - Design principles and usage guidelines
+- **[Component Documentation](https://blend.juspay.design/)** - Complete component API and examples
+- **[Storybook](https://blend.juspay.design/storybook/)** - Interactive component playground
+- **[Design Guidelines](https://blend.juspay.design/guidelines)** - Design principles and usage guidelines
 
 ## 🛠️ Development
 
@@ -167,10 +167,10 @@ MIT © [Juspay Technologies](https://juspay.in)
 
 ## 🔗 Links
 
-- **Homepage**: [https://juspay.design/](https://juspay.design/)
+- **Homepage**: [https://blend.juspay.design/](https://blend.juspay.design/)
 - **Repository**: [https://github.com/juspay/blend-design-system](https://github.com/juspay/blend-design-system)
 - **Issues**: [https://github.com/juspay/blend-design-system/issues](https://github.com/juspay/blend-design-system/issues)
-- **Storybook**: [https://storybook.juspay.design/](https://storybook.juspay.design/)
+- **Storybook**: [https://blend.juspay.design/storybook/](https://blend.juspay.design/storybook/)
 
 ---
 
