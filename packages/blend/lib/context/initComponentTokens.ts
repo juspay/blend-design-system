@@ -55,6 +55,7 @@ import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInp
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
 import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -173,6 +174,9 @@ const initTokens = (
         CHECKBOXV2:
             componentTokens.CHECKBOXV2 ??
             getCheckboxV2Tokens(foundationTokens, theme),
+        RADIOV2:
+            componentTokens.RADIOV2 ??
+            getRadioV2Tokens(foundationTokens, theme),
     }
 }
 

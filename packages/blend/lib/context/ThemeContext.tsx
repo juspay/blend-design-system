@@ -143,6 +143,10 @@ import {
     getCheckboxV2Tokens,
     ResponsiveCheckboxV2Tokens,
 } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import {
+    getRadioV2Tokens,
+    ResponsiveRadioV2Tokens,
+} from '../components/SelectorV2/RadioV2/radioV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -199,6 +203,7 @@ export type ComponentTokenType = {
     TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
     CHARTSV2?: ResponsiveChartV2Tokens
     CHECKBOXV2?: ResponsiveCheckboxV2Tokens
+    RADIOV2?: ResponsiveRadioV2Tokens
 }
 
 type ThemeContextType = {
@@ -265,6 +270,7 @@ const ThemeContext = createContext<ThemeContextType>({
         CHARTSV2: getChartV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
         CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
