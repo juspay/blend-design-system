@@ -19,7 +19,6 @@ import {
     TagVariant,
     Tooltip,
     Menu,
-    FOUNDATION_THEME,
 } from '../../main'
 import Block from '../Primitives/Block/Block'
 import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
