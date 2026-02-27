@@ -364,6 +364,9 @@ export const renderChart = ({
                     <Tooltip
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
+                        {...(tooltip?.wrapperStyle && {
+                            wrapperStyle: tooltip.wrapperStyle,
+                        })}
                         cursor={{
                             strokeDasharray: '6 5',
                             stroke: FOUNDATION_THEME.colors.gray[400],
@@ -606,6 +609,9 @@ export const renderChart = ({
                         cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
+                        {...(tooltip?.wrapperStyle && {
+                            wrapperStyle: tooltip.wrapperStyle,
+                        })}
                         content={(props) =>
                             CustomTooltip({
                                 ...props,
@@ -712,6 +718,9 @@ export const renderChart = ({
                         cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
+                        {...(tooltip?.wrapperStyle && {
+                            wrapperStyle: tooltip.wrapperStyle,
+                        })}
                         content={(props) =>
                             CustomTooltip({
                                 ...props,
@@ -949,6 +958,9 @@ export const renderChart = ({
                     <Tooltip
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
+                        {...(tooltip?.wrapperStyle && {
+                            wrapperStyle: tooltip.wrapperStyle,
+                        })}
                         content={(props) =>
                             CustomTooltip({
                                 ...props,
@@ -1103,6 +1115,9 @@ export const renderChart = ({
                     <Tooltip
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
+                        {...(tooltip?.wrapperStyle && {
+                            wrapperStyle: tooltip.wrapperStyle,
+                        })}
                         cursor={{
                             strokeDasharray: '6 5',
                             stroke: FOUNDATION_THEME.colors.gray[400],
@@ -1353,6 +1368,9 @@ export const renderChart = ({
                         cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
+                        {...(tooltip?.wrapperStyle && {
+                            wrapperStyle: tooltip.wrapperStyle,
+                        })}
                         content={(props) =>
                             CustomTooltip({
                                 ...props,

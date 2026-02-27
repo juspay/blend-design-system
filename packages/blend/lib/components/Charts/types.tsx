@@ -103,6 +103,7 @@ export type YAxisConfig = AxisConfig
 export type TooltipConfig = {
     position?: { x?: number; y?: number }
     allowEscapeViewBox?: { x?: boolean; y?: boolean }
+    wrapperStyle?: React.CSSProperties
 }
 
 export type DotItemDotProps = {
