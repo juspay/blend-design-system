@@ -12,7 +12,7 @@ import Text from '../Text/Text'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
-import { handleKeyDown } from './utils'
+import { handleKeyDown, handleClientSideNavigation } from './utils'
 import { Tooltip, TooltipSide } from '../Tooltip'
 
 const StyledElement = styled(Block)<{
@@ -209,17 +209,33 @@ const NavItem = ({
         []
     )
 
-    const handleClick = () => {
+    const handleClick = (event?: React.MouseEvent<HTMLAnchorElement>) => {
         if (hasChildren && !iconOnlyMode) {
             setIsExpanded(!isExpanded)
-        } else {
-            setActiveItem(itemPath)
-            item.onClick?.()
         }
+        if (isLink && event && item.href) {
+            const handled = handleClientSideNavigation(
+                event,
+                item.href,
+                item.onClick ? () => item.onClick!() : undefined
+            )
+            if (handled) {
+                setActiveItem(itemPath)
+            }
+            return
+        }
+
+        setActiveItem(itemPath)
+        item.onClick?.()
     }
 
-    const Element = item.href ? 'a' : 'button'
-    const elementProps = item.href ? { href: item.href } : {}
+    const isLink = !!item.href
+    const elementProps = isLink
+        ? { href: item.href }
+        : {
+              role: 'button',
+              tabIndex: 0,
+          }
 
     const renderContent = () => {
         if (iconOnlyMode) {
@@ -319,14 +335,14 @@ const NavItem = ({
 
     const itemElement = (
         <StyledElement
-            as={Element}
-            $isLink={!!item.href}
+            as="a"
+            $isLink={isLink}
             $isActive={isActive}
             $tokens={tokens}
             $iconOnlyMode={iconOnlyMode}
             {...elementProps}
             ref={refCallback}
-            onClick={handleClick}
+            onClick={handleClick as React.MouseEventHandler<HTMLAnchorElement>}
             onKeyDown={(e: React.KeyboardEvent) =>
                 handleKeyDown(e, {
                     hasChildren,
@@ -338,7 +354,7 @@ const NavItem = ({
                 })
             }
             aria-expanded={
-                hasChildren && !iconOnlyMode
+                !isLink && hasChildren && !iconOnlyMode
                     ? isExpanded
                         ? true
                         : false
@@ -347,7 +363,7 @@ const NavItem = ({
             aria-label={item.label}
             tabIndex={0}
             data-sidebar-expanded={
-                hasChildren && !iconOnlyMode ? isExpanded : undefined
+                !isLink && hasChildren && !iconOnlyMode ? isExpanded : undefined
             }
             data-element="sidebar-sub-section"
             data-id={item.label}

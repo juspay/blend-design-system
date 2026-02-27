@@ -75,3 +75,39 @@ export const handleKeyDown = (
         onNavigate('up', index)
     }
 }
+
+export const handleClientSideNavigation = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    onNavigate?: (href: string) => void
+): boolean => {
+    if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey ||
+        event.currentTarget.target === '_blank'
+    ) {
+        return false
+    }
+
+    // Check if it's an external URL (starts with http://, https://, or //)
+    const isExternalUrl = /^https?:\/\//.test(href) || href.startsWith('//')
+
+    if (isExternalUrl) {
+        // For external URLs, let the browser handle the navigation normally
+        // Don't call event.preventDefault() - allow default anchor behavior
+        return false
+    }
+
+    event.preventDefault()
+    window.history.pushState({}, '', href)
+
+    if (onNavigate) {
+        onNavigate(href)
+    }
+
+    return true
+}

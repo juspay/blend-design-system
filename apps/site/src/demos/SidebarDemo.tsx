@@ -694,6 +694,7 @@ const SidebarDemo = () => {
                             setTopbarVisible(true)
                         }
                     },
+                    href: '/icons/?search=copy',
                     showOnMobile: true,
                 },
                 {
