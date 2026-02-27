@@ -21,6 +21,8 @@ import {
     scatterChartOptions,
 } from './ChartV2DemoConfigs'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const ColumnChartSection = () => {
     const [showChart, setShowChart] = useState(true)
@@ -701,8 +703,15 @@ const NoDataSection = () => {
 }
 
 const ChartV2Demo = () => {
+    const { theme } = useTheme()
+    const isDark = theme === Theme.DARK
+
     return (
-        <div className="space-y-12 p-8">
+        <div
+            className={`space-y-12 p-8 ${
+                isDark ? 'bg-gray-950 text-gray-50' : 'bg-white text-gray-900'
+            }`}
+        >
             <h2 className="text-2xl font-bold">📊 ChartV2 Playground</h2>
 
             <ColumnChartSection />
