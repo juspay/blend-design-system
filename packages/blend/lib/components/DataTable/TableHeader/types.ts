@@ -72,4 +72,8 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
         column: ColumnDefinition<T>,
         index: number
     ) => React.CSSProperties
+    /** Measured pixel widths of frozen columns (from ResizeObserver). Used for sticky left offset. */
+    measuredFrozenWidths?: number[]
+    /** Called when frozen column header cells are measured so left offsets can use content-based widths. */
+    onFrozenWidthsMeasured?: (widths: number[]) => void
 }

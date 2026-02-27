@@ -103,45 +103,33 @@ export const getPopoverAlignment = (
     return 'center'
 }
 
-export const getFrozenColumnStyles = (
+export function getFrozenLeftOffset(
     index: number,
-    columnFreeze: number,
+    _columnFreeze: number,
     enableRowExpansion: boolean,
     enableRowSelection: boolean,
     visibleColumns: ColumnDefinition<Record<string, unknown>>[],
     getColumnWidth: (
         column: ColumnDefinition<Record<string, unknown>>,
-        index: number
+        i: number
     ) => React.CSSProperties,
-    backgroundColor: string
-) => {
-    if (index >= columnFreeze) return { padding: '0 16px' }
-
-    const currentColumn = visibleColumns[index]
-    const currentColumnStyles = getColumnWidth(currentColumn, index)
-
-    let fixedWidth = 140
-    if (currentColumn.maxWidth) {
-        fixedWidth =
-            parseInt(currentColumn.maxWidth.replace(/px|%|em|rem/g, '')) || 140
-    } else if (currentColumn.minWidth) {
-        fixedWidth =
-            parseInt(currentColumn.minWidth.replace(/px|%|em|rem/g, '')) || 140
-    } else if (currentColumnStyles.maxWidth) {
-        fixedWidth =
-            parseInt(
-                String(currentColumnStyles.maxWidth).replace(/px|%|em|rem/g, '')
-            ) || 140
-    } else if (currentColumnStyles.minWidth) {
-        fixedWidth =
-            parseInt(
-                String(currentColumnStyles.minWidth).replace(/px|%|em|rem/g, '')
-            ) || 140
-    }
-
+    measuredFrozenWidths?: number[]
+): number {
     let leftOffset = 0
     if (enableRowExpansion) leftOffset += 50
     if (enableRowSelection) leftOffset += 60
+    if (index === 0) return leftOffset
+
+    if (
+        measuredFrozenWidths &&
+        measuredFrozenWidths.length >= index &&
+        measuredFrozenWidths.slice(0, index).every((w) => w > 0)
+    ) {
+        return (
+            leftOffset +
+            measuredFrozenWidths.slice(0, index).reduce((a, b) => a + b, 0)
+        )
+    }
 
     for (let i = 0; i < index; i++) {
         const prevColumn = visibleColumns[i]
@@ -166,8 +154,45 @@ export const getFrozenColumnStyles = (
         }
         leftOffset += columnWidth
     }
+    return leftOffset
+}
+
+export const getFrozenColumnStyles = (
+    index: number,
+    columnFreeze: number,
+    enableRowExpansion: boolean,
+    enableRowSelection: boolean,
+    visibleColumns: ColumnDefinition<Record<string, unknown>>[],
+    getColumnWidth: (
+        column: ColumnDefinition<Record<string, unknown>>,
+        index: number
+    ) => React.CSSProperties,
+    backgroundColor: string,
+    measuredFrozenWidths?: number[]
+) => {
+    if (index >= columnFreeze) return { padding: '0 16px' }
+
+    const currentColumn = visibleColumns[index]
+    const currentColumnStyles = getColumnWidth(currentColumn, index)
+
+    const leftOffset = getFrozenLeftOffset(
+        index,
+        columnFreeze,
+        enableRowExpansion,
+        enableRowSelection,
+        visibleColumns,
+        getColumnWidth,
+        measuredFrozenWidths
+    )
 
     const isLastFrozenColumn = index === columnFreeze - 1
+
+    const minWidth =
+        currentColumn.minWidth ||
+        String(currentColumnStyles.minWidth ?? '140px')
+    const maxWidth =
+        currentColumn.maxWidth ||
+        String(currentColumnStyles.maxWidth ?? '200px')
 
     return {
         position: 'sticky' as const,
@@ -175,10 +200,11 @@ export const getFrozenColumnStyles = (
         zIndex: 9,
         backgroundColor,
         padding: `0 ${FOUNDATION_THEME.unit[16]}`,
-        width: `${fixedWidth}px`,
-        minWidth: `${fixedWidth}px`,
-        maxWidth: `${fixedWidth}px`,
+        minWidth,
+        maxWidth,
+        width: 'auto',
         boxSizing: 'border-box' as const,
+        overflow: 'hidden',
         ...(isLastFrozenColumn && {
             borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
         }),

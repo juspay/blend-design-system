@@ -305,6 +305,9 @@ const DataTable = forwardRef(
             rowIndex: number
             colIndex: number
         } | null>(null)
+        const [measuredFrozenWidths, setMeasuredFrozenWidths] = useState<
+            number[]
+        >([])
 
         const sensors = useSensors(
             useSensor(PointerSensor),
@@ -1548,6 +1551,12 @@ const DataTable = forwardRef(
                                                 ) => React.CSSProperties
                                             }
                                             columnFreeze={effectiveColumnFreeze}
+                                            measuredFrozenWidths={
+                                                measuredFrozenWidths
+                                            }
+                                            onFrozenWidthsMeasured={
+                                                setMeasuredFrozenWidths
+                                            }
                                         />
                                         {currentData.length > 0 && (
                                             <TableBodyComponent
@@ -1588,6 +1597,9 @@ const DataTable = forwardRef(
                                                 }
                                                 columnFreeze={
                                                     effectiveColumnFreeze
+                                                }
+                                                measuredFrozenWidths={
+                                                    measuredFrozenWidths
                                                 }
                                                 focusedCell={focusedCell}
                                                 onCellFocus={(
