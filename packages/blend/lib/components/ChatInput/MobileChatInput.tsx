@@ -28,6 +28,7 @@ type MobileChatInputProps = {
     value: string
     onChange?: (value: string) => void
     slot1?: React.ReactNode
+    slot2?: React.ReactNode
     placeholder?: string
     attachedFiles?: AttachedFile[]
     handleAttachClick?: () => void
@@ -40,6 +41,7 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
     value,
     onChange,
     slot1,
+    slot2,
     placeholder,
     attachedFiles,
     handleAttachClick,
@@ -133,6 +135,7 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
                     />
                 </Block>
             )}
+            {slot2}
             <Block
                 display="flex"
                 width="100%"

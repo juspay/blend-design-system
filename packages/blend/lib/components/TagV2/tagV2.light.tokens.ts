@@ -165,10 +165,10 @@ export const getTagV2LightTokens = (
                 },
 
                 fontWeight: {
-                    xs: foundationToken.font.weight[600],
-                    sm: foundationToken.font.weight[600],
-                    md: foundationToken.font.weight[600],
-                    lg: foundationToken.font.weight[600],
+                    xs: foundationToken.font.weight[500],
+                    sm: foundationToken.font.weight[500],
+                    md: foundationToken.font.weight[500],
+                    lg: foundationToken.font.weight[500],
                 },
                 lineHeight: {
                     xs: foundationToken.font.lineHeight[18],
@@ -335,10 +335,10 @@ export const getTagV2LightTokens = (
                 },
 
                 fontWeight: {
-                    xs: foundationToken.font.weight[600],
-                    sm: foundationToken.font.weight[600],
-                    md: foundationToken.font.weight[600],
-                    lg: foundationToken.font.weight[600],
+                    xs: foundationToken.font.weight[500],
+                    sm: foundationToken.font.weight[500],
+                    md: foundationToken.font.weight[500],
+                    lg: foundationToken.font.weight[500],
                 },
                 lineHeight: {
                     xs: foundationToken.font.lineHeight[18],
