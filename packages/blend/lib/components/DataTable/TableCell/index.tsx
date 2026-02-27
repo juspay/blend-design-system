@@ -27,7 +27,6 @@ const StyledTableCell = styled.td<{
     $isFirstRow?: boolean
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
-    $hasExplicitColumnWidth?: boolean
 }>`
     ${(props) =>
         props.$tableToken ? props.$tableToken.dataTable.table.body.cell : ''}
@@ -36,8 +35,6 @@ const StyledTableCell = styled.td<{
             ? $customBackgroundColor
             : FOUNDATION_THEME.colors.gray[0]} !important;
     box-sizing: border-box;
-    ${({ $hasExplicitColumnWidth }) =>
-        !$hasExplicitColumnWidth && 'max-width: 0;'}
     ${({ $isFirstRow }) => $isFirstRow && 'border-top: none'}
 `
 
@@ -521,11 +518,6 @@ const TableCell = forwardRef<
             )
         }
 
-        const hasExplicitColumnWidth = Boolean(
-            (width && 'maxWidth' in width && width.maxWidth) ||
-            (width && 'width' in width && width.width)
-        )
-
         return (
             <StyledTableCell
                 ref={ref}
@@ -538,7 +530,6 @@ const TableCell = forwardRef<
                 $isFirstRow={isFirstRow}
                 $customBackgroundColor={customBackgroundColor}
                 $hasCustomBackground={hasCustomBackground}
-                $hasExplicitColumnWidth={hasExplicitColumnWidth}
                 data-row-index={dataRowIndex}
                 data-col-index={dataColIndex}
                 tabIndex={cellTabIndex}

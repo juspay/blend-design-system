@@ -800,7 +800,7 @@ export const getColumnStyles = <T extends Record<string, unknown>>(
         return {
             minWidth,
             maxWidth,
-            width: maxWidth,
+            width: 'auto',
             overflow: 'hidden',
             boxSizing: 'border-box',
         }
@@ -809,7 +809,7 @@ export const getColumnStyles = <T extends Record<string, unknown>>(
     return {
         minWidth,
         maxWidth,
-        width: maxWidth,
+        width: 'auto',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
