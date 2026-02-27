@@ -2,7 +2,7 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import RadioV2 from '../../../lib/components/SelectorV2/RadioV2/RadioV2'
-import { RadioV2Size } from '../../../lib/components/SelectorV2/RadioV2/radioV2.types'
+import { SelectorV2Size } from '../../../lib/components/SelectorV2/selectorV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('RadioV2 Component', () => {
@@ -115,7 +115,7 @@ describe('RadioV2 Component', () => {
             render(
                 <RadioV2
                     label="Small Radio"
-                    size={RadioV2Size.SMALL}
+                    size={SelectorV2Size.SM}
                     checked={false}
                 />
             )
@@ -131,7 +131,7 @@ describe('RadioV2 Component', () => {
             expect(radioElement).toBeInTheDocument()
         })
 
-        it.each([RadioV2Size.SMALL, RadioV2Size.MEDIUM])(
+        it.each([SelectorV2Size.SM, SelectorV2Size.MD])(
             'renders %s size correctly',
             (size) => {
                 const { unmount } = render(

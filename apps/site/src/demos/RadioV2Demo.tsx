@@ -10,7 +10,7 @@ import { SwitchV2 } from '../../../../packages/blend/lib/components/SelectorV2/S
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
-import { RadioV2Size } from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/radioV2.types'
+import { SelectorV2Size } from '../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 import RadioV2 from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/RadioV2'
 import RadioGroupV2 from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/RadioGroupV2'
 const RadioV2Demo = () => {
@@ -22,7 +22,7 @@ const RadioV2Demo = () => {
     const [error, setError] = useState(false)
     const [disabled, setDisabled] = useState(false)
     const [showSlot, setShowSlot] = useState(true)
-    const [size, setSize] = useState<RadioV2Size>(RadioV2Size.MEDIUM)
+    const [size, setSize] = useState<SelectorV2Size>(SelectorV2Size.MD)
     const [labelMaxLength, setLabelMaxLength] = useState<number | undefined>()
     const [groupValue, setGroupValue] = useState('option1')
     const [groupDisabled, setGroupDisabled] = useState(false)
@@ -144,17 +144,17 @@ const RadioV2Demo = () => {
                                 items: [
                                     {
                                         label: 'Small',
-                                        value: RadioV2Size.SMALL,
+                                        value: SelectorV2Size.SM,
                                     },
                                     {
                                         label: 'Medium',
-                                        value: RadioV2Size.MEDIUM,
+                                        value: SelectorV2Size.MD,
                                     },
                                 ],
                             },
                         ]}
                         selected={size}
-                        onSelect={(value) => setSize(value as RadioV2Size)}
+                        onSelect={(value) => setSize(value as SelectorV2Size)}
                     />
                     <SingleSelect
                         label="Checked"
@@ -186,7 +186,7 @@ const RadioV2Demo = () => {
                         id="checkbox-v2-demo"
                         subLabel={subLabel}
                         checked={checked}
-                        onChange={(checked) => {
+                        onCheckedChange={(checked) => {
                             setCheckedState(checked ? 'Checked' : 'Unchecked')
                             setChecked(checked.target.checked)
                         }}
@@ -248,18 +248,18 @@ const RadioV2Demo = () => {
                             <RadioV2
                                 label="Option 1"
                                 value="option1"
-                                size={RadioV2Size.MEDIUM}
+                                size={SelectorV2Size.MD}
                             />
                             <RadioV2
                                 label="Option 2"
                                 value="option2"
-                                size={RadioV2Size.MEDIUM}
+                                size={SelectorV2Size.MD}
                                 subLabel="This option has a description"
                             />
                             <RadioV2
                                 label="Option 3"
                                 value="option3"
-                                size={RadioV2Size.MEDIUM}
+                                size={SelectorV2Size.MD}
                                 slot={{
                                     slot: (
                                         <Star

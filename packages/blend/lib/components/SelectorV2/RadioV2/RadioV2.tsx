@@ -1,4 +1,5 @@
-import { RadioV2ContentProps, RadioV2Props, RadioV2Size } from './radioV2.types'
+import { RadioV2ContentProps, RadioV2Props } from './radioV2.types'
+import { SelectorV2Size } from '../selectorV2.types'
 import { StyledRadioV2Root } from './StyledRadioV2'
 import { RadioV2TokensType } from './radioV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -13,6 +14,7 @@ import SelectorsLabel from '../../SelectorsContent/SelectorsLabel'
 import Block from '../../Primitives/Block/Block'
 import SelectorsSubLabel from '../../SelectorsContent/SelectorsSubLabel'
 import { addAccessibleAriaAttributes } from '../../../utils/accessibility/icon-helpers'
+import { filterBlockedProps } from '../../../utils/prop-helpers'
 
 const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
     (
@@ -21,11 +23,11 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
             label,
             checked,
             defaultChecked = false,
-            onChange,
+            onCheckedChange,
             disabled = false,
             required = false,
             error = false,
-            size = RadioV2Size.MEDIUM,
+            size = SelectorV2Size.MD,
             subLabel,
             slot,
             name,
@@ -47,8 +49,7 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
             subtextId && customAriaDescribedBy
                 ? `${customAriaDescribedBy} ${subtextId}`
                 : subtextId || customAriaDescribedBy
-
-        const inputRest = rest as { [key: string]: unknown }
+        const filteredRest = filterBlockedProps(rest)
 
         const controlProps: Record<string, unknown> =
             checked !== undefined ? { checked } : { defaultChecked }
@@ -66,10 +67,10 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
                     id={uniqueId}
                     name={name}
                     {...controlProps}
-                    {...inputRest}
+                    {...filteredRest}
                     disabled={disabled}
                     required={required}
-                    onChange={onChange}
+                    onChange={onCheckedChange}
                     size={size}
                     $isDisabled={disabled}
                     $isChecked={checked || false}

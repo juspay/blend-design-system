@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components'
-import { RadioV2Size } from './radioV2.types'
+import { SelectorV2Size } from '../selectorV2.types'
 import type { RadioV2TokensType } from './radioV2.tokens'
 
 import { radioV2Animations } from './radioV2.animation'
 
 export const StyledRadioV2Root = styled.input<{
-    size: RadioV2Size
+    size: SelectorV2Size
     $isDisabled: boolean
     $isChecked: boolean
     $error?: boolean
