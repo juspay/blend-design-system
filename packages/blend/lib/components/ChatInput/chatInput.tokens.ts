@@ -115,6 +115,7 @@ export type ChatInputTokensType = Readonly<{
         paddingY: CSSObject['padding']
         maxHeight: CSSObject['maxHeight']
         overflowY: CSSObject['overflowY']
+        margin: CSSObject['margin']
     }
 
     bottomActions: {
@@ -305,6 +306,7 @@ export const getChatInputTokens = (
                 paddingY: foundationToken.unit[8],
                 maxHeight: '140px',
                 overflowY: 'auto',
+                margin: foundationToken.unit[1],
             },
 
             bottomActions: {
@@ -487,6 +489,7 @@ export const getChatInputTokens = (
                 paddingY: foundationToken.unit[8],
                 maxHeight: '140px',
                 overflowY: 'auto',
+                margin: foundationToken.unit[1],
             },
 
             bottomActions: {

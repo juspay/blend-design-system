@@ -179,7 +179,7 @@ const AttachmentFile = ({
                     attachedFiles.length !== 1 ? 's' : ''
                 } attached`}
                 id={filesRegionId}
-                margin={FOUNDATION_THEME.unit[1]}
+                margin={tokens.filesContainer.margin}
             >
                 {visibleFiles.map((file) => {
                     const fileName =
