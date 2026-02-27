@@ -174,7 +174,10 @@ export type MultiSelectMenuProps = {
     searchPlaceholder?: string
     enableSelectAll?: boolean
     selectAllText?: string
-    onSelectAll?: (selectAll: boolean) => void
+    onSelectAll?: (
+        selectAll: boolean,
+        filteredItems: MultiSelectMenuGroupType[]
+    ) => void
 
     maxSelections?: number
 

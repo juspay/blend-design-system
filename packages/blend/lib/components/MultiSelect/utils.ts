@@ -139,16 +139,18 @@ export const handleSelectAll = (
     selectedValues: string[],
     onChange: (value: string) => void
 ) => {
+    const scopedValues = getAllValues(items)
     if (selectAll) {
-        const allValues = getAllValues(items)
-        allValues.forEach((value) => {
+        scopedValues.forEach((value) => {
             if (!selectedValues.includes(value)) {
                 onChange(value)
             }
         })
     } else {
         selectedValues.forEach((value) => {
-            onChange(value)
+            if (scopedValues.includes(value)) {
+                onChange(value)
+            }
         })
     }
 }
