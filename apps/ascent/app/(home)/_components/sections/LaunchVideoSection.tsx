@@ -1,63 +1,58 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { EXTERNAL_LINKS } from '../constants/links'
-
-type VideoType = 'local' | 'direct' | null
-
-const isLocalVideo = (url: string): boolean => {
-    return url.startsWith('/') || url.startsWith('./')
-}
-
-const getVideoInfo = (url: string): { url: string; type: VideoType } => {
-    if (!url) return { url: '', type: null }
-
-    if (isLocalVideo(url)) {
-        return { url, type: 'local' }
-    }
-
-    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv']
-    const hasVideoExtension = videoExtensions.some((ext) =>
-        url.toLowerCase().includes(ext)
-    )
-
-    if (hasVideoExtension) {
-        return { url, type: 'direct' }
-    }
-
-    return { url, type: null }
-}
 
 export default function LaunchVideoSection() {
     const [isExpanded, setIsExpanded] = useState(false)
+    const videoRef = useRef<HTMLVideoElement | null>(null)
+
     const videoUrl = EXTERNAL_LINKS.launchVideo
 
-    const videoInfo = useMemo(
-        () => (videoUrl ? getVideoInfo(videoUrl) : { url: '', type: null }),
-        [videoUrl]
-    )
+    const handleToggle = () => {
+        setIsExpanded((prev) => {
+            const next = !prev
 
-    if (!videoInfo.url || !videoInfo.type) {
-        return (
-            <div className="flex items-center justify-center py-5 px-8 border-t border-gray-200 bg-gray-50">
-                <a
-                    href={videoUrl || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 text-gray-500 hover:text-gray-800 transition-colors font-mono text-sm group"
-                >
-                    <span>🎉</span>
-                    <span>Blend&apos;s Launch Video</span>
-                    <span className="text-gray-400">&rarr;</span>
-                </a>
-            </div>
-        )
+            if (!next && videoRef.current) {
+                videoRef.current.pause()
+                videoRef.current.currentTime = 0
+            }
+
+            return next
+        })
     }
+
+    useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setIsExpanded(false)
+                if (videoRef.current) {
+                    videoRef.current.pause()
+                    videoRef.current.currentTime = 0
+                }
+            }
+        }
+
+        window.addEventListener('keydown', handleEsc)
+        return () => window.removeEventListener('keydown', handleEsc)
+    }, [])
+
+    useEffect(() => {
+        if (!videoRef.current) return
+        if (isExpanded) {
+            videoRef.current.play().catch(() => {})
+        } else {
+            videoRef.current.pause()
+            videoRef.current.currentTime = 0
+        }
+    }, [isExpanded])
+
+    if (!videoUrl) return null
 
     return (
         <div className="border-t border-gray-200 bg-gray-50 border-b">
             <button
-                onClick={() => setIsExpanded((prev) => !prev)}
+                onClick={handleToggle}
                 className="w-full flex items-center justify-center py-5 px-8 hover:bg-gray-100 transition-colors group"
             >
                 <div className="inline-flex items-center gap-3 text-gray-500 group-hover:text-gray-800 transition-colors font-mono text-sm">
@@ -73,19 +68,26 @@ export default function LaunchVideoSection() {
                 </div>
             </button>
 
-            {isExpanded && (
+            <div
+                className={`transition-all duration-300 ease-out overflow-hidden ${
+                    isExpanded ? 'max-h-[900px]' : 'max-h-0'
+                }`}
+            >
                 <div className="lg:px-44 pb-20 lg:pb-8 px-8">
                     <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black shadow-lg">
                         <video
-                            src={videoInfo.url}
+                            ref={videoRef}
                             className="w-full h-full object-contain"
                             controls
                             preload="metadata"
                             playsInline
-                        />
+                            poster="/images/thumnail.png"
+                        >
+                            <source src={videoUrl} type="video/mp4" />
+                        </video>
                     </div>
                 </div>
-            )}
+            </div>
         </div>
     )
 }

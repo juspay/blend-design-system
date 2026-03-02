@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Public videos - read-only access for website content
+    match /videos/public/{allPaths=**} {
+      allow read: if true;  // Allow public read access for videos
+      allow write: if false; // Completely prevent public uploads
+    }
+    
+    // Private/internal videos - no public access
+    match /videos/internal/{allPaths=**} {
+      allow read, write: if false; // Completely restricted - admin only
+    }
+    
+    // Admin uploads path - restricted to authenticated admin users only
+    match /admin/{allPaths=**} {
+      allow read, write: if false; // Completely restricted for security
+    }
+    
+    // Deny all other paths by default - security first approach
+    match /{allPaths=**} {
+      allow read, write: if false; // Default deny all access
+    }
+  }
+}

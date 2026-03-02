@@ -46,9 +46,9 @@ export const APP_CONFIG = {
         buildTime: process.env.NEXT_PUBLIC_BUILD_TIME,
     },
 
-    // Feature flags
+    // Feature flags (analytics enabled when NEXT_PUBLIC_GA_MEASUREMENT_ID is set)
     features: {
-        analytics: false, // Enable when ready
+        analytics: Boolean(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID),
         search: true,
         darkMode: true,
         keyboardNavigation: true,

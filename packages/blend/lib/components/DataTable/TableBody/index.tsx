@@ -10,6 +10,7 @@ import {
 import { styled, css } from 'styled-components'
 import { motion } from 'framer-motion'
 import { TableBodyProps } from './types'
+import { getFrozenLeftOffset } from '../TableHeader/utils'
 import TableCell from '../TableCell'
 import Block from '../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -81,14 +82,18 @@ const StyledTableCell = styled.td<{
         `}
 
     ${({ $width, $customBackgroundColor, $hasCustomBackground }) => css`
-        ${$width && `width: ${$width};`}
+        ${$width &&
+        css`
+            width: ${$width};
+            min-width: ${$width};
+            max-width: ${$width};
+        `}
         ${$customBackgroundColor &&
         css`
             background-color: ${$customBackgroundColor} !important;
         `}
-    overflow: hidden;
+        overflow: hidden;
         box-sizing: border-box;
-        max-width: 0;
 
         ${!$hasCustomBackground &&
         css`
@@ -517,6 +522,7 @@ const TableBody = forwardRef<
             enableRowSelection = true,
             rowActions,
             columnFreeze = 0,
+            measuredFrozenWidths,
             mobileConfig,
             mobileOverflowColumns = [],
             onMobileOverflowClick,
@@ -908,7 +914,7 @@ const TableBody = forwardRef<
                                                   : row[column.field]
 
                                               const getFrozenBodyStyles =
-                                                  () => {
+                                                  (): React.CSSProperties => {
                                                       if (
                                                           colIndex >=
                                                           columnFreeze
@@ -922,113 +928,30 @@ const TableBody = forwardRef<
                                                               column,
                                                               colIndex
                                                           )
-
-                                                      let fixedWidth = 140
-
-                                                      if (column.minWidth) {
-                                                          fixedWidth =
-                                                              parseInt(
-                                                                  column.minWidth.replace(
-                                                                      /px|%|em|rem/g,
-                                                                      ''
-                                                                  )
-                                                              ) || 140
-                                                      } else if (
-                                                          column.maxWidth
-                                                      ) {
-                                                          fixedWidth =
-                                                              parseInt(
-                                                                  column.maxWidth.replace(
-                                                                      /px|%|em|rem/g,
-                                                                      ''
-                                                                  )
-                                                              ) || 140
-                                                      } else if (
-                                                          currentColumnStyles.minWidth
-                                                      ) {
-                                                          fixedWidth =
-                                                              parseInt(
-                                                                  String(
-                                                                      currentColumnStyles.minWidth
-                                                                  ).replace(
-                                                                      /px|%|em|rem/g,
-                                                                      ''
-                                                                  )
-                                                              ) || 140
-                                                      }
-
-                                                      let leftOffset = 0
-                                                      if (enableRowExpansion)
-                                                          leftOffset += 50
-                                                      if (enableRowSelection)
-                                                          leftOffset += 60
-
-                                                      for (
-                                                          let i = 0;
-                                                          i < colIndex;
-                                                          i++
-                                                      ) {
-                                                          const prevColumn =
-                                                              visibleColumns[i]
-                                                          let columnWidth = 140
-
-                                                          if (
-                                                              prevColumn.minWidth
-                                                          ) {
-                                                              columnWidth =
-                                                                  parseInt(
-                                                                      prevColumn.minWidth.replace(
-                                                                          /px|%|em|rem/g,
-                                                                          ''
-                                                                      )
-                                                                  ) || 140
-                                                          } else if (
-                                                              prevColumn.maxWidth
-                                                          ) {
-                                                              columnWidth =
-                                                                  parseInt(
-                                                                      prevColumn.maxWidth.replace(
-                                                                          /px|%|em|rem/g,
-                                                                          ''
-                                                                      )
-                                                                  ) || 140
-                                                          } else {
-                                                              const prevStyles =
-                                                                  getColumnWidth(
-                                                                      prevColumn,
-                                                                      i
-                                                                  )
-                                                              if (
-                                                                  prevStyles.minWidth
-                                                              ) {
-                                                                  columnWidth =
-                                                                      parseInt(
-                                                                          String(
-                                                                              prevStyles.minWidth
-                                                                          ).replace(
-                                                                              /px|%|em|rem/g,
-                                                                              ''
-                                                                          )
-                                                                      ) || 140
-                                                              } else if (
-                                                                  prevStyles.maxWidth
-                                                              ) {
-                                                                  columnWidth =
-                                                                      parseInt(
-                                                                          String(
-                                                                              prevStyles.maxWidth
-                                                                          ).replace(
-                                                                              /px|%|em|rem/g,
-                                                                              ''
-                                                                          )
-                                                                      ) || 140
-                                                              }
-                                                          }
-
-                                                          leftOffset +=
-                                                              columnWidth
-                                                      }
-
+                                                      const cellMinWidth =
+                                                          column.minWidth ||
+                                                          String(
+                                                              currentColumnStyles.minWidth ??
+                                                                  '140px'
+                                                          )
+                                                      const cellMaxWidth =
+                                                          column.maxWidth ||
+                                                          String(
+                                                              currentColumnStyles.maxWidth ??
+                                                                  '200px'
+                                                          )
+                                                      const leftOffset =
+                                                          getFrozenLeftOffset(
+                                                              colIndex,
+                                                              columnFreeze,
+                                                              enableRowExpansion ??
+                                                                  false,
+                                                              enableRowSelection ??
+                                                                  true,
+                                                              visibleColumns,
+                                                              getColumnWidth,
+                                                              measuredFrozenWidths
+                                                          )
                                                       const isLastFrozenColumn =
                                                           colIndex ===
                                                           columnFreeze - 1
@@ -1043,11 +966,14 @@ const TableBody = forwardRef<
                                                               FOUNDATION_THEME
                                                                   .colors
                                                                   .gray[0],
-                                                          width: `${fixedWidth}px`,
-                                                          minWidth: `${fixedWidth}px`,
-                                                          maxWidth: `${fixedWidth}px`,
+                                                          minWidth:
+                                                              cellMinWidth,
+                                                          maxWidth:
+                                                              cellMaxWidth,
+                                                          width: 'auto',
                                                           boxSizing:
                                                               'border-box' as const,
+                                                          overflow: 'hidden',
                                                           ...(isLastFrozenColumn && {
                                                               borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
                                                           }),
