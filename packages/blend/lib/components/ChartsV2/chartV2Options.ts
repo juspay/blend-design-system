@@ -45,7 +45,7 @@ export const mergeChartOptions = (
         chart: {
             backgroundColor: 'transparent',
             ...chart,
-            spacingLeft: 0,
+            spacingLeft: chart?.spacingLeft ?? 0,
         },
         title: { text: '', ...title },
         subtitle: { text: '', ...subtitle },

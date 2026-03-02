@@ -5,7 +5,9 @@ import {
     ChartV2SeriesOptionsType,
 } from './chartV2.types'
 import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import HighchartsReact, {
+    HighchartsReactProps,
+} from 'highcharts-react-official'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { ChartV2TokensType } from './chartV2.tokens'
 import ChartV2Skeleton from './ChartV2Skeleton'
@@ -50,6 +52,22 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
             return <ChartV2NoData {...noData} />
         }
 
+        const filtered = filterBlockedProps(restProps) as HighchartsReactProps
+        const { containerProps: userContainerProps, ...highchartsProps } =
+            filtered
+
+        const dataChart =
+            ((
+                options.series?.[0] as {
+                    type?: string
+                }
+            )?.type as string | undefined) || 'Chart'
+
+        const containerProps: HighchartsReactProps['containerProps'] = {
+            ...(userContainerProps ?? {}),
+            'data-chart': dataChart,
+        }
+
         return (
             <>
                 {/*DO NOT REMOVE: This is to hide the credits from the chart */}
@@ -63,15 +81,8 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
                 <HighchartsReact
                     ref={ref}
                     highcharts={highcharts}
-                    {...filterBlockedProps(restProps)}
-                    containerProps={{
-                        'data-chart':
-                            ((
-                                options.series?.[0] as {
-                                    type?: string
-                                }
-                            )?.type as string | undefined) || 'Chart',
-                    }}
+                    {...highchartsProps}
+                    containerProps={containerProps}
                     options={mergeChartOptions(options, tokens)}
                 />
             </>
