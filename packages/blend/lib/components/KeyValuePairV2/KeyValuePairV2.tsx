@@ -102,7 +102,7 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
                 slotPresent={!!slots.value?.right}
                 aria-labelledby={keyId}
             >
-                {value || ''}
+                {value ?? ''}
             </ResponsiveText>
         )
 

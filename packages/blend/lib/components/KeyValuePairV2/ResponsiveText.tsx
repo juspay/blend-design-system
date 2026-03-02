@@ -72,8 +72,8 @@ export const ResponsiveText = ({
             setIsTruncated(false)
             return
         }
-        const timeoutId = setTimeout(checkTruncation, 0)
-        return () => clearTimeout(timeoutId)
+        const frameId = requestAnimationFrame(checkTruncation)
+        return () => cancelAnimationFrame(frameId)
     }, [
         children,
         textOverflow,
