@@ -102,7 +102,7 @@ figma.connect(
             },
             {
                 name: 'Storybook',
-                url: 'https://juspay.design/storybook/?path=/docs/components-checkbox--docs',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-checkbox--docs',
             },
         ],
     }

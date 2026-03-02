@@ -2,8 +2,8 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
-import SwitchV2 from '../../../lib/components/SwitchV2/SwitchV2'
-import { SwitchV2Size } from '../../../lib/components/SwitchV2/switchV2.types'
+import SwitchV2 from '../../../lib/components/SelectorV2/SwitchV2/SwitchV2'
+import { SelectorV2Size } from '../../../lib/components/SelectorV2/selectorV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('SwitchV2 Accessibility', () => {
@@ -46,7 +46,7 @@ describe('SwitchV2 Accessibility', () => {
                     label="Complex Switch"
                     checked={false}
                     subLabel="Additional information"
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon /> }}
                     required
                 />
             )
@@ -55,7 +55,7 @@ describe('SwitchV2 Accessibility', () => {
         })
 
         it('meets WCAG standards for all sizes', async () => {
-            const sizes = [SwitchV2Size.SM, SwitchV2Size.MD]
+            const sizes = [SelectorV2Size.SM, SelectorV2Size.MD]
 
             for (const size of sizes) {
                 const { container, unmount } = render(
@@ -87,7 +87,7 @@ describe('SwitchV2 Accessibility', () => {
                 <SwitchV2
                     label="Space Toggle Switch"
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -104,7 +104,7 @@ describe('SwitchV2 Accessibility', () => {
                 <SwitchV2
                     label="Enter Toggle Switch"
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -134,7 +134,7 @@ describe('SwitchV2 Accessibility', () => {
                     label="Disabled Keyboard Switch"
                     disabled
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -188,7 +188,7 @@ describe('SwitchV2 Accessibility', () => {
                     <SwitchV2
                         label="State Change Switch"
                         checked={checked}
-                        onChange={setChecked}
+                        onCheckedChange={(checked) => setChecked(checked)}
                     />
                 )
             }
@@ -320,7 +320,7 @@ describe('SwitchV2 Accessibility', () => {
                 <SwitchV2
                     label="Clickable Label Switch"
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                 />
             )
 
@@ -545,12 +545,12 @@ describe('SwitchV2 Accessibility', () => {
                 <SwitchV2
                     label="Complete Switch"
                     subLabel="Complete description"
-                    size={SwitchV2Size.MD}
+                    size={SelectorV2Size.MD}
                     checked={false}
-                    onChange={handleChange}
+                    onCheckedChange={handleChange}
                     required
                     error
-                    slot={<MockIcon />}
+                    slot={{ slot: <MockIcon /> }}
                     maxLength={{ label: 20, subLabel: 30 }}
                 />
             )

@@ -231,6 +231,8 @@ const TableHeader = forwardRef<
             onColumnFilter,
             columnFilters = [],
             getColumnWidth,
+            measuredFrozenWidths,
+            onFrozenWidthsMeasured,
         },
         ref
     ) => {
@@ -238,6 +240,48 @@ const TableHeader = forwardRef<
         const [editingField, setEditingField] = useState<string | null>(null)
         const [hoveredField, setHoveredField] = useState<string | null>(null)
         const editableRef = useRef<HTMLDivElement>(null)
+        const headerRowRef = useRef<HTMLTableRowElement>(null)
+
+        useEffect(() => {
+            if (
+                columnFreeze <= 0 ||
+                !onFrozenWidthsMeasured ||
+                !headerRowRef.current
+            )
+                return
+            const tr = headerRowRef.current
+            const startIndex =
+                (enableRowExpansion ? 1 : 0) + (enableRowSelection ? 1 : 0)
+            const collectWidths = () => {
+                const cells = tr.querySelectorAll('th')
+                if (cells.length < startIndex + columnFreeze) return
+                const widths: number[] = []
+                for (let i = 0; i < columnFreeze; i++) {
+                    const el = cells[startIndex + i]
+                    if (el) widths.push(el.offsetWidth)
+                }
+                if (widths.length === columnFreeze)
+                    onFrozenWidthsMeasured(widths)
+            }
+            const ro = new ResizeObserver(collectWidths)
+            const observed: Element[] = []
+            const cells = tr.querySelectorAll('th')
+            for (let i = 0; i < columnFreeze && cells[startIndex + i]; i++) {
+                const el = cells[startIndex + i]
+                ro.observe(el)
+                observed.push(el)
+            }
+            collectWidths()
+            return () => {
+                observed.forEach((el) => ro.unobserve(el))
+            }
+        }, [
+            columnFreeze,
+            enableRowExpansion,
+            enableRowSelection,
+            onFrozenWidthsMeasured,
+            visibleColumns.length,
+        ])
 
         const [sortState, setSortState] = useState<SortState>({
             currentSortField: sortConfig?.field || null,
@@ -550,6 +594,7 @@ const TableHeader = forwardRef<
                 }}
             >
                 <tr
+                    ref={headerRowRef}
                     role="row"
                     style={{
                         height: headerHeight,
@@ -717,7 +762,8 @@ const TableHeader = forwardRef<
                             visibleColumns,
                             getColumnWidth,
                             tableToken.dataTable.table.header.backgroundColor ||
-                                '#ffffff'
+                                '#ffffff',
+                            measuredFrozenWidths
                         )
 
                         const isLastColumn =

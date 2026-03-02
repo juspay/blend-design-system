@@ -6,7 +6,7 @@
 // External URLs - used across all modules
 export const SHARED_EXTERNAL_URLS = {
     GITHUB: 'https://github.com/juspay/blend-design-system',
-    STORYBOOK: 'https://juspay.design/storybook',
+    STORYBOOK: 'https://blend.juspay.design/storybook',
 } as const
 
 // Route paths - consistent across all modules

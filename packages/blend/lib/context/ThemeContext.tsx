@@ -122,7 +122,7 @@ import {
 import {
     getSwitchV2Tokens,
     ResponsiveSwitchV2Tokens,
-} from '../components/SwitchV2/switchV2.tokens'
+} from '../components/SelectorV2/SwitchV2/switchV2.tokens'
 import {
     getSingleSelectV2Tokens,
     ResponsiveSingleSelectV2Tokens,
@@ -143,6 +143,10 @@ import {
     getTimelineTokens,
     ResponsiveTimelineTokens,
 } from '../components/Timeline/timeline.token'
+import {
+    getCheckboxV2Tokens,
+    ResponsiveCheckboxV2Tokens,
+} from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -199,6 +203,7 @@ export type ComponentTokenType = {
     AVATARV2?: ResponsiveAvatarV2Tokens
     TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
     CHARTSV2?: ResponsiveChartV2Tokens
+    CHECKBOXV2?: ResponsiveCheckboxV2Tokens
 }
 
 type ThemeContextType = {
@@ -268,6 +273,7 @@ const ThemeContext = createContext<ThemeContextType>({
             FOUNDATION_THEME,
             Theme.LIGHT
         ),
+        CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

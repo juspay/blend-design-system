@@ -293,10 +293,13 @@ const MultiSelect = ({
                             maxSelections={maxSelections}
                             onSelectAll={
                                 enableSelectAll
-                                    ? (selectAll: boolean) =>
+                                    ? (
+                                          selectAll: boolean,
+                                          filteredItems: typeof items
+                                      ) =>
                                           handleSelectAll(
                                               selectAll,
-                                              items,
+                                              filteredItems,
                                               selectedValues,
                                               onChange
                                           )

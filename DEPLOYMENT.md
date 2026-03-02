@@ -14,8 +14,8 @@ npm run deploy:prod
 
 **URLs:**
 
-- 📚 Production Docs: https://juspay.design
-- 📖 Production Storybook: https://juspay.design/storybook
+- 📚 Production Docs: https://blend.juspay.design
+- 📖 Production Storybook: https://blend.juspay.design/storybook
 - 📚 Staging Docs: https://blend-staging.web.app
 - 📖 Staging Storybook: https://blend-staging.web.app/storybook
 
@@ -59,7 +59,7 @@ npm run deploy:prod
 
 | Environment | Target          | URL                           | Purpose          |
 | ----------- | --------------- | ----------------------------- | ---------------- |
-| Production  | `blend-prod`    | https://juspay.design         | Live Site        |
+| Production  | `blend-prod`    | https://blend.juspay.design   | Live Site        |
 | Staging     | `blend-staging` | https://blend-staging.web.app | Testing & Review |
 
 ## Setup
@@ -102,7 +102,7 @@ DEPLOY_URL=https://blend-staging.web.app
 # Example .env.prod
 FIREBASE_PROJECT_ID=storybook-452807
 FIREBASE_HOSTING_TARGET=blend-prod
-DEPLOY_URL=https://juspay.design
+DEPLOY_URL=https://blend.juspay.design
 ```
 
 ## Deployment
@@ -382,7 +382,7 @@ blend-design-system/
 
 ## 🌐 Custom Domain
 
-The production deployment is configured with the custom domain `juspay.design`. The DNS configuration and SSL certificates are managed through Firebase Hosting.
+The production deployment is configured with the custom domain `blend.juspay.design`. The DNS configuration and SSL certificates are managed through Firebase Hosting.
 
 ## 📚 Resources
 

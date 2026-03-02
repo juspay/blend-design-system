@@ -98,7 +98,7 @@ figma.connect(
       },
       {
         name: "Storybook",
-        url: "https://juspay.design/storybook/?path=/docs/components-yourcomponent--docs"
+        url: "https://blend.juspay.design/storybook/?path=/docs/components-yourcomponent--docs"
       }
     ]
   }
@@ -341,7 +341,7 @@ figma.connect(
       },
       {
         name: "Storybook",
-        url: "https://juspay.design/storybook/?path=/docs/components-button-buttonv2--docs"
+        url: "https://blend.juspay.design/storybook/?path=/docs/components-button-buttonv2--docs"
       }
     ]
   }
@@ -399,7 +399,7 @@ figma.connect(
       },
       {
         name: "Storybook",
-        url: "https://juspay.design/storybook/?path=/docs/components-tags--docs"
+        url: "https://blend.juspay.design/storybook/?path=/docs/components-tags--docs"
       }
     ]
   }

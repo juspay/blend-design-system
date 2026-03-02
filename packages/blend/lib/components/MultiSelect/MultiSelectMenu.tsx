@@ -445,7 +445,12 @@ const MultiSelectMenu = ({
                                                 availableValues={
                                                     availableValues
                                                 }
-                                                onSelectAll={onSelectAll}
+                                                onSelectAll={(selectAll) =>
+                                                    onSelectAll(
+                                                        selectAll,
+                                                        filteredItems
+                                                    )
+                                                }
                                                 selectAllText={selectAllText}
                                                 disabled={disabled}
                                             />

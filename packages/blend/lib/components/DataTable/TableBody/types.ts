@@ -17,6 +17,8 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     enableRowSelection?: boolean
     rowActions?: RowActionsConfig<T>
     columnFreeze?: number
+    /** Measured pixel widths of frozen columns (from header ResizeObserver). Used for sticky left offset. */
+    measuredFrozenWidths?: number[]
     mobileConfig?: MobileDataTableConfig
     mobileOverflowColumns?: ColumnDefinition<T>[]
     onMobileOverflowClick?: (row: T) => void
