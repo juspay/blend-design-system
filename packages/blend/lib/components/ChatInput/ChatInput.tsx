@@ -23,7 +23,6 @@ import {
 } from './utils'
 import PrimitiveInput from '../Primitives/PrimitiveInput/PrimitiveInput'
 import { addSnackbar, SnackbarVariant } from '../Snackbar'
-import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import MobileChatInput from './MobileChatInput'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -105,8 +104,8 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         const textareaElement =
             (ref as React.RefObject<HTMLTextAreaElement>) || textareaRef
 
-        const { innerWidth } = useBreakpoints()
-        const isMobile = innerWidth < BREAKPOINTS.lg
+        const { breakPointLabel } = useBreakpoints()
+        const isSmallScreen = breakPointLabel === 'sm'
 
         const handleTextareaChange = useCallback(
             (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -243,7 +242,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             />
         )
 
-        if (isMobile) {
+        if (isSmallScreen) {
             return (
                 <>
                     {hiddenFileInput}

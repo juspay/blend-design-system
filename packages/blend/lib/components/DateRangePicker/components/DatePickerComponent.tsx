@@ -29,9 +29,9 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
     isDisabled = false,
     maxYearOffset,
 }) => {
-    const { innerWidth } = useBreakpoints()
+    const { breakPointLabel } = useBreakpoints()
     const tokens =
-        getMobileToken(FOUNDATION_THEME)[innerWidth >= 1024 ? 'lg' : 'sm']
+        getMobileToken(FOUNDATION_THEME)[breakPointLabel === 'sm' ? 'sm' : 'lg']
 
     const renderTabContent = (tabType: 'start' | 'end') => {
         const data = generatePickerData(

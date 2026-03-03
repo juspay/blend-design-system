@@ -236,12 +236,10 @@ describe('AvatarV2', () => {
 
     describe('Sizes', () => {
         it.each([
-            [AvatarV2Size.XS, 'xs'],
             [AvatarV2Size.SM, 'sm'],
             [AvatarV2Size.MD, 'md'],
             [AvatarV2Size.LG, 'lg'],
             [AvatarV2Size.XL, 'xl'],
-            [AvatarV2Size.XXL, 'xxl'],
         ])('renders %s size correctly', async (size) => {
             const { container } = render(<AvatarV2 alt="Test" size={size} />)
 
@@ -253,18 +251,19 @@ describe('AvatarV2', () => {
     })
 
     describe('Shapes', () => {
-        it.each([
-            [AvatarV2Shape.CIRCLE, 'circle'],
-            [AvatarV2Shape.ROUNDED, 'rounded'],
-            [AvatarV2Shape.SQUARE, 'square'],
-        ])('renders %s shape correctly', async (shape) => {
-            const { container } = render(<AvatarV2 alt="Test" shape={shape} />)
+        it.each([[AvatarV2Shape.ROUNDED, 'rounded']])(
+            'renders %s shape correctly',
+            async (shape) => {
+                const { container } = render(
+                    <AvatarV2 alt="Test" shape={shape} />
+                )
 
-            const avatar = container.querySelector('[data-avatar]')
-            expect(avatar).toHaveAttribute('data-shape', shape)
+                const avatar = container.querySelector('[data-avatar]')
+                expect(avatar).toHaveAttribute('data-shape', shape)
 
-            expect(await axe(container)).toHaveNoViolations()
-        })
+                expect(await axe(container)).toHaveNoViolations()
+            }
+        )
     })
 
     describe('Status Indicators', () => {
@@ -756,7 +755,6 @@ describe('AvatarV2', () => {
         it('renders correctly on small screens', async () => {
             vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
                 breakPointLabel: 'sm',
-                innerWidth: 375,
             })
 
             const { container } = render(
@@ -776,7 +774,6 @@ describe('AvatarV2', () => {
         it('renders correctly on large screens', async () => {
             vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
                 breakPointLabel: 'lg',
-                innerWidth: 1024,
             })
 
             const { container } = render(

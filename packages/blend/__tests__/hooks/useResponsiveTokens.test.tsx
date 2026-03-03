@@ -47,7 +47,6 @@ describe.skip('useResponsiveTokens Hook', () => {
         it('returns correct tokens for small breakpoint', () => {
             vi.mocked(useBreakpoints).mockReturnValue({
                 breakPointLabel: 'sm',
-                innerWidth: 640,
             })
 
             const { result } = renderHook(() => useResponsiveTokens('BUTTON'), {
@@ -61,7 +60,6 @@ describe.skip('useResponsiveTokens Hook', () => {
         it('returns correct tokens for large breakpoint', () => {
             vi.mocked(useBreakpoints).mockReturnValue({
                 breakPointLabel: 'lg',
-                innerWidth: 1024,
             })
 
             const { result } = renderHook(() => useResponsiveTokens('BUTTON'), {
@@ -78,7 +76,6 @@ describe.skip('useResponsiveTokens Hook', () => {
             const mockUseBreakpoints = vi.mocked(useBreakpoints)
             mockUseBreakpoints.mockReturnValue({
                 breakPointLabel: 'sm',
-                innerWidth: 640,
             })
 
             const { result, rerender } = renderHook(
@@ -91,7 +88,6 @@ describe.skip('useResponsiveTokens Hook', () => {
             // Change breakpoint
             mockUseBreakpoints.mockReturnValue({
                 breakPointLabel: 'lg',
-                innerWidth: 1024,
             })
 
             rerender()
@@ -246,7 +242,6 @@ describe.skip('useResponsiveTokens Hook', () => {
         it.skip('handles undefined breakpoint gracefully', () => {
             vi.mocked(useBreakpoints).mockReturnValue({
                 breakPointLabel: undefined as unknown as 'sm' | 'lg',
-                innerWidth: 0,
             })
 
             const { result } = renderHook(() => useResponsiveTokens('BUTTON'), {

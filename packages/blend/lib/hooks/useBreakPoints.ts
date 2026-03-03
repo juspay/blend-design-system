@@ -1,32 +1,48 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
 
 export function useBreakpoints(breakpoints = BREAKPOINTS) {
-    const getLabel = (width: number) => {
-        // if (width >= breakpoints["2xl"]) return "2xl";
-        // if (width >= breakpoints.xl) return "xl";
-        if (width >= breakpoints.lg) return 'lg'
-        // if (width >= breakpoints.md) return "md";
-        if (width >= breakpoints.sm) return 'sm'
-        return 'lg'
+    const getRootWindow = () => {
+        if (typeof window === 'undefined') return null
+
+        try {
+            return window.top && window.top !== window ? window.top : window
+        } catch {
+            return window
+        }
     }
 
-    const [innerWidth, setInnerWidth] = useState(() => window.innerWidth)
-    const [breakPointLabel, setBreakPointLabel] = useState(() =>
-        getLabel(window.innerWidth)
+    const getInitialLabel = () => {
+        const root = getRootWindow()
+        if (!root) return 'lg'
+
+        return root.matchMedia(`(min-width: ${breakpoints.lg}px)`).matches
+            ? 'lg'
+            : 'sm'
+    }
+
+    const [breakPointLabel, setBreakPointLabel] = useState<'sm' | 'lg'>(
+        getInitialLabel
     )
 
     useEffect(() => {
-        const handleResize = () => {
-            const newWidth = window.innerWidth
-            setInnerWidth(newWidth)
-            setBreakPointLabel(getLabel(newWidth))
+        const root = getRootWindow()
+        if (!root) return
+
+        const mediaQuery = root.matchMedia(`(min-width: ${breakpoints.lg}px)`)
+
+        const handleChange = (event: MediaQueryListEvent) => {
+            setBreakPointLabel(event.matches ? 'lg' : 'sm')
         }
 
-        window.addEventListener('resize', handleResize)
+        setBreakPointLabel(mediaQuery.matches ? 'lg' : 'sm')
 
-        return () => window.removeEventListener('resize', handleResize)
-    }, [breakpoints])
+        mediaQuery.addEventListener('change', handleChange)
 
-    return { innerWidth, breakPointLabel }
+        return () => {
+            mediaQuery.removeEventListener('change', handleChange)
+        }
+    }, [breakpoints.lg])
+
+    return { breakPointLabel }
 }

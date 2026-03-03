@@ -119,8 +119,6 @@ const SingleSelect = ({
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
     const [open, setOpen] = useState(false)
-    const { innerWidth } = useBreakpoints()
-    const isMobile = innerWidth < 1024
     const valueLabelMap = map(items)
 
     const isItemSelected = selected.length > 0
@@ -165,9 +163,9 @@ const SingleSelect = ({
     )
     const shouldShake = useErrorShake(error)
 
-    useDropdownInteractionLock(!isMobile && open)
+    useDropdownInteractionLock(!isSmallScreen && open)
 
-    if (isMobile && useDrawerOnMobile) {
+    if (isSmallScreen && useDrawerOnMobile) {
         return (
             <MobileSingleSelect
                 label={label}
