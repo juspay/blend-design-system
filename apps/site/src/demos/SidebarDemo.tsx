@@ -687,6 +687,7 @@ const SidebarDemo = () => {
                         <Square style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'buttons',
+                    href: 'https://react.dev',
                     onClick: () => {
                         setActiveComponent('buttons')
                         // Show topbar when navigating to regular components (controlled mode only)
