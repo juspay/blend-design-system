@@ -212,7 +212,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             justifyContent="center"
             width="auto"
             height="auto"
-            backgroundColor={columnManagerTrigger.backgroundColor}
+            backgroundColor={columnManagerTrigger?.backgroundColor}
             cursor={disabled ? 'not-allowed' : 'pointer'}
             border="none"
             disabled={disabled}
@@ -232,17 +232,17 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             }}
             style={{
                 opacity: disabled
-                    ? (columnManagerTrigger.opacity as React.CSSProperties['opacity'])
+                    ? (columnManagerTrigger?.opacity as React.CSSProperties['opacity'])
                     : 1,
             }}
             _focus={{
                 outline: 'none',
             }}
             _focusVisible={{
-                outline: columnManagerTrigger.focusVisible.outline,
-                outlineOffset: columnManagerTrigger.focusVisible.outlineOffset,
-                borderRadius: columnManagerTrigger.focusVisible.borderRadius,
-                boxShadow: columnManagerTrigger.focusVisible.boxShadow,
+                outline: columnManagerTrigger?.focusVisible.outline,
+                outlineOffset: columnManagerTrigger?.focusVisible.outlineOffset,
+                borderRadius: columnManagerTrigger?.focusVisible.borderRadius,
+                boxShadow: columnManagerTrigger?.focusVisible.boxShadow,
             }}
         >
             <Plus

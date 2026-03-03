@@ -93,7 +93,7 @@ type HeaderType = {
             height: CSSObject['height']
             color: CSSObject['color']
         }
-        columnManagerTrigger: {
+        columnManagerTrigger?: {
             backgroundColor: CSSObject['backgroundColor']
             opacity: CSSObject['disabledOpacity']
             focusVisible: {
