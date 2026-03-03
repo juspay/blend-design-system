@@ -91,6 +91,17 @@ type HeaderType = {
         columnManagerIcon: {
             width: CSSObject['width']
             height: CSSObject['height']
+            color: CSSObject['color']
+        }
+        columnManagerTrigger: {
+            backgroundColor: CSSObject['backgroundColor']
+            opacity: CSSObject['disabledOpacity']
+            focusVisible: {
+                outline: CSSObject['outline']
+                outlineOffset: CSSObject['outlineOffset']
+                borderRadius: CSSObject['borderRadius']
+                boxShadow: CSSObject['boxShadow']
+            }
         }
     }
 }
@@ -317,6 +328,17 @@ export const getTableToken = (
                     columnManagerIcon: {
                         width: foundationToken.unit[14],
                         height: foundationToken.unit[14],
+                        color: foundationToken.colors.gray[400],
+                    },
+                    columnManagerTrigger: {
+                        backgroundColor: 'transparent',
+                        opacity: 0.4,
+                        focusVisible: {
+                            outline: `1px solid ${foundationToken.colors.primary[500]}`,
+                            outlineOffset: '1px',
+                            borderRadius: foundationToken.border.radius[4],
+                            boxShadow: `0 0 0 2px ${foundationToken.colors.primary[100]}`,
+                        },
                     },
                 },
             },
@@ -573,6 +595,17 @@ export const getTableToken = (
                     columnManagerIcon: {
                         width: foundationToken.unit[16],
                         height: foundationToken.unit[16],
+                        color: foundationToken.colors.gray[400],
+                    },
+                    columnManagerTrigger: {
+                        backgroundColor: 'transparent',
+                        opacity: 0.4,
+                        focusVisible: {
+                            outline: `1px solid ${foundationToken.colors.primary[500]}`,
+                            outlineOffset: '1px',
+                            borderRadius: foundationToken.border.radius[4],
+                            boxShadow: `0 0 0 2px ${foundationToken.colors.primary[100]}`,
+                        },
                     },
                 },
             },
