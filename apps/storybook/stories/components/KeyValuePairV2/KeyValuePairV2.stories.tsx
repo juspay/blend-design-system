@@ -41,7 +41,7 @@ KeyValuePairV2 — updated key/value component with improved tokenization and re
 Features:
 - Vertical and horizontal layouts
 - Three sizes (Small, Medium, Large)
-- Slots support (keySlot, valueLeftSlot, valueRightSlot)
+- Slots support (slots.key, slots.value.left, slots.value.right)
 - Text overflow modes with accessible tooltips
 `,
             },
@@ -188,20 +188,28 @@ export const WithSlots: Story = {
             <KeyValuePairV2
                 keyString="Rating"
                 value="4.8"
-                keySlot={<Info size={16} />}
-                valueLeftSlot={<Star size={16} color="#fbbf24" />}
+                slots={{
+                    key: <Info size={16} />,
+                    value: { left: <Star size={16} color="#fbbf24" /> },
+                }}
             />
             <KeyValuePairV2
                 keyString="Status"
                 value="Active"
-                valueLeftSlot={<CheckCircle size={16} color="#10b981" />}
-                valueRightSlot={<ArrowRight size={16} />}
+                slots={{
+                    value: {
+                        left: <CheckCircle size={16} color="#10b981" />,
+                        right: <ArrowRight size={16} />,
+                    },
+                }}
             />
             <KeyValuePairV2
                 keyString="Notifications"
                 value="Enabled"
-                keySlot={<Bell size={16} />}
-                valueRightSlot={<ArrowRight size={16} />}
+                slots={{
+                    key: <Bell size={16} />,
+                    value: { right: <ArrowRight size={16} /> },
+                }}
             />
         </div>
     ),
@@ -233,25 +241,25 @@ export const UserProfile: Story = {
             <KeyValuePairV2
                 keyString="Full Name"
                 value="John Doe"
-                keySlot={<User size={16} />}
+                slots={{ key: <User size={16} /> }}
                 size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Email"
                 value="john.doe@example.com"
-                keySlot={<Mail size={16} />}
+                slots={{ key: <Mail size={16} /> }}
                 size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Phone"
                 value="+1 (555) 123-4567"
-                keySlot={<Phone size={16} />}
+                slots={{ key: <Phone size={16} /> }}
                 size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Location"
                 value="San Francisco, CA"
-                keySlot={<MapPin size={16} />}
+                slots={{ key: <MapPin size={16} /> }}
                 size={KeyValuePairV2Size.MD}
             />
         </div>
@@ -284,30 +292,283 @@ export const FinancialData: Story = {
             <KeyValuePairV2
                 keyString="Balance"
                 value="$12,345.67"
-                keySlot={<DollarSign size={16} />}
+                slots={{ key: <DollarSign size={16} /> }}
                 size={KeyValuePairV2Size.LG}
             />
             <KeyValuePairV2
                 keyString="Monthly Income"
                 value="$5,000.00"
-                keySlot={<TrendingUp size={16} color="#10b981" />}
+                slots={{ key: <TrendingUp size={16} color="#10b981" /> }}
                 size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Monthly Expenses"
                 value="$3,200.00"
-                keySlot={<TrendingDown size={16} color="#ef4444" />}
+                slots={{ key: <TrendingDown size={16} color="#ef4444" /> }}
                 size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Payment Method"
                 value="**** **** **** 1234"
-                keySlot={<CreditCard size={16} />}
+                slots={{ key: <CreditCard size={16} /> }}
                 size={KeyValuePairV2Size.MD}
             />
         </div>
     ),
     parameters: { a11y: getA11yConfig('content') },
+}
+
+// ============================================================================
+// Visual (Chromatic regression)
+// ============================================================================
+
+export const Visual: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '32px',
+                maxWidth: '360px',
+            }}
+        >
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                    }}
+                >
+                    Layouts
+                </h3>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px',
+                    }}
+                >
+                    <KeyValuePairV2
+                        keyString="Vertical"
+                        value="Label above value"
+                        keyValuePairState={KeyValuePairV2StateType.vertical}
+                        size={KeyValuePairV2Size.MD}
+                    />
+                    <KeyValuePairV2
+                        keyString="Horizontal"
+                        value="Label beside value"
+                        keyValuePairState={KeyValuePairV2StateType.horizontal}
+                        size={KeyValuePairV2Size.MD}
+                    />
+                </div>
+            </div>
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                    }}
+                >
+                    Sizes
+                </h3>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px',
+                    }}
+                >
+                    <KeyValuePairV2
+                        keyString="Small"
+                        value="SM size"
+                        size={KeyValuePairV2Size.SM}
+                    />
+                    <KeyValuePairV2
+                        keyString="Medium"
+                        value="MD size"
+                        size={KeyValuePairV2Size.MD}
+                    />
+                    <KeyValuePairV2
+                        keyString="Large"
+                        value="LG size"
+                        size={KeyValuePairV2Size.LG}
+                    />
+                </div>
+            </div>
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                    }}
+                >
+                    Text overflow
+                </h3>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px',
+                    }}
+                >
+                    <KeyValuePairV2
+                        keyString="Truncate"
+                        value="Short"
+                        textOverflow="truncate"
+                        maxWidth="180px"
+                        showTooltipOnTruncate={true}
+                    />
+                    <KeyValuePairV2
+                        keyString="Wrap"
+                        value="This value wraps naturally across multiple lines when space is limited."
+                        textOverflow="wrap"
+                        maxWidth="180px"
+                    />
+                    <KeyValuePairV2
+                        keyString="Wrap clamp"
+                        value="This value wraps up to a max number of lines then shows ellipsis. Extra content is hidden."
+                        textOverflow="wrap-clamp"
+                        maxLines={2}
+                        maxWidth="180px"
+                        showTooltipOnTruncate={true}
+                    />
+                </div>
+            </div>
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '12px',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                    }}
+                >
+                    With slots
+                </h3>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px',
+                    }}
+                >
+                    <KeyValuePairV2
+                        keyString="Key slot"
+                        value="Icon on key"
+                        slots={{ key: <Info size={16} /> }}
+                        size={KeyValuePairV2Size.MD}
+                    />
+                    <KeyValuePairV2
+                        keyString="Value slots"
+                        value="Active"
+                        slots={{
+                            value: {
+                                left: <CheckCircle size={16} color="#10b981" />,
+                                right: <ArrowRight size={16} />,
+                            },
+                        }}
+                        size={KeyValuePairV2Size.MD}
+                    />
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Visual variants for Chromatic regression: layouts, sizes, text overflow modes, and slots.',
+            },
+        },
+        chromatic: { ...CHROMATIC_CONFIG, delay: 300 },
+    },
+}
+
+// ============================================================================
+// Interaction (tooltip on truncated value)
+// ============================================================================
+
+export const Interaction: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                padding: '24px',
+                maxWidth: '400px',
+            }}
+        >
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                    }}
+                >
+                    Truncated value with tooltip
+                </h3>
+                <p
+                    style={{
+                        marginBottom: '16px',
+                        fontSize: '14px',
+                        color: '#64748b',
+                    }}
+                >
+                    Hover or focus the truncated value to see the full text in a
+                    tooltip.
+                </p>
+                <KeyValuePairV2
+                    keyString="Description"
+                    value="This is a long value that will be truncated with an ellipsis. Hover over it to see the full content in a tooltip."
+                    textOverflow="truncate"
+                    maxWidth="200px"
+                    showTooltipOnTruncate={true}
+                    size={KeyValuePairV2Size.MD}
+                />
+            </div>
+            <div>
+                <h3
+                    style={{
+                        marginBottom: '8px',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                    }}
+                >
+                    Wrap-clamp with tooltip
+                </h3>
+                <p
+                    style={{
+                        marginBottom: '16px',
+                        fontSize: '14px',
+                        color: '#64748b',
+                    }}
+                >
+                    Multi-line clamp: hover the value to see the full text.
+                </p>
+                <KeyValuePairV2
+                    keyString="Summary"
+                    value="First line of content. Second line here. Third line that gets clamped. Fourth line is only visible in the tooltip when you hover."
+                    textOverflow="wrap-clamp"
+                    maxLines={2}
+                    maxWidth="220px"
+                    showTooltipOnTruncate={true}
+                    size={KeyValuePairV2Size.MD}
+                />
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Interaction: hover or focus truncated values to reveal full content in an accessible tooltip. Use keyboard (Tab + focus) to open the tooltip without a mouse.',
+            },
+        },
+        a11y: getA11yConfig('content'),
+        chromatic: { ...CHROMATIC_CONFIG, delay: 500 },
+    },
 }
 
 export const StatusIndicators: Story = {
@@ -335,25 +596,39 @@ export const StatusIndicators: Story = {
             <KeyValuePairV2
                 keyString="Server Status"
                 value="Online"
-                valueLeftSlot={<CheckCircle size={16} color="#10b981" />}
+                slots={{
+                    value: {
+                        left: <CheckCircle size={16} color="#10b981" />,
+                    },
+                }}
                 size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Database"
                 value="Connected"
-                valueLeftSlot={<CheckCircle size={16} color="#10b981" />}
+                slots={{
+                    value: {
+                        left: <CheckCircle size={16} color="#10b981" />,
+                    },
+                }}
                 size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="API Status"
                 value="Warning"
-                valueLeftSlot={<AlertCircle size={16} color="#f59e0b" />}
+                slots={{
+                    value: {
+                        left: <AlertCircle size={16} color="#f59e0b" />,
+                    },
+                }}
                 size={KeyValuePairV2Size.MD}
             />
             <KeyValuePairV2
                 keyString="Security"
                 value="Locked"
-                valueLeftSlot={<Info size={16} />}
+                slots={{
+                    value: { left: <Info size={16} /> },
+                }}
                 size={KeyValuePairV2Size.MD}
             />
         </div>
