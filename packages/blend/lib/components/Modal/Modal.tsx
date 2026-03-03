@@ -242,8 +242,8 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         ref
     ) => {
         const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
-        const { breakPointLabel } = useBreakpoints()
-        const isSmallScreen = breakPointLabel === 'sm'
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < 1024
         const { shouldRender, isAnimatingIn, portalContainer } = useModal(
             isOpen,
             onClose
@@ -267,7 +267,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         const skeletonVariant = skeleton?.variant || 'pulse'
 
         const modalContent = (() => {
-            if (isSmallScreen && useDrawerOnMobile) {
+            if (isMobile && useDrawerOnMobile) {
                 return (
                     <MobileModal
                         isOpen={isOpen}

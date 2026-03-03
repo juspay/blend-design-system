@@ -111,6 +111,8 @@ const MultiSelect = ({
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
     const [open, setOpen] = useState(false)
+    const { innerWidth } = useBreakpoints()
+    const isMobile = innerWidth < 1024
     const valueLabelMap = map(items)
     const shouldShowClearButton =
         showClearButton !== undefined
@@ -168,9 +170,9 @@ const MultiSelect = ({
         prefix: 'multiselect',
         needsMenuId: true,
     })
-    useDropdownInteractionLock(!isSmallScreen && open)
+    useDropdownInteractionLock(!isMobile && open)
 
-    if (isSmallScreen && useDrawerOnMobile) {
+    if (isMobile && useDrawerOnMobile) {
         return (
             <MobileMultiSelect
                 selectedValues={selectedValues}

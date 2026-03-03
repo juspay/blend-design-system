@@ -400,8 +400,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
         const [drawerOpen, setDrawerOpen] = useState(false)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
-        const { breakPointLabel } = useBreakpoints()
-        const isSmallScreen = breakPointLabel === 'sm'
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < 1024
         const showPresets = shouldShowPresets && !isSingleDatePicker
 
         const [selectedRange, setSelectedRange] = useState<
@@ -933,7 +933,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 return `${startStr} - ${endStr}`
             }
 
-            if (isSmallScreen && useDrawerOnMobile) {
+            if (isMobile && useDrawerOnMobile) {
                 return (
                     <Button
                         buttonType={ButtonType.SECONDARY}
@@ -1077,7 +1077,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             )
         }
 
-        if (isSmallScreen && useDrawerOnMobile) {
+        if (isMobile && useDrawerOnMobile) {
             const getMobilePresets = () => {
                 const presetsWithCustom = [...availablePresets]
                 if (!presetsWithCustom.includes(DateRangePreset.CUSTOM)) {

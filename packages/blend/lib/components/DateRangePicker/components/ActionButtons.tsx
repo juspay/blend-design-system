@@ -13,9 +13,9 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
     isApplyDisabled = false,
     applyDisabledMessage,
 }) => {
-    const { breakPointLabel } = useBreakpoints()
+    const { innerWidth } = useBreakpoints()
     const tokens =
-        getMobileToken(FOUNDATION_THEME)[breakPointLabel === 'sm' ? 'sm' : 'lg']
+        getMobileToken(FOUNDATION_THEME)[innerWidth >= 1024 ? 'lg' : 'sm']
 
     return (
         <Block

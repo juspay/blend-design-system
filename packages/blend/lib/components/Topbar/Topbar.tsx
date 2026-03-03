@@ -9,6 +9,7 @@ import { SingleSelect } from '../SingleSelect'
 import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarTokens } from './topbar.tokens'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import Seperator from '../common/Seperator'
 import { FOUNDATION_THEME } from '../../tokens'
 
@@ -45,8 +46,8 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
 
         const isVisible = isControlled ? controlledIsVisible! : internalVisible
 
-        const { breakPointLabel } = useBreakpoints()
-        const isMobile = breakPointLabel === 'sm'
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < BREAKPOINTS.lg
         const tokens = useComponentToken('TOPBAR') as ResponsiveTopbarTokens
         const topBarToken = isMobile ? tokens.sm : tokens.lg
 

@@ -3,45 +3,29 @@ import { BREAKPOINTS } from '../breakpoints/breakPoints'
 
 export function useBreakpoints(breakpoints = BREAKPOINTS) {
     const getLabel = (width: number) => {
+        // if (width >= breakpoints["2xl"]) return "2xl";
+        // if (width >= breakpoints.xl) return "xl";
         if (width >= breakpoints.lg) return 'lg'
+        // if (width >= breakpoints.md) return "md";
         if (width >= breakpoints.sm) return 'sm'
         return 'lg'
     }
 
-    const getRootWindow = () => {
-        if (typeof window === 'undefined') return null
-
-        try {
-            return window.top && window.top !== window ? window.top : window
-        } catch {
-            return window
-        }
-    }
-
-    const getViewportWidth = () => {
-        const root = getRootWindow()
-        if (!root) return breakpoints.lg
-        return root.innerWidth
-    }
-
-    const [innerWidth, setInnerWidth] = useState(() => getViewportWidth())
+    const [innerWidth, setInnerWidth] = useState(() => window.innerWidth)
     const [breakPointLabel, setBreakPointLabel] = useState(() =>
-        getLabel(getViewportWidth())
+        getLabel(window.innerWidth)
     )
 
     useEffect(() => {
-        const root = getRootWindow()
-        if (!root) return
-
         const handleResize = () => {
-            const newWidth = root.innerWidth
+            const newWidth = window.innerWidth
             setInnerWidth(newWidth)
             setBreakPointLabel(getLabel(newWidth))
         }
 
-        root.addEventListener('resize', handleResize)
+        window.addEventListener('resize', handleResize)
 
-        return () => root.removeEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
     }, [breakpoints])
 
     return { innerWidth, breakPointLabel }
