@@ -2,8 +2,8 @@ import { css } from 'styled-components'
 
 const easing = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
-// Main popover content animations
-export const popoverContentAnimations = css`
+// Main dropdown menu content animations
+export const menuContentAnimations = css`
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
     &[data-side='bottom'][data-state='open'] {

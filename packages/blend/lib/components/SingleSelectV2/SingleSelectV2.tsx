@@ -1,17 +1,16 @@
-import { useCallback, useId, useRef, useState } from 'react'
+import { isValidElement, useCallback, useId, useMemo, useState } from 'react'
+import type { AriaAttributes } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
 import { SingleSelectV2Size, SingleSelectV2Variant } from './types'
-import SingleSelectV2Popover from './SingleSelectV2Popover'
+import SingleSelectV2Menu from './SingleSelectV2Menu'
 import SingleSelectV2Trigger from './SingleSelectV2Trigger'
 import type { SingleSelectV2Props } from './types'
-import { BREAKPOINTS } from '../../breakpoints/breakPoints'
-import { useBreakpoints } from '../../hooks/useBreakPoints'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
-import { toPixels } from '../../global-utils/GlobalUtils'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import MobileSingleSelectV2 from './MobileSingleSelectV2'
 import { useErrorShake } from '../common/useErrorShake'
 import {
@@ -19,8 +18,7 @@ import {
     errorShakeAnimation,
 } from '../common/error.animations'
 import styled from 'styled-components'
-import { getBorderRadius, setupAccessibility, getValueLabelMap } from './utils'
-import { TruncatedTextWithTooltip } from '../common'
+import { getBorderRadius, getValueLabelMap, setupAccessibility } from './utils'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -40,6 +38,9 @@ const SingleSelectV2 = ({
     name,
     variant = SingleSelectV2Variant.CONTAINER,
     disabled,
+    open: controlledOpen,
+    defaultOpen = false,
+    onOpenChange: onControlledOpenChange,
     selected,
     onSelect,
     enableSearch,
@@ -58,7 +59,7 @@ const SingleSelectV2 = ({
     onFocus,
     inline = false,
     fullWidth = false,
-    enableVirtualization = items.length > 20 ? true : false,
+    enableVirtualization,
     virtualListItemHeight,
     virtualListOverscan,
     onEndReached,
@@ -77,21 +78,30 @@ const SingleSelectV2 = ({
     singleSelectGroupPosition,
     ...rest
 }: SingleSelectV2Props) => {
-    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
-    const isSmallScreen = breakPointLabel === 'sm'
-    const slotRef = useRef<HTMLDivElement>(null)
-    const slotWidth = slotRef.current?.offsetWidth
+    const breakpoints = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakpoints.breakPointLabel === 'sm'
+    const isMobile = breakpoints.innerWidth < 1024
 
     const isContainer = variant === SingleSelectV2Variant.CONTAINER
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
-    const [open, setOpen] = useState(false)
-    const { innerWidth } = useBreakpoints()
-    const isMobile = innerWidth < 1024
-    const valueLabelMap = getValueLabelMap(items)
 
-    const isItemSelected = selected.length > 0
+    const isControlledOpen = controlledOpen !== undefined
+    const [internalOpen, setInternalOpen] = useState(defaultOpen)
+    const open = isControlledOpen ? Boolean(controlledOpen) : internalOpen
+    const setOpenState = useCallback(
+        (nextOpen: boolean) => {
+            if (!isControlledOpen) setInternalOpen(nextOpen)
+            onControlledOpenChange?.(nextOpen)
+            if (nextOpen) onFocus?.()
+            else onBlur?.()
+        },
+        [isControlledOpen, onControlledOpenChange, onFocus, onBlur]
+    )
+
+    const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
+    const isItemSelected = Boolean(selected)
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SingleSelectV2Size.LARGE
 
@@ -108,27 +118,42 @@ const SingleSelectV2 = ({
             prefix: 'singleselectv2',
             needsMenuId: true,
         })
+    const triggerAriaAttributes: Pick<
+        AriaAttributes,
+        'aria-describedby' | 'aria-labelledby' | 'aria-label' | 'aria-invalid'
+    > = {
+        'aria-describedby': ariaAttributes['aria-describedby'] as
+            | string
+            | undefined,
+        'aria-labelledby': ariaAttributes['aria-labelledby'] as
+            | string
+            | undefined,
+        'aria-label': ariaAttributes['aria-label'] as string | undefined,
+        'aria-invalid': ariaAttributes['aria-invalid'] as boolean | undefined,
+    }
 
-    const borderRadius = getBorderRadius(
+    const borderConfig = getBorderRadius(
         size,
         variant,
         singleSelectGroupPosition,
         singleSelectTokens
-    ).borderRadius
-    const paddingX = toPixels(
-        singleSelectTokens.trigger.padding[size][variant].x
     )
-    const paddingY = toPixels(
-        singleSelectTokens.trigger.padding[size][variant].y
-    )
-    const paddingInlineStart =
-        slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
-    const handleOnSelect = useCallback(
-        (val: string) => onSelect(val),
-        [onSelect]
+    const handleSelect = useCallback(
+        (value: string) => {
+            onSelect(value)
+            setOpenState(false)
+        },
+        [onSelect, setOpenState]
     )
     const shouldShake = useErrorShake(error)
+    const shouldEnableVirtualization = enableVirtualization ?? items.length > 20
+
+    if (customTrigger && !isValidElement(customTrigger)) {
+        throw new Error(
+            'SingleSelectV2: customTrigger must be a valid React element.'
+        )
+    }
 
     if (isMobile && usePanelOnMobile) {
         return (
@@ -147,7 +172,7 @@ const SingleSelectV2 = ({
                 variant={variant}
                 disabled={disabled}
                 selected={selected}
-                onSelect={handleOnSelect}
+                onSelect={handleSelect}
                 enableSearch={enableSearch}
                 searchPlaceholder={searchPlaceholder}
                 slot={slot}
@@ -155,7 +180,8 @@ const SingleSelectV2 = ({
                 onBlur={onBlur}
                 onFocus={onFocus}
                 inline={inline}
-                enableVirtualization={enableVirtualization}
+                fullWidth={fullWidth}
+                enableVirtualization={shouldEnableVirtualization}
                 virtualListItemHeight={virtualListItemHeight}
                 virtualListOverscan={virtualListOverscan}
                 onEndReached={onEndReached}
@@ -207,36 +233,24 @@ const SingleSelectV2 = ({
                     display="flex"
                     alignItems="center"
                 >
-                    <SingleSelectV2Popover
+                    <SingleSelectV2Menu
                         skeleton={skeleton}
                         open={open}
-                        onOpenChange={(isOpen) => {
-                            setOpen(isOpen)
-                            if (isOpen) {
-                                onFocus?.()
-                            } else {
-                                onBlur?.()
-                            }
-                        }}
+                        onOpenChange={setOpenState}
                         items={items}
                         selected={selected}
-                        onSelect={(value) => {
-                            handleOnSelect(value)
-                            requestAnimationFrame(() => {
-                                setOpen(false)
-                            })
-                        }}
+                        onSelect={handleSelect}
                         disabled={disabled}
-                        minPopoverWidth={minPopoverWidth}
-                        maxPopoverWidth={maxPopoverWidth}
-                        maxPopoverHeight={maxPopoverHeight}
+                        minMenuWidth={minPopoverWidth}
+                        maxMenuWidth={maxPopoverWidth}
+                        maxMenuHeight={maxPopoverHeight}
                         alignment={alignment}
                         side={side}
                         sideOffset={sideOffset}
                         alignOffset={alignOffset}
                         enableSearch={enableSearch}
                         searchPlaceholder={searchPlaceholder}
-                        enableVirtualization={enableVirtualization}
+                        enableVirtualization={shouldEnableVirtualization}
                         virtualListItemHeight={virtualListItemHeight}
                         virtualListOverscan={virtualListOverscan}
                         onEndReached={onEndReached}
@@ -259,7 +273,6 @@ const SingleSelectV2 = ({
                                     required={required || false}
                                     valueLabelMap={valueLabelMap}
                                     open={open}
-                                    onClick={() => setOpen(true)}
                                     slot={slot}
                                     variant={variant}
                                     isSmallScreenWithLargeSize={
@@ -276,16 +289,9 @@ const SingleSelectV2 = ({
                                         singleSelectGroupPosition
                                     }
                                     fullWidth={fullWidth}
-                                    borderRadius={borderRadius}
-                                    borderRight={
-                                        getBorderRadius(
-                                            size,
-                                            variant,
-                                            singleSelectGroupPosition,
-                                            singleSelectTokens
-                                        ).borderRight
-                                    }
-                                    {...ariaAttributes}
+                                    borderRadius={borderConfig.borderRadius}
+                                    borderRight={borderConfig.borderRight}
+                                    {...triggerAriaAttributes}
                                 />
                             )
                         }

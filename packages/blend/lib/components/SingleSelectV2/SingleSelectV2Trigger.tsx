@@ -7,8 +7,6 @@ import { TruncatedTextWithTooltip } from '../common'
 import { ChevronDown } from 'lucide-react'
 import { SingleSelectV2Size, SingleSelectV2Variant } from './types'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
-import { FOUNDATION_THEME } from '../../tokens'
-import { getBorderRadius } from './utils'
 
 export type SingleSelectV2TriggerProps = {
     size: SingleSelectV2Size
@@ -19,7 +17,6 @@ export type SingleSelectV2TriggerProps = {
     required: boolean
     valueLabelMap: Record<string, string>
     open: boolean
-    onClick?: () => void
     slot?: React.ReactNode
     variant: SingleSelectV2Variant
     isSmallScreenWithLargeSize: boolean
@@ -34,7 +31,7 @@ export type SingleSelectV2TriggerProps = {
     fullWidth?: boolean
     borderRadius?: string
     borderRight?: string
-    [key: string]: any
+    [key: string]: unknown
 }
 
 const SingleSelectV2Trigger = ({
@@ -48,7 +45,6 @@ const SingleSelectV2Trigger = ({
     required,
     valueLabelMap,
     open,
-    onClick,
     slot,
     variant,
     isSmallScreenWithLargeSize,
@@ -57,21 +53,22 @@ const SingleSelectV2Trigger = ({
     inline = false,
     error,
     disabled,
-    singleSelectGroupPosition,
+    singleSelectGroupPosition: _singleSelectGroupPosition,
     fullWidth = false,
     borderRadius,
     borderRight,
     ...rest
 }: SingleSelectV2TriggerProps) => {
+    void _singleSelectGroupPosition
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
 
-    const paddingX = toPixels(
-        singleSelectTokens.trigger.padding[size][variant].x
-    )
-    const paddingY = toPixels(
-        singleSelectTokens.trigger.padding[size][variant].y
-    )
+    const paddingInlineVal =
+        singleSelectTokens.trigger.padding[size][variant].paddingInline
+    const paddingBlockVal =
+        singleSelectTokens.trigger.padding[size][variant].paddingBlock
+    const paddingX = toPixels(paddingInlineVal)
+    const paddingY = toPixels(paddingBlockVal)
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
@@ -79,7 +76,7 @@ const SingleSelectV2Trigger = ({
 
     return (
         <PrimitiveButton
-            data-element="single-select-v2-button"
+            data-element="single-select-button"
             type="button"
             disabled={disabled}
             maxWidth={maxTriggerWidth}
@@ -106,7 +103,6 @@ const SingleSelectV2Trigger = ({
                 ]
             }
             borderRight={borderRight}
-            onClick={onClick}
             {...((!inline || isContainer) && {
                 paddingX: paddingX,
                 paddingY: paddingY,
@@ -122,8 +118,9 @@ const SingleSelectV2Trigger = ({
                             error ? 'error' : 'hover'
                         ],
                         backgroundColor:
-                            singleSelectTokens.trigger.backgroundColor
-                                .container[error ? 'error' : 'hover'],
+                            singleSelectTokens.trigger.backgroundColor[variant][
+                                error ? 'error' : 'hover'
+                            ],
                         borderRight: borderRight,
                     },
                 }),
@@ -132,7 +129,7 @@ const SingleSelectV2Trigger = ({
                         error ? 'error' : 'focus'
                     ],
                     backgroundColor:
-                        singleSelectTokens.trigger.backgroundColor.container[
+                        singleSelectTokens.trigger.backgroundColor[variant][
                             error ? 'error' : 'focus'
                         ],
                     borderRight: borderRight,

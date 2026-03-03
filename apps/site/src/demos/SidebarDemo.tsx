@@ -209,7 +209,7 @@ const SidebarDemo = () => {
         | 'textInputGroup'
         | 'singleSelectV2'
         | 'timeline'
-    >('chatInput')
+    >('singleSelectV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =

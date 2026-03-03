@@ -1,13 +1,3 @@
-/**
- * SingleSelectV2 Dark Theme Tokens
- *
- * TODO: Populate this file with actual dark theme token values.
- * This file should follow the same pattern as ButtonV2 dark tokens.
- *
- * Reference:
- * - packages/blend/lib/components/ButtonV2/buttonV2.dark.tokens.ts
- */
-
 import { FoundationTokenType } from '../../tokens/theme.token'
 import type { ResponsiveSingleSelectV2Tokens } from './singleSelectV2.tokens'
 import { SingleSelectV2Size, SingleSelectV2Variant } from './types'
@@ -15,12 +5,10 @@ import { SingleSelectV2Size, SingleSelectV2Variant } from './types'
 export const getSingleSelectV2DarkTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveSingleSelectV2Tokens => {
-    // Create a base token structure for one breakpoint
-    // This needs to be expanded to include all breakpoints (sm, md, lg, xl)
-    const createBaseTokens = () => ({
+    const createBaseTokens = (): ResponsiveSingleSelectV2Tokens['sm'] => ({
         gap: foundationToken.unit[8],
         label: {
-            fontSize: foundationToken.font.fontSize[14],
+            fontSize: foundationToken.font.size.body.md.fontSize,
             fontWeight: foundationToken.font.weight[500],
             color: {
                 default: foundationToken.colors.gray[200],
@@ -33,7 +21,7 @@ export const getSingleSelectV2DarkTokens = (
             },
         },
         subLabel: {
-            fontSize: foundationToken.font.fontSize[12],
+            fontSize: foundationToken.font.size.body.md.fontSize,
             fontWeight: foundationToken.font.weight[400],
             color: {
                 default: foundationToken.colors.gray[400],
@@ -46,7 +34,7 @@ export const getSingleSelectV2DarkTokens = (
             },
         },
         hintText: {
-            fontSize: foundationToken.font.fontSize[12],
+            fontSize: foundationToken.font.size.body.md.fontSize,
             fontWeight: foundationToken.font.weight[400],
             color: {
                 default: foundationToken.colors.gray[400],
@@ -59,13 +47,12 @@ export const getSingleSelectV2DarkTokens = (
             },
         },
         errorMessage: {
-            fontSize: foundationToken.font.fontSize[12],
-            fontWeight: foundationToken.font.weight[400],
+            fontSize: foundationToken.font.size.body.md.fontSize,
+            fontWeight: foundationToken.font.weight[500],
             color: foundationToken.colors.red[400],
         },
-        required: {
-            color: foundationToken.colors.red[400],
-        },
+        required: { color: foundationToken.colors.red[400] },
+
         trigger: {
             height: {
                 [SingleSelectV2Size.SMALL]: {
@@ -74,70 +61,67 @@ export const getSingleSelectV2DarkTokens = (
                         foundationToken.unit[32],
                 },
                 [SingleSelectV2Size.MEDIUM]: {
+                    [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[36],
+                    [SingleSelectV2Variant.NO_CONTAINER]:
+                        foundationToken.unit[36],
+                },
+                [SingleSelectV2Size.LARGE]: {
                     [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[40],
                     [SingleSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[40],
-                },
-                [SingleSelectV2Size.LARGE]: {
-                    [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[48],
-                    [SingleSelectV2Variant.NO_CONTAINER]:
-                        foundationToken.unit[48],
                 },
             },
             padding: {
                 [SingleSelectV2Size.SMALL]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[12],
-                        y: foundationToken.unit[8],
+                        paddingInline: foundationToken.unit[14],
+                        paddingBlock: foundationToken.unit[7],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[12],
-                        y: foundationToken.unit[8],
+                        paddingInline: foundationToken.unit[14],
+                        paddingBlock: foundationToken.unit[7],
                     },
                 },
                 [SingleSelectV2Size.MEDIUM]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[16],
-                        y: foundationToken.unit[12],
+                        paddingInline: foundationToken.unit[14],
+                        paddingBlock: foundationToken.unit[8],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[16],
-                        y: foundationToken.unit[12],
+                        paddingInline: foundationToken.unit[14],
+                        paddingBlock: foundationToken.unit[8],
                     },
                 },
                 [SingleSelectV2Size.LARGE]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[20],
-                        y: foundationToken.unit[16],
+                        paddingInline: foundationToken.unit[12],
+                        paddingBlock: foundationToken.unit[10],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[20],
-                        y: foundationToken.unit[16],
+                        paddingInline: foundationToken.unit[12],
+                        paddingBlock: foundationToken.unit[10],
                     },
                 },
             },
             borderRadius: {
                 [SingleSelectV2Size.SMALL]: {
-                    [SingleSelectV2Variant.CONTAINER]:
-                        foundationToken.border.radius[8],
+                    [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [SingleSelectV2Variant.NO_CONTAINER]:
-                        foundationToken.border.radius[8],
+                        foundationToken.unit[10],
                 },
                 [SingleSelectV2Size.MEDIUM]: {
-                    [SingleSelectV2Variant.CONTAINER]:
-                        foundationToken.border.radius[8],
+                    [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [SingleSelectV2Variant.NO_CONTAINER]:
-                        foundationToken.border.radius[8],
+                        foundationToken.unit[10],
                 },
                 [SingleSelectV2Size.LARGE]: {
-                    [SingleSelectV2Variant.CONTAINER]:
-                        foundationToken.border.radius[10],
+                    [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [SingleSelectV2Variant.NO_CONTAINER]:
-                        foundationToken.border.radius[10],
+                        foundationToken.unit[10],
                 },
             },
             boxShadow: {
-                [SingleSelectV2Variant.CONTAINER]: foundationToken.shadows.sm,
+                [SingleSelectV2Variant.CONTAINER]: foundationToken.shadows.xs,
                 [SingleSelectV2Variant.NO_CONTAINER]: 'none',
             },
             backgroundColor: {
@@ -174,68 +158,87 @@ export const getSingleSelectV2DarkTokens = (
             },
             placeholder: {
                 color: foundationToken.colors.gray[500],
-                fontSize: foundationToken.font.fontSize[14],
+                fontSize: foundationToken.font.size.body.md.fontSize,
                 fontWeight: foundationToken.font.weight[400],
             },
             selectedValue: {
                 color: foundationToken.colors.gray[100],
-                fontSize: foundationToken.font.fontSize[14],
+                fontSize: foundationToken.font.size.body.md.fontSize,
                 fontWeight: foundationToken.font.weight[500],
             },
         },
-        popover: {
-            backgroundColor: foundationToken.colors.gray[800],
-            border: `1px solid ${foundationToken.colors.gray[700]}`,
-            borderRadius: foundationToken.border.radius[8],
+
+        menu: {
+            content: {
+                backgroundColor: foundationToken.colors.gray[800],
+                border: `1px solid ${foundationToken.colors.gray[700]}`,
+                borderRadius: foundationToken.unit[8],
+                boxShadow: foundationToken.shadows.lg,
+            },
             padding: {
                 [SingleSelectV2Size.SMALL]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[8],
-                        y: foundationToken.unit[8],
+                        paddingInline: foundationToken.unit[6],
+                        paddingBlock: foundationToken.unit[6],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[8],
-                        y: foundationToken.unit[8],
+                        paddingInline: foundationToken.unit[6],
+                        paddingBlock: foundationToken.unit[6],
                     },
                 },
                 [SingleSelectV2Size.MEDIUM]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[8],
-                        y: foundationToken.unit[8],
+                        paddingInline: foundationToken.unit[6],
+                        paddingBlock: foundationToken.unit[6],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[8],
-                        y: foundationToken.unit[8],
+                        paddingInline: foundationToken.unit[6],
+                        paddingBlock: foundationToken.unit[6],
                     },
                 },
                 [SingleSelectV2Size.LARGE]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[8],
-                        y: foundationToken.unit[8],
+                        paddingInline: foundationToken.unit[6],
+                        paddingBlock: foundationToken.unit[6],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[8],
-                        y: foundationToken.unit[8],
+                        paddingInline: foundationToken.unit[6],
+                        paddingBlock: foundationToken.unit[6],
                     },
                 },
             },
-            item: {
-                padding: foundationToken.unit[8],
+            groupLabel: {
                 margin: `0 ${foundationToken.unit[8]}`,
-                borderRadius: foundationToken.border.radius[4],
-                gap: foundationToken.unit[8],
+                padding: `${foundationToken.unit[8]} ${foundationToken.unit[6]}`,
+                fontSize: foundationToken.font.size.body.sm.fontSize,
+                fontWeight: foundationToken.font.weight[400],
+                color: {
+                    default: foundationToken.colors.gray[400],
+                    hover: foundationToken.colors.gray[400],
+                    active: foundationToken.colors.gray[400],
+                    focus: foundationToken.colors.gray[400],
+                    focusVisible: foundationToken.colors.gray[400],
+                    disabled: foundationToken.colors.gray[600],
+                    selected: foundationToken.colors.gray[400],
+                },
+            },
+            item: {
+                padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
+                margin: `${foundationToken.unit[0]} ${foundationToken.unit[4]}`,
+                borderRadius: foundationToken.unit[8],
+                gap: foundationToken.unit[4],
                 backgroundColor: {
-                    default: 'transparent',
+                    default: foundationToken.colors.gray[800],
                     hover: foundationToken.colors.gray[700],
                     active: foundationToken.colors.gray[600],
                     focus: foundationToken.colors.gray[700],
                     focusVisible: foundationToken.colors.gray[700],
-                    disabled: 'transparent',
-                    selected: foundationToken.colors.primary[900],
+                    disabled: foundationToken.colors.gray[800],
+                    selected: foundationToken.colors.gray[700],
                 },
-                optionsLabel: {
-                    fontSize: foundationToken.font.fontSize[12],
-                    fontWeight: foundationToken.font.weight[500],
+                groupLabelText: {
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
+                    fontWeight: foundationToken.font.weight[400],
                     color: {
                         default: foundationToken.colors.gray[400],
                         hover: foundationToken.colors.gray[400],
@@ -246,9 +249,9 @@ export const getSingleSelectV2DarkTokens = (
                         selected: foundationToken.colors.gray[400],
                     },
                 },
-                option: {
-                    fontSize: foundationToken.font.fontSize[14],
-                    fontWeight: foundationToken.font.weight[400],
+                optionText: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                     color: {
                         default: foundationToken.colors.gray[200],
                         hover: foundationToken.colors.gray[100],
@@ -256,11 +259,11 @@ export const getSingleSelectV2DarkTokens = (
                         focus: foundationToken.colors.gray[100],
                         focusVisible: foundationToken.colors.gray[100],
                         disabled: foundationToken.colors.gray[600],
-                        selected: foundationToken.colors.primary[400],
+                        selected: foundationToken.colors.gray[100],
                     },
                 },
                 description: {
-                    fontSize: foundationToken.font.fontSize[12],
+                    fontSize: foundationToken.font.size.body.sm.fontSize,
                     fontWeight: foundationToken.font.weight[400],
                     color: {
                         default: foundationToken.colors.gray[400],
@@ -274,25 +277,46 @@ export const getSingleSelectV2DarkTokens = (
                 },
                 separator: {
                     color: foundationToken.colors.gray[700],
-                    height: '1px',
-                    margin: `${foundationToken.unit[8]} 0`,
+                    height: 1,
+                    margin: `${foundationToken.unit[6]} 0`,
                 },
             },
+            submenu: {
+                trigger: {
+                    padding: `${foundationToken.unit[8]} ${foundationToken.unit[6]}`,
+                    margin: `0 ${foundationToken.unit[8]}`,
+                    borderRadius: foundationToken.unit[4],
+                    backgroundColor: {
+                        default: 'transparent',
+                        hover: foundationToken.colors.gray[700],
+                        focus: foundationToken.colors.gray[700],
+                    },
+                },
+                content: {
+                    backgroundColor: foundationToken.colors.gray[800],
+                    border: `1px solid ${foundationToken.colors.gray[700]}`,
+                    borderRadius: foundationToken.unit[8],
+                    padding: `${foundationToken.unit[8]} 0`,
+                    boxShadow: foundationToken.shadows.lg,
+                },
+                optionText: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                    color: foundationToken.colors.gray[200],
+                },
+                iconColor: foundationToken.colors.gray[500],
+            },
         },
+
         mobilePanel: {
             header: {
-                paddingX: foundationToken.unit[16],
-                paddingBottom: foundationToken.unit[12],
+                paddingInline: foundationToken.unit[16],
+                paddingBlockEnd: foundationToken.unit[12],
                 borderBottom: `1px solid ${foundationToken.colors.gray[700]}`,
             },
         },
     })
 
-    // Return tokens for all breakpoints
-    // TODO: Adjust values per breakpoint if needed
     const baseTokens = createBaseTokens()
-    return {
-        sm: baseTokens,
-        lg: baseTokens,
-    }
+    return { sm: baseTokens, lg: baseTokens }
 }

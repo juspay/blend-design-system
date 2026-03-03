@@ -16,11 +16,11 @@ const SingleSelectV2Skeleton = forwardRef<
     return (
         <Block
             ref={ref}
-            padding={singleSelectTokens.popover.item.padding}
+            padding={singleSelectTokens.menu.item.padding}
             display="flex"
             flexDirection="column"
-            gap={singleSelectTokens.popover.item.gap || 4}
-            borderRadius={singleSelectTokens.popover.item.borderRadius}
+            gap={singleSelectTokens.menu.item.gap || 4}
+            borderRadius={singleSelectTokens.menu.item.borderRadius}
             outline="none"
             border="none"
             width="100%"

@@ -1,5 +1,14 @@
 import { SkeletonVariant } from '../Skeleton'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+import type {
+    CSSProperties,
+    KeyboardEvent,
+    ReactElement,
+    ReactNode,
+    RefObject,
+} from 'react'
+import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
+import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 
 export enum SingleSelectV2Alignment {
     START = 'start',
@@ -61,6 +70,72 @@ export type SingleSelectV2ItemType = {
     disableTruncation?: boolean
 }
 
+export type FlattenedItem = {
+    id: string
+    type: 'item' | 'label' | 'separator'
+    item?: SingleSelectV2ItemType
+    label?: string
+    groupId?: number
+}
+
+export type MenuListSharedProps = {
+    selected: string
+    onSelect: (value: string) => void
+    singleSelectTokens: SingleSelectV2TokensType
+    size: SingleSelectV2Size
+    variant: SingleSelectV2Variant
+}
+
+export type MenuListProps = MenuListSharedProps & {
+    filteredItems: SingleSelectV2GroupType[]
+    enableSearch?: boolean
+}
+
+export type VirtualItemShape = {
+    key: string | number | bigint
+    index: number
+    start: number
+}
+
+export type VirtualListProps = MenuListSharedProps & {
+    flattenedItems: FlattenedItem[]
+    virtualViewportHeight: number
+    virtualItems: VirtualItemShape[]
+    totalSize: number
+    measureElement: (node: Element | null) => void
+    loadingComponent?: ReactNode
+    hasMore?: boolean
+    virtualScrollRef: RefObject<HTMLDivElement | null>
+}
+
+export type MenuSearchProps = {
+    enabled?: boolean
+    hasItems: boolean
+    backgroundColor: string
+    searchPlaceholder: string
+    searchText: string
+    onSearchTextChange: (value: string) => void
+    searchInputRef: RefObject<HTMLInputElement | null>
+    containerRef?: RefObject<HTMLDivElement | null>
+}
+
+export type MenuPopoverProps = {
+    open: boolean
+    onOpenChange: (open: boolean) => void
+    disabled?: boolean
+    trigger: ReactElement
+    menuId?: string
+    alignment: SingleSelectV2Alignment
+    side: SingleSelectV2Side
+    sideOffset: number
+    alignOffset: number
+    collisionBoundary?: DropdownMenuContentProps['collisionBoundary']
+    contentStyle: CSSProperties
+    onContentKeyDown?: (e: KeyboardEvent<HTMLDivElement>) => void
+    contentRef?: RefObject<HTMLDivElement | null>
+    children: ReactNode
+}
+
 export type SingleSelectV2Props = {
     label?: string
     subLabel?: string
@@ -78,9 +153,12 @@ export type SingleSelectV2Props = {
     slot?: React.ReactNode
     disabled?: boolean
     name?: string
+    open?: boolean
+    defaultOpen?: boolean
+    onOpenChange?: (open: boolean) => void
 
     // custom trigger
-    customTrigger?: React.ReactNode
+    customTrigger?: React.ReactElement
 
     // responsive behavior
     usePanelOnMobile?: boolean

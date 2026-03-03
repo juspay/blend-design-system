@@ -9,7 +9,6 @@ import {
 } from '../Drawer'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { FOUNDATION_THEME } from '../../tokens'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
@@ -40,33 +39,36 @@ const SingleSelectV2Item = ({
     item,
     isSelected,
     onSelect,
+    itemTokens,
 }: {
     item: SingleSelectV2ItemType
     isSelected: boolean
     onSelect: (value: string) => void
+    itemTokens: SingleSelectV2TokensType['menu']['item']
 }) => {
+    const colorState = isSelected ? 'selected' : 'default'
     return (
         <Block
             display="flex"
             flexDirection="column"
-            gap={4}
-            padding={`${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[6]}`}
-            margin={`0 ${FOUNDATION_THEME.unit[8]}`}
-            borderRadius={4}
+            gap={itemTokens.gap}
+            padding={itemTokens.padding}
+            margin={itemTokens.margin}
+            borderRadius={itemTokens.borderRadius}
             cursor={item.disabled ? 'not-allowed' : 'pointer'}
             backgroundColor={
-                isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
+                item.disabled
+                    ? itemTokens.backgroundColor.disabled
+                    : isSelected
+                      ? itemTokens.backgroundColor.selected
+                      : itemTokens.backgroundColor.default
             }
-            style={{
-                transition: 'background-color 0.15s ease-in-out',
-            }}
+            style={{ transition: 'background-color 0.15s ease-in-out' }}
             _hover={{
-                backgroundColor: FOUNDATION_THEME.colors.gray[50],
+                backgroundColor: itemTokens.backgroundColor.hover,
             }}
             onClick={() => {
-                if (!item.disabled) {
-                    onSelect(item.value)
-                }
+                if (!item.disabled) onSelect(item.value)
             }}
         >
             <Block
@@ -84,12 +86,13 @@ const SingleSelectV2Item = ({
                     )}
                     <Text
                         variant="body.md"
+                        fontSize={itemTokens.optionText.fontSize}
+                        fontWeight={itemTokens.optionText.fontWeight}
                         color={
-                            isSelected
-                                ? FOUNDATION_THEME.colors.gray[700]
-                                : FOUNDATION_THEME.colors.gray[600]
+                            item.disabled
+                                ? itemTokens.optionText.color.disabled
+                                : itemTokens.optionText.color[colorState]
                         }
-                        fontWeight={500}
                         truncate
                     >
                         {item.label}
@@ -120,7 +123,7 @@ const SingleSelectV2Item = ({
                         <Block flexShrink={0} height="auto" contentCentered>
                             <Check
                                 size={16}
-                                color={FOUNDATION_THEME.colors.gray[600]}
+                                color={itemTokens.optionText.color.selected}
                             />
                         </Block>
                     )}
@@ -130,8 +133,9 @@ const SingleSelectV2Item = ({
                 <Block display="flex" alignItems="center" width="100%">
                     <Text
                         variant="body.sm"
-                        color={FOUNDATION_THEME.colors.gray[400]}
-                        fontWeight={400}
+                        fontSize={itemTokens.description.fontSize}
+                        fontWeight={itemTokens.description.fontWeight}
+                        color={itemTokens.description.color[colorState]}
                     >
                         {item.subLabel}
                     </Text>
@@ -203,6 +207,7 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
     onBlur,
     onFocus,
     inline = false,
+    fullWidth = false,
     skeleton = {
         count: 3,
         show: false,
@@ -263,14 +268,26 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
             rest,
             prefix: 'singleselectv2-mobile',
         })
+    const triggerAriaAttributes = {
+        'aria-describedby': ariaAttributes['aria-describedby'] as
+            | string
+            | undefined,
+        'aria-labelledby': ariaAttributes['aria-labelledby'] as
+            | string
+            | undefined,
+        'aria-label': ariaAttributes['aria-label'] as string | undefined,
+        'aria-invalid': ariaAttributes['aria-invalid'] as boolean | undefined,
+    }
 
     return (
         <Block
             data-single-select-v2={label || 'single-select-v2'}
             data-status={disabled ? 'disabled' : 'enabled'}
+            width={fullWidth ? '100%' : 'fit-content'}
             display="flex"
             flexDirection="column"
             gap={8}
+            maxWidth="100%"
         >
             {variant === SingleSelectV2Variant.CONTAINER &&
                 (!isSmallScreen || size !== SingleSelectV2Size.LARGE) && (
@@ -311,7 +328,6 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                             required={required || false}
                             valueLabelMap={valueLabelMap}
                             open={panelOpen}
-                            onClick={() => setPanelOpen(true)}
                             slot={slot}
                             variant={variant}
                             isSmallScreenWithLargeSize={
@@ -321,7 +337,8 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                             inline={inline}
                             error={error}
                             disabled={disabled}
-                            {...ariaAttributes}
+                            fullWidth={fullWidth}
+                            {...triggerAriaAttributes}
                         />
                     )}
                 </DrawerTrigger>
@@ -339,17 +356,16 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                 {skeleton.show ? (
                                     <Block
                                         padding={
-                                            singleSelectTokens.popover.item
-                                                .padding
+                                            singleSelectTokens.menu.item.padding
                                         }
                                         display="flex"
                                         flexDirection="column"
                                         gap={
-                                            singleSelectTokens.popover.item
-                                                .gap || 4
+                                            singleSelectTokens.menu.item.gap ||
+                                            4
                                         }
                                         borderRadius={
-                                            singleSelectTokens.popover.item
+                                            singleSelectTokens.menu.item
                                                 .borderRadius
                                         }
                                         outline="none"
@@ -381,10 +397,23 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                     >
                                         {enableSearch && (
                                             <Block
-                                                padding="16px 16px 8px 16px"
+                                                position="sticky"
+                                                top={0}
+                                                left={0}
+                                                right={0}
+                                                style={{
+                                                    paddingInline:
+                                                        singleSelectTokens
+                                                            .mobilePanel.header
+                                                            .paddingInline,
+                                                    paddingBlock:
+                                                        singleSelectTokens
+                                                            .mobilePanel.header
+                                                            .paddingBlockEnd,
+                                                }}
                                                 backgroundColor={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[0]
+                                                    singleSelectTokens.menu
+                                                        .content.backgroundColor
                                                 }
                                                 zIndex={50}
                                             >
@@ -413,17 +442,26 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                 justifyContent="center"
                                                 alignItems="center"
                                                 padding={
-                                                    singleSelectTokens.popover
-                                                        .item.padding
+                                                    singleSelectTokens.menu.item
+                                                        .padding
                                                 }
                                             >
                                                 <Text
                                                     variant="body.md"
+                                                    fontSize={
+                                                        singleSelectTokens.menu
+                                                            .item.groupLabelText
+                                                            .fontSize
+                                                    }
+                                                    fontWeight={
+                                                        singleSelectTokens.menu
+                                                            .item.groupLabelText
+                                                            .fontWeight
+                                                    }
                                                     color={
-                                                        singleSelectTokens
-                                                            .popover.item
-                                                            .optionsLabel.color
-                                                            .default
+                                                        singleSelectTokens.menu
+                                                            .item.groupLabelText
+                                                            .color.default
                                                     }
                                                     textAlign="center"
                                                 >
@@ -437,17 +475,26 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                 justifyContent="center"
                                                 alignItems="center"
                                                 padding={
-                                                    singleSelectTokens.popover
-                                                        .item.padding
+                                                    singleSelectTokens.menu.item
+                                                        .padding
                                                 }
                                             >
                                                 <Text
                                                     variant="body.md"
+                                                    fontSize={
+                                                        singleSelectTokens.menu
+                                                            .item.groupLabelText
+                                                            .fontSize
+                                                    }
+                                                    fontWeight={
+                                                        singleSelectTokens.menu
+                                                            .item.groupLabelText
+                                                            .fontWeight
+                                                    }
                                                     color={
-                                                        singleSelectTokens
-                                                            .popover.item
-                                                            .optionsLabel.color
-                                                            .default
+                                                        singleSelectTokens.menu
+                                                            .item.groupLabelText
+                                                            .color.default
                                                     }
                                                     textAlign="center"
                                                 >
@@ -469,13 +516,13 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                                 <Block
                                                                     padding={
                                                                         singleSelectTokens
-                                                                            .popover
+                                                                            .menu
                                                                             .item
                                                                             .padding
                                                                     }
                                                                     margin={
                                                                         singleSelectTokens
-                                                                            .popover
+                                                                            .menu
                                                                             .item
                                                                             .margin
                                                                     }
@@ -484,19 +531,26 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                                         variant="body.sm"
                                                                         color={
                                                                             singleSelectTokens
-                                                                                .popover
+                                                                                .menu
                                                                                 .item
-                                                                                .optionsLabel
+                                                                                .groupLabelText
                                                                                 .color
                                                                                 .default
                                                                         }
                                                                         textTransform="uppercase"
                                                                         fontSize={
                                                                             singleSelectTokens
-                                                                                .popover
+                                                                                .menu
                                                                                 .item
-                                                                                .optionsLabel
+                                                                                .groupLabelText
                                                                                 .fontSize
+                                                                        }
+                                                                        fontWeight={
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .groupLabelText
+                                                                                .fontWeight
                                                                         }
                                                                     >
                                                                         {
@@ -522,6 +576,11 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                                             isSelected={
                                                                                 isSelected
                                                                             }
+                                                                            itemTokens={
+                                                                                singleSelectTokens
+                                                                                    .menu
+                                                                                    .item
+                                                                            }
                                                                             onSelect={(
                                                                                 value
                                                                             ) => {
@@ -543,21 +602,21 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                                     <Block
                                                                         height={
                                                                             singleSelectTokens
-                                                                                .popover
+                                                                                .menu
                                                                                 .item
                                                                                 .separator
                                                                                 .height
                                                                         }
                                                                         backgroundColor={
                                                                             singleSelectTokens
-                                                                                .popover
+                                                                                .menu
                                                                                 .item
                                                                                 .separator
                                                                                 .color
                                                                         }
                                                                         margin={
                                                                             singleSelectTokens
-                                                                                .popover
+                                                                                .menu
                                                                                 .item
                                                                                 .separator
                                                                                 .margin

@@ -20,6 +20,8 @@ export default defineConfig({
                 '**/mockData.ts',
                 '**/*.stories.tsx',
                 '**/lib/components/ButtonV2/**/accessibility/**',
+                '**/lib/components/**/index.ts',
+                '**/*.dark.tokens.ts',
             ],
             // Generate coverage even if tests fail
             reportOnFailure: true,

@@ -19,26 +19,21 @@ export type SingleSelectV2ItemStates =
 
 export type SingleSelectV2TokensType = {
     gap: CSSObject['gap']
+
     label: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
-        color: {
-            [key in SingleSelectV2ItemStates]: CSSObject['color']
-        }
+        color: Record<SingleSelectV2ItemStates, CSSObject['color']>
     }
     subLabel: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
-        color: {
-            [key in SingleSelectV2ItemStates]: CSSObject['color']
-        }
+        color: Record<SingleSelectV2ItemStates, CSSObject['color']>
     }
     hintText: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
-        color: {
-            [key in SingleSelectV2ItemStates]: CSSObject['color']
-        }
+        color: Record<SingleSelectV2ItemStates, CSSObject['color']>
     }
     errorMessage: {
         fontSize: CSSObject['fontSize']
@@ -50,39 +45,33 @@ export type SingleSelectV2TokensType = {
     }
 
     trigger: {
-        height: {
-            [key in SingleSelectV2Size]: {
-                [key in SingleSelectV2Variant]: CSSObject['height']
-            }
-        }
-        padding: {
-            [key in SingleSelectV2Size]: {
-                [key in SingleSelectV2Variant]: {
-                    x: CSSObject['padding']
-                    y: CSSObject['padding']
+        height: Record<
+            SingleSelectV2Size,
+            Record<SingleSelectV2Variant, CSSObject['height']>
+        >
+        padding: Record<
+            SingleSelectV2Size,
+            Record<
+                SingleSelectV2Variant,
+                {
+                    paddingInline: CSSObject['paddingInline']
+                    paddingBlock: CSSObject['paddingBlock']
                 }
-            }
-        }
-
-        borderRadius: {
-            [key in SingleSelectV2Size]: {
-                [key in SingleSelectV2Variant]: CSSObject['borderRadius']
-            }
-        }
-        boxShadow: {
-            [key in SingleSelectV2Variant]: CSSObject['boxShadow']
-        }
-        backgroundColor: {
-            [key in SingleSelectV2Variant]: {
-                [key in TriggerStates]: CSSObject['backgroundColor']
-            }
-        }
-        outline: {
-            //this acts as a border for the trigger in default state
-            [key in SingleSelectV2Variant]: {
-                [key in TriggerStates]: CSSObject['outline']
-            }
-        }
+            >
+        >
+        borderRadius: Record<
+            SingleSelectV2Size,
+            Record<SingleSelectV2Variant, CSSObject['borderRadius']>
+        >
+        boxShadow: Record<SingleSelectV2Variant, CSSObject['boxShadow']>
+        backgroundColor: Record<
+            SingleSelectV2Variant,
+            Record<TriggerStates, CSSObject['backgroundColor']>
+        >
+        outline: Record<
+            SingleSelectV2Variant,
+            Record<TriggerStates, CSSObject['outline']>
+        >
         placeholder: {
             color: CSSObject['color']
             fontSize: CSSObject['fontSize']
@@ -94,46 +83,54 @@ export type SingleSelectV2TokensType = {
             fontWeight: CSSObject['fontWeight']
         }
     }
-    popover: {
-        backgroundColor: CSSObject['backgroundColor']
-        border: CSSObject['border']
-        borderRadius: CSSObject['borderRadius']
-        padding: {
-            [key in SingleSelectV2Size]: {
-                [key in SingleSelectV2Variant]: {
-                    x: CSSObject['padding']
-                    y: CSSObject['padding']
+
+    menu: {
+        content: {
+            backgroundColor: CSSObject['backgroundColor']
+            border: CSSObject['border']
+            borderRadius: CSSObject['borderRadius']
+            boxShadow: CSSObject['boxShadow']
+        }
+        padding: Record<
+            SingleSelectV2Size,
+            Record<
+                SingleSelectV2Variant,
+                {
+                    paddingInline: CSSObject['paddingInline']
+                    paddingBlock: CSSObject['paddingBlock']
                 }
-            }
+            >
+        >
+        groupLabel: {
+            margin: CSSObject['margin']
+            padding: CSSObject['padding']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: Record<SingleSelectV2ItemStates, CSSObject['color']>
         }
         item: {
             padding: CSSObject['padding']
             margin: CSSObject['margin']
             borderRadius: CSSObject['borderRadius']
             gap: CSSObject['gap']
-            backgroundColor: {
-                [key in SingleSelectV2ItemStates]: CSSObject['backgroundColor']
-            }
-            optionsLabel: {
+            backgroundColor: Record<
+                SingleSelectV2ItemStates,
+                CSSObject['backgroundColor']
+            >
+            groupLabelText: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
-                color: {
-                    [key in SingleSelectV2ItemStates]: CSSObject['color']
-                }
+                color: Record<SingleSelectV2ItemStates, CSSObject['color']>
             }
-            option: {
+            optionText: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
-                color: {
-                    [key in SingleSelectV2ItemStates]: CSSObject['color']
-                }
+                color: Record<SingleSelectV2ItemStates, CSSObject['color']>
             }
             description: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
-                color: {
-                    [key in SingleSelectV2ItemStates]: CSSObject['color']
-                }
+                color: Record<SingleSelectV2ItemStates, CSSObject['color']>
             }
             separator: {
                 color: CSSObject['color']
@@ -141,11 +138,35 @@ export type SingleSelectV2TokensType = {
                 margin: CSSObject['margin']
             }
         }
+        submenu: {
+            trigger: {
+                padding: CSSObject['padding']
+                margin: CSSObject['margin']
+                borderRadius: CSSObject['borderRadius']
+                backgroundColor: Record<
+                    'default' | 'hover' | 'focus',
+                    CSSObject['backgroundColor']
+                >
+            }
+            content: {
+                backgroundColor: CSSObject['backgroundColor']
+                border: CSSObject['border']
+                borderRadius: CSSObject['borderRadius']
+                padding: CSSObject['padding']
+                boxShadow: CSSObject['boxShadow']
+            }
+            optionText: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            iconColor: CSSObject['color']
+        }
     }
     mobilePanel: {
         header: {
-            paddingX: CSSObject['padding']
-            paddingBottom: CSSObject['padding']
+            paddingInline: CSSObject['paddingInline']
+            paddingBlockEnd: CSSObject['paddingBlockEnd']
             borderBottom: CSSObject['borderBottom']
         }
     }
@@ -155,6 +176,9 @@ export type ResponsiveSingleSelectV2Tokens = {
     [key in keyof BreakpointType]: SingleSelectV2TokensType
 }
 
+export type SingleSelectV2MenuItemTokensType =
+    SingleSelectV2TokensType['menu']['item']
+
 export const getSingleSelectV2Tokens = (
     foundationToken: FoundationTokenType,
     theme: Theme | string = Theme.LIGHT
@@ -162,6 +186,5 @@ export const getSingleSelectV2Tokens = (
     if (theme === Theme.DARK || theme === 'dark') {
         return getSingleSelectV2DarkTokens(foundationToken)
     }
-
     return getSingleSelectV2LightTokens(foundationToken)
 }

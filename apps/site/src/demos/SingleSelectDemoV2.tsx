@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { SingleSelectV2 } from '../../../../packages/blend/lib/components/SingleSelectV2'
 import {
     SingleSelectV2Size,
@@ -9,10 +9,22 @@ import {
 } from '../../../../packages/blend/lib/components/SingleSelectV2/types'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import { User, MapPin, Star, Shield, Briefcase } from 'lucide-react'
+import { User, Star, Shield, Briefcase } from 'lucide-react'
+
+const LARGE_LIST_SIZE = 500
+
+function buildLargeList(): SingleSelectV2GroupType[] {
+    return [
+        {
+            items: Array.from({ length: LARGE_LIST_SIZE }, (_, i) => ({
+                label: `Option ${i + 1}`,
+                value: `option-${i + 1}`,
+            })),
+        },
+    ]
+}
 
 const SingleSelectDemoV2 = () => {
-    // Playground state
     const [playgroundLabel, setPlaygroundLabel] = useState('Select Option')
     const [playgroundError, setPlaygroundError] = useState(false)
     const [playgroundErrorMessage, setPlaygroundErrorMessage] = useState(
@@ -45,19 +57,11 @@ const SingleSelectDemoV2 = () => {
     const [playgroundFullWidth, setPlaygroundFullWidth] = useState(false)
     const [playgroundAllowCustomValue, setPlaygroundAllowCustomValue] =
         useState(false)
+    const [playgroundEnableVirtualization, setPlaygroundEnableVirtualization] =
+        useState(false)
 
-    // Sample data
-    const simpleItems: SingleSelectV2GroupType[] = [
-        {
-            items: [
-                { label: 'Option 1', value: 'option1' },
-                { label: 'Option 2', value: 'option2' },
-                { label: 'Option 3', value: 'option3' },
-                { label: 'Option 4', value: 'option4' },
-                { label: 'Option 5', value: 'option5' },
-            ],
-        },
-    ]
+    const largeListItems = useMemo(() => buildLargeList(), [])
+    const [largeListSelected, setLargeListSelected] = useState('')
 
     const groupedItems: SingleSelectV2GroupType[] = [
         {
@@ -167,14 +171,14 @@ const SingleSelectDemoV2 = () => {
             <div className="space-y-3">
                 <h1 className="text-3xl font-bold">SingleSelectV2 Component</h1>
                 <p className="text-gray-600">
-                    Interactive playground to test all SingleSelectV2 features
-                    and variants.
+                    Interactive playground: groups, search, virtualization, and
+                    accessibility aligned with SingleSelect v1 (data-element,
+                    data-id, ARIA).
                 </p>
             </div>
 
             <section className="space-y-4">
                 <h2 className="text-2xl font-bold">Playground</h2>
-
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <TextInput
@@ -289,6 +293,15 @@ const SingleSelectDemoV2 = () => {
                             }
                         />
                         <Switch
+                            label="Enable Virtualization"
+                            checked={playgroundEnableVirtualization}
+                            onChange={() =>
+                                setPlaygroundEnableVirtualization(
+                                    !playgroundEnableVirtualization
+                                )
+                            }
+                        />
+                        <Switch
                             label="Show Slot"
                             checked={playgroundShowSlot}
                             onChange={() =>
@@ -335,6 +348,9 @@ const SingleSelectDemoV2 = () => {
                             onSelect={(value) => setPlaygroundSelected(value)}
                             disabled={playgroundDisabled}
                             enableSearch={playgroundEnableSearch}
+                            enableVirtualization={
+                                playgroundEnableVirtualization
+                            }
                             slot={
                                 playgroundShowSlot ? (
                                     <User size={16} />
@@ -344,6 +360,28 @@ const SingleSelectDemoV2 = () => {
                             allowCustomValue={playgroundAllowCustomValue}
                         />
                     </div>
+                </div>
+            </section>
+
+            <section className="space-y-4">
+                <h2 className="text-2xl font-bold">
+                    Large list with virtualization ({LARGE_LIST_SIZE} items)
+                </h2>
+                <p className="text-gray-600">
+                    Virtual list renders only visible rows. Toggle search and
+                    scroll to verify behaviour.
+                </p>
+                <div className="max-w-md rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-6">
+                    <SingleSelectV2
+                        label="Choose option"
+                        placeholder={`Select from ${LARGE_LIST_SIZE} options...`}
+                        items={largeListItems}
+                        selected={largeListSelected}
+                        onSelect={setLargeListSelected}
+                        enableSearch
+                        enableVirtualization
+                        maxPopoverHeight={320}
+                    />
                 </div>
             </section>
         </div>

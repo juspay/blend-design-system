@@ -1,12 +1,9 @@
 import type { ReactNode } from 'react'
-import { TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip/types'
+import type { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+import type { SingleSelectV2MenuItemTokensType } from '../SingleSelectV2/singleSelectV2.tokens'
 
-export enum SelectItemType {
-    SINGLE = 'single',
-    MULTI = 'multi',
-}
-
-export type BaseSelectItemType = {
+/** Item type for SelectV2 (compatible with SingleSelectV2 item shape) */
+export type SelectV2ItemType = {
     label: string
     value: string
     checked?: boolean
@@ -17,8 +14,7 @@ export type BaseSelectItemType = {
     slot4?: ReactNode
     disabled?: boolean
     onClick?: () => void
-    subMenu?: BaseSelectItemType[]
-
+    subMenu?: SelectV2ItemType[]
     tooltip?: string | ReactNode
     tooltipProps?: {
         side?: TooltipSide
@@ -28,19 +24,16 @@ export type BaseSelectItemType = {
         delayDuration?: number
         offset?: number
     }
-
     disableTruncation?: boolean
 }
 
-export type SelectItemProps = {
-    item: BaseSelectItemType
+export type SelectItemV2Props = {
+    item: SelectV2ItemType
+    selected: string
     onSelect: (value: string) => void
-    selected: string | string[]
-    type: SelectItemType
-    showCheckmark?: boolean
-    className?: string
-    selectedPosition?: 'first' | 'middle' | 'last' | 'only' | 'none'
+    itemTokens: SingleSelectV2MenuItemTokensType
     index?: number
-    /** @default 'SINGLE_SELECT' – use SelectV2.SelectItemV2 for SingleSelectV2 */
-    tokenKey?: 'SINGLE_SELECT'
+    showCheckmark?: boolean
+    selectedPosition?: 'first' | 'middle' | 'last' | 'only' | 'none'
+    className?: string
 }
