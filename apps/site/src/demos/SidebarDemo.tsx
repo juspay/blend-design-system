@@ -207,7 +207,7 @@ const SidebarDemo = () => {
         | 'textInputAutofillTestV2'
         | 'textInputGroup'
         | 'timeline'
-    >('chatInput')
+    >('chartV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
