@@ -16,11 +16,8 @@ const stack = (gap: number) => ({
     flexDirection: 'column' as const,
     gap: `${gap}px`,
 })
-const sectionTitle = {
-    marginBottom: '12px',
-    fontSize: '14px',
-    fontWeight: 600 as const,
-}
+const sectionTitleWrap = { marginBottom: '12px' }
+const sectionTitle = { margin: 0, fontSize: '15px', fontWeight: 600 as const }
 const caption = { marginBottom: '16px', fontSize: '14px', color: '#64748b' }
 
 const meta: Meta<typeof KeyValuePairV2> = {
@@ -128,7 +125,9 @@ export const Visual: Story = {
     render: () => (
         <div style={{ ...stack(32), maxWidth: '360px' }}>
             <div>
-                <h3 style={sectionTitle}>Layouts</h3>
+                <div style={sectionTitleWrap}>
+                    <h3 style={sectionTitle}>Layouts</h3>
+                </div>
                 <div style={stack(12)}>
                     <KeyValuePairV2
                         keyString="Vertical"
@@ -145,7 +144,9 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <h3 style={sectionTitle}>Sizes</h3>
+                <div style={sectionTitleWrap}>
+                    <h3 style={sectionTitle}>Sizes</h3>
+                </div>
                 <div style={stack(12)}>
                     <KeyValuePairV2
                         keyString="Small"
@@ -165,7 +166,9 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <h3 style={sectionTitle}>Text overflow</h3>
+                <div style={sectionTitleWrap}>
+                    <h3 style={sectionTitle}>Text overflow</h3>
+                </div>
                 <div style={stack(12)}>
                     <KeyValuePairV2
                         keyString="Truncate"
@@ -191,7 +194,9 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <h3 style={sectionTitle}>With slots</h3>
+                <div style={sectionTitleWrap}>
+                    <h3 style={sectionTitle}>With slots</h3>
+                </div>
                 <div style={stack(12)}>
                     <KeyValuePairV2
                         keyString="Key slot"
@@ -226,9 +231,11 @@ export const Interaction: Story = {
     render: () => (
         <div style={{ ...stack(24), padding: '24px', maxWidth: '400px' }}>
             <div>
-                <h3 style={{ ...sectionTitle, fontSize: '16px' }}>
-                    Truncated value with tooltip
-                </h3>
+                <div style={sectionTitleWrap}>
+                    <h3 style={{ ...sectionTitle, fontSize: '16px' }}>
+                        Truncated value with tooltip
+                    </h3>
+                </div>
                 <p style={caption}>
                     Hover or focus the truncated value to see the full text in a
                     tooltip.
@@ -243,9 +250,11 @@ export const Interaction: Story = {
                 />
             </div>
             <div>
-                <h3 style={{ ...sectionTitle, fontSize: '16px' }}>
-                    Wrap-clamp with tooltip
-                </h3>
+                <div style={sectionTitleWrap}>
+                    <h3 style={{ ...sectionTitle, fontSize: '16px' }}>
+                        Wrap-clamp with tooltip
+                    </h3>
+                </div>
                 <p style={caption}>
                     Multi-line clamp: hover the value to see the full text.
                 </p>
