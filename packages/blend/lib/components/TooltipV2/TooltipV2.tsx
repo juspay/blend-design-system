@@ -13,7 +13,10 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { tooltipV2ContentAnimations } from './tooltipV2.animation'
-import { formatTextWithLineBreaks } from '../../global-utils/GlobalUtils'
+import {
+    formatTextWithLineBreaks,
+    composeRefs,
+} from '../../global-utils/GlobalUtils'
 
 const TOOLTIP_Z_INDEX = 9999
 const TOOLTIP_ARROW_OFFSET = 8
@@ -33,23 +36,29 @@ const AnimatedTooltipContent = styled(RadixTooltip.Content)`
     ${tooltipV2ContentAnimations}
 `
 
-const TooltipSlotBlock = ({
-    'data-element': dataElement,
-    children,
-}: {
-    'data-element': string
-    children: React.ReactNode
-}) => (
-    <Block
+const tooltipSlotBlockStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+}
+
+const TooltipSlotBlock = forwardRef<
+    HTMLElement,
+    { 'data-element': string; children: React.ReactNode }
+>(({ 'data-element': dataElement, children }, ref) => (
+    <div
+        ref={ref as React.Ref<HTMLDivElement>}
         data-element={dataElement}
-        contentCentered
-        flexShrink={0}
         role="presentation"
         aria-hidden="true"
+        style={tooltipSlotBlockStyle}
     >
         {children}
-    </Block>
-)
+    </div>
+))
+
+TooltipSlotBlock.displayName = 'TooltipSlotBlock'
 
 export const TooltipV2 = forwardRef<
     HTMLButtonElement | HTMLDivElement,
@@ -69,7 +78,7 @@ export const TooltipV2 = forwardRef<
             offset = 5,
             open,
             maxWidth,
-            fullWidth = false,
+            fullWidth: _fullWidth = false, // Not used: wrap trigger in a full-width container if needed
             disableInteractive = false,
         },
         ref
@@ -77,26 +86,24 @@ export const TooltipV2 = forwardRef<
         const tooltipTokens =
             useResponsiveTokens<TooltipV2TokensType>('TOOLTIPV2')
 
-        const isNativeElement =
-            isValidElement(trigger) && typeof trigger.type === 'string'
-        const shouldWrapTrigger = !isNativeElement
+        const triggerNode =
+            ref != null && isValidElement(trigger)
+                ? cloneElement(trigger, {
+                      ref: composeRefs<HTMLButtonElement | HTMLDivElement>(
+                          ref,
+                          (
+                              trigger as React.ReactElement & {
+                                  ref?: React.Ref<
+                                      HTMLButtonElement | HTMLDivElement
+                                  >
+                              }
+                          ).ref
+                      ),
+                  } as React.Attributes & {
+                      ref: React.Ref<HTMLButtonElement | HTMLDivElement>
+                  })
+                : trigger
 
-        const triggerStyle = {
-            display: fullWidth ? 'flex' : 'inline-flex',
-            width: fullWidth ? '100%' : 'auto',
-        } as const
-
-        const wrappedTrigger = shouldWrapTrigger ? (
-            <span ref={ref} style={triggerStyle}>
-                {trigger}
-            </span>
-        ) : isValidElement(trigger) && ref ? (
-            cloneElement(trigger, { ref } as {
-                ref: React.Ref<HTMLButtonElement | HTMLDivElement>
-            })
-        ) : (
-            trigger
-        )
         return (
             <RadixTooltip.Provider
                 delayDuration={delayDuration}
@@ -104,7 +111,7 @@ export const TooltipV2 = forwardRef<
             >
                 <RadixTooltip.Root open={open}>
                     <RadixTooltip.Trigger asChild>
-                        {wrappedTrigger}
+                        {triggerNode}
                     </RadixTooltip.Trigger>
                     {content && (
                         <RadixTooltip.Portal>
