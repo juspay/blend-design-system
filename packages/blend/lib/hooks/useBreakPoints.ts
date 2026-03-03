@@ -1,7 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
 
 export function useBreakpoints(breakpoints = BREAKPOINTS) {
+    const getLabel = (width: number) => {
+        if (width >= breakpoints.lg) return 'lg'
+        if (width >= breakpoints.sm) return 'sm'
+        return 'lg'
+    }
+
     const getRootWindow = () => {
         if (typeof window === 'undefined') return null
 
@@ -12,37 +18,31 @@ export function useBreakpoints(breakpoints = BREAKPOINTS) {
         }
     }
 
-    const getInitialLabel = () => {
+    const getViewportWidth = () => {
         const root = getRootWindow()
-        if (!root) return 'lg'
-
-        return root.matchMedia(`(min-width: ${breakpoints.lg}px)`).matches
-            ? 'lg'
-            : 'sm'
+        if (!root) return breakpoints.lg
+        return root.innerWidth
     }
 
-    const [breakPointLabel, setBreakPointLabel] = useState<'sm' | 'lg'>(
-        getInitialLabel
+    const [innerWidth, setInnerWidth] = useState(() => getViewportWidth())
+    const [breakPointLabel, setBreakPointLabel] = useState(() =>
+        getLabel(getViewportWidth())
     )
 
     useEffect(() => {
         const root = getRootWindow()
         if (!root) return
 
-        const mediaQuery = root.matchMedia(`(min-width: ${breakpoints.lg}px)`)
-
-        const handleChange = (event: MediaQueryListEvent) => {
-            setBreakPointLabel(event.matches ? 'lg' : 'sm')
+        const handleResize = () => {
+            const newWidth = root.innerWidth
+            setInnerWidth(newWidth)
+            setBreakPointLabel(getLabel(newWidth))
         }
 
-        setBreakPointLabel(mediaQuery.matches ? 'lg' : 'sm')
+        root.addEventListener('resize', handleResize)
 
-        mediaQuery.addEventListener('change', handleChange)
+        return () => root.removeEventListener('resize', handleResize)
+    }, [breakpoints])
 
-        return () => {
-            mediaQuery.removeEventListener('change', handleChange)
-        }
-    }, [breakpoints.lg])
-
-    return { breakPointLabel }
+    return { innerWidth, breakPointLabel }
 }
