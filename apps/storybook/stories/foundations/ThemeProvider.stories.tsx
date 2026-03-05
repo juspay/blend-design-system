@@ -277,6 +277,7 @@ function App() {
                     'SKELETON',
                     'AVATAR',
                     'SIDEBAR',
+                    'TOOLTIPV2',
                 ].map((component) => (
                     <code
                         key={component}

@@ -228,6 +228,8 @@ export const useComponentToken = (
             return componentTokens.CHECKBOXV2
         case 'KEYVALUEPAIRV2':
             return componentTokens.KEYVALUEPAIRV2
+        case 'TOOLTIPV2':
+            return componentTokens.TOOLTIPV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
