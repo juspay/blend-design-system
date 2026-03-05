@@ -53,3 +53,4 @@ export * from './tokens'
 
 export * from './components/ChartsV2'
 export * from './components/Timeline'
+export * from './components/MultiSelectV2'

@@ -121,6 +121,7 @@ import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
 import SingleSelectDemoV2 from './SingleSelectDemoV2'
+import MultiSelectDemoV2 from './MultiSelectDemoV2'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
@@ -180,6 +181,7 @@ const SidebarDemo = () => {
         | 'singleSelectGroup'
         | 'multiSelectGroup'
         | 'multiSelect'
+        | 'multiSelectV2'
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
@@ -485,6 +487,8 @@ const SidebarDemo = () => {
                 return <MultiSelectGroupDemo />
             case 'multiSelect':
                 return <MultiSelectDemo />
+            case 'multiSelectV2':
+                return <MultiSelectDemoV2 />
             case 'progressBar':
                 return <ProgressBarDemo />
             case 'drawer':
@@ -1050,6 +1054,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'multiSelect',
                     onClick: () => setActiveComponent('multiSelect'),
+                },
+                {
+                    label: 'Multi Select V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelectV2',
+                    onClick: () => setActiveComponent('multiSelectV2'),
                 },
                 {
                     label: 'Multi Select Group',
