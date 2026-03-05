@@ -90,6 +90,10 @@ import { TooltipV2, TooltipV2Side, TooltipV2Align, TooltipV2Size } from '@juspay
             control: 'boolean',
             description: 'Controlled open state of the tooltip',
         },
+        onOpenChange: {
+            description:
+                'Callback when open state changes (use with open for controlled mode)',
+        },
         side: {
             control: 'select',
             options: Object.values(TooltipV2Side),
@@ -163,161 +167,122 @@ export const Default: Story = {
     ),
 }
 
-export const TooltipPositions: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gridTemplateRows: 'repeat(3, 1fr)',
-                gap: '60px',
-                padding: '60px',
-                alignItems: 'center',
-                justifyItems: 'center',
-            }}
-        >
-            <div></div>
-            <TooltipV2
-                content="Top tooltip"
-                side={TooltipV2Side.TOP}
-                showArrow={true}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="Top" />
-            </TooltipV2>
-            <div></div>
-
-            <TooltipV2
-                content="Left tooltip"
-                side={TooltipV2Side.LEFT}
-                showArrow={true}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="Left" />
-            </TooltipV2>
-            <TooltipV2
-                content="Center tooltip - no arrow"
-                side={TooltipV2Side.TOP}
-                showArrow={false}
-            >
-                <Button buttonType={ButtonType.PRIMARY} text="Center" />
-            </TooltipV2>
-            <TooltipV2
-                content="Right tooltip"
-                side={TooltipV2Side.RIGHT}
-                showArrow={true}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="Right" />
-            </TooltipV2>
-
-            <div></div>
-            <TooltipV2
-                content="Bottom tooltip"
-                side={TooltipV2Side.BOTTOM}
-                showArrow={true}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="Bottom" />
-            </TooltipV2>
-            <div></div>
-        </div>
+export const Interactive: Story = {
+    args: {
+        content:
+            'Use the controls below to change props and see the tooltip update.',
+        side: TooltipV2Side.TOP,
+        align: TooltipV2Align.CENTER,
+        showArrow: true,
+        size: TooltipV2Size.SM,
+        slotDirection: TooltipV2SlotDirection.LEFT,
+        delayDuration: 300,
+        offset: 5,
+        fullWidth: false,
+        disableInteractive: false,
+    },
+    render: (args) => (
+        <TooltipV2 {...args}>
+            <Button
+                buttonType={ButtonType.PRIMARY}
+                text="Hover or focus to see tooltip"
+            />
+        </TooltipV2>
     ),
     parameters: {
         docs: {
             description: {
-                story: 'Tooltips positioned on all four sides: top, right, bottom, left. Hover over each button to see the tooltip placement.',
+                story: 'Use the Controls panel to change side, align, size, delay, offset, and other props. The tooltip updates in real time.',
             },
         },
     },
 }
 
-export const TooltipAlignments: Story = {
+export const Visual: Story = {
     render: () => (
         <div
             style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '40px',
-                padding: '40px',
+                gap: '48px',
+                padding: '48px',
+                alignItems: 'center',
+                maxWidth: '600px',
             }}
         >
             <div
                 style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    gap: '24px',
                     alignItems: 'center',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
                 }}
             >
                 <TooltipV2
-                    content="Start aligned tooltip"
+                    content="Top tooltip with arrow"
                     side={TooltipV2Side.TOP}
-                    align={TooltipV2Align.START}
                     showArrow={true}
+                    size={TooltipV2Size.SM}
                 >
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        text="Start Align"
-                    />
+                    <Button buttonType={ButtonType.SECONDARY} text="Top" />
                 </TooltipV2>
                 <TooltipV2
-                    content="Center aligned tooltip"
-                    side={TooltipV2Side.TOP}
-                    align={TooltipV2Align.CENTER}
+                    content="Right tooltip"
+                    side={TooltipV2Side.RIGHT}
                     showArrow={true}
                 >
-                    <Button
-                        buttonType={ButtonType.PRIMARY}
-                        text="Center Align"
-                    />
+                    <Button buttonType={ButtonType.SECONDARY} text="Right" />
                 </TooltipV2>
                 <TooltipV2
-                    content="End aligned tooltip"
-                    side={TooltipV2Side.TOP}
-                    align={TooltipV2Align.END}
+                    content="Bottom tooltip"
+                    side={TooltipV2Side.BOTTOM}
                     showArrow={true}
                 >
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        text="End Align"
-                    />
+                    <Button buttonType={ButtonType.SECONDARY} text="Bottom" />
+                </TooltipV2>
+                <TooltipV2
+                    content="Left tooltip"
+                    side={TooltipV2Side.LEFT}
+                    showArrow={true}
+                >
+                    <Button buttonType={ButtonType.SECONDARY} text="Left" />
                 </TooltipV2>
             </div>
-
             <div
                 style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    gap: '24px',
                     alignItems: 'center',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
                 }}
             >
                 <TooltipV2
-                    content="Start aligned (right)"
-                    side={TooltipV2Side.RIGHT}
-                    align={TooltipV2Align.START}
+                    content="Small size"
+                    size={TooltipV2Size.SM}
+                    showArrow={true}
+                >
+                    <Button buttonType={ButtonType.SECONDARY} text="SM" />
+                </TooltipV2>
+                <TooltipV2
+                    content="Large tooltip with more content"
+                    size={TooltipV2Size.LG}
+                    showArrow={true}
+                >
+                    <Button buttonType={ButtonType.PRIMARY} text="LG" />
+                </TooltipV2>
+                <TooltipV2
+                    content="With slot"
+                    slot={<Info size={16} color="#3b82f6" />}
+                    slotDirection={TooltipV2SlotDirection.LEFT}
+                    size={TooltipV2Size.LG}
                     showArrow={true}
                 >
                     <Button
                         buttonType={ButtonType.SECONDARY}
-                        text="Right Start"
-                    />
-                </TooltipV2>
-                <TooltipV2
-                    content="Center aligned (right)"
-                    side={TooltipV2Side.RIGHT}
-                    align={TooltipV2Align.CENTER}
-                    showArrow={true}
-                >
-                    <Button
-                        buttonType={ButtonType.PRIMARY}
-                        text="Right Center"
-                    />
-                </TooltipV2>
-                <TooltipV2
-                    content="End aligned (right)"
-                    side={TooltipV2Side.RIGHT}
-                    align={TooltipV2Align.END}
-                    showArrow={true}
-                >
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        text="Right End"
+                        text="With icon"
+                        leadingIcon={<Info size={16} />}
                     />
                 </TooltipV2>
             </div>
@@ -326,38 +291,7 @@ export const TooltipAlignments: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different tooltip alignment options: start, center, and end. Hover to see how tooltips align relative to their trigger elements.',
-            },
-        },
-    },
-}
-
-export const TooltipSizes: Story = {
-    render: () => (
-        <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-            <TooltipV2
-                content="Small tooltip with concise information"
-                size={TooltipV2Size.SM}
-                showArrow={true}
-            >
-                <Button
-                    buttonType={ButtonType.SECONDARY}
-                    text="Small Tooltip"
-                />
-            </TooltipV2>
-            <TooltipV2
-                content="Large tooltip with more detailed information and additional context that can span multiple lines"
-                size={TooltipV2Size.LG}
-                showArrow={true}
-            >
-                <Button buttonType={ButtonType.PRIMARY} text="Large Tooltip" />
-            </TooltipV2>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Different tooltip sizes: SM and LG. Hover to see the size difference and content capacity.',
+                story: 'Visual overview of TooltipV2: positions, sizes, and with slot. Use Controls on other stories to tweak individual props.',
             },
         },
     },
@@ -387,7 +321,7 @@ export const RichContentTooltips: Story = {
                 <Button
                     buttonType={ButtonType.PRIMARY}
                     text="Rich Content"
-                    leadingIcon={Info}
+                    leadingIcon={<Info size={16} />}
                 />
             </TooltipV2>
 
@@ -421,7 +355,7 @@ export const RichContentTooltips: Story = {
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     text="Status"
-                    leadingIcon={CheckCircle}
+                    leadingIcon={<CheckCircle size={16} />}
                 />
             </TooltipV2>
 
@@ -447,7 +381,7 @@ export const RichContentTooltips: Story = {
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     text="Warning"
-                    leadingIcon={AlertTriangle}
+                    leadingIcon={<AlertTriangle size={16} />}
                 />
             </TooltipV2>
         </div>
@@ -506,7 +440,7 @@ export const WithSlots: Story = {
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     text="Security"
-                    leadingIcon={Settings}
+                    leadingIcon={<Settings size={16} />}
                 />
             </TooltipV2>
         </div>
@@ -545,6 +479,7 @@ export const ControlledTooltip: Story = {
                         <TooltipV2
                             content="This tooltip is controlled by hover state"
                             open={isOpen}
+                            onOpenChange={setIsOpen}
                             showArrow={true}
                             size={TooltipV2Size.LG}
                         >
@@ -559,6 +494,7 @@ export const ControlledTooltip: Story = {
                         <TooltipV2
                             content="This tooltip is controlled by click state"
                             open={manualOpen}
+                            onOpenChange={setManualOpen}
                             showArrow={true}
                             size={TooltipV2Size.LG}
                             side={TooltipV2Side.RIGHT}
@@ -592,245 +528,6 @@ export const ControlledTooltip: Story = {
         docs: {
             description: {
                 story: 'Controlled tooltips with custom open/close logic. One responds to hover, another to clicks.',
-            },
-        },
-    },
-}
-
-export const DelayAndTiming: Story = {
-    render: () => (
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-            <TooltipV2
-                content="Instant tooltip (no delay)"
-                delayDuration={0}
-                showArrow={true}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="No Delay" />
-            </TooltipV2>
-
-            <TooltipV2
-                content="Fast tooltip (300ms delay)"
-                delayDuration={300}
-                showArrow={true}
-            >
-                <Button buttonType={ButtonType.PRIMARY} text="Fast" />
-            </TooltipV2>
-
-            <TooltipV2
-                content="Slow tooltip (1000ms delay)"
-                delayDuration={1000}
-                showArrow={true}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="Slow" />
-            </TooltipV2>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Different delay durations before tooltips appear: instant, fast (300ms), and slow (1000ms).',
-            },
-        },
-    },
-}
-
-export const OffsetVariations: Story = {
-    render: () => (
-        <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-            <TooltipV2
-                content="Close to trigger (5px offset)"
-                offset={5}
-                showArrow={true}
-                side={TooltipV2Side.TOP}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="Close" />
-            </TooltipV2>
-
-            <TooltipV2
-                content="Normal distance (15px offset)"
-                offset={15}
-                showArrow={true}
-                side={TooltipV2Side.TOP}
-            >
-                <Button buttonType={ButtonType.PRIMARY} text="Normal" />
-            </TooltipV2>
-
-            <TooltipV2
-                content="Far from trigger (30px offset)"
-                offset={30}
-                showArrow={true}
-                side={TooltipV2Side.TOP}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="Far" />
-            </TooltipV2>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Different offset distances between tooltip and trigger element: close (5px), normal (15px), and far (30px).',
-            },
-        },
-    },
-}
-
-export const FullWidthExamples: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                padding: '20px',
-                maxWidth: '400px',
-            }}
-        >
-            <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    Without fullWidth (default)
-                </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Tooltip wrapper uses inline-flex, causing the trigger to
-                    shrink to fit-content.
-                </p>
-                <div
-                    style={{
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '8px',
-                        padding: '8px',
-                        width: '100%',
-                    }}
-                >
-                    <TooltipV2
-                        content="This tooltip is on a menu item"
-                        showArrow={true}
-                        side={TooltipV2Side.RIGHT}
-                    >
-                        <div
-                            style={{
-                                padding: '12px',
-                                backgroundColor: '#f3f4f6',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Menu Item (fit-content width)
-                        </div>
-                    </TooltipV2>
-                </div>
-            </div>
-
-            <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    With fullWidth={true}
-                </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Tooltip wrapper uses flex with full width, allowing the
-                    trigger to span the full container width.
-                </p>
-                <div
-                    style={{
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '8px',
-                        padding: '8px',
-                        width: '100%',
-                    }}
-                >
-                    <TooltipV2
-                        content="This tooltip is on a full-width menu item"
-                        showArrow={true}
-                        side={TooltipV2Side.RIGHT}
-                        fullWidth={true}
-                    >
-                        <div
-                            style={{
-                                padding: '12px',
-                                backgroundColor: '#f3f4f6',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Menu Item (full width)
-                        </div>
-                    </TooltipV2>
-                </div>
-            </div>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Demonstrates the fullWidth prop which makes the tooltip trigger wrapper span full width. Useful for menu items.',
-            },
-        },
-    },
-}
-
-export const MaxWidthExamples: Story = {
-    render: () => (
-        <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-            <TooltipV2
-                content="This is a long tooltip content that will be constrained to a narrow width of 150px. It should wrap to multiple lines and demonstrate the maxWidth property in action."
-                maxWidth="150px"
-                size={TooltipV2Size.LG}
-                showArrow={true}
-                side={TooltipV2Side.TOP}
-            >
-                <Button
-                    buttonType={ButtonType.SECONDARY}
-                    text="Narrow (150px)"
-                />
-            </TooltipV2>
-
-            <TooltipV2
-                content="This tooltip has a medium width constraint of 250px. It provides a good balance between readability and space efficiency for moderately long content."
-                maxWidth="250px"
-                size={TooltipV2Size.LG}
-                showArrow={true}
-                side={TooltipV2Side.TOP}
-            >
-                <Button buttonType={ButtonType.PRIMARY} text="Medium (250px)" />
-            </TooltipV2>
-
-            <TooltipV2
-                content="This tooltip demonstrates a wide width constraint of 400px, which allows for longer content to be displayed on fewer lines while maintaining good readability."
-                maxWidth="400px"
-                size={TooltipV2Size.LG}
-                showArrow={true}
-                side={TooltipV2Side.TOP}
-            >
-                <Button buttonType={ButtonType.SECONDARY} text="Wide (400px)" />
-            </TooltipV2>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Different maxWidth constraints on tooltips: narrow (150px), medium (250px), and wide (400px).',
             },
         },
     },
@@ -891,20 +588,9 @@ export const FormValidationTooltips: Story = {
                         <Button
                             buttonType={ButtonType.SECONDARY}
                             text="!"
-                            style={{
-                                position: 'absolute',
-                                right: '8px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                width: '24px',
-                                height: '24px',
-                                minWidth: '24px',
-                                padding: '0',
-                                fontSize: '12px',
-                                backgroundColor: '#ef4444',
-                                color: 'white',
-                                border: 'none',
-                            }}
+                            leadingIcon={
+                                <AlertTriangle size={14} color="#ef4444" />
+                            }
                         />
                     </TooltipV2>
                 </div>
@@ -958,20 +644,9 @@ export const FormValidationTooltips: Story = {
                         <Button
                             buttonType={ButtonType.SECONDARY}
                             text="✓"
-                            style={{
-                                position: 'absolute',
-                                right: '8px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                width: '24px',
-                                height: '24px',
-                                minWidth: '24px',
-                                padding: '0',
-                                fontSize: '12px',
-                                backgroundColor: '#10b981',
-                                color: 'white',
-                                border: 'none',
-                            }}
+                            leadingIcon={
+                                <CheckCircle size={16} color="#10b981" />
+                            }
                         />
                     </TooltipV2>
                 </div>
@@ -1042,7 +717,7 @@ export const FeatureAnnouncements: Story = {
                 <Button
                     buttonType={ButtonType.PRIMARY}
                     text="Settings"
-                    leadingIcon={Settings}
+                    leadingIcon={<Settings size={16} />}
                 />
             </TooltipV2>
 

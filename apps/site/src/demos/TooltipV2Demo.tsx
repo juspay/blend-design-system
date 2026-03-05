@@ -308,6 +308,9 @@ const TooltipV2Demo: React.FC = () => {
                     offset={config.offset}
                     open={config.forceVisible || undefined}
                     disableInteractive={config.disableInteractive}
+                    onOpenChange={(e) => {
+                        console.log('open changed', e)
+                    }}
                 >
                     <Button
                         data-tooltip={'Hover Me'}

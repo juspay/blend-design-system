@@ -17,10 +17,7 @@ import {
     formatTextWithLineBreaks,
     composeRefs,
 } from '../../global-utils/GlobalUtils'
-import { FOUNDATION_THEME } from '../../tokens'
-
 const TOOLTIP_Z_INDEX = 9999
-const TOOLTIP_ARROW_OFFSET = FOUNDATION_THEME.unit[8]
 
 const textOverflowStyle: React.CSSProperties = {
     wordBreak: 'break-word',
@@ -78,6 +75,7 @@ export const TooltipV2 = forwardRef<
             delayDuration = 300,
             offset = 5,
             open,
+            onOpenChange,
             maxWidth,
             disableInteractive = false,
         },
@@ -109,7 +107,7 @@ export const TooltipV2 = forwardRef<
                 delayDuration={delayDuration}
                 disableHoverableContent={disableInteractive}
             >
-                <RadixTooltip.Root open={open}>
+                <RadixTooltip.Root open={open} onOpenChange={onOpenChange}>
                     <RadixTooltip.Trigger asChild>
                         {triggerNode}
                     </RadixTooltip.Trigger>
@@ -191,7 +189,7 @@ export const TooltipV2 = forwardRef<
                                 </Block>
                                 {showArrow && (
                                     <Arrow
-                                        offset={TOOLTIP_ARROW_OFFSET}
+                                        offset={offset}
                                         $color={tooltipTokens.background}
                                         aria-hidden="true"
                                     />

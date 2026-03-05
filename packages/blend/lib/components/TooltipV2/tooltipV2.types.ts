@@ -27,6 +27,7 @@ export type TooltipV2Props = {
     children: ReactNode
     content: ReactNode | string
     open?: boolean
+    onOpenChange?: (open: boolean) => void
     side?: TooltipV2Side
     align?: TooltipV2Align
     showArrow?: boolean
