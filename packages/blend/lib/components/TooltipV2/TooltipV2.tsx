@@ -1,5 +1,5 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
-import styled, { type CSSObject } from 'styled-components'
+import styled from 'styled-components'
 import { cloneElement, forwardRef, isValidElement } from 'react'
 import {
     type TooltipV2Props,
@@ -17,9 +17,10 @@ import {
     formatTextWithLineBreaks,
     composeRefs,
 } from '../../global-utils/GlobalUtils'
+import { FOUNDATION_THEME } from '../../tokens'
 
 const TOOLTIP_Z_INDEX = 9999
-const TOOLTIP_ARROW_OFFSET = 8
+const TOOLTIP_ARROW_OFFSET = FOUNDATION_THEME.unit[8]
 
 const textOverflowStyle: React.CSSProperties = {
     wordBreak: 'break-word',
@@ -27,7 +28,7 @@ const textOverflowStyle: React.CSSProperties = {
 }
 
 const Arrow = styled(RadixTooltip.Arrow)<{
-    $color: CSSObject['backgroundColor']
+    $color: React.CSSProperties['backgroundColor']
 }>`
     fill: ${({ $color }) => $color};
 `
@@ -78,7 +79,6 @@ export const TooltipV2 = forwardRef<
             offset = 5,
             open,
             maxWidth,
-            fullWidth: _fullWidth = false, // Not used: wrap trigger in a full-width container if needed
             disableInteractive = false,
         },
         ref

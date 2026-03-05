@@ -147,7 +147,8 @@ import {
     getKeyValuePairV2Tokens,
     ResponsiveKeyValuePairV2Tokens,
 } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
-    import {getTooltipV2Tokens,
+import {
+    getTooltipV2Tokens,
     ResponsiveTooltipV2Tokens,
 } from '../components/TooltipV2/tooltipV2.tokens'
 
