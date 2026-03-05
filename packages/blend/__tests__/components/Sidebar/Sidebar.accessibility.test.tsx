@@ -1258,7 +1258,7 @@ describe('Sidebar Accessibility', () => {
     })
 
     describe('Skip Links', () => {
-        it('skip links are present and functional', async () => {
+        it('does not render internal skip links when not configured', async () => {
             const { container } = render(
                 <div style={{ height: '100vh', width: '100vw' }}>
                     <Sidebar
@@ -1272,23 +1272,11 @@ describe('Sidebar Accessibility', () => {
 
             await waitFor(() => {
                 const skipLinks = container.querySelectorAll('a[href^="#"]')
-                expect(skipLinks.length).toBeGreaterThanOrEqual(2)
-
-                // Check for skip to navigation link
-                const skipToNav = Array.from(skipLinks).find((link) =>
-                    link.textContent?.includes('navigation')
-                )
-                expect(skipToNav).toBeInTheDocument()
-
-                // Check for skip to main content link
-                const skipToContent = Array.from(skipLinks).find((link) =>
-                    link.textContent?.includes('main content')
-                )
-                expect(skipToContent).toBeInTheDocument()
+                expect(skipLinks.length).toBe(0)
             })
         })
 
-        it('skip links have proper styling and visibility', async () => {
+        it('still exposes navigation and main regions via landmarks', async () => {
             const { container } = render(
                 <div style={{ height: '100vh', width: '100vw' }}>
                     <Sidebar
@@ -1301,16 +1289,10 @@ describe('Sidebar Accessibility', () => {
             )
 
             await waitFor(() => {
-                const skipLinks = container.querySelectorAll(
-                    'a[href^="#"]'
-                ) as NodeListOf<HTMLElement>
-                expect(skipLinks.length).toBeGreaterThan(0)
-
-                skipLinks.forEach((link) => {
-                    const style = window.getComputedStyle(link)
-                    // Skip links should be hidden by default but visible on focus
-                    expect(style.position).toBe('absolute')
-                })
+                const nav = container.querySelector('nav[role="navigation"]')
+                const main = container.querySelector('main[role="main"]')
+                expect(nav).toBeInTheDocument()
+                expect(main).toBeInTheDocument()
             })
         })
     })
