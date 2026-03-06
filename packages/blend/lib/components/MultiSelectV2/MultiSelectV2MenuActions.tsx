@@ -5,8 +5,6 @@ import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 
 export type MultiSelectV2MenuActionsProps = {
     tokens: MultiSelectV2TokensType
-    backgroundColor: string
-    borderColor: string
     primaryAction?: {
         text: string
         onClick: (selectedValues: string[]) => void
@@ -25,8 +23,6 @@ export type MultiSelectV2MenuActionsProps = {
 
 const MultiSelectV2MenuActions = ({
     tokens,
-    backgroundColor,
-    borderColor,
     primaryAction,
     secondaryAction,
     selected,
@@ -41,8 +37,8 @@ const MultiSelectV2MenuActions = ({
             justifyContent="flex-end"
             margin={0}
             flexShrink={0}
-            backgroundColor={backgroundColor}
-            borderTop={`1px solid ${borderColor}`}
+            backgroundColor={actions.backgroundColor}
+            borderTop={actions.borderTop}
         >
             {secondaryAction && (
                 <Button

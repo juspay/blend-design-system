@@ -6,8 +6,6 @@ import MultiSelectV2MenuSearch from './MultiSelectV2MenuSearch'
 import MultiSelectV2SelectAllItem from './MultiSelectV2SelectAllItem'
 
 export type MultiSelectV2MenuHeaderProps = {
-    backgroundColor: string
-    borderColor: string
     tokens: MultiSelectV2TokensType
     showSearch: boolean
     itemsCount: number
@@ -29,8 +27,6 @@ export type MultiSelectV2MenuHeaderProps = {
 }
 
 const MultiSelectV2MenuHeader = ({
-    backgroundColor,
-    borderColor,
     tokens,
     showSearch,
     itemsCount,
@@ -47,6 +43,7 @@ const MultiSelectV2MenuHeader = ({
     selectAllText,
     disabled,
 }: MultiSelectV2MenuHeaderProps) => {
+    const header = tokens.menu?.header
     return (
         <Block
             position="sticky"
@@ -54,7 +51,9 @@ const MultiSelectV2MenuHeader = ({
             left={0}
             right={0}
             zIndex={50}
-            backgroundColor={backgroundColor}
+            backgroundColor={
+                header?.backgroundColor ?? tokens.menu.backgroundColor
+            }
         >
             {showSearch && itemsCount > 0 && (
                 <MultiSelectV2MenuSearch
@@ -68,8 +67,9 @@ const MultiSelectV2MenuHeader = ({
             )}
             {showSelectAll && onSelectAll && availableValues.length > 0 && (
                 <Block
-                    borderBottom={`1px solid ${borderColor}`}
-                    padding={`0 ${tokens.menu.item.gap}`}
+                    borderBottom={header?.borderBottom}
+                    paddingLeft={header?.selectAllRowPaddingLeft}
+                    paddingRight={header?.selectAllRowPaddingRight}
                 >
                     <MultiSelectV2SelectAllItem
                         selected={selected}

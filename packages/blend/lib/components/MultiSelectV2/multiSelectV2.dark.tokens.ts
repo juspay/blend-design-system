@@ -242,8 +242,14 @@ export const getMultiSelectV2DarkTokens = (
             },
             minWidth: 250,
             scroll: {
-                headerFooterHeight: 80,
-                defaultContentMaxHeight: 320,
+                height: 80,
+                maxHeight: 320,
+            },
+            header: {
+                backgroundColor: foundationToken.colors.gray[800],
+                borderBottom: `1px solid ${foundationToken.colors.gray[700]}`,
+                selectAllRowPaddingLeft: foundationToken.unit[4],
+                selectAllRowPaddingRight: foundationToken.unit[4],
             },
             selectAll: {
                 padding: foundationToken.unit[8],
@@ -251,19 +257,21 @@ export const getMultiSelectV2DarkTokens = (
             },
             list: {
                 padding: foundationToken.unit[6],
-                paddingTopWhenNoSearch: foundationToken.unit[6],
+                paddingTop: foundationToken.unit[6],
             },
             actions: {
                 padding: foundationToken.unit[16],
                 gap: foundationToken.unit[8],
+                backgroundColor: foundationToken.colors.gray[800],
+                borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[700]}`,
             },
             item: {
-                padding: `${foundationToken.unit[8]} ${foundationToken.unit[6]}`,
-                margin: `0 ${foundationToken.unit[6]}`,
-                borderRadius: foundationToken.unit[8],
-                gap: foundationToken.unit[8],
+                padding: foundationToken.unit[4],
+                margin: foundationToken.unit[4],
+                borderRadius: foundationToken.unit[10],
+                gap: foundationToken.unit[4],
                 backgroundColor: {
-                    default: 'transparent',
+                    default: foundationToken.colors.gray[800],
                     hover: foundationToken.colors.gray[700],
                     active: foundationToken.colors.gray[600],
                     focus: foundationToken.colors.gray[700],
@@ -272,8 +280,8 @@ export const getMultiSelectV2DarkTokens = (
                     selected: foundationToken.colors.gray[700],
                 },
                 optionsLabel: {
-                    fontSize: foundationToken.font.size.body.xs.fontSize,
-                    fontWeight: foundationToken.font.weight[600],
+                    fontSize: 12,
+                    fontWeight: foundationToken.font.weight[400],
                     color: {
                         default: foundationToken.colors.gray[400],
                         hover: foundationToken.colors.gray[400],

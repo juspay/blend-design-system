@@ -64,11 +64,13 @@ const MultiSelectDemoV2 = () => {
         )
     }
 
-    const handlePlaygroundChange = (value: string) => {
+    const handlePlaygroundChange = (value: string | string[]) => {
         setPlaygroundSelected((prev) =>
-            prev.includes(value)
-                ? prev.filter((v) => v !== value)
-                : [...prev, value]
+            Array.isArray(value)
+                ? value
+                : prev.includes(value)
+                  ? prev.filter((v) => v !== value)
+                  : [...prev, value]
         )
     }
 

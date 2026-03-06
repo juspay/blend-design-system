@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from 'react'
+import React, { useCallback, useId, useMemo, useState } from 'react'
 import { X } from 'lucide-react'
 import styled from 'styled-components'
 import type { AriaAttributes } from 'react'
@@ -41,7 +41,7 @@ const Wrapper = styled(Block)`
 const MultiSelectV2 = ({
     selectedValues,
     onChange,
-    items = [],
+    items,
     label,
     subLabel,
     disabled,
@@ -79,7 +79,7 @@ const MultiSelectV2 = ({
     showItemDividers = false,
     showHeaderBorder = false,
     fullWidth = false,
-    enableVirtualization = items.length > 20 ? true : false,
+    enableVirtualization = false,
     virtualListItemHeight = 48,
     virtualListOverscan = 5,
     onEndReached,
@@ -100,18 +100,21 @@ const MultiSelectV2 = ({
     onOpenChange,
     multiSelectGroupPosition,
 }: MultiSelectV2Props) => {
+    const safeItems = items ?? []
     const breakpoints = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakpoints.breakPointLabel === 'sm'
-    const isMobile = breakpoints.innerWidth < 1024
+    const isMobile = breakpoints.innerWidth < BREAKPOINTS.lg
     const isContainer = variant === MultiSelectV2Variant.CONTAINER
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const [open, setOpen] = useState(false)
-    const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
+    const valueLabelMap = useMemo(
+        () => getValueLabelMap(safeItems),
+        [safeItems]
+    )
+    const shouldVirtualize = enableVirtualization && safeItems.length > 20
     const shouldShowClearButton =
-        showClearButton !== undefined
-            ? showClearButton && selectedValues.length > 0
-            : isContainer && selectedValues.length > 0
+        (showClearButton ?? isContainer) && selectedValues.length > 0
     const shouldShowActionButtons =
         showActionButtons !== undefined
             ? showActionButtons
@@ -151,62 +154,87 @@ const MultiSelectV2 = ({
         'aria-invalid': ariaAttributes['aria-invalid'] as boolean | undefined,
     }
 
+    const handleOpenChange = useCallback(
+        (isOpen: boolean) => {
+            setOpen(isOpen)
+            if (isOpen) {
+                onFocus?.()
+            } else {
+                onBlur?.()
+            }
+            onOpenChange?.(isOpen)
+        },
+        [onFocus, onBlur, onOpenChange]
+    )
+
+    const handleClearClick = useCallback(() => {
+        if (onClearAllClick) onClearAllClick()
+        else onChange([])
+    }, [onClearAllClick, onChange])
+
+    const handleClearKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                handleClearClick()
+            }
+        },
+        [handleClearClick]
+    )
+
     useDropdownInteractionLock(!isMobile && open)
 
+    const mobileSharedProps = {
+        selectedValues,
+        onChange,
+        items: safeItems,
+        label,
+        subLabel,
+        disabled,
+        helpIconText,
+        name,
+        required,
+        variant,
+        selectionTagType,
+        slot,
+        hintText,
+        placeholder,
+        size,
+        enableSearch,
+        searchPlaceholder,
+        enableSelectAll,
+        selectAllText,
+        maxSelections,
+        customTrigger,
+        onBlur,
+        onFocus,
+        error,
+        errorMessage,
+        showActionButtons: shouldShowActionButtons,
+        primaryAction: primaryAction
+            ? {
+                  ...primaryAction,
+                  onClick: () => primaryAction.onClick(selectedValues),
+              }
+            : undefined,
+        secondaryAction,
+        showItemDividers,
+        showHeaderBorder,
+        enableVirtualization: shouldVirtualize,
+        virtualListItemHeight,
+        virtualListOverscan,
+        onEndReached,
+        endReachedThreshold,
+        hasMore,
+        loadingComponent,
+        skeleton,
+        allowCustomValue,
+        customValueLabel,
+        onOpenChange,
+    }
+
     if (isMobile && usePanelOnMobile) {
-        return (
-            <MobileMultiSelectV2
-                selectedValues={selectedValues}
-                onChange={onChange}
-                items={items}
-                label={label}
-                subLabel={subLabel}
-                disabled={disabled}
-                helpIconText={helpIconText}
-                name={name}
-                required={required}
-                variant={variant}
-                selectionTagType={selectionTagType}
-                slot={slot}
-                hintText={hintText}
-                placeholder={placeholder}
-                size={size}
-                enableSearch={enableSearch}
-                searchPlaceholder={searchPlaceholder}
-                enableSelectAll={enableSelectAll}
-                selectAllText={selectAllText}
-                maxSelections={maxSelections}
-                customTrigger={customTrigger}
-                onBlur={onBlur}
-                onFocus={onFocus}
-                error={error}
-                errorMessage={errorMessage}
-                showActionButtons={shouldShowActionButtons}
-                primaryAction={
-                    primaryAction
-                        ? {
-                              ...primaryAction,
-                              onClick: () =>
-                                  primaryAction.onClick(selectedValues),
-                          }
-                        : undefined
-                }
-                secondaryAction={secondaryAction}
-                showItemDividers={showItemDividers}
-                showHeaderBorder={showHeaderBorder}
-                enableVirtualization={enableVirtualization}
-                virtualListItemHeight={virtualListItemHeight}
-                virtualListOverscan={virtualListOverscan}
-                onEndReached={onEndReached}
-                endReachedThreshold={endReachedThreshold}
-                hasMore={hasMore}
-                loadingComponent={loadingComponent}
-                skeleton={skeleton}
-                allowCustomValue={allowCustomValue}
-                customValueLabel={customValueLabel}
-                onOpenChange={onOpenChange}
-            />
-        )
+        return <MobileMultiSelectV2 {...mobileSharedProps} />
     }
 
     const borderRadius = getMultiSelectBorderRadius(
@@ -225,7 +253,7 @@ const MultiSelectV2 = ({
 
     return (
         <Block
-            data-multi-select={label || 'multi-select'}
+            data-multi-select="multi-select"
             data-status={disabled ? 'disabled' : 'enabled'}
             width={fullWidth ? '100%' : 'fit-content'}
             maxWidth={fullWidth ? '100%' : 'fit-content'}
@@ -263,7 +291,7 @@ const MultiSelectV2 = ({
                 >
                     <MultiSelectV2Menu
                         skeleton={skeleton}
-                        items={items}
+                        items={safeItems}
                         selected={selectedValues}
                         onSelect={onChange}
                         disabled={disabled}
@@ -291,12 +319,7 @@ const MultiSelectV2 = ({
                         sideOffset={sideOffset}
                         alignOffset={alignOffset}
                         open={open}
-                        onOpenChange={(isOpen) => {
-                            setOpen(isOpen)
-                            if (isOpen) onFocus?.()
-                            else onBlur?.()
-                            onOpenChange?.(isOpen)
-                        }}
+                        onOpenChange={handleOpenChange}
                         showActionButtons={shouldShowActionButtons}
                         primaryAction={
                             primaryAction
@@ -308,7 +331,7 @@ const MultiSelectV2 = ({
                                 : undefined
                         }
                         secondaryAction={secondaryAction}
-                        enableVirtualization={enableVirtualization}
+                        enableVirtualization={shouldVirtualize}
                         virtualListItemHeight={virtualListItemHeight}
                         virtualListOverscan={virtualListOverscan}
                         onEndReached={onEndReached}
@@ -327,9 +350,9 @@ const MultiSelectV2 = ({
                                     size={size}
                                     isSmallScreen={isSmallScreen}
                                     name={uniqueName}
-                                    label={label}
-                                    placeholder={placeholder}
-                                    required={required || false}
+                                    label={label ?? ''}
+                                    placeholder={placeholder ?? ''}
+                                    required={required ?? false}
                                     selectionTagType={selectionTagType}
                                     valueLabelMap={valueLabelMap}
                                     open={open}
@@ -346,9 +369,6 @@ const MultiSelectV2 = ({
                                             ? clearButtonBorder.borderRight
                                             : undefined
                                     }
-                                    onClick={() => {
-                                        if (!disabled && !open) setOpen(true)
-                                    }}
                                     {...triggerAriaAttributes}
                                 />
                             )
@@ -375,15 +395,10 @@ const MultiSelectV2 = ({
                                 opacity: 1,
                                 cursor: disabled ? 'not-allowed' : 'pointer',
                             }}
-                            onClick={() => {
-                                if (onClearAllClick) onClearAllClick()
-                                else onChange('')
-                            }}
-                            aria-label={
-                                label
-                                    ? `Clear selection for ${label}`
-                                    : 'Clear selection'
-                            }
+                            onClick={handleClearClick}
+                            onKeyDown={handleClearKeyDown}
+                            aria-label="Clear selection"
+                            tabIndex={disabled ? -1 : 0}
                             border={
                                 multiSelectTokens.trigger.outline[variant][
                                     error ? 'error' : 'closed'
@@ -434,4 +449,4 @@ const MultiSelectV2 = ({
 
 MultiSelectV2.displayName = 'MultiSelectV2'
 
-export default MultiSelectV2
+export default React.memo(MultiSelectV2)

@@ -160,8 +160,9 @@ export type MenuPopoverProps = {
 
 export type MultiSelectV2Props = {
     selectedValues: string[]
-    onChange: (selectedValue: string) => void
-    items: MultiSelectV2GroupType[]
+    /** Toggle: (value: string). Clear/set: (value: string[]). */
+    onChange: (value: string | string[]) => void
+    items?: MultiSelectV2GroupType[]
 
     label: string
     subLabel?: string

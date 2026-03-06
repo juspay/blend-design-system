@@ -279,10 +279,10 @@ const MultiSelectV2Menu = ({
 
     const isEmpty = filteredItems.length === 0
     const headerFooterHeight = Number(
-        multiSelectTokens.menu.scroll?.headerFooterHeight
+        multiSelectTokens.menu.scroll?.height ?? 80
     )
     const defaultContentMaxHeight = Number(
-        multiSelectTokens.menu.scroll?.defaultContentMaxHeight
+        multiSelectTokens.menu.scroll?.maxHeight ?? 320
     )
     const showActions =
         showActionButtons &&
@@ -337,8 +337,6 @@ const MultiSelectV2Menu = ({
                     ) : (
                         <>
                             <MultiSelectV2MenuHeader
-                                backgroundColor={menuBackgroundColor}
-                                borderColor={menuBorderColor}
                                 tokens={multiSelectTokens}
                                 showSearch={enableSearch}
                                 itemsCount={items.length}
@@ -415,8 +413,8 @@ const MultiSelectV2Menu = ({
                                         paddingTop={
                                             enableSearch
                                                 ? 0
-                                                : (multiSelectTokens.menu.list
-                                                      ?.paddingTopWhenNoSearch as number)
+                                                : multiSelectTokens.menu.list
+                                                      ?.paddingTop
                                         }
                                     />
                                 ) : (
@@ -435,8 +433,6 @@ const MultiSelectV2Menu = ({
                             {showActions && (
                                 <MultiSelectV2MenuActions
                                     tokens={multiSelectTokens}
-                                    backgroundColor={menuBackgroundColor}
-                                    borderColor={menuBorderColor}
                                     primaryAction={primaryAction}
                                     secondaryAction={secondaryAction}
                                     selected={selected}

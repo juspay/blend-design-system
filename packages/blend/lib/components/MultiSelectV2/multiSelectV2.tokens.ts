@@ -14,8 +14,8 @@ import type {
     SelectV2TriggerStates,
 } from '../SelectV2/selectV2.tokenStates'
 
-type StateToken<T> = Record<MultiSelectV2ItemStates, T>
-type TriggerStateToken<T> = Record<MultiSelectV2TriggerStates, T>
+type StateToken<T> = Record<SelectV2ItemStates, T>
+type TriggerStateToken<T> = Record<SelectV2TriggerStates, T>
 type VariantToken<T> = Record<MultiSelectV2Variant, T>
 type SizeToken<T> = Record<MultiSelectV2Size, T>
 type SelectionTagTypeToken<T> = Record<MultiSelectV2SelectionTagType, T>
@@ -26,6 +26,7 @@ export type MultiSelectV2ItemStates = SelectV2ItemStates
 
 export type MultiSelectV2TokensType = {
     gap: CSSObject['gap']
+
     label: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
@@ -49,6 +50,7 @@ export type MultiSelectV2TokensType = {
     required: {
         color: CSSObject['color']
     }
+
     trigger: {
         height: SizeToken<VariantToken<CSSObject['height']>>
         padding: SizeToken<
@@ -88,6 +90,7 @@ export type MultiSelectV2TokensType = {
             fontWeight: CSSObject['fontWeight']
         }
     }
+
     menu: {
         backgroundColor: CSSObject['backgroundColor']
         border: CSSObject['border']
@@ -100,8 +103,14 @@ export type MultiSelectV2TokensType = {
         >
         minWidth: CSSObject['minWidth']
         scroll: {
-            headerFooterHeight: CSSObject['height']
-            defaultContentMaxHeight: CSSObject['maxHeight']
+            height: CSSObject['height']
+            maxHeight: CSSObject['maxHeight']
+        }
+        header: {
+            backgroundColor: CSSObject['backgroundColor']
+            borderBottom: CSSObject['borderBottom']
+            selectAllRowPaddingLeft: CSSObject['paddingLeft']
+            selectAllRowPaddingRight: CSSObject['paddingRight']
         }
         selectAll: {
             padding: CSSObject['padding']
@@ -109,11 +118,13 @@ export type MultiSelectV2TokensType = {
         }
         list: {
             padding: CSSObject['padding']
-            paddingTopWhenNoSearch: CSSObject['paddingTop']
+            paddingTop: CSSObject['paddingTop']
         }
         actions: {
             padding: CSSObject['padding']
             gap: CSSObject['gap']
+            backgroundColor: CSSObject['backgroundColor']
+            borderTop: CSSObject['borderTop']
         }
         item: {
             padding: CSSObject['padding']
@@ -144,6 +155,7 @@ export type MultiSelectV2TokensType = {
             }
         }
     }
+
     subMenu: {
         trigger: {
             padding: CSSObject['padding']
@@ -155,6 +167,7 @@ export type MultiSelectV2TokensType = {
             padding: CSSObject['padding']
         }
     }
+
     drawer: {
         header: {
             paddingX: CSSObject['padding']

@@ -21,7 +21,7 @@ export type MultiSelectV2MenuVirtualListProps = {
     onEndReached?: () => void
     endReachedThreshold?: number
     hasMore?: boolean
-    paddingTop?: number
+    paddingTop?: number | string
 }
 
 const MultiSelectV2MenuVirtualList = ({
@@ -38,7 +38,7 @@ const MultiSelectV2MenuVirtualList = ({
     onEndReached,
     endReachedThreshold,
     hasMore,
-    paddingTop = tokens.menu.list?.paddingTopWhenNoSearch as number,
+    paddingTop = tokens.menu.list?.paddingTop,
 }: MultiSelectV2MenuVirtualListProps) => (
     <Block
         padding={tokens.menu.list?.padding ?? tokens.menu.item.gap}
