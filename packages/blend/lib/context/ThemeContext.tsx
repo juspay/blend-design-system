@@ -128,6 +128,10 @@ import {
     ResponsiveSingleSelectV2Tokens,
 } from '../components/SingleSelectV2/singleSelectV2.tokens'
 import {
+    getMultiSelectV2Tokens,
+    ResponsiveMultiSelectV2Tokens,
+} from '../components/MultiSelectV2/multiSelectV2.tokens'
+import {
     getAvatarV2Tokens,
     ResponsiveAvatarV2Tokens,
 } from '../components/AvatarV2/avatarV2.tokens'
@@ -200,6 +204,7 @@ export type ComponentTokenType = {
     SNACKBARV2?: ResponsiveSnackbarV2Tokens
     SWITCHV2?: ResponsiveSwitchV2Tokens
     SINGLE_SELECT_V2?: ResponsiveSingleSelectV2Tokens
+    MULTI_SELECT_V2?: ResponsiveMultiSelectV2Tokens
     AVATARV2?: ResponsiveAvatarV2Tokens
     TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
     CHARTSV2?: ResponsiveChartV2Tokens
@@ -273,6 +278,7 @@ const ThemeContext = createContext<ThemeContextType>({
             FOUNDATION_THEME,
             Theme.LIGHT
         ),
+        MULTI_SELECT_V2: getMultiSelectV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,

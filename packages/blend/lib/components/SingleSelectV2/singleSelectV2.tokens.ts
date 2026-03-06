@@ -5,23 +5,15 @@ import { BreakpointType } from '../../breakpoints/breakPoints'
 import { Theme } from '../../context/theme.enum'
 import { getSingleSelectV2LightTokens } from './singleSelectV2.light.tokens'
 import { getSingleSelectV2DarkTokens } from './singleSelectV2.dark.tokens'
+import type {
+    SelectV2ItemStates,
+    SelectV2TriggerStates,
+} from '../SelectV2/selectV2.tokenStates'
 
-export type SingleSelectV2ItemStates =
-    | 'default'
-    | 'hover'
-    | 'active'
-    | 'focus'
-    | 'focusVisible'
-    | 'disabled'
-    | 'selected'
+export type SingleSelectV2ItemStates = SelectV2ItemStates
 
 /** Trigger visual states: open, closed, hover, focus, error */
-export type SingleSelectV2TriggerStates =
-    | 'open'
-    | 'closed'
-    | 'hover'
-    | 'focus'
-    | 'error'
+export type SingleSelectV2TriggerStates = SelectV2TriggerStates
 
 type StateToken<T> = Record<SingleSelectV2ItemStates, T>
 type TriggerStateToken<T> = Record<SingleSelectV2TriggerStates, T>

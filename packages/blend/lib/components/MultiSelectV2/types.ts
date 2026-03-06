@@ -106,8 +106,10 @@ export type MultiSelectV2MenuProps = {
     side?: MultiSelectV2Side
     sideOffset?: number
     alignOffset?: number
-    open: boolean
-    onOpenChange: (open: boolean) => void
+    /** Controlled: when provided, menu open state is controlled by parent */
+    open?: boolean
+    /** Called when open state changes; use with open for controlled mode */
+    onOpenChange?: (open: boolean) => void
     showActionButtons?: boolean
     primaryAction?: {
         text: string

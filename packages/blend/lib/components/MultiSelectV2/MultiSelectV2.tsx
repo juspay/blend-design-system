@@ -105,7 +105,7 @@ const MultiSelectV2 = ({
     const isMobile = breakpoints.innerWidth < 1024
     const isContainer = variant === MultiSelectV2Variant.CONTAINER
     const multiSelectTokens =
-        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT')
+        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const [open, setOpen] = useState(false)
     const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
     const shouldShowClearButton =
@@ -347,7 +347,7 @@ const MultiSelectV2 = ({
                                             : undefined
                                     }
                                     onClick={() => {
-                                        if (!disabled) setOpen(true)
+                                        if (!disabled && !open) setOpen(true)
                                     }}
                                     {...triggerAriaAttributes}
                                 />

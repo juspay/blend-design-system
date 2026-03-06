@@ -22,7 +22,7 @@ const MultiSelectV2SelectAllItem = ({
     disabled,
 }: MultiSelectV2SelectAllItemProps) => {
     const multiSelectTokens =
-        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT')
+        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const { allSelected, someSelected } = getSelectAllState(
         selected,
         availableValues
@@ -45,11 +45,11 @@ const MultiSelectV2SelectAllItem = ({
         <RadixMenu.Item asChild data-disabled={disabled}>
             <Block
                 data-element="selectAll-checkbox"
-                padding={8}
+                padding={multiSelectTokens.menu.selectAll?.padding}
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
-                borderRadius={4}
+                borderRadius={multiSelectTokens.menu.selectAll?.borderRadius}
                 outline="none"
                 color={
                     disabled

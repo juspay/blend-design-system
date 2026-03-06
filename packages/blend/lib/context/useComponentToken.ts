@@ -219,6 +219,8 @@ export const useComponentToken = (
             return componentTokens.SWITCHV2
         case 'SINGLE_SELECT_V2':
             return componentTokens.SINGLE_SELECT_V2
+        case 'MULTI_SELECT_V2':
+            return componentTokens.MULTI_SELECT_V2
         case 'AVATARV2':
             return componentTokens.AVATARV2
         case 'TEXT_INPUTV2':

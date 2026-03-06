@@ -22,7 +22,7 @@ const MultiSelectV2MenuItem = ({
     index = 0,
 }: MultiSelectV2MenuItemProps) => {
     const multiSelectTokens =
-        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT')
+        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const isSelected = selected.includes(item.value)
     const isMaxReached =
         maxSelections !== undefined &&

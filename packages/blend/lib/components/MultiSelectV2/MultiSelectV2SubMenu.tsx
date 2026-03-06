@@ -5,7 +5,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import type { MultiSelectV2ItemType } from './types'
-import MultiSelectV2MenuItem from './MultiSelectV2MenuItem'
+import MultiSelectV2MenuItem from './MultiSelectV2MenuItem.tsx'
 
 const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => (
     <Block flexShrink={0} height="auto" contentCentered>
@@ -27,16 +27,18 @@ const MultiSelectV2SubMenu = ({
     maxSelections,
 }: MultiSelectV2SubMenuProps) => {
     const multiSelectTokens =
-        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT')
+        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
 
     return (
         <RadixMenu.Sub>
             <RadixMenu.SubTrigger asChild>
                 <Block
                     alignItems="center"
-                    padding="8px 6px"
-                    margin="0px 6px"
-                    borderRadius={4}
+                    padding={multiSelectTokens.subMenu?.trigger?.padding}
+                    margin={multiSelectTokens.subMenu?.trigger?.margin}
+                    borderRadius={
+                        multiSelectTokens.subMenu?.trigger?.borderRadius
+                    }
                     outline="none"
                     border="none"
                     backgroundColor={
@@ -64,14 +66,14 @@ const MultiSelectV2SubMenu = ({
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap={8}
+                        gap={multiSelectTokens.menu.item.gap ?? 8}
                         justifyContent="space-between"
                     >
                         <Block
                             as="span"
                             display="flex"
                             alignItems="center"
-                            gap={8}
+                            gap={multiSelectTokens.menu.item.gap ?? 8}
                             flexGrow={1}
                         >
                             {item.slot1 && <MenuItemSlot slot={item.slot1} />}
@@ -107,8 +109,10 @@ const MultiSelectV2SubMenu = ({
             <RadixMenu.SubContent avoidCollisions sideOffset={8} asChild>
                 <Block
                     backgroundColor={multiSelectTokens.menu.backgroundColor}
-                    borderRadius={8}
-                    padding="8px 0px"
+                    borderRadius={
+                        multiSelectTokens.subMenu?.content?.borderRadius
+                    }
+                    padding={multiSelectTokens.subMenu?.content?.padding}
                     boxShadow={multiSelectTokens.trigger.boxShadow.container}
                     border={`1px solid ${multiSelectTokens.menu.border as string}`}
                 >

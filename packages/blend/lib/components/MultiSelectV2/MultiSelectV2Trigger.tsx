@@ -84,8 +84,9 @@ const MultiSelectV2Trigger = forwardRef<
             size,
             variant
         )
+        const slotGap = Number(multiSelectTokens.trigger.slot?.gap ?? 8)
         const paddingInlineStart =
-            slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
+            slot && slotWidth ? paddingX + slotWidth + slotGap : paddingX
 
         return (
             <PrimitiveButton
@@ -103,7 +104,7 @@ const MultiSelectV2Trigger = forwardRef<
                 alignItems="center"
                 overflow="hidden"
                 justifyContent="space-between"
-                gap={8}
+                gap={multiSelectTokens.trigger.slot?.gap ?? 8}
                 borderRadius={borderRadius}
                 borderRight={borderRight}
                 border={
@@ -167,7 +168,7 @@ const MultiSelectV2Trigger = forwardRef<
                         variant === MultiSelectV2Variant.CONTAINER &&
                         isSmallScreenWithLargeSize &&
                         isItemSelected
-                            ? paddingY * 1.5
+                            ? '0.375rem'
                             : 0
                     }
                     style={{
@@ -269,10 +270,16 @@ const MultiSelectV2Trigger = forwardRef<
                                           variant
                                       ].count.color
                             }
-                            fontWeight={500}
+                            fontWeight={
+                                multiSelectTokens.trigger.selectionTag[variant][
+                                    selectionTagType
+                                ].fontWeight
+                            }
                             style={{
                                 height: '100%',
-                                marginLeft: 8,
+                                marginLeft:
+                                    multiSelectTokens.trigger.selectionTag
+                                        .marginLeft ?? 8,
                                 backgroundColor:
                                     disabled &&
                                     selectionTagType ===
@@ -283,12 +290,26 @@ const MultiSelectV2Trigger = forwardRef<
                                               .selectionTag[variant][
                                               selectionTagType
                                           ].backgroundColor,
-                                borderRadius: 6,
+                                borderRadius:
+                                    multiSelectTokens.trigger.selectionTag
+                                        .borderRadius ?? 6,
                                 padding:
                                     selectionTagType ===
                                     MultiSelectV2SelectionTagType.COUNT
-                                        ? '0px 6px'
-                                        : '0px 0px',
+                                        ? ((
+                                              multiSelectTokens.trigger
+                                                  .selectionTag as {
+                                                  paddingCount?: string
+                                                  paddingText?: string
+                                              }
+                                          )?.paddingCount ?? '0px 6px')
+                                        : ((
+                                              multiSelectTokens.trigger
+                                                  .selectionTag as {
+                                                  paddingCount?: string
+                                                  paddingText?: string
+                                              }
+                                          )?.paddingText ?? '0px 0px'),
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
@@ -316,8 +337,9 @@ const MultiSelectV2Trigger = forwardRef<
                     as="span"
                     display="flex"
                     alignItems="center"
-                    gap={4}
-                    size={20}
+                    gap={multiSelectTokens.trigger.chevron?.gap ?? 4}
+                    width={20}
+                    height={20}
                     contentCentered
                     flexShrink={0}
                 >

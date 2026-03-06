@@ -1,0 +1,79 @@
+import Block from '../Primitives/Block/Block'
+import Button from '../Button/Button'
+import { ButtonSize, ButtonType } from '../Button/types'
+import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
+
+export type MultiSelectV2MenuActionsProps = {
+    tokens: MultiSelectV2TokensType
+    backgroundColor: string
+    borderColor: string
+    primaryAction?: {
+        text: string
+        onClick: (selectedValues: string[]) => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    secondaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    selected: string[]
+    onClose: () => void
+}
+
+const MultiSelectV2MenuActions = ({
+    tokens,
+    backgroundColor,
+    borderColor,
+    primaryAction,
+    secondaryAction,
+    selected,
+    onClose,
+}: MultiSelectV2MenuActionsProps) => {
+    const actions = tokens.menu?.actions ?? {}
+    return (
+        <Block
+            padding={actions.padding}
+            display="flex"
+            gap={actions.gap}
+            justifyContent="flex-end"
+            margin={0}
+            flexShrink={0}
+            backgroundColor={backgroundColor}
+            borderTop={`1px solid ${borderColor}`}
+        >
+            {secondaryAction && (
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    text={secondaryAction.text}
+                    onClick={() => {
+                        secondaryAction.onClick()
+                        requestAnimationFrame(onClose)
+                    }}
+                    disabled={secondaryAction.disabled}
+                    loading={secondaryAction.loading}
+                />
+            )}
+            {primaryAction && (
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    size={ButtonSize.SMALL}
+                    text={primaryAction.text}
+                    onClick={() => {
+                        primaryAction.onClick(selected)
+                        requestAnimationFrame(onClose)
+                    }}
+                    disabled={primaryAction.disabled}
+                    loading={primaryAction.loading}
+                />
+            )}
+        </Block>
+    )
+}
+
+MultiSelectV2MenuActions.displayName = 'MultiSelectV2MenuActions'
+
+export default MultiSelectV2MenuActions

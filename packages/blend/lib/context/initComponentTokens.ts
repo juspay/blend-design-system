@@ -51,6 +51,7 @@ import { getAccordionV2Tokens } from '../components/AccordionV2'
 import { getSnackbarV2Tokens } from '../components/SnackbarV2'
 import { getSwitchV2Tokens } from '../components/SelectorV2/SwitchV2/switchV2.tokens'
 import { getSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
+import { getMultiSelectV2Tokens } from '../components/MultiSelectV2/multiSelectV2.tokens'
 import { getAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
@@ -162,6 +163,9 @@ const initTokens = (
         SINGLE_SELECT_V2:
             componentTokens.SINGLE_SELECT_V2 ??
             getSingleSelectV2Tokens(foundationTokens, theme),
+        MULTI_SELECT_V2:
+            componentTokens.MULTI_SELECT_V2 ??
+            getMultiSelectV2Tokens(foundationTokens, theme),
         AVATARV2:
             componentTokens.AVATARV2 ??
             getAvatarV2Tokens(foundationTokens, theme),

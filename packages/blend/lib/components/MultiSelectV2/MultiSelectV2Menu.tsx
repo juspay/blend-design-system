@@ -2,14 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
-import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Text from '../Text/Text'
-import { SearchInput } from '../Inputs'
-import Button from '../Button/Button'
-import { ButtonSize, ButtonType } from '../Button/types'
-import VirtualList from '../VirtualList/VirtualList'
-import type { VirtualListItem } from '../VirtualList/types'
-import MultiSelectSkeleton from '../MultiSelect/MultiSelectSkeleton'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { usePreventParentScroll, useScrollLock } from '../../hooks'
 import { dropdownContentAnimations } from '../MultiSelect/multiSelect.animations'
@@ -24,15 +17,17 @@ import {
     type MultiSelectV2MenuProps,
     MultiSelectV2Size,
     MultiSelectV2Variant,
-    type FlattenedMultiSelectV2Item,
 } from './types'
 import {
     filterMenuGroups,
     flattenMenuGroups,
     getAllAvailableValues,
 } from './utils'
-import MultiSelectV2MenuItem from './MultiSelectV2MenuItem'
-import MultiSelectV2SelectAllItem from './MultiSelectV2SelectAllItem'
+import MultiSelectSkeleton from '../MultiSelect/MultiSelectSkeleton'
+import MultiSelectV2MenuHeader from './MultiSelectV2MenuHeader'
+import MultiSelectV2MenuVirtualList from './MultiSelectV2MenuVirtualList'
+import MultiSelectV2MenuItems from './MultiSelectV2MenuItems'
+import MultiSelectV2MenuActions from './MultiSelectV2MenuActions'
 
 const Content = styled(RadixMenu.Content)<{
     $backgroundColor: string
@@ -52,15 +47,6 @@ const Content = styled(RadixMenu.Content)<{
     ${dropdownContentAnimations}
 `
 
-const StickyHeader = styled(Block)<{ $backgroundColor: string }>(() => ({
-    position: 'sticky',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 50,
-    backgroundColor: 'var(--bg)',
-}))
-
 const ScrollableContent = styled(Block)(() => ({
     overflowY: 'auto',
     scrollbarWidth: 'none',
@@ -69,16 +55,6 @@ const ScrollableContent = styled(Block)(() => ({
     '&::-webkit-scrollbar': {
         display: 'none',
     },
-}))
-
-const FixedActionButtons = styled(Block)(() => ({
-    padding: 16,
-    display: 'flex',
-    gap: 8,
-    justifyContent: 'flex-end',
-    margin: 0,
-    backgroundColor: 'var(--bg)',
-    flexShrink: 0,
 }))
 
 const MultiSelectV2Menu = ({
@@ -124,13 +100,38 @@ const MultiSelectV2Menu = ({
     menuId,
 }: MultiSelectV2MenuProps) => {
     const multiSelectTokens =
-        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT')
+        useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
 
     const [searchText, setSearchText] = useState('')
     const searchInputRef = useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const justOpenedRef = useRef(false)
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    const [internalOpen, setInternalOpen] = useState(false)
+    const isControlled = open !== undefined
+    const isOpen = (isControlled ? open : internalOpen) && !disabled
+    const handleOpenChange = useCallback(
+        (nextOpen: boolean) => {
+            if (disabled) return
+            if (!isControlled) setInternalOpen(nextOpen)
+            if (nextOpen) {
+                justOpenedRef.current = true
+                if (timeoutRef.current) clearTimeout(timeoutRef.current)
+                timeoutRef.current = setTimeout(() => {
+                    justOpenedRef.current = false
+                    timeoutRef.current = null
+                }, 150)
+            } else {
+                if (timeoutRef.current) clearTimeout(timeoutRef.current)
+                timeoutRef.current = null
+                justOpenedRef.current = false
+                if (enableSearch) setSearchText('')
+            }
+            onOpenChange?.(nextOpen)
+        },
+        [disabled, isControlled, enableSearch, onOpenChange]
+    )
     const hasMatch = useMemo(
         () => checkExactMatch(searchText, items),
         [searchText, items]
@@ -143,8 +144,8 @@ const MultiSelectV2Menu = ({
         '[data-radix-popper-content-wrapper]',
         '[data-radix-dropdown-menu-content]',
     ]
-    usePreventParentScroll(open, contentRef, selectors)
-    useScrollLock(open)
+    usePreventParentScroll(isOpen, contentRef, selectors)
+    useScrollLock(isOpen)
 
     const filteredItems = useMemo(() => {
         const baseFilteredItems = filterMenuGroups(items, searchText)
@@ -174,14 +175,29 @@ const MultiSelectV2Menu = ({
         [filteredItems]
     )
 
+    const itemIndexMap = useMemo(() => {
+        const map = new Map<string, number>()
+        flattenedItems
+            .filter((i) => i.type === 'item')
+            .forEach((item, idx) => {
+                if (item.id) map.set(item.id, idx)
+            })
+        return map
+    }, [flattenedItems])
+
+    const allItemsFlat = useMemo(
+        () => filteredItems.flatMap((g) => g.items),
+        [filteredItems]
+    )
+
     useEffect(() => {
-        if (open && enableSearch && searchInputRef.current) {
+        if (isOpen && enableSearch && searchInputRef.current) {
             const timer = setTimeout(() => {
                 searchInputRef.current?.focus()
             }, 50)
             return () => clearTimeout(timer)
         }
-    }, [open, enableSearch])
+    }, [isOpen, enableSearch])
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
@@ -226,27 +242,6 @@ const MultiSelectV2Menu = ({
         [enableSearch, searchText]
     )
 
-    const handleOpenStateChange = useCallback(
-        (nextOpen: boolean) => {
-            if (disabled) return
-            if (nextOpen) {
-                justOpenedRef.current = true
-                if (timeoutRef.current) clearTimeout(timeoutRef.current)
-                timeoutRef.current = setTimeout(() => {
-                    justOpenedRef.current = false
-                    timeoutRef.current = null
-                }, 150)
-            } else {
-                if (timeoutRef.current) clearTimeout(timeoutRef.current)
-                timeoutRef.current = null
-                justOpenedRef.current = false
-                if (enableSearch) setSearchText('')
-            }
-            onOpenChange(nextOpen)
-        },
-        [disabled, enableSearch, onOpenChange]
-    )
-
     const handleOutsideInteraction = useCallback((e: Event) => {
         if (justOpenedRef.current) {
             e.preventDefault()
@@ -254,16 +249,21 @@ const MultiSelectV2Menu = ({
         }
 
         const target = e.target as HTMLElement
-        const trigger = target?.closest('[data-radix-dropdown-menu-trigger]')
-        if (trigger) e.preventDefault()
+        const triggerEl = target?.closest('[data-radix-dropdown-menu-trigger]')
+        if (triggerEl) e.preventDefault()
     }, [])
 
-    const isTooltipWrapper =
-        React.isValidElement(trigger) &&
-        trigger.props !== null &&
-        typeof trigger.props === 'object' &&
-        'content' in trigger.props &&
-        'children' in trigger.props
+    const focusFirstMenuItem = useCallback(() => {
+        const menuContent = contentRef.current?.closest(
+            '[data-dropdown="dropdown"]'
+        )
+        if (menuContent) {
+            const firstMenuItem = menuContent.querySelector<HTMLElement>(
+                '[role="option"]:not([data-disabled])'
+            )
+            firstMenuItem?.focus()
+        }
+    }, [])
 
     const menuBorderColor =
         typeof multiSelectTokens.menu.border === 'string'
@@ -277,36 +277,28 @@ const MultiSelectV2Menu = ({
     const menuShadow =
         (multiSelectTokens.trigger.boxShadow.container as string) || 'none'
 
+    const isEmpty = filteredItems.length === 0
+    const headerFooterHeight = Number(
+        multiSelectTokens.menu.scroll?.headerFooterHeight
+    )
+    const defaultContentMaxHeight = Number(
+        multiSelectTokens.menu.scroll?.defaultContentMaxHeight
+    )
+    const showActions =
+        showActionButtons &&
+        (primaryAction || secondaryAction) &&
+        items.length > 0 &&
+        !(isEmpty && searchText.length > 0)
+
     return (
         <RadixMenu.Root
             modal={false}
-            open={open && !disabled}
-            onOpenChange={handleOpenStateChange}
+            open={isOpen}
+            onOpenChange={handleOpenChange}
         >
-            {isTooltipWrapper ? (
-                React.cloneElement(
-                    trigger as React.ReactElement<Record<string, unknown>>,
-                    {
-                        children: (
-                            <RadixMenu.Trigger asChild disabled={disabled}>
-                                {
-                                    (
-                                        trigger as React.ReactElement<
-                                            Record<string, unknown> & {
-                                                children: React.ReactNode
-                                            }
-                                        >
-                                    ).props.children
-                                }
-                            </RadixMenu.Trigger>
-                        ),
-                    }
-                )
-            ) : (
-                <RadixMenu.Trigger asChild disabled={disabled}>
-                    {trigger}
-                </RadixMenu.Trigger>
-            )}
+            <RadixMenu.Trigger asChild disabled={disabled}>
+                {trigger}
+            </RadixMenu.Trigger>
             <RadixMenu.Portal>
                 <Content
                     id={menuId}
@@ -321,14 +313,13 @@ const MultiSelectV2Menu = ({
                     onKeyDown={handleKeyDown}
                     onInteractOutside={handleOutsideInteraction}
                     onPointerDownOutside={handleOutsideInteraction}
-                    role="listbox"
-                    aria-multiselectable="true"
                     $backgroundColor={menuBackgroundColor}
                     $borderRadius={menuBorderRadius}
                     $boxShadow={menuShadow}
                     $borderColor={menuBorderColor}
                     style={{
-                        minWidth: minMenuWidth || 250,
+                        minWidth:
+                            minMenuWidth ?? multiSelectTokens.menu.minWidth,
                         width: 'max(var(--radix-dropdown-menu-trigger-width))',
                         maxWidth:
                             maxMenuWidth ||
@@ -345,82 +336,40 @@ const MultiSelectV2Menu = ({
                         />
                     ) : (
                         <>
-                            <StickyHeader
-                                style={{
-                                    ['--bg' as string]: menuBackgroundColor,
-                                }}
-                            >
-                                {enableSearch && items.length > 0 && (
-                                    <Block>
-                                        <SearchInput
-                                            ref={searchInputRef}
-                                            placeholder={searchPlaceholder}
-                                            value={searchText}
-                                            onChange={(e) =>
-                                                setSearchText(e.target.value)
-                                            }
-                                            autoFocus
-                                            aria-label={
-                                                searchPlaceholder ||
-                                                'Search options'
-                                            }
-                                            onKeyDown={(e) => {
-                                                if (
-                                                    e.key === 'ArrowDown' ||
-                                                    e.key === 'ArrowUp'
-                                                ) {
-                                                    e.preventDefault()
-                                                    e.stopPropagation()
-                                                    const menuContent =
-                                                        e.currentTarget.closest(
-                                                            '[data-dropdown="dropdown"]'
-                                                        )
-                                                    if (menuContent) {
-                                                        const firstMenuItem =
-                                                            menuContent.querySelector<HTMLElement>(
-                                                                '[role="option"]:not([data-disabled])'
-                                                            )
-                                                        firstMenuItem?.focus()
-                                                    }
-                                                }
-                                            }}
-                                        />
-                                    </Block>
-                                )}
-                                {enableSelectAll &&
-                                    onSelectAll &&
-                                    availableValues.length > 0 && (
-                                        <Block
-                                            borderBottom={`1px solid ${menuBorderColor}`}
-                                            padding={`0 ${multiSelectTokens.menu.item.gap}`}
-                                        >
-                                            <MultiSelectV2SelectAllItem
-                                                selected={selected}
-                                                availableValues={
-                                                    availableValues
-                                                }
-                                                onSelectAll={(selectAll) =>
-                                                    onSelectAll(
-                                                        selectAll,
-                                                        filteredItems
-                                                    )
-                                                }
-                                                selectAllText={selectAllText}
-                                                disabled={disabled}
-                                            />
-                                        </Block>
-                                    )}
-                            </StickyHeader>
+                            <MultiSelectV2MenuHeader
+                                backgroundColor={menuBackgroundColor}
+                                borderColor={menuBorderColor}
+                                tokens={multiSelectTokens}
+                                showSearch={enableSearch}
+                                itemsCount={items.length}
+                                searchValue={searchText}
+                                searchPlaceholder={searchPlaceholder}
+                                searchInputRef={searchInputRef}
+                                onSearchChange={(e) =>
+                                    setSearchText(e.target.value)
+                                }
+                                onSearchArrowKeyToFirst={focusFirstMenuItem}
+                                showSelectAll={enableSelectAll}
+                                selected={selected}
+                                availableValues={availableValues}
+                                filteredItems={filteredItems}
+                                onSelectAll={
+                                    onSelectAll
+                                        ? (selectAll, filtered) =>
+                                              onSelectAll(selectAll, filtered)
+                                        : undefined
+                                }
+                                selectAllText={selectAllText}
+                                disabled={disabled}
+                            />
                             <ScrollableContent
                                 style={{
                                     maxHeight: maxMenuHeight
-                                        ? `${maxMenuHeight - 80}px`
-                                        : '320px',
+                                        ? `${Number(maxMenuHeight) - headerFooterHeight}px`
+                                        : `${defaultContentMaxHeight}px`,
                                 }}
                             >
-                                {items.length === 0 ||
-                                (filteredItems.length === 0 &&
-                                    searchText.length > 0) ? (
+                                {isEmpty ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -444,334 +393,56 @@ const MultiSelectV2Menu = ({
                                     </Block>
                                 ) : enableVirtualization &&
                                   flattenedItems.length > 0 ? (
-                                    <Block
-                                        padding={6}
-                                        style={{
-                                            paddingTop: enableSearch ? 0 : 6,
-                                        }}
-                                    >
-                                        <VirtualList
-                                            items={
-                                                flattenedItems as VirtualListItem[]
-                                            }
-                                            height={(maxMenuHeight || 400) - 80}
-                                            itemHeight={virtualListItemHeight}
-                                            overscan={virtualListOverscan}
-                                            onEndReached={onEndReached}
-                                            endReachedThreshold={
-                                                endReachedThreshold
-                                            }
-                                            hasMore={hasMore}
-                                            renderItem={({
-                                                item: flatItem,
-                                            }) => {
-                                                const typed =
-                                                    flatItem as FlattenedMultiSelectV2Item
-
-                                                if (typed.type === 'label') {
-                                                    return (
-                                                        <RadixMenu.Label
-                                                            asChild
-                                                        >
-                                                            <PrimitiveText
-                                                                fontSize={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .optionsLabel
-                                                                        .fontSize
-                                                                }
-                                                                fontWeight={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .optionsLabel
-                                                                        .fontWeight
-                                                                }
-                                                                padding="6px 8px"
-                                                                userSelect="none"
-                                                                textTransform="uppercase"
-                                                                color={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .optionsLabel
-                                                                        .color
-                                                                        .default
-                                                                }
-                                                                style={{
-                                                                    margin: 0,
-                                                                    width: '100%',
-                                                                }}
-                                                            >
-                                                                {typed.label}
-                                                            </PrimitiveText>
-                                                        </RadixMenu.Label>
-                                                    )
-                                                }
-
-                                                if (
-                                                    typed.type === 'separator'
-                                                ) {
-                                                    return (
-                                                        <RadixMenu.Separator
-                                                            asChild
-                                                        >
-                                                            <Block
-                                                                height={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .seperator
-                                                                        .height
-                                                                }
-                                                                backgroundColor={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .seperator
-                                                                        .color
-                                                                }
-                                                                width="100%"
-                                                            />
-                                                        </RadixMenu.Separator>
-                                                    )
-                                                }
-
-                                                if (
-                                                    typed.type === 'item' &&
-                                                    typed.item
-                                                ) {
-                                                    const itemIndex =
-                                                        flattenedItems
-                                                            .filter(
-                                                                (i) =>
-                                                                    i.type ===
-                                                                    'item'
-                                                            )
-                                                            .findIndex(
-                                                                (i) =>
-                                                                    i.id ===
-                                                                    typed.id
-                                                            )
-                                                    return (
-                                                        <Block
-                                                            width="100%"
-                                                            style={{
-                                                                minWidth: 0,
-                                                            }}
-                                                        >
-                                                            <MultiSelectV2MenuItem
-                                                                selected={
-                                                                    selected
-                                                                }
-                                                                item={
-                                                                    typed.item
-                                                                }
-                                                                onSelect={
-                                                                    onSelect
-                                                                }
-                                                                maxSelections={
-                                                                    maxSelections
-                                                                }
-                                                                allItems={filteredItems.flatMap(
-                                                                    (g) =>
-                                                                        g.items
-                                                                )}
-                                                                index={
-                                                                    itemIndex
-                                                                }
-                                                            />
-                                                        </Block>
-                                                    )
-                                                }
-
-                                                return null
-                                            }}
-                                        />
-                                    </Block>
+                                    <MultiSelectV2MenuVirtualList
+                                        flattenedItems={flattenedItems}
+                                        itemIndexMap={itemIndexMap}
+                                        allItemsFlat={allItemsFlat}
+                                        selected={selected}
+                                        onSelect={onSelect}
+                                        maxSelections={maxSelections}
+                                        tokens={multiSelectTokens}
+                                        height={
+                                            (maxMenuHeight ?? 400) -
+                                            headerFooterHeight
+                                        }
+                                        itemHeight={virtualListItemHeight}
+                                        overscan={virtualListOverscan}
+                                        onEndReached={onEndReached}
+                                        endReachedThreshold={
+                                            endReachedThreshold
+                                        }
+                                        hasMore={hasMore}
+                                        paddingTop={
+                                            enableSearch
+                                                ? 0
+                                                : (multiSelectTokens.menu.list
+                                                      ?.paddingTopWhenNoSearch as number)
+                                        }
+                                    />
                                 ) : (
-                                    <Block
-                                        paddingX={
-                                            multiSelectTokens.menu.padding[
-                                                size
-                                            ][variant].x
-                                        }
-                                        paddingY={
-                                            multiSelectTokens.menu.padding[
-                                                size
-                                            ][variant].y
-                                        }
-                                    >
-                                        {filteredItems.map((group, groupId) => {
-                                            const groupStartIndex =
-                                                filteredItems
-                                                    .slice(0, groupId)
-                                                    .reduce(
-                                                        (acc, g) =>
-                                                            acc +
-                                                            g.items.length,
-                                                        0
-                                                    )
-
-                                            return (
-                                                <React.Fragment key={groupId}>
-                                                    {group.groupLabel && (
-                                                        <RadixMenu.Label
-                                                            asChild
-                                                        >
-                                                            <PrimitiveText
-                                                                fontSize={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .optionsLabel
-                                                                        .fontSize
-                                                                }
-                                                                fontWeight={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .optionsLabel
-                                                                        .fontWeight
-                                                                }
-                                                                padding="6px 8px"
-                                                                userSelect="none"
-                                                                textTransform="uppercase"
-                                                                color={
-                                                                    multiSelectTokens
-                                                                        .menu
-                                                                        .item
-                                                                        .optionsLabel
-                                                                        .color
-                                                                        .default
-                                                                }
-                                                            >
-                                                                {
-                                                                    group.groupLabel
-                                                                }
-                                                            </PrimitiveText>
-                                                        </RadixMenu.Label>
-                                                    )}
-                                                    {group.items.map(
-                                                        (item, itemIndex) => (
-                                                            <MultiSelectV2MenuItem
-                                                                key={`${groupId}-${itemIndex}`}
-                                                                selected={
-                                                                    selected
-                                                                }
-                                                                item={item}
-                                                                onSelect={
-                                                                    onSelect
-                                                                }
-                                                                maxSelections={
-                                                                    maxSelections
-                                                                }
-                                                                allItems={filteredItems.flatMap(
-                                                                    (g) =>
-                                                                        g.items
-                                                                )}
-                                                                index={
-                                                                    groupStartIndex +
-                                                                    itemIndex
-                                                                }
-                                                            />
-                                                        )
-                                                    )}
-                                                    {groupId !==
-                                                        filteredItems.length -
-                                                            1 &&
-                                                        group.showSeparator && (
-                                                            <RadixMenu.Separator
-                                                                asChild
-                                                            >
-                                                                <Block
-                                                                    height={
-                                                                        multiSelectTokens
-                                                                            .menu
-                                                                            .item
-                                                                            .seperator
-                                                                            .height
-                                                                    }
-                                                                    backgroundColor={
-                                                                        multiSelectTokens
-                                                                            .menu
-                                                                            .item
-                                                                            .seperator
-                                                                            .color
-                                                                    }
-                                                                    margin={
-                                                                        multiSelectTokens
-                                                                            .menu
-                                                                            .item
-                                                                            .seperator
-                                                                            .margin
-                                                                    }
-                                                                />
-                                                            </RadixMenu.Separator>
-                                                        )}
-                                                </React.Fragment>
-                                            )
-                                        })}
-                                    </Block>
+                                    <MultiSelectV2MenuItems
+                                        filteredItems={filteredItems}
+                                        allItemsFlat={allItemsFlat}
+                                        selected={selected}
+                                        onSelect={onSelect}
+                                        maxSelections={maxSelections}
+                                        tokens={multiSelectTokens}
+                                        size={size}
+                                        variant={variant}
+                                    />
                                 )}
                             </ScrollableContent>
-                            {showActionButtons &&
-                                (primaryAction || secondaryAction) &&
-                                items.length > 0 &&
-                                !(
-                                    filteredItems.length === 0 &&
-                                    searchText.length > 0
-                                ) && (
-                                    <FixedActionButtons
-                                        style={{
-                                            ['--bg' as string]:
-                                                menuBackgroundColor,
-                                        }}
-                                        borderTop={`1px solid ${menuBorderColor}`}
-                                    >
-                                        {secondaryAction && (
-                                            <Button
-                                                buttonType={
-                                                    ButtonType.SECONDARY
-                                                }
-                                                size={ButtonSize.SMALL}
-                                                text={secondaryAction.text}
-                                                onClick={() => {
-                                                    secondaryAction.onClick()
-                                                    requestAnimationFrame(() =>
-                                                        onOpenChange(false)
-                                                    )
-                                                }}
-                                                disabled={
-                                                    secondaryAction.disabled
-                                                }
-                                                loading={
-                                                    secondaryAction.loading
-                                                }
-                                            />
-                                        )}
-                                        {primaryAction && (
-                                            <Button
-                                                buttonType={ButtonType.PRIMARY}
-                                                size={ButtonSize.SMALL}
-                                                text={primaryAction.text}
-                                                onClick={() => {
-                                                    primaryAction.onClick(
-                                                        selected
-                                                    )
-                                                    requestAnimationFrame(() =>
-                                                        onOpenChange(false)
-                                                    )
-                                                }}
-                                                disabled={
-                                                    primaryAction.disabled
-                                                }
-                                                loading={primaryAction.loading}
-                                            />
-                                        )}
-                                    </FixedActionButtons>
-                                )}
+                            {showActions && (
+                                <MultiSelectV2MenuActions
+                                    tokens={multiSelectTokens}
+                                    backgroundColor={menuBackgroundColor}
+                                    borderColor={menuBorderColor}
+                                    primaryAction={primaryAction}
+                                    secondaryAction={secondaryAction}
+                                    selected={selected}
+                                    onClose={() => handleOpenChange(false)}
+                                />
+                            )}
                         </>
                     )}
                 </Content>
@@ -779,5 +450,7 @@ const MultiSelectV2Menu = ({
         </RadixMenu.Root>
     )
 }
+
+MultiSelectV2Menu.displayName = 'MultiSelectV2Menu'
 
 export default MultiSelectV2Menu
