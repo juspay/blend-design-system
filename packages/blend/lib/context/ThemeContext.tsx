@@ -163,6 +163,9 @@ import {
     getRadioV2Tokens,
     ResponsiveRadioV2Tokens,
 } from '../components/SelectorV2/RadioV2/radioV2.tokens'
+ import {   getPopoverV2Tokens,
+    ResponsivePopoverV2Tokens,
+} from '../components/PopoverV2/popoverV2.token'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -224,6 +227,7 @@ export type ComponentTokenType = {
     KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
     TOOLTIPV2?: ResponsiveTooltipV2Tokens
     RADIOV2?: ResponsiveRadioV2Tokens
+    POPOVERV2?: ResponsivePopoverV2Tokens
 }
 
 type ThemeContextType = {
@@ -298,6 +302,7 @@ const ThemeContext = createContext<ThemeContextType>({
         KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
