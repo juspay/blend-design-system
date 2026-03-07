@@ -56,6 +56,7 @@ import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInp
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
 import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -177,6 +178,9 @@ const initTokens = (
         KEYVALUEPAIRV2:
             componentTokens.KEYVALUEPAIRV2 ??
             getKeyValuePairV2Tokens(foundationTokens, theme),
+        POPOVERV2:
+            componentTokens.POPOVERV2 ??
+            getPopoverV2Tokens(foundationTokens, theme),
     }
 }
 
