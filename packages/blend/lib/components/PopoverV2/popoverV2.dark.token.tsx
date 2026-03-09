@@ -16,6 +16,7 @@ export const getPopoverV2DarkToken = (
             gap: {
                 small: foundationTokens.unit[12],
                 medium: foundationTokens.unit[12],
+                large: foundationTokens.unit[12],
             },
             // zIndex (size-independent)
             zIndex: 1000,
@@ -23,24 +24,29 @@ export const getPopoverV2DarkToken = (
             borderRadius: {
                 small: foundationTokens.border.radius[8],
                 medium: foundationTokens.border.radius[8],
+                large: foundationTokens.border.radius[8],
             },
             // padding.[side].[size]
             padding: {
                 left: {
                     small: foundationTokens.unit[16],
                     medium: foundationTokens.unit[16],
+                    large: foundationTokens.unit[16],
                 },
                 right: {
                     small: foundationTokens.unit[16],
                     medium: foundationTokens.unit[16],
+                    large: foundationTokens.unit[16],
                 },
                 top: {
                     small: foundationTokens.unit[12],
                     medium: foundationTokens.unit[12],
+                    large: foundationTokens.unit[12],
                 },
                 bottom: {
                     small: foundationTokens.unit[16],
                     medium: foundationTokens.unit[16],
+                    large: foundationTokens.unit[16],
                 },
             },
             headerContainer: {
@@ -49,11 +55,13 @@ export const getPopoverV2DarkToken = (
                     fontSize: {
                         small: foundationTokens.font.size.body.md.fontSize,
                         medium: foundationTokens.font.size.body.lg.fontSize,
+                        large: foundationTokens.font.size.body.lg.fontSize,
                     },
                     // heading.fontWeight.[size]
                     fontWeight: {
                         small: foundationTokens.font.weight[600],
                         medium: foundationTokens.font.weight[600],
+                        large: foundationTokens.font.weight[600],
                     },
                     // heading.color (size-independent)
                     color: foundationTokens.colors.gray[900],
@@ -61,6 +69,7 @@ export const getPopoverV2DarkToken = (
                     lineHeight: {
                         small: foundationTokens.font.size.body.md.lineHeight,
                         medium: foundationTokens.font.size.body.lg.lineHeight,
+                        large: foundationTokens.font.size.body.lg.lineHeight,
                     },
                 },
                 description: {
@@ -68,11 +77,13 @@ export const getPopoverV2DarkToken = (
                     fontSize: {
                         small: foundationTokens.font.size.body.sm.fontSize,
                         medium: foundationTokens.font.size.body.md.fontSize,
+                        large: foundationTokens.font.size.body.lg.fontSize,
                     },
                     // description.fontWeight.[size]
                     fontWeight: {
                         small: foundationTokens.font.weight[500],
                         medium: foundationTokens.font.weight[500],
+                        large: foundationTokens.font.weight[500],
                     },
                     // description.color (size-independent)
                     color: foundationTokens.colors.gray[500],
@@ -80,6 +91,7 @@ export const getPopoverV2DarkToken = (
                     lineHeight: {
                         small: foundationTokens.font.size.body.sm.lineHeight,
                         medium: foundationTokens.font.size.body.md.lineHeight,
+                        large: foundationTokens.font.size.body.lg.lineHeight,
                     },
                 },
             },
@@ -88,12 +100,13 @@ export const getPopoverV2DarkToken = (
                 gap: {
                     small: foundationTokens.unit[12],
                     medium: foundationTokens.unit[12],
+                    large: foundationTokens.unit[12],
                 },
             },
         },
         lg: {
             // background (size-independent)
-            background: foundationTokens.colors.gray[0],
+            background: foundationTokens.colors.gray[900],
             // border (size-independent)
             border: foundationTokens.border.radius[8],
             // shadow (size-independent)
@@ -102,6 +115,7 @@ export const getPopoverV2DarkToken = (
             gap: {
                 small: foundationTokens.unit[12],
                 medium: foundationTokens.unit[12],
+                large: foundationTokens.unit[12],
             },
             // zIndex (size-independent)
             zIndex: 1000,
@@ -109,24 +123,29 @@ export const getPopoverV2DarkToken = (
             borderRadius: {
                 small: foundationTokens.border.radius[8],
                 medium: foundationTokens.border.radius[8],
+                large: foundationTokens.border.radius[8],
             },
             // padding.[side].[size]
             padding: {
                 left: {
                     small: foundationTokens.unit[16],
                     medium: foundationTokens.unit[16],
+                    large: foundationTokens.unit[16],
                 },
                 right: {
                     small: foundationTokens.unit[16],
                     medium: foundationTokens.unit[16],
+                    large: foundationTokens.unit[16],
                 },
                 top: {
                     small: foundationTokens.unit[12],
                     medium: foundationTokens.unit[12],
+                    large: foundationTokens.unit[12],
                 },
                 bottom: {
                     small: foundationTokens.unit[16],
                     medium: foundationTokens.unit[16],
+                    large: foundationTokens.unit[16],
                 },
             },
             headerContainer: {
@@ -135,18 +154,21 @@ export const getPopoverV2DarkToken = (
                     fontSize: {
                         small: foundationTokens.font.size.body.md.fontSize,
                         medium: foundationTokens.font.size.body.lg.fontSize,
+                        large: foundationTokens.font.size.body.lg.fontSize,
                     },
                     // heading.fontWeight.[size]
                     fontWeight: {
                         small: foundationTokens.font.weight[600],
                         medium: foundationTokens.font.weight[600],
+                        large: foundationTokens.font.weight[600],
                     },
                     // heading.color (size-independent)
-                    color: foundationTokens.colors.gray[900],
+                    color: foundationTokens.colors.gray[0],
                     // heading.lineHeight.[size]
                     lineHeight: {
                         small: foundationTokens.font.size.body.md.lineHeight,
                         medium: foundationTokens.font.size.body.lg.lineHeight,
+                        large: foundationTokens.font.size.body.lg.lineHeight,
                     },
                 },
                 description: {
@@ -154,26 +176,29 @@ export const getPopoverV2DarkToken = (
                     fontSize: {
                         small: foundationTokens.font.size.body.sm.fontSize,
                         medium: foundationTokens.font.size.body.md.fontSize,
+                        large: foundationTokens.font.size.body.lg.fontSize,
                     },
                     // description.fontWeight.[size]
                     fontWeight: {
                         small: foundationTokens.font.weight[500],
                         medium: foundationTokens.font.weight[500],
+                        large: foundationTokens.font.weight[500],
                     },
                     // description.color (size-independent)
-                    color: foundationTokens.colors.gray[500],
+                    color: foundationTokens.colors.gray[400],
                     // description.lineHeight.[size]
                     lineHeight: {
                         small: foundationTokens.font.size.body.sm.lineHeight,
                         medium: foundationTokens.font.size.body.md.lineHeight,
+                        large: foundationTokens.font.size.body.lg.lineHeight,
                     },
                 },
             },
             footer: {
-                // footer.gap.[size]
                 gap: {
                     small: foundationTokens.unit[12],
                     medium: foundationTokens.unit[12],
+                    large: foundationTokens.unit[12],
                 },
             },
         },

@@ -7,7 +7,7 @@ import PopoverV2Header from './PopoverV2Header'
 import PopoverV2Footer from './PopoverV2Footer'
 import { PopoverV2TokenType } from './popoverV2.token'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
-import MobilePopover from '../Popover/MobilePopover'
+import MobilePopoverV2 from './MobilePopoverV2'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { popoverContentAnimations } from '../Popover/popover.animations'
 import PopoverV2Skeleton from './PopoverV2Skeleton'
@@ -38,7 +38,7 @@ const PopoverV2 = ({
     minHeight,
     maxHeight,
     zIndex = 101,
-    size = PopoverV2Size.MEDIUM,
+    size = PopoverV2Size.MD,
     onClose,
     shadow = 'lg',
     useDrawerOnMobile = true,
@@ -56,12 +56,10 @@ const PopoverV2 = ({
     const shouldShowSkeleton = skeleton?.show
     const skeletonVariant = skeleton?.variant || 'pulse'
 
-    // Generate unique IDs for accessibility (WCAG 4.1.2 Name, Role, Value)
     const baseId = useId()
     const headingId = heading ? `${baseId}-heading` : undefined
     const descriptionId = description ? `${baseId}-description` : undefined
 
-    // Construct aria-describedby to link description if present (WCAG 1.3.1 Info and Relationships)
     const ariaDescribedBy = descriptionId || undefined
 
     useEffect(() => {
@@ -70,36 +68,36 @@ const PopoverV2 = ({
         }
     }, [open])
 
-    // if (isMobile && useDrawerOnMobile) {
-    //     return (
-    //         <MobilePopover
-    //             skeleton={skeleton}
-    //             open={isOpen}
-    //             onOpenChange={(open) => {
-    //                 setIsOpen(open)
-    //                 if (onOpenChange) {
-    //                     onOpenChange(open)
-    //                 }
-    //             }}
-    //             heading={heading}
-    //             description={description}
-    //             primaryAction={primaryAction}
-    //             secondaryAction={secondaryAction}
-    //             showCloseButton={showCloseButton}
-    //             onClose={() => {
-    //                 setIsOpen(false)
-    //                 if (onClose) {
-    //                     onClose()
-    //                 }
-    //             }}
-    //             trigger={trigger}
-    //             // size={size as PopoverV2Size}
-    //             useDrawerOnMobile={useDrawerOnMobile}
-    //         >
-    //             {children}
-    //         </MobilePopover>
-    //     )
-    // }
+    if (isMobile && useDrawerOnMobile) {
+        return (
+            <MobilePopoverV2
+                skeleton={skeleton}
+                open={isOpen}
+                onOpenChange={(open) => {
+                    setIsOpen(open)
+                    if (onOpenChange) {
+                        onOpenChange(open)
+                    }
+                }}
+                heading={heading}
+                description={description}
+                primaryAction={primaryAction}
+                secondaryAction={secondaryAction}
+                showCloseButton={showCloseButton}
+                onClose={() => {
+                    setIsOpen(false)
+                    if (onClose) {
+                        onClose()
+                    }
+                }}
+                trigger={trigger}
+                size={size}
+                useDrawerOnMobile={useDrawerOnMobile}
+            >
+                {children}
+            </MobilePopoverV2>
+        )
+    }
     return (
         <RadixPopover.Root
             open={isOpen}

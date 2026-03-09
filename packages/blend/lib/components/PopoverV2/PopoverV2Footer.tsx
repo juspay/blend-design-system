@@ -9,7 +9,7 @@ import PopoverV2Skeleton from './PopoverV2Skeleton'
 const PopoverV2Footer = ({
     primaryAction,
     secondaryAction,
-    size = PopoverV2Size.MEDIUM,
+    size = PopoverV2Size.MD,
     showSkeleton,
     skeletonVariant,
 }: Pick<PopoverV2Props, 'primaryAction' | 'secondaryAction' | 'size'> & {

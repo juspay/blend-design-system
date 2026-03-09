@@ -7,8 +7,9 @@ export type PopoverV2ActionType = Omit<
 >
 
 export enum PopoverV2Size {
-    SMALL = 'small',
-    MEDIUM = 'medium',
+    SM = 'small',
+    MD = 'medium',
+    LG = 'large',
 }
 
 type BodySkeletonV2Props = {

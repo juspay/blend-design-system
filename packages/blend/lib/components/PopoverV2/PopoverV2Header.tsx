@@ -14,7 +14,7 @@ const PopoverV2Header = ({
     description,
     showCloseButton,
     onClose,
-    size = PopoverV2Size.MEDIUM,
+    size = PopoverV2Size.MD,
     showSkeleton,
     skeletonVariant,
     headingId,
@@ -107,6 +107,10 @@ const PopoverV2Header = ({
                                 <X
                                     size={FOUNDATION_THEME.unit[12]}
                                     aria-hidden="true"
+                                    color={
+                                        popoverTokens.headerContainer.heading
+                                            .color
+                                    }
                                 />
                             }
                             onClick={onClose}

@@ -35,7 +35,7 @@ const PopoverV2Demo = () => {
         showPrimaryButton: true,
         showSecondaryButton: true,
         contentType: 'basic',
-        size: PopoverV2Size.MEDIUM,
+        size: PopoverV2Size.MD,
         side: 'bottom' as 'top' | 'right' | 'bottom' | 'left',
         align: 'center' as 'start' | 'center' | 'end',
         shadow: 'lg' as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full',
@@ -609,7 +609,7 @@ const SettingsPopoverExample = () => {
                 onClick: () => {},
                 buttonType: ButtonType.SECONDARY,
             }}
-            size={PopoverV2Size.MEDIUM}
+            size={PopoverV2Size.MD}
             minWidth={320}
         >
             <div className="p-4 space-y-4">
