@@ -202,10 +202,10 @@ const PopoverV2Demo = () => {
         <div className="max-w-6xl mx-auto p-8">
             <div className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-700 mb-2">
-                    Popover Configuration Playground
+                    PopoverV2 Configuration Playground
                 </h1>
                 <p className="text-lg text-gray-600">
-                    Customize the popover to see different configurations in
+                    Customize the PopoverV2 to see different configurations in
                     action
                 </p>
             </div>
