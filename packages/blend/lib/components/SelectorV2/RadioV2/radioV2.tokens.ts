@@ -1,7 +1,7 @@
 import { Theme } from '../../../context/theme.enum'
 
 import { CSSObject } from 'styled-components'
-import { RadioV2State, RadioV2IndicatorState } from './radioV2.types'
+import { RadioV2IndicatorState } from './radioV2.types'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../../tokens/theme.token'
 import { getRadioV2LightTokens } from './radioV2.light.tokens'
@@ -17,11 +17,11 @@ export type RadioV2TokensType = {
         indicator: {
             [key in RadioV2IndicatorState]: {
                 backgroundColor: {
-                    [key in RadioV2State]: CSSObject['backgroundColor']
+                    [key in SelectorV2InteractionState]: CSSObject['backgroundColor']
                 }
 
                 borderColor: {
-                    [key in RadioV2State]: CSSObject['borderColor']
+                    [key in SelectorV2InteractionState]: CSSObject['borderColor']
                 }
             }
         }
@@ -29,7 +29,7 @@ export type RadioV2TokensType = {
             active: {
                 backgroundColor: {
                     [key in Exclude<
-                        RadioV2State,
+                        SelectorV2InteractionState,
                         'hover' | 'error'
                     >]: CSSObject['backgroundColor']
                 }
@@ -40,7 +40,7 @@ export type RadioV2TokensType = {
         }
         borderWidth: {
             [key in RadioV2IndicatorState]: {
-                [key in RadioV2State]: number
+                [key in SelectorV2InteractionState]: number
             }
         }
     }

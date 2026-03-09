@@ -4,8 +4,6 @@ import { StyledRadioV2Root } from './StyledRadioV2'
 import { RadioV2TokensType } from './radioV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import React, { forwardRef } from 'react'
-import { getRadioV2ErrorShakeStyle } from './radioV2.animation'
-import { useErrorShake } from '../../common/useErrorShake'
 import {
     SelectorsLabelTokensType,
     SelectorsSubLabelTokensType,
@@ -19,27 +17,23 @@ import { filterBlockedProps } from '../../../utils/prop-helpers'
 const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
     (
         {
-            id,
             label,
             checked,
-            defaultChecked = false,
-            onCheckedChange,
-            disabled = false,
-            required = false,
-            error = false,
             size = SelectorV2Size.MD,
             subLabel,
             slot,
-            name,
             maxLength,
+            disabled = false,
+            required = false,
+            error = false,
+            onCheckedChange,
             ...rest
         },
         ref
     ) => {
         const radioTokens = useResponsiveTokens<RadioV2TokensType>('RADIOV2')
         const generatedId = React.useId()
-        const uniqueId = id || generatedId
-        const shouldShake = useErrorShake(error)
+        const uniqueId = generatedId
         const subtextId = subLabel ? `${uniqueId}-subLabel` : undefined
         const labelId = label ? `${uniqueId}-label` : undefined
         const customAriaDescribedBy = (rest as { 'aria-describedby'?: string })[
@@ -50,10 +44,6 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
                 ? `${customAriaDescribedBy} ${subtextId}`
                 : subtextId || customAriaDescribedBy
         const filteredRest = filterBlockedProps(rest)
-
-        const controlProps: Record<string, unknown> =
-            checked !== undefined ? { checked } : { defaultChecked }
-
         return (
             <Block
                 display="flex"
@@ -65,8 +55,7 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
                     ref={ref}
                     type="radio"
                     id={uniqueId}
-                    name={name}
-                    {...controlProps}
+                    checked={checked}
                     {...filteredRest}
                     disabled={disabled}
                     required={required}
@@ -76,7 +65,6 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
                     $isChecked={checked || false}
                     $error={error}
                     $tokens={radioTokens}
-                    style={getRadioV2ErrorShakeStyle(shouldShake)}
                     aria-required={required ? true : undefined}
                     aria-invalid={error ? true : undefined}
                     aria-describedby={ariaDescribedBy}

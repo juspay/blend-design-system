@@ -55,19 +55,14 @@ import { SelectorV2Size } from '@juspay/blend-design-system/SelectorV2'
 
 ```typescript
 export type RadioV2Props = {
-    id?: string
-    value?: string
     checked?: boolean
-    defaultChecked?: boolean
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-    disabled?: boolean
     required?: boolean
     error?: boolean
     size?: SelectorV2Size
     label?: string
     subLabel?: string
     slot?: { slot: ReactElement; maxHeight?: CSSObject['maxHeight'] }
-    name?: string
     maxLength?: { label?: number; subLabel?: number }
 }
 ```
@@ -89,22 +84,28 @@ type RadioV2TokensType = {
         indicator: {
             [k in RadioV2IndicatorState]: {
                 backgroundColor: Record<
-                    RadioV2State,
+                    SelectorV2InteractionState,
                     CSSObject['backgroundColor']
                 >
-                borderColor: Record<RadioV2State, CSSObject['borderColor']>
+                borderColor: Record<
+                    SelectorV2InteractionState,
+                    CSSObject['borderColor']
+                >
             }
         }
         activeIndicator: {
             active: {
                 backgroundColor: Record<
-                    Exclude<RadioV2State, 'hover' | 'error'>,
+                    Exclude<SelectorV2InteractionState, 'hover' | 'error'>,
                     CSSObject['backgroundColor']
                 >
             }
         }
         height: Record<SelectorV2Size, CSSObject['height']>
-        borderWidth: Record<RadioV2IndicatorState, Record<RadioV2State, number>>
+        borderWidth: Record<
+            RadioV2IndicatorState,
+            Record<SelectorV2InteractionState, number>
+        >
     }
     content: {
         gap: CSSObject['gap']
@@ -157,15 +158,6 @@ Inputs are void elements; `children` must not be forwarded. The component explic
 ### 6. Tokens & Theming
 
 Tokens are responsive and theme-aware (light/dark). The token shape separates indicator, active indicator, sizing, and content styles so theme engineers can override each area independently.
-
-## Example: RadioGroup usage
-
-```tsx
-<RadioGroupV2 name="choices" value={value} onChange={setValue}>
-    <RadioV2 label="A" value="a" />
-    <RadioV2 label="B" value="b" />
-</RadioGroupV2>
-```
 
 ## Testing & Accessibility
 

@@ -1,14 +1,8 @@
-import type { InputHTMLAttributes, ReactElement, ReactNode } from 'react'
+import type { InputHTMLAttributes, ReactElement } from 'react'
 import { RadioV2TokensType } from './radioV2.tokens'
 import { CSSObject } from 'styled-components'
 import { SelectorV2Size } from '../selectorV2.types'
 
-export enum RadioV2CheckedState {
-    CHECKED = 'checked',
-    UNCHECKED = 'unchecked',
-}
-
-export type RadioV2State = 'default' | 'hover' | 'disabled' | 'error'
 export type RadioV2IndicatorState = 'active' | 'inactive'
 
 export type RadioV2ContentProps = {
@@ -30,13 +24,8 @@ export type RadioV2ContentProps = {
 }
 
 export type RadioV2Props = {
-    id?: string
-    value?: string
-    defaultChecked?: boolean
-    onCheckedChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-    disabled?: boolean
-    name?: string
     checked?: boolean
+    onCheckedChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     required?: boolean
     error?: boolean
     label?: string
@@ -52,18 +41,5 @@ export type RadioV2Props = {
     }
 } & Omit<
     InputHTMLAttributes<HTMLInputElement>,
-    'className' | 'style' | 'slot' | 'onChange' | 'size' | 'maxLength'
+    'className' | 'style' | 'slot' | 'size' | 'maxLength'
 >
-
-export type RadioV2GroupProps = {
-    id?: string
-    label?: string
-    name: string
-    defaultValue?: string
-    value?: string
-    children: ReactNode
-    onChange?: (value: string) => void
-    disabled?: boolean
-    required?: boolean
-    error?: boolean
-}

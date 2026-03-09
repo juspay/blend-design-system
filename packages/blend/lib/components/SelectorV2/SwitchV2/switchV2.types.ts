@@ -53,5 +53,5 @@ export type SwitchV2Props = {
     }
 } & Omit<
     ButtonHTMLAttributes<HTMLButtonElement>,
-    'className' | 'style' | 'slot' | 'onChange'
+    'className' | 'style' | 'slot'
 >

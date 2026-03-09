@@ -226,51 +226,6 @@ const RadioV2Demo = () => {
                             </div>
                         </div>
                     </div>
-                    <div
-                        className={`min-h-32 p-8 rounded-xl flex justify-center items-center border-2 border-dashed ${
-                            theme === Theme.DARK
-                                ? 'border-gray-700 bg-gray-900'
-                                : 'border-gray-300 bg-gray-50'
-                        }`}
-                    >
-                        <RadioGroupV2
-                            name="playground-group"
-                            label={groupLabel}
-                            value={groupValue}
-                            onChange={(value) => {
-                                setGroupValue(value)
-                                addSnackbar({
-                                    header: `Selected: ${value}`,
-                                })
-                            }}
-                            disabled={groupDisabled}
-                        >
-                            <RadioV2
-                                label="Option 1"
-                                value="option1"
-                                size={SelectorV2Size.MD}
-                            />
-                            <RadioV2
-                                label="Option 2"
-                                value="option2"
-                                size={SelectorV2Size.MD}
-                                subLabel="This option has a description"
-                            />
-                            <RadioV2
-                                label="Option 3"
-                                value="option3"
-                                size={SelectorV2Size.MD}
-                                slot={{
-                                    slot: (
-                                        <Star
-                                            size={16}
-                                            className="text-yellow-500"
-                                        />
-                                    ),
-                                }}
-                            />
-                        </RadioGroupV2>
-                    </div>
                 </div>
             </div>
         </div>
