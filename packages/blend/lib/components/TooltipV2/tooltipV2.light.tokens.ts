@@ -47,13 +47,13 @@ export const getTooltipV2LightTokens = (
                 fontSize: {
                     sm: `${foundationToken.font.size.body.xs.fontSize}px`,
                     md: `${foundationToken.font.size.body.md.fontSize}px`,
-                    lg: `${foundationToken.font.size.body.sm.fontSize}px`,
+                    lg: `${foundationToken.font.size.body.md.fontSize}px`,
                 },
                 // text.lineHeight.[size]
                 lineHeight: {
                     sm: `${foundationToken.font.size.body.xs.lineHeight}px`,
                     md: `${foundationToken.font.size.body.md.lineHeight}px`,
-                    lg: `${foundationToken.font.size.body.sm.lineHeight}px`,
+                    lg: `${foundationToken.font.size.body.md.lineHeight}px`,
                 },
             },
         },
@@ -101,13 +101,13 @@ export const getTooltipV2LightTokens = (
                 fontSize: {
                     sm: `${foundationToken.font.size.body.xs.fontSize}px`,
                     md: `${foundationToken.font.size.body.md.fontSize}px`,
-                    lg: `${foundationToken.font.size.body.sm.fontSize}px`,
+                    lg: `${foundationToken.font.size.body.md.fontSize}px`,
                 },
                 // text.lineHeight.[size]
                 lineHeight: {
                     sm: `${foundationToken.font.size.body.xs.lineHeight}px`,
                     md: `${foundationToken.font.size.body.md.lineHeight}px`,
-                    lg: `${foundationToken.font.size.body.sm.lineHeight}px`,
+                    lg: `${foundationToken.font.size.body.md.lineHeight}px`,
                 },
             },
         },

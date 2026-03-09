@@ -72,6 +72,7 @@ export const TooltipV2 = forwardRef<HTMLElement, TooltipV2Props>(
             open,
             onOpenChange,
             maxWidth,
+            fullWidth = false,
             disableInteractive = false,
         },
         ref
@@ -79,19 +80,34 @@ export const TooltipV2 = forwardRef<HTMLElement, TooltipV2Props>(
         const tooltipTokens =
             useResponsiveTokens<TooltipV2TokensType>('TOOLTIPV2')
 
-        const triggerNode =
-            ref != null && isValidElement(trigger)
-                ? cloneElement(trigger, {
-                      ref: composeRefs<HTMLElement>(
-                          ref,
-                          (
-                              trigger as React.ReactElement & {
-                                  ref?: React.Ref<HTMLElement>
-                              }
-                          ).ref
-                      ),
-                  } as React.Attributes & { ref: React.Ref<HTMLElement> })
-                : trigger
+        const isNativeElement =
+            isValidElement(trigger) && typeof trigger.type === 'string'
+        const shouldWrapTrigger = !isNativeElement
+
+        const triggerNode = shouldWrapTrigger ? (
+            <span
+                ref={ref as React.Ref<HTMLSpanElement>}
+                style={{
+                    display: fullWidth ? 'flex' : 'inline-flex',
+                    width: fullWidth ? '100%' : 'auto',
+                }}
+            >
+                {trigger}
+            </span>
+        ) : ref != null && isValidElement(trigger) ? (
+            cloneElement(trigger, {
+                ref: composeRefs<HTMLElement>(
+                    ref,
+                    (
+                        trigger as React.ReactElement & {
+                            ref?: React.Ref<HTMLElement>
+                        }
+                    ).ref
+                ),
+            } as React.Attributes & { ref: React.Ref<HTMLElement> })
+        ) : (
+            trigger
+        )
 
         return (
             <RadixTooltip.Provider
