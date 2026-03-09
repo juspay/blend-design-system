@@ -168,7 +168,8 @@ import {
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
 
- import {   getBreadcrumbV2Tokens,
+import {
+    getBreadcrumbV2Tokens,
     ResponsiveBreadcrumbV2Tokens,
 } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 export type ComponentTokenType = {
