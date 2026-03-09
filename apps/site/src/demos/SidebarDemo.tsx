@@ -58,6 +58,7 @@ import StatCardDemo from './StatCardDemo'
 import SnackbarDemo from './SnackbarDemo'
 import AvatarGroupDemo from './AvatarGroupDemo'
 import TooltipDemo from './TooltipDemo'
+import TooltipV2Demo from './TooltipV2Demo'
 import ModalDemo from './ModalDemo'
 import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
@@ -209,7 +210,8 @@ const SidebarDemo = () => {
         | 'keyValuePairV2'
         | 'textInputGroup'
         | 'timeline'
-    >('keyValuePairV2')
+        | 'tooltipV2'
+    >('tooltipV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -539,6 +541,8 @@ const SidebarDemo = () => {
                 return <TimelineDemo />
             case 'keyValuePairV2':
                 return <KeyValuePairV2Demo />
+            case 'tooltipV2':
+                return <TooltipV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -1140,6 +1144,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tooltips',
                     onClick: () => setActiveComponent('tooltips'),
+                },
+                {
+                    label: 'Tooltip V2',
+                    leftSlot: (
+                        <Info style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tooltipV2',
+                    onClick: () => setActiveComponent('tooltipV2'),
                 },
                 {
                     label: 'Modal',

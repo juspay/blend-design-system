@@ -55,6 +55,25 @@ export const formatTextWithLineBreaks = (
     return content
 }
 
+/**
+ * Composes multiple refs (forwarded ref + trigger's ref) so both receive the same DOM instance.
+ * Use when cloning an element and passing a ref so the child's existing ref is not lost.
+ */
+export function composeRefs<T>(
+    ...refs: (React.Ref<T> | null | undefined)[]
+): React.RefCallback<T> {
+    return (instance: T | null) => {
+        refs.forEach((ref) => {
+            if (ref == null) return
+            if (typeof ref === 'function') {
+                ref(instance)
+            } else {
+                ;(ref as React.MutableRefObject<T | null>).current = instance
+            }
+        })
+    }
+}
+
 export const addPxToValue = (value?: number | string): string => {
     if (typeof value === 'number') {
         return `${value}px`
