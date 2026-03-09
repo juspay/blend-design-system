@@ -93,8 +93,10 @@ const FilterIcon = () => (
 )
 
 const DateRangePickerDemo = () => {
-    // Main playground state
-    const [playgroundRange, setPlaygroundRange] = useState<DateRange>({
+    // Main playground state (undefined = no selection, tests Issue #1187)
+    const [playgroundRange, setPlaygroundRange] = useState<
+        DateRange | undefined
+    >({
         startDate: new Date(),
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     })
@@ -756,7 +758,7 @@ const DateRangePickerDemo = () => {
                         </h3>
 
                         <div className="p-6 bg-white border border-gray-200 rounded-lg overflow-hidden">
-                            <div className="overflow-hidden">
+                            <div className="overflow-hidden space-y-3">
                                 <DateRangePicker
                                     value={playgroundRange}
                                     onChange={handlePlaygroundRangeChange}
@@ -786,6 +788,32 @@ const DateRangePickerDemo = () => {
                                     formatConfig={getFormatConfig()}
                                     triggerConfig={getTriggerConfig()}
                                 />
+                                <div className="flex gap-2 flex-wrap">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setPlaygroundRange(undefined)
+                                        }
+                                        className="px-3 py-1.5 text-sm font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                                    >
+                                        Clear (value = undefined)
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setPlaygroundRange({
+                                                startDate: new Date(),
+                                                endDate: new Date(
+                                                    Date.now() +
+                                                        7 * 24 * 60 * 60 * 1000
+                                                ),
+                                            })
+                                        }
+                                        className="px-3 py-1.5 text-sm font-medium rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                                    >
+                                        Set range (today + 7 days)
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -795,26 +823,38 @@ const DateRangePickerDemo = () => {
                                 Current Selection
                             </h4>
                             <div className="text-sm text-gray-600 space-y-1">
-                                <div>
-                                    <strong>Start:</strong>{' '}
-                                    {playgroundRange.startDate.toLocaleString()}
-                                </div>
-                                {playgroundRange.endDate && (
+                                {playgroundRange ? (
                                     <>
                                         <div>
-                                            <strong>End:</strong>{' '}
-                                            {playgroundRange.endDate.toLocaleString()}
+                                            <strong>Start:</strong>{' '}
+                                            {playgroundRange.startDate.toLocaleString()}
                                         </div>
-                                        <div>
-                                            <strong>Duration:</strong>{' '}
-                                            {Math.ceil(
-                                                (playgroundRange.endDate.getTime() -
-                                                    playgroundRange.startDate.getTime()) /
-                                                    (1000 * 60 * 60 * 24)
-                                            )}{' '}
-                                            days
-                                        </div>
+                                        {playgroundRange.endDate && (
+                                            <>
+                                                <div>
+                                                    <strong>End:</strong>{' '}
+                                                    {playgroundRange.endDate.toLocaleString()}
+                                                </div>
+                                                <div>
+                                                    <strong>Duration:</strong>{' '}
+                                                    {Math.ceil(
+                                                        (playgroundRange.endDate.getTime() -
+                                                            playgroundRange.startDate.getTime()) /
+                                                            (1000 *
+                                                                60 *
+                                                                60 *
+                                                                24)
+                                                    )}{' '}
+                                                    days
+                                                </div>
+                                            </>
+                                        )}
                                     </>
+                                ) : (
+                                    <div>
+                                        <strong>Value:</strong> undefined
+                                        (placeholder shown)
+                                    </div>
                                 )}
                             </div>
                         </div>
