@@ -128,7 +128,7 @@ const MultiSelectV2Trigger = ({
             disabled={disabled}
             position="relative"
             width={fullWidth ? '100%' : 'fit-content'}
-            maxWidth={maxTriggerWidth}
+            maxWidth={fullWidth ? maxTriggerWidth : (maxTriggerWidth ?? '100%')}
             minWidth={minTriggerWidth}
             display="flex"
             alignItems="center"
@@ -185,6 +185,8 @@ const MultiSelectV2Trigger = ({
                 style={{
                     textAlign: 'left',
                     flexGrow: 1,
+                    flexShrink: 1,
+                    minWidth: 0,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
