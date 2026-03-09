@@ -354,6 +354,13 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
             '950': '#3D2700',
         },
     },
+    zIndex: {
+        0: 0,
+        9999: 9999,
+        1000: 1000,
+        1100: 1100,
+        1200: 1200,
+    },
 }
 
 export default ALT_FOUNDATION_TOKENS
