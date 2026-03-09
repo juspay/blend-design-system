@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 import type { SingleSelectV2MenuItemTokensType } from '../SingleSelectV2/singleSelectV2.tokens'
-import type { MultiSelectTokensType } from '../MultiSelect/multiSelect.tokens'
+import type { MultiSelectV2TokensType } from '../MultiSelectV2/multiSelectV2.tokens'
 
 /** Item type for SelectV2 (compatible with SingleSelectV2 item shape) */
 export type SelectV2ItemType = {
@@ -43,7 +43,7 @@ export type MultiSelectItemV2Props = {
     item: SelectV2ItemType
     selectedValues: string[]
     onSelect: (value: string) => void
-    itemTokens: MultiSelectTokensType['menu']['item']
+    itemTokens: MultiSelectV2TokensType['menu']['item']
     index?: number
     selectedPosition?: 'first' | 'middle' | 'last' | 'only' | 'none'
     className?: string

@@ -182,12 +182,18 @@ export const MenuItem = ({
     index,
 }: MenuItemProps) => {
     if (item.subMenu) {
+        if (!singleSelectTokens) {
+            console.error(
+                'SingleSelectV2 MenuItem: singleSelectTokens is required when item has subMenu'
+            )
+            return null
+        }
         return (
             <SubMenu
                 item={item}
                 onSelect={onSelect}
                 selected={selected}
-                singleSelectTokens={singleSelectTokens!}
+                singleSelectTokens={singleSelectTokens}
             />
         )
     }

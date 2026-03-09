@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import { Checkbox } from '../Checkbox'
 import Block from '../Primitives/Block/Block'
@@ -28,7 +29,7 @@ const MultiSelectV2SelectAllItem = ({
         availableValues
     )
 
-    const handleClick = (e: React.MouseEvent) => {
+    const handleClick = (e: MouseEvent) => {
         if (disabled) return
         e.preventDefault()
         e.stopPropagation()

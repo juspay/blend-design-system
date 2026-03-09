@@ -183,7 +183,7 @@ const SingleSelectV2Menu = ({
     useEffect(() => {
         if (!open || !enableVirtualization) return
         virtualizer.scrollToIndex(0)
-    }, [searchText])
+    }, [searchText, open, enableVirtualization, virtualizer])
 
     useEffect(() => {
         if (!open || !enableSearch) return

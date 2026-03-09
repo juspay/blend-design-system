@@ -51,14 +51,14 @@ export type SingleSelectV2ItemType = {
     value: string
     checked?: boolean
     subLabel?: string
-    slot1?: React.ReactNode
-    slot2?: React.ReactNode
-    slot3?: React.ReactNode
-    slot4?: React.ReactNode
+    slot1?: ReactNode
+    slot2?: ReactNode
+    slot3?: ReactNode
+    slot4?: ReactNode
     disabled?: boolean
     onClick?: () => void
     subMenu?: SingleSelectV2ItemType[]
-    tooltip?: string | React.ReactNode
+    tooltip?: string | ReactNode
     tooltipProps?: {
         side?: TooltipSide
         align?: TooltipAlign

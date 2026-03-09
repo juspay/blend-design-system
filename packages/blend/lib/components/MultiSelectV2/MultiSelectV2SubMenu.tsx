@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import { ChevronRight } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
@@ -7,7 +8,7 @@ import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import type { MultiSelectV2ItemType } from './types'
 import MultiSelectV2MenuItem from './MultiSelectV2MenuItem.tsx'
 
-const MenuItemSlot = ({ slot }: { slot: React.ReactNode }) => (
+const MenuItemSlot = ({ slot }: { slot: ReactNode }) => (
     <Block flexShrink={0} height="auto" contentCentered>
         {slot}
     </Block>
