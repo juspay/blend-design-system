@@ -148,6 +148,10 @@ import {
     ResponsiveKeyValuePairV2Tokens,
 } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 
+import {
+    getBreadcrumbV2Tokens,
+    ResponsiveBreadcrumbV2Tokens,
+} from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -204,6 +208,7 @@ export type ComponentTokenType = {
     CHARTSV2?: ResponsiveChartV2Tokens
     CHECKBOXV2?: ResponsiveCheckboxV2Tokens
     KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
+    BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
 }
 
 type ThemeContextType = {
@@ -271,6 +276,7 @@ const ThemeContext = createContext<ThemeContextType>({
         TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
         CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
