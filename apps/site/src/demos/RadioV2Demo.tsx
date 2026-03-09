@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Heart, Star } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import {
-    addSnackbar,
     SingleSelect,
     Switch,
     TextInput,
@@ -12,7 +11,6 @@ import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import { SelectorV2Size } from '../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 import RadioV2 from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/RadioV2'
-import RadioGroupV2 from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/RadioGroupV2'
 const RadioV2Demo = () => {
     const [checked, setChecked] = useState<boolean>(false)
     const [checkedState, setCheckedState] = useState('Unchecked')
@@ -24,7 +22,6 @@ const RadioV2Demo = () => {
     const [showSlot, setShowSlot] = useState(true)
     const [size, setSize] = useState<SelectorV2Size>(SelectorV2Size.MD)
     const [labelMaxLength, setLabelMaxLength] = useState<number | undefined>()
-    const [groupValue, setGroupValue] = useState('option1')
     const [groupDisabled, setGroupDisabled] = useState(false)
     const [groupLabel, setGroupLabel] = useState('Select an option')
     const [subLabelMaxLength, setSubLabelMaxLength] = useState<

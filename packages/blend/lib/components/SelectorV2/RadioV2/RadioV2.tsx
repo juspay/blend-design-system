@@ -17,6 +17,7 @@ import { filterBlockedProps } from '../../../utils/prop-helpers'
 const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
     (
         {
+            id: idProp,
             label,
             checked,
             size = SelectorV2Size.MD,
@@ -33,7 +34,7 @@ const RadioV2 = forwardRef<HTMLInputElement, RadioV2Props>(
     ) => {
         const radioTokens = useResponsiveTokens<RadioV2TokensType>('RADIOV2')
         const generatedId = React.useId()
-        const uniqueId = generatedId
+        const uniqueId = idProp ?? generatedId
         const subtextId = subLabel ? `${uniqueId}-subLabel` : undefined
         const labelId = label ? `${uniqueId}-label` : undefined
         const customAriaDescribedBy = (rest as { 'aria-describedby'?: string })[
