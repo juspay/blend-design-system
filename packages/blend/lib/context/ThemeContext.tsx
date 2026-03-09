@@ -148,7 +148,8 @@ import {
     ResponsiveKeyValuePairV2Tokens,
 } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 
- import {   getBreadcrumbV2Tokens,
+import {
+    getBreadcrumbV2Tokens,
     ResponsiveBreadcrumbV2Tokens,
 } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 export type ComponentTokenType = {
