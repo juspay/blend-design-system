@@ -78,7 +78,21 @@ export type MultiSelectV2TokensType = {
             paddingCount: CSSObject['padding']
             paddingText: CSSObject['padding']
         }
-        chevron: { gap: CSSObject['gap'] }
+        chevron: {
+            gap: CSSObject['gap']
+            width: CSSObject['width']
+            height: CSSObject['height']
+            iconSize?: number
+        }
+        clearButton?: {
+            backgroundColor: TriggerStateToken<CSSObject['backgroundColor']>
+            outline: TriggerStateToken<CSSObject['outline']>
+            color: CSSObject['color']
+            width?: CSSObject['width']
+        }
+        floatingLabel: {
+            paddingTop: CSSObject['paddingTop']
+        }
         placeholder: {
             color: CSSObject['color']
             fontSize: CSSObject['fontSize']
@@ -170,12 +184,14 @@ export type MultiSelectV2TokensType = {
 
     drawer: {
         header: {
-            paddingX: CSSObject['padding']
+            paddingLeft: CSSObject['paddingLeft']
+            paddingRight: CSSObject['paddingRight']
             paddingBottom: CSSObject['padding']
             borderBottom: CSSObject['borderBottom']
         }
         search: {
-            paddingX: CSSObject['padding']
+            paddingLeft: CSSObject['paddingLeft']
+            paddingRight: CSSObject['paddingRight']
             marginTop: CSSObject['margin']
             marginBottom: CSSObject['margin']
         }

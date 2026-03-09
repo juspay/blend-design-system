@@ -41,7 +41,7 @@ const Wrapper = styled(Block)`
 const MultiSelectV2 = ({
     selectedValues,
     onChange,
-    items,
+    items = [],
     label,
     subLabel,
     disabled,
@@ -100,7 +100,6 @@ const MultiSelectV2 = ({
     onOpenChange,
     multiSelectGroupPosition,
 }: MultiSelectV2Props) => {
-    const safeItems = items ?? []
     const breakpoints = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakpoints.breakPointLabel === 'sm'
     const isMobile = breakpoints.innerWidth < BREAKPOINTS.lg
@@ -108,11 +107,8 @@ const MultiSelectV2 = ({
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const [open, setOpen] = useState(false)
-    const valueLabelMap = useMemo(
-        () => getValueLabelMap(safeItems),
-        [safeItems]
-    )
-    const shouldVirtualize = enableVirtualization && safeItems.length > 20
+    const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
+    const shouldVirtualize = enableVirtualization && items.length > 20
     const shouldShowClearButton =
         (showClearButton ?? isContainer) && selectedValues.length > 0
     const shouldShowActionButtons =
@@ -187,7 +183,7 @@ const MultiSelectV2 = ({
     const mobileSharedProps = {
         selectedValues,
         onChange,
-        items: safeItems,
+        items: items,
         label,
         subLabel,
         disabled,
@@ -250,6 +246,7 @@ const MultiSelectV2 = ({
         multiSelectGroupPosition,
         multiSelectTokens
     )
+    const clearButtonState: 'error' | 'closed' = error ? 'error' : 'closed'
 
     return (
         <Block
@@ -287,11 +284,11 @@ const MultiSelectV2 = ({
                     width={fullWidth ? '100%' : 'fit-content'}
                     maxWidth={fullWidth ? '100%' : 'fit-content'}
                     display="flex"
-                    alignItems="center"
+                    alignItems={shouldShowClearButton ? 'stretch' : 'center'}
                 >
                     <MultiSelectV2Menu
                         skeleton={skeleton}
-                        items={safeItems}
+                        items={items}
                         selected={selectedValues}
                         onSelect={onChange}
                         disabled={disabled}
@@ -384,12 +381,17 @@ const MultiSelectV2 = ({
                             type="button"
                             borderRadius={clearButtonBorder.borderRadius}
                             backgroundColor={
+                                multiSelectTokens.trigger.clearButton
+                                    ?.backgroundColor?.[clearButtonState] ??
                                 multiSelectTokens.trigger.backgroundColor[
                                     variant
                                 ].closed
                             }
                             contentCentered
                             height="100%"
+                            minHeight={
+                                multiSelectTokens.trigger.height[size][variant]
+                            }
                             style={{
                                 aspectRatio: 1,
                                 opacity: 1,
@@ -399,35 +401,54 @@ const MultiSelectV2 = ({
                             onKeyDown={handleClearKeyDown}
                             aria-label="Clear selection"
                             tabIndex={disabled ? -1 : 0}
-                            border={
+                            outline={
+                                multiSelectTokens.trigger.clearButton
+                                    ?.outline?.[clearButtonState] ??
                                 multiSelectTokens.trigger.outline[variant][
                                     error ? 'error' : 'closed'
                                 ]
                             }
                             borderRight={clearButtonBorder.borderRight}
-                            borderLeft="0px solid !important"
                             _hover={{
                                 backgroundColor:
+                                    multiSelectTokens.trigger.clearButton
+                                        ?.backgroundColor?.hover ??
                                     multiSelectTokens.trigger.backgroundColor[
                                         variant
                                     ].hover,
+                                outline:
+                                    multiSelectTokens.trigger.clearButton
+                                        ?.outline?.hover ??
+                                    multiSelectTokens.trigger.outline[variant]
+                                        .closed,
                             }}
                             _focus={{
                                 backgroundColor:
+                                    multiSelectTokens.trigger.clearButton
+                                        ?.backgroundColor?.focus ??
                                     multiSelectTokens.trigger.backgroundColor[
                                         variant
                                     ].focus,
-                                border: multiSelectTokens.trigger.outline[
-                                    variant
-                                ].focus,
+                                outline:
+                                    multiSelectTokens.trigger.clearButton
+                                        ?.outline?.focus ??
+                                    multiSelectTokens.trigger.outline[variant]
+                                        .focus,
                             }}
-                            color={
-                                disabled
-                                    ? multiSelectTokens.label.color.disabled
-                                    : multiSelectTokens.label.color.default
-                            }
                         >
-                            <X size={16} aria-hidden="true" />
+                            <X
+                                size={
+                                    multiSelectTokens.trigger.clearButton?.width
+                                }
+                                aria-hidden="true"
+                                color={
+                                    disabled
+                                        ? multiSelectTokens.label.color.disabled
+                                        : (multiSelectTokens.trigger.clearButton
+                                              ?.color ??
+                                          multiSelectTokens.label.color.default)
+                                }
+                            />
                         </PrimitiveButton>
                     )}
                 </Wrapper>
@@ -449,4 +470,4 @@ const MultiSelectV2 = ({
 
 MultiSelectV2.displayName = 'MultiSelectV2'
 
-export default React.memo(MultiSelectV2)
+export default MultiSelectV2

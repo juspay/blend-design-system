@@ -29,10 +29,15 @@ const MultiSelectV2MenuActions = ({
     onClose,
 }: MultiSelectV2MenuActionsProps) => {
     const actions = tokens.menu?.actions ?? {}
+    const padding = actions.padding ?? 16
     return (
         <Block
-            padding={actions.padding}
+            paddingTop={padding}
+            paddingBottom={padding}
+            paddingLeft={padding}
+            paddingRight={padding}
             display="flex"
+            alignItems="center"
             gap={actions.gap}
             justifyContent="flex-end"
             margin={0}
@@ -42,6 +47,9 @@ const MultiSelectV2MenuActions = ({
         >
             {secondaryAction && (
                 <Button
+                    data-button-for={secondaryAction.text}
+                    data-dynamic-button={secondaryAction.text}
+                    data-batch-value={secondaryAction.text}
                     buttonType={ButtonType.SECONDARY}
                     size={ButtonSize.SMALL}
                     text={secondaryAction.text}
@@ -55,6 +63,9 @@ const MultiSelectV2MenuActions = ({
             )}
             {primaryAction && (
                 <Button
+                    data-button-for={primaryAction.text}
+                    data-dynamic-button={primaryAction.text}
+                    data-batch-value={primaryAction.text}
                     buttonType={ButtonType.PRIMARY}
                     size={ButtonSize.SMALL}
                     text={primaryAction.text}

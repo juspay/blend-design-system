@@ -132,27 +132,27 @@ export const getMultiSelectV2LightTokens = (
             },
             backgroundColor: {
                 [MultiSelectV2Variant.CONTAINER]: {
-                    open: foundationToken.colors.gray[0],
+                    open: foundationToken.colors.gray[25],
                     closed: foundationToken.colors.gray[0],
-                    hover: foundationToken.colors.gray[0],
-                    focus: foundationToken.colors.gray[0],
+                    hover: foundationToken.colors.gray[50],
+                    focus: foundationToken.colors.gray[50],
                     error: foundationToken.colors.red[50],
                 },
                 [MultiSelectV2Variant.NO_CONTAINER]: {
                     open: 'transparent',
                     closed: 'transparent',
-                    hover: 'transparent',
-                    focus: 'transparent',
+                    hover: foundationToken.colors.gray[50],
+                    focus: foundationToken.colors.gray[50],
                     error: 'transparent',
                 },
             },
             outline: {
                 [MultiSelectV2Variant.CONTAINER]: {
-                    open: `1px solid ${foundationToken.colors.primary[500]}`,
-                    closed: `1px solid ${foundationToken.colors.gray[300]}`,
-                    hover: `1px solid ${foundationToken.colors.gray[300]}`,
-                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
-                    error: `1px solid ${foundationToken.colors.red[500]}`,
+                    open: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                    closed: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                    hover: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                    focus: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                    error: `1px solid ${foundationToken.colors.red[600]} !important`,
                 },
                 [MultiSelectV2Variant.NO_CONTAINER]: {
                     open: 'none',
@@ -166,8 +166,8 @@ export const getMultiSelectV2LightTokens = (
             selectionTag: {
                 [MultiSelectV2Variant.CONTAINER]: {
                     [MultiSelectV2SelectionTagType.COUNT]: {
-                        color: foundationToken.colors.gray[600],
-                        backgroundColor: foundationToken.colors.gray[100],
+                        color: foundationToken.colors.gray[0],
+                        backgroundColor: foundationToken.colors.primary[600],
                         fontWeight: foundationToken.font.weight[500],
                     },
                     [MultiSelectV2SelectionTagType.TEXT]: {
@@ -178,8 +178,8 @@ export const getMultiSelectV2LightTokens = (
                 },
                 [MultiSelectV2Variant.NO_CONTAINER]: {
                     [MultiSelectV2SelectionTagType.COUNT]: {
-                        color: foundationToken.colors.gray[600],
-                        backgroundColor: foundationToken.colors.gray[100],
+                        color: foundationToken.colors.gray[0],
+                        backgroundColor: foundationToken.colors.primary[600],
                         fontWeight: foundationToken.font.weight[500],
                     },
                     [MultiSelectV2SelectionTagType.TEXT]: {
@@ -189,11 +189,37 @@ export const getMultiSelectV2LightTokens = (
                     },
                 },
                 marginLeft: foundationToken.unit[8],
-                borderRadius: foundationToken.unit[6],
+                borderRadius: foundationToken.unit[4],
                 paddingCount: `0 ${foundationToken.unit[6]}`,
                 paddingText: '0',
             },
-            chevron: { gap: foundationToken.unit[4] },
+            chevron: {
+                gap: foundationToken.unit[4],
+                width: 20,
+                height: 20,
+                iconSize: 16,
+            },
+            clearButton: {
+                backgroundColor: {
+                    open: foundationToken.colors.gray[0],
+                    closed: foundationToken.colors.gray[0],
+                    hover: foundationToken.colors.gray[25],
+                    focus: foundationToken.colors.gray[25],
+                    error: foundationToken.colors.gray[0],
+                },
+                outline: {
+                    open: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                    closed: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                    hover: `1px solid ${foundationToken.colors.gray[200]} !important`,
+                    focus: `1px solid ${foundationToken.colors.gray[400]} !important`,
+                    error: `1px solid ${foundationToken.colors.red[600]} !important`,
+                },
+                color: foundationToken.colors.gray[400],
+                width: foundationToken.unit[16],
+            },
+            floatingLabel: {
+                paddingTop: '0.375rem',
+            },
             placeholder: {
                 color: foundationToken.colors.gray[400],
                 fontSize: foundationToken.font.size.body.md.fontSize,
@@ -343,12 +369,14 @@ export const getMultiSelectV2LightTokens = (
 
         drawer: {
             header: {
-                paddingX: foundationToken.unit[16],
+                paddingLeft: foundationToken.unit[16],
+                paddingRight: foundationToken.unit[16],
                 paddingBottom: foundationToken.unit[12],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
             },
             search: {
-                paddingX: foundationToken.unit[16],
+                paddingLeft: foundationToken.unit[16],
+                paddingRight: foundationToken.unit[16],
                 marginTop: foundationToken.unit[8],
                 marginBottom: foundationToken.unit[4],
             },

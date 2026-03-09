@@ -29,18 +29,23 @@ import MultiSelectV2MenuVirtualList from './MultiSelectV2MenuVirtualList'
 import MultiSelectV2MenuItems from './MultiSelectV2MenuItems'
 import MultiSelectV2MenuActions from './MultiSelectV2MenuActions'
 
+const FOCUS_SEARCH_INPUT_DELAY_MS = 50
+const JUST_OPENED_DEBOUNCE_MS = 150
+const DEFAULT_MIN_MENU_WIDTH = 250
+const DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK = 400
+
 const Content = styled(RadixMenu.Content)<{
     $backgroundColor: string
     $borderRadius: string
     $boxShadow: string
-    $borderColor: string
+    $border: string
 }>`
     position: relative;
     background-color: ${({ $backgroundColor }) => $backgroundColor};
     border-radius: ${({ $borderRadius }) => $borderRadius};
     box-shadow: ${({ $boxShadow }) => $boxShadow};
     z-index: 101;
-    border: 1px solid ${({ $borderColor }) => $borderColor};
+    border: ${({ $border }) => $border};
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -121,7 +126,7 @@ const MultiSelectV2Menu = ({
                 timeoutRef.current = setTimeout(() => {
                     justOpenedRef.current = false
                     timeoutRef.current = null
-                }, 150)
+                }, JUST_OPENED_DEBOUNCE_MS)
             } else {
                 if (timeoutRef.current) clearTimeout(timeoutRef.current)
                 timeoutRef.current = null
@@ -194,7 +199,7 @@ const MultiSelectV2Menu = ({
         if (isOpen && enableSearch && searchInputRef.current) {
             const timer = setTimeout(() => {
                 searchInputRef.current?.focus()
-            }, 50)
+            }, FOCUS_SEARCH_INPUT_DELAY_MS)
             return () => clearTimeout(timer)
         }
     }, [isOpen, enableSearch])
@@ -265,17 +270,15 @@ const MultiSelectV2Menu = ({
         }
     }, [])
 
-    const menuBorderColor =
-        typeof multiSelectTokens.menu.border === 'string'
-            ? multiSelectTokens.menu.border
-            : '#d0d5dd'
-
-    const menuBackgroundColor =
-        (multiSelectTokens.menu.backgroundColor as string) || 'white'
-    const menuBorderRadius =
-        (multiSelectTokens.menu.borderRadius as string) || '8px'
-    const menuShadow =
-        (multiSelectTokens.trigger.boxShadow.container as string) || 'none'
+    const menuBorder = String(multiSelectTokens.menu.border ?? '')
+    const menuBackgroundColor = String(
+        multiSelectTokens.menu.backgroundColor ?? ''
+    )
+    const menuBorderRadius = String(multiSelectTokens.menu.borderRadius ?? '')
+    const menuBoxShadow = String(
+        multiSelectTokens.trigger.boxShadow?.[MultiSelectV2Variant.CONTAINER] ??
+            'none'
+    )
 
     const isEmpty = filteredItems.length === 0
     const headerFooterHeight = Number(
@@ -304,6 +307,8 @@ const MultiSelectV2Menu = ({
                     id={menuId}
                     data-dropdown="dropdown"
                     ref={contentRef}
+                    role="listbox"
+                    aria-multiselectable="true"
                     align={alignment}
                     sideOffset={sideOffset}
                     alignOffset={alignOffset}
@@ -315,17 +320,19 @@ const MultiSelectV2Menu = ({
                     onPointerDownOutside={handleOutsideInteraction}
                     $backgroundColor={menuBackgroundColor}
                     $borderRadius={menuBorderRadius}
-                    $boxShadow={menuShadow}
-                    $borderColor={menuBorderColor}
+                    $boxShadow={menuBoxShadow}
+                    $border={menuBorder}
                     style={{
                         minWidth:
-                            minMenuWidth ?? multiSelectTokens.menu.minWidth,
+                            minMenuWidth ??
+                            multiSelectTokens.menu.minWidth ??
+                            DEFAULT_MIN_MENU_WIDTH,
                         width: 'max(var(--radix-dropdown-menu-trigger-width))',
                         maxWidth:
-                            maxMenuWidth ||
+                            maxMenuWidth ??
                             'var(--radix-dropdown-menu-trigger-width)',
                         maxHeight:
-                            maxMenuHeight ||
+                            maxMenuHeight ??
                             'var(--radix-popper-available-height)',
                     }}
                 >
@@ -400,7 +407,8 @@ const MultiSelectV2Menu = ({
                                         maxSelections={maxSelections}
                                         tokens={multiSelectTokens}
                                         height={
-                                            (maxMenuHeight ?? 400) -
+                                            (maxMenuHeight ??
+                                                DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK) -
                                             headerFooterHeight
                                         }
                                         itemHeight={virtualListItemHeight}

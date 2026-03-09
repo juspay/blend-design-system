@@ -66,14 +66,14 @@ const MultiSelectV2SubMenu = ({
                     <Block
                         display="flex"
                         alignItems="center"
-                        gap={multiSelectTokens.menu.item.gap ?? 8}
+                        gap={multiSelectTokens.menu.item.gap}
                         justifyContent="space-between"
                     >
                         <Block
                             as="span"
                             display="flex"
                             alignItems="center"
-                            gap={multiSelectTokens.menu.item.gap ?? 8}
+                            gap={multiSelectTokens.menu.item.gap}
                             flexGrow={1}
                         >
                             {item.slot1 && <MenuItemSlot slot={item.slot1} />}
