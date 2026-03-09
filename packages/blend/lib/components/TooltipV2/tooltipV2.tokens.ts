@@ -43,6 +43,7 @@ export type TooltipV2TokensType = {
             [key in TooltipV2Size]: CSSObject['lineHeight']
         }
     }
+    zIndex: CSSObject['zIndex']
 }
 
 export type ResponsiveTooltipV2Tokens = {

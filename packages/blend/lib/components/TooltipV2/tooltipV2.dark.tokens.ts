@@ -6,6 +6,7 @@ export const getTooltipV2DarkTokens = (
 ): ResponsiveTooltipV2Tokens => {
     return {
         sm: {
+            zIndex: foundationToken.zIndex[9999],
             // background (size-independent)
             background: foundationToken.colors.gray[0],
             // borderRadius.[size]
@@ -57,6 +58,7 @@ export const getTooltipV2DarkTokens = (
             },
         },
         lg: {
+            zIndex: foundationToken.zIndex[9999],
             // background (size-independent)
             background: foundationToken.colors.gray[0],
 

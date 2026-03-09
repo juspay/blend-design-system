@@ -17,9 +17,6 @@ import {
     formatTextWithLineBreaks,
     composeRefs,
 } from '../../global-utils/GlobalUtils'
-import { FOUNDATION_THEME } from '../../tokens'
-const TOOLTIP_Z_INDEX = FOUNDATION_THEME.zIndex[9999]
-
 const textOverflowStyle: React.CSSProperties = {
     wordBreak: 'break-word',
     overflowWrap: 'anywhere',
@@ -112,7 +109,7 @@ export const TooltipV2 = forwardRef<HTMLElement, TooltipV2Props>(
                                 side={side}
                                 align={align}
                                 sideOffset={offset}
-                                style={{ zIndex: TOOLTIP_Z_INDEX }}
+                                style={{ zIndex: tooltipTokens.zIndex }}
                             >
                                 <Block
                                     display="flex"
