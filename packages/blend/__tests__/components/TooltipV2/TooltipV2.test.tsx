@@ -743,7 +743,7 @@ describe('TooltipV2 Component', () => {
 
     describe('Ref forwarding', () => {
         it('forwards ref to native button trigger', () => {
-            const ref = React.createRef<HTMLButtonElement | HTMLDivElement>()
+            const ref = React.createRef<HTMLElement>()
             render(
                 <TooltipV2 content="Ref tooltip" ref={ref}>
                     <button>Trigger</button>
@@ -754,7 +754,7 @@ describe('TooltipV2 Component', () => {
         })
 
         it('forwards ref to wrapped span when trigger is not native element', () => {
-            const ref = React.createRef<HTMLButtonElement | HTMLDivElement>()
+            const ref = React.createRef<HTMLElement>()
             render(
                 <TooltipV2 content="Ref tooltip" ref={ref}>
                     <div>Custom trigger</div>

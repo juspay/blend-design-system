@@ -17,7 +17,8 @@ import {
     formatTextWithLineBreaks,
     composeRefs,
 } from '../../global-utils/GlobalUtils'
-const TOOLTIP_Z_INDEX = 9999
+import { FOUNDATION_THEME } from '../../tokens'
+const TOOLTIP_Z_INDEX = FOUNDATION_THEME.zIndex[9999]
 
 const textOverflowStyle: React.CSSProperties = {
     wordBreak: 'break-word',
@@ -58,10 +59,7 @@ const TooltipSlotBlock = forwardRef<
 
 TooltipSlotBlock.displayName = 'TooltipSlotBlock'
 
-export const TooltipV2 = forwardRef<
-    HTMLButtonElement | HTMLDivElement,
-    TooltipV2Props
->(
+export const TooltipV2 = forwardRef<HTMLElement, TooltipV2Props>(
     (
         {
             children: trigger,
@@ -87,19 +85,15 @@ export const TooltipV2 = forwardRef<
         const triggerNode =
             ref != null && isValidElement(trigger)
                 ? cloneElement(trigger, {
-                      ref: composeRefs<HTMLButtonElement | HTMLDivElement>(
+                      ref: composeRefs<HTMLElement>(
                           ref,
                           (
                               trigger as React.ReactElement & {
-                                  ref?: React.Ref<
-                                      HTMLButtonElement | HTMLDivElement
-                                  >
+                                  ref?: React.Ref<HTMLElement>
                               }
                           ).ref
                       ),
-                  } as React.Attributes & {
-                      ref: React.Ref<HTMLButtonElement | HTMLDivElement>
-                  })
+                  } as React.Attributes & { ref: React.Ref<HTMLElement> })
                 : trigger
 
         return (
