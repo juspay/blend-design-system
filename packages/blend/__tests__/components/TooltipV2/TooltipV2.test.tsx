@@ -210,6 +210,7 @@ describe('TooltipV2 Component', () => {
     describe('Tooltip Sizes', () => {
         it.each([
             [TooltipV2Size.SM, 'sm'],
+            [TooltipV2Size.MD, 'md'],
             [TooltipV2Size.LG, 'lg'],
         ])('renders %s size correctly', async (size, sizeLabel) => {
             const { user } = render(

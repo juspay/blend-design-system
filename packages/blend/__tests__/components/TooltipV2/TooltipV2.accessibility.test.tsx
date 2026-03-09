@@ -37,7 +37,7 @@ describe('TooltipV2 Accessibility', () => {
         })
 
         it('meets WCAG standards for all tooltip sizes', async () => {
-            const sizes = [TooltipV2Size.SM, TooltipV2Size.LG]
+            const sizes = [TooltipV2Size.SM, TooltipV2Size.MD, TooltipV2Size.LG]
 
             for (const size of sizes) {
                 const { container, user, unmount } = render(

@@ -20,6 +20,7 @@ export enum TooltipV2Align {
 
 export enum TooltipV2Size {
     SM = 'sm',
+    MD = 'md',
     LG = 'lg',
 }
 
