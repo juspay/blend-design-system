@@ -1,7 +1,7 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import { menuContentAnimations } from './singleSelectV2.animations'
-import type { MenuPopoverProps } from './types'
+import type { MenuPopoverProps } from './SingleSelectV2.types'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
@@ -10,6 +10,11 @@ const Content = styled(RadixMenu.Content)`
     overflow-x: hidden;
     scrollbar-width: none;
     scrollbar-color: transparent transparent;
+
+    &[data-state='closed'] {
+        pointer-events: none;
+    }
+
     ${menuContentAnimations}
 `
 
@@ -54,5 +59,7 @@ const SingleSelectV2Popover = ({
         </RadixMenu.Root>
     )
 }
+
+SingleSelectV2Popover.displayName = 'SingleSelectV2Popover'
 
 export default SingleSelectV2Popover

@@ -1,5 +1,5 @@
-import { MultiSelectItemV2 } from '../SelectV2'
-import type { MultiSelectV2ItemType } from './types'
+import { SelectItemV2 } from '../SelectV2'
+import type { MultiSelectV2ItemType } from './MultiSelectV2.types'
 import MultiSelectV2SubMenu from './MultiSelectV2SubMenu'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
@@ -61,7 +61,8 @@ const MultiSelectV2MenuItem = ({
     }
 
     return (
-        <MultiSelectItemV2
+        <SelectItemV2
+            mode="multi"
             item={{ ...item, disabled: isItemDisabled }}
             selectedValues={selected}
             onSelect={onSelect}

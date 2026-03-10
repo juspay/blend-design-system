@@ -1,26 +1,26 @@
 import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
-import { SingleSelectV2SkeletonProps } from './SingleSelectV2.types'
-import { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
+import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
+import type { SelectV2SkeletonProps } from '../SelectV2/selectV2.shared.types'
 
-export type SingleSelectV2SkeletonComponentProps = {
-    singleSelectTokens: SingleSelectV2TokensType
-    skeleton: SingleSelectV2SkeletonProps
+export type MultiSelectV2SkeletonComponentProps = {
+    multiSelectTokens: MultiSelectV2TokensType
+    skeleton: SelectV2SkeletonProps
 }
 
-const SingleSelectV2Skeleton = forwardRef<
+const MultiSelectV2Skeleton = forwardRef<
     HTMLDivElement,
-    SingleSelectV2SkeletonComponentProps
->(({ singleSelectTokens, skeleton }, ref) => {
+    MultiSelectV2SkeletonComponentProps
+>(({ multiSelectTokens, skeleton }, ref) => {
     return (
         <Block
             ref={ref}
-            padding={singleSelectTokens.menu.item.padding}
+            padding={multiSelectTokens.menu.item.padding}
             display="flex"
             flexDirection="column"
-            gap={singleSelectTokens.menu.item.gap || 4}
-            borderRadius={singleSelectTokens.menu.item.borderRadius}
+            gap={multiSelectTokens.menu.item.gap || 4}
+            borderRadius={multiSelectTokens.menu.item.borderRadius}
             outline="none"
             border="none"
             width="100%"
@@ -38,6 +38,6 @@ const SingleSelectV2Skeleton = forwardRef<
     )
 })
 
-SingleSelectV2Skeleton.displayName = 'SingleSelectV2Skeleton'
+MultiSelectV2Skeleton.displayName = 'MultiSelectV2Skeleton'
 
-export default SingleSelectV2Skeleton
+export default MultiSelectV2Skeleton

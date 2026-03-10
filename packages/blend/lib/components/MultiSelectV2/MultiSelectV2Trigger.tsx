@@ -8,7 +8,7 @@ import {
     MultiSelectV2SelectionTagType,
     MultiSelectV2Size,
     MultiSelectV2Variant,
-} from './types'
+} from './MultiSelectV2.types'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import { getTriggerHorizontalPadding, getTriggerVerticalPadding } from './utils'
 
@@ -75,48 +75,39 @@ const MultiSelectV2Trigger = ({
         variant
     )
     const paddingY = getTriggerVerticalPadding(multiSelectTokens, size, variant)
-    const slotGap = Number(multiSelectTokens.trigger.slot?.gap ?? 8)
+    const slotGap = Number(multiSelectTokens.trigger?.slot?.gap ?? 8)
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + slotGap : paddingX
-    const chevronWidth = multiSelectTokens.trigger.chevron?.width ?? 20
-    const chevronHeight = multiSelectTokens.trigger.chevron?.height ?? 20
-    const chevronIconSize = multiSelectTokens.trigger.chevron?.iconSize ?? 16
+    const chevronWidth = multiSelectTokens.trigger?.chevron?.width ?? 20
+    const chevronHeight = multiSelectTokens.trigger?.chevron?.height ?? 20
+    const chevronIconSize = multiSelectTokens.trigger?.chevron?.iconSize ?? 16
     const floatingLabelPaddingTop =
-        multiSelectTokens.trigger.floatingLabel?.paddingTop ?? '0.375rem'
+        multiSelectTokens.trigger?.floatingLabel?.paddingTop ?? '0.375rem'
 
     const triggerState = error ? 'error' : open ? 'open' : 'closed'
-    const outline = multiSelectTokens.trigger.outline[variant][triggerState]
+    const trigger = multiSelectTokens.trigger
+    const outline = trigger?.outline?.[variant]?.[triggerState] ?? 'none'
     const backgroundColor =
-        multiSelectTokens.trigger.backgroundColor[variant][triggerState]
+        trigger?.backgroundColor?.[variant]?.[triggerState] ?? 'transparent'
 
     const showContainerStyles = !inline || isContainer
-    const hoverOutline =
-        multiSelectTokens.trigger.outline[variant][error ? 'error' : 'hover']
+    const hoverState = error ? 'error' : 'hover'
+    const focusState = error ? 'error' : 'focus'
+    const hoverOutline = trigger?.outline?.[variant]?.[hoverState] ?? 'none'
     const hoverBackgroundColor =
-        multiSelectTokens.trigger.backgroundColor[variant][
-            error ? 'error' : 'hover'
-        ]
-    const focusOutline =
-        multiSelectTokens.trigger.outline[variant][error ? 'error' : 'focus']
+        trigger?.backgroundColor?.[variant]?.[hoverState] ?? 'transparent'
+    const focusOutline = trigger?.outline?.[variant]?.[focusState] ?? 'none'
     const focusBackgroundColor =
-        multiSelectTokens.trigger.backgroundColor[variant][
-            error ? 'error' : 'focus'
-        ]
-
+        trigger?.backgroundColor?.[variant]?.[focusState] ?? 'transparent'
+    const resolvedBorderRadius =
+        borderRadius ?? trigger?.borderRadius?.[size]?.[variant]
+    const selectionTagToken = multiSelectTokens.trigger?.selectionTag as
+        | { paddingCount?: string; paddingText?: string }
+        | undefined
     const selectionTagStyles =
         selectionTagType === MultiSelectV2SelectionTagType.COUNT
-            ? ((
-                  multiSelectTokens.trigger.selectionTag as {
-                      paddingCount?: string
-                      paddingText?: string
-                  }
-              )?.paddingCount ?? `0 ${slotGap}px`)
-            : ((
-                  multiSelectTokens.trigger.selectionTag as {
-                      paddingCount?: string
-                      paddingText?: string
-                  }
-              )?.paddingText ?? '0')
+            ? (selectionTagToken?.paddingCount ?? `0 ${slotGap}px`)
+            : (selectionTagToken?.paddingText ?? '0')
 
     return (
         <PrimitiveButton
@@ -134,13 +125,12 @@ const MultiSelectV2Trigger = ({
             alignItems="center"
             overflow="hidden"
             justifyContent="space-between"
-            gap={multiSelectTokens.trigger.slot?.gap ?? 8}
-            borderRadius={borderRadius}
-            borderRight={borderRight}
+            gap={multiSelectTokens.trigger?.slot?.gap ?? 8}
+            borderRadius={resolvedBorderRadius}
             outline={outline}
             {...(showContainerStyles && {
-                height: multiSelectTokens.trigger.height[size][variant],
-                maxHeight: multiSelectTokens.trigger.height[size][variant],
+                height: trigger?.height?.[size]?.[variant],
+                maxHeight: trigger?.height?.[size]?.[variant],
                 paddingX,
                 paddingY,
                 backgroundColor,
@@ -157,9 +147,11 @@ const MultiSelectV2Trigger = ({
                 _disabled: {
                     cursor: 'not-allowed',
                     backgroundColor:
-                        multiSelectTokens.trigger.backgroundColor[variant]
-                            .closed,
-                    color: multiSelectTokens.label.color.disabled,
+                        trigger?.backgroundColor?.[variant]?.closed ??
+                        'transparent',
+                    color:
+                        multiSelectTokens.label?.color?.disabled ??
+                        'currentColor',
                 },
             })}
         >
@@ -198,14 +190,14 @@ const MultiSelectV2Trigger = ({
                         variant="body.md"
                         color={
                             disabled
-                                ? multiSelectTokens.label.color.disabled
-                                : multiSelectTokens.trigger.placeholder.color
+                                ? multiSelectTokens.label?.color?.disabled
+                                : multiSelectTokens.trigger?.placeholder?.color
                         }
                         fontWeight={
-                            multiSelectTokens.trigger.placeholder.fontWeight
+                            multiSelectTokens.trigger?.placeholder?.fontWeight
                         }
                         fontSize={
-                            multiSelectTokens.trigger.placeholder.fontSize
+                            multiSelectTokens.trigger?.placeholder?.fontSize
                         }
                     >
                         {label}
@@ -251,14 +243,15 @@ const MultiSelectV2Trigger = ({
                             as="span"
                             color={
                                 disabled
-                                    ? multiSelectTokens.label.color.disabled
-                                    : multiSelectTokens.label.color.default
+                                    ? multiSelectTokens.label?.color?.disabled
+                                    : multiSelectTokens.label?.color?.default
                             }
                             fontWeight={
-                                multiSelectTokens.trigger.placeholder.fontWeight
+                                multiSelectTokens.trigger?.placeholder
+                                    ?.fontWeight
                             }
                             fontSize={
-                                multiSelectTokens.trigger.placeholder.fontSize
+                                multiSelectTokens.trigger?.placeholder?.fontSize
                             }
                         >
                             {placeholder}
@@ -279,34 +272,27 @@ const MultiSelectV2Trigger = ({
                         color={
                             selectionTagType ===
                             MultiSelectV2SelectionTagType.TEXT
-                                ? multiSelectTokens.subLabel.color.default
-                                : multiSelectTokens.trigger.selectionTag[
-                                      variant
-                                  ].count.color
+                                ? multiSelectTokens.subLabel?.color?.default
+                                : trigger?.selectionTag?.[variant]?.count?.color
                         }
                         fontWeight={
-                            multiSelectTokens.trigger.selectionTag[variant][
-                                selectionTagType
-                            ].fontWeight
+                            trigger?.selectionTag?.[variant]?.[selectionTagType]
+                                ?.fontWeight
                         }
                         style={{
                             height: '100%',
-                            marginLeft:
-                                multiSelectTokens.trigger.selectionTag
-                                    .marginLeft ?? 8,
+                            marginLeft: trigger?.selectionTag?.marginLeft ?? 8,
                             backgroundColor:
                                 disabled &&
                                 selectionTagType ===
                                     MultiSelectV2SelectionTagType.TEXT
-                                    ? multiSelectTokens.trigger.backgroundColor[
-                                          variant
-                                      ].closed
-                                    : multiSelectTokens.trigger.selectionTag[
-                                          variant
-                                      ][selectionTagType].backgroundColor,
+                                    ? trigger?.backgroundColor?.[variant]
+                                          ?.closed
+                                    : trigger?.selectionTag?.[variant]?.[
+                                          selectionTagType
+                                      ]?.backgroundColor,
                             borderRadius:
-                                multiSelectTokens.trigger.selectionTag
-                                    .borderRadius ?? 6,
+                                trigger?.selectionTag?.borderRadius ?? 6,
                             padding: selectionTagStyles,
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
@@ -336,7 +322,7 @@ const MultiSelectV2Trigger = ({
                 as="span"
                 display="flex"
                 alignItems="center"
-                gap={multiSelectTokens.trigger.chevron?.gap ?? 4}
+                gap={multiSelectTokens.trigger?.chevron?.gap ?? 4}
                 width={chevronWidth}
                 height={chevronHeight}
                 contentCentered
@@ -347,8 +333,8 @@ const MultiSelectV2Trigger = ({
                     aria-hidden="true"
                     color={
                         disabled
-                            ? multiSelectTokens.label.color.disabled
-                            : multiSelectTokens.subLabel.color.default
+                            ? multiSelectTokens.label?.color?.disabled
+                            : multiSelectTokens.subLabel?.color?.default
                     }
                 />
             </Block>

@@ -2,7 +2,6 @@ import { css } from 'styled-components'
 
 const easing = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
-// Main dropdown menu content animations
 export const menuContentAnimations = css`
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
@@ -124,7 +123,6 @@ export const menuContentAnimations = css`
     }
 `
 
-// Submenu animations
 export const submenuContentAnimations = css`
     transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 
@@ -143,7 +141,6 @@ export const submenuContentAnimations = css`
     }
 `
 
-// Hover transition for interactive elements
 export const hoverTransition = css`
     transition: background-color 0.15s ease-in-out;
 `

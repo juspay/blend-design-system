@@ -8,7 +8,7 @@ import {
     MultiSelectV2Variant,
     type MultiSelectV2GroupType,
     type MultiSelectV2ItemType,
-} from './types'
+} from './MultiSelectV2.types'
 import MultiSelectV2MenuItem from './MultiSelectV2MenuItem'
 
 export type MultiSelectV2MenuItemsProps = {
@@ -52,10 +52,7 @@ const MultiSelectV2MenuItems = ({
                                 fontWeight={
                                     tokens.menu.item.optionsLabel.fontWeight
                                 }
-                                padding={
-                                    tokens.menu.item.optionsLabel.padding ??
-                                    '6px 8px'
-                                }
+                                padding={tokens.menu.item.optionsLabel.padding}
                                 userSelect="none"
                                 textTransform="uppercase"
                                 color={

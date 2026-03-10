@@ -6,7 +6,7 @@ import {
     MultiSelectSelectionTagType,
     MultiSelectVariant,
 } from '../MultiSelect/types'
-import type { MultiSelectV2Props } from './types'
+import type { MultiSelectV2Props } from './MultiSelectV2.types'
 
 const MobileMultiSelectV2 = ({
     subLabel,
@@ -19,6 +19,11 @@ const MobileMultiSelectV2 = ({
     return (
         <MobileMultiSelect
             {...props}
+            items={
+                (props.items ?? []) as unknown as Parameters<
+                    typeof MobileMultiSelect
+                >[0]['items']
+            }
             sublabel={subLabel}
             helpIconHintText={helpIconText}
             minMenuWidth={minPopoverWidth}

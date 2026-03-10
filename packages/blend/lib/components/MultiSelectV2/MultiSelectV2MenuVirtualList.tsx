@@ -4,7 +4,10 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
-import type { FlattenedMultiSelectV2Item, MultiSelectV2ItemType } from './types'
+import type {
+    FlattenedMultiSelectV2Item,
+    MultiSelectV2ItemType,
+} from './MultiSelectV2.types'
 import MultiSelectV2MenuItem from './MultiSelectV2MenuItem'
 
 export type MultiSelectV2MenuVirtualListProps = {

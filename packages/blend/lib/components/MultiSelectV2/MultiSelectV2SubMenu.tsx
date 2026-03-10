@@ -5,7 +5,7 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
-import type { MultiSelectV2ItemType } from './types'
+import type { MultiSelectV2ItemType } from './MultiSelectV2.types'
 import MultiSelectV2MenuItem from './MultiSelectV2MenuItem.tsx'
 
 const MenuItemSlot = ({ slot }: { slot: ReactNode }) => (

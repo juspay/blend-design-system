@@ -6,7 +6,7 @@ import {
     type FlattenedMultiSelectV2Item,
     type MultiSelectV2GroupType,
     type MultiSelectV2ItemType,
-} from './types'
+} from './MultiSelectV2.types'
 
 export const getSelectAllState = (
     selected: string[],
@@ -216,14 +216,23 @@ export const flattenMenuGroups = (
     return flattened
 }
 
+const DEFAULT_TRIGGER_PADDING_X = 14
+const DEFAULT_TRIGGER_PADDING_Y = 8
+
 export const getTriggerHorizontalPadding = (
     tokens: MultiSelectV2TokensType,
     size: MultiSelectV2Size,
     variant: MultiSelectV2Variant
-) => toPixels(tokens.trigger.padding[size][variant].x)
+): number => {
+    const value = tokens.trigger?.padding?.[size]?.[variant]?.x
+    return value != null ? toPixels(value) : DEFAULT_TRIGGER_PADDING_X
+}
 
 export const getTriggerVerticalPadding = (
     tokens: MultiSelectV2TokensType,
     size: MultiSelectV2Size,
     variant: MultiSelectV2Variant
-) => toPixels(tokens.trigger.padding[size][variant].y)
+): number => {
+    const value = tokens.trigger?.padding?.[size]?.[variant]?.y
+    return value != null ? toPixels(value) : DEFAULT_TRIGGER_PADDING_Y
+}

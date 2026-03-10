@@ -29,7 +29,7 @@ const MultiSelectV2MenuActions = ({
     onClose,
 }: MultiSelectV2MenuActionsProps) => {
     const actions = tokens.menu?.actions ?? {}
-    const padding = actions.padding ?? 16
+    const padding = actions.padding
     return (
         <Block
             paddingTop={padding}

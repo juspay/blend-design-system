@@ -1,7 +1,7 @@
 import React from 'react'
 import Block from '../Primitives/Block/Block'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
-import type { MultiSelectV2GroupType } from './types'
+import type { MultiSelectV2GroupType } from './MultiSelectV2.types'
 import MultiSelectV2MenuSearch from './MultiSelectV2MenuSearch'
 import MultiSelectV2SelectAllItem from './MultiSelectV2SelectAllItem'
 

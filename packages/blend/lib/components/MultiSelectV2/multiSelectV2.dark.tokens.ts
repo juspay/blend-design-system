@@ -3,7 +3,7 @@ import {
     MultiSelectV2SelectionTagType,
     MultiSelectV2Size,
     MultiSelectV2Variant,
-} from './types'
+} from './MultiSelectV2.types'
 import type { ResponsiveMultiSelectV2Tokens } from './multiSelectV2.tokens'
 
 export const getMultiSelectV2DarkTokens = (
@@ -160,7 +160,10 @@ export const getMultiSelectV2DarkTokens = (
                     error: 'none',
                 },
             },
-            slot: { gap: foundationToken.unit[8] },
+            slot: {
+                gap: foundationToken.unit[8],
+                width: foundationToken.unit[20],
+            },
             selectionTag: {
                 [MultiSelectV2Variant.CONTAINER]: {
                     [MultiSelectV2SelectionTagType.COUNT]: {

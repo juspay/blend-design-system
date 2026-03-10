@@ -1,5 +1,8 @@
 import type { CSSObject } from 'styled-components'
-import { SingleSelectV2Size, SingleSelectV2Variant } from './types'
+import {
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+} from './SingleSelectV2.types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { Theme } from '../../context/theme.enum'
@@ -12,7 +15,6 @@ import type {
 
 export type SingleSelectV2ItemStates = SelectV2ItemStates
 
-/** Trigger visual states: open, closed, hover, focus, error */
 export type SingleSelectV2TriggerStates = SelectV2TriggerStates
 
 type StateToken<T> = Record<SingleSelectV2ItemStates, T>
@@ -67,6 +69,10 @@ export type SingleSelectV2TokensType = {
             TriggerStateToken<CSSObject['backgroundColor']>
         >
         outline: VariantToken<TriggerStateToken<CSSObject['outline']>>
+        slot: {
+            gap: CSSObject['gap']
+            width: CSSObject['width']
+        }
         placeholder: {
             color: CSSObject['color']
             fontSize: CSSObject['fontSize']
@@ -110,7 +116,7 @@ export type SingleSelectV2TokensType = {
                 fontWeight: CSSObject['fontWeight']
                 color: StateToken<CSSObject['color']>
             }
-            optionText: {
+            option: {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
                 color: StateToken<CSSObject['color']>

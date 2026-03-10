@@ -6,6 +6,8 @@ import {
     type ReactElement,
     type ReactNode,
 } from 'react'
+import * as RadixMenu from '@radix-ui/react-dropdown-menu'
+import styled from 'styled-components'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
 import {
@@ -15,7 +17,7 @@ import {
     SingleSelectV2Variant,
     SingleSelectV2SkeletonProps,
     type SingleSelectV2GroupType,
-} from './types'
+} from './SingleSelectV2.types'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -34,10 +36,26 @@ import {
     MENU_SCROLL_SELECTORS,
     DEFAULT_END_REACHED_THRESHOLD,
 } from './utils'
-import SingleSelectV2Popover from './SingleSelectV2Popover'
+import { menuContentAnimations } from './singleSelectV2.animations'
 import SingleSelectV2Search from './SingleSelectV2Search'
 import SingleSelectV2List from './SingleSelectV2List'
 import SingleSelectV2VirtualList from './SingleSelectV2VirtualList'
+import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
+
+const Content = styled(RadixMenu.Content)`
+    position: relative;
+    z-index: ${SELECT_V2_MENU_Z_INDEX};
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+
+    &[data-state='closed'] {
+        pointer-events: none;
+    }
+
+    ${menuContentAnimations}
+`
 
 export type SingleSelectV2MenuProps = {
     items: SingleSelectV2GroupType[]
@@ -193,7 +211,6 @@ const SingleSelectV2Menu = ({
         return () => cancelAnimationFrame(id)
     }, [open, enableSearch])
 
-    // Keep focus stable in the searchbox while results update.
     useEffect(() => {
         if (!open || !enableSearch || !searchInputRef.current) return
 
@@ -233,7 +250,7 @@ const SingleSelectV2Menu = ({
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled && newOpen) return
-        if (!newOpen && enableSearch) setSearchText('')
+        if (newOpen && enableSearch) setSearchText('')
         onOpenChange(newOpen)
     }
 
@@ -252,124 +269,148 @@ const SingleSelectV2Menu = ({
     const hasVirtualRows = virtualItems.length > 0
 
     return (
-        <SingleSelectV2Popover
+        <RadixMenu.Root
+            modal={false}
             open={open}
             onOpenChange={handleOpenChange}
-            disabled={disabled}
-            trigger={trigger}
-            menuId={menuId}
-            alignment={alignment}
-            side={side}
-            sideOffset={sideOffset}
-            alignOffset={alignOffset}
-            collisionBoundary={collisionBoundary}
-            contentRef={contentRef}
-            contentStyle={{
-                backgroundColor: menuContent.backgroundColor,
-                border: menuContent.border,
-                borderRadius: menuContent.borderRadius,
-                boxShadow: menuContent.boxShadow,
-                maxHeight: maxMenuHeight,
-                minWidth: minMenuWidth ?? '250px',
-                width: 'max(var(--radix-dropdown-menu-trigger-width))',
-                maxWidth:
-                    maxMenuWidth ?? 'var(--radix-dropdown-menu-trigger-width)',
-            }}
-            onContentKeyDown={(e) => {
-                if (!enableSearch || !searchInputRef.current) return
-                const targetIsSearch =
-                    e.target === searchInputRef.current ||
-                    searchInputRef.current.contains(e.target as Node)
-                if (targetIsSearch) return
-
-                const isTypingKey =
-                    e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey
-
-                if (e.key === 'Backspace') {
-                    e.preventDefault()
-                    setSearchText((prev) =>
-                        prev.length > 0 ? prev.slice(0, -1) : prev
-                    )
-                    searchInputRef.current.focus()
-                    return
-                }
-
-                if (e.key === 'Delete') {
-                    e.preventDefault()
-                    searchInputRef.current.focus()
-                    return
-                }
-
-                if (isTypingKey) {
-                    searchInputRef.current.focus()
-                }
-            }}
         >
-            {skeleton.show ? (
-                <SingleSelectV2Skeleton
-                    singleSelectTokens={singleSelectTokens}
-                    skeleton={skeleton}
-                />
-            ) : (
-                <>
-                    <SingleSelectV2Search
-                        enabled={enableSearch}
-                        hasItems={items.length > 0}
-                        backgroundColor={menuContent.backgroundColor as string}
-                        searchPlaceholder={searchPlaceholder}
-                        searchText={searchText}
-                        onSearchTextChange={setSearchText}
-                        searchInputRef={searchInputRef}
-                        containerRef={searchContainerRef}
-                    />
+            <RadixMenu.Trigger asChild disabled={disabled}>
+                {trigger}
+            </RadixMenu.Trigger>
+            <RadixMenu.Portal>
+                <Content
+                    id={menuId}
+                    ref={contentRef}
+                    data-dropdown="dropdown"
+                    align={alignment}
+                    side={side}
+                    sideOffset={sideOffset}
+                    alignOffset={alignOffset}
+                    avoidCollisions
+                    collisionBoundary={collisionBoundary}
+                    style={{
+                        backgroundColor: menuContent.backgroundColor,
+                        border: menuContent.border,
+                        borderRadius: menuContent.borderRadius,
+                        boxShadow: menuContent.boxShadow,
+                        maxHeight: maxMenuHeight,
+                        minWidth: minMenuWidth ?? '250px',
+                        width: 'max(var(--radix-dropdown-menu-trigger-width))',
+                        maxWidth:
+                            maxMenuWidth ??
+                            'var(--radix-dropdown-menu-trigger-width)',
+                    }}
+                    onKeyDown={(e) => {
+                        if (!enableSearch || !searchInputRef.current) return
+                        const targetIsSearch =
+                            e.target === searchInputRef.current ||
+                            searchInputRef.current.contains(e.target as Node)
+                        if (targetIsSearch) return
 
-                    {showEmptyState ? (
-                        <Block
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            padding={menuItem.padding}
-                        >
-                            <Text
-                                variant="body.md"
-                                fontSize={menuItem.groupLabelText.fontSize}
-                                fontWeight={menuItem.groupLabelText.fontWeight}
-                                color={menuItem.groupLabelText.color.default}
-                                textAlign="center"
-                            >
-                                {emptyMessage}
-                            </Text>
-                        </Block>
-                    ) : showVirtualList && hasVirtualRows ? (
-                        <SingleSelectV2VirtualList
-                            flattenedItems={flattenedItems}
-                            selected={selected}
-                            onSelect={onSelect}
+                        const isTypingKey =
+                            e.key.length === 1 &&
+                            !e.ctrlKey &&
+                            !e.metaKey &&
+                            !e.altKey
+
+                        if (e.key === 'Backspace') {
+                            e.preventDefault()
+                            setSearchText((prev) =>
+                                prev.length > 0 ? prev.slice(0, -1) : prev
+                            )
+                            searchInputRef.current.focus()
+                            return
+                        }
+
+                        if (e.key === 'Delete') {
+                            e.preventDefault()
+                            searchInputRef.current.focus()
+                            return
+                        }
+
+                        if (isTypingKey) {
+                            searchInputRef.current.focus()
+                        }
+                    }}
+                >
+                    {skeleton.show ? (
+                        <SingleSelectV2Skeleton
                             singleSelectTokens={singleSelectTokens}
-                            size={size}
-                            variant={variant}
-                            virtualViewportHeight={virtualViewportHeight}
-                            virtualItems={virtualItems}
-                            totalSize={virtualizer.getTotalSize()}
-                            measureElement={virtualizer.measureElement}
-                            loadingComponent={loadingComponent}
-                            hasMore={hasMore}
-                            virtualScrollRef={virtualScrollRef}
+                            skeleton={skeleton}
                         />
                     ) : (
-                        <SingleSelectV2List
-                            filteredItems={filteredItems}
-                            selected={selected}
-                            onSelect={onSelect}
-                            singleSelectTokens={singleSelectTokens}
-                            size={size}
-                            variant={variant}
-                            enableSearch={enableSearch}
-                        />
+                        <>
+                            <SingleSelectV2Search
+                                enabled={enableSearch}
+                                hasItems={items.length > 0}
+                                backgroundColor={
+                                    menuContent.backgroundColor as string
+                                }
+                                searchPlaceholder={searchPlaceholder}
+                                searchText={searchText}
+                                onSearchTextChange={setSearchText}
+                                searchInputRef={searchInputRef}
+                                containerRef={searchContainerRef}
+                            />
+
+                            {showEmptyState ? (
+                                <Block
+                                    display="flex"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    padding={menuItem.padding}
+                                >
+                                    <Text
+                                        variant="body.md"
+                                        fontSize={
+                                            menuItem.groupLabelText.fontSize
+                                        }
+                                        fontWeight={
+                                            menuItem.groupLabelText.fontWeight
+                                        }
+                                        color={
+                                            menuItem.groupLabelText.color
+                                                .default
+                                        }
+                                        textAlign="center"
+                                    >
+                                        {emptyMessage}
+                                    </Text>
+                                </Block>
+                            ) : showVirtualList && hasVirtualRows ? (
+                                <SingleSelectV2VirtualList
+                                    flattenedItems={flattenedItems}
+                                    selected={selected}
+                                    onSelect={onSelect}
+                                    singleSelectTokens={singleSelectTokens}
+                                    size={size}
+                                    variant={variant}
+                                    virtualViewportHeight={
+                                        virtualViewportHeight
+                                    }
+                                    virtualItems={virtualItems}
+                                    totalSize={virtualizer.getTotalSize()}
+                                    measureElement={virtualizer.measureElement}
+                                    loadingComponent={loadingComponent}
+                                    hasMore={hasMore}
+                                    virtualScrollRef={virtualScrollRef}
+                                />
+                            ) : (
+                                <SingleSelectV2List
+                                    filteredItems={filteredItems}
+                                    selected={selected}
+                                    onSelect={onSelect}
+                                    singleSelectTokens={singleSelectTokens}
+                                    size={size}
+                                    variant={variant}
+                                    enableSearch={enableSearch}
+                                />
+                            )}
+                        </>
                     )}
-                </>
-            )}
-        </SingleSelectV2Popover>
+                </Content>
+            </RadixMenu.Portal>
+        </RadixMenu.Root>
     )
 }
 

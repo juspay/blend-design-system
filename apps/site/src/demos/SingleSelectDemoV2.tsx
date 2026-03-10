@@ -6,10 +6,10 @@ import {
     SingleSelectV2Alignment,
     SingleSelectV2Side,
     type SingleSelectV2GroupType,
-} from '../../../../packages/blend/lib/components/SingleSelectV2/types'
+} from '../../../../packages/blend/lib/components/SingleSelectV2/SingleSelectV2.types'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import { User, Star, Shield, Briefcase } from 'lucide-react'
+import { User, Star, Shield, Briefcase, MapPin } from 'lucide-react'
 
 const LARGE_LIST_SIZE = 500
 
@@ -62,6 +62,48 @@ const SingleSelectDemoV2 = () => {
 
     const largeListItems = useMemo(() => buildLargeList(), [])
     const [largeListSelected, setLargeListSelected] = useState('')
+    const [submenuSelected, setSubmenuSelected] = useState('')
+
+    const submenuItems: SingleSelectV2GroupType[] = [
+        {
+            groupLabel: 'Locations',
+            items: [
+                {
+                    label: 'United States',
+                    value: 'us',
+                    slot1: <MapPin size={16} />,
+                    subMenu: [
+                        { label: 'California', value: 'us-ca' },
+                        { label: 'New York', value: 'us-ny' },
+                        { label: 'Texas', value: 'us-tx' },
+                        { label: 'Florida', value: 'us-fl' },
+                    ],
+                },
+                {
+                    label: 'Europe',
+                    value: 'eu',
+                    slot1: <MapPin size={16} />,
+                    subMenu: [
+                        { label: 'United Kingdom', value: 'eu-uk' },
+                        { label: 'Germany', value: 'eu-de' },
+                        { label: 'France', value: 'eu-fr' },
+                        { label: 'Spain', value: 'eu-es' },
+                    ],
+                },
+                {
+                    label: 'Asia',
+                    value: 'asia',
+                    slot1: <MapPin size={16} />,
+                    subMenu: [
+                        { label: 'Japan', value: 'asia-jp' },
+                        { label: 'South Korea', value: 'asia-kr' },
+                        { label: 'Singapore', value: 'asia-sg' },
+                        { label: 'India', value: 'asia-in' },
+                    ],
+                },
+            ],
+        },
+    ]
 
     const groupedItems: SingleSelectV2GroupType[] = [
         {
@@ -360,6 +402,25 @@ const SingleSelectDemoV2 = () => {
                             allowCustomValue={playgroundAllowCustomValue}
                         />
                     </div>
+                </div>
+            </section>
+
+            <section className="space-y-4">
+                <h2 className="text-2xl font-bold">Submenu</h2>
+                <p className="text-gray-600">
+                    Items with{' '}
+                    <code className="rounded bg-gray-200 px-1">subMenu</code>{' '}
+                    open a nested list on hover. Select a region then a
+                    sub-option (e.g. United States → California).
+                </p>
+                <div className="max-w-md rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-6">
+                    <SingleSelectV2
+                        label="Location"
+                        placeholder="Select region and sub-option..."
+                        items={submenuItems}
+                        selected={submenuSelected}
+                        onSelect={setSubmenuSelected}
+                    />
                 </div>
             </section>
 

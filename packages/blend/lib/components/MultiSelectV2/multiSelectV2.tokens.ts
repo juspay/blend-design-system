@@ -5,7 +5,7 @@ import {
     MultiSelectV2Size,
     MultiSelectV2SelectionTagType,
     MultiSelectV2Variant,
-} from './types'
+} from './MultiSelectV2.types'
 import { Theme } from '../../context/theme.enum'
 import { getMultiSelectV2LightTokens } from './multiSelectV2.light.tokens.ts'
 import { getMultiSelectV2DarkTokens } from './multiSelectV2.dark.tokens.ts'
@@ -65,7 +65,10 @@ export type MultiSelectV2TokensType = {
             TriggerStateToken<CSSObject['backgroundColor']>
         >
         outline: VariantToken<TriggerStateToken<CSSObject['outline']>>
-        slot: { gap: CSSObject['gap'] }
+        slot: {
+            gap: CSSObject['gap']
+            width: CSSObject['width']
+        }
         selectionTag: VariantToken<
             SelectionTagTypeToken<{
                 color: CSSObject['color']

@@ -3,10 +3,13 @@ import type { AriaAttributes } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import Block from '../Primitives/Block/Block'
-import { SingleSelectV2Size, SingleSelectV2Variant } from './types'
+import {
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+    type SingleSelectV2Props,
+} from './SingleSelectV2.types'
 import SingleSelectV2Menu from './SingleSelectV2Menu'
 import SingleSelectV2Trigger from './SingleSelectV2Trigger'
-import type { SingleSelectV2Props } from './types'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'

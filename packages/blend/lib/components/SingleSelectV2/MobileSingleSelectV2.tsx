@@ -15,13 +15,13 @@ import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
-import type { SingleSelectV2Props } from './types'
+import type { SingleSelectV2Props } from './SingleSelectV2.types'
 import {
     type SingleSelectV2GroupType,
     type SingleSelectV2ItemType,
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from './types'
+} from './SingleSelectV2.types'
 import SingleSelectV2Trigger from './SingleSelectV2Trigger'
 import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
@@ -86,12 +86,12 @@ const SingleSelectV2Item = ({
                     )}
                     <Text
                         variant="body.md"
-                        fontSize={itemTokens.optionText.fontSize}
-                        fontWeight={itemTokens.optionText.fontWeight}
+                        fontSize={itemTokens.option.fontSize}
+                        fontWeight={itemTokens.option.fontWeight}
                         color={
                             item.disabled
-                                ? itemTokens.optionText.color.disabled
-                                : itemTokens.optionText.color[colorState]
+                                ? itemTokens.option.color.disabled
+                                : itemTokens.option.color[colorState]
                         }
                         truncate
                     >
@@ -123,7 +123,7 @@ const SingleSelectV2Item = ({
                         <Block flexShrink={0} height="auto" contentCentered>
                             <Check
                                 size={16}
-                                color={itemTokens.optionText.color.selected}
+                                color={itemTokens.option.color.selected}
                             />
                         </Block>
                     )}

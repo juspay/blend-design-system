@@ -1,6 +1,6 @@
 import Block from '../Primitives/Block/Block'
 import { SearchInput } from '../Inputs'
-import type { MenuSearchProps } from './types'
+import type { MenuSearchProps } from './SingleSelectV2.types'
 
 const SingleSelectV2Search = ({
     enabled,

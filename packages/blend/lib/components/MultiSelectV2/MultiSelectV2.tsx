@@ -16,6 +16,7 @@ import {
     getErrorShakeStyle,
 } from '../common/error.animations'
 import { setupAccessibility } from '../SingleSelect/utils'
+import { FOUNDATION_THEME } from '../../tokens'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import {
     MultiSelectV2Alignment,
@@ -23,7 +24,7 @@ import {
     MultiSelectV2Size,
     MultiSelectV2Variant,
     type MultiSelectV2Props,
-} from './types'
+} from './MultiSelectV2.types'
 import MultiSelectV2Menu from './MultiSelectV2Menu'
 import MultiSelectV2Trigger from './MultiSelectV2Trigger'
 import MobileMultiSelectV2 from './MobileMultiSelectV2'
@@ -247,6 +248,9 @@ const MultiSelectV2 = ({
         multiSelectTokens
     )
     const clearButtonState: 'error' | 'closed' = error ? 'error' : 'closed'
+    const clearButtonOutline =
+        multiSelectTokens.trigger.clearButton?.outline?.[clearButtonState] ??
+        multiSelectTokens.trigger.outline[variant][error ? 'error' : 'closed']
 
     return (
         <Block
@@ -362,11 +366,6 @@ const MultiSelectV2 = ({
                                     minTriggerWidth={minTriggerWidth}
                                     fullWidth={fullWidth}
                                     borderRadius={borderRadius}
-                                    borderRight={
-                                        multiSelectGroupPosition
-                                            ? clearButtonBorder.borderRight
-                                            : undefined
-                                    }
                                     {...triggerAriaAttributes}
                                 />
                             )
@@ -384,9 +383,7 @@ const MultiSelectV2 = ({
                             backgroundColor={
                                 multiSelectTokens.trigger.clearButton
                                     ?.backgroundColor?.[clearButtonState] ??
-                                multiSelectTokens.trigger.backgroundColor[
-                                    variant
-                                ].closed
+                                FOUNDATION_THEME.colors.gray[0]
                             }
                             contentCentered
                             height="100%"
@@ -400,54 +397,38 @@ const MultiSelectV2 = ({
                             }}
                             onClick={handleClearClick}
                             onKeyDown={handleClearKeyDown}
-                            aria-label="Clear selection"
-                            tabIndex={disabled ? -1 : 0}
-                            outline={
-                                multiSelectTokens.trigger.clearButton
-                                    ?.outline?.[clearButtonState] ??
-                                multiSelectTokens.trigger.outline[variant][
-                                    error ? 'error' : 'closed'
-                                ]
+                            aria-label={
+                                label
+                                    ? `Clear selection for ${label}`
+                                    : 'Clear selection'
                             }
-                            borderRight={clearButtonBorder.borderRight}
+                            tabIndex={disabled ? -1 : 0}
+                            outline={clearButtonOutline}
                             _hover={{
                                 backgroundColor:
                                     multiSelectTokens.trigger.clearButton
                                         ?.backgroundColor?.hover ??
-                                    multiSelectTokens.trigger.backgroundColor[
-                                        variant
-                                    ].hover,
-                                outline:
-                                    multiSelectTokens.trigger.clearButton
-                                        ?.outline?.hover ??
-                                    multiSelectTokens.trigger.outline[variant]
-                                        .closed,
+                                    FOUNDATION_THEME.colors.gray[25],
                             }}
                             _focus={{
                                 backgroundColor:
                                     multiSelectTokens.trigger.clearButton
                                         ?.backgroundColor?.focus ??
-                                    multiSelectTokens.trigger.backgroundColor[
-                                        variant
-                                    ].focus,
-                                outline:
-                                    multiSelectTokens.trigger.clearButton
-                                        ?.outline?.focus ??
-                                    multiSelectTokens.trigger.outline[variant]
-                                        .focus,
+                                    FOUNDATION_THEME.colors.gray[25],
+                                outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
                             }}
                         >
                             <X
-                                size={
-                                    multiSelectTokens.trigger.clearButton?.width
-                                }
+                                size={16}
                                 aria-hidden="true"
                                 color={
                                     disabled
-                                        ? multiSelectTokens.label.color.disabled
+                                        ? (multiSelectTokens.label?.color
+                                              ?.disabled ??
+                                          FOUNDATION_THEME.colors.gray[400])
                                         : (multiSelectTokens.trigger.clearButton
                                               ?.color ??
-                                          multiSelectTokens.label.color.default)
+                                          FOUNDATION_THEME.colors.gray[400])
                                 }
                             />
                         </PrimitiveButton>

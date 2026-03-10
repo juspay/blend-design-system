@@ -1,8 +1,3 @@
-/**
- * Utility functions for SingleSelectV2 component
- * Following the refactoring pattern: logic separated from UI
- */
-
 import React, { type ReactNode } from 'react'
 import { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 import {
@@ -12,18 +7,13 @@ import {
     type SingleSelectV2GroupType,
     type SingleSelectV2ItemType,
     type SingleSelectV2SkeletonProps,
-} from './types'
+} from './SingleSelectV2.types'
 
-/** Default skeleton config for SingleSelectV2 menu (avoids exporting from component file for fast refresh). */
 export const defaultSingleSelectV2Skeleton: SingleSelectV2SkeletonProps = {
     count: 3,
     show: false,
     variant: 'pulse',
 }
-
-// ---------------------------------------------------------------------------
-// Menu / dropdown constants (align with SingleSelect v1 for a11y and data-ids)
-// ---------------------------------------------------------------------------
 
 export const DROPDOWN_DATA_ATTR = 'data-dropdown="dropdown"' as const
 export const MENU_SCROLL_SELECTORS = [
@@ -34,7 +24,6 @@ export const MENU_SCROLL_SELECTORS = [
     '[data-radix-dropdown-menu-content]',
 ] as const
 
-/** Default threshold (px from bottom) to trigger onEndReached */
 export const DEFAULT_END_REACHED_THRESHOLD = 200
 
 export type AriaAttributes = {
@@ -73,9 +62,6 @@ export type AccessibilitySetupResult = {
     ariaAttributes: AriaAttributes
 }
 
-/**
- * Gets border radius for trigger based on size, variant, and group position
- */
 export function getBorderRadius(
     size: SingleSelectV2Size,
     variant: SingleSelectV2Variant,
@@ -116,9 +102,6 @@ export function getBorderRadius(
     }
 }
 
-/**
- * Creates a value-to-label map from groups
- */
 export function getValueLabelMap(
     groups: SingleSelectV2GroupType[]
 ): Record<string, string> {
@@ -140,10 +123,6 @@ export function getValueLabelMap(
     return map
 }
 
-/**
- * Generates unique IDs for accessibility attributes
- * WCAG 4.1.2 (Name, Role, Value)
- */
 export const generateAccessibilityIds = (
     uniqueName: string,
     options: {
@@ -168,10 +147,6 @@ export const generateAccessibilityIds = (
     }
 }
 
-/**
- * Extracts ARIA attributes from rest props
- * WCAG 4.1.2 (Name, Role, Value)
- */
 export const extractAriaProps = (
     rest: Record<string, unknown> | undefined
 ): ExtractedAriaProps => {
@@ -195,10 +170,6 @@ export const extractAriaProps = (
     }
 }
 
-/**
- * Merges aria-describedby IDs from multiple sources
- * WCAG 3.3.2 (Labels or Instructions) & 4.1.3 (Status Messages)
- */
 export const mergeAriaDescribedBy = (
     ...ids: (string | undefined)[]
 ): string | undefined => {
@@ -206,12 +177,6 @@ export const mergeAriaDescribedBy = (
     return merged || undefined
 }
 
-/**
- * Builds ARIA attributes object for SingleSelectV2 components
- * Note: Radix UI handles aria-expanded and aria-controls automatically
- * We only add form-specific attributes: aria-labelledby, aria-describedby, aria-invalid
- * WCAG 4.1.2 (Name, Role, Value)
- */
 export const buildAriaAttributes = (options: {
     error?: boolean
     ariaLabelledBy?: string
@@ -231,11 +196,6 @@ export const buildAriaAttributes = (options: {
     }
 }
 
-/**
- * Complete accessibility setup for SingleSelectV2 components
- * Handles ID generation, ARIA attribute extraction, and attribute building
- * WCAG 4.1.2 (Name, Role, Value), 3.3.2 (Labels or Instructions), 4.1.3 (Status Messages)
- */
 export const setupAccessibility = (
     options: AccessibilitySetupOptions
 ): AccessibilitySetupResult => {
@@ -294,10 +254,6 @@ export const setupAccessibility = (
     }
 }
 
-// ---------------------------------------------------------------------------
-// Menu list flattening (for virtualized lists and consistent indexing)
-// ---------------------------------------------------------------------------
-
 export function flattenGroups(
     groups: SingleSelectV2GroupType[]
 ): FlattenedItem[] {
@@ -335,10 +291,6 @@ export function flattenGroups(
     return flattened
 }
 
-// ---------------------------------------------------------------------------
-// Menu search filtering (recursive by label / subLabel)
-// ---------------------------------------------------------------------------
-
 export function filterMenuGroups(
     groups: SingleSelectV2GroupType[],
     searchText: string
@@ -375,11 +327,6 @@ export function filterMenuItem(
     return matches ? item : null
 }
 
-// ---------------------------------------------------------------------------
-// Trigger / DOM helpers
-// ---------------------------------------------------------------------------
-
-/** Detect if trigger is a Tooltip wrapping the actual button (for Radix asChild) */
 export function isTooltipWrappingTrigger(trigger: ReactNode): boolean {
     return (
         typeof trigger === 'object' &&
@@ -392,7 +339,6 @@ export function isTooltipWrappingTrigger(trigger: ReactNode): boolean {
     )
 }
 
-/** Compute global item index from group index and item index within group */
 export function getMenuItemIndex(
     filteredGroups: SingleSelectV2GroupType[],
     groupId: number,
@@ -405,19 +351,13 @@ export function getMenuItemIndex(
     return index + itemIndex
 }
 
-/** Default row height estimates for virtualizer (px). Match static list: item padding + line height; with subLabel add one line + gap. */
 export const VIRTUAL_ROW_ESTIMATES = {
-    /** Group label row (font sm + padding) */
     label: 32,
-    /** Separator bar */
     separator: 8,
-    /** Single-line item (padding 6*2 + line ~20) */
     item: 38,
-    /** Item with subLabel (label line + gap + description line) */
     itemWithSubLabel: 58,
 } as const
 
-/** Per-index size estimate for virtual list so initial layout matches static list (label/separator/item/subLabel). */
 export function getVirtualRowEstimate(
     flattened: FlattenedItem[],
     index: number
@@ -432,7 +372,6 @@ export function getVirtualRowEstimate(
     return VIRTUAL_ROW_ESTIMATES.item
 }
 
-/** Count of selectable items in flattened list up to (and excluding) flatIndex */
 export function getItemOrdinalIndex(
     flattened: FlattenedItem[],
     flatIndex: number

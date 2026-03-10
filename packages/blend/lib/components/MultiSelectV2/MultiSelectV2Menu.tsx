@@ -17,17 +17,18 @@ import {
     type MultiSelectV2MenuProps,
     MultiSelectV2Size,
     MultiSelectV2Variant,
-} from './types'
+} from './MultiSelectV2.types'
 import {
     filterMenuGroups,
     flattenMenuGroups,
     getAllAvailableValues,
 } from './utils'
-import MultiSelectSkeleton from '../MultiSelect/MultiSelectSkeleton'
+import MultiSelectV2Skeleton from './MultiSelectV2Skeleton'
 import MultiSelectV2MenuHeader from './MultiSelectV2MenuHeader'
 import MultiSelectV2MenuVirtualList from './MultiSelectV2MenuVirtualList'
 import MultiSelectV2MenuItems from './MultiSelectV2MenuItems'
 import MultiSelectV2MenuActions from './MultiSelectV2MenuActions'
+import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 
 const FOCUS_SEARCH_INPUT_DELAY_MS = 50
 const JUST_OPENED_DEBOUNCE_MS = 150
@@ -44,11 +45,16 @@ const Content = styled(RadixMenu.Content)<{
     background-color: ${({ $backgroundColor }) => $backgroundColor};
     border-radius: ${({ $borderRadius }) => $borderRadius};
     box-shadow: ${({ $boxShadow }) => $boxShadow};
-    z-index: 101;
+    z-index: ${SELECT_V2_MENU_Z_INDEX};
     border: ${({ $border }) => $border};
     display: flex;
     flex-direction: column;
     overflow: hidden;
+
+    &[data-state='closed'] {
+        pointer-events: none;
+    }
+
     ${dropdownContentAnimations}
 `
 
@@ -121,6 +127,7 @@ const MultiSelectV2Menu = ({
             if (disabled) return
             if (!isControlled) setInternalOpen(nextOpen)
             if (nextOpen) {
+                if (enableSearch) setSearchText('')
                 justOpenedRef.current = true
                 if (timeoutRef.current) clearTimeout(timeoutRef.current)
                 timeoutRef.current = setTimeout(() => {
@@ -131,7 +138,6 @@ const MultiSelectV2Menu = ({
                 if (timeoutRef.current) clearTimeout(timeoutRef.current)
                 timeoutRef.current = null
                 justOpenedRef.current = false
-                if (enableSearch) setSearchText('')
             }
             onOpenChange?.(nextOpen)
         },
@@ -337,7 +343,7 @@ const MultiSelectV2Menu = ({
                     }}
                 >
                     {skeleton.show ? (
-                        <MultiSelectSkeleton
+                        <MultiSelectV2Skeleton
                             multiSelectTokens={multiSelectTokens}
                             skeleton={skeleton}
                         />

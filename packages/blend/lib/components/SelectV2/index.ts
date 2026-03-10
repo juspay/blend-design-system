@@ -1,7 +1,10 @@
 export { default as SelectItemV2 } from './SelectItemV2'
-export { default as MultiSelectItemV2 } from './MultiSelectItemV2'
 export type {
     SelectItemV2Props,
-    SelectV2ItemType,
+    SingleSelectItemV2Props,
     MultiSelectItemV2Props,
+    SelectV2ItemType,
+    SelectV2MenuItemTokensBase,
 } from './types'
+export { SELECT_V2_MENU_Z_INDEX } from './selectV2.constants'
+export * from './selectV2.shared.types'

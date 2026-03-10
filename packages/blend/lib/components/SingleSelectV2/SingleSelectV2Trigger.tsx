@@ -5,7 +5,10 @@ import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { TruncatedTextWithTooltip } from '../common'
 import { ChevronDown } from 'lucide-react'
-import { SingleSelectV2Size, SingleSelectV2Variant } from './types'
+import {
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+} from './SingleSelectV2.types'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 
 export type SingleSelectV2TriggerProps = {
@@ -73,6 +76,8 @@ const SingleSelectV2Trigger = ({
         slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
 
     const isContainer = variant === SingleSelectV2Variant.CONTAINER
+    const resolvedBorderRadius =
+        borderRadius ?? singleSelectTokens.trigger.borderRadius[size][variant]
 
     return (
         <PrimitiveButton
@@ -96,7 +101,7 @@ const SingleSelectV2Trigger = ({
             overflow="hidden"
             justifyContent="space-between"
             gap={8}
-            borderRadius={borderRadius}
+            borderRadius={resolvedBorderRadius}
             border={
                 singleSelectTokens.trigger.outline[variant][
                     error ? 'error' : open ? 'open' : 'closed'

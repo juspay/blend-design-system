@@ -1,6 +1,9 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
 import type { ResponsiveSingleSelectV2Tokens } from './singleSelectV2.tokens'
-import { SingleSelectV2Size, SingleSelectV2Variant } from './types'
+import {
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+} from './SingleSelectV2.types'
 
 export const getSingleSelectV2DarkTokens = (
     foundationToken: FoundationTokenType
@@ -123,6 +126,10 @@ export const getSingleSelectV2DarkTokens = (
             boxShadow: {
                 [SingleSelectV2Variant.CONTAINER]: foundationToken.shadows.xs,
                 [SingleSelectV2Variant.NO_CONTAINER]: 'none',
+            },
+            slot: {
+                gap: foundationToken.unit[8],
+                width: foundationToken.unit[20],
             },
             backgroundColor: {
                 [SingleSelectV2Variant.CONTAINER]: {
@@ -249,7 +256,7 @@ export const getSingleSelectV2DarkTokens = (
                         selected: foundationToken.colors.gray[400],
                     },
                 },
-                optionText: {
+                option: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                     color: {

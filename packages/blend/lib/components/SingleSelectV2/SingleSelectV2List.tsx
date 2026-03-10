@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { MenuItem } from './SingleSelectV2MenuItems'
-import type { MenuListProps } from './types'
+import type { MenuListProps } from './SingleSelectV2.types'
 import { getMenuItemIndex } from './utils'
 
 const GroupLabel = styled(RadixMenu.Label)`

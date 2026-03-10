@@ -1,9 +1,10 @@
 import { forwardRef, useRef, useState, useEffect, useCallback } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
+import { Check } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
+import { Checkbox } from '../Checkbox'
 import { Tooltip, TooltipSide } from '../Tooltip'
-import { Check } from 'lucide-react'
 import { checkIfTruncated } from '../Select/SelectItem/utils'
 import type { SelectItemV2Props } from './types'
 
@@ -14,19 +15,16 @@ const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (
 )
 
 const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
-    (
-        {
+    (props, ref) => {
+        const {
             item,
-            selected,
             onSelect,
             itemTokens,
             index = 0,
-            showCheckmark = true,
             selectedPosition = 'none',
             className,
-        },
-        ref
-    ) => {
+        } = props
+
         const textRef = useRef<HTMLDivElement>(null)
         const subLabelRef = useRef<HTMLDivElement>(null)
         const [showTooltip, setShowTooltip] = useState(false)
@@ -34,7 +32,14 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
         const resizeObserverRef = useRef<ResizeObserver | null>(null)
         const rafRef = useRef<number | null>(null)
 
-        const isSelected = selected === item.value
+        const isSelected =
+            props.mode === 'single'
+                ? props.selected === item.value
+                : props.selectedValues.includes(item.value)
+
+        const isMulti = props.mode === 'multi'
+        const showCheckmark =
+            props.mode === 'single' ? (props.showCheckmark ?? true) : false
 
         const checkTruncation = useCallback(() => {
             if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
@@ -77,6 +82,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                 e.preventDefault()
                 return
             }
+            if (isMulti) e.preventDefault()
             onSelect(item.value)
         }
 
@@ -103,8 +109,6 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                     return '0'
                 case 'last':
                     return `0 0 ${defaultRadius} ${defaultRadius}`
-                case 'only':
-                    return defaultRadius
                 default:
                     return defaultRadius
             }
@@ -115,6 +119,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
             : isSelected
               ? 'selected'
               : 'default'
+
         const itemContent = (
             <RadixMenu.Item
                 asChild
@@ -125,10 +130,16 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                 <Block
                     data-numeric={index + 1}
                     data-state={isSelected ? 'selected' : 'not selected'}
-                    data-element="select-item"
-                    data-id={item.label || 'select-item'}
+                    data-element={
+                        isMulti ? 'select-item-v2-multi' : 'select-item'
+                    }
+                    data-id={
+                        item.label ||
+                        (isMulti ? 'select-item-v2-multi' : 'select-item')
+                    }
                     ref={ref}
-                    role="menuitem"
+                    role={isMulti ? 'option' : 'menuitem'}
+                    aria-selected={isMulti ? isSelected : undefined}
                     tabIndex={item.disabled ? -1 : 0}
                     padding={itemTokens.padding as string}
                     display="flex"
@@ -140,7 +151,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                     width="100%"
                     maxWidth="100%"
                     minWidth={0}
-                    color={itemTokens.optionText.color[colorState]}
+                    color={itemTokens.option.color[colorState]}
                     backgroundColor={
                         isSelected
                             ? itemTokens.backgroundColor.selected
@@ -193,10 +204,8 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                             >
                                 <PrimitiveText
                                     data-text={item.label}
-                                    fontSize={itemTokens.optionText.fontSize}
-                                    fontWeight={
-                                        itemTokens.optionText.fontWeight
-                                    }
+                                    fontSize={itemTokens.option.fontSize}
+                                    fontWeight={itemTokens.option.fontWeight}
                                     truncate={!item.disableTruncation}
                                     data-truncate="true"
                                     style={{
@@ -212,6 +221,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                                 </PrimitiveText>
                             </Block>
                         </Block>
+
                         <Block
                             as="div"
                             display="flex"
@@ -222,6 +232,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                             {item.slot2 && <SlotWrapper slot={item.slot2} />}
                             {item.slot3 && <SlotWrapper slot={item.slot3} />}
                             {item.slot4 && <SlotWrapper slot={item.slot4} />}
+
                             {showCheckmark && isSelected && (
                                 <Block
                                     as="span"
@@ -242,8 +253,16 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                                     />
                                 </Block>
                             )}
+
+                            {isMulti && (
+                                <Checkbox
+                                    checked={isSelected}
+                                    disabled={item.disabled}
+                                />
+                            )}
                         </Block>
                     </Block>
+
                     {item.subLabel && (
                         <Block
                             data-element="select-item-sublabel"

@@ -1,73 +1,33 @@
-import { SkeletonVariant } from '../Skeleton'
-import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
-import type {
-    CSSProperties,
-    KeyboardEvent,
-    ReactElement,
-    ReactNode,
-    RefObject,
-} from 'react'
+import type { ReactNode, ReactElement } from 'react'
 import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
-import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
+import type {
+    SelectV2Alignment,
+    SelectV2FlattenedItemBase,
+    SelectV2BaseItemType,
+    SelectV2PopoverPropsBase,
+    SelectV2SkeletonProps,
+    SelectV2Side,
+    SelectV2Size,
+    SelectV2Variant,
+} from '../SelectV2/selectV2.shared.types'
 
-export enum MultiSelectV2Variant {
-    CONTAINER = 'container',
-    NO_CONTAINER = 'no-container',
-}
+export {
+    SelectV2Alignment as MultiSelectV2Alignment,
+    SelectV2Variant as MultiSelectV2Variant,
+    SelectV2Size as MultiSelectV2Size,
+    SelectV2Side as MultiSelectV2Side,
+} from '../SelectV2/selectV2.shared.types'
 
-export enum MultiSelectV2Alignment {
-    START = 'start',
-    CENTER = 'center',
-    END = 'end',
-}
-
-export enum MultiSelectV2Side {
-    TOP = 'top',
-    LEFT = 'left',
-    RIGHT = 'right',
-    BOTTOM = 'bottom',
-}
-
-export enum MultiSelectV2Size {
-    SMALL = 'sm',
-    MEDIUM = 'md',
-    LARGE = 'lg',
-}
+export type { SelectV2SkeletonProps as MultiSelectV2SkeletonProps }
 
 export enum MultiSelectV2SelectionTagType {
     COUNT = 'count',
     TEXT = 'text',
 }
 
-export type MultiSelectV2SkeletonProps = {
-    count?: number
-    show?: boolean
-    variant?: SkeletonVariant
-}
-
-export type MultiSelectV2ItemType = {
-    label: string
-    value: string
-    checked?: boolean
-    subLabel?: string
-    slot1?: ReactNode
-    slot2?: ReactNode
-    slot3?: ReactNode
-    slot4?: ReactNode
-    disabled?: boolean
+export type MultiSelectV2ItemType = SelectV2BaseItemType & {
     alwaysSelected?: boolean
-    onClick?: () => void
     subMenu?: MultiSelectV2ItemType[]
-    tooltip?: string | ReactNode
-    tooltipProps?: {
-        side?: TooltipSide
-        align?: TooltipAlign
-        size?: TooltipSize
-        showArrow?: boolean
-        delayDuration?: number
-        offset?: number
-    }
-    disableTruncation?: boolean
 }
 
 export type MultiSelectV2GroupType = {
@@ -76,13 +36,8 @@ export type MultiSelectV2GroupType = {
     showSeparator?: boolean
 }
 
-export type FlattenedMultiSelectV2Item = {
-    id: string
-    type: 'item' | 'label' | 'separator'
-    item?: MultiSelectV2ItemType
-    label?: string
-    groupId?: number
-}
+export type FlattenedMultiSelectV2Item =
+    SelectV2FlattenedItemBase<MultiSelectV2ItemType>
 
 export type MultiSelectV2MenuProps = {
     items: MultiSelectV2GroupType[]
@@ -102,13 +57,11 @@ export type MultiSelectV2MenuProps = {
         filteredItems: MultiSelectV2GroupType[]
     ) => void
     maxSelections?: number
-    alignment?: MultiSelectV2Alignment
-    side?: MultiSelectV2Side
+    alignment?: SelectV2Alignment
+    side?: SelectV2Side
     sideOffset?: number
     alignOffset?: number
-    /** Controlled: when provided, menu open state is controlled by parent */
     open?: boolean
-    /** Called when open state changes; use with open for controlled mode */
     onOpenChange?: (open: boolean) => void
     showActionButtons?: boolean
     primaryAction?: {
@@ -130,37 +83,22 @@ export type MultiSelectV2MenuProps = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: ReactNode
-    skeleton?: MultiSelectV2SkeletonProps
-    size?: MultiSelectV2Size
-    variant?: MultiSelectV2Variant
+    skeleton?: SelectV2SkeletonProps
+    size?: SelectV2Size
+    variant?: SelectV2Variant
     allowCustomValue?: boolean
     customValueLabel?: string
     menuId?: string
     collisionBoundary?: DropdownMenuContentProps['collisionBoundary']
 }
 
-export type MenuPopoverProps = {
-    open: boolean
-    onOpenChange: (open: boolean) => void
-    disabled?: boolean
-    trigger: ReactElement
-    menuId?: string
-    alignment: MultiSelectV2Alignment
-    side: MultiSelectV2Side
-    sideOffset: number
-    alignOffset: number
-    collisionBoundary?: DropdownMenuContentProps['collisionBoundary']
-    contentStyle: CSSProperties
-    onContentKeyDown?: (e: KeyboardEvent<HTMLDivElement>) => void
-    contentRef?: RefObject<HTMLDivElement | null>
+export type MenuPopoverProps = SelectV2PopoverPropsBase & {
     onInteractOutside?: (e: Event) => void
     onPointerDownOutside?: (e: Event) => void
-    children: ReactNode
 }
 
 export type MultiSelectV2Props = {
     selectedValues: string[]
-    /** Toggle: (value: string). Clear/set: (value: string[]). */
     onChange: (value: string | string[]) => void
     items?: MultiSelectV2GroupType[]
 
@@ -170,12 +108,12 @@ export type MultiSelectV2Props = {
     helpIconText?: string
     name?: string
     required?: boolean
-    variant?: MultiSelectV2Variant
+    variant?: SelectV2Variant
     selectionTagType?: MultiSelectV2SelectionTagType
     slot?: ReactNode
     hintText?: string
     placeholder: string
-    size?: MultiSelectV2Size
+    size?: SelectV2Size
     enableSearch?: boolean
     searchPlaceholder?: string
     enableSelectAll?: boolean
@@ -191,8 +129,8 @@ export type MultiSelectV2Props = {
     maxPopoverWidth?: number
     maxPopoverHeight?: number
 
-    alignment?: MultiSelectV2Alignment
-    side?: MultiSelectV2Side
+    alignment?: SelectV2Alignment
+    side?: SelectV2Side
     sideOffset?: number
     alignOffset?: number
 
@@ -230,7 +168,7 @@ export type MultiSelectV2Props = {
     endReachedThreshold?: number
     hasMore?: boolean
     loadingComponent?: ReactNode
-    skeleton?: MultiSelectV2SkeletonProps
+    skeleton?: SelectV2SkeletonProps
     allowCustomValue?: boolean
     customValueLabel?: string
     showClearButton?: boolean
