@@ -22,6 +22,7 @@ import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
 } from '../Select/selectUtils'
+import { SEARCH_RESET_DELAY_MS } from '../Select/constants'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { usePreventParentScroll, useScrollLock } from '../../hooks'
@@ -64,7 +65,8 @@ const ScrollableContent = styled(Block)(() => ({
     overflowY: 'auto',
     scrollbarWidth: 'none',
     msOverflowStyle: 'none',
-    flexShrink: 0,
+    flex: '1 1 auto',
+    minHeight: 0,
     '&::-webkit-scrollbar': {
         display: 'none',
     },
@@ -308,14 +310,10 @@ const MultiSelectMenu = ({
                 }
                 justOpenedRef.current = false
                 if (enableSearch) {
-                    // Delay the reset until the close animation (300ms) finishes.
-                    // Resetting immediately re-renders the full item list, which
-                    // expands the Content before the click event fires – causing
-                    // the click to land on a now-visible menu item and select it.
                     searchResetRef.current = setTimeout(() => {
                         setSearchText('')
                         searchResetRef.current = null
-                    }, 350)
+                    }, SEARCH_RESET_DELAY_MS)
                 }
             }
 

@@ -31,6 +31,7 @@ import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
 } from '../Select/selectUtils'
+import { SEARCH_RESET_DELAY_MS } from '../Select/constants'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -450,7 +451,7 @@ const SingleSelectMenu = ({
             searchResetRef.current = setTimeout(() => {
                 setSearchText('')
                 searchResetRef.current = null
-            }, 350)
+            }, SEARCH_RESET_DELAY_MS)
         }
         onOpenChange(newOpen)
     }
