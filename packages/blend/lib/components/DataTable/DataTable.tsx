@@ -116,6 +116,7 @@ const DataTable = forwardRef(
             enableInlineEdit = false,
             enableRowExpansion = false,
             enableRowSelection = false,
+            showBulkActionBar = true,
             onRowSelectionChange,
             renderExpandedRow,
             isRowExpandable,
@@ -1372,13 +1373,15 @@ const DataTable = forwardRef(
                         overflow: 'auto',
                     }}
                 >
-                    <BulkActionBar
-                        selectedCount={selectedCount}
-                        onExport={exportToCSV}
-                        onDeselectAll={handleDeselectAll}
-                        customActions={renderBulkActions()}
-                        showExport={bulkActions?.showExport}
-                    />
+                    {showBulkActionBar && (
+                        <BulkActionBar
+                            selectedCount={selectedCount}
+                            onExport={exportToCSV}
+                            onDeselectAll={handleDeselectAll}
+                            customActions={renderBulkActions()}
+                            showExport={bulkActions?.showExport}
+                        />
+                    )}
                     <Block
                         id={statusRegionId}
                         role="status"
