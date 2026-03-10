@@ -24,12 +24,14 @@ export const getSwitchV2DarkTokens = (
                         hover: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[200],
                         error: foundationToken.colors.red[500],
+                        focus: foundationToken.colors.primary[600],
                     },
                     unchecked: {
                         default: foundationToken.colors.gray[800],
                         hover: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[800],
                         error: foundationToken.colors.gray[800],
+                        focus: foundationToken.colors.gray[700],
                     },
                 },
 
@@ -59,6 +61,7 @@ export const getSwitchV2DarkTokens = (
                         hover: foundationToken.colors.gray[100],
                         disabled: foundationToken.colors.gray[500],
                         error: foundationToken.colors.red[400],
+                        focus: foundationToken.colors.gray[500],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
@@ -90,6 +93,7 @@ export const getSwitchV2DarkTokens = (
                         hover: foundationToken.colors.gray[300],
                         disabled: foundationToken.colors.gray[600],
                         error: foundationToken.colors.red[400],
+                        focus: foundationToken.colors.gray[700],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
@@ -132,12 +136,14 @@ export const getSwitchV2DarkTokens = (
                         hover: foundationToken.colors.primary[600],
                         disabled: foundationToken.colors.primary[200],
                         error: foundationToken.colors.red[500],
+                        focus: foundationToken.colors.primary[600],
                     },
                     unchecked: {
                         default: foundationToken.colors.gray[800],
                         hover: foundationToken.colors.gray[700],
                         disabled: foundationToken.colors.gray[800],
                         error: foundationToken.colors.gray[800],
+                        focus: foundationToken.colors.gray[700],
                     },
                 },
 
@@ -167,6 +173,7 @@ export const getSwitchV2DarkTokens = (
                         hover: foundationToken.colors.gray[100],
                         disabled: foundationToken.colors.gray[500],
                         error: foundationToken.colors.red[400],
+                        focus: foundationToken.colors.gray[500],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
@@ -198,6 +205,7 @@ export const getSwitchV2DarkTokens = (
                         hover: foundationToken.colors.gray[300],
                         disabled: foundationToken.colors.gray[600],
                         error: foundationToken.colors.red[400],
+                        focus: foundationToken.colors.gray[700],
                     },
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],

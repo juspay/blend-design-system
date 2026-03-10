@@ -2,8 +2,6 @@ import styled, { css } from 'styled-components'
 import { SelectorV2Size } from '../selectorV2.types'
 import type { RadioV2TokensType } from './radioV2.tokens'
 
-import { radioV2Animations } from './radioV2.animation'
-
 export const StyledRadioV2Root = styled.input<{
     size: SelectorV2Size
     $isDisabled: boolean
@@ -27,8 +25,6 @@ export const StyledRadioV2Root = styled.input<{
         const indicatorState = $isChecked ? 'active' : 'inactive'
 
         return css`
-            ${radioV2Animations}
-
             background-color: ${$tokens.radio.indicator[indicatorState]
                 .backgroundColor[state]};
             border: ${$tokens.radio.borderWidth[indicatorState][state]}px solid
