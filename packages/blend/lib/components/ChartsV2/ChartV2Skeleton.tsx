@@ -13,6 +13,10 @@ const ChartV2Skeleton = ({
 }) => {
     return (
         <Block
+            data-chart="Skeleton"
+            role="status"
+            aria-live="polite"
+            aria-busy={true}
             display="flex"
             width="100%"
             height={isExpanded ? height : 'auto'}

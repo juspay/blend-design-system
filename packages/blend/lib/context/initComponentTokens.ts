@@ -52,11 +52,13 @@ import { getSnackbarV2Tokens } from '../components/SnackbarV2'
 import { getSwitchV2Tokens } from '../components/SelectorV2/SwitchV2/switchV2.tokens'
 import { getSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
 import { getMultiSelectV2Tokens } from '../components/MultiSelectV2/multiSelectV2.tokens'
+import { getKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import { getAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
 import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -181,6 +183,12 @@ const initTokens = (
         CHECKBOXV2:
             componentTokens.CHECKBOXV2 ??
             getCheckboxV2Tokens(foundationTokens, theme),
+        KEYVALUEPAIRV2:
+            componentTokens.KEYVALUEPAIRV2 ??
+            getKeyValuePairV2Tokens(foundationTokens, theme),
+        TOOLTIPV2:
+            componentTokens.TOOLTIPV2 ??
+            getTooltipV2Tokens(foundationTokens, theme),
     }
 }
 

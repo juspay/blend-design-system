@@ -1,4 +1,4 @@
-import type { RefObject, ReactNode } from 'react'
+import type { RefObject, ReactNode, HTMLAttributes } from 'react'
 import { HighchartsReactProps } from 'highcharts-react-official'
 
 import type { HighchartsReactRefObject } from 'highcharts-react-official'
@@ -51,29 +51,25 @@ export type ChartV2SeriesZonesOptionsObject =
     Highcharts.SeriesZonesOptionsObject
 export type ChartV2ReactRefObject = HighchartsReactRefObject
 
-//Chart Container Types
-export interface ChartV2ContainerProps {
+export type ChartV2ContainerProps = {
     children: ReactNode
-}
+} & Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'style' | 'className'>
 
-//Chart Header Types
-export interface ChartV2HeaderProps {
+export type ChartV2HeaderProps = {
     children: ReactNode
-}
+} & Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'style' | 'className'>
 
 export type ChartV2LegendItem = Highcharts.Series | Highcharts.Point
 
-export interface ChartV2CustomLegendItem {
+export type ChartV2CustomLegendItem = {
     key: string
     name: string
     color?: string
     value?: string | number
 }
 
-export interface ChartV2LegendProps {
-    /** Single chart ref (use when legend controls one chart). */
+export type ChartV2LegendProps = {
     chartRef?: RefObject<ChartV2ReactRefObject | null>
-    /** Multiple chart refs (use for shared legend; visibility and hover sync across all). */
     chartRefs?: ReadonlyArray<RefObject<ChartV2ReactRefObject | null>>
     customLegendItems?: ChartV2CustomLegendItem[]
     renderItem?: (params: {
@@ -85,4 +81,4 @@ export interface ChartV2LegendProps {
         onClick: () => void
     }) => ReactNode
     layout?: 'horizontal' | 'vertical'
-}
+} & Omit<HTMLAttributes<HTMLDivElement>, 'style' | 'className'>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Tooltip } from '../../../lib/components/Tooltip/Tooltip'
@@ -915,9 +915,10 @@ describe('Tooltip Accessibility', () => {
                 )
             })
 
-            // Tooltip should remain visible while focus is on trigger
-            await new Promise((resolve) => setTimeout(resolve, 500))
+            vi.useFakeTimers()
+            vi.advanceTimersByTime(500)
             expect(screen.getAllByText('Persistent tooltip')).toHaveLength(2)
+            vi.useRealTimers()
         })
     })
 

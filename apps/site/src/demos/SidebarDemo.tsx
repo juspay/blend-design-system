@@ -58,6 +58,7 @@ import StatCardDemo from './StatCardDemo'
 import SnackbarDemo from './SnackbarDemo'
 import AvatarGroupDemo from './AvatarGroupDemo'
 import TooltipDemo from './TooltipDemo'
+import TooltipV2Demo from './TooltipV2Demo'
 import ModalDemo from './ModalDemo'
 import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
@@ -122,6 +123,7 @@ import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
 import SingleSelectDemoV2 from './SingleSelectDemoV2'
 import MultiSelectDemoV2 from './MultiSelectDemoV2'
+import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
@@ -208,9 +210,11 @@ const SidebarDemo = () => {
         | 'switchV2'
         | 'textInputV2'
         | 'textInputAutofillTestV2'
+        | 'keyValuePairV2'
         | 'textInputGroup'
         | 'singleSelectV2'
         | 'timeline'
+        | 'tooltipV2'
     >('singleSelectV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -543,6 +547,10 @@ const SidebarDemo = () => {
                 return <ChartV2Demo />
             case 'timeline':
                 return <TimelineDemo />
+            case 'keyValuePairV2':
+                return <KeyValuePairV2Demo />
+            case 'tooltipV2':
+                return <TooltipV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -695,6 +703,7 @@ const SidebarDemo = () => {
                         <Square style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'buttons',
+                    href: 'https://react.dev',
                     onClick: () => {
                         setActiveComponent('buttons')
                         // Show topbar when navigating to regular components (controlled mode only)
@@ -950,6 +959,14 @@ const SidebarDemo = () => {
                     isSelected: activeComponent === 'keyValuePair',
                     onClick: () => setActiveComponent('keyValuePair'),
                 },
+                {
+                    label: 'Key Value Pair V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'keyValuePairV2',
+                    onClick: () => setActiveComponent('keyValuePairV2'),
+                },
             ],
         },
         {
@@ -1151,6 +1168,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tooltips',
                     onClick: () => setActiveComponent('tooltips'),
+                },
+                {
+                    label: 'Tooltip V2',
+                    leftSlot: (
+                        <Info style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tooltipV2',
+                    onClick: () => setActiveComponent('tooltipV2'),
                 },
                 {
                     label: 'Modal',

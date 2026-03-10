@@ -58,6 +58,8 @@ const ChartV2Legend = ({
                         <Block
                             as="span"
                             key={`${key}-${i}`}
+                            data-element="chart-legend"
+                            data-id={key}
                             role="listitem"
                             opacity={opacity}
                             transition="opacity 0.2s ease"
@@ -78,6 +80,8 @@ const ChartV2Legend = ({
                 return (
                     <PrimitiveButton
                         key={`${key}-${i}`}
+                        data-element="chart-legend"
+                        data-id={key}
                         display="inline-flex"
                         alignItems="center"
                         gap={legends.legendItem.gap}
@@ -100,6 +104,8 @@ const ChartV2Legend = ({
                             opacity={isDimmed ? 0.3 : 1}
                             transition="opacity 0.2s ease"
                             aria-hidden
+                            data-element="chart-legend-color"
+                            data-id={color}
                         />
                         <Block
                             as="span"
@@ -109,6 +115,8 @@ const ChartV2Legend = ({
                         >
                             <Text
                                 data-legend="label"
+                                data-element="chart-legend-text"
+                                data-id={key}
                                 fontSize={legends.legendItem.text.name.fontSize}
                                 fontWeight={
                                     legends.legendItem.text.name.fontWeight

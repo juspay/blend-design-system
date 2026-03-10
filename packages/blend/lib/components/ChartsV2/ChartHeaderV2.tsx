@@ -15,6 +15,7 @@ const ChartHeaderV2 = ({ children }: ChartV2HeaderProps) => {
             paddingLeft={tokens.header.padding.left}
             backgroundColor={tokens.header.backgroundColor}
             borderBottom={tokens.header.borderBottom}
+            data-element="chart-header"
         >
             {children}
         </Block>

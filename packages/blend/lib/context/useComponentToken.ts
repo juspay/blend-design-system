@@ -54,6 +54,7 @@ import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/
 import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { ResponsiveTimelineTokens } from '../components/Timeline/timeline.token'
 import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -115,6 +116,7 @@ export const useComponentToken = (
     | ResponsiveTextInputV2Tokens
     | ResponsiveTimelineTokens
     | ResponsiveCheckboxV2Tokens
+    | ResponsiveKeyValuePairV2Tokens
     | ResponsiveTextInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -156,7 +158,6 @@ export const useComponentToken = (
             return componentTokens.MENU
         case 'MULTI_SELECT':
             return componentTokens.MULTI_SELECT
-
         case 'TABLE':
             return componentTokens.TABLE
         case 'CALENDAR':
@@ -231,6 +232,10 @@ export const useComponentToken = (
             return componentTokens.TIMELINE
         case 'CHECKBOXV2':
             return componentTokens.CHECKBOXV2
+        case 'KEYVALUEPAIRV2':
+            return componentTokens.KEYVALUEPAIRV2
+        case 'TOOLTIPV2':
+            return componentTokens.TOOLTIPV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
