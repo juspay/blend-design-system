@@ -22,7 +22,6 @@ import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
 } from '../Select/selectUtils'
-import { SEARCH_RESET_DELAY_MS } from '../Select/constants'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { usePreventParentScroll, useScrollLock } from '../../hooks'
@@ -177,13 +176,6 @@ const MultiSelectMenu = ({
     const contentRef = useRef<HTMLDivElement>(null)
     const justOpenedRef = useRef(false)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-    const searchResetRef = useRef<NodeJS.Timeout | null>(null)
-
-    useEffect(() => {
-        return () => {
-            if (searchResetRef.current) clearTimeout(searchResetRef.current)
-        }
-    }, [])
     const hasMatch = React.useMemo(
         () => checkExactMatch(searchText, items),
         [searchText, items]
@@ -290,15 +282,9 @@ const MultiSelectMenu = ({
             if (disabled) return
 
             if (newOpen) {
-                // Cancel any pending search reset so it doesn't clear an active search
-                if (searchResetRef.current) {
-                    clearTimeout(searchResetRef.current)
-                    searchResetRef.current = null
-                }
+                if (enableSearch) setSearchText('')
                 justOpenedRef.current = true
-                if (timeoutRef.current) {
-                    clearTimeout(timeoutRef.current)
-                }
+                if (timeoutRef.current) clearTimeout(timeoutRef.current)
                 timeoutRef.current = setTimeout(() => {
                     justOpenedRef.current = false
                     timeoutRef.current = null
@@ -309,12 +295,6 @@ const MultiSelectMenu = ({
                     timeoutRef.current = null
                 }
                 justOpenedRef.current = false
-                if (enableSearch) {
-                    searchResetRef.current = setTimeout(() => {
-                        setSearchText('')
-                        searchResetRef.current = null
-                    }, SEARCH_RESET_DELAY_MS)
-                }
             }
 
             onOpenChange(newOpen)

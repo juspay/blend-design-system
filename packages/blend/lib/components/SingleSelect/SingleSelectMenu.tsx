@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 
 import type { SelectMenuGroupType } from '../Select'
@@ -31,7 +31,6 @@ import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
 } from '../Select/selectUtils'
-import { SEARCH_RESET_DELAY_MS } from '../Select/constants'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -386,13 +385,6 @@ const SingleSelectMenu = ({
     const [searchText, setSearchText] = useState('')
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
-    const searchResetRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-    useEffect(() => {
-        return () => {
-            if (searchResetRef.current) clearTimeout(searchResetRef.current)
-        }
-    }, [])
 
     let itemCounter = 0
     const selectors = [
@@ -442,17 +434,7 @@ const SingleSelectMenu = ({
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
-        if (newOpen) {
-            if (searchResetRef.current) {
-                clearTimeout(searchResetRef.current)
-                searchResetRef.current = null
-            }
-        } else if (enableSearch) {
-            searchResetRef.current = setTimeout(() => {
-                setSearchText('')
-                searchResetRef.current = null
-            }, SEARCH_RESET_DELAY_MS)
-        }
+        if (newOpen && enableSearch) setSearchText('')
         onOpenChange(newOpen)
     }
 
