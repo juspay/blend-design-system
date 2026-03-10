@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 
 import type { SelectMenuGroupType } from '../Select'
@@ -128,6 +128,10 @@ const Content = styled(RadixMenu.Content)`
     overflow-x: hidden;
     scrollbar-width: none;
     scrollbar-color: transparent transparent;
+
+    &[data-state='closed'] {
+        pointer-events: none;
+    }
 
     ${dropdownContentAnimations}
 `
@@ -381,6 +385,14 @@ const SingleSelectMenu = ({
     const [searchText, setSearchText] = useState('')
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
+    const searchResetRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    useEffect(() => {
+        return () => {
+            if (searchResetRef.current) clearTimeout(searchResetRef.current)
+        }
+    }, [])
+
     let itemCounter = 0
     const selectors = [
         '[data-dropdown="dropdown"]',
@@ -429,8 +441,16 @@ const SingleSelectMenu = ({
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
-        if (!newOpen && enableSearch) {
-            setSearchText('')
+        if (newOpen) {
+            if (searchResetRef.current) {
+                clearTimeout(searchResetRef.current)
+                searchResetRef.current = null
+            }
+        } else if (enableSearch) {
+            searchResetRef.current = setTimeout(() => {
+                setSearchText('')
+                searchResetRef.current = null
+            }, 350)
         }
         onOpenChange(newOpen)
     }
