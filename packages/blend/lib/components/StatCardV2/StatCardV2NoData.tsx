@@ -1,6 +1,6 @@
 import Block from '../Primitives/Block/Block'
 import { StatCardV2Variant, type StatCardV2Props } from './statcardV2.types'
-import type { StatCardV2TokensType } from './StatCardV2.tokens'
+import type { StatCardV2TokensType } from './statcardV2.tokens'
 import StatCardV2Title from './StatCardV2Title'
 import StatCardV2Subtitle from './StatCardV2Subtitle'
 import StatCardV2Value from './StatCardV2Value'

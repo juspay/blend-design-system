@@ -150,7 +150,7 @@ import {
 import {
     getStatCardV2Tokens,
     ResponsiveStatCardV2Tokens,
-} from '../components/StatCardV2/StatCardV2.tokens'
+} from '../components/StatCardV2/statcardV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens

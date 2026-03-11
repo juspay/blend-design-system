@@ -2,7 +2,7 @@ import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Block from '../Primitives/Block/Block'
-import { StatCardV2TokensType } from './StatCardV2.tokens'
+import { StatCardV2TokensType } from './statcardV2.tokens'
 import {
     StatCardV2ArrowDirection,
     StatCardV2ChangeType,

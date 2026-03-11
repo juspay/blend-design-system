@@ -1,6 +1,6 @@
 import { HTMLAttributes, ReactNode } from 'react'
 import { CSSObject } from 'styled-components'
-import { StatCardV2TokensType } from './StatCardV2.tokens'
+import { StatCardV2TokensType } from './statcardV2.tokens'
 import { ChartV2Options } from '../ChartsV2'
 import { SkeletonVariant } from '../Skeleton'
 

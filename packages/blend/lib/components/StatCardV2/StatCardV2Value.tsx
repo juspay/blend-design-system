@@ -2,7 +2,7 @@ import { addPxToValue } from '../../global-utils/GlobalUtils'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { StatCardV2Props, StatCardV2Variant } from './statcardV2.types'
-import type { StatCardV2TokensType } from './StatCardV2.tokens'
+import type { StatCardV2TokensType } from './statcardV2.tokens'
 
 export const STATCARD_FALLBACK_DISPLAY = '--'
 
