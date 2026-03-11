@@ -41,7 +41,7 @@ const PopoverV2Footer = ({
             display="flex"
             alignItems="center"
             gap={popoverTokens.footer.gap[size]}
-            justifyContent={'flex-end'}
+            justifyContent={'flex-start'}
         >
             {primaryAction && (
                 <Button {...primaryAction} subType={ButtonSubType.INLINE} />

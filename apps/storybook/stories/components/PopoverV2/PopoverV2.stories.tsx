@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import {
     PopoverV2,
+    PopoverV2Align,
+    PopoverV2Side,
     PopoverV2Size,
     Button,
     ButtonType,
@@ -397,8 +399,8 @@ export const Default: Story = {
         heading: 'Default PopoverV2',
         description: 'This is a simple popover with header and content',
         size: PopoverV2Size.MD,
-        side: 'bottom',
-        align: 'center',
+        side: PopoverV2Side.BOTTOM,
+        align: PopoverV2Align.CENTER,
         showCloseButton: true,
         asModal: false,
     },
@@ -479,8 +481,8 @@ export const Positioning: Story = {
                         />
                     }
                     heading="Top Positioned"
-                    side="top"
-                    align="center"
+                    side={PopoverV2Side.TOP}
+                    align={PopoverV2Align.CENTER}
                 >
                     <div style={{ padding: '16px' }}>
                         <p>This popover appears above the trigger button.</p>
@@ -492,8 +494,8 @@ export const Positioning: Story = {
                         <Button leadingIcon={<User size={16} />} text="Left" />
                     }
                     heading="Left Positioned"
-                    side="left"
-                    align="center"
+                    side={PopoverV2Side.LEFT}
+                    align={PopoverV2Align.CENTER}
                 >
                     <div style={{ padding: '16px' }}>
                         <p>
@@ -508,8 +510,8 @@ export const Positioning: Story = {
                         <Button leadingIcon={<Bell size={16} />} text="Right" />
                     }
                     heading="Right Positioned"
-                    side="right"
-                    align="center"
+                    side={PopoverV2Side.RIGHT}
+                    align={PopoverV2Align.CENTER}
                 >
                     <div style={{ padding: '16px' }}>
                         <p>
@@ -529,8 +531,8 @@ export const Positioning: Story = {
                         />
                     }
                     heading="Bottom Positioned"
-                    side="bottom"
-                    align="center"
+                    side={PopoverV2Side.BOTTOM}
+                    align={PopoverV2Align.CENTER}
                 >
                     <div style={{ padding: '16px' }}>
                         <p>This popover appears below the trigger button.</p>
@@ -592,7 +594,7 @@ export const WithActions: Story = {
                     text: 'Cancel',
                     buttonType: ButtonType.SECONDARY,
                 }}
-                side="top"
+                side={PopoverV2Side.TOP}
             >
                 <div style={{ padding: '16px' }}>
                     <p style={{ color: '#6b7280', fontSize: '14px' }}>
@@ -955,7 +957,7 @@ export const ShareDialog: Story = {
                 heading="Share Content"
                 description="Share this content with others"
                 maxWidth={380}
-                side="top"
+                side={PopoverV2Side.TOP}
             >
                 <div style={{ padding: '20px' }}>
                     <div style={{ marginBottom: '20px' }}>
@@ -1320,8 +1322,8 @@ export const QuickActionsMenu: Story = {
                 }
                 heading="Quick Actions"
                 maxWidth={280}
-                side="bottom"
-                align="start"
+                side={PopoverV2Side.BOTTOM}
+                align={PopoverV2Align.START}
             >
                 <div style={{ padding: '8px' }}>
                     {quickActions.map((action, index) => (
@@ -1479,8 +1481,8 @@ export const NotificationCenter: Story = {
                 heading="Notifications"
                 description={`${unreadCount} unread notification${unreadCount !== 1 ? 's' : ''}`}
                 maxWidth={400}
-                side="bottom"
-                align="end"
+                side={PopoverV2Side.BOTTOM}
+                align={PopoverV2Align.END}
             >
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
                     {notifications.map((notification) => (

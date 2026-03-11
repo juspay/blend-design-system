@@ -45,7 +45,7 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
 
     const shouldShowSkeleton = skeleton?.show
     const skeletonVariant: SkeletonVariant =
-        (skeleton?.variant as SkeletonVariant) || 'pulse'
+        (skeleton?.variant as SkeletonVariant) ?? 'pulse'
 
     const bodySkeletonWidth = skeleton?.bodySkeletonProps?.width || '100%'
     const bodySkeletonHeight = skeleton?.bodySkeletonProps?.height || 200
@@ -197,15 +197,15 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
                                 />
                             ) : (
                                 <>
-                                    {secondaryAction && (
-                                        <Button
-                                            {...secondaryAction}
-                                            subType={ButtonSubType.INLINE}
-                                        />
-                                    )}
                                     {primaryAction && (
                                         <Button
                                             {...primaryAction}
+                                            subType={ButtonSubType.INLINE}
+                                        />
+                                    )}
+                                    {secondaryAction && (
+                                        <Button
+                                            {...secondaryAction}
                                             subType={ButtonSubType.INLINE}
                                         />
                                     )}

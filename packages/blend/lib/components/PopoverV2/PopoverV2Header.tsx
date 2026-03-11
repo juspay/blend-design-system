@@ -1,5 +1,4 @@
 import { X } from 'lucide-react'
-import { FOUNDATION_THEME } from '../../tokens'
 import { ButtonSubType, ButtonType, Button } from '../Button'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -60,6 +59,9 @@ const PopoverV2Header = ({
                     popoverTokens.headerContainer.heading.fontWeight[size]
                 }
                 color={popoverTokens.headerContainer.heading.color}
+                lineHeight={
+                    popoverTokens.headerContainer.heading.lineHeight[size]
+                }
             >
                 {heading}
             </PrimitiveText>
@@ -79,44 +81,46 @@ const PopoverV2Header = ({
                 fontWeight={
                     popoverTokens.headerContainer.description.fontWeight[size]
                 }
+                lineHeight={
+                    popoverTokens.headerContainer.description.lineHeight[size]
+                }
             >
                 {description}
             </PrimitiveText>
         )
     }
-
     return (
         <Block
             display="flex"
             flexDirection="column"
-            gap={FOUNDATION_THEME.unit[4]}
+            gap={popoverTokens.headerContainer.heading.gap[size]}
         >
             <Block
                 display="flex"
                 justifyContent="space-between"
-                alignItems="flex-start"
-                gap={FOUNDATION_THEME.unit[8]}
+                alignItems="center"
+                gap={popoverTokens.headerContainer.description.gap[size]}
             >
                 {heading ? <Header /> : description ? <Description /> : null}
                 {showCloseButton && (
-                    <Block size={18} contentCentered>
-                        <Button
-                            subType={ButtonSubType.INLINE}
-                            buttonType={ButtonType.SECONDARY}
-                            leadingIcon={
-                                <X
-                                    size={FOUNDATION_THEME.unit[12]}
-                                    aria-hidden="true"
-                                    color={
-                                        popoverTokens.headerContainer.heading
-                                            .color
-                                    }
-                                />
-                            }
-                            onClick={onClose}
-                            aria-label="Close popover"
-                        ></Button>
-                    </Block>
+                    <Button
+                        subType={ButtonSubType.INLINE}
+                        buttonType={ButtonType.SECONDARY}
+                        leadingIcon={
+                            <X
+                                size={
+                                    popoverTokens.headerContainer.heading
+                                        .IconSize[size] as number
+                                }
+                                aria-hidden="true"
+                                color={
+                                    popoverTokens.headerContainer.heading.color
+                                }
+                            />
+                        }
+                        onClick={onClose}
+                        aria-label="Close popover"
+                    ></Button>
                 )}
             </Block>
             {description && heading && <Description />}

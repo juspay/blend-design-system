@@ -52,7 +52,4 @@ export * from './tokens'
 //V2 Components
 
 export * from './components/ChartsV2'
-export * from './components/PopoverV2'
 export * from './components/Timeline'
-export * from './components/SelectorV2/CheckboxV2'
-export * from './components/SelectorV2/SwitchV2'

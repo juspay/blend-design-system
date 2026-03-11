@@ -5,7 +5,11 @@ import {
     ButtonType,
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
-import { PopoverV2Size } from '../../../../packages/blend/lib/components/PopoverV2/popoverV2.types'
+import {
+    PopoverV2Align,
+    PopoverV2Size,
+    PopoverV2Side,
+} from '../../../../packages/blend/lib/components/PopoverV2/popoverV2.types'
 import {
     Settings,
     Info,
@@ -36,8 +40,8 @@ const PopoverV2Demo = () => {
         showSecondaryButton: true,
         contentType: 'basic',
         size: PopoverV2Size.MD,
-        side: 'bottom' as 'top' | 'right' | 'bottom' | 'left',
-        align: 'center' as 'start' | 'center' | 'end',
+        side: PopoverV2Side.BOTTOM,
+        align: PopoverV2Align.CENTER,
         shadow: 'lg' as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full',
         asModal: false,
         useDrawerOnMobile: true,
@@ -289,13 +293,19 @@ const PopoverV2Demo = () => {
                             </label>
                             <select
                                 value={config.side}
-                                onChange={handleSelectChange('side')}
+                                onChange={(e) =>
+                                    setConfig((prev) => ({
+                                        ...prev,
+                                        side: e.target.value as PopoverV2Side,
+                                    }))
+                                }
                                 className="w-full px-3 py-2 rounded border border-gray-300 text-sm bg-white focus:border-blue-500 focus:outline-none"
                             >
-                                <option value="top">Top</option>
-                                <option value="right">Right</option>
-                                <option value="bottom">Bottom</option>
-                                <option value="left">Left</option>
+                                {Object.values(PopoverV2Side).map((s) => (
+                                    <option key={s} value={s}>
+                                        {s.charAt(0).toUpperCase() + s.slice(1)}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -305,12 +315,19 @@ const PopoverV2Demo = () => {
                             </label>
                             <select
                                 value={config.align}
-                                onChange={handleSelectChange('align')}
+                                onChange={(e) =>
+                                    setConfig((prev) => ({
+                                        ...prev,
+                                        align: e.target.value as PopoverV2Align,
+                                    }))
+                                }
                                 className="w-full px-3 py-2 rounded border border-gray-300 text-sm bg-white focus:border-blue-500 focus:outline-none"
                             >
-                                <option value="start">Start</option>
-                                <option value="center">Center</option>
-                                <option value="end">End</option>
+                                {Object.values(PopoverV2Align).map((a) => (
+                                    <option key={a} value={a}>
+                                        {a.charAt(0).toUpperCase() + a.slice(1)}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -649,8 +666,8 @@ const ActionsMenuExample = () => {
                     trailingIcon={<MoreVertical size={16} />}
                 />
             }
-            side="bottom"
-            align="end"
+            side={PopoverV2Side.BOTTOM}
+            align={PopoverV2Align.END}
             showCloseButton={false}
             minWidth={180}
         >
@@ -689,7 +706,7 @@ const InfoPopoverExample = () => {
                     leadingIcon={<Info size={16} />}
                 />
             }
-            side="top"
+            side={PopoverV2Side.TOP}
             showCloseButton={false}
             minWidth={280}
         >
@@ -722,8 +739,8 @@ const UserProfileExample = () => {
                     leadingIcon={<User size={16} />}
                 />
             }
-            side="bottom"
-            align="end"
+            side={PopoverV2Side.BOTTOM}
+            align={PopoverV2Align.END}
             showCloseButton={false}
             minWidth={250}
         >
@@ -768,8 +785,8 @@ const NotificationCenterExample = () => {
                     leadingIcon={<Bell size={16} />}
                 />
             }
-            side="bottom"
-            align="end"
+            side={PopoverV2Side.BOTTOM}
+            align={PopoverV2Align.END}
             minWidth={320}
             maxWidth={320}
         >
@@ -846,7 +863,7 @@ const FilterOptionsExample = () => {
                 onClick: () => alert('Filters reset!'),
                 buttonType: ButtonType.SECONDARY,
             }}
-            side="bottom"
+            side={PopoverV2Side.BOTTOM}
             minWidth={280}
         >
             <div className="p-4 space-y-4">

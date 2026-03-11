@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getPopoverV2DarkToken } from '../../../lib/components/PopoverV2/popoverV2.dark.token'
+import { getPopoverV2DarkToken } from '../../../lib/components/PopoverV2/popoverV2.dark.tokens'
 import FOUNDATION_THEME from '../../../lib/tokens/theme.token'
 import type { FoundationTokenType } from '../../../lib/tokens/theme.token'
 import type { ResponsivePopoverV2Tokens } from '../../../lib/components/PopoverV2/popoverV2.token'
@@ -24,70 +24,71 @@ describe('popoverV2.dark.token', () => {
             expect(sm.shadow).toBe(ft.shadows)
             expect(sm.zIndex).toBe(1000)
 
-            expect(sm.gap.small).toBe(ft.unit[12])
-            expect(sm.gap.medium).toBe(ft.unit[12])
-            expect(sm.gap.large).toBe(ft.unit[12])
+            expect(sm.gap.sm).toBe(ft.unit[12])
+            expect(sm.gap.md).toBe(ft.unit[12])
+            expect(sm.gap.lg).toBe(ft.unit[12])
 
-            expect(sm.borderRadius.small).toBe(ft.border.radius[8])
-            expect(sm.borderRadius.medium).toBe(ft.border.radius[8])
-            expect(sm.borderRadius.large).toBe(ft.border.radius[8])
+            expect(sm.borderRadius.sm).toBe(ft.border.radius[8])
+            expect(sm.borderRadius.md).toBe(ft.border.radius[8])
+            expect(sm.borderRadius.lg).toBe(ft.border.radius[8])
         })
 
         it('sm: padding all sides and sizes', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
             const sm = tokens.sm
 
-            expect(sm.padding.left.small).toBe(ft.unit[16])
-            expect(sm.padding.left.medium).toBe(ft.unit[16])
-            expect(sm.padding.left.large).toBe(ft.unit[16])
-            expect(sm.padding.right.small).toBe(ft.unit[16])
-            expect(sm.padding.right.medium).toBe(ft.unit[16])
-            expect(sm.padding.right.large).toBe(ft.unit[16])
-            expect(sm.padding.top.small).toBe(ft.unit[12])
-            expect(sm.padding.top.medium).toBe(ft.unit[12])
-            expect(sm.padding.top.large).toBe(ft.unit[12])
-            expect(sm.padding.bottom.small).toBe(ft.unit[16])
-            expect(sm.padding.bottom.medium).toBe(ft.unit[16])
-            expect(sm.padding.bottom.large).toBe(ft.unit[16])
+            expect(sm.padding.left.sm).toBe(ft.unit[16])
+            expect(sm.padding.left.md).toBe(ft.unit[16])
+            expect(sm.padding.left.lg).toBe(ft.unit[16])
+            expect(sm.padding.right.sm).toBe(ft.unit[16])
+            expect(sm.padding.right.md).toBe(ft.unit[16])
+            expect(sm.padding.right.lg).toBe(ft.unit[16])
+            expect(sm.padding.top.sm).toBe(ft.unit[12])
+            expect(sm.padding.top.md).toBe(ft.unit[12])
+            expect(sm.padding.top.lg).toBe(ft.unit[12])
+            expect(sm.padding.bottom.sm).toBe(ft.unit[16])
+            expect(sm.padding.bottom.md).toBe(ft.unit[16])
+            expect(sm.padding.bottom.lg).toBe(ft.unit[16])
         })
 
         it('sm: headerContainer.heading all keys', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
             const h = tokens.sm.headerContainer.heading
 
-            expect(h.fontSize.small).toBe(ft.font.size.body.md.fontSize)
-            expect(h.fontSize.medium).toBe(ft.font.size.body.lg.fontSize)
-            expect(h.fontSize.large).toBe(ft.font.size.body.lg.fontSize)
-            expect(h.fontWeight.small).toBe(ft.font.weight[600])
-            expect(h.fontWeight.medium).toBe(ft.font.weight[600])
-            expect(h.fontWeight.large).toBe(ft.font.weight[600])
+            expect(h.fontSize.sm).toBe(ft.font.size.body.md.fontSize)
+            expect(h.fontSize.md).toBe(ft.font.size.body.lg.fontSize)
+            expect(h.fontSize.lg).toBe(ft.font.size.body.lg.fontSize)
+            expect(h.fontSize.lg).toBe(ft.font.size.body.lg.fontSize)
+            expect(h.fontWeight.sm).toBe(ft.font.weight[600])
+            expect(h.fontWeight.md).toBe(ft.font.weight[600])
+            expect(h.fontWeight.lg).toBe(ft.font.weight[600])
             expect(h.color).toBe(ft.colors.gray[900])
-            expect(h.lineHeight.small).toBe(ft.font.size.body.md.lineHeight)
-            expect(h.lineHeight.medium).toBe(ft.font.size.body.lg.lineHeight)
-            expect(h.lineHeight.large).toBe(ft.font.size.body.lg.lineHeight)
+            expect(h.lineHeight.sm).toBe(ft.font.size.body.md.lineHeight)
+            expect(h.lineHeight.md).toBe(ft.font.size.body.lg.lineHeight)
+            expect(h.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
         })
 
         it('sm: headerContainer.description all keys', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
             const d = tokens.sm.headerContainer.description
 
-            expect(d.fontSize.small).toBe(ft.font.size.body.sm.fontSize)
-            expect(d.fontSize.medium).toBe(ft.font.size.body.md.fontSize)
-            expect(d.fontSize.large).toBe(ft.font.size.body.lg.fontSize)
-            expect(d.fontWeight.small).toBe(ft.font.weight[500])
-            expect(d.fontWeight.medium).toBe(ft.font.weight[500])
-            expect(d.fontWeight.large).toBe(ft.font.weight[500])
+            expect(d.fontSize.sm).toBe(ft.font.size.body.sm.fontSize)
+            expect(d.fontSize.md).toBe(ft.font.size.body.md.fontSize)
+            expect(d.fontSize.lg).toBe(ft.font.size.body.lg.fontSize)
+            expect(d.fontWeight.sm).toBe(ft.font.weight[500])
+            expect(d.fontWeight.md).toBe(ft.font.weight[500])
+            expect(d.fontWeight.lg).toBe(ft.font.weight[500])
             expect(d.color).toBe(ft.colors.gray[500])
-            expect(d.lineHeight.small).toBe(ft.font.size.body.sm.lineHeight)
-            expect(d.lineHeight.medium).toBe(ft.font.size.body.md.lineHeight)
-            expect(d.lineHeight.large).toBe(ft.font.size.body.lg.lineHeight)
+            expect(d.lineHeight.sm).toBe(ft.font.size.body.sm.lineHeight)
+            expect(d.lineHeight.md).toBe(ft.font.size.body.md.lineHeight)
+            expect(d.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
         })
 
         it('sm: footer.gap', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
-            expect(tokens.sm.footer.gap.small).toBe(ft.unit[12])
-            expect(tokens.sm.footer.gap.medium).toBe(ft.unit[12])
-            expect(tokens.sm.footer.gap.large).toBe(ft.unit[12])
+            expect(tokens.sm.footer.gap.sm).toBe(ft.unit[12])
+            expect(tokens.sm.footer.gap.md).toBe(ft.unit[12])
+            expect(tokens.sm.footer.gap.lg).toBe(ft.unit[12])
         })
 
         it('lg: top-level and gap/borderRadius/zIndex', () => {
@@ -99,70 +100,70 @@ describe('popoverV2.dark.token', () => {
             expect(lg.shadow).toBe(ft.shadows)
             expect(lg.zIndex).toBe(1000)
 
-            expect(lg.gap.small).toBe(ft.unit[12])
-            expect(lg.gap.medium).toBe(ft.unit[12])
-            expect(lg.gap.large).toBe(ft.unit[12])
+            expect(lg.gap.sm).toBe(ft.unit[12])
+            expect(lg.gap.md).toBe(ft.unit[12])
+            expect(lg.gap.lg).toBe(ft.unit[12])
 
-            expect(lg.borderRadius.small).toBe(ft.border.radius[8])
-            expect(lg.borderRadius.medium).toBe(ft.border.radius[8])
-            expect(lg.borderRadius.large).toBe(ft.border.radius[8])
+            expect(lg.borderRadius.sm).toBe(ft.border.radius[8])
+            expect(lg.borderRadius.md).toBe(ft.border.radius[8])
+            expect(lg.borderRadius.lg).toBe(ft.border.radius[8])
         })
 
         it('lg: padding all sides and sizes', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
             const lg = tokens.lg
 
-            expect(lg.padding.left.small).toBe(ft.unit[16])
-            expect(lg.padding.left.medium).toBe(ft.unit[16])
-            expect(lg.padding.left.large).toBe(ft.unit[16])
-            expect(lg.padding.right.small).toBe(ft.unit[16])
-            expect(lg.padding.right.medium).toBe(ft.unit[16])
-            expect(lg.padding.right.large).toBe(ft.unit[16])
-            expect(lg.padding.top.small).toBe(ft.unit[12])
-            expect(lg.padding.top.medium).toBe(ft.unit[12])
-            expect(lg.padding.top.large).toBe(ft.unit[12])
-            expect(lg.padding.bottom.small).toBe(ft.unit[16])
-            expect(lg.padding.bottom.medium).toBe(ft.unit[16])
-            expect(lg.padding.bottom.large).toBe(ft.unit[16])
+            expect(lg.padding.left.sm).toBe(ft.unit[16])
+            expect(lg.padding.left.md).toBe(ft.unit[16])
+            expect(lg.padding.left.lg).toBe(ft.unit[16])
+            expect(lg.padding.right.sm).toBe(ft.unit[16])
+            expect(lg.padding.right.md).toBe(ft.unit[16])
+            expect(lg.padding.right.lg).toBe(ft.unit[16])
+            expect(lg.padding.top.sm).toBe(ft.unit[12])
+            expect(lg.padding.top.md).toBe(ft.unit[12])
+            expect(lg.padding.top.lg).toBe(ft.unit[12])
+            expect(lg.padding.bottom.sm).toBe(ft.unit[16])
+            expect(lg.padding.bottom.md).toBe(ft.unit[16])
+            expect(lg.padding.bottom.lg).toBe(ft.unit[16])
         })
 
         it('lg: headerContainer.heading all keys', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
             const h = tokens.lg.headerContainer.heading
 
-            expect(h.fontSize.small).toBe(ft.font.size.body.md.fontSize)
-            expect(h.fontSize.medium).toBe(ft.font.size.body.lg.fontSize)
-            expect(h.fontSize.large).toBe(ft.font.size.body.lg.fontSize)
-            expect(h.fontWeight.small).toBe(ft.font.weight[600])
-            expect(h.fontWeight.medium).toBe(ft.font.weight[600])
-            expect(h.fontWeight.large).toBe(ft.font.weight[600])
+            expect(h.fontSize.sm).toBe(ft.font.size.body.md.fontSize)
+            expect(h.fontSize.md).toBe(ft.font.size.body.lg.fontSize)
+            expect(h.fontSize.lg).toBe(ft.font.size.body.lg.fontSize)
+            expect(h.fontWeight.sm).toBe(ft.font.weight[600])
+            expect(h.fontWeight.md).toBe(ft.font.weight[600])
+            expect(h.fontWeight.lg).toBe(ft.font.weight[600])
             expect(h.color).toBe(ft.colors.gray[0])
-            expect(h.lineHeight.small).toBe(ft.font.size.body.md.lineHeight)
-            expect(h.lineHeight.medium).toBe(ft.font.size.body.lg.lineHeight)
-            expect(h.lineHeight.large).toBe(ft.font.size.body.lg.lineHeight)
+            expect(h.lineHeight.sm).toBe(ft.font.size.body.md.lineHeight)
+            expect(h.lineHeight.md).toBe(ft.font.size.body.lg.lineHeight)
+            expect(h.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
         })
 
         it('lg: headerContainer.description all keys', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
             const d = tokens.lg.headerContainer.description
 
-            expect(d.fontSize.small).toBe(ft.font.size.body.sm.fontSize)
-            expect(d.fontSize.medium).toBe(ft.font.size.body.md.fontSize)
-            expect(d.fontSize.large).toBe(ft.font.size.body.lg.fontSize)
-            expect(d.fontWeight.small).toBe(ft.font.weight[500])
-            expect(d.fontWeight.medium).toBe(ft.font.weight[500])
-            expect(d.fontWeight.large).toBe(ft.font.weight[500])
+            expect(d.fontSize.sm).toBe(ft.font.size.body.sm.fontSize)
+            expect(d.fontSize.md).toBe(ft.font.size.body.md.fontSize)
+            expect(d.fontSize.lg).toBe(ft.font.size.body.lg.fontSize)
+            expect(d.fontWeight.sm).toBe(ft.font.weight[500])
+            expect(d.fontWeight.md).toBe(ft.font.weight[500])
+            expect(d.fontWeight.lg).toBe(ft.font.weight[500])
             expect(d.color).toBe(ft.colors.gray[400])
-            expect(d.lineHeight.small).toBe(ft.font.size.body.sm.lineHeight)
-            expect(d.lineHeight.medium).toBe(ft.font.size.body.md.lineHeight)
-            expect(d.lineHeight.large).toBe(ft.font.size.body.lg.lineHeight)
+            expect(d.lineHeight.sm).toBe(ft.font.size.body.sm.lineHeight)
+            expect(d.lineHeight.md).toBe(ft.font.size.body.md.lineHeight)
+            expect(d.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
         })
 
         it('lg: footer.gap', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
-            expect(tokens.lg.footer.gap.small).toBe(ft.unit[12])
-            expect(tokens.lg.footer.gap.medium).toBe(ft.unit[12])
-            expect(tokens.lg.footer.gap.large).toBe(ft.unit[12])
+            expect(tokens.lg.footer.gap.sm).toBe(ft.unit[12])
+            expect(tokens.lg.footer.gap.md).toBe(ft.unit[12])
+            expect(tokens.lg.footer.gap.lg).toBe(ft.unit[12])
         })
 
         it('returns correct type and uses custom foundation tokens', () => {

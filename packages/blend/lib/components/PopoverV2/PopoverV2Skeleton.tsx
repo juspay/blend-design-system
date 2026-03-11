@@ -1,10 +1,11 @@
 import Block from '../Primitives/Block/Block'
-import { FOUNDATION_THEME } from '../../tokens'
 import { Skeleton, type SkeletonVariant } from '../Skeleton'
 import { PopoverV2TokenType } from './popoverV2.token'
 import { PopoverV2Size } from './popoverV2.types'
 
 const PopoverV2Skeleton = ({
+    popoverTokens,
+    size,
     headerSkeleton,
     bodySkeleton,
     footerSkeleton,
@@ -34,30 +35,30 @@ const PopoverV2Skeleton = ({
     } = bodySkeleton || {}
     const { show: showFooterSkeleton = false } = footerSkeleton || {}
 
+    const gap = popoverTokens.gap[size]
+    const headerHeadingGap = popoverTokens.headerContainer.heading.gap[size]
+    const borderRadius = popoverTokens.borderRadius[size]
+
     if (showHeaderSkeleton) {
         return (
-            <Block
-                display="flex"
-                flexDirection="column"
-                gap={FOUNDATION_THEME.unit[4]}
-            >
+            <Block display="flex" flexDirection="column" gap={gap}>
                 <Block
                     display="flex"
                     justifyContent="space-between"
                     alignItems="flex-start"
-                    gap={FOUNDATION_THEME.unit[8]}
+                    gap={headerHeadingGap}
                 >
                     <Block
                         display="flex"
                         flexDirection="column"
                         flexGrow={1}
-                        gap={FOUNDATION_THEME.unit[4]}
+                        gap={headerHeadingGap}
                     >
                         <Skeleton
                             variant={skeletonVariant}
                             width="70%"
                             height={20}
-                            borderRadius={4}
+                            borderRadius={borderRadius}
                         />
                     </Block>
                 </Block>
@@ -67,16 +68,12 @@ const PopoverV2Skeleton = ({
 
     if (showBodySkeleton) {
         return (
-            <Block
-                display="flex"
-                flexDirection="column"
-                gap={FOUNDATION_THEME.unit[12]}
-            >
+            <Block display="flex" flexDirection="column" gap={gap}>
                 <Skeleton
                     variant={skeletonVariant}
                     width={bodySkeletonWidth || '100%'}
                     height={bodySkeletonHeight || 200}
-                    borderRadius={4}
+                    borderRadius={borderRadius}
                 />
             </Block>
         )

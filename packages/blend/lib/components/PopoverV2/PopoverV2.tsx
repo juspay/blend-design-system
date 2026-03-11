@@ -2,7 +2,12 @@ import { useState, useEffect, useId } from 'react'
 import styled from 'styled-components'
 import * as RadixPopover from '@radix-ui/react-popover'
 import Block from '../Primitives/Block/Block'
-import { PopoverV2Props, PopoverV2Size } from './popoverV2.types'
+import {
+    PopoverV2Align,
+    PopoverV2Props,
+    PopoverV2Side,
+    PopoverV2Size,
+} from './popoverV2.types'
 import PopoverV2Header from './PopoverV2Header'
 import PopoverV2Footer from './PopoverV2Footer'
 import { PopoverV2TokenType } from './popoverV2.token'
@@ -11,6 +16,7 @@ import MobilePopoverV2 from './MobilePopoverV2'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { popoverContentAnimations } from '../Popover/popover.animations'
 import PopoverV2Skeleton from './PopoverV2Skeleton'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 
 const AnimatedPopoverSurface = styled(Block)`
     ${popoverContentAnimations}
@@ -28,8 +34,8 @@ const PopoverV2 = ({
     primaryAction,
     secondaryAction,
     sideOffset = 8,
-    side = 'bottom',
-    align = 'center',
+    side = PopoverV2Side.BOTTOM,
+    align = PopoverV2Align.CENTER,
     alignOffset = 0,
     width,
     minWidth = 300,
@@ -47,8 +53,8 @@ const PopoverV2 = ({
 }: PopoverV2Props) => {
     const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useResponsiveTokens<PopoverV2TokenType>('POPOVERV2')
-    const { innerWidth } = useBreakpoints()
-    const isMobile = innerWidth < 1024
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isMobile = breakPointLabel === 'sm'
 
     const isCustomPopover =
         !heading && !description && !primaryAction && !secondaryAction

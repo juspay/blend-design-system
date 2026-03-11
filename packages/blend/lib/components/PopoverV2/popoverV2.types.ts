@@ -7,9 +7,22 @@ export type PopoverV2ActionType = Omit<
 >
 
 export enum PopoverV2Size {
-    SM = 'small',
-    MD = 'medium',
-    LG = 'large',
+    SM = 'sm',
+    MD = 'md',
+    LG = 'lg',
+}
+
+export enum PopoverV2Side {
+    TOP = 'top',
+    RIGHT = 'right',
+    BOTTOM = 'bottom',
+    LEFT = 'left',
+}
+
+export enum PopoverV2Align {
+    START = 'start',
+    CENTER = 'center',
+    END = 'end',
 }
 
 type BodySkeletonV2Props = {
@@ -23,7 +36,14 @@ export type PopoverV2SkeletonProps = {
     variant?: SkeletonVariant
     bodySkeletonProps?: BodySkeletonV2Props
 }
-
+export type PopoverV2Dimensions = {
+    width?: number
+    maxWidth?: number
+    minWidth?: number
+    height?: number
+    minHeight?: number
+    maxHeight?: number
+}
 export type PopoverV2Props = {
     heading?: string
     description?: string
@@ -36,15 +56,9 @@ export type PopoverV2Props = {
     primaryAction?: PopoverV2ActionType
     secondaryAction?: PopoverV2ActionType
     sideOffset?: number
-    side?: 'top' | 'right' | 'bottom' | 'left'
-    align?: 'start' | 'center' | 'end'
+    side?: PopoverV2Side
+    align?: PopoverV2Align
     alignOffset?: number
-    width?: number
-    minWidth?: number
-    maxWidth?: number
-    height?: number
-    minHeight?: number
-    maxHeight?: number
     zIndex?: number
     size?: PopoverV2Size
     onClose?: () => void
@@ -52,4 +66,5 @@ export type PopoverV2Props = {
     useDrawerOnMobile?: boolean
     avoidCollisions?: boolean
     skeleton?: PopoverV2SkeletonProps
-}
+} & PopoverV2Dimensions &
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'slot' | 'className' | 'style'>

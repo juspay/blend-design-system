@@ -3,8 +3,8 @@ import { PopoverV2Size } from './popoverV2.types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { Theme } from '../../context/theme.enum'
-import { getPopoverV2LightToken } from './popoverV2.light.token'
-import { getPopoverV2DarkToken } from './popoverV2.dark.token'
+import { getPopoverV2LightToken } from './popoverV2.light.tokens'
+import { getPopoverV2DarkToken } from './popoverV2.dark.tokens'
 export type PopoverV2TokenType = {
     background: CSSObject['backgroundColor']
     border: CSSObject['border']
@@ -42,6 +42,12 @@ export type PopoverV2TokenType = {
             lineHeight: {
                 [key in PopoverV2Size]: CSSObject['lineHeight']
             }
+            gap: {
+                [key in PopoverV2Size]: CSSObject['gap']
+            }
+            IconSize: {
+                [key in PopoverV2Size]: CSSObject['size']
+            }
         }
         description: {
             color: CSSObject['color']
@@ -53,6 +59,9 @@ export type PopoverV2TokenType = {
             }
             lineHeight: {
                 [key in PopoverV2Size]: CSSObject['lineHeight']
+            }
+            gap: {
+                [key in PopoverV2Size]: CSSObject['gap']
             }
         }
     }
