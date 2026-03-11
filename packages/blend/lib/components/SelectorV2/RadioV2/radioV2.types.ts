@@ -41,5 +41,5 @@ export type RadioV2Props = {
     }
 } & Omit<
     InputHTMLAttributes<HTMLInputElement>,
-    'className' | 'style' | 'slot' | 'size' | 'maxLength'
+    'className' | 'style' | 'slot' | 'size' | 'maxLength' | 'children'
 >

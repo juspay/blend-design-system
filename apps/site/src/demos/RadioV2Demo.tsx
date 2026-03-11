@@ -13,7 +13,9 @@ import { SelectorV2Size } from '../../../../packages/blend/lib/components/Select
 import RadioV2 from '../../../../packages/blend/lib/components/SelectorV2/RadioV2/RadioV2'
 const RadioV2Demo = () => {
     const [checked, setChecked] = useState<boolean>(false)
-    const [checkedState, setCheckedState] = useState('Unchecked')
+    const [checkedState, setCheckedState] = useState<'checked' | 'unchecked'>(
+        'unchecked'
+    )
     const [label, setLabel] = useState('RadioV2 label')
     const [subLabel, setSubLabel] = useState('RadioV2 sub label')
     const [required, setRequired] = useState(false)
@@ -33,16 +35,16 @@ const RadioV2Demo = () => {
         switch (state) {
             case 'checked':
                 setChecked(true)
-                setCheckedState('Checked')
+                setCheckedState('checked')
                 break
             case 'unchecked':
                 setChecked(false)
-                setCheckedState('Unchecked')
+                setCheckedState('unchecked')
                 break
         }
     }
     useEffect(() => {
-        setCheckedState(checked ? 'Checked' : 'Unchecked')
+        setCheckedState(checked ? 'checked' : 'unchecked')
     }, [checked])
 
     return (
@@ -183,9 +185,11 @@ const RadioV2Demo = () => {
                         id="checkbox-v2-demo"
                         subLabel={subLabel}
                         checked={checked}
-                        onCheckedChange={(checked) => {
-                            setCheckedState(checked ? 'Checked' : 'Unchecked')
-                            setChecked(checked.target.checked)
+                        onCheckedChange={(e) => {
+                            setCheckedState(
+                                e.target.checked ? 'checked' : 'unchecked'
+                            )
+                            setChecked(e.target.checked)
                         }}
                         required={required}
                         error={error}

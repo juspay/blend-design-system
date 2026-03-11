@@ -56,7 +56,7 @@ import { SelectorV2Size } from '@juspay/blend-design-system/SelectorV2'
 ```typescript
 export type RadioV2Props = {
     checked?: boolean
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onCheckedChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     required?: boolean
     error?: boolean
     size?: SelectorV2Size

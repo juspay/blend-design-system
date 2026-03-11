@@ -146,7 +146,9 @@ export const Default: Story = {
             <RadioV2
                 {...args}
                 checked={checkedState}
-                onChange={() => setCheckedState((prev: boolean) => !prev)}
+                onCheckedChange={() =>
+                    setCheckedState((prev: boolean) => !prev)
+                }
                 slot={getSlotContent(args?.slot as string | React.ReactNode)}
             />
         )
