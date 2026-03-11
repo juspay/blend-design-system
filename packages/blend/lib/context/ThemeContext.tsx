@@ -167,6 +167,10 @@ import {
     getPopoverV2Tokens,
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
+import { 
+    getCodeV2Tokens,
+    ResponsiveCodeV2Tokens,
+} from '../components/CodeV2/tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -229,6 +233,7 @@ export type ComponentTokenType = {
     TOOLTIPV2?: ResponsiveTooltipV2Tokens
     RADIOV2?: ResponsiveRadioV2Tokens
     POPOVERV2?: ResponsivePopoverV2Tokens
+    CODEEDITORV2?: ResponsiveCodeV2Tokens
 }
 
 type ThemeContextType = {
@@ -304,6 +309,7 @@ const ThemeContext = createContext<ThemeContextType>({
         TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CODEEDITORV2: getCodeV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
