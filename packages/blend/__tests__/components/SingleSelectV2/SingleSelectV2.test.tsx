@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import userEvent from '@testing-library/user-event'
 import SingleSelectV2 from '../../../lib/components/SingleSelectV2/SingleSelectV2'
-import { SingleSelectV2Size } from '../../../lib/components/SingleSelectV2/types'
+import { SingleSelectV2Size } from '../../../lib/components/SingleSelectV2/SingleSelectV2.types'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 
 const createBasicItems = () => [
@@ -351,8 +351,6 @@ describe('SingleSelectV2', () => {
             />
         )
         await user.click(screen.getByRole('button', { name: /search/i }))
-        const searchInput =
-            await screen.findByPlaceholderText('Search options...')
         await user.keyboard('{ArrowDown}')
         await waitFor(() => {
             const first = document.querySelector('[role="menuitem"]')

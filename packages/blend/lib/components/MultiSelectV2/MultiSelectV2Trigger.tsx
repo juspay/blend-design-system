@@ -134,6 +134,7 @@ const MultiSelectV2Trigger = ({
                 paddingX,
                 paddingY,
                 backgroundColor,
+                borderRight,
                 ...(!disabled && {
                     _hover: {
                         outline: hoverOutline,

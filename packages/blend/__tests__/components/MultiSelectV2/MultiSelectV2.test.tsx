@@ -3,10 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import userEvent from '@testing-library/user-event'
 import MultiSelectV2 from '../../../lib/components/MultiSelectV2/MultiSelectV2'
-import {
-    MultiSelectV2Size,
-    MultiSelectV2Variant,
-} from '../../../lib/components/MultiSelectV2/types'
+import { MultiSelectV2SelectionTagType } from '../../../lib/components/MultiSelectV2/MultiSelectV2.types'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 
 const createBasicItems = (): {
@@ -305,7 +302,7 @@ describe('MultiSelectV2', () => {
                 items={createBasicItems()}
                 selectedValues={['apple', 'banana']}
                 onChange={() => {}}
-                selectionTagType="count"
+                selectionTagType={MultiSelectV2SelectionTagType.COUNT}
             />
         )
         expect(screen.getByRole('combobox')).toHaveTextContent('2')

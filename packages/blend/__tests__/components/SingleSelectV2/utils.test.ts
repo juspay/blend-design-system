@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import React from 'react'
 import {
     getVirtualRowEstimate,
@@ -7,8 +7,8 @@ import {
     isTooltipWrappingTrigger,
     VIRTUAL_ROW_ESTIMATES,
 } from '../../../lib/components/SingleSelectV2/utils'
-import type { FlattenedItem } from '../../../lib/components/SingleSelectV2/types'
-import type { SingleSelectV2GroupType } from '../../../lib/components/SingleSelectV2/types'
+import type { FlattenedItem } from '../../../lib/components/SingleSelectV2/SingleSelectV2.types'
+import type { SingleSelectV2GroupType } from '../../../lib/components/SingleSelectV2/SingleSelectV2.types'
 
 describe('SingleSelectV2 utils', () => {
     it('getVirtualRowEstimate returns label height for label type', () => {

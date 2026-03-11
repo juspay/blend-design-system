@@ -49,6 +49,7 @@ import { ResponsiveAccordionV2Tokens } from '../components/AccordionV2'
 import { ResponsiveSnackbarV2Tokens } from '../components/SnackbarV2'
 import { ResponsiveSwitchV2Tokens } from '../components/SelectorV2/SwitchV2/switchV2.tokens'
 import { ResponsiveSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
+import type { ResponsiveMultiSelectV2Tokens } from '../components/MultiSelectV2/multiSelectV2.tokens'
 import { ResponsiveAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
@@ -110,6 +111,7 @@ export const useComponentToken = (
     | ResponsiveSnackbarV2Tokens
     | ResponsiveSwitchV2Tokens
     | ResponsiveSingleSelectV2Tokens
+    | ResponsiveMultiSelectV2Tokens
     | ResponsiveTextInputV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
