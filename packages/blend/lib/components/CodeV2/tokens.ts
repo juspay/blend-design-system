@@ -2,8 +2,8 @@ import type { CSSObject } from 'styled-components'
 import { DiffLineType } from './types'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { darkCodeTokens } from './dark.tokens'
-import { lightCodeTokens } from './light.token'
+import { darkCodeTokens } from './code.dark.tokens'
+import { lightCodeTokens } from './code.light.token'
 import { Theme } from '../../context/theme.enum'
 
 export type CodeV2Tokens = {

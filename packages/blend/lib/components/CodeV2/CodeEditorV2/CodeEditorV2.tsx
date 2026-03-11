@@ -36,7 +36,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
         },
         ref
     ) => {
-        const tokens = useResponsiveTokens<CodeV2Tokens>('CODE_BLOCK')
+        const tokens = useResponsiveTokens<CodeV2Tokens>('CODEEDITORV2')
         const [isCopied, setIsCopied] = useState(false)
 
         // Determine if line numbers should be shown
