@@ -56,12 +56,16 @@ const MultiSelectDemoV2 = () => {
     const [actionButtonsSelected, setActionButtonsSelected] = useState<
         string[]
     >([])
-    const handleActionButtonsChange = (value: string) => {
-        setActionButtonsSelected((prev) =>
-            prev.includes(value)
-                ? prev.filter((v) => v !== value)
-                : [...prev, value]
-        )
+    const handleActionButtonsChange = (value: string | string[]) => {
+        if (Array.isArray(value)) {
+            setActionButtonsSelected(value)
+        } else {
+            setActionButtonsSelected((prev) =>
+                prev.includes(value)
+                    ? prev.filter((v) => v !== value)
+                    : [...prev, value]
+            )
+        }
     }
 
     const handlePlaygroundChange = (value: string | string[]) => {
