@@ -147,6 +147,10 @@ import {
     getKeyValuePairV2Tokens,
     ResponsiveKeyValuePairV2Tokens,
 } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
+import {
+    getStatCardV2Tokens,
+    ResponsiveStatCardV2Tokens,
+} from '../components/StatCardV2/StatCardV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -204,6 +208,7 @@ export type ComponentTokenType = {
     CHARTSV2?: ResponsiveChartV2Tokens
     CHECKBOXV2?: ResponsiveCheckboxV2Tokens
     KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
+    STATCARDV2?: ResponsiveStatCardV2Tokens
 }
 
 type ThemeContextType = {
@@ -271,6 +276,7 @@ const ThemeContext = createContext<ThemeContextType>({
         TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
         CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        STATCARDV2: getStatCardV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
