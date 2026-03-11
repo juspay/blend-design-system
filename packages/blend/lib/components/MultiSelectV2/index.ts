@@ -1,7 +1,6 @@
 export { default as MultiSelectV2 } from './MultiSelectV2'
 export { default as MultiSelectV2Skeleton } from './MultiSelectV2Skeleton'
 export { default as MultiSelectV2Menu } from './MultiSelectV2Menu'
-export { default as MultiSelectV2MenuRoot } from './MultiSelectV2MenuRoot'
 export { default as MultiSelectV2MenuHeader } from './MultiSelectV2MenuHeader'
 export { default as MultiSelectV2MenuSearch } from './MultiSelectV2MenuSearch'
 export { default as MultiSelectV2MenuVirtualList } from './MultiSelectV2MenuVirtualList'

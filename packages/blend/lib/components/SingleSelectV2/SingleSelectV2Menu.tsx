@@ -1,23 +1,14 @@
-import {
-    useState,
-    useMemo,
-    useRef,
-    useEffect,
-    type ReactElement,
-    type ReactNode,
-} from 'react'
+import { useState, useMemo, useRef } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
 import {
     SingleSelectV2Alignment,
     SingleSelectV2Side,
     SingleSelectV2Size,
     SingleSelectV2Variant,
-    SingleSelectV2SkeletonProps,
-    type SingleSelectV2GroupType,
-} from './singleSelectV2.types'
+    type SingleSelectV2MenuProps,
+} from './SingleSelectV2.types'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -41,6 +32,7 @@ import SingleSelectV2Search from './SingleSelectV2Search'
 import SingleSelectV2List from './SingleSelectV2List'
 import SingleSelectV2VirtualList from './SingleSelectV2VirtualList'
 import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
+import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
@@ -57,63 +49,19 @@ const Content = styled(RadixMenu.Content)`
     ${menuContentAnimations}
 `
 
-export type SingleSelectV2MenuProps = {
-    items: SingleSelectV2GroupType[]
-    selected: string
-    onSelect: (value: string) => void
-    trigger: ReactElement
-    minMenuWidth?: number
-    maxMenuWidth?: number
-    maxMenuHeight?: number
-    enableSearch?: boolean
-    searchPlaceholder?: string
-    disabled?: boolean
-
-    alignment?: SingleSelectV2Alignment
-    side?: SingleSelectV2Side
-    sideOffset?: number
-    alignOffset?: number
-    collisionBoundary?: DropdownMenuContentProps['collisionBoundary']
-
-    open: boolean
-    onOpenChange: (open: boolean) => void
-
-    size?: SingleSelectV2Size
-    variant?: SingleSelectV2Variant
-
-    enableVirtualization?: boolean
-    virtualListItemHeight?: number
-    virtualListOverscan?: number
-
-    onEndReached?: () => void
-    endReachedThreshold?: number
-    hasMore?: boolean
-    loadingComponent?: ReactNode
-    skeleton?: SingleSelectV2SkeletonProps
-    allowCustomValue?: boolean
-    customValueLabel?: string
-    menuId?: string
-}
-
 const SingleSelectV2Menu = ({
     items,
     selected,
     onSelect,
     trigger,
-    minMenuWidth,
-    maxMenuWidth,
-    maxMenuHeight = 400,
-    enableSearch,
-    searchPlaceholder = 'Search options...',
+    menuDimensions,
+    search,
     disabled,
-    alignment = SingleSelectV2Alignment.START,
-    side = SingleSelectV2Side.BOTTOM,
-    sideOffset = 8,
-    alignOffset = 0,
+    menuPosition,
     collisionBoundary,
     open,
     onOpenChange,
-    size = SingleSelectV2Size.MEDIUM,
+    size = SingleSelectV2Size.MD,
     variant = SingleSelectV2Variant.CONTAINER,
     enableVirtualization = false,
     virtualListItemHeight = 48,
@@ -130,23 +78,19 @@ const SingleSelectV2Menu = ({
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
 
+    const enableSearch = search?.show
+    const searchPlaceholder = search?.placeholder ?? 'Search options...'
+    const maxMenuHeight = menuDimensions?.maxHeight as number | undefined
+    const alignment = menuPosition?.alignment ?? SingleSelectV2Alignment.START
+    const side = menuPosition?.side ?? SingleSelectV2Side.BOTTOM
+    const sideOffset = menuPosition?.sideOffset ?? 8
+    const alignOffset = menuPosition?.alignOffset ?? 0
+
     const [searchText, setSearchText] = useState('')
     const searchInputRef = useRef<HTMLInputElement>(null)
     const searchContainerRef = useRef<HTMLDivElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const virtualScrollRef = useRef<HTMLDivElement>(null)
-    const [searchHeight, setSearchHeight] = useState(0)
-
-    useEffect(() => {
-        if (!searchContainerRef.current) return
-        const measure = () => {
-            setSearchHeight(searchContainerRef.current?.offsetHeight ?? 0)
-        }
-        measure()
-        const observer = new ResizeObserver(measure)
-        observer.observe(searchContainerRef.current)
-        return () => observer.disconnect()
-    }, [enableSearch, open])
 
     usePreventParentScroll(open, contentRef, [...MENU_SCROLL_SELECTORS])
     useScrollLock(open)
@@ -180,7 +124,7 @@ const SingleSelectV2Menu = ({
         [filteredItems]
     )
     const virtualViewportHeight = maxMenuHeight
-        ? Math.max(maxMenuHeight - (enableSearch ? searchHeight : 0), 120)
+        ? Math.max(maxMenuHeight - (enableSearch ? 0 : 0), 120)
         : 340
 
     const virtualizer = useVirtualizer({
@@ -198,55 +142,25 @@ const SingleSelectV2Menu = ({
         enabled: enableVirtualization && flattenedItems.length > 0,
     })
 
-    useEffect(() => {
-        if (!open || !enableVirtualization) return
-        virtualizer.scrollToIndex(0)
-    }, [searchText, open, enableVirtualization, virtualizer])
+    const { searchHeight } = useSelectV2MenuBehavior({
+        open,
+        enableSearch,
+        searchText,
+        searchInputRef,
+        searchContainerRef,
+        shouldMeasureSearchHeight: true,
+        refocusSearchOnTextChange: true,
+        enableVirtualization,
+        onVirtualizedSearchChange: () => virtualizer.scrollToIndex(0),
+        virtualScrollRef,
+        onEndReached,
+        hasMore,
+        endReachedThreshold,
+    })
 
-    useEffect(() => {
-        if (!open || !enableSearch) return
-        const id = requestAnimationFrame(() => {
-            searchInputRef.current?.focus()
-        })
-        return () => cancelAnimationFrame(id)
-    }, [open, enableSearch])
-
-    useEffect(() => {
-        if (!open || !enableSearch || !searchInputRef.current) return
-
-        const menuElement = searchInputRef.current.closest(
-            '[data-dropdown="dropdown"]'
-        )
-        const activeElement = document.activeElement
-        if (
-            menuElement &&
-            activeElement &&
-            menuElement.contains(activeElement) &&
-            activeElement !== searchInputRef.current
-        ) {
-            const id = requestAnimationFrame(() => {
-                searchInputRef.current?.focus()
-            })
-            return () => cancelAnimationFrame(id)
-        }
-    }, [searchText, open, enableSearch])
-
-    useEffect(() => {
-        if (!enableVirtualization || !onEndReached || !hasMore) return
-
-        const scrollElement = virtualScrollRef.current
-        if (!scrollElement) return
-
-        const handleScroll = () => {
-            const { scrollHeight, scrollTop, clientHeight } = scrollElement
-            if (scrollHeight - scrollTop - clientHeight < endReachedThreshold) {
-                onEndReached()
-            }
-        }
-
-        scrollElement.addEventListener('scroll', handleScroll)
-        return () => scrollElement.removeEventListener('scroll', handleScroll)
-    }, [enableVirtualization, onEndReached, hasMore, endReachedThreshold])
+    const adjustedVirtualViewportHeight = maxMenuHeight
+        ? Math.max(maxMenuHeight - (enableSearch ? searchHeight : 0), 120)
+        : 340
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled && newOpen) return
@@ -294,10 +208,10 @@ const SingleSelectV2Menu = ({
                         borderRadius: menuContent.borderRadius,
                         boxShadow: menuContent.boxShadow,
                         maxHeight: maxMenuHeight,
-                        minWidth: minMenuWidth ?? '250px',
+                        minWidth: menuDimensions?.minWidth ?? '250px',
                         width: 'max(var(--radix-dropdown-menu-trigger-width))',
                         maxWidth:
-                            maxMenuWidth ??
+                            menuDimensions?.maxWidth ??
                             'var(--radix-dropdown-menu-trigger-width)',
                     }}
                     onKeyDown={(e) => {
@@ -386,7 +300,7 @@ const SingleSelectV2Menu = ({
                                     size={size}
                                     variant={variant}
                                     virtualViewportHeight={
-                                        virtualViewportHeight
+                                        adjustedVirtualViewportHeight
                                     }
                                     virtualItems={virtualItems}
                                     totalSize={virtualizer.getTotalSize()}

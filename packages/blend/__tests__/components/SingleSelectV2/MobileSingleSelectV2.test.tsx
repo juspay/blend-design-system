@@ -64,8 +64,8 @@ describe('MobileSingleSelectV2', () => {
                 items={mobileItems}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
-                size={SingleSelectV2Size.MEDIUM}
+                search={{ show: true }}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )
@@ -86,7 +86,7 @@ describe('MobileSingleSelectV2', () => {
                 items={[]}
                 selected=""
                 onSelect={() => {}}
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )
@@ -99,8 +99,8 @@ describe('MobileSingleSelectV2', () => {
                 items={mobileItems}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
-                size={SingleSelectV2Size.MEDIUM}
+                search={{ show: true }}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )
@@ -121,7 +121,7 @@ describe('MobileSingleSelectV2', () => {
                 items={mobileItems}
                 selected=""
                 onSelect={onSelect}
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )
@@ -137,7 +137,7 @@ describe('MobileSingleSelectV2', () => {
                 items={mobileItemsTwoGroups}
                 selected=""
                 onSelect={() => {}}
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )
@@ -153,7 +153,7 @@ describe('MobileSingleSelectV2', () => {
                 selected=""
                 onSelect={() => {}}
                 skeleton={{ show: true, count: 2, variant: 'pulse' }}
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )
@@ -179,7 +179,7 @@ describe('MobileSingleSelectV2', () => {
                 ]}
                 selected=""
                 onSelect={() => {}}
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )
@@ -208,8 +208,8 @@ describe('MobileSingleSelectV2', () => {
                 ]}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
-                size={SingleSelectV2Size.MEDIUM}
+                search={{ show: true }}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )
@@ -227,7 +227,7 @@ describe('MobileSingleSelectV2', () => {
                 selected=""
                 onSelect={() => {}}
                 skeleton={{ show: true, count: 0, variant: 'shimmer' }}
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 variant={SingleSelectV2Variant.CONTAINER}
             />
         )

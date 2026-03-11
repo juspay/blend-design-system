@@ -66,7 +66,7 @@ describe('SingleSelectV2 parts', () => {
                         selected=""
                         onSelect={() => {}}
                         singleSelectTokens={singleSelectTokens}
-                        size={SingleSelectV2Size.MEDIUM}
+                        size={SingleSelectV2Size.MD}
                         variant={SingleSelectV2Variant.CONTAINER}
                         virtualViewportHeight={220}
                         virtualItems={virtualItems}
@@ -109,7 +109,7 @@ describe('SingleSelectV2 parts', () => {
                         selected=""
                         onSelect={() => {}}
                         singleSelectTokens={singleSelectTokens}
-                        size={SingleSelectV2Size.MEDIUM}
+                        size={SingleSelectV2Size.MD}
                         variant={SingleSelectV2Variant.CONTAINER}
                         virtualViewportHeight={200}
                         virtualItems={virtualItems}
@@ -142,7 +142,7 @@ describe('SingleSelectV2 parts', () => {
     it('renders trigger in full-width mode with selected text', () => {
         render(
             <SingleSelectV2Trigger
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 selected="option-1"
                 label="Label"
                 name="single-select-v2-trigger"
@@ -154,7 +154,7 @@ describe('SingleSelectV2 parts', () => {
                 isSmallScreenWithLargeSize={false}
                 isItemSelected
                 singleSelectTokens={singleSelectTokens}
-                fullWidth
+                triggerDimensions={{ width: '100%' }}
             />
         )
 
@@ -184,10 +184,10 @@ describe('SingleSelectV2 parts', () => {
         expect(screen.getAllByTestId('skeleton')).toHaveLength(3)
     })
 
-    it('renders trigger with maxTriggerWidth and not fullWidth', () => {
+    it('renders trigger with triggerDimensions maxWidth', () => {
         render(
             <SingleSelectV2Trigger
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 selected=""
                 label=""
                 name="trigger-width"
@@ -199,8 +199,7 @@ describe('SingleSelectV2 parts', () => {
                 isSmallScreenWithLargeSize={false}
                 isItemSelected={false}
                 singleSelectTokens={singleSelectTokens}
-                fullWidth={false}
-                maxTriggerWidth={300}
+                triggerDimensions={{ maxWidth: 300 }}
             />
         )
         expect(
@@ -211,7 +210,7 @@ describe('SingleSelectV2 parts', () => {
     it('renders trigger disabled with selected value', () => {
         render(
             <SingleSelectV2Trigger
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 selected="x"
                 label="Label"
                 name="trigger-disabled"
@@ -234,7 +233,7 @@ describe('SingleSelectV2 parts', () => {
     it('renders trigger with placeholder when no selection', () => {
         render(
             <SingleSelectV2Trigger
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 selected=""
                 label=""
                 name="placeholder-trigger"
@@ -257,7 +256,7 @@ describe('SingleSelectV2 parts', () => {
     it('renders trigger with selected value not in valueLabelMap as fallback', () => {
         render(
             <SingleSelectV2Trigger
-                size={SingleSelectV2Size.MEDIUM}
+                size={SingleSelectV2Size.MD}
                 selected="raw-value"
                 label=""
                 name="fallback-trigger"
@@ -279,7 +278,7 @@ describe('SingleSelectV2 parts', () => {
     it('renders floating label trigger with required false and selected', () => {
         render(
             <SingleSelectV2Trigger
-                size={SingleSelectV2Size.LARGE}
+                size={SingleSelectV2Size.LG}
                 selected="a"
                 label="Field"
                 name="floating"

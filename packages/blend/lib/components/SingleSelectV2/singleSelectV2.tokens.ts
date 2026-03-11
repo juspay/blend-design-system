@@ -2,7 +2,7 @@ import type { CSSObject } from 'styled-components'
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from './singleSelectV2.types'
+} from './SingleSelectV2.types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { Theme } from '../../context/theme.enum'
@@ -59,8 +59,10 @@ export type SingleSelectV2TokensType = {
         height: SizeToken<VariantToken<CSSObject['height']>>
         padding: SizeToken<
             VariantToken<{
-                paddingInline: CSSObject['paddingInline']
-                paddingBlock: CSSObject['paddingBlock']
+                top: CSSObject['paddingTop']
+                right: CSSObject['paddingRight']
+                bottom: CSSObject['paddingBottom']
+                left: CSSObject['paddingLeft']
             }>
         >
         borderRadius: SizeToken<VariantToken<CSSObject['borderRadius']>>

@@ -126,7 +126,7 @@ describe('SingleSelectV2', () => {
                 items={createLargeItems(500)}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
 
@@ -151,7 +151,7 @@ describe('SingleSelectV2', () => {
                 items={createSearchItems()}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
 
@@ -271,7 +271,7 @@ describe('SingleSelectV2', () => {
                 items={createBasicItems()}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
 
@@ -347,7 +347,7 @@ describe('SingleSelectV2', () => {
                 items={createBasicItems()}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
         await user.click(screen.getByRole('button', { name: /search/i }))
@@ -383,7 +383,7 @@ describe('SingleSelectV2', () => {
                 items={createBasicItems()}
                 selected=""
                 onSelect={() => {}}
-                size={SingleSelectV2Size.LARGE}
+                size={SingleSelectV2Size.LG}
             />
         )
         expect(screen.getByText('Label')).toBeInTheDocument()
@@ -398,7 +398,7 @@ describe('SingleSelectV2', () => {
                 items={createBasicItems()}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
         await user.click(screen.getByRole('button', { name: /refocus/i }))
@@ -420,7 +420,7 @@ describe('SingleSelectV2', () => {
                 items={createBasicItems()}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
         await user.click(screen.getByRole('button', { name: /delete test/i }))
@@ -434,7 +434,7 @@ describe('SingleSelectV2', () => {
         await waitFor(() => expect(searchInput).toHaveFocus())
     })
 
-    it('passes fullWidth to mobile trigger on mobile breakpoints', () => {
+    it('passes triggerDimensions width to mobile trigger on mobile breakpoints', () => {
         vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
             breakPointLabel: 'sm',
             innerWidth: 480,
@@ -447,7 +447,7 @@ describe('SingleSelectV2', () => {
                 selected=""
                 onSelect={() => {}}
                 usePanelOnMobile
-                fullWidth
+                triggerDimensions={{ width: '100%' }}
             />
         )
 

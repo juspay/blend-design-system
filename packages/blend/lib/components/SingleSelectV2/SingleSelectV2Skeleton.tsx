@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 import Block from '../Primitives/Block/Block'
-import { SingleSelectV2SkeletonProps } from './singleSelectV2.types'
+import { SingleSelectV2SkeletonProps } from './SingleSelectV2.types'
 import { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
 

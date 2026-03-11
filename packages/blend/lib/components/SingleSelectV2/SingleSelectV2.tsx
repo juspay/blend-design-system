@@ -7,7 +7,7 @@ import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
     type SingleSelectV2Props,
-} from './singleSelectV2.types'
+} from './SingleSelectV2.types'
 import SingleSelectV2Menu from './SingleSelectV2Menu'
 import SingleSelectV2Trigger from './SingleSelectV2Trigger'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
@@ -15,17 +15,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import MobileSingleSelectV2 from './MobileSingleSelectV2'
-import { useErrorShake } from '../common/useErrorShake'
-import {
-    getErrorShakeStyle,
-    errorShakeAnimation,
-} from '../common/error.animations'
-import styled from 'styled-components'
 import { getBorderRadius, getValueLabelMap, setupAccessibility } from './utils'
-
-const Wrapper = styled(Block)`
-    ${errorShakeAnimation}
-`
 
 const SingleSelectV2 = ({
     label,
@@ -34,34 +24,22 @@ const SingleSelectV2 = ({
     required,
     helpIconText,
     placeholder,
-    error = false,
-    errorMessage,
-    size = SingleSelectV2Size.MEDIUM,
+    error = {},
+    size = SingleSelectV2Size.MD,
     items = [],
-    name,
     variant = SingleSelectV2Variant.CONTAINER,
-    disabled,
     open: controlledOpen,
-    defaultOpen = false,
     onOpenChange: onControlledOpenChange,
     selected,
     onSelect,
-    enableSearch,
-    searchPlaceholder,
+    search,
     slot,
     customTrigger,
     usePanelOnMobile = true,
-    alignment,
-    side,
-    sideOffset,
-    alignOffset,
-    minPopoverWidth,
-    maxPopoverWidth,
-    maxPopoverHeight,
-    onBlur,
-    onFocus,
+    menuPosition,
+    menuDimensions,
+    triggerDimensions,
     inline = false,
-    fullWidth = false,
     enableVirtualization,
     virtualListItemHeight,
     virtualListOverscan,
@@ -74,39 +52,41 @@ const SingleSelectV2 = ({
         show: false,
         variant: 'pulse',
     },
-    maxTriggerWidth,
-    minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
     singleSelectGroupPosition,
     ...rest
 }: SingleSelectV2Props) => {
+    const { disabled, name, ...buttonRest } = rest as {
+        disabled?: boolean
+        name?: string
+        [key: string]: unknown
+    }
+
     const breakpoints = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakpoints.breakPointLabel === 'sm'
-    const isMobile = breakpoints.innerWidth < 1024
-
     const isContainer = variant === SingleSelectV2Variant.CONTAINER
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
 
-    const isControlledOpen = controlledOpen !== undefined
-    const [internalOpen, setInternalOpen] = useState(defaultOpen)
-    const open = isControlledOpen ? Boolean(controlledOpen) : internalOpen
-    const setOpenState = useCallback(
+    const [internalOpen, setInternalOpen] = useState(false)
+    const open =
+        controlledOpen !== undefined ? Boolean(controlledOpen) : internalOpen
+
+    const handleOpenChange = useCallback(
         (nextOpen: boolean) => {
-            if (!isControlledOpen) setInternalOpen(nextOpen)
+            if (controlledOpen === undefined) setInternalOpen(nextOpen)
             onControlledOpenChange?.(nextOpen)
-            if (nextOpen) onFocus?.()
-            else onBlur?.()
         },
-        [isControlledOpen, onControlledOpenChange, onFocus, onBlur]
+        [controlledOpen, onControlledOpenChange]
     )
 
     const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
+    const safeItems = items ?? []
     const isItemSelected = Boolean(selected)
     const isSmallScreenWithLargeSize =
-        isSmallScreen && size === SingleSelectV2Size.LARGE
+        isSmallScreen && size === SingleSelectV2Size.LG
 
     const generatedId = useId()
     const { uniqueName, hintTextId, errorMessageId, menuId, ariaAttributes } =
@@ -115,12 +95,13 @@ const SingleSelectV2 = ({
             generatedId,
             label,
             hintText,
-            error,
-            errorMessage,
-            rest,
+            error: error.show,
+            errorMessage: error.message,
+            rest: buttonRest,
             prefix: 'singleselectv2',
             needsMenuId: true,
         })
+
     const triggerAriaAttributes: Pick<
         AriaAttributes,
         'aria-describedby' | 'aria-labelledby' | 'aria-label' | 'aria-invalid'
@@ -145,12 +126,13 @@ const SingleSelectV2 = ({
     const handleSelect = useCallback(
         (value: string) => {
             onSelect(value)
-            setOpenState(false)
+            handleOpenChange(false)
         },
-        [onSelect, setOpenState]
+        [onSelect, handleOpenChange]
     )
-    const shouldShake = useErrorShake(error)
-    const shouldEnableVirtualization = enableVirtualization ?? items.length > 20
+
+    const shouldEnableVirtualization =
+        enableVirtualization ?? safeItems.length > 20
 
     if (customTrigger && !isValidElement(customTrigger)) {
         throw new Error(
@@ -158,7 +140,7 @@ const SingleSelectV2 = ({
         )
     }
 
-    if (isMobile && usePanelOnMobile) {
+    if (isSmallScreen && usePanelOnMobile) {
         return (
             <MobileSingleSelectV2
                 label={label}
@@ -168,22 +150,18 @@ const SingleSelectV2 = ({
                 helpIconText={helpIconText}
                 placeholder={placeholder}
                 error={error}
-                errorMessage={errorMessage}
                 size={size}
-                items={items}
-                name={name}
+                items={safeItems}
                 variant={variant}
                 disabled={disabled}
+                name={name}
                 selected={selected}
                 onSelect={handleSelect}
-                enableSearch={enableSearch}
-                searchPlaceholder={searchPlaceholder}
+                search={search}
                 slot={slot}
                 customTrigger={customTrigger}
-                onBlur={onBlur}
-                onFocus={onFocus}
                 inline={inline}
-                fullWidth={fullWidth}
+                triggerDimensions={triggerDimensions}
                 enableVirtualization={shouldEnableVirtualization}
                 virtualListItemHeight={virtualListItemHeight}
                 virtualListOverscan={virtualListOverscan}
@@ -192,26 +170,27 @@ const SingleSelectV2 = ({
                 hasMore={hasMore}
                 loadingComponent={loadingComponent}
                 skeleton={skeleton}
-                maxTriggerWidth={maxTriggerWidth}
-                minTriggerWidth={minTriggerWidth}
                 allowCustomValue={allowCustomValue}
                 customValueLabel={customValueLabel}
+                {...buttonRest}
             />
         )
     }
+
+    const triggerWidth = triggerDimensions?.width ?? 'fit-content'
 
     return (
         <Block
             data-single-select-v2={label || 'single-select-v2'}
             data-status={disabled ? 'disabled' : 'enabled'}
-            width={fullWidth ? '100%' : 'fit-content'}
+            width={triggerWidth === '100%' ? '100%' : 'fit-content'}
             display="flex"
             flexDirection="column"
             gap={singleSelectTokens.gap}
             maxWidth={'100%'}
         >
             {isContainer &&
-                (!isSmallScreen || size !== SingleSelectV2Size.LARGE) && (
+                (!isSmallScreen || size !== SingleSelectV2Size.LG) && (
                     <InputLabels
                         label={label}
                         sublabel={subLabel}
@@ -228,31 +207,24 @@ const SingleSelectV2 = ({
                     maxHeight: singleSelectTokens.trigger.height[size][variant],
                 })}
             >
-                <Wrapper
+                <Block
                     position="relative"
-                    style={getErrorShakeStyle(shouldShake)}
-                    width={fullWidth ? '100%' : 'fit-content'}
-                    maxWidth={fullWidth ? '100%' : 'fit-content'}
+                    width={triggerWidth === '100%' ? '100%' : 'fit-content'}
+                    maxWidth={triggerWidth === '100%' ? '100%' : 'fit-content'}
                     display="flex"
                     alignItems="center"
                 >
                     <SingleSelectV2Menu
                         skeleton={skeleton}
                         open={open}
-                        onOpenChange={setOpenState}
-                        items={items}
+                        onOpenChange={handleOpenChange}
+                        items={safeItems}
                         selected={selected}
                         onSelect={handleSelect}
                         disabled={disabled}
-                        minMenuWidth={minPopoverWidth}
-                        maxMenuWidth={maxPopoverWidth}
-                        maxMenuHeight={maxPopoverHeight}
-                        alignment={alignment}
-                        side={side}
-                        sideOffset={sideOffset}
-                        alignOffset={alignOffset}
-                        enableSearch={enableSearch}
-                        searchPlaceholder={searchPlaceholder}
+                        menuDimensions={menuDimensions}
+                        menuPosition={menuPosition}
+                        search={search}
                         enableVirtualization={shouldEnableVirtualization}
                         virtualListItemHeight={virtualListItemHeight}
                         virtualListOverscan={virtualListOverscan}
@@ -284,28 +256,27 @@ const SingleSelectV2 = ({
                                     isItemSelected={isItemSelected}
                                     singleSelectTokens={singleSelectTokens}
                                     inline={inline}
-                                    error={error}
+                                    error={error.show}
                                     disabled={disabled}
-                                    maxTriggerWidth={maxTriggerWidth}
-                                    minTriggerWidth={minTriggerWidth}
+                                    triggerDimensions={triggerDimensions}
                                     singleSelectGroupPosition={
                                         singleSelectGroupPosition
                                     }
-                                    fullWidth={fullWidth}
                                     borderRadius={borderConfig.borderRadius}
                                     borderRight={borderConfig.borderRight}
                                     {...triggerAriaAttributes}
+                                    {...buttonRest}
                                 />
                             )
                         }
                     />
-                </Wrapper>
+                </Block>
             </Block>
             {isContainer && (
                 <InputFooter
                     hintText={hintText}
-                    error={error}
-                    errorMessage={errorMessage}
+                    error={error.show}
+                    errorMessage={error.message}
                     tokens={singleSelectTokens}
                     hintTextId={hintTextId}
                     errorMessageId={errorMessageId}

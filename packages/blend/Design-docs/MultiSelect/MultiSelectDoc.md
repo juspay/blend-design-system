@@ -4,8 +4,8 @@
 
 The Blend design system provides two MultiSelect components:
 
-- **MultiSelect (v1)** – Original component; open state is internal; uses `useDrawerOnMobile`; menu dimensions via `minMenuWidth` / `maxMenuWidth` / `maxMenuHeight`; `onChange(selectedValue: string)` (single value toggle; clear via `onChange('')` or `onClearAllClick`).
-- **MultiSelectV2** – Refactored API with controlled/uncontrolled open state, `onChange(value: string | string[])` for type-safe clear via `onChange([])`, theme-driven tokens (light/dark), and decomposed subcomponents. UI, accessibility, and data attributes match v1 for parity.
+- **MultiSelect (v1)** – Original component; open state is internal; uses `useDrawerOnMobile`; flat props for menu dimensions (`minMenuWidth` / `maxMenuWidth` / `maxMenuHeight`), alignment, side, error, search, trigger dimensions; `onChange(selectedValue: string)` (single value toggle; clear via `onChange('')` or `onClearAllClick`).
+- **MultiSelectV2** – Refactored API with controlled open state (`open` / `onOpenChange`), **grouped props** for menu dimensions, trigger dimensions, menu position, search, and error (same shapes as SingleSelectV2); extends `ButtonHTMLAttributes`; `onChange(value: string | string[])` for type-safe clear via `onChange([])`; theme-driven tokens (light/dark). UI, accessibility, and data attributes match v1 for parity.
 
 Both support: label/sublabel, hint text, required, help icon, placeholder, sizes (sm/md/lg), variants (container / no-container), selection display (count badge or text tags), grouped items, search, Select All, virtualization, infinite scroll, action buttons, custom trigger, clear button, and mobile panel/drawer.
 
@@ -19,9 +19,9 @@ Both support: label/sublabel, hint text, required, help icon, placeholder, sizes
 - **Variants**: `CONTAINER` (bordered box with label above) or `NO_CONTAINER` (minimal, no wrapper box).
 - **Selection display**: `selectionTagType` – `COUNT` (badge with number) or `TEXT` (comma-separated labels).
 - **States**: Default, hover, focus, error, disabled – trigger and clear button use token-driven background and outline.
-- **Validation**: `error` and optional `errorMessage`.
+- **Validation**: V1: `error` (boolean) and `errorMessage` (string). V2: `error?: SelectV2ErrorState` with `{ show?: boolean, message?: string }`.
 - **Items**: Grouped list (`MultiSelectMenuGroupType[]` / `MultiSelectV2GroupType[]`) with optional group labels, separators, submenus, slots, tooltips.
-- **Search**: Optional `enableSearch` and `searchPlaceholder`.
+- **Search**: V1: `enableSearch` and `searchPlaceholder`. V2: `search?: SelectV2SearchConfig` with `{ show?: boolean, placeholder?: string }`.
 - **Select All**: Optional `enableSelectAll`, `selectAllText`, `onSelectAll` (v2 passes filtered groups).
 - **Virtualization**: Optional `enableVirtualization`, `virtualListItemHeight`, `virtualListOverscan`; v1 defaults to `items.length > 20`, v2 uses `enableVirtualization && items.length > 20`.
 - **Infinite scroll**: `onEndReached`, `endReachedThreshold`, `hasMore`, `loadingComponent`.
@@ -70,48 +70,56 @@ Menu (dropdown or panel):
 
 ## Props & Types Comparison
 
+### V1: flat props
+
+V1 uses flat props: `alignment`, `side`, `sideOffset`, `alignOffset`, `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`, `enableSearch`, `searchPlaceholder`, `error`, `errorMessage`, `fullWidth`, `maxTriggerWidth`, `minTriggerWidth`, `disabled`, `name`, `onBlur`, `onFocus`.
+
+### V2: grouped props and ButtonHTMLAttributes
+
+V2 extends `Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className' | 'onChange' | 'slot'>`, so **disabled**, **name**, **onFocus**, **onBlur** are passed through from the consumer.
+
+V2 **replaces** flat props with **grouped** types (same as SingleSelectV2):
+
+| V1 (flat)                                         | V2 (grouped)                                                                                    |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `alignment`, `side`, `sideOffset`, `alignOffset`  | **menuPosition?**: `{ alignment?, side?, sideOffset?, alignOffset? }` (`SelectV2MenuPosition`)  |
+| `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`   | **menuDimensions?**: `{ minWidth?, maxWidth?, maxHeight? }` (`SelectV2MenuDimensions`)          |
+| `enableSearch`, `searchPlaceholder`               | **search?**: `{ show?, placeholder? }` (`SelectV2SearchConfig`)                                 |
+| `error`, `errorMessage`                           | **error?**: `{ show?, message? }` (`SelectV2ErrorState`)                                        |
+| `fullWidth`, `maxTriggerWidth`, `minTriggerWidth` | **triggerDimensions?**: `{ width?, minWidth?, maxWidth? }`. Use `width: '100%'` for full-width. |
+
 ### Shared / equivalent props (v1 vs v2)
 
-| Prop                                                         | V1 (MultiSelect)                          | V2 (MultiSelectV2)                                 |
-| ------------------------------------------------------------ | ----------------------------------------- | -------------------------------------------------- |
-| label                                                        | ✓                                         | ✓                                                  |
-| sublabel / subLabel                                          | sublabel                                  | subLabel                                           |
-| hintText                                                     | ✓                                         | ✓                                                  |
-| required                                                     | ✓                                         | ✓                                                  |
-| helpIconHintText / helpIconText                              | helpIconHintText                          | helpIconText                                       |
-| placeholder                                                  | ✓                                         | ✓                                                  |
-| size                                                         | MultiSelectMenuSize                       | MultiSelectV2Size                                  |
-| items                                                        | MultiSelectMenuGroupType[]                | MultiSelectV2GroupType[] (optional, default [])    |
-| variant                                                      | MultiSelectVariant                        | MultiSelectV2Variant                               |
-| selectedValues                                               | string[]                                  | string[]                                           |
-| onChange                                                     | (selectedValue: string) => void           | (value: string \| string[]) => void                |
-| enableSearch                                                 | ✓                                         | ✓                                                  |
-| searchPlaceholder                                            | ✓                                         | ✓                                                  |
-| enableSelectAll, selectAllText                               | ✓                                         | ✓                                                  |
-| maxSelections                                                | ✓                                         | ✓                                                  |
-| slot                                                         | ReactNode                                 | ReactNode                                          |
-| disabled                                                     | ✓                                         | ✓                                                  |
-| name                                                         | ✓                                         | ✓                                                  |
-| alignment                                                    | MultiSelectMenuAlignment                  | MultiSelectV2Alignment                             |
-| side                                                         | MultiSelectMenuSide                       | MultiSelectV2Side                                  |
-| sideOffset, alignOffset                                      | ✓                                         | ✓                                                  |
-| min/max menu width/height                                    | minMenuWidth, maxMenuWidth, maxMenuHeight | minPopoverWidth, maxPopoverWidth, maxPopoverHeight |
-| inline                                                       | ✓                                         | ✓                                                  |
-| onBlur / onFocus                                             | ✓                                         | ✓                                                  |
-| error / errorMessage                                         | ✓                                         | ✓                                                  |
-| fullWidth                                                    | ✓                                         | ✓                                                  |
-| showActionButtons, primaryAction, secondaryAction            | ✓                                         | ✓                                                  |
-| showItemDividers, showHeaderBorder                           | ✓                                         | ✓                                                  |
-| enableVirtualization                                         | ✓ (default: items.length > 20)            | ✓ (default: false; use with items.length > 20)     |
-| virtualListItemHeight, virtualListOverscan                   | ✓                                         | ✓                                                  |
-| onEndReached, endReachedThreshold, hasMore, loadingComponent | ✓                                         | ✓                                                  |
-| skeleton                                                     | MultiSelectSkeletonProps                  | MultiSelectV2SkeletonProps                         |
-| maxTriggerWidth, minTriggerWidth                             | ✓                                         | ✓                                                  |
-| allowCustomValue, customValueLabel                           | ✓                                         | ✓                                                  |
-| showClearButton, onClearAllClick                             | ✓                                         | ✓                                                  |
-| multiSelectGroupPosition                                     | ✓                                         | ✓                                                  |
-| selectionTagType                                             | MultiSelectSelectionTagType               | MultiSelectV2SelectionTagType                      |
-| customTrigger                                                | ReactNode                                 | ReactElement                                       |
+| Prop                                                        | V1 (MultiSelect)                            | V2 (MultiSelectV2)                            |
+| ----------------------------------------------------------- | ------------------------------------------- | --------------------------------------------- |
+| label                                                       | ✓                                           | ✓                                             |
+| sublabel / subLabel                                         | sublabel                                    | subLabel                                      |
+| hintText, required, placeholder                             | ✓                                           | ✓                                             |
+| helpIconHintText / helpIconText                             | helpIconHintText                            | helpIconText                                  |
+| size                                                        | MultiSelectMenuSize                         | MultiSelectV2Size (SM, MD, LG)                |
+| items                                                       | MultiSelectMenuGroupType[]                  | MultiSelectV2GroupType[] (optional)           |
+| variant                                                     | MultiSelectVariant                          | MultiSelectV2Variant                          |
+| selectedValues                                              | string[]                                    | string[]                                      |
+| onChange                                                    | (selectedValue: string) => void             | (value: string \| string[]) => void           |
+| search                                                      | enableSearch, searchPlaceholder             | search?: SelectV2SearchConfig                 |
+| enableSelectAll, selectAllText, maxSelections               | ✓                                           | ✓                                             |
+| slot                                                        | ReactNode                                   | ReactNode                                     |
+| disabled, name, onBlur, onFocus                             | ✓ explicit                                  | ✓ via ButtonHTMLAttributes                    |
+| alignment, side, sideOffset, alignOffset                    | ✓ flat                                      | menuPosition?: SelectV2MenuPosition           |
+| min/max menu width/height                                   | minMenuWidth, maxMenuWidth, maxMenuHeight   | menuDimensions?: SelectV2MenuDimensions       |
+| inline                                                      | ✓                                           | ✓                                             |
+| error / errorMessage                                        | error (bool), errorMessage                  | error?: SelectV2ErrorState                    |
+| fullWidth / trigger dimensions                              | fullWidth, maxTriggerWidth, minTriggerWidth | triggerDimensions?: SelectV2TriggerDimensions |
+| showActionButtons, primaryAction, secondaryAction           | ✓                                           | ✓                                             |
+| showItemDividers, showHeaderBorder                          | ✓                                           | ✓                                             |
+| enableVirtualization (V2 default: false)                    | ✓ (default: items.length > 20)              | ✓                                             |
+| virtualListItemHeight, virtualListOverscan, onEndReached, … | ✓                                           | ✓                                             |
+| skeleton                                                    | MultiSelectSkeletonProps                    | MultiSelectV2SkeletonProps                    |
+| allowCustomValue, customValueLabel                          | ✓                                           | ✓                                             |
+| showClearButton, onClearAllClick                            | ✓                                           | ✓                                             |
+| multiSelectGroupPosition                                    | ✓                                           | ✓                                             |
+| selectionTagType                                            | MultiSelectSelectionTagType                 | MultiSelectV2SelectionTagType                 |
+| customTrigger                                               | ReactNode                                   | ReactElement                                  |
 
 ### V1-only
 
@@ -122,15 +130,15 @@ Menu (dropdown or panel):
 ### V2-only
 
 - **open**: Controlled open state (boolean). If provided, component is controlled.
-- **defaultOpen**: Initial open state when uncontrolled.
 - **onOpenChange**: `(open: boolean) => void` – called when menu opens or closes.
 - **usePanelOnMobile**: Same behavior as V1’s `useDrawerOnMobile`; name aligned with “panel” terminology.
 
-### Naming differences
+### Naming and structure differences
 
 - **sublabel vs subLabel**: V1 uses `sublabel`; V2 uses `subLabel` (camelCase).
 - **helpIconHintText vs helpIconText**: V1 uses `helpIconHintText`; V2 uses `helpIconText`.
-- **Menu vs popover**: V1 uses `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`; V2 uses `minPopoverWidth`, `maxPopoverWidth`, `maxPopoverHeight`. Behavior is the same.
+- **Menu dimensions**: V1 uses `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`. V2 uses **menuDimensions** `{ minWidth?, maxWidth?, maxHeight? }` (same behavior; “menu” naming).
+- **Trigger dimensions**: V1 uses `fullWidth`, `maxTriggerWidth`, `minTriggerWidth`. V2 uses **triggerDimensions** `{ width?, minWidth?, maxWidth? }`; use `width: '100%'` for full-width.
 - **Mobile**: V1 `useDrawerOnMobile` vs V2 `usePanelOnMobile` – same meaning, different name.
 
 ### onChange behavior
@@ -209,9 +217,9 @@ Usage pattern: `tokens.trigger.height[size][variant]`, `tokens.trigger.backgroun
 
 **Rationale**: Clear is expressed as `onChange([])` rather than `onChange('')`, giving correct types and clearer intent. Toggle remains `onChange(value)` for a single value.
 
-### 2. Controlled vs uncontrolled open (V2 only)
+### 2. Controlled open state (V2 only)
 
-**Decision**: V2 supports both controlled (`open` + `onOpenChange`) and uncontrolled (internal state) open state.
+**Decision**: V2 supports controlled open state via `open` and `onOpenChange`. When `open` is omitted, component uses internal state.
 
 **Rationale**: Parents can close on route change, sync with other UI, or track open/close for analytics.
 
@@ -221,11 +229,11 @@ Usage pattern: `tokens.trigger.height[size][variant]`, `tokens.trigger.backgroun
 
 **Rationale**: Aligns naming with other components that use “panel” for full-screen overlay.
 
-### 4. Popover vs menu width/height (V2)
+### 4. Grouped menu and trigger dimensions (V2)
 
-**Decision**: V2 uses `minPopoverWidth`, `maxPopoverWidth`, `maxPopoverHeight` instead of `minMenuWidth`, etc.
+**Decision**: V2 uses **menuDimensions** `{ minWidth?, maxWidth?, maxHeight? }` and **triggerDimensions** `{ width?, minWidth?, maxWidth? }` instead of flat `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`, `fullWidth`, `maxTriggerWidth`, `minTriggerWidth` (same pattern as SingleSelectV2).
 
-**Rationale**: Matches Radix popover/dropdown API and clarifies that constraints apply to the popover content.
+**Rationale**: Grouped props keep the API consistent across Select V2 components; “menu” naming is used. Trigger width is explicit (e.g. `width: '100%'` for full-width).
 
 ### 5. customTrigger: ReactNode vs ReactElement (V1 vs V2)
 
@@ -271,7 +279,7 @@ Usage pattern: `tokens.trigger.height[size][variant]`, `tokens.trigger.backgroun
 | ----------------------------------------------------------------------------- | ---------------------------------------------------- |
 | Controlled open state or onOpenChange                                         | MultiSelectV2                                        |
 | Type-safe clear via onChange([])                                              | MultiSelectV2                                        |
-| Consistent “panel”/“popover” naming                                           | MultiSelectV2                                        |
+| Consistent “panel”/“menu” naming and grouped props (menuDimensions, etc.)     | MultiSelectV2                                        |
 | customTrigger as any ReactNode                                                | MultiSelect (v1)                                     |
 | customTrigger as single ReactElement (ref forwarding)                         | MultiSelectV2                                        |
 | Light/dark tokens from theme                                                  | MultiSelectV2 (`getMultiSelectV2Tokens(..., theme)`) |
@@ -289,4 +297,4 @@ This document is the **source of truth** for the MultiSelect refactor (V2). When
 2. **Accessibility**: Same roles, ARIA attributes, and keyboard behavior as V1; trigger and menu IDs and relationships must be correct.
 3. **Data attributes**: Preserve the data attributes listed in the table so tests and automation remain valid.
 4. **Tokens**: All visual and layout values that are design-derived belong in tokens (V2); static layout (e.g. flex, overflow) may stay in components. Token keys must be valid CSS property names where the value is a CSS value.
-5. **API**: Follow the props and types described here; V2-specific props (open, defaultOpen, onOpenChange, usePanelOnMobile, popover width/height, helpIconText, subLabel) and the V2 onChange signature are intentional.
+5. **API**: Follow the props and types described here; V2-specific props (open, onOpenChange, usePanelOnMobile, grouped menuDimensions/triggerDimensions/menuPosition/search/error, helpIconText, subLabel) and the V2 onChange signature are intentional.

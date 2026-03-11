@@ -30,7 +30,7 @@ describe('MultiSelectV2 parts', () => {
     it('renders MultiSelectV2Trigger with placeholder when no selection', () => {
         render(
             <MultiSelectV2Trigger
-                size={MultiSelectV2Size.MEDIUM}
+                size={MultiSelectV2Size.MD}
                 variant={MultiSelectV2Variant.CONTAINER}
                 selectedValues={[]}
                 valueLabelMap={{}}
@@ -54,7 +54,7 @@ describe('MultiSelectV2 parts', () => {
     it('renders MultiSelectV2Trigger with selected count when selectionTagType is COUNT', () => {
         render(
             <MultiSelectV2Trigger
-                size={MultiSelectV2Size.MEDIUM}
+                size={MultiSelectV2Size.MD}
                 variant={MultiSelectV2Variant.CONTAINER}
                 selectedValues={['a', 'b']}
                 valueLabelMap={{ a: 'A', b: 'B' }}
@@ -76,7 +76,7 @@ describe('MultiSelectV2 parts', () => {
     it('renders MultiSelectV2Trigger with selected text when selectionTagType is TEXT', () => {
         render(
             <MultiSelectV2Trigger
-                size={MultiSelectV2Size.MEDIUM}
+                size={MultiSelectV2Size.MD}
                 variant={MultiSelectV2Variant.CONTAINER}
                 selectedValues={['apple']}
                 valueLabelMap={{ apple: 'Apple' }}

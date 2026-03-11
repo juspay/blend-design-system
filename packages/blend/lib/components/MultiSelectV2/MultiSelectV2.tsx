@@ -19,7 +19,6 @@ import { setupAccessibility } from '../SingleSelect/utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import {
-    MultiSelectV2Alignment,
     MultiSelectV2SelectionTagType,
     MultiSelectV2Size,
     MultiSelectV2Variant,
@@ -46,41 +45,30 @@ const MultiSelectV2 = ({
     items = [],
     label,
     subLabel,
-    disabled,
     helpIconText,
-    name,
     required,
     variant = MultiSelectV2Variant.CONTAINER,
     selectionTagType = MultiSelectV2SelectionTagType.COUNT,
     slot,
     hintText,
     placeholder,
-    size = MultiSelectV2Size.MEDIUM,
-    enableSearch = true,
-    searchPlaceholder = 'Search options...',
+    size = MultiSelectV2Size.MD,
+    search = { show: true, placeholder: 'Search options...' },
     enableSelectAll = false,
     selectAllText = 'Select All',
     maxSelections,
     customTrigger,
     usePanelOnMobile = true,
-    minPopoverWidth,
-    maxPopoverWidth,
-    maxPopoverHeight,
-    alignment = MultiSelectV2Alignment.START,
-    side,
-    sideOffset,
-    alignOffset,
+    triggerDimensions,
+    menuDimensions,
+    menuPosition,
     inline = false,
-    onBlur,
-    onFocus,
-    error,
-    errorMessage,
+    error = {},
     showActionButtons,
     primaryAction,
     secondaryAction,
     showItemDividers = false,
     showHeaderBorder = false,
-    fullWidth = false,
     enableVirtualization = false,
     virtualListItemHeight = 48,
     virtualListOverscan = 5,
@@ -93,31 +81,41 @@ const MultiSelectV2 = ({
         show: false,
         variant: 'pulse',
     },
-    maxTriggerWidth,
-    minTriggerWidth,
     allowCustomValue = false,
     customValueLabel = 'Specify',
     showClearButton,
     onClearAllClick,
     onOpenChange,
     multiSelectGroupPosition,
+    ...rest
 }: MultiSelectV2Props) => {
+    const { disabled, name, ...buttonRest } = rest as {
+        disabled?: boolean
+        name?: string
+        onFocus?: React.FocusEventHandler<HTMLButtonElement>
+        onBlur?: React.FocusEventHandler<HTMLButtonElement>
+        [key: string]: unknown
+    }
+
     const breakpoints = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakpoints.breakPointLabel === 'sm'
-    const isMobile = breakpoints.innerWidth < BREAKPOINTS.lg
     const isContainer = variant === MultiSelectV2Variant.CONTAINER
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const [open, setOpen] = useState(false)
-    const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
-    const shouldVirtualize = enableVirtualization && items.length > 20
+    const safeItems = items ?? []
+    const valueLabelMap = useMemo(
+        () => getValueLabelMap(safeItems),
+        [safeItems]
+    )
+    const shouldVirtualize = enableVirtualization && safeItems.length > 20
     const shouldShowClearButton =
         (showClearButton ?? isContainer) && selectedValues.length > 0
     const shouldShowActionButtons =
         showActionButtons !== undefined
             ? showActionButtons
             : !!(primaryAction || secondaryAction)
-    const shouldShake = useErrorShake(error || false)
+    const shouldShake = useErrorShake(error?.show || false)
 
     const generatedId = useId()
     const {
@@ -132,8 +130,8 @@ const MultiSelectV2 = ({
         generatedId,
         label,
         hintText,
-        error,
-        errorMessage,
+        error: error.show,
+        errorMessage: error.message,
         prefix: 'multiselectv2',
         needsMenuId: true,
     })
@@ -155,14 +153,9 @@ const MultiSelectV2 = ({
     const handleOpenChange = useCallback(
         (isOpen: boolean) => {
             setOpen(isOpen)
-            if (isOpen) {
-                onFocus?.()
-            } else {
-                onBlur?.()
-            }
             onOpenChange?.(isOpen)
         },
-        [onFocus, onBlur, onOpenChange]
+        [onOpenChange]
     )
 
     const handleClearClick = useCallback(() => {
@@ -180,17 +173,15 @@ const MultiSelectV2 = ({
         [handleClearClick]
     )
 
-    useDropdownInteractionLock(!isMobile && open)
+    useDropdownInteractionLock(!isSmallScreen && open)
 
     const mobileSharedProps = {
         selectedValues,
         onChange,
-        items: items,
+        items: safeItems,
         label,
         subLabel,
-        disabled,
         helpIconText,
-        name,
         required,
         variant,
         selectionTagType,
@@ -198,16 +189,12 @@ const MultiSelectV2 = ({
         hintText,
         placeholder,
         size,
-        enableSearch,
-        searchPlaceholder,
+        search,
         enableSelectAll,
         selectAllText,
         maxSelections,
         customTrigger,
-        onBlur,
-        onFocus,
         error,
-        errorMessage,
         showActionButtons: shouldShowActionButtons,
         primaryAction: primaryAction
             ? {
@@ -229,11 +216,17 @@ const MultiSelectV2 = ({
         allowCustomValue,
         customValueLabel,
         onOpenChange,
+        triggerDimensions,
+        disabled,
+        name,
+        ...buttonRest,
     }
 
-    if (isMobile && usePanelOnMobile) {
+    if (isSmallScreen && usePanelOnMobile) {
         return <MobileMultiSelectV2 {...mobileSharedProps} />
     }
+
+    const fullWidth = triggerDimensions?.width === '100%'
 
     const borderRadius = getMultiSelectBorderRadius(
         size,
@@ -248,10 +241,12 @@ const MultiSelectV2 = ({
         multiSelectGroupPosition,
         multiSelectTokens
     )
-    const clearButtonState: 'error' | 'closed' = error ? 'error' : 'closed'
+    const clearButtonState: 'error' | 'closed' = error.show ? 'error' : 'closed'
     const clearButtonOutline =
         multiSelectTokens.trigger.clearButton?.outline?.[clearButtonState] ??
-        multiSelectTokens.trigger.outline[variant][error ? 'error' : 'closed']
+        multiSelectTokens.trigger.outline[variant][
+            error.show ? 'error' : 'closed'
+        ]
 
     return (
         <Block
@@ -264,7 +259,7 @@ const MultiSelectV2 = ({
             gap={multiSelectTokens.gap}
         >
             {isContainer &&
-                (!isSmallScreen || size !== MultiSelectV2Size.LARGE) && (
+                (!isSmallScreen || size !== MultiSelectV2Size.LG) && (
                     <InputLabels
                         label={label}
                         sublabel={subLabel}
@@ -294,12 +289,11 @@ const MultiSelectV2 = ({
                 >
                     <MultiSelectV2Menu
                         skeleton={skeleton}
-                        items={items}
+                        items={safeItems}
                         selected={selectedValues}
                         onSelect={onChange}
                         disabled={disabled}
-                        enableSearch={enableSearch}
-                        searchPlaceholder={searchPlaceholder}
+                        search={search}
                         enableSelectAll={enableSelectAll}
                         selectAllText={selectAllText}
                         maxSelections={maxSelections}
@@ -317,13 +311,8 @@ const MultiSelectV2 = ({
                                       )
                                 : undefined
                         }
-                        minMenuWidth={minPopoverWidth}
-                        maxMenuWidth={maxPopoverWidth}
-                        maxMenuHeight={maxPopoverHeight}
-                        alignment={alignment}
-                        side={side}
-                        sideOffset={sideOffset}
-                        alignOffset={alignOffset}
+                        menuDimensions={menuDimensions}
+                        menuPosition={menuPosition}
                         open={open}
                         onOpenChange={handleOpenChange}
                         showActionButtons={shouldShowActionButtons}
@@ -364,13 +353,12 @@ const MultiSelectV2 = ({
                                     open={open}
                                     multiSelectTokens={multiSelectTokens}
                                     inline={inline}
-                                    error={error}
+                                    error={error.show}
                                     disabled={disabled}
-                                    maxTriggerWidth={maxTriggerWidth}
-                                    minTriggerWidth={minTriggerWidth}
-                                    fullWidth={fullWidth}
+                                    triggerDimensions={triggerDimensions}
                                     borderRadius={borderRadius}
                                     {...triggerAriaAttributes}
+                                    {...buttonRest}
                                 />
                             )
                         }
@@ -443,8 +431,8 @@ const MultiSelectV2 = ({
             {isContainer && (
                 <InputFooter
                     hintText={hintText}
-                    error={error}
-                    errorMessage={errorMessage}
+                    error={error.show}
+                    errorMessage={error.message}
                     tokens={multiSelectTokens}
                     hintTextId={hintTextId}
                     errorMessageId={errorMessageId}

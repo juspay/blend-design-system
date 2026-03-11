@@ -236,7 +236,7 @@ describe('MultiSelectV2 utils', () => {
     describe('getMultiSelectBorderRadius', () => {
         it('returns left-only radius when showClearButton and no group position', () => {
             const result = getMultiSelectBorderRadius(
-                MultiSelectV2Size.MEDIUM,
+                MultiSelectV2Size.MD,
                 MultiSelectV2Variant.CONTAINER,
                 undefined,
                 tokens,
@@ -247,7 +247,7 @@ describe('MultiSelectV2 utils', () => {
 
         it('returns full radius when no clear button and no group position', () => {
             const result = getMultiSelectBorderRadius(
-                MultiSelectV2Size.MEDIUM,
+                MultiSelectV2Size.MD,
                 MultiSelectV2Variant.CONTAINER,
                 undefined,
                 tokens,
@@ -261,7 +261,7 @@ describe('MultiSelectV2 utils', () => {
     describe('getMultiSelectCrossBorderRadius', () => {
         it('returns right-only radius when no group position', () => {
             const result = getMultiSelectCrossBorderRadius(
-                MultiSelectV2Size.MEDIUM,
+                MultiSelectV2Size.MD,
                 MultiSelectV2Variant.CONTAINER,
                 undefined,
                 tokens

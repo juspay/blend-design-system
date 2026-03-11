@@ -7,7 +7,7 @@ import {
     type SingleSelectV2GroupType,
     type SingleSelectV2ItemType,
     type SingleSelectV2SkeletonProps,
-} from './singleSelectV2.types'
+} from './SingleSelectV2.types'
 
 export const defaultSingleSelectV2Skeleton: SingleSelectV2SkeletonProps = {
     count: 3,

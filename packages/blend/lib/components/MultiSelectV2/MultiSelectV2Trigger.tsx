@@ -8,9 +8,14 @@ import {
     MultiSelectV2SelectionTagType,
     MultiSelectV2Size,
     MultiSelectV2Variant,
+    type SelectV2TriggerDimensions,
 } from './multiSelectV2.types'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
-import { getTriggerHorizontalPadding, getTriggerVerticalPadding } from './utils'
+import { getTriggerLeftPadding, getTriggerTopPadding } from './utils'
+
+const DEFAULT_TRIGGER_DIMENSIONS: SelectV2TriggerDimensions = {
+    width: 'fit-content',
+}
 
 export type MultiSelectV2TriggerProps = {
     selectedValues: string[]
@@ -29,9 +34,7 @@ export type MultiSelectV2TriggerProps = {
     inline?: boolean
     error?: boolean
     disabled?: boolean
-    maxTriggerWidth?: number
-    minTriggerWidth?: number
-    fullWidth?: boolean
+    triggerDimensions?: SelectV2TriggerDimensions
     borderRadius: string
     borderRight?: string
     [key: string]: unknown
@@ -54,9 +57,7 @@ const MultiSelectV2Trigger = ({
     inline = false,
     error = false,
     disabled = false,
-    maxTriggerWidth,
-    minTriggerWidth,
-    fullWidth = false,
+    triggerDimensions = DEFAULT_TRIGGER_DIMENSIONS,
     borderRadius,
     borderRight,
     ...rest
@@ -67,14 +68,10 @@ const MultiSelectV2Trigger = ({
     const isContainer = variant === MultiSelectV2Variant.CONTAINER
     const isItemSelected = selectedValues.length > 0
     const isSmallScreenWithLargeSize =
-        isSmallScreen && size === MultiSelectV2Size.LARGE
+        isSmallScreen && size === MultiSelectV2Size.LG
 
-    const paddingX = getTriggerHorizontalPadding(
-        multiSelectTokens,
-        size,
-        variant
-    )
-    const paddingY = getTriggerVerticalPadding(multiSelectTokens, size, variant)
+    const paddingX = getTriggerLeftPadding(multiSelectTokens, size, variant)
+    const paddingY = getTriggerTopPadding(multiSelectTokens, size, variant)
     const slotGap = Number(multiSelectTokens.trigger?.slot?.gap ?? 8)
     const paddingInlineStart =
         slot && slotWidth ? paddingX + slotWidth + slotGap : paddingX
@@ -118,9 +115,9 @@ const MultiSelectV2Trigger = ({
             role="combobox"
             disabled={disabled}
             position="relative"
-            width={fullWidth ? '100%' : 'fit-content'}
-            maxWidth={fullWidth ? maxTriggerWidth : (maxTriggerWidth ?? '100%')}
-            minWidth={minTriggerWidth}
+            width={triggerDimensions.width ?? 'fit-content'}
+            maxWidth={triggerDimensions.maxWidth ?? '100%'}
+            minWidth={triggerDimensions.minWidth}
             display="flex"
             alignItems="center"
             overflow="hidden"
@@ -131,8 +128,10 @@ const MultiSelectV2Trigger = ({
             {...(showContainerStyles && {
                 height: trigger?.height?.[size]?.[variant],
                 maxHeight: trigger?.height?.[size]?.[variant],
-                paddingX,
-                paddingY,
+                paddingLeft: paddingX,
+                paddingRight: paddingX,
+                paddingTop: paddingY,
+                paddingBottom: paddingY,
                 backgroundColor,
                 borderRight,
                 ...(!disabled && {
@@ -237,7 +236,7 @@ const MultiSelectV2Trigger = ({
                 {isContainer &&
                     (selectedValues.length > 0 ||
                         !isSmallScreen ||
-                        size !== MultiSelectV2Size.LARGE) && (
+                        size !== MultiSelectV2Size.LG) && (
                         <Text
                             data-element="placeholder"
                             data-id={placeholder || 'placeholder'}

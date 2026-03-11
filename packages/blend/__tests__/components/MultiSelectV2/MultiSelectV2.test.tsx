@@ -185,7 +185,7 @@ describe('MultiSelectV2', () => {
                 items={createBasicItems()}
                 selectedValues={[]}
                 onChange={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
 
@@ -205,7 +205,7 @@ describe('MultiSelectV2', () => {
                 items={createBasicItems()}
                 selectedValues={[]}
                 onChange={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
 
@@ -402,7 +402,7 @@ describe('MultiSelectV2', () => {
         )
 
         expect(
-            screen.getByRole('button', { name: /mobile select/i })
+            screen.getByRole('combobox', { name: /mobile select/i })
         ).toBeInTheDocument()
         vi.restoreAllMocks()
     })

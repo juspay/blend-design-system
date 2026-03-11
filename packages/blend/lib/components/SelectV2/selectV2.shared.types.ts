@@ -21,9 +21,9 @@ export enum SelectV2Variant {
 }
 
 export enum SelectV2Size {
-    SMALL = 'sm',
-    MEDIUM = 'md',
-    LARGE = 'lg',
+    SM = 'sm',
+    MD = 'md',
+    LG = 'lg',
 }
 
 export enum SelectV2Side {

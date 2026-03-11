@@ -51,8 +51,7 @@ describe('SingleSelectV2 Accessibility', () => {
                 items={createItems()}
                 selected=""
                 onSelect={() => {}}
-                error
-                errorMessage="This field is required"
+                error={{ show: true, message: 'This field is required' }}
             />
         )
 
@@ -70,7 +69,7 @@ describe('SingleSelectV2 Accessibility', () => {
                 items={createLargeItems(500)}
                 selected=""
                 onSelect={() => {}}
-                enableSearch
+                search={{ show: true }}
             />
         )
 

@@ -59,66 +59,78 @@ export const getMultiSelectV2DarkTokens = (
 
         trigger: {
             height: {
-                [MultiSelectV2Size.SMALL]: {
+                [MultiSelectV2Size.SM]: {
                     [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[32],
                     [MultiSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[32],
                 },
-                [MultiSelectV2Size.MEDIUM]: {
+                [MultiSelectV2Size.MD]: {
                     [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[36],
                     [MultiSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[36],
                 },
-                [MultiSelectV2Size.LARGE]: {
+                [MultiSelectV2Size.LG]: {
                     [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[40],
                     [MultiSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[40],
                 },
             },
             padding: {
-                [MultiSelectV2Size.SMALL]: {
+                [MultiSelectV2Size.SM]: {
                     [MultiSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[14],
-                        y: foundationToken.unit[7],
+                        top: foundationToken.unit[7],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[7],
+                        left: foundationToken.unit[14],
                     },
                     [MultiSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[14],
-                        y: foundationToken.unit[7],
+                        top: foundationToken.unit[7],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[7],
+                        left: foundationToken.unit[14],
                     },
                 },
-                [MultiSelectV2Size.MEDIUM]: {
+                [MultiSelectV2Size.MD]: {
                     [MultiSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[14],
-                        y: foundationToken.unit[8],
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[14],
                     },
                     [MultiSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[14],
-                        y: foundationToken.unit[8],
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[14],
                     },
                 },
-                [MultiSelectV2Size.LARGE]: {
+                [MultiSelectV2Size.LG]: {
                     [MultiSelectV2Variant.CONTAINER]: {
-                        x: foundationToken.unit[12],
-                        y: foundationToken.unit[10],
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
                     [MultiSelectV2Variant.NO_CONTAINER]: {
-                        x: foundationToken.unit[12],
-                        y: foundationToken.unit[10],
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
                 },
             },
             borderRadius: {
-                [MultiSelectV2Size.SMALL]: {
+                [MultiSelectV2Size.SM]: {
                     [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [MultiSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[10],
                 },
-                [MultiSelectV2Size.MEDIUM]: {
+                [MultiSelectV2Size.MD]: {
                     [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [MultiSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[10],
                 },
-                [MultiSelectV2Size.LARGE]: {
+                [MultiSelectV2Size.LG]: {
                     [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [MultiSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[10],
@@ -238,7 +250,7 @@ export const getMultiSelectV2DarkTokens = (
             border: `1px solid ${foundationToken.colors.gray[700]}`,
             borderRadius: foundationToken.unit[8],
             padding: {
-                [MultiSelectV2Size.SMALL]: {
+                [MultiSelectV2Size.SM]: {
                     [MultiSelectV2Variant.CONTAINER]: {
                         x: foundationToken.unit[6],
                         y: foundationToken.unit[6],
@@ -248,7 +260,7 @@ export const getMultiSelectV2DarkTokens = (
                         y: foundationToken.unit[6],
                     },
                 },
-                [MultiSelectV2Size.MEDIUM]: {
+                [MultiSelectV2Size.MD]: {
                     [MultiSelectV2Variant.CONTAINER]: {
                         x: foundationToken.unit[6],
                         y: foundationToken.unit[6],
@@ -258,7 +270,7 @@ export const getMultiSelectV2DarkTokens = (
                         y: foundationToken.unit[6],
                     },
                 },
-                [MultiSelectV2Size.LARGE]: {
+                [MultiSelectV2Size.LG]: {
                     [MultiSelectV2Variant.CONTAINER]: {
                         x: foundationToken.unit[6],
                         y: foundationToken.unit[6],

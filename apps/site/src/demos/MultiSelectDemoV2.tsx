@@ -28,7 +28,7 @@ const MultiSelectDemoV2 = () => {
         useState('Select options...')
     const [playgroundSize, setPlaygroundSize] = useState<
         MultiSelectV2Size | ''
-    >(MultiSelectV2Size.MEDIUM)
+    >(MultiSelectV2Size.MD)
     const [playgroundVariant, setPlaygroundVariant] = useState<
         MultiSelectV2Variant | ''
     >(MultiSelectV2Variant.CONTAINER)
@@ -138,9 +138,9 @@ const MultiSelectDemoV2 = () => {
     const sizeOptions: MultiSelectV2GroupType[] = [
         {
             items: [
-                { value: MultiSelectV2Size.SMALL, label: 'Small' },
-                { value: MultiSelectV2Size.MEDIUM, label: 'Medium' },
-                { value: MultiSelectV2Size.LARGE, label: 'Large' },
+                { value: MultiSelectV2Size.SM, label: 'Small' },
+                { value: MultiSelectV2Size.MD, label: 'Medium' },
+                { value: MultiSelectV2Size.LG, label: 'Large' },
             ],
         },
     ]
@@ -404,18 +404,22 @@ const MultiSelectDemoV2 = () => {
                             hintText={playgroundHintText}
                             placeholder={playgroundPlaceholder}
                             required={playgroundRequired}
-                            error={playgroundError}
-                            errorMessage={playgroundErrorMessage}
-                            size={playgroundSize || MultiSelectV2Size.MEDIUM}
+                            error={{
+                                show: playgroundError,
+                                message: playgroundErrorMessage,
+                            }}
+                            size={playgroundSize || MultiSelectV2Size.MD}
                             variant={
                                 playgroundVariant ||
                                 MultiSelectV2Variant.CONTAINER
                             }
-                            alignment={
-                                playgroundAlignment ||
-                                MultiSelectV2Alignment.START
-                            }
-                            side={playgroundSide || MultiSelectV2Side.BOTTOM}
+                            menuPosition={{
+                                alignment:
+                                    playgroundAlignment ||
+                                    MultiSelectV2Alignment.START,
+                                side:
+                                    playgroundSide || MultiSelectV2Side.BOTTOM,
+                            }}
                             selectionTagType={
                                 playgroundSelectionTagType ||
                                 MultiSelectV2SelectionTagType.COUNT
@@ -424,7 +428,7 @@ const MultiSelectDemoV2 = () => {
                             selectedValues={playgroundSelected}
                             onChange={handlePlaygroundChange}
                             disabled={playgroundDisabled}
-                            enableSearch={playgroundEnableSearch}
+                            search={{ show: playgroundEnableSearch }}
                             enableSelectAll={playgroundEnableSelectAll}
                             selectAllText="Select All"
                             slot={
@@ -432,7 +436,11 @@ const MultiSelectDemoV2 = () => {
                                     <User size={16} />
                                 ) : undefined
                             }
-                            fullWidth={playgroundFullWidth}
+                            triggerDimensions={
+                                playgroundFullWidth
+                                    ? { width: '100%' }
+                                    : undefined
+                            }
                             showActionButtons={playgroundShowActionButtons}
                             primaryAction={
                                 playgroundShowActionButtons
@@ -469,7 +477,7 @@ const MultiSelectDemoV2 = () => {
                         items={groupedItems}
                         selectedValues={actionButtonsSelected}
                         onChange={handleActionButtonsChange}
-                        enableSearch
+                        search={{ show: true }}
                         enableSelectAll
                         selectAllText="Select All"
                         selectionTagType={MultiSelectV2SelectionTagType.TEXT}

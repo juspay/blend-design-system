@@ -216,23 +216,28 @@ export const flattenMenuGroups = (
     return flattened
 }
 
-const DEFAULT_TRIGGER_PADDING_X = 14
-const DEFAULT_TRIGGER_PADDING_Y = 8
+const DEFAULT_TRIGGER_PADDING_LEFT = 14
+const DEFAULT_TRIGGER_PADDING_TOP = 8
 
-export const getTriggerHorizontalPadding = (
+export const getTriggerLeftPadding = (
     tokens: MultiSelectV2TokensType,
     size: MultiSelectV2Size,
     variant: MultiSelectV2Variant
 ): number => {
-    const value = tokens.trigger?.padding?.[size]?.[variant]?.x
-    return value != null ? toPixels(value) : DEFAULT_TRIGGER_PADDING_X
+    const value = tokens.trigger?.padding?.[size]?.[variant]?.left
+    return value != null ? toPixels(value) : DEFAULT_TRIGGER_PADDING_LEFT
 }
 
-export const getTriggerVerticalPadding = (
+export const getTriggerTopPadding = (
     tokens: MultiSelectV2TokensType,
     size: MultiSelectV2Size,
     variant: MultiSelectV2Variant
 ): number => {
-    const value = tokens.trigger?.padding?.[size]?.[variant]?.y
-    return value != null ? toPixels(value) : DEFAULT_TRIGGER_PADDING_Y
+    const value = tokens.trigger?.padding?.[size]?.[variant]?.top
+    return value != null ? toPixels(value) : DEFAULT_TRIGGER_PADDING_TOP
 }
+
+/** @deprecated Use getTriggerLeftPadding */
+export const getTriggerHorizontalPadding = getTriggerLeftPadding
+/** @deprecated Use getTriggerTopPadding */
+export const getTriggerVerticalPadding = getTriggerTopPadding

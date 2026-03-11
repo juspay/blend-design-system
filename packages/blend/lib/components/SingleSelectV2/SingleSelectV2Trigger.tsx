@@ -8,7 +8,8 @@ import { ChevronDown } from 'lucide-react'
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from './singleSelectV2.types'
+    type SelectV2TriggerDimensions,
+} from './SingleSelectV2.types'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 
 export type SingleSelectV2TriggerProps = {
@@ -28,18 +29,19 @@ export type SingleSelectV2TriggerProps = {
     inline?: boolean
     error?: boolean
     disabled?: boolean
-    maxTriggerWidth?: number
-    minTriggerWidth?: number
+    triggerDimensions?: SelectV2TriggerDimensions
     singleSelectGroupPosition?: 'center' | 'left' | 'right'
-    fullWidth?: boolean
     borderRadius?: string
     borderRight?: string
     [key: string]: unknown
 }
 
+const DEFAULT_TRIGGER_DIMENSIONS: SelectV2TriggerDimensions = {
+    width: 'fit-content',
+}
+
 const SingleSelectV2Trigger = ({
-    maxTriggerWidth,
-    minTriggerWidth,
+    triggerDimensions = DEFAULT_TRIGGER_DIMENSIONS,
     size,
     selected,
     label,
@@ -57,7 +59,6 @@ const SingleSelectV2Trigger = ({
     error,
     disabled,
     singleSelectGroupPosition: _singleSelectGroupPosition,
-    fullWidth = false,
     borderRadius,
     borderRight,
     ...rest
@@ -66,33 +67,32 @@ const SingleSelectV2Trigger = ({
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
 
-    const paddingInlineVal =
-        singleSelectTokens.trigger.padding[size][variant].paddingInline
-    const paddingBlockVal =
-        singleSelectTokens.trigger.padding[size][variant].paddingBlock
-    const paddingX = toPixels(paddingInlineVal)
-    const paddingY = toPixels(paddingBlockVal)
+    const padding = singleSelectTokens.trigger.padding[size][variant]
+    const paddingLeft = toPixels(padding.left)
+    const paddingRight = toPixels(padding.right)
+    const paddingTop = toPixels(padding.top)
+    const paddingBottom = toPixels(padding.bottom)
     const paddingInlineStart =
-        slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
+        slot && slotWidth ? paddingLeft + slotWidth + 8 : paddingLeft
 
     const isContainer = variant === SingleSelectV2Variant.CONTAINER
     const resolvedBorderRadius =
         borderRadius ?? singleSelectTokens.trigger.borderRadius[size][variant]
+
+    const resolvedWidth =
+        triggerDimensions.width ??
+        (triggerDimensions.maxWidth || triggerDimensions.minWidth
+            ? undefined
+            : 'fit-content')
 
     return (
         <PrimitiveButton
             data-element="single-select-button"
             type="button"
             disabled={disabled}
-            maxWidth={maxTriggerWidth}
-            minWidth={minTriggerWidth}
-            width={
-                fullWidth
-                    ? '100%'
-                    : maxTriggerWidth || minTriggerWidth
-                      ? undefined
-                      : 'fit-content'
-            }
+            maxWidth={triggerDimensions.maxWidth}
+            minWidth={triggerDimensions.minWidth}
+            width={resolvedWidth}
             name={name}
             id={name}
             position="relative"
@@ -109,8 +109,10 @@ const SingleSelectV2Trigger = ({
             }
             borderRight={borderRight}
             {...((!inline || isContainer) && {
-                paddingX: paddingX,
-                paddingY: paddingY,
+                paddingLeft: paddingLeft,
+                paddingRight: paddingRight,
+                paddingTop: paddingTop,
+                paddingBottom: paddingBottom,
                 backgroundColor:
                     singleSelectTokens.trigger.backgroundColor[variant][
                         error ? 'error' : open ? 'open' : 'closed'
@@ -178,7 +180,7 @@ const SingleSelectV2Trigger = ({
                         textAlign="left"
                         paddingTop={
                             isSmallScreenWithLargeSize && isItemSelected
-                                ? paddingY * 1.5
+                                ? paddingTop * 1.5
                                 : 0
                         }
                         style={{
@@ -195,7 +197,7 @@ const SingleSelectV2Trigger = ({
                             position="absolute"
                             top={
                                 isItemSelected
-                                    ? toPixels(paddingY - paddingY / 1.3) +
+                                    ? toPixels(paddingTop - paddingTop / 1.3) +
                                       (!required ? 3 : 0)
                                     : '50%'
                             }

@@ -40,7 +40,7 @@ const SingleSelectDemoV2 = () => {
         'Select an option...'
     )
     const [playgroundSize, setPlaygroundSize] = useState<SingleSelectV2Size>(
-        SingleSelectV2Size.LARGE
+        SingleSelectV2Size.LG
     )
     const [playgroundVariant, setPlaygroundVariant] =
         useState<SingleSelectV2Variant>(SingleSelectV2Variant.CONTAINER)
@@ -165,9 +165,9 @@ const SingleSelectDemoV2 = () => {
     const sizeOptions: SingleSelectV2GroupType[] = [
         {
             items: [
-                { value: SingleSelectV2Size.SMALL, label: 'Small' },
-                { value: SingleSelectV2Size.MEDIUM, label: 'Medium' },
-                { value: SingleSelectV2Size.LARGE, label: 'Large' },
+                { value: SingleSelectV2Size.SM, label: 'Small' },
+                { value: SingleSelectV2Size.MD, label: 'Medium' },
+                { value: SingleSelectV2Size.LG, label: 'Large' },
             ],
         },
     ]
@@ -379,17 +379,21 @@ const SingleSelectDemoV2 = () => {
                             hintText={playgroundHintText}
                             placeholder={playgroundPlaceholder}
                             required={playgroundRequired}
-                            error={playgroundError}
-                            errorMessage={playgroundErrorMessage}
+                            error={{
+                                show: playgroundError,
+                                message: playgroundErrorMessage,
+                            }}
                             size={playgroundSize}
                             variant={playgroundVariant}
-                            alignment={playgroundAlignment}
-                            side={playgroundSide}
+                            menuPosition={{
+                                alignment: playgroundAlignment,
+                                side: playgroundSide,
+                            }}
                             items={groupedItems}
                             selected={playgroundSelected}
                             onSelect={(value) => setPlaygroundSelected(value)}
                             disabled={playgroundDisabled}
-                            enableSearch={playgroundEnableSearch}
+                            search={{ show: playgroundEnableSearch }}
                             enableVirtualization={
                                 playgroundEnableVirtualization
                             }
@@ -398,7 +402,11 @@ const SingleSelectDemoV2 = () => {
                                     <User size={16} />
                                 ) : undefined
                             }
-                            fullWidth={playgroundFullWidth}
+                            triggerDimensions={
+                                playgroundFullWidth
+                                    ? { width: '100%' }
+                                    : undefined
+                            }
                             allowCustomValue={playgroundAllowCustomValue}
                         />
                     </div>
@@ -439,9 +447,9 @@ const SingleSelectDemoV2 = () => {
                         items={largeListItems}
                         selected={largeListSelected}
                         onSelect={setLargeListSelected}
-                        enableSearch
+                        search={{ show: true }}
                         enableVirtualization
-                        maxPopoverHeight={320}
+                        menuDimensions={{ maxHeight: 320 }}
                     />
                 </div>
             </section>

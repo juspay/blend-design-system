@@ -4,8 +4,8 @@
 
 The Blend design system provides two SingleSelect components:
 
-- **SingleSelect (v1)** – Original component; open state is internal; uses `useDrawerOnMobile` and `minMenuWidth` / `maxMenuWidth` / `maxMenuHeight`; supports `allowDeselect`.
-- **SingleSelectV2** – Updated API with controlled/uncontrolled open state, renamed props for consistency, and stricter typing for `customTrigger`; no `allowDeselect` (parent can call `onSelect('')` if needed).
+- **SingleSelect (v1)** – Original component; open state is internal; uses `useDrawerOnMobile` and `minMenuWidth` / `maxMenuWidth` / `maxMenuHeight`; flat props for alignment, side, error, search, trigger dimensions; supports `allowDeselect`.
+- **SingleSelectV2** – Refactored API with controlled open state (`open` / `onOpenChange`), **grouped props** for menu dimensions, trigger dimensions, menu position, search, and error; extends `ButtonHTMLAttributes` (so `disabled`, `name`, `onFocus`, `onBlur` come from HTML); stricter typing for `customTrigger` (ReactElement); no `allowDeselect` (parent can call `onSelect('')` if needed).
 
 Both support: label/sublabel, hint text, required, help icon, placeholder, sizes (sm/md/lg), variants (container / no-container), grouped items, search, virtualization, infinite scroll, custom trigger, and mobile panel/drawer.
 
@@ -18,9 +18,9 @@ Both support: label/sublabel, hint text, required, help icon, placeholder, sizes
 - **Sizes**: `sm`, `md`, `lg` (via `SelectMenuSize` / `SingleSelectV2Size`)
 - **Variants**: `CONTAINER` (bordered box with label above) or `NO_CONTAINER` (minimal, no wrapper box)
 - **States**: Default, hover, focus, error, disabled – with correct trigger background and outline from tokens
-- **Validation**: `error` and optional `errorMessage`
+- **Validation**: V1: `error` (boolean) and `errorMessage` (string). V2: `error?: SelectV2ErrorState` with `{ show?: boolean, message?: string }`.
 - **Items**: Grouped list (`SelectMenuGroupType[]` / `SingleSelectV2GroupType[]`) with optional group labels, separators, submenus, slots, tooltips
-- **Search**: Optional `enableSearch` and `searchPlaceholder`
+- **Search**: V1: `enableSearch` and `searchPlaceholder`. V2: `search?: SelectV2SearchConfig` with `{ show?: boolean, placeholder?: string }`.
 - **Virtualization**: Optional `enableVirtualization`, `virtualListItemHeight`, `virtualListOverscan` (V2 defaults virtualization when item count > 20)
 - **Infinite scroll**: `onEndReached`, `endReachedThreshold`, `hasMore`, `loadingComponent`
 - **Mobile**: On small viewports, optional full-screen panel (v1: `useDrawerOnMobile`, v2: `usePanelOnMobile`); both default to `true`
@@ -62,43 +62,46 @@ Menu (dropdown or panel):
 
 ## Props & Types Comparison
 
+### V1: flat props
+
+V1 uses flat props: `alignment`, `side`, `sideOffset`, `alignOffset`, `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`, `enableSearch`, `searchPlaceholder`, `error`, `errorMessage`, `fullWidth`, `maxTriggerWidth`, `minTriggerWidth`, `disabled`, `name`, `onBlur`, `onFocus`.
+
+### V2: grouped props and ButtonHTMLAttributes
+
+V2 extends `Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className' | 'onSelect' | 'slot'>`, so **disabled**, **name**, **onFocus**, **onBlur** are passed through from the consumer.
+
+V2 **replaces** flat props with **grouped** types:
+
+| V1 (flat)                                         | V2 (grouped)                                                                                    |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `alignment`, `side`, `sideOffset`, `alignOffset`  | **menuPosition?**: `{ alignment?, side?, sideOffset?, alignOffset? }` (`SelectV2MenuPosition`)  |
+| `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`   | **menuDimensions?**: `{ minWidth?, maxWidth?, maxHeight? }` (`SelectV2MenuDimensions`)          |
+| `enableSearch`, `searchPlaceholder`               | **search?**: `{ show?, placeholder? }` (`SelectV2SearchConfig`)                                 |
+| `error`, `errorMessage`                           | **error?**: `{ show?, message? }` (`SelectV2ErrorState`)                                        |
+| `fullWidth`, `maxTriggerWidth`, `minTriggerWidth` | **triggerDimensions?**: `{ width?, minWidth?, maxWidth? }`. Use `width: '100%'` for full-width. |
+
 ### Shared / equivalent props (v1 vs v2)
 
-| Prop                                                         | V1 (SingleSelect)                         | V2 (SingleSelectV2)                                |
-| ------------------------------------------------------------ | ----------------------------------------- | -------------------------------------------------- |
-| label                                                        | ✓                                         | ✓                                                  |
-| subLabel                                                     | ✓                                         | ✓                                                  |
-| hintText                                                     | ✓                                         | ✓                                                  |
-| required                                                     | ✓                                         | ✓                                                  |
-| helpIconText                                                 | ✓                                         | ✓                                                  |
-| placeholder                                                  | ✓                                         | ✓                                                  |
-| size                                                         | SelectMenuSize                            | SingleSelectV2Size                                 |
-| items                                                        | SelectMenuGroupType[]                     | SingleSelectV2GroupType[]                          |
-| variant                                                      | SelectMenuVariant                         | SingleSelectV2Variant                              |
-| selected                                                     | string                                    | string                                             |
-| onSelect                                                     | (value: string) => void                   | (value: string) => void                            |
-| enableSearch                                                 | ✓                                         | ✓                                                  |
-| searchPlaceholder                                            | ✓                                         | ✓                                                  |
-| slot                                                         | ReactNode                                 | ReactNode                                          |
-| disabled                                                     | ✓                                         | ✓                                                  |
-| name                                                         | ✓                                         | ✓                                                  |
-| alignment                                                    | SelectMenuAlignment                       | SingleSelectV2Alignment                            |
-| side                                                         | SelectMenuSide                            | SingleSelectV2Side                                 |
-| sideOffset                                                   | number                                    | number                                             |
-| alignOffset                                                  | number                                    | number                                             |
-| min width/height                                             | minMenuWidth, maxMenuWidth, maxMenuHeight | minPopoverWidth, maxPopoverWidth, maxPopoverHeight |
-| inline                                                       | ✓                                         | ✓                                                  |
-| onBlur / onFocus                                             | ✓                                         | ✓                                                  |
-| error / errorMessage                                         | ✓                                         | ✓                                                  |
-| fullWidth                                                    | ✓                                         | ✓                                                  |
-| enableVirtualization                                         | ✓ (default: items.length > 20)            | ✓ (default: items.length > 20)                     |
-| virtualListItemHeight, virtualListOverscan                   | ✓                                         | ✓                                                  |
-| onEndReached, endReachedThreshold, hasMore, loadingComponent | ✓                                         | ✓                                                  |
-| skeleton                                                     | SingleSelectSkeletonProps                 | SingleSelectV2SkeletonProps                        |
-| maxTriggerWidth, minTriggerWidth                             | ✓                                         | ✓                                                  |
-| allowCustomValue, customValueLabel                           | ✓                                         | ✓                                                  |
-| singleSelectGroupPosition                                    | ✓                                         | ✓                                                  |
-| customTrigger                                                | ReactNode                                 | ReactElement                                       |
+| Prop                                                           | V1 (SingleSelect)                           | V2 (SingleSelectV2)                           |
+| -------------------------------------------------------------- | ------------------------------------------- | --------------------------------------------- |
+| label, subLabel, hintText, required, helpIconText, placeholder | ✓                                           | ✓                                             |
+| size                                                           | SelectMenuSize                              | SingleSelectV2Size (SM, MD, LG)               |
+| items                                                          | SelectMenuGroupType[]                       | SingleSelectV2GroupType[]                     |
+| variant                                                        | SelectMenuVariant                           | SingleSelectV2Variant                         |
+| selected, onSelect                                             | string, (value: string) => void             | same                                          |
+| search                                                         | enableSearch, searchPlaceholder             | search?: SelectV2SearchConfig                 |
+| slot                                                           | ReactNode                                   | ReactNode                                     |
+| disabled, name, onBlur, onFocus                                | ✓ explicit                                  | ✓ via ButtonHTMLAttributes                    |
+| alignment, side, sideOffset, alignOffset                       | ✓ flat                                      | menuPosition?: SelectV2MenuPosition           |
+| min/max menu width/height                                      | minMenuWidth, maxMenuWidth, maxMenuHeight   | menuDimensions?: SelectV2MenuDimensions       |
+| inline                                                         | ✓                                           | ✓                                             |
+| error / errorMessage                                           | error (bool), errorMessage                  | error?: SelectV2ErrorState                    |
+| fullWidth / trigger dimensions                                 | fullWidth, maxTriggerWidth, minTriggerWidth | triggerDimensions?: SelectV2TriggerDimensions |
+| enableVirtualization (default when items > 20)                 | ✓                                           | ✓                                             |
+| virtualListItemHeight, virtualListOverscan, onEndReached, …    | ✓                                           | ✓                                             |
+| skeleton                                                       | SingleSelectSkeletonProps                   | SingleSelectV2SkeletonProps                   |
+| allowCustomValue, customValueLabel, singleSelectGroupPosition  | ✓                                           | ✓                                             |
+| customTrigger                                                  | ReactNode                                   | ReactElement                                  |
 
 ### V1-only
 
@@ -108,13 +111,13 @@ Menu (dropdown or panel):
 ### V2-only
 
 - **open**: Controlled open state (boolean). If provided, component is controlled.
-- **defaultOpen**: Initial open state when uncontrolled.
-- **onOpenChange**: `(open: boolean) => void` – called when menu opens or closes; supports analytics or parent-controlled closing.
+- **onOpenChange**: `(open: boolean) => void` – called when menu opens or closes.
 - **usePanelOnMobile**: Same behavior as V1’s `useDrawerOnMobile`; name aligned with “panel” terminology.
 
-### Naming differences
+### Naming and structure differences
 
-- **Menu vs popover**: V1 uses `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`; V2 uses `minPopoverWidth`, `maxPopoverWidth`, `maxPopoverHeight`. Behavior is the same; V2 aligns with Radix popover naming.
+- **Menu dimensions**: V1 uses `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`. V2 uses **menuDimensions** `{ minWidth?, maxWidth?, maxHeight? }` (same behavior; “menu” naming).
+- **Trigger dimensions**: V1 uses `fullWidth`, `maxTriggerWidth`, `minTriggerWidth`. V2 uses **triggerDimensions** `{ width?, minWidth?, maxWidth? }`; use `width: '100%'` for full-width.
 - **Mobile**: V1 `useDrawerOnMobile` vs V2 `usePanelOnMobile` – same meaning, different name.
 
 ### Item and group types
@@ -130,7 +133,7 @@ V2 defines types used by subcomponents and shared logic; V1 keeps these implicit
 - **MenuListProps**, **MenuListSharedProps**: Props for the menu list.
 - **VirtualListProps**, **VirtualItemShape**: Virtual list rendering.
 - **MenuSearchProps**: Search input inside menu.
-- **MenuRootProps**: Menu dropdown root (Radix Root + Trigger + Portal + Content). Props: open, alignment, side, content style, etc. Component: `SingleSelectV2MenuRoot`.
+- **MenuRootProps**: Base type for menu root. Radix Root/Trigger/Portal/Content are inlined in `SingleSelectV2Menu`.
 
 ---
 
@@ -174,11 +177,11 @@ Usage pattern: `tokens.trigger.height[size][variant]`, `tokens.trigger.backgroun
 
 ## Design Decisions
 
-### 1. Controlled vs uncontrolled open (V2 only)
+### 1. Controlled open state (V2 only)
 
-**Decision**: V2 supports both controlled (`open` + `onOpenChange`) and uncontrolled (`defaultOpen`) open state.
+**Decision**: V2 supports controlled open state via `open` and `onOpenChange`. No `defaultOpen`; when `open` is omitted, component uses internal state.
 
-**Rationale**: Parents can close on route change, sync with other UI, or track open/close for analytics without managing full internal state.
+**Rationale**: Parents can close on route change, sync with other UI, or track open/close for analytics. Simpler than supporting both defaultOpen and controlled in the same API.
 
 ### 2. Panel vs drawer naming (V2)
 
@@ -186,11 +189,11 @@ Usage pattern: `tokens.trigger.height[size][variant]`, `tokens.trigger.backgroun
 
 **Rationale**: Aligns naming with other components that use “panel” for full-screen overlay behavior.
 
-### 3. Popover vs menu width/height (V2)
+### 3. Grouped menu and trigger dimensions (V2)
 
-**Decision**: V2 uses `minPopoverWidth`, `maxPopoverWidth`, `maxPopoverHeight` instead of `minMenuWidth`, etc.
+**Decision**: V2 uses **menuDimensions** `{ minWidth?, maxWidth?, maxHeight? }` and **triggerDimensions** `{ width?, minWidth?, maxWidth? }` instead of flat `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`, `fullWidth`, `maxTriggerWidth`, `minTriggerWidth`.
 
-**Rationale**: Matches the underlying Radix popover/dropdown API and makes it clear the constraints apply to the popover content.
+**Rationale**: Grouped props keep the API organized; “menu” naming is used consistently (not “popover”). Trigger width is explicit (e.g. `width: '100%'` for full-width).
 
 ### 4. customTrigger: ReactNode vs ReactElement (V1 vs V2)
 
@@ -230,7 +233,7 @@ Usage pattern: `tokens.trigger.height[size][variant]`, `tokens.trigger.backgroun
 | ------------------------------------------------------------------------- | ------------------------------------------------------ |
 | Controlled open state or onOpenChange                                     | SingleSelectV2                                         |
 | allowDeselect built-in                                                    | SingleSelect (v1)                                      |
-| Consistent “panel”/“popover” naming                                       | SingleSelectV2                                         |
+| Consistent “panel”/“menu” naming and grouped props (menuDimensions, etc.) | SingleSelectV2                                         |
 | customTrigger as any ReactNode                                            | SingleSelect (v1)                                      |
 | customTrigger as single ReactElement (ref forwarding)                     | SingleSelectV2                                         |
 | Light/dark tokens from theme                                              | SingleSelectV2 (`getSingleSelectV2Tokens(..., theme)`) |

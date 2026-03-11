@@ -3,7 +3,7 @@ import type { ResponsiveSingleSelectV2Tokens } from './singleSelectV2.tokens'
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from './singleSelectV2.types'
+} from './SingleSelectV2.types'
 
 export const getSingleSelectV2DarkTokens = (
     foundationToken: FoundationTokenType
@@ -58,66 +58,78 @@ export const getSingleSelectV2DarkTokens = (
 
         trigger: {
             height: {
-                [SingleSelectV2Size.SMALL]: {
+                [SingleSelectV2Size.SM]: {
                     [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[32],
                     [SingleSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[32],
                 },
-                [SingleSelectV2Size.MEDIUM]: {
+                [SingleSelectV2Size.MD]: {
                     [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[36],
                     [SingleSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[36],
                 },
-                [SingleSelectV2Size.LARGE]: {
+                [SingleSelectV2Size.LG]: {
                     [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[40],
                     [SingleSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[40],
                 },
             },
             padding: {
-                [SingleSelectV2Size.SMALL]: {
+                [SingleSelectV2Size.SM]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        paddingInline: foundationToken.unit[14],
-                        paddingBlock: foundationToken.unit[7],
+                        top: foundationToken.unit[7],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[7],
+                        left: foundationToken.unit[14],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        paddingInline: foundationToken.unit[14],
-                        paddingBlock: foundationToken.unit[7],
+                        top: foundationToken.unit[7],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[7],
+                        left: foundationToken.unit[14],
                     },
                 },
-                [SingleSelectV2Size.MEDIUM]: {
+                [SingleSelectV2Size.MD]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        paddingInline: foundationToken.unit[14],
-                        paddingBlock: foundationToken.unit[8],
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[14],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        paddingInline: foundationToken.unit[14],
-                        paddingBlock: foundationToken.unit[8],
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[14],
                     },
                 },
-                [SingleSelectV2Size.LARGE]: {
+                [SingleSelectV2Size.LG]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        paddingInline: foundationToken.unit[12],
-                        paddingBlock: foundationToken.unit[10],
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        paddingInline: foundationToken.unit[12],
-                        paddingBlock: foundationToken.unit[10],
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
                     },
                 },
             },
             borderRadius: {
-                [SingleSelectV2Size.SMALL]: {
+                [SingleSelectV2Size.SM]: {
                     [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [SingleSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[10],
                 },
-                [SingleSelectV2Size.MEDIUM]: {
+                [SingleSelectV2Size.MD]: {
                     [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [SingleSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[10],
                 },
-                [SingleSelectV2Size.LARGE]: {
+                [SingleSelectV2Size.LG]: {
                     [SingleSelectV2Variant.CONTAINER]: foundationToken.unit[10],
                     [SingleSelectV2Variant.NO_CONTAINER]:
                         foundationToken.unit[10],
@@ -183,7 +195,7 @@ export const getSingleSelectV2DarkTokens = (
                 boxShadow: foundationToken.shadows.lg,
             },
             padding: {
-                [SingleSelectV2Size.SMALL]: {
+                [SingleSelectV2Size.SM]: {
                     [SingleSelectV2Variant.CONTAINER]: {
                         paddingInline: foundationToken.unit[6],
                         paddingBlock: foundationToken.unit[6],
@@ -193,7 +205,7 @@ export const getSingleSelectV2DarkTokens = (
                         paddingBlock: foundationToken.unit[6],
                     },
                 },
-                [SingleSelectV2Size.MEDIUM]: {
+                [SingleSelectV2Size.MD]: {
                     [SingleSelectV2Variant.CONTAINER]: {
                         paddingInline: foundationToken.unit[6],
                         paddingBlock: foundationToken.unit[6],
@@ -203,7 +215,7 @@ export const getSingleSelectV2DarkTokens = (
                         paddingBlock: foundationToken.unit[6],
                     },
                 },
-                [SingleSelectV2Size.LARGE]: {
+                [SingleSelectV2Size.LG]: {
                     [SingleSelectV2Variant.CONTAINER]: {
                         paddingInline: foundationToken.unit[6],
                         paddingBlock: foundationToken.unit[6],
@@ -303,7 +315,7 @@ export const getSingleSelectV2DarkTokens = (
                     backgroundColor: foundationToken.colors.gray[800],
                     border: `1px solid ${foundationToken.colors.gray[700]}`,
                     borderRadius: foundationToken.unit[8],
-                    padding: `${foundationToken.unit[8]} 0`,
+                    padding: foundationToken.unit[6],
                     boxShadow: foundationToken.shadows.lg,
                 },
                 optionText: {

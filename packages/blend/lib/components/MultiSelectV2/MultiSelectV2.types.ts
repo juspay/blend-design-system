@@ -1,15 +1,20 @@
-import type { ReactNode, ReactElement } from 'react'
+import type { ReactNode, ReactElement, ButtonHTMLAttributes } from 'react'
 import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
 import type {
-    SelectV2Alignment,
     SelectV2FlattenedItemBase,
     SelectV2BaseItemType,
     SelectV2MenuRootPropsBase,
     SelectV2SkeletonProps,
-    SelectV2Side,
     SelectV2Size,
     SelectV2Variant,
 } from '../SelectV2/selectV2.shared.types'
+import type {
+    SelectV2MenuDimensions,
+    SelectV2TriggerDimensions,
+    SelectV2MenuPosition,
+    SelectV2ErrorState,
+    SelectV2SearchConfig,
+} from '../SingleSelectV2/SingleSelectV2.types'
 
 export {
     SelectV2Alignment as MultiSelectV2Alignment,
@@ -19,6 +24,14 @@ export {
 } from '../SelectV2/selectV2.shared.types'
 
 export type { SelectV2SkeletonProps as MultiSelectV2SkeletonProps }
+
+export type {
+    SelectV2MenuDimensions,
+    SelectV2TriggerDimensions,
+    SelectV2MenuPosition,
+    SelectV2ErrorState,
+    SelectV2SearchConfig,
+}
 
 export enum MultiSelectV2SelectionTagType {
     COUNT = 'count',
@@ -44,12 +57,9 @@ export type MultiSelectV2MenuProps = {
     selected: string[]
     onSelect: (value: string) => void
     trigger: ReactElement
-    minMenuWidth?: number
-    maxMenuWidth?: number
-    maxMenuHeight?: number
+    menuDimensions?: SelectV2MenuDimensions
     disabled?: boolean
-    enableSearch?: boolean
-    searchPlaceholder?: string
+    search?: SelectV2SearchConfig
     enableSelectAll?: boolean
     selectAllText?: string
     onSelectAll?: (
@@ -57,10 +67,8 @@ export type MultiSelectV2MenuProps = {
         filteredItems: MultiSelectV2GroupType[]
     ) => void
     maxSelections?: number
-    alignment?: SelectV2Alignment
-    side?: SelectV2Side
-    sideOffset?: number
-    alignOffset?: number
+    menuPosition?: SelectV2MenuPosition
+    collisionBoundary?: DropdownMenuContentProps['collisionBoundary']
     open?: boolean
     onOpenChange?: (open: boolean) => void
     showActionButtons?: boolean
@@ -89,25 +97,24 @@ export type MultiSelectV2MenuProps = {
     allowCustomValue?: boolean
     customValueLabel?: string
     menuId?: string
-    collisionBoundary?: DropdownMenuContentProps['collisionBoundary']
 }
 
-/** Props for the menu dropdown root (Radix Root + Trigger + Portal + Content). */
 export type MenuRootProps = SelectV2MenuRootPropsBase & {
     onInteractOutside?: (e: Event) => void
     onPointerDownOutside?: (e: Event) => void
 }
 
-export type MultiSelectV2Props = {
+export type MultiSelectV2Props = Omit<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    'style' | 'className' | 'onChange' | 'slot'
+> & {
     selectedValues: string[]
     onChange: (value: string | string[]) => void
     items?: MultiSelectV2GroupType[]
 
     label: string
     subLabel?: string
-    disabled?: boolean
     helpIconText?: string
-    name?: string
     required?: boolean
     variant?: SelectV2Variant
     selectionTagType?: MultiSelectV2SelectionTagType
@@ -115,33 +122,22 @@ export type MultiSelectV2Props = {
     hintText?: string
     placeholder: string
     size?: SelectV2Size
-    enableSearch?: boolean
-    searchPlaceholder?: string
+    search?: SelectV2SearchConfig
     enableSelectAll?: boolean
     selectAllText?: string
     maxSelections?: number
 
     customTrigger?: ReactElement
     usePanelOnMobile?: boolean
-    maxTriggerWidth?: number
-    minTriggerWidth?: number
 
-    minPopoverWidth?: number
-    maxPopoverWidth?: number
-    maxPopoverHeight?: number
-
-    alignment?: SelectV2Alignment
-    side?: SelectV2Side
-    sideOffset?: number
-    alignOffset?: number
+    triggerDimensions?: SelectV2TriggerDimensions
+    menuDimensions?: SelectV2MenuDimensions
+    menuPosition?: SelectV2MenuPosition
 
     inline?: boolean
-    onBlur?: () => void
-    onFocus?: () => void
     onOpenChange?: (open: boolean) => void
 
-    error?: boolean
-    errorMessage?: string
+    error?: SelectV2ErrorState
 
     showActionButtons?: boolean
     primaryAction?: {
@@ -158,7 +154,6 @@ export type MultiSelectV2Props = {
     }
     showItemDividers?: boolean
     showHeaderBorder?: boolean
-    fullWidth?: boolean
 
     enableVirtualization?: boolean
     virtualListItemHeight?: number

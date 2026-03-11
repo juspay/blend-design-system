@@ -55,8 +55,10 @@ export type MultiSelectV2TokensType = {
         height: SizeToken<VariantToken<CSSObject['height']>>
         padding: SizeToken<
             VariantToken<{
-                x: CSSObject['padding']
-                y: CSSObject['padding']
+                top: CSSObject['paddingTop']
+                right: CSSObject['paddingRight']
+                bottom: CSSObject['paddingBottom']
+                left: CSSObject['paddingLeft']
             }>
         >
         borderRadius: SizeToken<VariantToken<CSSObject['borderRadius']>>
