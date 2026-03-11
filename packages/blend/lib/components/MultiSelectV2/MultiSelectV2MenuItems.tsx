@@ -8,7 +8,7 @@ import {
     MultiSelectV2Variant,
     type MultiSelectV2GroupType,
     type MultiSelectV2ItemType,
-} from './MultiSelectV2.types'
+} from './multiSelectV2.types'
 import MultiSelectV2MenuItem from './MultiSelectV2MenuItem'
 
 export type MultiSelectV2MenuItemsProps = {

@@ -6,7 +6,7 @@ import {
     type FlattenedMultiSelectV2Item,
     type MultiSelectV2GroupType,
     type MultiSelectV2ItemType,
-} from './MultiSelectV2.types'
+} from './multiSelectV2.types'
 
 export const getSelectAllState = (
     selected: string[],

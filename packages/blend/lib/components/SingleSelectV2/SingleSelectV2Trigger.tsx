@@ -8,7 +8,7 @@ import { ChevronDown } from 'lucide-react'
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from './SingleSelectV2.types'
+} from './singleSelectV2.types'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 
 export type SingleSelectV2TriggerProps = {

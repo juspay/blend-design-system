@@ -6,7 +6,7 @@ import {
     SingleSelectV2Alignment,
     SingleSelectV2Side,
     type SingleSelectV2GroupType,
-} from '../../../../packages/blend/lib/components/SingleSelectV2/SingleSelectV2.types'
+} from '../../../../packages/blend/lib/components/SingleSelectV2/singleSelectV2.types'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { User, Star, Shield, Briefcase, MapPin } from 'lucide-react'

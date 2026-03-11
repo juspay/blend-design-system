@@ -8,7 +8,7 @@ import {
     MultiSelectV2Variant,
     MultiSelectV2SelectionTagType,
 } from '../../../../../packages/blend/lib/components/MultiSelectV2'
-import type { MultiSelectV2GroupType } from '../../../../../packages/blend/lib/components/MultiSelectV2/types'
+import type { MultiSelectV2GroupType } from '../../../../../packages/blend/lib/components/MultiSelectV2/multiSelectV2.types'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,

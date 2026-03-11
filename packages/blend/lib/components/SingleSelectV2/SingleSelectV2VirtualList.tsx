@@ -4,7 +4,7 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { CSSProperties } from 'react'
 import { MenuItem } from './SingleSelectV2MenuItems'
-import type { VirtualListProps, FlattenedItem } from './SingleSelectV2.types'
+import type { VirtualListProps, FlattenedItem } from './singleSelectV2.types'
 import { getItemOrdinalIndex } from './utils'
 
 const GroupLabel = styled(RadixMenu.Label)`

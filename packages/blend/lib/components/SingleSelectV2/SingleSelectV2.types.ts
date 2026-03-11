@@ -4,7 +4,7 @@ import {
     SelectV2Alignment,
     SelectV2FlattenedItemBase,
     SelectV2BaseItemType,
-    SelectV2PopoverPropsBase,
+    SelectV2MenuRootPropsBase,
     SelectV2SkeletonProps,
     SelectV2Side,
     SelectV2Size,
@@ -71,7 +71,7 @@ export type MenuSearchProps = {
     containerRef?: RefObject<HTMLDivElement | null>
 }
 
-export type MenuPopoverProps = SelectV2PopoverPropsBase
+export type MenuRootProps = SelectV2MenuRootPropsBase
 
 export type SingleSelectV2Props = {
     label?: string

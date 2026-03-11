@@ -5,7 +5,7 @@ import {
     MultiSelectV2Size,
     MultiSelectV2SelectionTagType,
     MultiSelectV2Variant,
-} from './MultiSelectV2.types'
+} from './multiSelectV2.types'
 import { Theme } from '../../context/theme.enum'
 import { getMultiSelectV2LightTokens } from './multiSelectV2.light.tokens.ts'
 import { getMultiSelectV2DarkTokens } from './multiSelectV2.dark.tokens.ts'

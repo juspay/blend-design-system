@@ -11,13 +11,13 @@ import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
     type FlattenedItem,
-} from '../../../lib/components/SingleSelectV2/types'
+} from '../../../lib/components/SingleSelectV2/singleSelectV2.types'
 import { getSingleSelectV2Tokens } from '../../../lib/components/SingleSelectV2/singleSelectV2.tokens'
 import { FOUNDATION_THEME } from '../../../lib/tokens'
 import { Theme } from '../../../lib/context/theme.enum'
 
 vi.mock(
-    '../../../lib/components/SingleSelectV2/SingleSelectV2MenuItems',
+    '../../../lib/components/SingleSelectV2/singleSelectV2MenuItems',
     () => ({
         MenuItem: ({ item }: { item: { label: string } }) => (
             <div data-testid="virtual-menu-item">{item.label}</div>
@@ -85,6 +85,58 @@ describe('SingleSelectV2 parts', () => {
             'Option A'
         )
         expect(screen.getByText('Loading more')).toBeInTheDocument()
+    })
+
+    it('renders virtual list without loading component when hasMore is false', () => {
+        const flattenedItems: FlattenedItem[] = [
+            { id: 'label-1', type: 'label', label: 'Group B' },
+            {
+                id: 'item-1',
+                type: 'item',
+                item: { label: 'Option B', value: 'option-b' },
+            },
+        ]
+        const virtualItems = [
+            { key: 'label-1', index: 0, start: 0, size: 36, end: 36 },
+            { key: 'item-1', index: 1, start: 36, size: 48, end: 84 },
+        ]
+
+        render(
+            <RadixMenu.Root open>
+                <RadixMenu.Content>
+                    <SingleSelectV2VirtualList
+                        flattenedItems={flattenedItems}
+                        selected=""
+                        onSelect={() => {}}
+                        singleSelectTokens={singleSelectTokens}
+                        size={SingleSelectV2Size.MEDIUM}
+                        variant={SingleSelectV2Variant.CONTAINER}
+                        virtualViewportHeight={200}
+                        virtualItems={virtualItems}
+                        totalSize={84}
+                        measureElement={vi.fn()}
+                        hasMore={false}
+                        virtualScrollRef={React.createRef<HTMLDivElement>()}
+                    />
+                </RadixMenu.Content>
+            </RadixMenu.Root>
+        )
+
+        expect(screen.getByText('Group B')).toBeInTheDocument()
+        expect(screen.getByTestId('virtual-menu-item')).toHaveTextContent(
+            'Option B'
+        )
+        expect(screen.queryByText('Loading more')).not.toBeInTheDocument()
+    })
+
+    it('renders skeleton with default variant when variant is undefined', () => {
+        render(
+            <SingleSelectV2Skeleton
+                singleSelectTokens={singleSelectTokens}
+                skeleton={{ show: true, count: 1 }}
+            />
+        )
+        expect(screen.getAllByTestId('skeleton')).toHaveLength(1)
     })
 
     it('renders trigger in full-width mode with selected text', () => {
@@ -247,8 +299,8 @@ describe('SingleSelectV2 parts', () => {
 
     it('search ArrowDown focuses first menuitem in dropdown', async () => {
         const user = userEvent.setup()
-        const searchInputRef = React.createRef<HTMLInputElement>(null)
-        const containerRef = React.createRef<HTMLDivElement>(null)
+        const searchInputRef = React.createRef<HTMLInputElement>()
+        const containerRef = React.createRef<HTMLDivElement>()
         render(
             <div data-dropdown="dropdown">
                 <SingleSelectV2Search

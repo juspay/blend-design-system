@@ -15,13 +15,13 @@ import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
-import type { SingleSelectV2Props } from './SingleSelectV2.types'
+import type { SingleSelectV2Props } from './singleSelectV2.types'
 import {
     type SingleSelectV2GroupType,
     type SingleSelectV2ItemType,
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from './SingleSelectV2.types'
+} from './singleSelectV2.types'
 import SingleSelectV2Trigger from './SingleSelectV2Trigger'
 import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'

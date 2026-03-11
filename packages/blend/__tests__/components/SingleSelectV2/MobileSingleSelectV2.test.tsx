@@ -6,7 +6,7 @@ import MobileSingleSelectV2 from '../../../lib/components/SingleSelectV2/MobileS
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from '../../../lib/components/SingleSelectV2/types'
+} from '../../../lib/components/SingleSelectV2/singleSelectV2.types'
 
 vi.mock('../../../lib/components/Drawer', () => ({
     Drawer: ({ children }: { children: React.ReactNode }) => (

@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import userEvent from '@testing-library/user-event'
-import MultiSelectV2 from '../../../lib/components/MultiSelectV2/MultiSelectV2'
+import MultiSelectV2 from '../../../lib/components/MultiSelectV2/multiSelectV2'
 
 const createItems = () => [
     {

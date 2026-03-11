@@ -7,7 +7,7 @@ import { flattenMenuGroups } from '../../../lib/components/MultiSelectV2/utils'
 import { getMultiSelectV2Tokens } from '../../../lib/components/MultiSelectV2/multiSelectV2.tokens'
 import { FOUNDATION_THEME } from '../../../lib/tokens'
 import { Theme } from '../../../lib/context/theme.enum'
-import type { MultiSelectV2GroupType } from '../../../lib/components/MultiSelectV2/types'
+import type { MultiSelectV2GroupType } from '../../../lib/components/MultiSelectV2/multiSelectV2.types'
 
 vi.mock('../../../lib/components/VirtualList/VirtualList', () => {
     const MockVirtualList = ({

@@ -1,5 +1,5 @@
 import { SelectItemV2 } from '../SelectV2'
-import type { MultiSelectV2ItemType } from './MultiSelectV2.types'
+import type { MultiSelectV2ItemType } from './multiSelectV2.types'
 import MultiSelectV2SubMenu from './MultiSelectV2SubMenu'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'

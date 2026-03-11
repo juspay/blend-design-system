@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { usePreventParentScroll, useScrollLock } from '../../hooks'
-import { dropdownContentAnimations } from '../MultiSelect/multiSelect.animations'
 import {
     getFilteredItemsWithCustomValue,
     hasExactMatch as checkExactMatch,
@@ -17,46 +15,23 @@ import {
     type MultiSelectV2MenuProps,
     MultiSelectV2Size,
     MultiSelectV2Variant,
-} from './MultiSelectV2.types'
+} from './multiSelectV2.types'
 import {
     filterMenuGroups,
     flattenMenuGroups,
     getAllAvailableValues,
 } from './utils'
+import MultiSelectV2MenuRoot from './MultiSelectV2MenuRoot'
 import MultiSelectV2Skeleton from './MultiSelectV2Skeleton'
 import MultiSelectV2MenuHeader from './MultiSelectV2MenuHeader'
 import MultiSelectV2MenuVirtualList from './MultiSelectV2MenuVirtualList'
 import MultiSelectV2MenuItems from './MultiSelectV2MenuItems'
 import MultiSelectV2MenuActions from './MultiSelectV2MenuActions'
-import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 
 const FOCUS_SEARCH_INPUT_DELAY_MS = 50
 const JUST_OPENED_DEBOUNCE_MS = 150
 const DEFAULT_MIN_MENU_WIDTH = 250
 const DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK = 400
-
-const Content = styled(RadixMenu.Content)<{
-    $backgroundColor: string
-    $borderRadius: string
-    $boxShadow: string
-    $border: string
-}>`
-    position: relative;
-    background-color: ${({ $backgroundColor }) => $backgroundColor};
-    border-radius: ${({ $borderRadius }) => $borderRadius};
-    box-shadow: ${({ $boxShadow }) => $boxShadow};
-    z-index: ${SELECT_V2_MENU_Z_INDEX};
-    border: ${({ $border }) => $border};
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-
-    &[data-state='closed'] {
-        pointer-events: none;
-    }
-
-    ${dropdownContentAnimations}
-`
 
 const ScrollableContent = styled(Block)(() => ({
     overflowY: 'auto',
@@ -299,165 +274,159 @@ const MultiSelectV2Menu = ({
         items.length > 0 &&
         !(isEmpty && searchText.length > 0)
 
+    const contentStyle = useMemo(
+        () => ({
+            backgroundColor: menuBackgroundColor,
+            borderRadius: menuBorderRadius,
+            border: menuBorder,
+            boxShadow: menuBoxShadow,
+            minWidth:
+                minMenuWidth ??
+                multiSelectTokens.menu.minWidth ??
+                DEFAULT_MIN_MENU_WIDTH,
+            width: 'max(var(--radix-dropdown-menu-trigger-width))',
+            maxWidth:
+                maxMenuWidth ?? 'var(--radix-dropdown-menu-trigger-width)',
+            maxHeight: maxMenuHeight ?? 'var(--radix-popper-available-height)',
+        }),
+        [
+            menuBackgroundColor,
+            menuBorderRadius,
+            menuBorder,
+            menuBoxShadow,
+            minMenuWidth,
+            maxMenuWidth,
+            maxMenuHeight,
+            multiSelectTokens.menu.minWidth,
+        ]
+    )
+
     return (
-        <RadixMenu.Root
-            modal={false}
+        <MultiSelectV2MenuRoot
             open={isOpen}
             onOpenChange={handleOpenChange}
+            disabled={disabled}
+            trigger={trigger}
+            menuId={menuId}
+            alignment={alignment}
+            side={side}
+            sideOffset={sideOffset}
+            alignOffset={alignOffset}
+            collisionBoundary={collisionBoundary}
+            contentStyle={contentStyle}
+            onContentKeyDown={handleKeyDown}
+            contentRef={contentRef}
+            onInteractOutside={handleOutsideInteraction}
+            onPointerDownOutside={handleOutsideInteraction}
         >
-            <RadixMenu.Trigger asChild disabled={disabled}>
-                {trigger}
-            </RadixMenu.Trigger>
-            <RadixMenu.Portal>
-                <Content
-                    id={menuId}
-                    data-dropdown="dropdown"
-                    ref={contentRef}
-                    role="listbox"
-                    aria-multiselectable="true"
-                    align={alignment}
-                    sideOffset={sideOffset}
-                    alignOffset={alignOffset}
-                    side={side}
-                    avoidCollisions
-                    collisionBoundary={collisionBoundary}
-                    onKeyDown={handleKeyDown}
-                    onInteractOutside={handleOutsideInteraction}
-                    onPointerDownOutside={handleOutsideInteraction}
-                    $backgroundColor={menuBackgroundColor}
-                    $borderRadius={menuBorderRadius}
-                    $boxShadow={menuBoxShadow}
-                    $border={menuBorder}
-                    style={{
-                        minWidth:
-                            minMenuWidth ??
-                            multiSelectTokens.menu.minWidth ??
-                            DEFAULT_MIN_MENU_WIDTH,
-                        width: 'max(var(--radix-dropdown-menu-trigger-width))',
-                        maxWidth:
-                            maxMenuWidth ??
-                            'var(--radix-dropdown-menu-trigger-width)',
-                        maxHeight:
-                            maxMenuHeight ??
-                            'var(--radix-popper-available-height)',
-                    }}
-                >
-                    {skeleton.show ? (
-                        <MultiSelectV2Skeleton
-                            multiSelectTokens={multiSelectTokens}
-                            skeleton={skeleton}
-                        />
-                    ) : (
-                        <>
-                            <MultiSelectV2MenuHeader
-                                tokens={multiSelectTokens}
-                                showSearch={enableSearch}
-                                itemsCount={items.length}
-                                searchValue={searchText}
-                                searchPlaceholder={searchPlaceholder}
-                                searchInputRef={searchInputRef}
-                                onSearchChange={(e) =>
-                                    setSearchText(e.target.value)
-                                }
-                                onSearchArrowKeyToFirst={focusFirstMenuItem}
-                                showSelectAll={enableSelectAll}
-                                selected={selected}
-                                availableValues={availableValues}
-                                filteredItems={filteredItems}
-                                onSelectAll={
-                                    onSelectAll
-                                        ? (selectAll, filtered) =>
-                                              onSelectAll(selectAll, filtered)
-                                        : undefined
-                                }
-                                selectAllText={selectAllText}
-                                disabled={disabled}
-                            />
-                            <ScrollableContent
-                                style={{
-                                    maxHeight: maxMenuHeight
-                                        ? `${Number(maxMenuHeight) - headerFooterHeight}px`
-                                        : `${defaultContentMaxHeight}px`,
-                                }}
+            {skeleton.show ? (
+                <MultiSelectV2Skeleton
+                    multiSelectTokens={multiSelectTokens}
+                    skeleton={skeleton}
+                />
+            ) : (
+                <>
+                    <MultiSelectV2MenuHeader
+                        tokens={multiSelectTokens}
+                        showSearch={enableSearch}
+                        itemsCount={items.length}
+                        searchValue={searchText}
+                        searchPlaceholder={searchPlaceholder}
+                        searchInputRef={searchInputRef}
+                        onSearchChange={(e) => setSearchText(e.target.value)}
+                        onSearchArrowKeyToFirst={focusFirstMenuItem}
+                        showSelectAll={enableSelectAll}
+                        selected={selected}
+                        availableValues={availableValues}
+                        filteredItems={filteredItems}
+                        onSelectAll={
+                            onSelectAll
+                                ? (selectAll, filtered) =>
+                                      onSelectAll(selectAll, filtered)
+                                : undefined
+                        }
+                        selectAllText={selectAllText}
+                        disabled={disabled}
+                    />
+                    <ScrollableContent
+                        style={{
+                            maxHeight: maxMenuHeight
+                                ? `${Number(maxMenuHeight) - headerFooterHeight}px`
+                                : `${defaultContentMaxHeight}px`,
+                        }}
+                    >
+                        {isEmpty ? (
+                            <Block
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                padding={multiSelectTokens.menu.item.padding}
                             >
-                                {isEmpty ? (
-                                    <Block
-                                        display="flex"
-                                        justifyContent="center"
-                                        alignItems="center"
-                                        padding={
-                                            multiSelectTokens.menu.item.padding
-                                        }
-                                    >
-                                        <Text
-                                            variant="body.md"
-                                            color={
-                                                multiSelectTokens.menu.item
-                                                    .optionsLabel.color.default
-                                            }
-                                            textAlign="center"
-                                        >
-                                            {items.length === 0
-                                                ? 'No items available'
-                                                : 'No results found'}
-                                        </Text>
-                                    </Block>
-                                ) : enableVirtualization &&
-                                  flattenedItems.length > 0 ? (
-                                    <MultiSelectV2MenuVirtualList
-                                        flattenedItems={flattenedItems}
-                                        itemIndexMap={itemIndexMap}
-                                        allItemsFlat={allItemsFlat}
-                                        selected={selected}
-                                        onSelect={onSelect}
-                                        maxSelections={maxSelections}
-                                        tokens={multiSelectTokens}
-                                        height={
-                                            (maxMenuHeight ??
-                                                DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK) -
-                                            headerFooterHeight
-                                        }
-                                        itemHeight={virtualListItemHeight}
-                                        overscan={virtualListOverscan}
-                                        onEndReached={onEndReached}
-                                        endReachedThreshold={
-                                            endReachedThreshold
-                                        }
-                                        hasMore={hasMore}
-                                        paddingTop={
-                                            enableSearch
-                                                ? 0
-                                                : multiSelectTokens.menu.list
-                                                      ?.paddingTop
-                                        }
-                                    />
-                                ) : (
-                                    <MultiSelectV2MenuItems
-                                        filteredItems={filteredItems}
-                                        allItemsFlat={allItemsFlat}
-                                        selected={selected}
-                                        onSelect={onSelect}
-                                        maxSelections={maxSelections}
-                                        tokens={multiSelectTokens}
-                                        size={size}
-                                        variant={variant}
-                                    />
-                                )}
-                            </ScrollableContent>
-                            {showActions && (
-                                <MultiSelectV2MenuActions
-                                    tokens={multiSelectTokens}
-                                    primaryAction={primaryAction}
-                                    secondaryAction={secondaryAction}
-                                    selected={selected}
-                                    onClose={() => handleOpenChange(false)}
-                                />
-                            )}
-                        </>
+                                <Text
+                                    variant="body.md"
+                                    color={
+                                        multiSelectTokens.menu.item.optionsLabel
+                                            .color.default
+                                    }
+                                    textAlign="center"
+                                >
+                                    {items.length === 0
+                                        ? 'No items available'
+                                        : 'No results found'}
+                                </Text>
+                            </Block>
+                        ) : enableVirtualization &&
+                          flattenedItems.length > 0 ? (
+                            <MultiSelectV2MenuVirtualList
+                                flattenedItems={flattenedItems}
+                                itemIndexMap={itemIndexMap}
+                                allItemsFlat={allItemsFlat}
+                                selected={selected}
+                                onSelect={onSelect}
+                                maxSelections={maxSelections}
+                                tokens={multiSelectTokens}
+                                height={
+                                    (maxMenuHeight ??
+                                        DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK) -
+                                    headerFooterHeight
+                                }
+                                itemHeight={virtualListItemHeight}
+                                overscan={virtualListOverscan}
+                                onEndReached={onEndReached}
+                                endReachedThreshold={endReachedThreshold}
+                                hasMore={hasMore}
+                                paddingTop={
+                                    enableSearch
+                                        ? 0
+                                        : multiSelectTokens.menu.list
+                                              ?.paddingTop
+                                }
+                            />
+                        ) : (
+                            <MultiSelectV2MenuItems
+                                filteredItems={filteredItems}
+                                allItemsFlat={allItemsFlat}
+                                selected={selected}
+                                onSelect={onSelect}
+                                maxSelections={maxSelections}
+                                tokens={multiSelectTokens}
+                                size={size}
+                                variant={variant}
+                            />
+                        )}
+                    </ScrollableContent>
+                    {showActions && (
+                        <MultiSelectV2MenuActions
+                            tokens={multiSelectTokens}
+                            primaryAction={primaryAction}
+                            secondaryAction={secondaryAction}
+                            selected={selected}
+                            onClose={() => handleOpenChange(false)}
+                        />
                     )}
-                </Content>
-            </RadixMenu.Portal>
-        </RadixMenu.Root>
+                </>
+            )}
+        </MultiSelectV2MenuRoot>
     )
 }
 

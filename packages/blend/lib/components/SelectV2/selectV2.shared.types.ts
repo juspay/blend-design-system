@@ -95,7 +95,7 @@ export type SelectV2InfiniteScrollProps = {
     loadingComponent?: ReactNode
 }
 
-export type SelectV2PopoverPropsBase = {
+export type SelectV2MenuRootPropsBase = {
     open: boolean
     onOpenChange: (open: boolean) => void
     disabled?: boolean

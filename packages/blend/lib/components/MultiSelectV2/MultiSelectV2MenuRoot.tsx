@@ -1,11 +1,15 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
-import { menuContentAnimations } from './singleSelectV2.animations'
-import type { MenuPopoverProps } from './SingleSelectV2.types'
+import { dropdownContentAnimations } from '../MultiSelect/multiSelect.animations'
+import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
+import type { MenuRootProps } from './multiSelectV2.types'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
-    z-index: 101;
+    z-index: ${SELECT_V2_MENU_Z_INDEX};
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -15,10 +19,14 @@ const Content = styled(RadixMenu.Content)`
         pointer-events: none;
     }
 
-    ${menuContentAnimations}
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    ${dropdownContentAnimations}
 `
 
-const SingleSelectV2Popover = ({
+const MultiSelectV2MenuRoot = ({
     open,
     onOpenChange,
     disabled,
@@ -32,8 +40,10 @@ const SingleSelectV2Popover = ({
     contentStyle,
     onContentKeyDown,
     contentRef,
+    onInteractOutside,
+    onPointerDownOutside,
     children,
-}: MenuPopoverProps) => {
+}: MenuRootProps) => {
     return (
         <RadixMenu.Root modal={false} open={open} onOpenChange={onOpenChange}>
             <RadixMenu.Trigger asChild disabled={disabled}>
@@ -44,6 +54,8 @@ const SingleSelectV2Popover = ({
                     id={menuId}
                     ref={contentRef}
                     data-dropdown="dropdown"
+                    role="listbox"
+                    aria-multiselectable="true"
                     align={alignment}
                     side={side}
                     sideOffset={sideOffset}
@@ -52,6 +64,8 @@ const SingleSelectV2Popover = ({
                     collisionBoundary={collisionBoundary}
                     style={contentStyle}
                     onKeyDown={onContentKeyDown}
+                    onInteractOutside={onInteractOutside}
+                    onPointerDownOutside={onPointerDownOutside}
                 >
                     {children}
                 </Content>
@@ -60,6 +74,6 @@ const SingleSelectV2Popover = ({
     )
 }
 
-SingleSelectV2Popover.displayName = 'SingleSelectV2Popover'
+MultiSelectV2MenuRoot.displayName = 'MultiSelectV2MenuRoot'
 
-export default SingleSelectV2Popover
+export default MultiSelectV2MenuRoot

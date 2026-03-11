@@ -2,7 +2,7 @@ import type { CSSObject } from 'styled-components'
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from './SingleSelectV2.types'
+} from './singleSelectV2.types'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { Theme } from '../../context/theme.enum'

@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import userEvent from '@testing-library/user-event'
 import SingleSelectV2 from '../../../lib/components/SingleSelectV2/SingleSelectV2'
-import { SingleSelectV2Size } from '../../../lib/components/SingleSelectV2/SingleSelectV2.types'
+import { SingleSelectV2Size } from '../../../lib/components/SingleSelectV2/singleSelectV2.types'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 
 const createBasicItems = () => [

@@ -6,7 +6,7 @@ import {
     MultiSelectSelectionTagType,
     MultiSelectVariant,
 } from '../MultiSelect/types'
-import type { MultiSelectV2Props } from './MultiSelectV2.types'
+import type { MultiSelectV2Props } from './multiSelectV2.types'
 
 const MobileMultiSelectV2 = ({
     subLabel,

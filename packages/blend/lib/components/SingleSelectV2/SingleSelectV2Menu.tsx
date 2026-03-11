@@ -17,7 +17,7 @@ import {
     SingleSelectV2Variant,
     SingleSelectV2SkeletonProps,
     type SingleSelectV2GroupType,
-} from './SingleSelectV2.types'
+} from './singleSelectV2.types'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'

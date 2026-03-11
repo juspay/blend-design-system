@@ -2,8 +2,8 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import userEvent from '@testing-library/user-event'
-import MultiSelectV2 from '../../../lib/components/MultiSelectV2/MultiSelectV2'
-import { MultiSelectV2SelectionTagType } from '../../../lib/components/MultiSelectV2/MultiSelectV2.types'
+import MultiSelectV2 from '../../../lib/components/MultiSelectV2/multiSelectV2'
+import { MultiSelectV2SelectionTagType } from '../../../lib/components/MultiSelectV2/multiSelectV2.types'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 
 const createBasicItems = (): {

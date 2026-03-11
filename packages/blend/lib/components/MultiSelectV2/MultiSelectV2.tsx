@@ -23,8 +23,9 @@ import {
     MultiSelectV2SelectionTagType,
     MultiSelectV2Size,
     MultiSelectV2Variant,
+    type MultiSelectV2GroupType,
     type MultiSelectV2Props,
-} from './MultiSelectV2.types'
+} from './multiSelectV2.types'
 import MultiSelectV2Menu from './MultiSelectV2Menu'
 import MultiSelectV2Trigger from './MultiSelectV2Trigger'
 import MobileMultiSelectV2 from './MobileMultiSelectV2'
@@ -304,7 +305,10 @@ const MultiSelectV2 = ({
                         maxSelections={maxSelections}
                         onSelectAll={
                             enableSelectAll
-                                ? (selectAll, filteredItems) =>
+                                ? (
+                                      selectAll: boolean,
+                                      filteredItems: MultiSelectV2GroupType[]
+                                  ) =>
                                       handleSelectAll(
                                           selectAll,
                                           filteredItems,

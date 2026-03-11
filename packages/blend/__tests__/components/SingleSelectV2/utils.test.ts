@@ -7,8 +7,8 @@ import {
     isTooltipWrappingTrigger,
     VIRTUAL_ROW_ESTIMATES,
 } from '../../../lib/components/SingleSelectV2/utils'
-import type { FlattenedItem } from '../../../lib/components/SingleSelectV2/SingleSelectV2.types'
-import type { SingleSelectV2GroupType } from '../../../lib/components/SingleSelectV2/SingleSelectV2.types'
+import type { FlattenedItem } from '../../../lib/components/SingleSelectV2/singleSelectV2.types'
+import type { SingleSelectV2GroupType } from '../../../lib/components/SingleSelectV2/singleSelectV2.types'
 
 describe('SingleSelectV2 utils', () => {
     it('getVirtualRowEstimate returns label height for label type', () => {

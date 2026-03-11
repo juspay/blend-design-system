@@ -4,7 +4,7 @@ import type {
     SelectV2Alignment,
     SelectV2FlattenedItemBase,
     SelectV2BaseItemType,
-    SelectV2PopoverPropsBase,
+    SelectV2MenuRootPropsBase,
     SelectV2SkeletonProps,
     SelectV2Side,
     SelectV2Size,
@@ -92,7 +92,8 @@ export type MultiSelectV2MenuProps = {
     collisionBoundary?: DropdownMenuContentProps['collisionBoundary']
 }
 
-export type MenuPopoverProps = SelectV2PopoverPropsBase & {
+/** Props for the menu dropdown root (Radix Root + Trigger + Portal + Content). */
+export type MenuRootProps = SelectV2MenuRootPropsBase & {
     onInteractOutside?: (e: Event) => void
     onPointerDownOutside?: (e: Event) => void
 }

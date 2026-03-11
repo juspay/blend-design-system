@@ -130,7 +130,7 @@ V2 defines types used by subcomponents and shared logic; V1 keeps these implicit
 - **MenuListProps**, **MenuListSharedProps**: Props for the menu list.
 - **VirtualListProps**, **VirtualItemShape**: Virtual list rendering.
 - **MenuSearchProps**: Search input inside menu.
-- **MenuPopoverProps**: Popover wrapper (open, alignment, side, content style, etc.).
+- **MenuRootProps**: Menu dropdown root (Radix Root + Trigger + Portal + Content). Props: open, alignment, side, content style, etc. Component: `SingleSelectV2MenuRoot`.
 
 ---
 

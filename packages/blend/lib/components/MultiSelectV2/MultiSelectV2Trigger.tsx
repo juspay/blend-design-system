@@ -8,7 +8,7 @@ import {
     MultiSelectV2SelectionTagType,
     MultiSelectV2Size,
     MultiSelectV2Variant,
-} from './MultiSelectV2.types'
+} from './multiSelectV2.types'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import { getTriggerHorizontalPadding, getTriggerVerticalPadding } from './utils'
 

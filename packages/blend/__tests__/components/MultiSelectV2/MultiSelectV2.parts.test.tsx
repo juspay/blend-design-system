@@ -11,7 +11,7 @@ import {
     MultiSelectV2Size,
     MultiSelectV2Variant,
     MultiSelectV2SelectionTagType,
-} from '../../../lib/components/MultiSelectV2/types'
+} from '../../../lib/components/MultiSelectV2/multiSelectV2.types'
 import { getMultiSelectV2Tokens } from '../../../lib/components/MultiSelectV2/multiSelectV2.tokens'
 import { FOUNDATION_THEME } from '../../../lib/tokens'
 import { Theme } from '../../../lib/context/theme.enum'

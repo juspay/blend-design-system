@@ -7,7 +7,7 @@ import {
     MultiSelectV2Side,
     MultiSelectV2SelectionTagType,
     type MultiSelectV2GroupType,
-} from '../../../../packages/blend/lib/components/MultiSelectV2/MultiSelectV2.types'
+} from '../../../../packages/blend/lib/components/MultiSelectV2/multiSelectV2.types'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { User, Star, Shield, Briefcase } from 'lucide-react'
