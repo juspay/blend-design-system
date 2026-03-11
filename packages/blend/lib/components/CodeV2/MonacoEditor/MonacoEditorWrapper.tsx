@@ -18,7 +18,7 @@ import {
     getPlaceholderPosition,
     getUpdateEditorOptions,
     toCssValue,
-} from './monacoEditorUtils'
+} from '../utils'
 import './monaco-editor.css'
 
 // ---------------------------------------------------------------------------
@@ -226,9 +226,9 @@ export function MonacoEditorWrapper({
             ),
         [metrics, tokens, showLineNumbers, readOnly, disabled]
     )
-
     return (
         <Block
+            data-element="monaco-editor-wrapper"
             position="relative"
             width="100%"
             backgroundColor={tokens.body.backgroundColor}

@@ -1,6 +1,5 @@
 import type * as Monaco from 'monaco-editor'
-import type { CodeBlockTokenType } from '../../CodeBlock/codeBlock.token'
-
+import type { CodeV2Tokens } from '../tokens'
 const MONACO_COLOR_FALLBACK = '#24292F'
 
 const toMonacoColor = (
@@ -11,7 +10,7 @@ const toMonacoColor = (
 /** Token names mapped to syntax key and optional font style for Monaco theme rules */
 const SYNTAX_RULE_SPEC: Array<{
     token: string
-    syntaxKey: keyof CodeBlockTokenType['body']['syntax']
+    syntaxKey: keyof CodeV2Tokens['body']['syntax']
     fontStyle?: string
 }> = [
     { token: 'keyword', syntaxKey: 'keyword', fontStyle: 'bold' },
@@ -55,7 +54,7 @@ const SYNTAX_RULE_SPEC: Array<{
 ]
 
 export function createEditorTheme(
-    tokens: CodeBlockTokenType
+    tokens: CodeV2Tokens
 ): Monaco.editor.IStandaloneThemeData {
     const syntax = tokens.body.syntax
     const gutter = tokens.body.gutter
