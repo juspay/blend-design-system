@@ -1,22 +1,11 @@
-import { ButtonHTMLAttributes, ReactElement } from 'react'
-import { SwitchV2TokensType } from './switchV2.tokens'
+import type { InputHTMLAttributes, ReactElement } from 'react'
+import { RadioV2TokensType } from './radioV2.tokens'
 import { CSSObject } from 'styled-components'
 import { SelectorV2Size } from '../selectorV2.types'
 
-export type SwitchV2Variant = 'checked' | 'unchecked'
+export type RadioV2IndicatorState = 'active' | 'inactive'
 
-export type SwitchV2ButtonProps = {
-    id: string
-    checked?: boolean
-    disabled: boolean
-    size: SelectorV2Size
-    tokens: SwitchV2TokensType
-    onToggle: () => void
-    buttonProps?: Record<string, unknown>
-    ref?: React.Ref<HTMLButtonElement>
-}
-
-export type SwitchV2ContentProps = {
+export type RadioV2ContentProps = {
     uniqueId: string
     disabled: boolean
     error: boolean
@@ -28,15 +17,15 @@ export type SwitchV2ContentProps = {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
     }
-    tokens: SwitchV2TokensType
+    tokens: RadioV2TokensType
     labelMaxLength?: number
     subLabelMaxLength?: number
     subLabelId?: string
 }
 
-export type SwitchV2Props = {
+export type RadioV2Props = {
     checked?: boolean
-    onCheckedChange?: (checked: boolean) => void
+    onCheckedChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     required?: boolean
     error?: boolean
     label?: string
@@ -51,6 +40,6 @@ export type SwitchV2Props = {
         subLabel?: number
     }
 } & Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'className' | 'style' | 'slot'
+    InputHTMLAttributes<HTMLInputElement>,
+    'className' | 'style' | 'slot' | 'size' | 'maxLength' | 'children'
 >

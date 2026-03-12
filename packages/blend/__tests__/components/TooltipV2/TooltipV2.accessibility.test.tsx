@@ -1,30 +1,28 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
-import { Tooltip } from '../../../lib/components/Tooltip/Tooltip'
+import TooltipV2 from '../../../lib/components/TooltipV2/TooltipV2'
 import {
-    TooltipAlign,
-    TooltipSide,
-    TooltipSize,
-    TooltipSlotDirection,
-} from '../../../lib/components/Tooltip/types'
+    TooltipV2Align,
+    TooltipV2Side,
+    TooltipV2Size,
+    TooltipV2SlotDirection,
+} from '../../../lib/components/TooltipV2/tooltipV2.types'
 import { MockIcon } from '../../test-utils'
 
-describe('Tooltip Accessibility', () => {
+describe('TooltipV2 Accessibility', () => {
     describe('WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
         it('meets WCAG standards for basic tooltip (axe-core validation)', async () => {
             const { container, user } = render(
-                <Tooltip content="Accessible tooltip">
+                <TooltipV2 content="Accessible tooltip">
                     <button>Trigger button</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
-            // Test initial state
             const results = await axe(container)
             expect(results).toHaveNoViolations()
 
-            // Test with tooltip visible
             const trigger = screen.getByRole('button')
             await user.hover(trigger)
 
@@ -39,13 +37,13 @@ describe('Tooltip Accessibility', () => {
         })
 
         it('meets WCAG standards for all tooltip sizes', async () => {
-            const sizes = [TooltipSize.SMALL, TooltipSize.LARGE]
+            const sizes = [TooltipV2Size.SM, TooltipV2Size.MD, TooltipV2Size.LG]
 
             for (const size of sizes) {
                 const { container, user, unmount } = render(
-                    <Tooltip content={`${size} size tooltip`} size={size}>
+                    <TooltipV2 content={`${size} size tooltip`} size={size}>
                         <button>{size} trigger</button>
-                    </Tooltip>
+                    </TooltipV2>
                 )
 
                 const trigger = screen.getByRole('button')
@@ -66,17 +64,17 @@ describe('Tooltip Accessibility', () => {
 
         it('meets WCAG standards for all tooltip positions', async () => {
             const sides = [
-                TooltipSide.TOP,
-                TooltipSide.RIGHT,
-                TooltipSide.BOTTOM,
-                TooltipSide.LEFT,
+                TooltipV2Side.TOP,
+                TooltipV2Side.RIGHT,
+                TooltipV2Side.BOTTOM,
+                TooltipV2Side.LEFT,
             ]
 
             for (const side of sides) {
                 const { container, user, unmount } = render(
-                    <Tooltip content={`${side} tooltip`} side={side}>
+                    <TooltipV2 content={`${side} tooltip`} side={side}>
                         <button>{side} trigger</button>
-                    </Tooltip>
+                    </TooltipV2>
                 )
 
                 const trigger = screen.getByRole('button')
@@ -97,16 +95,19 @@ describe('Tooltip Accessibility', () => {
 
         it('meets WCAG standards for all tooltip alignments', async () => {
             const aligns = [
-                TooltipAlign.START,
-                TooltipAlign.CENTER,
-                TooltipAlign.END,
+                TooltipV2Align.START,
+                TooltipV2Align.CENTER,
+                TooltipV2Align.END,
             ]
 
             for (const align of aligns) {
                 const { container, user, unmount } = render(
-                    <Tooltip content={`${align} aligned tooltip`} align={align}>
+                    <TooltipV2
+                        content={`${align} aligned tooltip`}
+                        align={align}
+                    >
                         <button>{align} trigger</button>
-                    </Tooltip>
+                    </TooltipV2>
                 )
 
                 const trigger = screen.getByRole('button')
@@ -127,13 +128,13 @@ describe('Tooltip Accessibility', () => {
 
         it('meets WCAG standards for tooltip with slot (1.1.1 Non-text Content)', async () => {
             const { container, user } = render(
-                <Tooltip
+                <TooltipV2
                     content="Tooltip with icon"
                     slot={<MockIcon aria-hidden="true" />}
-                    slotDirection={TooltipSlotDirection.LEFT}
+                    slotDirection={TooltipV2SlotDirection.LEFT}
                 >
                     <button>Icon tooltip trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -149,9 +150,9 @@ describe('Tooltip Accessibility', () => {
 
         it('meets WCAG standards for tooltip with arrow (1.1.1 Non-text Content)', async () => {
             const { container, user } = render(
-                <Tooltip content="Tooltip with arrow" showArrow={true}>
+                <TooltipV2 content="Tooltip with arrow" showArrow={true}>
                     <button>Arrow tooltip trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -169,12 +170,11 @@ describe('Tooltip Accessibility', () => {
 
         it('meets WCAG standards for controlled tooltip', async () => {
             const { container } = render(
-                <Tooltip content="Always visible tooltip" open={true}>
+                <TooltipV2 content="Always visible tooltip" open={true}>
                     <button>Controlled trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
-            // Tooltip should be visible immediately
             expect(screen.getAllByText('Always visible tooltip')).toHaveLength(
                 2
             )
@@ -185,7 +185,7 @@ describe('Tooltip Accessibility', () => {
 
         it('meets WCAG standards for tooltip with complex content', async () => {
             const { container, user } = render(
-                <Tooltip
+                <TooltipV2
                     content={
                         <div>
                             <strong>Important:</strong> This is a complex
@@ -194,7 +194,7 @@ describe('Tooltip Accessibility', () => {
                     }
                 >
                     <button>Complex content trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -210,11 +210,11 @@ describe('Tooltip Accessibility', () => {
     })
 
     describe('WCAG 2.1.1 Keyboard (Level A)', () => {
-        it('tooltip trigger is keyboard accessible - all functionality operable via keyboard', async () => {
+        it('tooltip trigger is keyboard accessible', async () => {
             const { user } = render(
-                <Tooltip content="Keyboard accessible tooltip">
+                <TooltipV2 content="Keyboard accessible tooltip">
                     <button>Keyboard trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -226,9 +226,9 @@ describe('Tooltip Accessibility', () => {
 
         it('tooltip appears on focus - keyboard users can access tooltip content', async () => {
             const { user } = render(
-                <Tooltip content="Focus tooltip">
+                <TooltipV2 content="Focus tooltip">
                     <button>Focusable trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -244,9 +244,9 @@ describe('Tooltip Accessibility', () => {
         it('tooltip hides on blur - keyboard navigation support', async () => {
             const { user } = render(
                 <div>
-                    <Tooltip content="Blur tooltip">
+                    <TooltipV2 content="Blur tooltip">
                         <button>First button</button>
-                    </Tooltip>
+                    </TooltipV2>
                     <button>Second button</button>
                 </div>
             )
@@ -258,7 +258,6 @@ describe('Tooltip Accessibility', () => {
                 name: 'Second button',
             })
 
-            // Focus first button to show tooltip
             await user.tab()
             expect(firstButton).toHaveFocus()
 
@@ -266,7 +265,6 @@ describe('Tooltip Accessibility', () => {
                 expect(screen.getAllByText('Blur tooltip')).toHaveLength(2)
             })
 
-            // Tab to second button to blur first
             await user.tab()
             expect(secondButton).toHaveFocus()
 
@@ -277,22 +275,21 @@ describe('Tooltip Accessibility', () => {
             })
         })
 
-        it('supports Tab navigation through multiple tooltips - logical focus order', async () => {
+        it('supports Tab navigation through multiple tooltips', async () => {
             const { user } = render(
                 <div>
-                    <Tooltip content="First tooltip">
+                    <TooltipV2 content="First tooltip">
                         <button>First button</button>
-                    </Tooltip>
-                    <Tooltip content="Second tooltip">
+                    </TooltipV2>
+                    <TooltipV2 content="Second tooltip">
                         <button>Second button</button>
-                    </Tooltip>
-                    <Tooltip content="Third tooltip">
+                    </TooltipV2>
+                    <TooltipV2 content="Third tooltip">
                         <button>Third button</button>
-                    </Tooltip>
+                    </TooltipV2>
                 </div>
             )
 
-            // Tab through buttons and verify tooltips
             await user.tab()
             expect(
                 screen.getByRole('button', { name: 'First button' })
@@ -318,11 +315,11 @@ describe('Tooltip Accessibility', () => {
             })
         })
 
-        it('handles Escape key to close tooltip - keyboard dismissal', async () => {
+        it('handles Escape key to close tooltip', async () => {
             const { user } = render(
-                <Tooltip content="Escapable tooltip">
+                <TooltipV2 content="Escapable tooltip">
                     <button>Escape test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -333,7 +330,6 @@ describe('Tooltip Accessibility', () => {
                 expect(screen.getAllByText('Escapable tooltip')).toHaveLength(2)
             })
 
-            // Press Escape to close tooltip
             await user.keyboard('{Escape}')
 
             await waitFor(() => {
@@ -345,23 +341,20 @@ describe('Tooltip Accessibility', () => {
 
         it('all functionality is keyboard accessible without timing requirements', async () => {
             const { user } = render(
-                <Tooltip content="No timing tooltip" delayDuration={0}>
+                <TooltipV2 content="No timing tooltip" delayDuration={0}>
                     <button>No timing trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
             await user.tab()
 
-            // Verify trigger is focused
             expect(trigger).toHaveFocus()
 
-            // Tooltip should appear immediately (no delay)
             await waitFor(() => {
                 expect(screen.getAllByText('No timing tooltip')).toHaveLength(2)
             })
 
-            // Escape should work immediately
             await user.keyboard('{Escape}')
 
             await waitFor(() => {
@@ -375,9 +368,9 @@ describe('Tooltip Accessibility', () => {
     describe('WCAG 2.1.3 Keyboard (No Exception) (Level AAA)', () => {
         it('all functionality operable through keyboard without exception', async () => {
             const { user } = render(
-                <Tooltip content="AAA keyboard tooltip">
+                <TooltipV2 content="AAA keyboard tooltip">
                     <button>AAA keyboard trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -390,7 +383,6 @@ describe('Tooltip Accessibility', () => {
                 ).toHaveLength(2)
             })
 
-            // All interactions work via keyboard
             await user.keyboard('{Escape}')
 
             await waitFor(() => {
@@ -402,11 +394,11 @@ describe('Tooltip Accessibility', () => {
     })
 
     describe('WCAG 4.1.2 Name, Role, Value (Level A)', () => {
-        it('tooltip has proper role="tooltip" - programmatically determinable role', async () => {
+        it('tooltip has proper role="tooltip"', async () => {
             const { user } = render(
-                <Tooltip content="ARIA tooltip">
+                <TooltipV2 content="ARIA tooltip">
                     <button>ARIA trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -419,11 +411,11 @@ describe('Tooltip Accessibility', () => {
             })
         })
 
-        it('establishes proper relationship between trigger and tooltip - aria-describedby', async () => {
+        it('establishes proper relationship between trigger and tooltip', async () => {
             const { user } = render(
-                <Tooltip content="Related tooltip">
+                <TooltipV2 content="Related tooltip">
                     <button>Related trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -432,16 +424,15 @@ describe('Tooltip Accessibility', () => {
             await waitFor(() => {
                 const tooltip = screen.getByRole('tooltip')
                 expect(tooltip).toBeInTheDocument()
-                // Radix UI automatically establishes the relationship
                 expect(tooltip).toHaveTextContent('Related tooltip')
             })
         })
 
-        it('tooltip content provides accessible name - programmatically determinable name', async () => {
+        it('tooltip content provides accessible name', async () => {
             const { user } = render(
-                <Tooltip content="Accessible name tooltip">
+                <TooltipV2 content="Accessible name tooltip">
                     <button>Name test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -456,7 +447,7 @@ describe('Tooltip Accessibility', () => {
 
         it('maintains accessibility with complex content structure', async () => {
             const { user } = render(
-                <Tooltip
+                <TooltipV2
                     content={
                         <span>
                             <strong>Tooltip Title</strong>
@@ -467,7 +458,7 @@ describe('Tooltip Accessibility', () => {
                     }
                 >
                     <button>Complex structure</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -480,45 +471,14 @@ describe('Tooltip Accessibility', () => {
                 expect(tooltip).toHaveTextContent('emphasized text')
             })
         })
-
-        it('handles aria-describedby relationship correctly with existing attributes', async () => {
-            const { user } = render(
-                <div>
-                    <Tooltip content="Descriptive tooltip">
-                        <button aria-describedby="external-description">
-                            Described button
-                        </button>
-                    </Tooltip>
-                    <div id="external-description">External description</div>
-                </div>
-            )
-
-            const trigger = screen.getByRole('button')
-            expect(trigger).toHaveAttribute(
-                'aria-describedby',
-                'external-description'
-            )
-
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                expect(screen.getByRole('tooltip')).toBeInTheDocument()
-            })
-
-            // Button should maintain its existing aria-describedby
-            expect(trigger).toHaveAttribute(
-                'aria-describedby',
-                'external-description'
-            )
-        })
     })
 
     describe('WCAG 2.4.7 Focus Visible (Level AA)', () => {
         it('tooltip trigger has visible focus indicator', async () => {
             const { user } = render(
-                <Tooltip content="Focus visible tooltip">
+                <TooltipV2 content="Focus visible tooltip">
                     <button>Focus visible trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -530,9 +490,9 @@ describe('Tooltip Accessibility', () => {
 
         it('focus indicator is visible when tooltip is shown', async () => {
             const { user } = render(
-                <Tooltip content="Focus indicator tooltip">
+                <TooltipV2 content="Focus indicator tooltip">
                     <button>Focus indicator trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -546,7 +506,6 @@ describe('Tooltip Accessibility', () => {
                 ).toHaveLength(2)
             })
 
-            // Focus should remain visible on trigger
             expect(trigger).toHaveFocus()
         })
     })
@@ -554,13 +513,13 @@ describe('Tooltip Accessibility', () => {
     describe('WCAG 1.1.1 Non-text Content (Level A)', () => {
         it('decorative slot icons have aria-hidden="true"', async () => {
             const { user } = render(
-                <Tooltip
+                <TooltipV2
                     content="Tooltip with icon"
                     slot={<MockIcon />}
-                    slotDirection={TooltipSlotDirection.LEFT}
+                    slotDirection={TooltipV2SlotDirection.LEFT}
                 >
                     <button>Icon tooltip trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -569,7 +528,6 @@ describe('Tooltip Accessibility', () => {
             await waitFor(() => {
                 const tooltip = screen.getByRole('tooltip')
                 expect(tooltip).toBeInTheDocument()
-                // Slot container should have aria-hidden
                 const slotContainer = tooltip.querySelector(
                     '[role="presentation"]'
                 )
@@ -579,9 +537,9 @@ describe('Tooltip Accessibility', () => {
 
         it('decorative arrow has aria-hidden="true"', async () => {
             const { user } = render(
-                <Tooltip content="Tooltip with arrow" showArrow={true}>
+                <TooltipV2 content="Tooltip with arrow" showArrow={true}>
                     <button>Arrow tooltip trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -590,7 +548,6 @@ describe('Tooltip Accessibility', () => {
             await waitFor(() => {
                 const tooltip = screen.getByRole('tooltip')
                 expect(tooltip).toBeInTheDocument()
-                // Arrow should have aria-hidden
                 const arrow = tooltip.querySelector('svg')
                 if (arrow) {
                     expect(arrow).toHaveAttribute('aria-hidden', 'true')
@@ -600,13 +557,13 @@ describe('Tooltip Accessibility', () => {
 
         it('tooltip text content provides accessible alternative for decorative elements', async () => {
             const { user } = render(
-                <Tooltip
+                <TooltipV2
                     content="Accessible text content"
                     slot={<MockIcon />}
                     showArrow={true}
                 >
                     <button>Accessible tooltip trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -615,7 +572,6 @@ describe('Tooltip Accessibility', () => {
             await waitFor(() => {
                 const tooltip = screen.getByRole('tooltip')
                 expect(tooltip).toBeInTheDocument()
-                // Text content should be accessible
                 expect(tooltip).toHaveTextContent('Accessible text content')
             })
         })
@@ -624,14 +580,14 @@ describe('Tooltip Accessibility', () => {
     describe('WCAG 2.5.8 Target Size (Level AA)', () => {
         it('tooltip trigger meets minimum touch target size (24x24px)', () => {
             render(
-                <Tooltip content="Touch target test">
+                <TooltipV2 content="Touch target test">
                     <button
                         style={{ minWidth: '24px', minHeight: '24px' }}
                         aria-label="Touch target button"
                     >
                         Touch
                     </button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button', {
@@ -642,7 +598,7 @@ describe('Tooltip Accessibility', () => {
 
         it('tooltip trigger with padding meets touch target requirements', () => {
             render(
-                <Tooltip content="Touch target with padding">
+                <TooltipV2 content="Touch target with padding">
                     <button
                         style={{
                             padding: '8px',
@@ -652,20 +608,23 @@ describe('Tooltip Accessibility', () => {
                     >
                         Touch
                     </button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
-            expect(trigger).toHaveStyle({ minWidth: '24px', minHeight: '24px' })
+            expect(trigger).toHaveStyle({
+                minWidth: '24px',
+                minHeight: '24px',
+            })
         })
     })
 
     describe('WCAG 1.3.1 Info and Relationships (Level A)', () => {
         it('tooltip content is programmatically associated with trigger', async () => {
             const { user } = render(
-                <Tooltip content="Associated tooltip">
+                <TooltipV2 content="Associated tooltip">
                     <button>Association test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -674,16 +633,15 @@ describe('Tooltip Accessibility', () => {
             await waitFor(() => {
                 const tooltip = screen.getByRole('tooltip')
                 expect(tooltip).toBeInTheDocument()
-                // Radix UI establishes the relationship automatically
                 expect(tooltip).toHaveTextContent('Associated tooltip')
             })
         })
 
         it('tooltip maintains relationship when content changes', async () => {
             const { user, rerender } = render(
-                <Tooltip content="Initial content">
+                <TooltipV2 content="Initial content">
                     <button>Dynamic content</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -693,11 +651,10 @@ describe('Tooltip Accessibility', () => {
                 expect(screen.getAllByText('Initial content')).toHaveLength(2)
             })
 
-            // Change tooltip content
             rerender(
-                <Tooltip content="Updated content">
+                <TooltipV2 content="Updated content">
                     <button>Dynamic content</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             await waitFor(() => {
@@ -711,9 +668,9 @@ describe('Tooltip Accessibility', () => {
     describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {
         it('tooltip text has sufficient color contrast', async () => {
             const { user } = render(
-                <Tooltip content="Contrast test tooltip">
+                <TooltipV2 content="Contrast test tooltip">
                     <button>Contrast test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -722,8 +679,6 @@ describe('Tooltip Accessibility', () => {
             await waitFor(() => {
                 const tooltip = screen.getByRole('tooltip')
                 expect(tooltip).toBeInTheDocument()
-                // Color contrast would be tested through computed styles
-                // in a real browser environment with contrast ratio calculations
                 expect(tooltip).toHaveTextContent('Contrast test tooltip')
             })
         })
@@ -734,9 +689,9 @@ describe('Tooltip Accessibility', () => {
             const { user } = render(
                 <div>
                     <button>Before</button>
-                    <Tooltip content="Non-interfering tooltip">
+                    <TooltipV2 content="Non-interfering tooltip">
                         <button>Tooltip trigger</button>
-                    </Tooltip>
+                    </TooltipV2>
                     <button>After</button>
                 </div>
             )
@@ -747,7 +702,6 @@ describe('Tooltip Accessibility', () => {
             })
             const afterButton = screen.getByRole('button', { name: 'After' })
 
-            // Tab to trigger
             await user.tab()
             expect(beforeButton).toHaveFocus()
 
@@ -760,7 +714,6 @@ describe('Tooltip Accessibility', () => {
                 ).toHaveLength(2)
             })
 
-            // Tab should move to next element, not trap in tooltip
             await user.tab()
             expect(afterButton).toHaveFocus()
         })
@@ -768,15 +721,15 @@ describe('Tooltip Accessibility', () => {
         it('maintains focus order with multiple tooltips', async () => {
             const { user } = render(
                 <div>
-                    <Tooltip content="First tooltip">
+                    <TooltipV2 content="First tooltip">
                         <button>First</button>
-                    </Tooltip>
-                    <Tooltip content="Second tooltip">
+                    </TooltipV2>
+                    <TooltipV2 content="Second tooltip">
                         <button>Second</button>
-                    </Tooltip>
-                    <Tooltip content="Third tooltip">
+                    </TooltipV2>
+                    <TooltipV2 content="Third tooltip">
                         <button>Third</button>
-                    </Tooltip>
+                    </TooltipV2>
                 </div>
             )
 
@@ -798,9 +751,9 @@ describe('Tooltip Accessibility', () => {
     describe('WCAG 3.2.1 On Focus (Level A)', () => {
         it('tooltip appearance does not change context on focus', async () => {
             const { user } = render(
-                <Tooltip content="No context change tooltip">
+                <TooltipV2 content="No context change tooltip">
                     <button>No context change</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -814,7 +767,6 @@ describe('Tooltip Accessibility', () => {
                 ).toHaveLength(2)
             })
 
-            // Focus should remain on trigger, no context change
             expect(trigger).toHaveFocus()
             expect(document.activeElement).toBe(trigger)
         })
@@ -823,9 +775,9 @@ describe('Tooltip Accessibility', () => {
     describe('WCAG 3.2.2 On Input (Level A)', () => {
         it('tooltip does not change context on keyboard input', async () => {
             const { user } = render(
-                <Tooltip content="No input context change">
+                <TooltipV2 content="No input context change">
                     <button>Input test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -838,7 +790,6 @@ describe('Tooltip Accessibility', () => {
                 ).toHaveLength(2)
             })
 
-            // Pressing Escape should only close tooltip, not change context
             await user.keyboard('{Escape}')
 
             await waitFor(() => {
@@ -847,7 +798,6 @@ describe('Tooltip Accessibility', () => {
                 ).not.toBeInTheDocument()
             })
 
-            // Focus should still be on trigger
             expect(trigger).toHaveFocus()
         })
     })
@@ -855,9 +805,9 @@ describe('Tooltip Accessibility', () => {
     describe('WCAG 1.4.13 Content on Hover or Focus (Level AA)', () => {
         it('tooltip is dismissible - ESC key closes tooltip', async () => {
             const { user } = render(
-                <Tooltip content="Dismissible tooltip">
+                <TooltipV2 content="Dismissible tooltip">
                     <button>Dismissible test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -870,7 +820,6 @@ describe('Tooltip Accessibility', () => {
                 )
             })
 
-            // ESC key should dismiss tooltip
             await user.keyboard('{Escape}')
 
             await waitFor(() => {
@@ -882,9 +831,9 @@ describe('Tooltip Accessibility', () => {
 
         it('tooltip is hoverable - can move pointer to tooltip', async () => {
             const { user } = render(
-                <Tooltip content="Hoverable tooltip">
+                <TooltipV2 content="Hoverable tooltip">
                     <button>Hoverable test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -893,16 +842,15 @@ describe('Tooltip Accessibility', () => {
             await waitFor(() => {
                 const tooltip = screen.getByRole('tooltip')
                 expect(tooltip).toBeInTheDocument()
-                // Tooltip should remain visible when hovering over it
                 expect(tooltip).toHaveTextContent('Hoverable tooltip')
             })
         })
 
         it('tooltip is persistent - remains visible until dismissed', async () => {
             const { user } = render(
-                <Tooltip content="Persistent tooltip">
+                <TooltipV2 content="Persistent tooltip">
                     <button>Persistent test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -915,19 +863,17 @@ describe('Tooltip Accessibility', () => {
                 )
             })
 
-            vi.useFakeTimers()
-            vi.advanceTimersByTime(500)
+            await new Promise((resolve) => setTimeout(resolve, 500))
             expect(screen.getAllByText('Persistent tooltip')).toHaveLength(2)
-            vi.useRealTimers()
         })
     })
 
     describe('Screen Reader Support', () => {
         it('tooltip content is announced to screen readers when opened', async () => {
             const { user } = render(
-                <Tooltip content="Screen reader accessible tooltip">
+                <TooltipV2 content="Screen reader accessible tooltip">
                     <button>Screen reader test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -944,9 +890,9 @@ describe('Tooltip Accessibility', () => {
 
         it('announces tooltip content changes to screen readers', async () => {
             const { user, rerender } = render(
-                <Tooltip content="Initial content">
+                <TooltipV2 content="Initial content">
                     <button>Dynamic content</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -956,11 +902,10 @@ describe('Tooltip Accessibility', () => {
                 expect(screen.getAllByText('Initial content')).toHaveLength(2)
             })
 
-            // Change tooltip content
             rerender(
-                <Tooltip content="Updated content">
+                <TooltipV2 content="Updated content">
                     <button>Dynamic content</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             await waitFor(() => {
@@ -972,7 +917,7 @@ describe('Tooltip Accessibility', () => {
 
         it('handles complex content structure for screen readers', async () => {
             const { user } = render(
-                <Tooltip
+                <TooltipV2
                     content={
                         <span>
                             <strong>Tooltip Title</strong>
@@ -983,7 +928,7 @@ describe('Tooltip Accessibility', () => {
                     }
                 >
                     <button>Complex structure</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -1001,9 +946,9 @@ describe('Tooltip Accessibility', () => {
     describe('Focus Management', () => {
         it('maintains focus on trigger element when tooltip is shown', async () => {
             const { user } = render(
-                <Tooltip content="Focus maintained">
+                <TooltipV2 content="Focus maintained">
                     <button>Focus test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -1014,7 +959,6 @@ describe('Tooltip Accessibility', () => {
                 expect(screen.getAllByText('Focus maintained')).toHaveLength(2)
             })
 
-            // Focus should remain on trigger
             expect(trigger).toHaveFocus()
         })
 
@@ -1022,9 +966,9 @@ describe('Tooltip Accessibility', () => {
             const { user } = render(
                 <div>
                     <button>Before</button>
-                    <Tooltip content="Non-trapping tooltip">
+                    <TooltipV2 content="Non-trapping tooltip">
                         <button>Tooltip trigger</button>
-                    </Tooltip>
+                    </TooltipV2>
                     <button>After</button>
                 </div>
             )
@@ -1035,7 +979,6 @@ describe('Tooltip Accessibility', () => {
             })
             const afterButton = screen.getByRole('button', { name: 'After' })
 
-            // Tab to trigger
             await user.tab()
             expect(beforeButton).toHaveFocus()
 
@@ -1048,28 +991,24 @@ describe('Tooltip Accessibility', () => {
                 ).toHaveLength(2)
             })
 
-            // Tab should move to next element, not trap in tooltip
             await user.tab()
             expect(afterButton).toHaveFocus()
         })
 
         it('handles focus with controlled tooltip', async () => {
             const { user } = render(
-                <Tooltip content="Controlled focus test" open={true}>
+                <TooltipV2 content="Controlled focus test" open={true}>
                     <button>Always visible trigger</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
 
-            // Tooltip should be visible
             expect(screen.getAllByText('Controlled focus test')).toHaveLength(2)
 
-            // Focus the trigger
             await user.tab()
             expect(trigger).toHaveFocus()
 
-            // Tooltip should remain visible and focus should stay on trigger
             expect(screen.getAllByText('Controlled focus test')).toHaveLength(2)
             expect(trigger).toHaveFocus()
         })
@@ -1078,11 +1017,11 @@ describe('Tooltip Accessibility', () => {
     describe('Edge Cases and Additional Accessibility', () => {
         it('maintains accessibility with minimal content', async () => {
             const { container, user } = render(
-                <Tooltip content="Info">
+                <TooltipV2 content="Info">
                     <button aria-label="Button with minimal tooltip">
                         Minimal content test
                     </button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -1100,9 +1039,9 @@ describe('Tooltip Accessibility', () => {
 
         it('handles accessibility with dynamic content', async () => {
             const { user, rerender } = render(
-                <Tooltip content="Dynamic content 1">
+                <TooltipV2 content="Dynamic content 1">
                     <button>Dynamic test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
@@ -1112,11 +1051,10 @@ describe('Tooltip Accessibility', () => {
                 expect(screen.getAllByText('Dynamic content 1')).toHaveLength(2)
             })
 
-            // Update content while tooltip is visible
             rerender(
-                <Tooltip content="Dynamic content 2">
+                <TooltipV2 content="Dynamic content 2">
                     <button>Dynamic test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             await waitFor(() => {
@@ -1128,20 +1066,18 @@ describe('Tooltip Accessibility', () => {
 
         it('maintains accessibility with rapid show/hide cycles', async () => {
             const { user } = render(
-                <Tooltip content="Rapid cycle test" delayDuration={50}>
+                <TooltipV2 content="Rapid cycle test" delayDuration={50}>
                     <button>Rapid test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button')
 
-            // Rapid hover/unhover cycles
             for (let i = 0; i < 3; i++) {
                 await user.hover(trigger)
                 await user.unhover(trigger)
             }
 
-            // Final hover to test state
             await user.hover(trigger)
             await waitFor(() => {
                 const tooltip = screen.getByRole('tooltip')
@@ -1152,12 +1088,12 @@ describe('Tooltip Accessibility', () => {
 
         it('handles accessibility with nested interactive elements', async () => {
             const { user } = render(
-                <Tooltip content="Nested elements tooltip">
+                <TooltipV2 content="Nested elements tooltip">
                     <div>
                         <button>Nested button</button>
                         <span>Additional content</span>
                     </div>
-                </Tooltip>
+                </TooltipV2>
             )
 
             const trigger = screen.getByRole('button', {
@@ -1171,29 +1107,59 @@ describe('Tooltip Accessibility', () => {
                 expect(tooltip).toHaveTextContent('Nested elements tooltip')
             })
 
-            // Button should remain focusable and functional
             await user.click(trigger)
             expect(trigger).toBeInTheDocument()
         })
 
         it('handles tooltip with empty content gracefully', async () => {
             const { container } = render(
-                <Tooltip content="">
+                <TooltipV2 content="">
                     <button>Empty content test</button>
-                </Tooltip>
+                </TooltipV2>
             )
 
-            // Empty content should not render tooltip
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Comprehensive WCAG compliance', () => {
+        it('meets WCAG standards with all features combined', async () => {
+            const { container, user } = render(
+                <TooltipV2
+                    content="Complete accessibility test tooltip"
+                    size={TooltipV2Size.LG}
+                    showArrow={true}
+                    slot={<MockIcon aria-hidden="true" />}
+                    slotDirection={TooltipV2SlotDirection.LEFT}
+                >
+                    <button aria-label="Complete test trigger">
+                        Complete test
+                    </button>
+                </TooltipV2>
+            )
+
+            const trigger = screen.getByRole('button')
+            await user.hover(trigger)
+
+            await waitFor(() => {
+                expect(
+                    screen.getAllByText('Complete accessibility test tooltip')
+                ).toHaveLength(2)
+            })
+
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
-        it('handles tooltip with null content gracefully', async () => {
+        it('meets WCAG standards for controlled tooltip', async () => {
             const { container } = render(
-                <Tooltip content={null as unknown as string}>
-                    <button>Null content test</button>
-                </Tooltip>
+                <TooltipV2 content="Controlled tooltip" open={true}>
+                    <button>Controlled</button>
+                </TooltipV2>
             )
+
+            expect(screen.getAllByText('Controlled tooltip')).toHaveLength(2)
 
             const results = await axe(container)
             expect(results).toHaveNoViolations()

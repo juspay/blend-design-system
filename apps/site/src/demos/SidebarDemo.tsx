@@ -58,6 +58,7 @@ import StatCardDemo from './StatCardDemo'
 import SnackbarDemo from './SnackbarDemo'
 import AvatarGroupDemo from './AvatarGroupDemo'
 import TooltipDemo from './TooltipDemo'
+import TooltipV2Demo from './TooltipV2Demo'
 import ModalDemo from './ModalDemo'
 import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
@@ -128,6 +129,7 @@ import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import StatCardV2Demo from './StatCardV2Demo'
+import RadioV2Demo from './RadioV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -143,6 +145,7 @@ const SidebarDemo = () => {
         | 'checkbox'
         | 'checkboxV2'
         | 'radio'
+        | 'radioV2'
         | 'switch'
         | 'textInput'
         | 'alerts'
@@ -211,6 +214,7 @@ const SidebarDemo = () => {
         | 'textInputGroup'
         | 'timeline'
         | 'statCardV2'
+        | 'tooltipV2'
     >('statCardV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -465,6 +469,8 @@ const SidebarDemo = () => {
                 return <ModalDemo />
             case 'radio':
                 return <RadioDemo />
+            case 'radioV2':
+                return <RadioV2Demo />
             case 'checkbox':
                 return <CheckboxDemo />
             case 'switch':
@@ -543,6 +549,8 @@ const SidebarDemo = () => {
                 return <KeyValuePairV2Demo />
             case 'statCardV2':
                 return <StatCardV2Demo />
+            case 'tooltipV2':
+                return <TooltipV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -1146,6 +1154,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('tooltips'),
                 },
                 {
+                    label: 'Tooltip V2',
+                    leftSlot: (
+                        <Info style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tooltipV2',
+                    onClick: () => setActiveComponent('tooltipV2'),
+                },
+                {
                     label: 'Modal',
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
                     isSelected: activeComponent === 'modal',
@@ -1327,6 +1343,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'radio',
                     onClick: () => setActiveComponent('radio'),
+                },
+                {
+                    label: 'Radio V2',
+                    leftSlot: (
+                        <Radio style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'radioV2',
+                    onClick: () => setActiveComponent('radioV2'),
                 },
                 {
                     label: 'Checkbox',

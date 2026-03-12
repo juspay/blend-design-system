@@ -1,37 +1,47 @@
 import { Theme } from '../../../context/theme.enum'
 
 import { CSSObject } from 'styled-components'
-import { SwitchV2Variant } from './switchV2.types'
+import { RadioV2IndicatorState } from './radioV2.types'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import { getSwitchV2LightTokens } from './switchV2.light.tokens'
-import { getSwitchV2DarkTokens } from './switchV2.dark.tokens'
+import { getRadioV2LightTokens } from './radioV2.light.tokens'
+import { getRadioV2DarkTokens } from './radioV2.dark.tokens'
 import { SelectorV2Size, SelectorV2InteractionState } from '../selectorV2.types'
 
-export type SwitchV2TokensType = {
+export type RadioV2TokensType = {
     gap: CSSObject['gap']
-    switch: {
+    group: {
+        gap: CSSObject['gap']
+    }
+    radio: {
+        indicator: {
+            [key in RadioV2IndicatorState]: {
+                backgroundColor: {
+                    [key in SelectorV2InteractionState]: CSSObject['backgroundColor']
+                }
+
+                borderColor: {
+                    [key in SelectorV2InteractionState]: CSSObject['borderColor']
+                }
+            }
+        }
+        activeIndicator: {
+            active: {
+                backgroundColor: {
+                    [key in Exclude<
+                        SelectorV2InteractionState,
+                        'hover' | 'error'
+                    >]: CSSObject['backgroundColor']
+                }
+            }
+        }
         height: {
             [key in SelectorV2Size]: CSSObject['height']
         }
-        width: {
-            [key in SelectorV2Size]: CSSObject['width']
-        }
-        backgroundColor: {
-            [key in SwitchV2Variant]: {
-                [key in SelectorV2InteractionState]: CSSObject['backgroundColor']
+        borderWidth: {
+            [key in RadioV2IndicatorState]: {
+                [key in SelectorV2InteractionState]: number
             }
-        }
-        thumb: {
-            backgroundColor: CSSObject['backgroundColor']
-            border: CSSObject['border']
-            width: {
-                [key in SelectorV2Size]: CSSObject['width']
-            }
-            height: {
-                [key in SelectorV2Size]: CSSObject['height']
-            }
-            outline: CSSObject['outline']
         }
     }
     content: {
@@ -64,17 +74,17 @@ export type SwitchV2TokensType = {
     }
 }
 
-export type ResponsiveSwitchV2Tokens = {
-    [key in keyof BreakpointType]: SwitchV2TokensType
+export type ResponsiveRadioV2Tokens = {
+    [key in keyof BreakpointType]: RadioV2TokensType
 }
 
-export const getSwitchV2Tokens = (
+export const getRadioV2Tokens = (
     foundationToken: FoundationTokenType,
     theme: Theme | string = Theme.LIGHT
-): ResponsiveSwitchV2Tokens => {
+): ResponsiveRadioV2Tokens => {
     if (theme === Theme.DARK || theme === 'dark') {
-        return getSwitchV2DarkTokens(foundationToken)
+        return getRadioV2DarkTokens(foundationToken)
     }
 
-    return getSwitchV2LightTokens(foundationToken)
+    return getRadioV2LightTokens(foundationToken)
 }
