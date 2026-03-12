@@ -101,10 +101,13 @@ const SingleSelectV2VirtualList = ({
             ref={virtualScrollRef}
             data-element="virtual-list"
             style={{
-                paddingBlock: 0,
-                paddingInline:
-                    singleSelectTokens.menu.padding[size][variant]
-                        .paddingInline,
+                paddingTop: 0,
+                paddingRight:
+                    singleSelectTokens.menu.padding[size][variant].right,
+                paddingBottom:
+                    singleSelectTokens.menu.padding[size][variant].bottom,
+                paddingLeft:
+                    singleSelectTokens.menu.padding[size][variant].left,
                 height: virtualViewportHeight,
                 overflow: 'auto',
             }}

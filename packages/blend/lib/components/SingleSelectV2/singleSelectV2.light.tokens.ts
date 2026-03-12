@@ -197,32 +197,44 @@ export const getSingleSelectV2LightTokens = (
             padding: {
                 [SingleSelectV2Size.SM]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        paddingInline: foundationToken.unit[6],
-                        paddingBlock: foundationToken.unit[6],
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        paddingInline: foundationToken.unit[6],
-                        paddingBlock: foundationToken.unit[6],
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
                     },
                 },
                 [SingleSelectV2Size.MD]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        paddingInline: foundationToken.unit[6],
-                        paddingBlock: foundationToken.unit[6],
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        paddingInline: foundationToken.unit[6],
-                        paddingBlock: foundationToken.unit[6],
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
                     },
                 },
                 [SingleSelectV2Size.LG]: {
                     [SingleSelectV2Variant.CONTAINER]: {
-                        paddingInline: foundationToken.unit[6],
-                        paddingBlock: foundationToken.unit[6],
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
                     },
                     [SingleSelectV2Variant.NO_CONTAINER]: {
-                        paddingInline: foundationToken.unit[6],
-                        paddingBlock: foundationToken.unit[6],
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
                     },
                 },
             },

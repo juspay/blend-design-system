@@ -96,8 +96,10 @@ export type SingleSelectV2TokensType = {
         }
         padding: SizeToken<
             VariantToken<{
-                paddingInline: CSSObject['paddingInline']
-                paddingBlock: CSSObject['paddingBlock']
+                top: CSSObject['paddingTop']
+                right: CSSObject['paddingRight']
+                bottom: CSSObject['paddingBottom']
+                left: CSSObject['paddingLeft']
             }>
         >
         groupLabel: {

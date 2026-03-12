@@ -29,9 +29,10 @@ const SingleSelectV2List = ({
         <Block
             data-element="menu-content"
             style={{
-                paddingInline: menuPadding.paddingInline,
-                paddingBlock: menuPadding.paddingBlock,
-                paddingTop: enableSearch ? 0 : menuPadding.paddingBlock,
+                paddingTop: enableSearch ? 0 : menuPadding.top,
+                paddingRight: menuPadding.right,
+                paddingBottom: menuPadding.bottom,
+                paddingLeft: menuPadding.left,
             }}
         >
             {filteredItems.map((group, groupId) => (

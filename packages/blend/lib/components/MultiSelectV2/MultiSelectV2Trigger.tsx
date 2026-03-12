@@ -98,13 +98,12 @@ const MultiSelectV2Trigger = ({
         trigger?.backgroundColor?.[variant]?.[focusState] ?? 'transparent'
     const resolvedBorderRadius =
         borderRadius ?? trigger?.borderRadius?.[size]?.[variant]
-    const selectionTagToken = multiSelectTokens.trigger?.selectionTag as
-        | { paddingCount?: string; paddingText?: string }
-        | undefined
     const selectionTagStyles =
-        selectionTagType === MultiSelectV2SelectionTagType.COUNT
-            ? (selectionTagToken?.paddingCount ?? `0 ${slotGap}px`)
-            : (selectionTagToken?.paddingText ?? '0')
+        multiSelectTokens.trigger.selectionTag?.[variant]?.[selectionTagType]
+            ?.padding ??
+        (selectionTagType === MultiSelectV2SelectionTagType.COUNT
+            ? `0 ${slotGap}px`
+            : '0')
 
     return (
         <PrimitiveButton

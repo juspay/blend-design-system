@@ -184,11 +184,13 @@ export const getMultiSelectV2LightTokens = (
                         color: foundationToken.colors.gray[0],
                         backgroundColor: foundationToken.colors.primary[600],
                         fontWeight: foundationToken.font.weight[500],
+                        padding: `0 ${foundationToken.unit[6]}`,
                     },
                     [MultiSelectV2SelectionTagType.TEXT]: {
                         color: foundationToken.colors.gray[600],
                         backgroundColor: 'transparent',
                         fontWeight: foundationToken.font.weight[500],
+                        padding: '0',
                     },
                 },
                 [MultiSelectV2Variant.NO_CONTAINER]: {
@@ -196,17 +198,17 @@ export const getMultiSelectV2LightTokens = (
                         color: foundationToken.colors.gray[0],
                         backgroundColor: foundationToken.colors.primary[600],
                         fontWeight: foundationToken.font.weight[500],
+                        padding: `0 ${foundationToken.unit[6]}`,
                     },
                     [MultiSelectV2SelectionTagType.TEXT]: {
                         color: foundationToken.colors.gray[600],
                         backgroundColor: 'transparent',
                         fontWeight: foundationToken.font.weight[500],
+                        padding: '0',
                     },
                 },
                 marginLeft: foundationToken.unit[8],
                 borderRadius: foundationToken.unit[4],
-                paddingCount: `0 ${foundationToken.unit[6]}`,
-                paddingText: '0',
             },
             chevron: {
                 gap: foundationToken.unit[4],

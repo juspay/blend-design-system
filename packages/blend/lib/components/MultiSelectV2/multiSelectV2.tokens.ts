@@ -76,12 +76,11 @@ export type MultiSelectV2TokensType = {
                 color: CSSObject['color']
                 backgroundColor: CSSObject['backgroundColor']
                 fontWeight: CSSObject['fontWeight']
+                padding: CSSObject['padding']
             }>
         > & {
             marginLeft: CSSObject['margin']
             borderRadius: CSSObject['borderRadius']
-            paddingCount: CSSObject['padding']
-            paddingText: CSSObject['padding']
         }
         chevron: {
             gap: CSSObject['gap']
