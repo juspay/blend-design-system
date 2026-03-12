@@ -1,3 +1,4 @@
+import { useId, useMemo } from 'react'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -10,6 +11,8 @@ import {
     StatCardV2Variant,
 } from './statcardV2.types'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+import SingleSelect from '../SingleSelect/SingleSelect'
+import { SelectMenuSize, SelectMenuVariant } from '../SingleSelect/types'
 import { ChartV2 } from '../ChartsV2'
 import {
     ProgressBar,
@@ -23,6 +26,7 @@ import StatCardV2Subtitle from './StatCardV2Subtitle'
 import StatCardV2Value, { renderVariantFallbackValue } from './StatCardV2Value'
 import { buildStatCardV2ChartOptions } from './StatCardV2.chartConfig'
 import StatCardV2NoData from './StatCardV2NoData'
+import { buildStatCardV2AriaLabel } from './utils'
 
 const StatCardV2 = ({
     title,
@@ -34,6 +38,7 @@ const StatCardV2 = ({
     progressValue,
     change,
     subtitle,
+    dropdownProps,
     maxWidth,
     minWidth,
     width = '100%',
@@ -50,10 +55,33 @@ const StatCardV2 = ({
     const isProgressBarVariant = variant === StatCardV2Variant.PROGRESS_BAR
     const isNumberVariant = variant === StatCardV2Variant.NUMBER
 
+    const { label, placeholder, items, selected, onSelect } =
+        dropdownProps || {}
+
+    const resolvedHeight = !isSmallScreen && height ? height : tokens.height
+
     const effectiveChangeType =
         change?.changeType ?? StatCardV2ChangeType.INCREASE
     const effectiveArrowDirection =
         change?.arrowDirection ?? StatCardV2ArrowDirection.UP
+
+    const baseId = useId()
+    const titleId = `${baseId}-title`
+    const valueId = `${baseId}-value`
+    const changeId = `${baseId}-change`
+    const subtitleId = `${baseId}-subtitle`
+    const chartId = `${baseId}-chart`
+
+    const cardLabel = useMemo(
+        () =>
+            buildStatCardV2AriaLabel({
+                title,
+                value,
+                subtitle,
+                change,
+            }),
+        [title, value, subtitle, change]
+    )
 
     const hasChartData =
         isChartVariant &&
@@ -80,10 +108,11 @@ const StatCardV2 = ({
                 titleIcon={titleIcon}
                 helpIconText={helpIconText}
                 subtitle={subtitle}
+                dropdownProps={dropdownProps}
                 maxWidth={maxWidth}
                 minWidth={minWidth}
                 width={width}
-                height={height}
+                height={resolvedHeight}
                 tokens={tokens}
                 isSmallScreen={isSmallScreen}
                 filteredProps={filteredProps}
@@ -107,7 +136,11 @@ const StatCardV2 = ({
             maxWidth={maxWidth ?? tokens.maxWidth}
             minWidth={minWidth ?? tokens.minWidth}
             width={width ?? tokens.width}
-            height={height ?? tokens.height}
+            height={resolvedHeight}
+            role="region"
+            aria-label={cardLabel || title}
+            aria-labelledby={titleId}
+            aria-describedby={subtitle ? subtitleId : undefined}
             {...filteredProps}
         >
             {skeleton?.show ? (
@@ -122,7 +155,13 @@ const StatCardV2 = ({
                         position="relative"
                         display="flex"
                         flexDirection={isNumberVariant ? 'column' : 'row'}
-                        alignItems={isNumberVariant ? 'center' : 'flex-start'}
+                        alignItems={
+                            isNumberVariant
+                                ? isSmallScreen
+                                    ? 'flex-start'
+                                    : 'center'
+                                : 'flex-start'
+                        }
                         gap={tokens.topContainer.gap}
                     >
                         {actionIcon && !isSmallScreen && (
@@ -145,10 +184,15 @@ const StatCardV2 = ({
                             flexDirection="column"
                             gap={tokens.topContainer.dataContainer.gap}
                             alignItems={
-                                isNumberVariant ? 'center' : 'flex-start'
+                                isNumberVariant
+                                    ? isSmallScreen
+                                        ? 'flex-start'
+                                        : 'center'
+                                    : 'flex-start'
                             }
                         >
                             <StatCardV2Title
+                                id={titleId}
                                 title={title}
                                 helpIconText={helpIconText}
                                 tokens={tokens}
@@ -157,7 +201,11 @@ const StatCardV2 = ({
                                 display="flex"
                                 flexDirection="column"
                                 alignItems={
-                                    isNumberVariant ? 'center' : 'flex-start'
+                                    isNumberVariant
+                                        ? isSmallScreen
+                                            ? 'flex-start'
+                                            : 'center'
+                                        : 'flex-start'
                                 }
                             >
                                 <Block
@@ -169,11 +217,13 @@ const StatCardV2 = ({
                                     }
                                 >
                                     <StatCardV2Value
+                                        id={valueId}
                                         value={value}
                                         tokens={tokens}
                                         variant={variant}
                                     />
                                     <StatCardV2Change
+                                        id={changeId}
                                         changeValueText={change?.value}
                                         leftSymbol={change?.leftSymbol}
                                         rightSymbol={change?.rightSymbol}
@@ -183,18 +233,45 @@ const StatCardV2 = ({
                                     />
                                 </Block>
 
-                                <StatCardV2Subtitle
-                                    subtitle={subtitle}
-                                    tokens={tokens}
-                                />
+                                {!isSmallScreen && (
+                                    <StatCardV2Subtitle
+                                        id={subtitleId}
+                                        subtitle={subtitle}
+                                        tokens={tokens}
+                                    />
+                                )}
+
+                                {isSmallScreen && items && items.length > 0 && (
+                                    <SingleSelect
+                                        label={label || ''}
+                                        placeholder={placeholder || ''}
+                                        items={items || []}
+                                        selected={selected || ''}
+                                        onSelect={onSelect || (() => {})}
+                                        variant={SelectMenuVariant.NO_CONTAINER}
+                                        size={SelectMenuSize.SMALL}
+                                        inline={true}
+                                        minMenuWidth={100}
+                                    />
+                                )}
                             </Block>
                         </Block>
                     </Block>
                     {isChartVariant &&
                         (hasChartData ? (
-                            <ChartV2
-                                options={buildStatCardV2ChartOptions(options)}
-                            />
+                            <Block
+                                id={chartId}
+                                role="img"
+                                aria-label={
+                                    title ? `${title} chart` : 'Data chart'
+                                }
+                            >
+                                <ChartV2
+                                    options={buildStatCardV2ChartOptions(
+                                        options
+                                    )}
+                                />
+                            </Block>
                         ) : (
                             renderVariantFallbackValue(
                                 tokens,

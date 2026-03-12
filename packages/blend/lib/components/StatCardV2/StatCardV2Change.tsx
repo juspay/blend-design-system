@@ -11,6 +11,7 @@ const StatCardV2Change = ({
     arrowDirection,
     changeType,
     tokens,
+    id,
 }: StatCardV2ChangeProps) => {
     const arrowColor =
         tokens.topContainer.dataContainer.statsContainer.changeContainer.arrow
@@ -28,6 +29,7 @@ const StatCardV2Change = ({
                 tokens.topContainer.dataContainer.statsContainer.changeContainer
                     .gap
             }
+            data-element="statcard-delta"
         >
             <Block
                 data-element="change-arrow"
@@ -63,10 +65,14 @@ const StatCardV2Change = ({
             </Block>
             <Block as="span" display="flex" alignItems="center">
                 <Text
+                    id={id}
                     fontSize={changeTokens.fontSize}
                     fontWeight={changeTokens.fontWeight}
                     lineHeight={addPxToValue(changeTokens.lineHeight)}
                     color={changeTokens.color[changeType]}
+                    data-status={
+                        changeType === 'increase' ? 'increase' : 'decrease'
+                    }
                 >
                     {leftSymbol && leftSymbol}
                     {changeValueText}

@@ -3,6 +3,7 @@ import { CSSObject } from 'styled-components'
 import { StatCardV2TokensType } from './statcardV2.tokens'
 import { ChartV2Options } from '../ChartsV2'
 import { SkeletonVariant } from '../Skeleton'
+import type { SingleSelectProps } from '../SingleSelect'
 
 export type StatCardV2Dimensions = {
     width?: CSSObject['width']
@@ -27,6 +28,11 @@ export enum StatCardV2ChangeType {
     DECREASE = 'decrease',
 }
 
+export enum StatCardV2Alignment {
+    LEFT = 'left',
+    CENTER = 'center',
+}
+
 export type StatCardV2Change = {
     value: string
     changeType: StatCardV2ChangeType
@@ -48,6 +54,7 @@ export type StatCardV2TitleProps = {
     title: string
     helpIconText?: string
     tokens: StatCardV2TokensType
+    id?: string
 }
 
 export type StatCardV2ChangeProps = {
@@ -57,11 +64,13 @@ export type StatCardV2ChangeProps = {
     arrowDirection: StatCardV2ArrowDirection
     changeType: StatCardV2ChangeType
     tokens: StatCardV2TokensType
+    id?: string
 }
 
 export type StatCardV2SubtitleProps = {
     subtitle?: string
     tokens: StatCardV2TokensType
+    id?: string
 }
 
 export type StatCardV2Props = {
@@ -76,5 +85,8 @@ export type StatCardV2Props = {
     subtitle?: string
     options?: ChartV2Options
     skeleton?: StatCardV2SkeletonProps
+    dropdownProps?: SingleSelectProps
+    alignment?: StatCardV2Alignment
+    dataDisplay?: boolean
 } & HTMLAttributes<HTMLDivElement> &
     StatCardV2Dimensions

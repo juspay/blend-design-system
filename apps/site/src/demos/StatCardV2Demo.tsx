@@ -41,6 +41,11 @@ const StatCardV2Demo = () => {
     const [chartType, setChartType] = useState<'column' | 'line' | 'area'>(
         'column'
     )
+    const [dropdownValue, setDropdownValue] = useState('USD')
+
+    const handleDropdownSelect = (val: string) => {
+        setDropdownValue(val)
+    }
 
     return (
         <div
@@ -303,6 +308,22 @@ const StatCardV2Demo = () => {
                                   }
                                 : undefined
                         }
+                        dropdownProps={{
+                            label: 'Currency',
+                            placeholder: 'Currency',
+                            items: [
+                                {
+                                    items: [
+                                        { label: 'USD', value: 'USD' },
+                                        { label: 'EUR', value: 'EUR' },
+                                        { label: 'GBP', value: 'GBP' },
+                                        { label: 'INR', value: 'INR' },
+                                    ],
+                                },
+                            ],
+                            selected: dropdownValue,
+                            onSelect: handleDropdownSelect,
+                        }}
                         options={
                             variant === StatCardV2Variant.CHART
                                 ? {
@@ -322,14 +343,64 @@ const StatCardV2Demo = () => {
                                               'Value: <b>{point.y}%</b>',
                                       },
                                       series: [
-                                          {
-                                              data: [
-                                                  9, 11, 13, 10, 12, 15, 18, 17,
-                                                  19, 21, 22,
-                                              ],
-                                              type: chartType,
-                                              color: '#00A63E',
-                                          },
+                                          (() => {
+                                              const isIncrease =
+                                                  changeType ===
+                                                  StatCardV2ChangeType.INCREASE
+
+                                              const baseColor = isIncrease
+                                                  ? '#00A63E'
+                                                  : '#F04438'
+
+                                              if (chartType === 'area') {
+                                                  return {
+                                                      data: [
+                                                          9, 11, 13, 10, 12, 15,
+                                                          18, 17, 19, 21, 22,
+                                                      ],
+                                                      type: 'area',
+                                                      color: baseColor,
+                                                      fillColor: {
+                                                          linearGradient: {
+                                                              x1: 0,
+                                                              y1: 0,
+                                                              x2: 0,
+                                                              y2: 1,
+                                                          },
+                                                          stops: isIncrease
+                                                              ? [
+                                                                    [
+                                                                        0,
+                                                                        'rgba(123, 241, 168, 0.40)',
+                                                                    ],
+                                                                    [
+                                                                        1,
+                                                                        'rgba(123, 241, 168, 0.00)',
+                                                                    ],
+                                                                ]
+                                                              : [
+                                                                    [
+                                                                        0,
+                                                                        'rgba(240, 68, 56, 0.40)',
+                                                                    ],
+                                                                    [
+                                                                        1,
+                                                                        'rgba(240, 68, 56, 0.00)',
+                                                                    ],
+                                                                ],
+                                                      },
+                                                  }
+                                              }
+
+                                              return {
+                                                  data: [
+                                                      9, 11, 13, 10, 12, 15, 18,
+                                                      17, 19, 21, 22,
+                                                  ],
+                                                  type: chartType,
+                                                  color: baseColor,
+                                              }
+                                          })(),
                                       ],
                                   }
                                 : undefined

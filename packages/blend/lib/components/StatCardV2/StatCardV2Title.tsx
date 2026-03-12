@@ -9,6 +9,7 @@ const StatCardV2Title = ({
     title,
     helpIconText,
     tokens,
+    id,
 }: StatCardV2TitleProps) => (
     <Block
         display="flex"
@@ -16,6 +17,7 @@ const StatCardV2Title = ({
         gap={tokens.topContainer.dataContainer.titleContainer.gap}
     >
         <Text
+            id={id}
             fontSize={
                 tokens.topContainer.dataContainer.titleContainer.title.fontSize
             }
@@ -28,6 +30,8 @@ const StatCardV2Title = ({
                     .lineHeight
             )}
             color={tokens.topContainer.dataContainer.titleContainer.title.color}
+            data-element="statcard-header"
+            data-id={title || 'statcard-header'}
         >
             {title}
         </Text>

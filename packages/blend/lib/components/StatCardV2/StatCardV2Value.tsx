@@ -36,10 +36,12 @@ const StatCardV2Value = ({
     value,
     tokens,
     variant,
+    id,
 }: {
     value: StatCardV2Props['value']
     tokens: StatCardV2TokensType
     variant: StatCardV2Variant
+    id?: string
 }) => {
     const valueTokens = tokens.topContainer.dataContainer.statsContainer.value
 
@@ -50,10 +52,12 @@ const StatCardV2Value = ({
 
     return (
         <Text
+            id={id}
             fontSize={valueTokens[variant].fontSize}
             fontWeight={valueTokens[variant].fontWeight}
             lineHeight={addPxToValue(valueTokens[variant].lineHeight)}
             color={valueTokens[variant].color}
+            data-element="statcard-data"
         >
             {displayValue}
         </Text>
