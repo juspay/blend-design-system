@@ -156,6 +156,11 @@ import {
     ResponsiveKeyValuePairV2Tokens,
 } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import {
+    getStatCardV2Tokens,
+    ResponsiveStatCardV2Tokens,
+} from '../components/StatCardV2/statcardV2.tokens'
+
+import {
     getTooltipV2Tokens,
     ResponsiveTooltipV2Tokens,
 } from '../components/TooltipV2/tooltipV2.tokens'
@@ -222,6 +227,7 @@ export type ComponentTokenType = {
     CHARTSV2?: ResponsiveChartV2Tokens
     CHECKBOXV2?: ResponsiveCheckboxV2Tokens
     KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
+    STATCARDV2?: ResponsiveStatCardV2Tokens
     TOOLTIPV2?: ResponsiveTooltipV2Tokens
     RADIOV2?: ResponsiveRadioV2Tokens
 }
@@ -296,6 +302,7 @@ const ThemeContext = createContext<ThemeContextType>({
         MULTI_SELECT_V2: getMultiSelectV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        STATCARDV2: getStatCardV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
