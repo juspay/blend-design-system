@@ -6,6 +6,10 @@ export enum CodeV2Variant {
     DIFF = 'diff',
 }
 
+export enum MonacoTheme {
+    LIGHT = 'light',
+    DARK = 'vs-dark',
+}
 export enum DiffLineType {
     ADDED = 'added',
     REMOVED = 'removed',

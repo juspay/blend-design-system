@@ -1,12 +1,13 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { ResponsiveCodeV2Tokens } from './codeV2.tokens'
-import { DiffLineType } from './codeV2.types'
+import { DiffLineType, MonacoTheme } from './codeV2.types'
 
 export const darkCodeTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveCodeV2Tokens => {
     return {
         sm: {
+            theme: MonacoTheme.DARK,
             backgroundColor: foundationToken.colors.gray[25],
             border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
@@ -87,6 +88,7 @@ export const darkCodeTokens = (
             },
         },
         lg: {
+            theme: MonacoTheme.DARK,
             backgroundColor: foundationToken.colors.gray[25],
             border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],

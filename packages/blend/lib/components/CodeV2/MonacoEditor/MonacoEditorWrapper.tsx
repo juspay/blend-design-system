@@ -242,7 +242,7 @@ export function MonacoEditorWrapper({
                 language={monacoLanguage}
                 onChange={handleChange}
                 onMount={handleMount}
-                theme={BLEND_EDITOR_THEME_NAME}
+                theme={tokens.theme}
                 beforeMount={beforeMount}
                 options={initialOptions}
                 loading={
