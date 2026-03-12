@@ -2,7 +2,7 @@ import { Check } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import Text from '../../Text/Text'
 import type { SingleSelectV2TokensType } from '../singleSelectV2.tokens'
-import type { SingleSelectV2ItemType } from '../SingleSelectV2.types'
+import type { SingleSelectV2ItemType } from '../singleSelectV2.types'
 
 type SingleSelectV2MobileItemProps = {
     item: SingleSelectV2ItemType

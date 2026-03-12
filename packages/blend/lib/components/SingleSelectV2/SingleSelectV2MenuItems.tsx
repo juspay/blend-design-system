@@ -4,7 +4,7 @@ import Text from '../Text/Text'
 import { ChevronRight } from 'lucide-react'
 import styled from 'styled-components'
 import { SelectItemV2 } from '../SelectV2'
-import type { SingleSelectV2ItemType } from './SingleSelectV2.types'
+import type { SingleSelectV2ItemType } from './singleSelectV2.types'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 import {
     submenuContentAnimations,

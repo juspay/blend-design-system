@@ -14,7 +14,7 @@ import type {
     SelectV2MenuPosition,
     SelectV2ErrorState,
     SelectV2SearchConfig,
-} from '../SingleSelectV2/SingleSelectV2.types'
+} from '../SingleSelectV2/singleSelectV2.types'
 
 export {
     SelectV2Alignment as MultiSelectV2Alignment,

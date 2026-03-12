@@ -7,7 +7,7 @@ import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
     type SingleSelectV2Props,
-} from './SingleSelectV2.types'
+} from './singleSelectV2.types'
 import SingleSelectV2Menu from './SingleSelectV2Menu'
 import SingleSelectV2Trigger from './SingleSelectV2Trigger'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'

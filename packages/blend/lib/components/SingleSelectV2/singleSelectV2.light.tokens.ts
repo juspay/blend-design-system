@@ -3,7 +3,7 @@ import type { ResponsiveSingleSelectV2Tokens } from './singleSelectV2.tokens'
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
-} from './SingleSelectV2.types'
+} from './singleSelectV2.types'
 
 export const getSingleSelectV2LightTokens = (
     foundationToken: FoundationTokenType

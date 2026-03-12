@@ -8,7 +8,7 @@ import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
     type SingleSelectV2MenuProps,
-} from './SingleSelectV2.types'
+} from './singleSelectV2.types'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'

@@ -9,7 +9,7 @@ import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
     type SelectV2TriggerDimensions,
-} from './SingleSelectV2.types'
+} from './singleSelectV2.types'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 
 export type SingleSelectV2TriggerProps = {

@@ -1,7 +1,7 @@
 import type {
     SingleSelectV2GroupType,
     SingleSelectV2ItemType,
-} from '../SingleSelectV2.types'
+} from '../singleSelectV2.types'
 
 export const filterMobileMenuItem = (
     item: SingleSelectV2ItemType,
