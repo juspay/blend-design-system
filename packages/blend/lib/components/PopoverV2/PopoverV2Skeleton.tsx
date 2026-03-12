@@ -14,8 +14,8 @@ const PopoverV2Skeleton = ({
     popoverTokens: PopoverV2TokenType
     size: PopoverV2Size
     headerSkeleton?: {
-        show: boolean
-        showCloseButton: boolean
+        show?: boolean | undefined
+        showCloseButton?: boolean | undefined
     }
     bodySkeleton?: {
         show: boolean

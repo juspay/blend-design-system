@@ -42,8 +42,8 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
     size = PopoverV2Size.MD,
 }) => {
     const popoverTokens = useResponsiveTokens<PopoverV2TokenType>('POPOVERV2')
-
     const shouldShowSkeleton = skeleton?.show
+    const showBodySkeleton = skeleton?.bodySkeletonProps?.show
     const skeletonVariant: SkeletonVariant =
         (skeleton?.variant as SkeletonVariant) ?? 'pulse'
     const bodySkeletonWidth = skeleton?.bodySkeletonProps?.width || '100%'
@@ -165,15 +165,12 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
                     )}
 
                     <DrawerBody>
-                        {shouldShowSkeleton &&
-                        skeleton?.bodySkeletonProps?.show ? (
+                        {shouldShowSkeleton && showBodySkeleton ? (
                             <PopoverV2Skeleton
                                 popoverTokens={popoverTokens}
                                 size={size}
                                 bodySkeleton={{
-                                    show:
-                                        skeleton?.bodySkeletonProps?.show ||
-                                        false,
+                                    show: showBodySkeleton || false,
                                     width: bodySkeletonWidth,
                                     height: bodySkeletonHeight,
                                 }}

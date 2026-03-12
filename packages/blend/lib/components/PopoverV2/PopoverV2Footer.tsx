@@ -1,4 +1,3 @@
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { ButtonSubType, Button } from '../Button'
 import Block from '../Primitives/Block/Block'
 import { PopoverV2TokenType } from './popoverV2.token'
@@ -7,6 +6,7 @@ import { type SkeletonVariant } from '../Skeleton'
 import PopoverV2Skeleton from './PopoverV2Skeleton'
 
 const PopoverV2Footer = ({
+    popoverTokens,
     primaryAction,
     secondaryAction,
     size = PopoverV2Size.MD,
@@ -15,29 +15,26 @@ const PopoverV2Footer = ({
 }: Pick<PopoverV2Props, 'primaryAction' | 'secondaryAction' | 'size'> & {
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
+    popoverTokens: PopoverV2TokenType
 }) => {
-    const popoverTokens = useResponsiveTokens<PopoverV2TokenType>('POPOVERV2')
-
     if (showSkeleton) {
         return (
             <PopoverV2Skeleton
                 popoverTokens={popoverTokens}
                 size={size}
                 footerSkeleton={{
-                    show: showSkeleton || false,
+                    show: showSkeleton,
                 }}
-                skeletonVariant={
-                    skeletonVariant || ('pulse' as SkeletonVariant)
-                }
+                skeletonVariant={skeletonVariant ?? 'pulse'}
             />
         )
     }
-
+    if (showSkeleton) return null
     if (!primaryAction && !secondaryAction) return null
 
     return (
         <Block
-            data-design-system="true"
+            data-element="popover-footer"
             display="flex"
             alignItems="center"
             gap={popoverTokens.bottomContainer.gap[size]}
