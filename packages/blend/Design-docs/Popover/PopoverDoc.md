@@ -47,9 +47,22 @@ Create a scalable Popover component that can display:
 
 ```typescript
 export enum PopoverV2Size {
-    SM = 'small',
-    MD = 'medium',
-    LG = 'large',
+    SM = 'sm',
+    MD = 'md',
+    LG = 'lg',
+}
+
+export enum PopoverV2Side {
+    TOP = 'top',
+    RIGHT = 'right',
+    BOTTOM = 'bottom',
+    LEFT = 'left',
+}
+
+export enum PopoverV2Align {
+    START = 'start',
+    CENTER = 'center',
+    END = 'end',
 }
 
 export type PopoverV2ActionType = Omit<
@@ -67,6 +80,15 @@ export type PopoverV2SkeletonProps = {
     }
 }
 
+export type PopoverV2Dimensions = {
+    width?: number
+    maxWidth?: number
+    minWidth?: number
+    height?: number
+    minHeight?: number
+    maxHeight?: number
+}
+
 export type PopoverV2Props = {
     heading?: string
     description?: string
@@ -79,24 +101,19 @@ export type PopoverV2Props = {
     primaryAction?: PopoverV2ActionType
     secondaryAction?: PopoverV2ActionType
     sideOffset?: number
-    side?: 'top' | 'right' | 'bottom' | 'left'
-    align?: 'start' | 'center' | 'end'
+    side?: PopoverV2Side
+    align?: PopoverV2Align
     alignOffset?: number
-    width?: number
-    minWidth?: number
-    maxWidth?: number
-    height?: number
-    minHeight?: number
-    maxHeight?: number
-    zIndex?: number
     size?: PopoverV2Size
     onClose?: () => void
-    shadow?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
     useDrawerOnMobile?: boolean
     avoidCollisions?: boolean
     skeleton?: PopoverV2SkeletonProps
-}
+} & PopoverV2Dimensions &
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'slot' | 'className' | 'style'>
 ```
+
+Dimension props (`width`, `minWidth`, `maxWidth`, `height`, `minHeight`, `maxHeight`) and other div attributes come from `PopoverV2Dimensions` and the `HTMLAttributes` intersection. `zIndex` and `shadow` are token-driven, not props.
 
 ## Final Token Type
 
@@ -114,12 +131,14 @@ export type PopoverV2TokenType = {
         top: { [key in PopoverV2Size]: CSSObject['paddingTop'] }
         bottom: { [key in PopoverV2Size]: CSSObject['paddingBottom'] }
     }
-    headerContainer: {
+    TopContainer: {
+        gap: { [key in PopoverV2Size]: CSSObject['gap'] }
         heading: {
             color: CSSObject['color']
             fontSize: { [key in PopoverV2Size]: CSSObject['fontSize'] }
             fontWeight: { [key in PopoverV2Size]: CSSObject['fontWeight'] }
             lineHeight: { [key in PopoverV2Size]: CSSObject['lineHeight'] }
+            IconSize: { [key in PopoverV2Size]: CSSObject['size'] }
         }
         description: {
             color: CSSObject['color']
@@ -128,7 +147,7 @@ export type PopoverV2TokenType = {
             lineHeight: { [key in PopoverV2Size]: CSSObject['lineHeight'] }
         }
     }
-    footer: {
+    bottomContainer: {
         gap: { [key in PopoverV2Size]: CSSObject['gap'] }
     }
 }
