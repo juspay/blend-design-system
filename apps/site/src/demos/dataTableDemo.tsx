@@ -3425,9 +3425,11 @@ const DataTableDemo = () => {
                         <code>tableBodyHeight</code> property. This creates a
                         fixed-height table with scrollable content, perfect for
                         dashboard layouts or when you need consistent table
-                        dimensions. The table below has a fixed height of{' '}
-                        <strong>400px</strong> - try scrolling within the table
-                        body!
+                        dimensions. The table below has a fixed height with
+                        scrollable content. It uses{' '}
+                        <code>showBulkActionBar={'{false}'}</code> so checkbox
+                        selection is available without the bulk action bar
+                        (download, deselect all).
                     </p>
                 </div>
 
@@ -3447,6 +3449,7 @@ const DataTableDemo = () => {
                     enableInlineEdit={false}
                     enableRowExpansion={false}
                     enableRowSelection={true}
+                    showBulkActionBar={false}
                     enableColumnManager={false}
                     showSettings={false}
                     columnFreeze={0}
@@ -3458,11 +3461,6 @@ const DataTableDemo = () => {
                         pageSizeOptions: [20, 50, 100],
                     }}
                     onRowSelectionChange={handleRowSelectionChange}
-                    bulkActions={{
-                        // showExport defaults to true - Export button will be shown
-                        // Set to false to hide it and only show customActions
-                        showExport: true,
-                    }}
                     headerSlot1={
                         <Button
                             text="Settings"

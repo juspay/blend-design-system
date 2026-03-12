@@ -1,12 +1,12 @@
 import { Theme } from '../../../context/theme.enum'
 
 import { CSSObject } from 'styled-components'
-import { SwitchV2State, SwitchV2Variant } from './switchV2.types'
+import { SwitchV2Variant } from './switchV2.types'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../../tokens/theme.token'
 import { getSwitchV2LightTokens } from './switchV2.light.tokens'
 import { getSwitchV2DarkTokens } from './switchV2.dark.tokens'
-import { SelectorV2Size } from '../selectorV2.types'
+import { SelectorV2Size, SelectorV2InteractionState } from '../selectorV2.types'
 
 export type SwitchV2TokensType = {
     gap: CSSObject['gap']
@@ -19,7 +19,7 @@ export type SwitchV2TokensType = {
         }
         backgroundColor: {
             [key in SwitchV2Variant]: {
-                [key in SwitchV2State]: CSSObject['backgroundColor']
+                [key in SelectorV2InteractionState]: CSSObject['backgroundColor']
             }
         }
         thumb: {
@@ -39,7 +39,7 @@ export type SwitchV2TokensType = {
         label: {
             gap: CSSObject['gap']
             color: {
-                [key in SwitchV2State]: CSSObject['color']
+                [key in SelectorV2InteractionState]: CSSObject['color']
             }
             fontSize: { [key in SelectorV2Size]: CSSObject['fontSize'] }
             fontWeight: { [key in SelectorV2Size]: CSSObject['fontWeight'] }
@@ -52,7 +52,7 @@ export type SwitchV2TokensType = {
         }
         subLabel: {
             color: {
-                [key in SwitchV2State]: CSSObject['color']
+                [key in SelectorV2InteractionState]: CSSObject['color']
             }
             fontSize: { [key in SelectorV2Size]: CSSObject['fontSize'] }
             fontWeight: { [key in SelectorV2Size]: CSSObject['fontWeight'] }

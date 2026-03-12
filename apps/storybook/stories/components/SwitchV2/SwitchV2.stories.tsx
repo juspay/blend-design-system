@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import React, { isValidElement, useState } from 'react'
+import React, { isValidElement, useState, useEffect } from 'react'
 import { Hash, Bell } from 'lucide-react'
 
 import {
@@ -135,13 +135,19 @@ type Story = StoryObj<typeof SwitchV2>
 
 export const Default: Story = {
     render: function DefaultSwitchV2(args: Story['args']) {
-        const [checked, setChecked] = useState<boolean>(args?.checked ?? false)
+        const [checkedState, setCheckedState] = useState<boolean>(
+            args?.checked ?? false
+        )
+
+        useEffect(() => {
+            setCheckedState(args?.checked ?? false)
+        }, [args?.checked])
 
         return (
             <SwitchV2
                 {...args}
-                checked={checked}
-                onCheckedChange={(next: boolean) => setChecked(next)}
+                checked={checkedState}
+                onCheckedChange={(next: boolean) => setCheckedState(next)}
                 slot={getSlotContent(args?.slot as string | React.ReactNode)}
             />
         )
@@ -183,7 +189,10 @@ export const Sizes: Story = {
                         size={SwitchV2Size.SM}
                         checked={states.sm}
                         onCheckedChange={(next: boolean) =>
-                            setStates((prev) => ({ ...prev, sm: next }))
+                            setStates((prev: { sm: boolean; md: boolean }) => ({
+                                ...prev,
+                                sm: next,
+                            }))
                         }
                     />
                     <SwitchV2
@@ -191,7 +200,10 @@ export const Sizes: Story = {
                         size={SwitchV2Size.MD}
                         checked={states.md}
                         onCheckedChange={(next: boolean) =>
-                            setStates((prev) => ({ ...prev, md: next }))
+                            setStates((prev: { sm: boolean; md: boolean }) => ({
+                                ...prev,
+                                md: next,
+                            }))
                         }
                     />
                 </div>

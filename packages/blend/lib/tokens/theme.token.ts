@@ -4,6 +4,7 @@ import fontTokens, { type FontTokensType } from './font.tokens'
 import opacityTokens, { type OpacityTokensType } from './opacity.tokens'
 import unitTokens, { type UnitTokensType } from './unit.tokens'
 import colorTokens, { type ColorTokensType } from './color.tokens'
+import zIndexTokens, { type ZIndexTokensType } from './zIndex.tokens'
 
 export type FoundationTokenType = {
     shadows: ShadowTokensType
@@ -12,6 +13,7 @@ export type FoundationTokenType = {
     opacity: OpacityTokensType
     unit: UnitTokensType
     colors: ColorTokensType
+    zIndex: ZIndexTokensType
 }
 
 const FOUNDATION_THEME: FoundationTokenType = {
@@ -21,6 +23,7 @@ const FOUNDATION_THEME: FoundationTokenType = {
     opacity: opacityTokens,
     unit: unitTokens,
     colors: colorTokens,
+    zIndex: zIndexTokens,
 }
 
 export default FOUNDATION_THEME

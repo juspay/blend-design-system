@@ -3,7 +3,6 @@ import { SwitchV2TokensType } from './switchV2.tokens'
 import { CSSObject } from 'styled-components'
 import { SelectorV2Size } from '../selectorV2.types'
 
-export type SwitchV2State = 'default' | 'hover' | 'disabled' | 'error'
 export type SwitchV2Variant = 'checked' | 'unchecked'
 
 export type SwitchV2ButtonProps = {
@@ -53,5 +52,5 @@ export type SwitchV2Props = {
     }
 } & Omit<
     ButtonHTMLAttributes<HTMLButtonElement>,
-    'className' | 'style' | 'slot' | 'onChange'
+    'className' | 'style' | 'slot'
 >
