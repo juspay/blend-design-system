@@ -200,7 +200,15 @@ const MobileMultiSelectV2 = ({
         if (flatItem.type === 'selectAll') {
             return (
                 <Block
-                    padding={multiSelectTokens.menu.selectAll.padding}
+                    style={{
+                        paddingTop: multiSelectTokens.menu.selectAll.paddingTop,
+                        paddingRight:
+                            multiSelectTokens.menu.selectAll.paddingRight,
+                        paddingBottom:
+                            multiSelectTokens.menu.selectAll.paddingBottom,
+                        paddingLeft:
+                            multiSelectTokens.menu.selectAll.paddingLeft,
+                    }}
                     borderRadius={multiSelectTokens.menu.selectAll.borderRadius}
                     borderBottom={multiSelectTokens.menu.header.borderBottom}
                     backgroundColor={
@@ -270,7 +278,19 @@ const MobileMultiSelectV2 = ({
         if (flatItem.type === 'label') {
             return (
                 <Block
-                    padding={multiSelectTokens.menu.item.optionsLabel.padding}
+                    style={{
+                        paddingTop:
+                            multiSelectTokens.menu.item.optionsLabel.paddingTop,
+                        paddingRight:
+                            multiSelectTokens.menu.item.optionsLabel
+                                .paddingRight,
+                        paddingBottom:
+                            multiSelectTokens.menu.item.optionsLabel
+                                .paddingBottom,
+                        paddingLeft:
+                            multiSelectTokens.menu.item.optionsLabel
+                                .paddingLeft,
+                    }}
                 >
                     <Text
                         variant="body.sm"
@@ -389,16 +409,20 @@ const MobileMultiSelectV2 = ({
                                 display="flex"
                                 justifyContent="center"
                                 alignItems="center"
-                                paddingLeft={
-                                    multiSelectTokens.drawer.header.paddingLeft
-                                }
-                                paddingRight={
-                                    multiSelectTokens.drawer.header.paddingRight
-                                }
-                                paddingBottom={
-                                    multiSelectTokens.drawer.header
-                                        .paddingBottom
-                                }
+                                style={{
+                                    paddingTop:
+                                        multiSelectTokens.drawer.header
+                                            .paddingTop,
+                                    paddingRight:
+                                        multiSelectTokens.drawer.header
+                                            .paddingRight,
+                                    paddingBottom:
+                                        multiSelectTokens.drawer.header
+                                            .paddingBottom,
+                                    paddingLeft:
+                                        multiSelectTokens.drawer.header
+                                            .paddingLeft,
+                                }}
                                 {...(showHeaderBorder && {
                                     borderBottom:
                                         multiSelectTokens.drawer.header
@@ -417,9 +441,20 @@ const MobileMultiSelectV2 = ({
                                     display="flex"
                                     flexDirection="column"
                                     gap={multiSelectTokens.menu.item.gap}
-                                    padding={
-                                        multiSelectTokens.menu.item.padding
-                                    }
+                                    style={{
+                                        paddingTop:
+                                            multiSelectTokens.menu.item
+                                                .paddingTop,
+                                        paddingRight:
+                                            multiSelectTokens.menu.item
+                                                .paddingRight,
+                                        paddingBottom:
+                                            multiSelectTokens.menu.item
+                                                .paddingBottom,
+                                        paddingLeft:
+                                            multiSelectTokens.menu.item
+                                                .paddingLeft,
+                                    }}
                                 >
                                     {Array.from({
                                         length: skeleton.count || 3,
@@ -445,22 +480,26 @@ const MobileMultiSelectV2 = ({
                                 >
                                     {enableSearch && (
                                         <Block
-                                            paddingLeft={
-                                                multiSelectTokens.drawer.search
-                                                    .paddingLeft
-                                            }
-                                            paddingRight={
-                                                multiSelectTokens.drawer.search
-                                                    .paddingRight
-                                            }
-                                            marginTop={
-                                                multiSelectTokens.drawer.search
-                                                    .marginTop
-                                            }
-                                            marginBottom={
-                                                multiSelectTokens.drawer.search
-                                                    .marginBottom
-                                            }
+                                            style={{
+                                                paddingTop:
+                                                    multiSelectTokens.drawer
+                                                        .search.paddingTop,
+                                                paddingRight:
+                                                    multiSelectTokens.drawer
+                                                        .search.paddingRight,
+                                                paddingBottom:
+                                                    multiSelectTokens.drawer
+                                                        .search.paddingBottom,
+                                                paddingLeft:
+                                                    multiSelectTokens.drawer
+                                                        .search.paddingLeft,
+                                                marginTop:
+                                                    multiSelectTokens.drawer
+                                                        .search.marginTop,
+                                                marginBottom:
+                                                    multiSelectTokens.drawer
+                                                        .search.marginBottom,
+                                            }}
                                         >
                                             <TextInput
                                                 size={TextInputSize.MEDIUM}
@@ -483,13 +522,20 @@ const MobileMultiSelectV2 = ({
                                         flexShrink={1}
                                         minHeight={0}
                                         overflow="auto"
-                                        padding={
-                                            multiSelectTokens.menu.list.padding
-                                        }
-                                        paddingTop={
-                                            multiSelectTokens.menu.list
-                                                .paddingTop
-                                        }
+                                        style={{
+                                            paddingTop:
+                                                multiSelectTokens.menu.list
+                                                    .paddingTop,
+                                            paddingRight:
+                                                multiSelectTokens.menu.list
+                                                    .paddingRight,
+                                            paddingBottom:
+                                                multiSelectTokens.menu.list
+                                                    .paddingBottom,
+                                            paddingLeft:
+                                                multiSelectTokens.menu.list
+                                                    .paddingLeft,
+                                        }}
                                     >
                                         {safeItems.length === 0 ? (
                                             <Text
@@ -561,10 +607,23 @@ const MobileMultiSelectV2 = ({
                                     {showActionButtons &&
                                         (primaryAction || secondaryAction) && (
                                             <Block
-                                                padding={
-                                                    multiSelectTokens.menu
-                                                        .actions.padding
-                                                }
+                                                style={{
+                                                    paddingTop:
+                                                        multiSelectTokens.menu
+                                                            .actions.paddingTop,
+                                                    paddingRight:
+                                                        multiSelectTokens.menu
+                                                            .actions
+                                                            .paddingRight,
+                                                    paddingBottom:
+                                                        multiSelectTokens.menu
+                                                            .actions
+                                                            .paddingBottom,
+                                                    paddingLeft:
+                                                        multiSelectTokens.menu
+                                                            .actions
+                                                            .paddingLeft,
+                                                }}
                                                 gap={
                                                     multiSelectTokens.menu
                                                         .actions.gap

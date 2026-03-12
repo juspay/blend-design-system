@@ -7,8 +7,8 @@ import {
     MultiSelectV2Variant,
 } from './multiSelectV2.types'
 import { Theme } from '../../context/theme.enum'
-import { getMultiSelectV2LightTokens } from './multiSelectV2.light.tokens.ts'
-import { getMultiSelectV2DarkTokens } from './multiSelectV2.dark.tokens.ts'
+import { getMultiSelectV2LightTokens } from './multiSelectV2.light.tokens'
+import { getMultiSelectV2DarkTokens } from './multiSelectV2.dark.tokens'
 import type {
     SelectV2ItemStates,
     SelectV2TriggerStates,
@@ -76,7 +76,10 @@ export type MultiSelectV2TokensType = {
                 color: CSSObject['color']
                 backgroundColor: CSSObject['backgroundColor']
                 fontWeight: CSSObject['fontWeight']
-                padding: CSSObject['padding']
+                paddingTop: CSSObject['paddingTop']
+                paddingRight: CSSObject['paddingRight']
+                paddingBottom: CSSObject['paddingBottom']
+                paddingLeft: CSSObject['paddingLeft']
             }>
         > & {
             marginLeft: CSSObject['margin']
@@ -96,6 +99,9 @@ export type MultiSelectV2TokensType = {
         }
         floatingLabel: {
             paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
         }
         placeholder: {
             color: CSSObject['color']
@@ -115,8 +121,10 @@ export type MultiSelectV2TokensType = {
         borderRadius: CSSObject['borderRadius']
         padding: SizeToken<
             VariantToken<{
-                x: CSSObject['padding']
-                y: CSSObject['padding']
+                top: CSSObject['paddingTop']
+                right: CSSObject['paddingRight']
+                bottom: CSSObject['paddingBottom']
+                left: CSSObject['paddingLeft']
             }>
         >
         minWidth: CSSObject['minWidth']
@@ -131,21 +139,32 @@ export type MultiSelectV2TokensType = {
             selectAllRowPaddingRight: CSSObject['paddingRight']
         }
         selectAll: {
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             borderRadius: CSSObject['borderRadius']
         }
         list: {
-            padding: CSSObject['padding']
             paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
         }
         actions: {
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             gap: CSSObject['gap']
             backgroundColor: CSSObject['backgroundColor']
             borderTop: CSSObject['borderTop']
         }
         item: {
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             margin: CSSObject['margin']
             borderRadius: CSSObject['borderRadius']
             gap: CSSObject['gap']
@@ -154,7 +173,10 @@ export type MultiSelectV2TokensType = {
                 fontSize: CSSObject['fontSize']
                 fontWeight: CSSObject['fontWeight']
                 color: StateToken<CSSObject['color']>
-                padding: CSSObject['padding']
+                paddingTop: CSSObject['paddingTop']
+                paddingRight: CSSObject['paddingRight']
+                paddingBottom: CSSObject['paddingBottom']
+                paddingLeft: CSSObject['paddingLeft']
             }
             option: {
                 fontSize: CSSObject['fontSize']
@@ -176,26 +198,35 @@ export type MultiSelectV2TokensType = {
 
     subMenu: {
         trigger: {
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             margin: CSSObject['margin']
             borderRadius: CSSObject['borderRadius']
         }
         content: {
             borderRadius: CSSObject['borderRadius']
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
         }
     }
 
     drawer: {
         header: {
-            paddingLeft: CSSObject['paddingLeft']
+            paddingTop: CSSObject['paddingTop']
             paddingRight: CSSObject['paddingRight']
-            paddingBottom: CSSObject['padding']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             borderBottom: CSSObject['borderBottom']
         }
         search: {
-            paddingLeft: CSSObject['paddingLeft']
+            paddingTop: CSSObject['paddingTop']
             paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             marginTop: CSSObject['margin']
             marginBottom: CSSObject['margin']
         }

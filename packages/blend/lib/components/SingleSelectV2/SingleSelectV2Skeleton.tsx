@@ -16,7 +16,12 @@ const SingleSelectV2Skeleton = forwardRef<
     return (
         <Block
             ref={ref}
-            padding={singleSelectTokens.menu.item.padding}
+            style={{
+                paddingTop: singleSelectTokens.menu.item.paddingTop,
+                paddingRight: singleSelectTokens.menu.item.paddingRight,
+                paddingBottom: singleSelectTokens.menu.item.paddingBottom,
+                paddingLeft: singleSelectTokens.menu.item.paddingLeft,
+            }}
             display="flex"
             flexDirection="column"
             gap={singleSelectTokens.menu.item.gap || 4}

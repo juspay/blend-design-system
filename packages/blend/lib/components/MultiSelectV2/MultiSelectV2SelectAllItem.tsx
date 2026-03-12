@@ -46,7 +46,15 @@ const MultiSelectV2SelectAllItem = ({
         <RadixMenu.Item asChild data-disabled={disabled}>
             <Block
                 data-element="selectAll-checkbox"
-                padding={multiSelectTokens.menu.selectAll?.padding}
+                style={{
+                    paddingTop: multiSelectTokens.menu.selectAll?.paddingTop,
+                    paddingRight:
+                        multiSelectTokens.menu.selectAll?.paddingRight,
+                    paddingBottom:
+                        multiSelectTokens.menu.selectAll?.paddingBottom,
+                    paddingLeft: multiSelectTokens.menu.selectAll?.paddingLeft,
+                    userSelect: 'none',
+                }}
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
@@ -66,7 +74,6 @@ const MultiSelectV2SelectAllItem = ({
                     multiSelectTokens.menu.item.backgroundColor.default
                 }
                 cursor={disabled ? 'not-allowed' : 'pointer'}
-                style={{ userSelect: 'none' }}
                 onClick={handleClick}
             >
                 <PrimitiveText

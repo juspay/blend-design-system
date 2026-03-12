@@ -389,9 +389,20 @@ const MultiSelectV2Menu = ({
                                         display="flex"
                                         justifyContent="center"
                                         alignItems="center"
-                                        padding={
-                                            multiSelectTokens.menu.item.padding
-                                        }
+                                        style={{
+                                            paddingTop:
+                                                multiSelectTokens.menu.item
+                                                    .paddingTop,
+                                            paddingRight:
+                                                multiSelectTokens.menu.item
+                                                    .paddingRight,
+                                            paddingBottom:
+                                                multiSelectTokens.menu.item
+                                                    .paddingBottom,
+                                            paddingLeft:
+                                                multiSelectTokens.menu.item
+                                                    .paddingLeft,
+                                        }}
                                     >
                                         <Text
                                             variant="body.md"
@@ -428,12 +439,6 @@ const MultiSelectV2Menu = ({
                                             endReachedThreshold
                                         }
                                         hasMore={hasMore}
-                                        paddingTop={
-                                            enableSearch
-                                                ? 0
-                                                : multiSelectTokens.menu.list
-                                                      ?.paddingTop
-                                        }
                                     />
                                 ) : (
                                     <MultiSelectV2MenuItems

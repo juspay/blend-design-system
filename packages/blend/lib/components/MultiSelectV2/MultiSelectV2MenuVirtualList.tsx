@@ -24,7 +24,6 @@ export type MultiSelectV2MenuVirtualListProps = {
     onEndReached?: () => void
     endReachedThreshold?: number
     hasMore?: boolean
-    paddingTop?: number | string
 }
 
 const MultiSelectV2MenuVirtualList = ({
@@ -41,11 +40,14 @@ const MultiSelectV2MenuVirtualList = ({
     onEndReached,
     endReachedThreshold,
     hasMore,
-    paddingTop = tokens.menu.list?.paddingTop,
 }: MultiSelectV2MenuVirtualListProps) => (
     <Block
-        padding={tokens.menu.list?.padding ?? tokens.menu.item.gap}
-        style={{ paddingTop }}
+        style={{
+            paddingTop: tokens.menu.list?.paddingTop ?? tokens.menu.item.gap,
+            paddingRight: tokens.menu.list?.paddingRight,
+            paddingBottom: tokens.menu.list?.paddingBottom,
+            paddingLeft: tokens.menu.list?.paddingLeft,
+        }}
     >
         <VirtualList
             items={flattenedItems as VirtualListItem[]}
@@ -68,13 +70,27 @@ const MultiSelectV2MenuVirtualList = ({
                                 fontWeight={
                                     tokens.menu.item.optionsLabel.fontWeight
                                 }
-                                padding={tokens.menu.item.optionsLabel.padding}
+                                style={{
+                                    paddingTop:
+                                        tokens.menu.item.optionsLabel
+                                            .paddingTop,
+                                    paddingRight:
+                                        tokens.menu.item.optionsLabel
+                                            .paddingRight,
+                                    paddingBottom:
+                                        tokens.menu.item.optionsLabel
+                                            .paddingBottom,
+                                    paddingLeft:
+                                        tokens.menu.item.optionsLabel
+                                            .paddingLeft,
+                                    margin: 0,
+                                    width: '100%',
+                                }}
                                 userSelect="none"
                                 textTransform="uppercase"
                                 color={
                                     tokens.menu.item.optionsLabel.color.default
                                 }
-                                style={{ margin: 0, width: '100%' }}
                             >
                                 {typed.label}
                             </PrimitiveText>

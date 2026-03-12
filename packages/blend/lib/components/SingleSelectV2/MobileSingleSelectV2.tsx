@@ -209,9 +209,20 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                             >
                                 {skeleton.show ? (
                                     <Block
-                                        padding={
-                                            singleSelectTokens.menu.item.padding
-                                        }
+                                        style={{
+                                            paddingTop:
+                                                singleSelectTokens.menu.item
+                                                    .paddingTop,
+                                            paddingRight:
+                                                singleSelectTokens.menu.item
+                                                    .paddingRight,
+                                            paddingBottom:
+                                                singleSelectTokens.menu.item
+                                                    .paddingBottom,
+                                            paddingLeft:
+                                                singleSelectTokens.menu.item
+                                                    .paddingLeft,
+                                        }}
                                         display="flex"
                                         flexDirection="column"
                                         gap={
@@ -256,14 +267,22 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                 left={0}
                                                 right={0}
                                                 style={{
-                                                    paddingInline:
+                                                    paddingTop:
                                                         singleSelectTokens
                                                             .mobilePanel.header
-                                                            .paddingInline,
-                                                    paddingBlock:
+                                                            .paddingTop,
+                                                    paddingRight:
                                                         singleSelectTokens
                                                             .mobilePanel.header
-                                                            .paddingBlockEnd,
+                                                            .paddingRight,
+                                                    paddingBottom:
+                                                        singleSelectTokens
+                                                            .mobilePanel.header
+                                                            .paddingBottom,
+                                                    paddingLeft:
+                                                        singleSelectTokens
+                                                            .mobilePanel.header
+                                                            .paddingLeft,
                                                 }}
                                                 backgroundColor={
                                                     singleSelectTokens.menu
@@ -295,10 +314,20 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                 display="flex"
                                                 justifyContent="center"
                                                 alignItems="center"
-                                                padding={
-                                                    singleSelectTokens.menu.item
-                                                        .padding
-                                                }
+                                                style={{
+                                                    paddingTop:
+                                                        singleSelectTokens.menu
+                                                            .item.paddingTop,
+                                                    paddingRight:
+                                                        singleSelectTokens.menu
+                                                            .item.paddingRight,
+                                                    paddingBottom:
+                                                        singleSelectTokens.menu
+                                                            .item.paddingBottom,
+                                                    paddingLeft:
+                                                        singleSelectTokens.menu
+                                                            .item.paddingLeft,
+                                                }}
                                             >
                                                 <Text
                                                     variant="body.md"
@@ -328,10 +357,20 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                 display="flex"
                                                 justifyContent="center"
                                                 alignItems="center"
-                                                padding={
-                                                    singleSelectTokens.menu.item
-                                                        .padding
-                                                }
+                                                style={{
+                                                    paddingTop:
+                                                        singleSelectTokens.menu
+                                                            .item.paddingTop,
+                                                    paddingRight:
+                                                        singleSelectTokens.menu
+                                                            .item.paddingRight,
+                                                    paddingBottom:
+                                                        singleSelectTokens.menu
+                                                            .item.paddingBottom,
+                                                    paddingLeft:
+                                                        singleSelectTokens.menu
+                                                            .item.paddingLeft,
+                                                }}
                                             >
                                                 <Text
                                                     variant="body.md"
@@ -368,12 +407,28 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                         >
                                                             {group.groupLabel && (
                                                                 <Block
-                                                                    padding={
-                                                                        singleSelectTokens
-                                                                            .menu
-                                                                            .item
-                                                                            .padding
-                                                                    }
+                                                                    style={{
+                                                                        paddingTop:
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .paddingTop,
+                                                                        paddingRight:
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .paddingRight,
+                                                                        paddingBottom:
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .paddingBottom,
+                                                                        paddingLeft:
+                                                                            singleSelectTokens
+                                                                                .menu
+                                                                                .item
+                                                                                .paddingLeft,
+                                                                    }}
                                                                     margin={
                                                                         singleSelectTokens
                                                                             .menu

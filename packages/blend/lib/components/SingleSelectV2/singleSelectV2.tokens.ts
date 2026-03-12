@@ -104,13 +104,19 @@ export type SingleSelectV2TokensType = {
         >
         groupLabel: {
             margin: CSSObject['margin']
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             color: StateToken<CSSObject['color']>
         }
         item: {
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             margin: CSSObject['margin']
             borderRadius: CSSObject['borderRadius']
             gap: CSSObject['gap']
@@ -138,7 +144,10 @@ export type SingleSelectV2TokensType = {
         }
         submenu: {
             trigger: {
-                padding: CSSObject['padding']
+                paddingTop: CSSObject['paddingTop']
+                paddingRight: CSSObject['paddingRight']
+                paddingBottom: CSSObject['paddingBottom']
+                paddingLeft: CSSObject['paddingLeft']
                 margin: CSSObject['margin']
                 borderRadius: CSSObject['borderRadius']
                 backgroundColor: SubmenuTriggerStateToken<
@@ -149,7 +158,10 @@ export type SingleSelectV2TokensType = {
                 backgroundColor: CSSObject['backgroundColor']
                 border: CSSObject['border']
                 borderRadius: CSSObject['borderRadius']
-                padding: CSSObject['padding']
+                paddingTop: CSSObject['paddingTop']
+                paddingRight: CSSObject['paddingRight']
+                paddingBottom: CSSObject['paddingBottom']
+                paddingLeft: CSSObject['paddingLeft']
                 boxShadow: CSSObject['boxShadow']
             }
             optionText: {
@@ -163,8 +175,10 @@ export type SingleSelectV2TokensType = {
 
     mobilePanel: {
         header: {
-            paddingInline: CSSObject['paddingInline']
-            paddingBlockEnd: CSSObject['paddingBlockEnd']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             borderBottom: CSSObject['borderBottom']
         }
     }

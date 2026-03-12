@@ -98,12 +98,31 @@ const MultiSelectV2Trigger = ({
         trigger?.backgroundColor?.[variant]?.[focusState] ?? 'transparent'
     const resolvedBorderRadius =
         borderRadius ?? trigger?.borderRadius?.[size]?.[variant]
-    const selectionTagStyles =
+    const tagToken =
         multiSelectTokens.trigger.selectionTag?.[variant]?.[selectionTagType]
-            ?.padding ??
-        (selectionTagType === MultiSelectV2SelectionTagType.COUNT
-            ? `0 ${slotGap}px`
-            : '0')
+    const selectionTagPadding =
+        tagToken &&
+        tagToken.paddingTop !== undefined &&
+        tagToken.paddingRight !== undefined
+            ? {
+                  paddingTop: tagToken.paddingTop,
+                  paddingRight: tagToken.paddingRight,
+                  paddingBottom: tagToken.paddingBottom,
+                  paddingLeft: tagToken.paddingLeft,
+              }
+            : selectionTagType === MultiSelectV2SelectionTagType.COUNT
+              ? {
+                    paddingTop: 0,
+                    paddingRight: slotGap,
+                    paddingBottom: 0,
+                    paddingLeft: slotGap,
+                }
+              : {
+                    paddingTop: 0,
+                    paddingRight: 0,
+                    paddingBottom: 0,
+                    paddingLeft: 0,
+                }
 
     return (
         <PrimitiveButton
@@ -292,7 +311,7 @@ const MultiSelectV2Trigger = ({
                                       ]?.backgroundColor,
                             borderRadius:
                                 trigger?.selectionTag?.borderRadius ?? 6,
-                            padding: selectionTagStyles,
+                            ...selectionTagPadding,
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',

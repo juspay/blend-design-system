@@ -272,7 +272,12 @@ const SingleSelectV2Menu = ({
                                     display="flex"
                                     justifyContent="center"
                                     alignItems="center"
-                                    padding={menuItem.padding}
+                                    style={{
+                                        paddingTop: menuItem.paddingTop,
+                                        paddingRight: menuItem.paddingRight,
+                                        paddingBottom: menuItem.paddingBottom,
+                                        paddingLeft: menuItem.paddingLeft,
+                                    }}
                                 >
                                     <Text
                                         variant="body.md"

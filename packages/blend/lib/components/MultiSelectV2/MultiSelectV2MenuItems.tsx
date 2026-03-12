@@ -33,8 +33,12 @@ const MultiSelectV2MenuItems = ({
     variant,
 }: MultiSelectV2MenuItemsProps) => (
     <Block
-        paddingX={tokens.menu.padding[size][variant].x}
-        paddingY={tokens.menu.padding[size][variant].y}
+        style={{
+            paddingTop: tokens.menu.padding[size][variant].top,
+            paddingRight: tokens.menu.padding[size][variant].right,
+            paddingBottom: tokens.menu.padding[size][variant].bottom,
+            paddingLeft: tokens.menu.padding[size][variant].left,
+        }}
     >
         {filteredItems.map((group, groupId) => {
             const groupStartIndex = filteredItems
@@ -52,7 +56,20 @@ const MultiSelectV2MenuItems = ({
                                 fontWeight={
                                     tokens.menu.item.optionsLabel.fontWeight
                                 }
-                                padding={tokens.menu.item.optionsLabel.padding}
+                                style={{
+                                    paddingTop:
+                                        tokens.menu.item.optionsLabel
+                                            .paddingTop,
+                                    paddingRight:
+                                        tokens.menu.item.optionsLabel
+                                            .paddingRight,
+                                    paddingBottom:
+                                        tokens.menu.item.optionsLabel
+                                            .paddingBottom,
+                                    paddingLeft:
+                                        tokens.menu.item.optionsLabel
+                                            .paddingLeft,
+                                }}
                                 userSelect="none"
                                 textTransform="uppercase"
                                 color={

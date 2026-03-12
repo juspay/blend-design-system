@@ -42,7 +42,10 @@ const SingleSelectV2List = ({
                             data-element="menu-group-label"
                             style={{
                                 margin: menuGroupLabel.margin,
-                                padding: menuGroupLabel.padding,
+                                paddingTop: menuGroupLabel.paddingTop,
+                                paddingRight: menuGroupLabel.paddingRight,
+                                paddingBottom: menuGroupLabel.paddingBottom,
+                                paddingLeft: menuGroupLabel.paddingLeft,
                             }}
                         >
                             <Text

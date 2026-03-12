@@ -24,7 +24,13 @@ const SingleSelectV2MobileItem = ({
             display="flex"
             flexDirection="column"
             gap={itemTokens.gap}
-            padding={itemTokens.padding}
+            style={{
+                paddingTop: itemTokens.paddingTop,
+                paddingRight: itemTokens.paddingRight,
+                paddingBottom: itemTokens.paddingBottom,
+                paddingLeft: itemTokens.paddingLeft,
+                transition: 'background-color 0.15s ease-in-out',
+            }}
             margin={itemTokens.margin}
             borderRadius={itemTokens.borderRadius}
             cursor={item.disabled ? 'not-allowed' : 'pointer'}
@@ -35,7 +41,6 @@ const SingleSelectV2MobileItem = ({
                       ? itemTokens.backgroundColor.selected
                       : itemTokens.backgroundColor.default
             }
-            style={{ transition: 'background-color 0.15s ease-in-out' }}
             _hover={{
                 backgroundColor: itemTokens.backgroundColor.hover,
             }}

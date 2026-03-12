@@ -16,7 +16,12 @@ const MultiSelectV2Skeleton = forwardRef<
     return (
         <Block
             ref={ref}
-            padding={multiSelectTokens.menu.item.padding}
+            style={{
+                paddingTop: multiSelectTokens.menu.item.paddingTop,
+                paddingRight: multiSelectTokens.menu.item.paddingRight,
+                paddingBottom: multiSelectTokens.menu.item.paddingBottom,
+                paddingLeft: multiSelectTokens.menu.item.paddingLeft,
+            }}
             display="flex"
             flexDirection="column"
             gap={multiSelectTokens.menu.item.gap || 4}

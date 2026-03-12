@@ -35,7 +35,17 @@ const MultiSelectV2SubMenu = ({
             <RadixMenu.SubTrigger asChild>
                 <Block
                     alignItems="center"
-                    padding={multiSelectTokens.subMenu?.trigger?.padding}
+                    style={{
+                        paddingTop:
+                            multiSelectTokens.subMenu?.trigger?.paddingTop,
+                        paddingRight:
+                            multiSelectTokens.subMenu?.trigger?.paddingRight,
+                        paddingBottom:
+                            multiSelectTokens.subMenu?.trigger?.paddingBottom,
+                        paddingLeft:
+                            multiSelectTokens.subMenu?.trigger?.paddingLeft,
+                        userSelect: 'none',
+                    }}
                     margin={multiSelectTokens.subMenu?.trigger?.margin}
                     borderRadius={
                         multiSelectTokens.subMenu?.trigger?.borderRadius
@@ -62,7 +72,6 @@ const MultiSelectV2SubMenu = ({
                             multiSelectTokens.menu.item.backgroundColor
                                 .focusVisible,
                     }}
-                    style={{ userSelect: 'none' }}
                 >
                     <Block
                         display="flex"
@@ -113,7 +122,16 @@ const MultiSelectV2SubMenu = ({
                     borderRadius={
                         multiSelectTokens.subMenu?.content?.borderRadius
                     }
-                    padding={multiSelectTokens.subMenu?.content?.padding}
+                    style={{
+                        paddingTop:
+                            multiSelectTokens.subMenu?.content?.paddingTop,
+                        paddingRight:
+                            multiSelectTokens.subMenu?.content?.paddingRight,
+                        paddingBottom:
+                            multiSelectTokens.subMenu?.content?.paddingBottom,
+                        paddingLeft:
+                            multiSelectTokens.subMenu?.content?.paddingLeft,
+                    }}
                     boxShadow={multiSelectTokens.trigger.boxShadow.container}
                     border={`1px solid ${multiSelectTokens.menu.border as string}`}
                 >

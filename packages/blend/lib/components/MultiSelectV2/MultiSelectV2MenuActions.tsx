@@ -29,13 +29,14 @@ const MultiSelectV2MenuActions = ({
     onClose,
 }: MultiSelectV2MenuActionsProps) => {
     const actions = tokens.menu?.actions ?? {}
-    const padding = actions.padding
     return (
         <Block
-            paddingTop={padding}
-            paddingBottom={padding}
-            paddingLeft={padding}
-            paddingRight={padding}
+            style={{
+                paddingTop: actions.paddingTop,
+                paddingRight: actions.paddingRight,
+                paddingBottom: actions.paddingBottom,
+                paddingLeft: actions.paddingLeft,
+            }}
             display="flex"
             alignItems="center"
             gap={actions.gap}

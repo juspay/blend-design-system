@@ -141,7 +141,14 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                     role={isMulti ? 'option' : 'menuitem'}
                     aria-selected={isMulti ? isSelected : undefined}
                     tabIndex={item.disabled ? -1 : 0}
-                    padding={itemTokens.padding as string}
+                    style={{
+                        paddingTop: itemTokens.paddingTop,
+                        paddingRight: itemTokens.paddingRight,
+                        paddingBottom: itemTokens.paddingBottom,
+                        paddingLeft: itemTokens.paddingLeft,
+                        userSelect: 'none',
+                        overflow: 'hidden',
+                    }}
                     display="flex"
                     flexDirection="column"
                     gap={itemTokens.gap as number}
@@ -171,7 +178,6 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                             itemTokens.backgroundColor.focusVisible,
                     }}
                     cursor={item.disabled ? 'not-allowed' : 'pointer'}
-                    style={{ userSelect: 'none', overflow: 'hidden' }}
                     className={className}
                 >
                     <Block

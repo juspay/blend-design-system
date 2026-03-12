@@ -50,7 +50,10 @@ type SelectV2ItemStateToken<T> = {
 }
 
 export type SelectV2MenuItemTokensBase = {
-    padding: CSSObject['padding']
+    paddingTop: CSSObject['paddingTop']
+    paddingRight: CSSObject['paddingRight']
+    paddingBottom: CSSObject['paddingBottom']
+    paddingLeft: CSSObject['paddingLeft']
     margin: CSSObject['margin']
     borderRadius: CSSObject['borderRadius']
     gap: CSSObject['gap']

@@ -75,7 +75,14 @@ export const SubMenu = ({
     singleSelectTokens,
 }: SubMenuProps) => {
     const sub = singleSelectTokens.menu.submenu
-    const triggerPadding = String(sub.trigger.padding ?? '')
+    const triggerPadding = [
+        sub.trigger.paddingTop,
+        sub.trigger.paddingRight,
+        sub.trigger.paddingBottom,
+        sub.trigger.paddingLeft,
+    ]
+        .filter(Boolean)
+        .join(' ')
     const triggerMargin = String(sub.trigger.margin ?? '')
     const triggerRadius = String(sub.trigger.borderRadius ?? '')
     const bgHover = String(sub.trigger.backgroundColor.hover ?? '')
@@ -83,7 +90,14 @@ export const SubMenu = ({
     const contentBg = String(sub.content.backgroundColor ?? '')
     const contentBorder = String(sub.content.border ?? '')
     const contentRadius = String(sub.content.borderRadius ?? '')
-    const contentPadding = String(sub.content.padding ?? '')
+    const contentPadding = [
+        sub.content.paddingTop,
+        sub.content.paddingRight,
+        sub.content.paddingBottom,
+        sub.content.paddingLeft,
+    ]
+        .filter(Boolean)
+        .join(' ')
     const contentShadow = String(sub.content.boxShadow ?? '')
     return (
         <StyledSubMenu $padding={triggerPadding} $margin={triggerMargin}>

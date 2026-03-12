@@ -45,7 +45,10 @@ const SingleSelectV2VirtualList = ({
                     <GroupLabel
                         style={{
                             margin: menuGroupLabel.margin,
-                            padding: menuGroupLabel.padding,
+                            paddingTop: menuGroupLabel.paddingTop,
+                            paddingRight: menuGroupLabel.paddingRight,
+                            paddingBottom: menuGroupLabel.paddingBottom,
+                            paddingLeft: menuGroupLabel.paddingLeft,
                             width: '100%',
                         }}
                     >
@@ -140,7 +143,16 @@ const SingleSelectV2VirtualList = ({
                 ))}
             </div>
             {loadingComponent && hasMore && (
-                <Block padding={menuItem.padding}>{loadingComponent}</Block>
+                <Block
+                    style={{
+                        paddingTop: menuItem.paddingTop,
+                        paddingRight: menuItem.paddingRight,
+                        paddingBottom: menuItem.paddingBottom,
+                        paddingLeft: menuItem.paddingLeft,
+                    }}
+                >
+                    {loadingComponent}
+                </Block>
             )}
         </Block>
     )

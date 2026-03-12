@@ -240,7 +240,10 @@ export const getSingleSelectV2LightTokens = (
             },
             groupLabel: {
                 margin: `0 ${foundationToken.unit[8]}`,
-                padding: `${foundationToken.unit[8]} ${foundationToken.unit[6]}`,
+                paddingTop: foundationToken.unit[8],
+                paddingRight: foundationToken.unit[6],
+                paddingBottom: foundationToken.unit[8],
+                paddingLeft: foundationToken.unit[6],
                 fontSize: foundationToken.font.size.body.sm.fontSize,
                 fontWeight: foundationToken.font.weight[400],
                 color: {
@@ -254,7 +257,10 @@ export const getSingleSelectV2LightTokens = (
                 },
             },
             item: {
-                padding: `${foundationToken.unit[6]} ${foundationToken.unit[8]}`,
+                paddingTop: foundationToken.unit[6],
+                paddingRight: foundationToken.unit[8],
+                paddingBottom: foundationToken.unit[6],
+                paddingLeft: foundationToken.unit[8],
                 margin: `${foundationToken.unit[0]} ${foundationToken.unit[4]}`,
                 borderRadius: foundationToken.unit[8],
                 gap: foundationToken.unit[4],
@@ -314,7 +320,10 @@ export const getSingleSelectV2LightTokens = (
             },
             submenu: {
                 trigger: {
-                    padding: `${foundationToken.unit[8]} ${foundationToken.unit[6]}`,
+                    paddingTop: foundationToken.unit[8],
+                    paddingRight: foundationToken.unit[6],
+                    paddingBottom: foundationToken.unit[8],
+                    paddingLeft: foundationToken.unit[6],
                     margin: `0 ${foundationToken.unit[8]}`,
                     borderRadius: foundationToken.unit[4],
                     backgroundColor: {
@@ -327,7 +336,10 @@ export const getSingleSelectV2LightTokens = (
                     backgroundColor: foundationToken.colors.gray[0],
                     border: `1px solid ${foundationToken.colors.gray[200]}`,
                     borderRadius: foundationToken.unit[8],
-                    padding: foundationToken.unit[6],
+                    paddingTop: foundationToken.unit[6],
+                    paddingRight: foundationToken.unit[6],
+                    paddingBottom: foundationToken.unit[6],
+                    paddingLeft: foundationToken.unit[6],
                     boxShadow: foundationToken.shadows.lg,
                 },
                 optionText: {
@@ -341,8 +353,10 @@ export const getSingleSelectV2LightTokens = (
 
         mobilePanel: {
             header: {
-                paddingInline: foundationToken.unit[16],
-                paddingBlockEnd: foundationToken.unit[12],
+                paddingTop: foundationToken.unit[0],
+                paddingRight: foundationToken.unit[16],
+                paddingBottom: foundationToken.unit[12],
+                paddingLeft: foundationToken.unit[16],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
             },
         },
