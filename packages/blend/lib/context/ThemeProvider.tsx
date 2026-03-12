@@ -4,12 +4,20 @@ import initTokens from './initComponentTokens'
 import ThemeContext, { type ComponentTokenType } from './ThemeContext'
 import { Theme } from './theme.enum'
 import { AutofillStyles } from '../components/Inputs/AutofillStyles/AutofillStyles'
+import ShadowAware from './ShadowAware'
+
 type ThemeProviderProps = {
     foundationTokens?: ThemeType
     componentTokens?: ComponentTokenType
     breakpoints?: BreakpointType
     theme?: Theme | string
     children: React.ReactNode
+    /**
+     * When true, automatically detects Shadow DOM and injects styles into it.
+     * Set to false if you want to manually control ShadowAware wrapping.
+     * @default false
+     */
+    autoShadowDetection?: boolean
 }
 
 const ThemeProvider = ({
@@ -18,6 +26,7 @@ const ThemeProvider = ({
     breakpoints = BREAKPOINTS,
     theme = Theme.LIGHT,
     children,
+    autoShadowDetection = false,
 }: ThemeProviderProps) => {
     const defaultThemeContextValue = {
         foundationTokens,
@@ -29,7 +38,11 @@ const ThemeProvider = ({
     return (
         <ThemeContext.Provider value={defaultThemeContextValue}>
             <AutofillStyles />
-            {children}
+            {autoShadowDetection ? (
+                <ShadowAware autoDetect={true}>{children}</ShadowAware>
+            ) : (
+                children
+            )}
         </ThemeContext.Provider>
     )
 }

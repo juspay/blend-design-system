@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import ShadowAware, { useShadowRoot } from '../../lib/context/ShadowAware'
 import ThemeProvider from '../../lib/context/ThemeProvider'
 import styled from 'styled-components'
@@ -121,6 +121,93 @@ describe('ShadowAware', () => {
 
             const styledElements = shadowRoot.querySelectorAll('[data-styled]')
             expect(styledElements.length).toBeGreaterThan(0)
+        })
+    })
+
+    describe('Auto-Detection', () => {
+        it('auto-detects shadowRoot when rendered inside Shadow DOM with ShadowAware', async () => {
+            const host = document.createElement('div')
+            const shadowRoot = host.attachShadow({ mode: 'open' })
+
+            const TestComponent = () => {
+                const { shadowRoot: contextShadowRoot } = useShadowRoot()
+                return (
+                    <span data-testid="shadow-root">
+                        {contextShadowRoot ? 'has-shadow' : 'no-shadow'}
+                    </span>
+                )
+            }
+
+            const container = document.createElement('div')
+            shadowRoot.appendChild(container)
+
+            const { getByTestId } = render(
+                <ThemeProvider autoShadowDetection={true}>
+                    <TestComponent />
+                </ThemeProvider>,
+                { container }
+            )
+
+            // Wait for useEffect to run and state to update
+            await waitFor(
+                () => {
+                    expect(getByTestId('shadow-root')).toHaveTextContent(
+                        'has-shadow'
+                    )
+                },
+                { timeout: 1000 }
+            )
+        })
+
+        it('auto-detects shadowRoot for styled components with ShadowAware', async () => {
+            const host = document.createElement('div')
+            const shadowRoot = host.attachShadow({ mode: 'open' })
+
+            const container = document.createElement('div')
+            shadowRoot.appendChild(container)
+
+            render(
+                <ThemeProvider autoShadowDetection={true}>
+                    <StyledButton>Auto-styled</StyledButton>
+                </ThemeProvider>,
+                { container }
+            )
+
+            // Wait for useEffect to run and styles to be injected
+            await waitFor(
+                () => {
+                    const styledElements =
+                        shadowRoot.querySelectorAll('[data-styled]')
+                    expect(styledElements.length).toBeGreaterThan(0)
+                },
+                { timeout: 1000 }
+            )
+        })
+
+        it('respects autoShadowDetection=false to disable auto-detection', () => {
+            const host = document.createElement('div')
+            const shadowRoot = host.attachShadow({ mode: 'open' })
+
+            const TestComponent = () => {
+                const { shadowRoot: contextShadowRoot } = useShadowRoot()
+                return (
+                    <span data-testid="shadow-root">
+                        {contextShadowRoot ? 'has-shadow' : 'no-shadow'}
+                    </span>
+                )
+            }
+
+            const container = document.createElement('div')
+            shadowRoot.appendChild(container)
+
+            const { getByTestId } = render(
+                <ThemeProvider autoShadowDetection={false}>
+                    <TestComponent />
+                </ThemeProvider>,
+                { container }
+            )
+
+            expect(getByTestId('shadow-root')).toHaveTextContent('no-shadow')
         })
     })
 
