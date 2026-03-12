@@ -36,7 +36,7 @@ const PopoverV2Skeleton = ({
     const { show: showFooterSkeleton = false } = footerSkeleton || {}
 
     const gap = popoverTokens.gap[size]
-    const headerHeadingGap = popoverTokens.headerContainer.heading.gap[size]
+    const topContainerGap = popoverTokens.TopContainer.gap[size]
     const borderRadius = popoverTokens.borderRadius[size]
 
     if (showHeaderSkeleton) {
@@ -46,13 +46,13 @@ const PopoverV2Skeleton = ({
                     display="flex"
                     justifyContent="space-between"
                     alignItems="flex-start"
-                    gap={headerHeadingGap}
+                    gap={topContainerGap}
                 >
                     <Block
                         display="flex"
                         flexDirection="column"
                         flexGrow={1}
-                        gap={headerHeadingGap}
+                        gap={topContainerGap}
                     >
                         <Skeleton
                             variant={skeletonVariant}

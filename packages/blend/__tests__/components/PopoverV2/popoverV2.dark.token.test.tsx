@@ -51,9 +51,9 @@ describe('popoverV2.dark.token', () => {
             expect(sm.padding.bottom.lg).toBe(ft.unit[16])
         })
 
-        it('sm: headerContainer.heading all keys', () => {
+        it('sm: TopContainer.heading all keys', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
-            const h = tokens.sm.headerContainer.heading
+            const h = tokens.sm.TopContainer.heading
 
             expect(h.fontSize.sm).toBe(ft.font.size.body.md.fontSize)
             expect(h.fontSize.md).toBe(ft.font.size.body.lg.fontSize)
@@ -68,9 +68,9 @@ describe('popoverV2.dark.token', () => {
             expect(h.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
         })
 
-        it('sm: headerContainer.description all keys', () => {
+        it('sm: TopContainer.description all keys', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
-            const d = tokens.sm.headerContainer.description
+            const d = tokens.sm.TopContainer.description
 
             expect(d.fontSize.sm).toBe(ft.font.size.body.sm.fontSize)
             expect(d.fontSize.md).toBe(ft.font.size.body.md.fontSize)
@@ -86,9 +86,9 @@ describe('popoverV2.dark.token', () => {
 
         it('sm: footer.gap', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
-            expect(tokens.sm.footer.gap.sm).toBe(ft.unit[12])
-            expect(tokens.sm.footer.gap.md).toBe(ft.unit[12])
-            expect(tokens.sm.footer.gap.lg).toBe(ft.unit[12])
+            expect(tokens.sm.bottomContainer.gap.sm).toBe(ft.unit[12])
+            expect(tokens.sm.bottomContainer.gap.md).toBe(ft.unit[12])
+            expect(tokens.sm.bottomContainer.gap.lg).toBe(ft.unit[12])
         })
 
         it('lg: top-level and gap/borderRadius/zIndex', () => {
@@ -127,9 +127,9 @@ describe('popoverV2.dark.token', () => {
             expect(lg.padding.bottom.lg).toBe(ft.unit[16])
         })
 
-        it('lg: headerContainer.heading all keys', () => {
+        it('lg: TopContainer.heading all keys', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
-            const h = tokens.lg.headerContainer.heading
+            const h = tokens.lg.TopContainer.heading
 
             expect(h.fontSize.sm).toBe(ft.font.size.body.md.fontSize)
             expect(h.fontSize.md).toBe(ft.font.size.body.lg.fontSize)
@@ -143,9 +143,9 @@ describe('popoverV2.dark.token', () => {
             expect(h.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
         })
 
-        it('lg: headerContainer.description all keys', () => {
+        it('lg: TopContainer.description all keys', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
-            const d = tokens.lg.headerContainer.description
+            const d = tokens.lg.TopContainer.description
 
             expect(d.fontSize.sm).toBe(ft.font.size.body.sm.fontSize)
             expect(d.fontSize.md).toBe(ft.font.size.body.md.fontSize)
@@ -161,9 +161,9 @@ describe('popoverV2.dark.token', () => {
 
         it('lg: footer.gap', () => {
             const tokens = getPopoverV2DarkToken(FOUNDATION_THEME)
-            expect(tokens.lg.footer.gap.sm).toBe(ft.unit[12])
-            expect(tokens.lg.footer.gap.md).toBe(ft.unit[12])
-            expect(tokens.lg.footer.gap.lg).toBe(ft.unit[12])
+            expect(tokens.lg.bottomContainer.gap.sm).toBe(ft.unit[12])
+            expect(tokens.lg.bottomContainer.gap.md).toBe(ft.unit[12])
+            expect(tokens.lg.bottomContainer.gap.lg).toBe(ft.unit[12])
         })
 
         it('returns correct type and uses custom foundation tokens', () => {
@@ -185,12 +185,12 @@ describe('popoverV2.dark.token', () => {
                 getPopoverV2DarkToken(custom)
 
             expect(tokens.sm.background).toBe('#fff')
-            expect(tokens.sm.headerContainer.heading.color).toBe('#000')
-            expect(tokens.sm.headerContainer.description.color).toBe('#888')
+            expect(tokens.sm.TopContainer.heading.color).toBe('#000')
+            expect(tokens.sm.TopContainer.description.color).toBe('#888')
 
             expect(tokens.lg.background).toBe('#000')
-            expect(tokens.lg.headerContainer.heading.color).toBe('#fff')
-            expect(tokens.lg.headerContainer.description.color).toBe('#aaa')
+            expect(tokens.lg.TopContainer.heading.color).toBe('#fff')
+            expect(tokens.lg.TopContainer.description.color).toBe('#aaa')
         })
 
         it('returns full token shape for both breakpoints', () => {
@@ -204,8 +204,8 @@ describe('popoverV2.dark.token', () => {
                 'zIndex',
                 'borderRadius',
                 'padding',
-                'headerContainer',
-                'footer',
+                'TopContainer',
+                'bottomContainer',
             ] as const
 
             for (const key of keys) {
@@ -213,8 +213,9 @@ describe('popoverV2.dark.token', () => {
                 expect(tokens.lg).toHaveProperty(key)
             }
 
-            expect(tokens.sm.headerContainer).toHaveProperty('heading')
-            expect(tokens.sm.headerContainer).toHaveProperty('description')
+            expect(tokens.sm.TopContainer).toHaveProperty('heading')
+            expect(tokens.sm.TopContainer).toHaveProperty('description')
+            expect(tokens.sm.TopContainer).toHaveProperty('gap')
             expect(tokens.sm.padding).toHaveProperty('left')
             expect(tokens.sm.padding).toHaveProperty('right')
             expect(tokens.sm.padding).toHaveProperty('top')

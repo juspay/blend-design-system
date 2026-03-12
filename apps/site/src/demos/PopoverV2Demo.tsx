@@ -330,26 +330,6 @@ const PopoverV2Demo = () => {
                                 ))}
                             </select>
                         </div>
-
-                        <div className="mb-4">
-                            <label className="block mb-2 font-medium text-gray-700">
-                                Shadow
-                            </label>
-                            <select
-                                value={config.shadow}
-                                onChange={handleSelectChange('shadow')}
-                                className="w-full px-3 py-2 rounded border border-gray-300 text-sm bg-white focus:border-blue-500 focus:outline-none"
-                            >
-                                <option value="xs">XS</option>
-                                <option value="sm">SM</option>
-                                <option value="md">MD</option>
-                                <option value="lg">LG</option>
-                                <option value="xl">XL</option>
-                                <option value="2xl">2XL</option>
-                                <option value="full">Full</option>
-                            </select>
-                        </div>
-
                         <div className="mb-4">
                             <label className="block mb-2 font-medium text-gray-700">
                                 Side Offset
@@ -514,7 +494,6 @@ const PopoverV2Demo = () => {
                         size={config.size}
                         side={config.side}
                         align={config.align}
-                        shadow={config.shadow}
                         asModal={config.asModal}
                         useDrawerOnMobile={config.useDrawerOnMobile}
                         sideOffset={config.sideOffset}

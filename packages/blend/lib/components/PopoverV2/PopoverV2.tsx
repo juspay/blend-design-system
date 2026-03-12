@@ -43,10 +43,8 @@ const PopoverV2 = ({
     height,
     minHeight,
     maxHeight,
-    zIndex = 101,
     size = PopoverV2Size.MD,
     onClose,
-    shadow = 'lg',
     useDrawerOnMobile = true,
     avoidCollisions = true,
     skeleton,
@@ -121,7 +119,12 @@ const PopoverV2 = ({
             <RadixPopover.Portal>
                 <RadixPopover.Content
                     data-popover={heading || 'Popover'}
-                    style={{ zIndex, outline: 'none', minWidth, maxWidth }}
+                    style={{
+                        zIndex: popoverTokens.zIndex,
+                        outline: 'none',
+                        minWidth,
+                        maxWidth,
+                    }}
                     asChild
                     sideOffset={sideOffset}
                     side={side}
@@ -130,7 +133,7 @@ const PopoverV2 = ({
                     avoidCollisions={avoidCollisions}
                 >
                     <AnimatedPopoverSurface
-                        style={{ zIndex }}
+                        style={{ zIndex: popoverTokens.zIndex }}
                         {...(headingId
                             ? { 'aria-labelledby': headingId }
                             : { 'aria-label': heading || 'Popover dialog' })}
@@ -138,10 +141,7 @@ const PopoverV2 = ({
                             ? { 'aria-describedby': ariaDescribedBy }
                             : {})}
                         backgroundColor={popoverTokens.background}
-                        boxShadow={
-                            popoverTokens.shadow?.[shadow] ||
-                            popoverTokens.shadow?.lg
-                        }
+                        boxShadow={popoverTokens.shadow?.lg}
                         borderRadius={popoverTokens.borderRadius[size]}
                         border={popoverTokens.border}
                         width={width}

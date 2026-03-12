@@ -30,7 +30,10 @@ export type PopoverV2TokenType = {
             [key in PopoverV2Size]: CSSObject['paddingBottom']
         }
     }
-    headerContainer: {
+    TopContainer: {
+        gap: {
+            [key in PopoverV2Size]: CSSObject['gap']
+        }
         heading: {
             color: CSSObject['color']
             fontSize: {
@@ -41,9 +44,6 @@ export type PopoverV2TokenType = {
             }
             lineHeight: {
                 [key in PopoverV2Size]: CSSObject['lineHeight']
-            }
-            gap: {
-                [key in PopoverV2Size]: CSSObject['gap']
             }
             IconSize: {
                 [key in PopoverV2Size]: CSSObject['size']
@@ -60,12 +60,9 @@ export type PopoverV2TokenType = {
             lineHeight: {
                 [key in PopoverV2Size]: CSSObject['lineHeight']
             }
-            gap: {
-                [key in PopoverV2Size]: CSSObject['gap']
-            }
         }
     }
-    footer: {
+    bottomContainer: {
         gap: {
             [key in PopoverV2Size]: CSSObject['gap']
         }

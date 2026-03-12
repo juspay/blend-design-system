@@ -40,7 +40,7 @@ const PopoverV2Footer = ({
             data-design-system="true"
             display="flex"
             alignItems="center"
-            gap={popoverTokens.footer.gap[size]}
+            gap={popoverTokens.bottomContainer.gap[size]}
             justifyContent={'flex-start'}
         >
             {primaryAction && (

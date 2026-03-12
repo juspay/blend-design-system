@@ -49,7 +49,12 @@ export const getPopoverV2DarkToken = (
                     lg: foundationTokens.unit[16],
                 },
             },
-            headerContainer: {
+            TopContainer: {
+                gap: {
+                    sm: foundationTokens.unit[8],
+                    md: foundationTokens.unit[8],
+                    lg: foundationTokens.unit[8],
+                },
                 heading: {
                     // heading.fontSize.[size]
                     fontSize: {
@@ -71,11 +76,7 @@ export const getPopoverV2DarkToken = (
                         md: foundationTokens.font.size.body.lg.lineHeight,
                         lg: foundationTokens.font.size.body.lg.lineHeight,
                     },
-                    gap: {
-                        sm: foundationTokens.unit[8],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[8],
-                    },
+
                     IconSize: {
                         sm: foundationTokens.font.fontSize[18],
                         md: foundationTokens.font.fontSize[18],
@@ -83,11 +84,6 @@ export const getPopoverV2DarkToken = (
                     },
                 },
                 description: {
-                    gap: {
-                        sm: foundationTokens.unit[8],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[8],
-                    },
                     // description.fontSize.[size]
                     fontSize: {
                         sm: foundationTokens.font.size.body.sm.fontSize,
@@ -110,7 +106,7 @@ export const getPopoverV2DarkToken = (
                     },
                 },
             },
-            footer: {
+            bottomContainer: {
                 // footer.gap.[size]
                 gap: {
                     sm: foundationTokens.unit[12],
@@ -163,7 +159,12 @@ export const getPopoverV2DarkToken = (
                     lg: foundationTokens.unit[16],
                 },
             },
-            headerContainer: {
+            TopContainer: {
+                gap: {
+                    sm: foundationTokens.unit[8],
+                    md: foundationTokens.unit[8],
+                    lg: foundationTokens.unit[8],
+                },
                 heading: {
                     // heading.fontSize.[size]
                     fontSize: {
@@ -185,11 +186,7 @@ export const getPopoverV2DarkToken = (
                         md: foundationTokens.font.size.body.lg.lineHeight,
                         lg: foundationTokens.font.size.body.lg.lineHeight,
                     },
-                    gap: {
-                        sm: foundationTokens.unit[8],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[8],
-                    },
+
                     IconSize: {
                         sm: foundationTokens.font.fontSize[18],
                         md: foundationTokens.font.fontSize[18],
@@ -197,11 +194,6 @@ export const getPopoverV2DarkToken = (
                     },
                 },
                 description: {
-                    gap: {
-                        sm: foundationTokens.unit[8],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[8],
-                    },
                     // description.fontSize.[size]
                     fontSize: {
                         sm: foundationTokens.font.size.body.sm.fontSize,
@@ -224,7 +216,7 @@ export const getPopoverV2DarkToken = (
                     },
                 },
             },
-            footer: {
+            bottomContainer: {
                 gap: {
                     sm: foundationTokens.unit[12],
                     md: foundationTokens.unit[12],

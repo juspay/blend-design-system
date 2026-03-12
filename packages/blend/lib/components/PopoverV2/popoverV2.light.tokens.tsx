@@ -19,7 +19,7 @@ export const getPopoverV2LightToken = (
                 lg: foundationTokens.unit[12],
             },
             // zIndex (size-independent)
-            zIndex: 1000,
+            zIndex: 101,
             // borderRadius.[size]
             borderRadius: {
                 sm: foundationTokens.border.radius[8],
@@ -49,7 +49,12 @@ export const getPopoverV2LightToken = (
                     lg: foundationTokens.unit[16],
                 },
             },
-            headerContainer: {
+            TopContainer: {
+                gap: {
+                    sm: foundationTokens.unit[8],
+                    md: foundationTokens.unit[8],
+                    lg: foundationTokens.unit[8],
+                },
                 heading: {
                     // heading.fontSize.[size]
                     fontSize: {
@@ -71,11 +76,7 @@ export const getPopoverV2LightToken = (
                         md: foundationTokens.unit[24],
                         lg: foundationTokens.unit[24],
                     },
-                    gap: {
-                        sm: foundationTokens.unit[8],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[8],
-                    },
+
                     IconSize: {
                         sm: foundationTokens.font.fontSize[18],
                         md: foundationTokens.font.fontSize[18],
@@ -103,14 +104,9 @@ export const getPopoverV2LightToken = (
                         md: foundationTokens.unit[16],
                         lg: foundationTokens.unit[16],
                     },
-                    gap: {
-                        sm: foundationTokens.unit[8],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[8],
-                    },
                 },
             },
-            footer: {
+            bottomContainer: {
                 // footer.gap.[size]
                 gap: {
                     sm: foundationTokens.unit[12],
@@ -133,7 +129,7 @@ export const getPopoverV2LightToken = (
                 lg: foundationTokens.unit[12],
             },
             // zIndex (size-independent)
-            zIndex: 1000,
+            zIndex: 101,
             // borderRadius.[size]
             borderRadius: {
                 sm: foundationTokens.border.radius[8],
@@ -163,13 +159,13 @@ export const getPopoverV2LightToken = (
                     lg: foundationTokens.unit[16],
                 },
             },
-            headerContainer: {
+            TopContainer: {
+                gap: {
+                    sm: foundationTokens.unit[8],
+                    md: foundationTokens.unit[8],
+                    lg: foundationTokens.unit[8],
+                },
                 heading: {
-                    gap: {
-                        sm: foundationTokens.unit[8],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[8],
-                    },
                     // heading.fontSize.[size]
                     fontSize: {
                         sm: foundationTokens.font.size.body.md.fontSize,
@@ -197,11 +193,6 @@ export const getPopoverV2LightToken = (
                     },
                 },
                 description: {
-                    gap: {
-                        sm: foundationTokens.unit[8],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[8],
-                    },
                     // description.fontSize.[size]
                     fontSize: {
                         sm: foundationTokens.font.size.body.sm.fontSize,
@@ -224,7 +215,7 @@ export const getPopoverV2LightToken = (
                     },
                 },
             },
-            footer: {
+            bottomContainer: {
                 // footer.gap.[size]
                 gap: {
                     sm: foundationTokens.unit[12],

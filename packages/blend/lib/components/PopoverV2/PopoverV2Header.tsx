@@ -54,14 +54,10 @@ const PopoverV2Header = ({
                 as="span"
                 data-element="popover-header"
                 data-id={heading || 'popover-header'}
-                fontSize={popoverTokens.headerContainer.heading.fontSize[size]}
-                fontWeight={
-                    popoverTokens.headerContainer.heading.fontWeight[size]
-                }
-                color={popoverTokens.headerContainer.heading.color}
-                lineHeight={
-                    popoverTokens.headerContainer.heading.lineHeight[size]
-                }
+                fontSize={popoverTokens.TopContainer.heading.fontSize[size]}
+                fontWeight={popoverTokens.TopContainer.heading.fontWeight[size]}
+                color={popoverTokens.TopContainer.heading.color}
+                lineHeight={popoverTokens.TopContainer.heading.lineHeight[size]}
             >
                 {heading}
             </PrimitiveText>
@@ -74,15 +70,13 @@ const PopoverV2Header = ({
                 {...(descriptionId ? { id: descriptionId } : {})}
                 data-element="popover-description"
                 data-id={description || 'popover-description'}
-                fontSize={
-                    popoverTokens.headerContainer.description.fontSize[size]
-                }
-                color={popoverTokens.headerContainer.description.color}
+                fontSize={popoverTokens.TopContainer.description.fontSize[size]}
+                color={popoverTokens.TopContainer.description.color}
                 fontWeight={
-                    popoverTokens.headerContainer.description.fontWeight[size]
+                    popoverTokens.TopContainer.description.fontWeight[size]
                 }
                 lineHeight={
-                    popoverTokens.headerContainer.description.lineHeight[size]
+                    popoverTokens.TopContainer.description.lineHeight[size]
                 }
             >
                 {description}
@@ -93,15 +87,14 @@ const PopoverV2Header = ({
         <Block
             display="flex"
             flexDirection="column"
-            gap={popoverTokens.headerContainer.heading.gap[size]}
+            gap={popoverTokens.TopContainer.gap[size]}
         >
             <Block
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
-                gap={popoverTokens.headerContainer.description.gap[size]}
             >
-                {heading ? <Header /> : description ? <Description /> : null}
+                {heading && <Header />}
                 {showCloseButton && (
                     <Button
                         subType={ButtonSubType.INLINE}
@@ -109,13 +102,12 @@ const PopoverV2Header = ({
                         leadingIcon={
                             <X
                                 size={
-                                    popoverTokens.headerContainer.heading
-                                        .IconSize[size] as number
+                                    popoverTokens.TopContainer.heading.IconSize[
+                                        size
+                                    ] as number
                                 }
                                 aria-hidden="true"
-                                color={
-                                    popoverTokens.headerContainer.heading.color
-                                }
+                                color={popoverTokens.TopContainer.heading.color}
                             />
                         }
                         onClick={onClose}
@@ -123,7 +115,7 @@ const PopoverV2Header = ({
                     ></Button>
                 )}
             </Block>
-            {description && heading && <Description />}
+            {description && <Description />}
         </Block>
     )
 }

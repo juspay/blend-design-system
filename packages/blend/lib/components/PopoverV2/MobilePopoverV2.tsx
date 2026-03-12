@@ -46,7 +46,6 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
     const shouldShowSkeleton = skeleton?.show
     const skeletonVariant: SkeletonVariant =
         (skeleton?.variant as SkeletonVariant) ?? 'pulse'
-
     const bodySkeletonWidth = skeleton?.bodySkeletonProps?.width || '100%'
     const bodySkeletonHeight = skeleton?.bodySkeletonProps?.height || 200
     const baseId = useId()
@@ -76,8 +75,9 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
                     direction="bottom"
                     showHandle={true}
                     contentDriven={true}
-                    aria-labelledby={headingId}
-                    aria-label={heading || 'Popover dialog'}
+                    {...(headingId
+                        ? { 'aria-labelledby': headingId }
+                        : { 'aria-label': heading || 'Popover dialog' })}
                     aria-describedby={ariaDescribedBy}
                 >
                     {(heading || description || shouldShowSkeleton) && (
