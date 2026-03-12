@@ -6,7 +6,6 @@ import { ColumnManagerProps } from './types'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TableTokenType } from './dataTable.tokens'
-import { FOUNDATION_THEME } from '../../tokens'
 import { MultiSelect } from '../MultiSelect'
 import {
     MultiSelectVariant,
@@ -199,6 +198,10 @@ export const ColumnManager = <T extends Record<string, unknown>>({
         }
     }
 
+    const columnManagerIcon = tableTokens.header.actionIcons.columnManagerIcon
+    const columnManagerTrigger =
+        tableTokens.header.actionIcons.columnManagerTrigger
+
     const customTrigger = (
         <PrimitiveButton
             ref={(el) => {
@@ -209,6 +212,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             justifyContent="center"
             width="auto"
             height="auto"
+            backgroundColor={columnManagerTrigger?.backgroundColor}
             cursor={disabled ? 'not-allowed' : 'pointer'}
             border="none"
             disabled={disabled}
@@ -227,21 +231,23 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                 }
             }}
             style={{
-                opacity: disabled ? 0.4 : 1,
+                opacity: disabled
+                    ? (columnManagerTrigger?.opacity as React.CSSProperties['opacity'])
+                    : 1,
             }}
             _focus={{
                 outline: 'none',
             }}
             _focusVisible={{
-                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                outlineOffset: '1px',
-                borderRadius: '4px',
-                boxShadow: `0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]}`,
+                outline: columnManagerTrigger?.focusVisible.outline,
+                outlineOffset: columnManagerTrigger?.focusVisible.outlineOffset,
+                borderRadius: columnManagerTrigger?.focusVisible.borderRadius,
+                boxShadow: columnManagerTrigger?.focusVisible.boxShadow,
             }}
         >
             <Plus
-                size={tableTokens.header.actionIcons.columnManagerIcon.width}
-                color={FOUNDATION_THEME.colors.gray[400]}
+                size={columnManagerIcon.width}
+                color={columnManagerIcon.color}
                 aria-hidden="true"
             />
         </PrimitiveButton>
