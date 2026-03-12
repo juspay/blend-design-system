@@ -52,7 +52,7 @@ const PopoverV2 = ({
     const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useResponsiveTokens<PopoverV2TokenType>('POPOVERV2')
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
-    const isMobile = breakPointLabel === 'sm'
+    const isSmallScreen = breakPointLabel === 'sm'
 
     const isCustomPopover =
         !heading && !description && !primaryAction && !secondaryAction
@@ -72,7 +72,7 @@ const PopoverV2 = ({
         }
     }, [open])
 
-    if (isMobile && useDrawerOnMobile) {
+    if (isSmallScreen && useDrawerOnMobile) {
         return (
             <MobilePopoverV2
                 skeleton={skeleton}
