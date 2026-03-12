@@ -1,6 +1,6 @@
-import { CodeV2Variant } from './types'
+import { CodeV2Variant } from './codeV2.types'
 import type * as Monaco from 'monaco-editor'
-import type { CodeV2Tokens } from './tokens'
+import type { CodeV2Tokens } from './codeV2.tokens'
 export const createCopyToClipboard = (
     code: string,
     setIsCopied: (copied: boolean) => void
