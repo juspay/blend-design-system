@@ -163,7 +163,8 @@ import {
     getRadioV2Tokens,
     ResponsiveRadioV2Tokens,
 } from '../components/SelectorV2/RadioV2/radioV2.tokens'
- import {   getPopoverV2Tokens,
+import {
+    getPopoverV2Tokens,
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
 
