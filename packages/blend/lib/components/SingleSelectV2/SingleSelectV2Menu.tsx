@@ -130,8 +130,8 @@ const SingleSelectV2Menu = ({
     const virtualizer = useVirtualizer({
         count: flattenedItems.length,
         getScrollElement: () => virtualScrollRef.current,
-        getItemKey: (index) => flattenedItems[index]?.id ?? index,
-        estimateSize: (index) =>
+        getItemKey: (index: number) => flattenedItems[index]?.id ?? index,
+        estimateSize: (index: number) =>
             getVirtualRowEstimate(flattenedItems, index) ??
             virtualListItemHeight,
         overscan: virtualListOverscan,
