@@ -58,6 +58,7 @@
         "recharts": "^2.15.3",
         "sonner": "^2.0.3",
         "styled-components": "^6.1.18",
+        "@tanstack/react-virtual": "^3.11.0",
         "vaul": "^1.1.2"
     },
     "devDependencies": {

@@ -60,8 +60,7 @@ jobs:
 
             - name: Run tests with coverage
               run: |
-                  cd packages/blend
-                  pnpm test:coverage
+                  pnpm test:blend:coverage
               env:
                   CI: true
 
