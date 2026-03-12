@@ -3,7 +3,7 @@ import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSe
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import CodeEditorV2 from '../../../../packages/blend/lib/components/CodeV2/CodeEditorV2/CodeEditorV2'
-import { CodeV2Variant } from '../../../../packages/blend/lib/components/CodeV2/types'
+import { CodeV2Variant } from '../../../../packages/blend/lib/components/CodeV2/codeV2.types'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import {
     Button,
