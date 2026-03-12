@@ -55,7 +55,7 @@ export const MIN_SCROLLBAR_SIZE = 8
 const SCROLLBAR_SIZE_RATIO = 0.8
 const PLACEHOLDER_VERTICAL_OFFSET_MULTIPLIER = 2
 
-export const BLEND_EDITOR_THEME_NAME = 'blend-code-theme'
+export const BLEND_EDITOR_THEME_NAME = 'light'
 
 // ---------------------------------------------------------------------------
 // Value coercion
