@@ -17,7 +17,7 @@ import { FOUNDATION_THEME } from '../../../lib/tokens'
 import { Theme } from '../../../lib/context/theme.enum'
 
 vi.mock(
-    '../../../lib/components/SingleSelectV2/singleSelectV2MenuItems',
+    '../../../lib/components/SingleSelectV2/SingleSelectV2MenuItems',
     () => ({
         MenuItem: ({ item }: { item: { label: string } }) => (
             <div data-testid="virtual-menu-item">{item.label}</div>
