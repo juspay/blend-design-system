@@ -1031,7 +1031,7 @@ function CompactTable() {
             {
                 content: 'enableRowSelection',
                 hintText:
-                    'When true, enables row selection with checkboxes in the first column. Users can select individual rows or use "select all" functionality. Selected rows can trigger bulk actions. Requires bulkActions to be provided for actions to appear. Defaults to false.',
+                    'When true, enables row selection with checkboxes in the first column. Users can select individual rows or use "select all" functionality. Selected rows can trigger bulk actions when showBulkActionBar is true. Defaults to false.',
             },
             {
                 content: 'boolean',
@@ -1039,6 +1039,19 @@ function CompactTable() {
                     'true enables row selection, false disables selection checkboxes',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'showBulkActionBar',
+                hintText:
+                    'When true (default), the bulk action bar is shown when rows are selected, with Export, Deselect all, and custom actions. When false, the bulk action bar is hidden while checkbox selection remains available. Use when you need selection state (e.g. via onRowSelectionChange) but do not want to show the bulk actions UI.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows bulk action bar when rows are selected (default), false hides it',
+            },
+            { content: 'true' },
         ],
         [
             {
