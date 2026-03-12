@@ -19,7 +19,7 @@ export const getPopoverV2DarkToken = (
                 lg: foundationTokens.unit[12],
             },
             // zIndex (size-independent)
-            zIndex: 1000,
+            zIndex: 101,
             // borderRadius.[size]
             borderRadius: {
                 sm: foundationTokens.border.radius[8],
@@ -72,9 +72,9 @@ export const getPopoverV2DarkToken = (
                     color: foundationTokens.colors.gray[900],
                     // heading.lineHeight.[size]
                     lineHeight: {
-                        sm: foundationTokens.font.size.body.md.lineHeight,
-                        md: foundationTokens.font.size.body.lg.lineHeight,
-                        lg: foundationTokens.font.size.body.lg.lineHeight,
+                        sm: foundationTokens.unit[24],
+                        md: foundationTokens.unit[24],
+                        lg: foundationTokens.unit[24],
                     },
 
                     IconSize: {
@@ -100,9 +100,9 @@ export const getPopoverV2DarkToken = (
                     color: foundationTokens.colors.gray[500],
                     // description.lineHeight.[size]
                     lineHeight: {
-                        sm: foundationTokens.font.size.body.sm.lineHeight,
-                        md: foundationTokens.font.size.body.md.lineHeight,
-                        lg: foundationTokens.font.size.body.lg.lineHeight,
+                        sm: foundationTokens.unit[16],
+                        md: foundationTokens.unit[16],
+                        lg: foundationTokens.unit[16],
                     },
                 },
             },
@@ -129,7 +129,7 @@ export const getPopoverV2DarkToken = (
                 lg: foundationTokens.unit[12],
             },
             // zIndex (size-independent)
-            zIndex: 1000,
+            zIndex: 101,
             // borderRadius.[size]
             borderRadius: {
                 sm: foundationTokens.border.radius[8],
@@ -182,9 +182,9 @@ export const getPopoverV2DarkToken = (
                     color: foundationTokens.colors.gray[0],
                     // heading.lineHeight.[size]
                     lineHeight: {
-                        sm: foundationTokens.font.size.body.md.lineHeight,
-                        md: foundationTokens.font.size.body.lg.lineHeight,
-                        lg: foundationTokens.font.size.body.lg.lineHeight,
+                        sm: foundationTokens.unit[24],
+                        md: foundationTokens.unit[24],
+                        lg: foundationTokens.unit[24],
                     },
 
                     IconSize: {
@@ -210,9 +210,9 @@ export const getPopoverV2DarkToken = (
                     color: foundationTokens.colors.gray[400],
                     // description.lineHeight.[size]
                     lineHeight: {
-                        sm: foundationTokens.font.size.body.sm.lineHeight,
-                        md: foundationTokens.font.size.body.md.lineHeight,
-                        lg: foundationTokens.font.size.body.lg.lineHeight,
+                        sm: foundationTokens.unit[20],
+                        md: foundationTokens.unit[20],
+                        lg: foundationTokens.unit[20],
                     },
                 },
             },
