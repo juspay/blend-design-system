@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { CodeV2Tokens } from './tokens'
+import { CodeV2Tokens } from './codeV2.tokens'
 export enum CodeV2Variant {
     DEFAULT = 'default',
     NO_GUTTER = 'no-gutter',
@@ -43,6 +43,29 @@ export type CodeV2Props = {
     showCopyButton?: boolean
     autoFormat?: boolean
     language?: SupportedLanguage
+}
+export type CodeEditorV2Props = {
+    value: string
+    onChange?: (value: string) => void
+    variant?: CodeV2Variant
+    showLineNumbers?: boolean
+    showHeader?: boolean
+    header?: string
+    headerLeftSlot?: ReactNode
+    headerRightSlot?: ReactNode
+    showLeftIcon?: boolean
+    showCopyButton?: boolean
+    language?: SupportedLanguage
+    placeholder?: string
+    readOnly?: boolean
+    disabled?: boolean
+    minHeight?: string | number
+    maxHeight?: string | number
+    height?: string | number
+    className?: string
+    onBlur?: () => void
+    onFocus?: () => void
+    autoFocus?: boolean
 }
 export type CodeV2HeaderProps = {
     header: string

@@ -1,8 +1,8 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveCodeV2Tokens } from './tokens'
-import { DiffLineType } from './types'
+import { ResponsiveCodeV2Tokens } from './codeV2.tokens'
+import { DiffLineType } from './codeV2.types'
 
-export const lightCodeTokens = (
+export const darkCodeTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveCodeV2Tokens => {
     return {

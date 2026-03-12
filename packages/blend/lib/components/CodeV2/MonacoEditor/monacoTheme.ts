@@ -1,5 +1,5 @@
 import type * as Monaco from 'monaco-editor'
-import type { CodeV2Tokens } from '../tokens'
+import type { CodeV2Tokens } from '../codeV2.tokens'
 const MONACO_COLOR_FALLBACK = '#24292F'
 
 const toMonacoColor = (

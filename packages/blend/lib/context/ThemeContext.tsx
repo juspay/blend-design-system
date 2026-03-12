@@ -177,7 +177,7 @@ import {
 import { 
     getCodeV2Tokens,
     ResponsiveCodeV2Tokens,
-} from '../components/CodeV2/tokens'
+} from '../components/CodeV2/codeV2.tokens'
 
 import {
     getBreadcrumbV2Tokens,
