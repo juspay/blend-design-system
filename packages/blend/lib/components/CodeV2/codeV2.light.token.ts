@@ -1,6 +1,6 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { ResponsiveCodeV2Tokens } from './codeV2.tokens'
-import { DiffLineType } from './codeV2.types'
+import { DiffLineType, MonacoTheme } from './codeV2.types'
 
 export const lightCodeTokens = (
     foundationToken: FoundationTokenType
@@ -11,6 +11,7 @@ export const lightCodeTokens = (
             border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
+            theme: MonacoTheme.LIGHT,
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
@@ -91,6 +92,7 @@ export const lightCodeTokens = (
             border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
+            theme: MonacoTheme.LIGHT,
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
