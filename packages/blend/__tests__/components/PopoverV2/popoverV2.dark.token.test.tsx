@@ -22,7 +22,7 @@ describe('popoverV2.dark.token', () => {
             expect(sm.background).toBe(ft.colors.gray[0])
             expect(sm.border).toBe(ft.border.radius[8])
             expect(sm.shadow).toBe(ft.shadows)
-            expect(sm.zIndex).toBe(1000)
+            expect(sm.zIndex).toBe(101)
 
             expect(sm.gap.sm).toBe(ft.unit[12])
             expect(sm.gap.md).toBe(ft.unit[12])
@@ -63,9 +63,9 @@ describe('popoverV2.dark.token', () => {
             expect(h.fontWeight.md).toBe(ft.font.weight[600])
             expect(h.fontWeight.lg).toBe(ft.font.weight[600])
             expect(h.color).toBe(ft.colors.gray[900])
-            expect(h.lineHeight.sm).toBe(ft.font.size.body.md.lineHeight)
-            expect(h.lineHeight.md).toBe(ft.font.size.body.lg.lineHeight)
-            expect(h.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
+            expect(h.lineHeight.sm).toBe(ft.unit[24])
+            expect(h.lineHeight.md).toBe(ft.unit[24])
+            expect(h.lineHeight.lg).toBe(ft.unit[24])
         })
 
         it('sm: TopContainer.description all keys', () => {
@@ -79,9 +79,9 @@ describe('popoverV2.dark.token', () => {
             expect(d.fontWeight.md).toBe(ft.font.weight[500])
             expect(d.fontWeight.lg).toBe(ft.font.weight[500])
             expect(d.color).toBe(ft.colors.gray[500])
-            expect(d.lineHeight.sm).toBe(ft.font.size.body.sm.lineHeight)
-            expect(d.lineHeight.md).toBe(ft.font.size.body.md.lineHeight)
-            expect(d.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
+            expect(d.lineHeight.sm).toBe(ft.unit[16])
+            expect(d.lineHeight.md).toBe(ft.unit[16])
+            expect(d.lineHeight.lg).toBe(ft.unit[16])
         })
 
         it('sm: footer.gap', () => {
@@ -98,7 +98,7 @@ describe('popoverV2.dark.token', () => {
             expect(lg.background).toBe(ft.colors.gray[900])
             expect(lg.border).toBe(ft.border.radius[8])
             expect(lg.shadow).toBe(ft.shadows)
-            expect(lg.zIndex).toBe(1000)
+            expect(lg.zIndex).toBe(101)
 
             expect(lg.gap.sm).toBe(ft.unit[12])
             expect(lg.gap.md).toBe(ft.unit[12])
@@ -138,9 +138,9 @@ describe('popoverV2.dark.token', () => {
             expect(h.fontWeight.md).toBe(ft.font.weight[600])
             expect(h.fontWeight.lg).toBe(ft.font.weight[600])
             expect(h.color).toBe(ft.colors.gray[0])
-            expect(h.lineHeight.sm).toBe(ft.font.size.body.md.lineHeight)
-            expect(h.lineHeight.md).toBe(ft.font.size.body.lg.lineHeight)
-            expect(h.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
+            expect(h.lineHeight.sm).toBe(ft.unit[24])
+            expect(h.lineHeight.md).toBe(ft.unit[24])
+            expect(h.lineHeight.lg).toBe(ft.unit[24])
         })
 
         it('lg: TopContainer.description all keys', () => {
@@ -154,9 +154,9 @@ describe('popoverV2.dark.token', () => {
             expect(d.fontWeight.md).toBe(ft.font.weight[500])
             expect(d.fontWeight.lg).toBe(ft.font.weight[500])
             expect(d.color).toBe(ft.colors.gray[400])
-            expect(d.lineHeight.sm).toBe(ft.font.size.body.sm.lineHeight)
-            expect(d.lineHeight.md).toBe(ft.font.size.body.md.lineHeight)
-            expect(d.lineHeight.lg).toBe(ft.font.size.body.lg.lineHeight)
+            expect(d.lineHeight.sm).toBe(ft.unit[20])
+            expect(d.lineHeight.md).toBe(ft.unit[20])
+            expect(d.lineHeight.lg).toBe(ft.unit[20])
         })
 
         it('lg: footer.gap', () => {
