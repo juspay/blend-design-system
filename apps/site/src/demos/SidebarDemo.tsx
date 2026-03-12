@@ -121,6 +121,8 @@ import AlertV2Demo from './AlertV2Demo'
 import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
+import SingleSelectDemoV2 from './SingleSelectDemoV2'
+import MultiSelectDemoV2 from './MultiSelectDemoV2'
 import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
@@ -184,6 +186,7 @@ const SidebarDemo = () => {
         | 'singleSelectGroup'
         | 'multiSelectGroup'
         | 'multiSelect'
+        | 'multiSelectV2'
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
@@ -212,6 +215,7 @@ const SidebarDemo = () => {
         | 'textInputAutofillTestV2'
         | 'keyValuePairV2'
         | 'textInputGroup'
+        | 'singleSelectV2'
         | 'timeline'
         | 'statCardV2'
         | 'tooltipV2'
@@ -477,6 +481,8 @@ const SidebarDemo = () => {
                 return <SwitchDemo />
             case 'switchV2':
                 return <SwitchV2Demo />
+            case 'singleSelectV2':
+                return <SingleSelectDemoV2 />
             case 'checkboxV2':
                 return <CheckboxV2Demo />
             case 'menu':
@@ -491,6 +497,8 @@ const SidebarDemo = () => {
                 return <MultiSelectGroupDemo />
             case 'multiSelect':
                 return <MultiSelectDemo />
+            case 'multiSelectV2':
+                return <MultiSelectDemoV2 />
             case 'progressBar':
                 return <ProgressBarDemo />
             case 'drawer':
@@ -1049,6 +1057,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('singleSelect'),
                 },
                 {
+                    label: 'Single Select V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelectV2',
+                    onClick: () => setActiveComponent('singleSelectV2'),
+                },
+                {
                     label: 'Single Select Group',
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
@@ -1063,6 +1079,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'multiSelect',
                     onClick: () => setActiveComponent('multiSelect'),
+                },
+                {
+                    label: 'Multi Select V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelectV2',
+                    onClick: () => setActiveComponent('multiSelectV2'),
                 },
                 {
                     label: 'Multi Select Group',
