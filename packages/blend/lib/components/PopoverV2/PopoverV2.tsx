@@ -83,7 +83,7 @@ const PopoverV2 = forwardRef<HTMLDivElement, PopoverV2Props>(
 
         const shouldShowSkeleton = skeleton?.show
         const showBodySkeleton = skeleton?.bodySkeletonProps?.show
-        const skeletonVariant = skeleton?.variant || 'pulse'
+        const skeletonVariant = skeleton?.variant ?? 'pulse'
 
         const baseId = useId()
         const headingId = hasHeading ? `${baseId}-heading` : undefined
@@ -128,12 +128,6 @@ const PopoverV2 = forwardRef<HTMLDivElement, PopoverV2Props>(
                 <RadixPopover.Portal>
                     <RadixPopover.Content
                         data-popover={heading || 'Popover'}
-                        style={{
-                            zIndex: popoverTokens.zIndex,
-                            outline: 'none',
-                            minWidth,
-                            maxWidth,
-                        }}
                         asChild
                         sideOffset={sideOffset}
                         side={side}
@@ -142,7 +136,7 @@ const PopoverV2 = forwardRef<HTMLDivElement, PopoverV2Props>(
                         avoidCollisions={avoidCollisions}
                     >
                         <AnimatedPopoverSurface
-                            ref={ref as React.RefObject<HTMLDivElement>}
+                            ref={ref}
                             style={{ zIndex: popoverTokens.zIndex }}
                             {...(headingId
                                 ? { 'aria-labelledby': headingId }
@@ -203,7 +197,7 @@ const PopoverV2 = forwardRef<HTMLDivElement, PopoverV2Props>(
                                     popoverTokens={popoverTokens}
                                     size={size}
                                     bodySkeleton={{
-                                        show: showBodySkeleton || false,
+                                        show: showBodySkeleton,
                                         width:
                                             skeleton?.bodySkeletonProps
                                                 ?.width || '100%',
