@@ -70,6 +70,12 @@ export type CodeEditorV2Props = {
     onBlur?: () => void
     onFocus?: () => void
     autoFocus?: boolean
+    /** When true, renders a side-by-side diff view instead of a single editor. */
+    diff?: boolean
+    /** The original (left-side) source for diff mode. */
+    originalValue?: string
+    /** Render diffs inline (single column) instead of side-by-side. */
+    renderSideBySide?: boolean
 }
 export type CodeV2HeaderProps = {
     header: string
@@ -97,4 +103,10 @@ export type MonacoEditorWrapperProps = {
     onBlur?: () => void
     /** When true, focuses the editor on mount. Defaults to false. */
     autoFocus?: boolean
+    /** When true, renders a side-by-side diff view instead of a single editor. */
+    diff?: boolean
+    /** The original (left-side) source for diff mode. */
+    originalValue?: string
+    /** Render diffs inline (single column) instead of side-by-side. */
+    renderSideBySide?: boolean
 }

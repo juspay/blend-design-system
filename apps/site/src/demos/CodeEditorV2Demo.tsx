@@ -11,7 +11,7 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
 import type { SupportedLanguage } from '../../../../packages/blend/lib/components/CodeBlock/types'
-import { Save, Play, Download } from 'lucide-react'
+import { Save, Play, Download, GitCompareArrows } from 'lucide-react'
 
 const CodeEditorV2Demo = () => {
     // State for controls
@@ -447,6 +447,87 @@ def process_transactions(transactions):
                             header="auto-grow.jsx"
                             language="jsx"
                             minHeight="180px"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Diff Editor */}
+            <div className="space-y-6" id="diff-editor">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                        <GitCompareArrows size={24} />
+                        <h2 className="text-2xl font-bold">Diff Editor</h2>
+                    </div>
+                    <p className="text-gray-600">
+                        Compare two versions of code side-by-side or inline
+                        using Monaco's built-in diff view.
+                    </p>
+                </div>
+
+                <div className="space-y-8">
+                    {/* Side-by-side diff */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Side-by-Side Diff
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Original code on the left, modified code on the
+                            right. Added lines are highlighted in green, removed
+                            lines in red.
+                        </p>
+                        <CodeEditorV2
+                            diff
+                            originalValue={`function getPaymentPriority(order) {
+  const priorities = [];
+  if (order.paymentMethod === 'UPI') {
+    priorities.push('PAYU');
+  }
+  return priorities.length ? priorities : ['DEFAULT'];
+}`}
+                            value={`function getPaymentPriority(order) {
+  const priorities = [];
+  if (order.udf3 === 'insurance' && order.udf4 === 'health' && order.paymentMethod === 'UPI') {
+    priorities.push('PAYU');
+    priorities.push('RAZORPAY');
+  }
+  if (order.amount > 10000) {
+    priorities.push('STRIPE');
+  }
+  return priorities.length ? priorities : ['DEFAULT'];
+}`}
+                            header="payment.js — diff"
+                            language="javascript"
+                            height="300px"
+                        />
+                    </div>
+
+                    {/* Inline diff */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">Inline Diff</h3>
+                        <p className="text-sm text-gray-600">
+                            Single column diff view with additions and removals
+                            shown inline. Set{' '}
+                            <code>renderSideBySide=false</code>.
+                        </p>
+                        <CodeEditorV2
+                            diff
+                            renderSideBySide={false}
+                            originalValue={`interface User {
+  id: number;
+  name: string;
+  email: string;
+}`}
+                            value={`interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'user' | 'guest';
+  createdAt: Date;
+}`}
+                            header="types.ts — inline diff"
+                            language="typescript"
+                            height="280px"
                         />
                     </div>
                 </div>
