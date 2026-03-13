@@ -191,6 +191,7 @@ function getScrollbarOptions(
         verticalScrollbarSize: metrics.scrollbarSize,
         horizontalScrollbarSize: metrics.scrollbarSize,
         useShadows: true,
+        alwaysConsumeMouseWheel: false,
     }
 }
 
@@ -265,6 +266,39 @@ export function getUpdateEditorOptions(
 // Initial Editor component options (before mount)
 // ---------------------------------------------------------------------------
 
+export function getDiffEditorOptions(
+    metrics: EditorMetrics,
+    tokens: CodeV2Tokens,
+    showLineNumbers: boolean,
+    renderSideBySide: boolean,
+    readOnly: boolean,
+    disabled: boolean
+): Monaco.editor.IDiffEditorConstructionOptions {
+    const isViewOnly = readOnly || disabled
+    return {
+        automaticLayout: true,
+        readOnly: isViewOnly,
+        renderSideBySide,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        fontSize: metrics.fontSize,
+        fontFamily: tokens.body.code.fontFamily,
+        lineHeight: metrics.lineHeight,
+        lineNumbers: showLineNumbers ? 'on' : 'off',
+        renderLineHighlight: 'none',
+        renderWhitespace: 'none',
+        glyphMargin: false,
+        folding: false,
+        scrollbar: getScrollbarOptions(metrics),
+        padding: getPaddingOptions(metrics),
+        overviewRulerBorder: false,
+        guides: { indentation: false, highlightActiveIndentation: false },
+        smoothScrolling: true,
+        cursorBlinking: 'smooth',
+        cursorSmoothCaretAnimation: 'on',
+    }
+}
+
 export function getInitialEditorOptions(
     metrics: EditorMetrics,
     tokens: CodeV2Tokens,
@@ -293,52 +327,4 @@ export function getInitialEditorOptions(
             alwaysConsumeMouseWheel: false,
         },
     }
-}
-
-// ---------------------------------------------------------------------------
-// Inline margin styles for Monaco (CSS string)
-// ---------------------------------------------------------------------------
-
-export function getEditorMarginStyles(
-    showLineNumbers: boolean,
-    codePaddingLeft: number
-): string {
-    const paddingLeft = `${codePaddingLeft}px`
-    return showLineNumbers
-        ? `
-            .monaco-editor .margin { padding-right: ${paddingLeft} !important; }
-            .monaco-editor .monaco-editor-background { padding-left: 0 !important; }
-        `
-        : `
-            .monaco-editor .monaco-editor-background { padding-left: ${paddingLeft} !important; }
-        `
-}
-
-// ---------------------------------------------------------------------------
-// Keyboard shortcuts config (for wrapper to register with Monaco)
-// ---------------------------------------------------------------------------
-
-export type ShortcutConfig = {
-    id: string
-    label: string
-    keybindings: number[]
-    actionId: string
-    requiresWriteAccess: boolean
-}
-
-export function buildShortcutKeybindings(
-    monaco: typeof import('monaco-editor')
-): ShortcutConfig[] {
-    return [
-        {
-            id: 'blend-editor-select-all',
-            label: 'Select All',
-            keybindings: [
-                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyA,
-                monaco.KeyMod.WinCtrl | monaco.KeyCode.KeyA,
-            ],
-            actionId: 'editor.action.selectAll',
-            requiresWriteAccess: false,
-        },
-    ]
 }

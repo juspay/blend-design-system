@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Editor, { OnMount } from '@monaco-editor/react'
+import Editor, { DiffEditor, OnMount, DiffOnMount } from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../../Primitives/Block/Block'
 import type { CodeV2Tokens } from '../codeV2.tokens'
@@ -8,10 +8,9 @@ import { MonacoEditorWrapperProps } from '../codeV2.types'
 import {
     BLEND_EDITOR_THEME_NAME,
     EDITOR_FOCUS_DELAY_MS,
-    buildShortcutKeybindings,
     configureLanguageDefaults,
     getContainerDimensions,
-    getEditorMarginStyles,
+    getDiffEditorOptions,
     getEditorMetrics,
     getInitialEditorOptions,
     getMountEditorOptions,
@@ -104,10 +103,12 @@ export function MonacoEditorWrapper({
     onFocus,
     onBlur,
     autoFocus = false,
+    diff = false,
+    originalValue = '',
+    renderSideBySide = true,
 }: MonacoEditorWrapperProps) {
     const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
     const monacoRef = useRef<typeof import('monaco-editor') | null>(null)
-    const shortcutDisposables = useRef<Monaco.IDisposable[]>([])
     const [isEditorReady, setIsEditorReady] = useState(false)
 
     const monacoLanguage = useMemo(() => mapLanguage(language), [language])
@@ -124,36 +125,6 @@ export function MonacoEditorWrapper({
         () => getPlaceholderPosition(metrics, showLineNumbers),
         [metrics, showLineNumbers]
     )
-    const marginStyles = useMemo(
-        () => getEditorMarginStyles(showLineNumbers, metrics.codePaddingLeft),
-        [showLineNumbers, metrics.codePaddingLeft]
-    )
-
-    const disposeShortcuts = useCallback(() => {
-        shortcutDisposables.current.forEach((d) => d?.dispose?.())
-        shortcutDisposables.current = []
-    }, [])
-
-    const registerShortcuts = useCallback(() => {
-        const editor = editorRef.current
-        const monaco = monacoRef.current
-        if (!editor || !monaco) return
-
-        disposeShortcuts()
-        const configs = buildShortcutKeybindings(monaco).filter(
-            (s) => !s.requiresWriteAccess || (!readOnly && !disabled)
-        )
-        shortcutDisposables.current = configs.map((s) =>
-            editor.addAction({
-                id: s.id,
-                label: s.label,
-                keybindings: s.keybindings,
-                precondition: undefined,
-                keybindingContext: undefined,
-                run: () => editor.trigger('shortcut', s.actionId, undefined),
-            })
-        )
-    }, [disposeShortcuts, disabled, readOnly])
 
     useEffect(() => {
         if (!editorRef.current) return
@@ -161,12 +132,6 @@ export function MonacoEditorWrapper({
             getUpdateEditorOptions(metrics, showLineNumbers, readOnly, disabled)
         )
     }, [metrics, showLineNumbers, readOnly, disabled])
-
-    useEffect(() => {
-        if (!isEditorReady) return
-        registerShortcuts()
-        return disposeShortcuts
-    }, [disposeShortcuts, isEditorReady, registerShortcuts])
 
     const handleMount: OnMount = (editor, monaco) => {
         editorRef.current = editor
@@ -190,6 +155,44 @@ export function MonacoEditorWrapper({
             setTimeout(() => editor.focus(), EDITOR_FOCUS_DELAY_MS)
         }
     }
+
+    const diffContainerRef = useRef<HTMLDivElement | null>(null)
+
+    const handleDiffMount: DiffOnMount = (diffEditor, monaco) => {
+        monacoRef.current = monaco
+        setIsEditorReady(true)
+
+        const scrollbarOverride = {
+            scrollbar: { alwaysConsumeMouseWheel: false },
+        }
+        diffEditor.getOriginalEditor().updateOptions(scrollbarOverride)
+        diffEditor.getModifiedEditor().updateOptions(scrollbarOverride)
+    }
+
+    useEffect(() => {
+        if (!diff || !diffContainerRef.current) return
+
+        const el = diffContainerRef.current
+        const handleWheel = (e: WheelEvent) => {
+            const scrollable = el.querySelector(
+                '.monaco-scrollable-element'
+            ) as HTMLElement | null
+            if (!scrollable) return
+
+            const { scrollTop, scrollHeight, clientHeight } = scrollable
+            const atTop = scrollTop <= 0 && e.deltaY < 0
+            const atBottom =
+                scrollTop + clientHeight >= scrollHeight - 1 && e.deltaY > 0
+
+            if (atTop || atBottom) {
+                return
+            }
+            e.stopPropagation()
+        }
+
+        el.addEventListener('wheel', handleWheel, { passive: false })
+        return () => el.removeEventListener('wheel', handleWheel)
+    }, [diff, isEditorReady])
 
     const handleChange = useCallback(
         (newValue: string | undefined) => {
@@ -226,36 +229,76 @@ export function MonacoEditorWrapper({
             ),
         [metrics, tokens, showLineNumbers, readOnly, disabled]
     )
+
+    const diffOptions = useMemo(
+        () =>
+            getDiffEditorOptions(
+                metrics,
+                tokens,
+                showLineNumbers,
+                renderSideBySide,
+                readOnly,
+                disabled
+            ),
+        [metrics, tokens, showLineNumbers, renderSideBySide, readOnly, disabled]
+    )
+
     return (
         <Block
             data-element="monaco-editor-wrapper"
             position="relative"
             width="100%"
             backgroundColor={tokens.body.backgroundColor}
-            style={{ ...containerStyle, overflow: 'auto' }}
+            style={{ ...containerStyle, overflow: 'visible' }}
             onKeyDown={handleKeyDown}
         >
-            <style>{marginStyles}</style>
+            {diff ? (
+                <div ref={diffContainerRef}>
+                    <DiffEditor
+                        original={originalValue}
+                        modified={value}
+                        language={monacoLanguage}
+                        height={
+                            containerStyle.height ?? containerStyle.minHeight
+                        }
+                        theme={tokens.theme}
+                        beforeMount={beforeMount}
+                        onMount={handleDiffMount}
+                        options={diffOptions}
+                        loading={
+                            <EditorLoading
+                                minHeight={minHeight}
+                                tokens={tokens}
+                            />
+                        }
+                    />
+                </div>
+            ) : (
+                <>
+                    <Editor
+                        value={value}
+                        language={monacoLanguage}
+                        onChange={handleChange}
+                        onMount={handleMount}
+                        theme={tokens.theme}
+                        beforeMount={beforeMount}
+                        options={initialOptions}
+                        loading={
+                            <EditorLoading
+                                minHeight={minHeight}
+                                tokens={tokens}
+                            />
+                        }
+                    />
 
-            <Editor
-                value={value}
-                language={monacoLanguage}
-                onChange={handleChange}
-                onMount={handleMount}
-                theme={tokens.theme}
-                beforeMount={beforeMount}
-                options={initialOptions}
-                loading={
-                    <EditorLoading minHeight={minHeight} tokens={tokens} />
-                }
-            />
-
-            {!value && placeholder && isEditorReady && (
-                <EditorPlaceholder
-                    placeholder={placeholder}
-                    position={placeholderPosition}
-                    tokens={tokens}
-                />
+                    {!value && placeholder && isEditorReady && (
+                        <EditorPlaceholder
+                            placeholder={placeholder}
+                            position={placeholderPosition}
+                            tokens={tokens}
+                        />
+                    )}
+                </>
             )}
         </Block>
     )
