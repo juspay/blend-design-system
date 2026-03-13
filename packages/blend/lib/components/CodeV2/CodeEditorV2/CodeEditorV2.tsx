@@ -33,6 +33,9 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             onBlur,
             onFocus,
             autoFocus = false,
+            diff = false,
+            originalValue,
+            renderSideBySide = true,
         },
         ref
     ) => {
@@ -91,6 +94,9 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                     onFocus={onFocus}
                     onBlur={onBlur}
                     autoFocus={autoFocus}
+                    diff={diff}
+                    originalValue={originalValue}
+                    renderSideBySide={renderSideBySide}
                 />
             </Block>
         )

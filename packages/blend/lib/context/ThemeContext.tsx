@@ -167,7 +167,7 @@ import {
     getPopoverV2Tokens,
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
-import { 
+import {
     getCodeV2Tokens,
     ResponsiveCodeV2Tokens,
 } from '../components/CodeV2/codeV2.tokens'

@@ -91,6 +91,24 @@ export function createEditorTheme(
             'scrollbarSlider.hoverBackground': `${gutterColor}55`,
             'scrollbarSlider.activeBackground': `${gutterColor}70`,
             'scrollbar.shadow': `${gutterColor}10`,
+
+            // Diff: inserted (added) line & gutter backgrounds
+            'diffEditor.insertedLineBackground': highlight.added || '#dafbe1',
+            'diffEditorGutter.insertedLineBackground':
+                gutter.backgroundColor.added || '#dafbe1',
+            'diffEditorOverview.insertedForeground':
+                gutter.borderColor.added || '#2da44e',
+
+            // Diff: removed line & gutter backgrounds
+            'diffEditor.removedLineBackground': highlight.removed || '#ffebe9',
+            'diffEditorGutter.removedLineBackground':
+                gutter.backgroundColor.removed || '#ffebe9',
+            'diffEditorOverview.removedForeground':
+                gutter.borderColor.removed || '#cf222e',
+
+            // Diff: unchanged area border
+            'diffEditor.diagonalFill': `${gutterColor}15`,
+            'diffEditor.border': `${gutterColor}30`,
         },
     }
 }
