@@ -2,24 +2,17 @@ import type { ReactNode } from 'react'
 import type { MenuV2GroupType, MenuV2ItemType } from './menuV2.types'
 import type { MenuV2TokensType } from './menuV2.tokens'
 
-type MenuV2ItemTokens = MenuV2TokensType['item']
 import { MenuV2ItemActionType, MenuV2ItemVariant } from './menuV2.types'
 import type { MenuV2ItemStates } from './menuV2.tokens'
 
-/** Resolve [slot1, slot2, slot3, slot4] from item.slots or legacy slot1–slot4. */
+type MenuV2ItemTokens = MenuV2TokensType['item']
+
 export const getItemSlots = (
     item: MenuV2ItemType
 ): [ReactNode?, ReactNode?, ReactNode?, ReactNode?] => {
-    if (item.slots) {
-        const t = item.slots.trailing ?? []
-        return [item.slots.leading, t[0], t[1], t[2]]
-    }
-    return [item.slot1, item.slot2, item.slot3, item.slot4]
+    return [item.slot]
 }
 
-/**
- * Filter a single menu item (and its submenu) by search text.
- */
 export const filterMenuItem = (
     item: MenuV2ItemType,
     lower: string
@@ -39,9 +32,6 @@ export const filterMenuItem = (
     return matches ? item : null
 }
 
-/**
- * Resolve item background color from tokens by variant, actionType and state.
- */
 export const getMenuItemBackgroundColor = (
     state: MenuV2ItemStates,
     itemTokens: MenuV2ItemTokens,
@@ -59,9 +49,6 @@ export const getMenuItemBackgroundColor = (
     return item.disabled ? actionBg.disabled[state] : actionBg.enabled[state]
 }
 
-/**
- * Resolve item label/option color from tokens by variant, actionType and state.
- */
 export const getMenuItemOptionColor = (
     state: MenuV2ItemStates,
     itemTokens: MenuV2ItemTokens,
@@ -81,9 +68,6 @@ export const getMenuItemOptionColor = (
         : actionColors.enabled[state]
 }
 
-/**
- * Resolve item description/sublabel color from tokens.
- */
 export const getMenuItemDescriptionColor = (
     state: MenuV2ItemStates,
     itemTokens: MenuV2ItemTokens,
@@ -103,9 +87,6 @@ export const getMenuItemDescriptionColor = (
         : actionColors.enabled[state]
 }
 
-/**
- * Flatten menu groups into a list of rows for virtual scrolling: label, separator, or item.
- */
 export type MenuV2FlatRow =
     | { type: 'label'; id: string; label: string }
     | { type: 'separator'; id: string }
@@ -148,9 +129,6 @@ export const flattenMenuV2Groups = (
     return rows
 }
 
-/**
- * Filter menu groups by search text.
- */
 export const filterMenuGroups = (
     groups: MenuV2GroupType[],
     searchText: string

@@ -13,12 +13,13 @@ import type { MenuV2GroupType, MenuV2ItemType } from './menuV2.types'
 import type { MenuV2VirtualScrollingConfig } from './menuV2.types'
 import type { MenuV2TokensType } from './menuV2.tokens'
 import { menuV2ContentAnimations } from './menuV2.animations'
-import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 import { flattenMenuV2Groups, type MenuV2FlatRow } from './menuV2.utils'
 
-const Content = styled(RadixMenu.Content)`
+type ContentStyledProps = { $zIndex?: number | string }
+
+const Content = styled(RadixMenu.Content)<ContentStyledProps>`
     position: relative;
-    z-index: ${SELECT_V2_MENU_Z_INDEX};
+    z-index: ${(p) => p.$zIndex ?? 101};
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -201,10 +202,12 @@ const MenuV2Content = ({
             onPointerDownOutside={onPointerDownOutside}
             onFocusCapture={onFocusCapture}
             onKeyDown={onKeyDown}
+            $zIndex={content.zIndex}
             style={{
                 maxHeight: maxHeight
                     ? `${maxHeight}px`
                     : 'var(--radix-popper-available-height)',
+                minHeight: minHeight ? `${minHeight}px` : undefined,
                 minWidth: `${minWidth}px`,
                 maxWidth: `${maxWidth}px`,
                 paddingTop: enableSearch ? 0 : content.paddingTop,
@@ -301,6 +304,7 @@ const MenuV2Content = ({
                 <Block
                     style={{
                         paddingTop: enableSearch ? 0 : content.paddingTop,
+                        minHeight: minHeight ? `${minHeight}px` : undefined,
                     }}
                 >
                     {filteredItems.map((group, groupId) => (

@@ -29,17 +29,17 @@ const basicItems: MenuV2GroupType[] = [
         items: [
             {
                 label: 'Profile',
-                slot1: <User size={16} />,
+                slot: <User size={16} />,
                 onClick: () => console.log('Profile clicked'),
             },
             {
                 label: 'Settings',
-                slot1: <Settings size={16} />,
+                slot: <Settings size={16} />,
                 onClick: () => console.log('Settings clicked'),
             },
             {
                 label: 'Sign Out',
-                slot1: <LogOut size={16} />,
+                slot: <LogOut size={16} />,
                 variant: MenuV2ItemVariant.ACTION,
                 actionType: MenuV2ItemActionType.DANGER,
                 onClick: () => console.log('Sign out clicked'),
@@ -56,7 +56,7 @@ const groupedItems: MenuV2GroupType[] = [
             {
                 label: 'Create New',
                 subLabel: 'Start a new project',
-                slot1: <Plus size={16} />,
+                slot: <Plus size={16} />,
                 variant: MenuV2ItemVariant.ACTION,
                 actionType: MenuV2ItemActionType.PRIMARY,
                 onClick: () => console.log('Create new clicked'),
@@ -69,7 +69,7 @@ const groupedItems: MenuV2GroupType[] = [
         items: [
             {
                 label: 'United States',
-                slot1: <MapPin size={16} />,
+                slot: <MapPin size={16} />,
                 subMenu: [
                     {
                         label: 'California',
@@ -84,7 +84,7 @@ const groupedItems: MenuV2GroupType[] = [
             },
             {
                 label: 'Europe',
-                slot1: <MapPin size={16} />,
+                slot: <MapPin size={16} />,
                 subMenu: [
                     {
                         label: 'United Kingdom',
@@ -104,10 +104,10 @@ const manyItems: MenuV2GroupType[] = [
         items: [
             {
                 label: 'Most Popular',
-                slot1: <Star size={16} />,
+                slot: <Star size={16} />,
                 onClick: () => {},
             },
-            { label: 'Trending', slot1: <Star size={16} />, onClick: () => {} },
+            { label: 'Trending', slot: <Star size={16} />, onClick: () => {} },
         ],
     },
     {
@@ -115,7 +115,7 @@ const manyItems: MenuV2GroupType[] = [
         items: [
             {
                 label: 'Enterprise',
-                slot1: <Shield size={16} />,
+                slot: <Shield size={16} />,
                 subLabel: 'Full feature set',
                 onClick: () => {},
             },
