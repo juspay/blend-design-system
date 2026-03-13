@@ -1,4 +1,4 @@
-import type { ChangeEvent, FocusEvent, KeyboardEvent } from 'react'
+import type { FocusEvent, KeyboardEvent } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import { useRef, useMemo } from 'react'
@@ -146,7 +146,6 @@ const MenuV2Content = ({
     collisionBoundaryRef,
     onInteractOutside,
     onPointerDownOutside,
-    onFocusCapture,
     onKeyDown,
 }: MenuV2ContentProps) => {
     const searchInputRef = useRef<HTMLInputElement>(null)
@@ -200,8 +199,15 @@ const MenuV2Content = ({
             collisionBoundary={collisionBoundaryRef ?? undefined}
             onInteractOutside={onInteractOutside}
             onPointerDownOutside={onPointerDownOutside}
-            onFocusCapture={onFocusCapture}
             onKeyDown={onKeyDown}
+            onFocusCapture={(e) => {
+                if (enableSearch && searchInputRef.current) {
+                    if (e.target === e.currentTarget) {
+                        searchInputRef.current.focus()
+                    }
+                }
+            }}
+            onCloseAutoFocus={(e) => e.preventDefault()}
             $zIndex={content.zIndex}
             style={{
                 maxHeight: maxHeight
@@ -242,9 +248,10 @@ const MenuV2Content = ({
                         }
                         placeholder={searchPlaceholder}
                         value={searchText}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            onSearchTextChange(e.target.value)
-                        }
+                        onChange={(e) => onSearchTextChange(e.target.value)}
+                        onKeyDown={(e) => {
+                            e.stopPropagation()
+                        }}
                         aria-label={
                             searchPlaceholder
                                 ? `Search menu items: ${searchPlaceholder}`
