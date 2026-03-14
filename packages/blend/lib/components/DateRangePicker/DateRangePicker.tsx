@@ -136,11 +136,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 value={startDate || ''}
                                 onChange={onStartDateChange}
                                 error={!startDateValidation.isValid}
-                                errorMessage={
-                                    !startDateValidation.isValid
-                                        ? startDateValidation.message
-                                        : undefined
-                                }
                                 size={TextInputSize.SMALL}
                                 autoFocus={false}
                                 aria-invalid={!startDateValidation.isValid}
@@ -165,11 +160,11 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                 </Block>
 
                 {!isSingleDatePicker &&
-                    selectedRange &&
                     (!allowSingleDateSelection ||
-                        (allowSingleDateSelection &&
-                            selectedRange.startDate.getTime() !==
-                                selectedRange.endDate?.getTime())) && (
+                        !selectedRange ||
+                        !selectedRange.endDate ||
+                        selectedRange.startDate.getTime() !==
+                            selectedRange.endDate.getTime()) && (
                         <Block
                             display="flex"
                             gap={
@@ -218,11 +213,6 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                         value={endDate || ''}
                                         onChange={onEndDateChange}
                                         error={!endDateValidation.isValid}
-                                        errorMessage={
-                                            !endDateValidation.isValid
-                                                ? endDateValidation.message
-                                                : undefined
-                                        }
                                         size={TextInputSize.SMALL}
                                         autoFocus={false}
                                         aria-invalid={
@@ -443,14 +433,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         const [startDateValidation, setStartDateValidation] =
             useState<DateValidationResult>({ isValid: true, error: 'none' })
+        // Empty end date when no selection is neutral (no error styling); Apply stays disabled via selectedRange check
         const [endDateValidation, setEndDateValidation] =
-            useState<DateValidationResult>({
-                isValid: isSingleDatePicker || !!selectedRange?.endDate,
-                error:
-                    isSingleDatePicker || selectedRange?.endDate
-                        ? 'none'
-                        : 'invalid-date',
-            })
+            useState<DateValidationResult>({ isValid: true, error: 'none' })
 
         const today = getTodayInTimezone(timezone)
 
@@ -529,35 +514,44 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         : DateRangePreset.CUSTOM
                 )
                 setStartDate(
-                    dateRangeObj &&
-                        formatDate(dateRangeObj.startDate, dateFormat, timezone)
+                    dateRangeObj
+                        ? formatDate(
+                              dateRangeObj.startDate,
+                              dateFormat,
+                              timezone
+                          )
+                        : undefined
                 )
-                if (dateRangeObj && dateRangeObj.endDate) {
+                if (dateRangeObj?.endDate) {
                     setEndDate(
                         formatDate(dateRangeObj.endDate, dateFormat, timezone)
                     )
+                } else {
+                    setEndDate(undefined)
                 }
                 setStartTime(
-                    dateRangeObj &&
-                        formatDate(dateRangeObj.startDate, 'HH:mm', timezone)
+                    dateRangeObj
+                        ? formatDate(dateRangeObj.startDate, 'HH:mm', timezone)
+                        : undefined
                 )
-                if (dateRangeObj && dateRangeObj.endDate) {
+                if (dateRangeObj?.endDate) {
                     setEndTime(
                         formatDate(dateRangeObj.endDate, 'HH:mm', timezone)
                     )
+                } else {
+                    setEndTime(undefined)
                 }
                 setStartDateValidation({ isValid: true, error: 'none' })
-                setEndDateValidation({
-                    isValid: true,
-                    error: 'none',
-                })
+                // Empty end date is neutral (no red error); Apply stays disabled until both dates selected
+                setEndDateValidation({ isValid: true, error: 'none' })
             },
-            [timezone, dateFormat]
+            [timezone, dateFormat, isSingleDatePicker]
         )
 
         useEffect(() => {
             if (!value) {
                 lastExternalValueRef.current = null
+                resetValues(undefined)
                 return
             }
 

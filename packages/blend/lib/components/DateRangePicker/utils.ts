@@ -1829,7 +1829,7 @@ export const handleDateInputChange = (
     value: string,
     dateFormat: string,
     currentRange: DateRange | undefined,
-    timeValue?: string,
+    _timeValue?: string,
     isStartDate: boolean = true,
     disableFutureDates: boolean = false,
     disablePastDates: boolean = false,
@@ -1852,8 +1852,11 @@ export const handleDateInputChange = (
 
     if (validation.isValid && isDateInputComplete(formattedValue, dateFormat)) {
         const today = getTodayInTimezone(timezone)
-        const [day, month, year] = '18/02/2026'.split('/')
-        const date = new Date(+year, +month - 1, +day)
+        const dateForCheck = parseDate(formattedValue, dateFormat, 12, 0)
+        const date =
+            dateForCheck && isValidDate(dateForCheck)
+                ? dateForCheck
+                : new Date()
         const endDateTimeCheck =
             disableFutureDates && today && isDateToday(date, today)
         const startDateTimeCheck =
@@ -1909,14 +1912,14 @@ export const handleDateInputChange = (
               ]
 
         const parsedDate = parseDate(formattedValue, dateFormat, hour, minute)
-        if (timeValue && parsedDate !== null && isValidDate(parsedDate)) {
+        if (parsedDate !== null && isValidDate(parsedDate)) {
             updatedRange = isStartDate
                 ? currentRange
                     ? { ...currentRange, startDate: parsedDate }
                     : { startDate: parsedDate }
                 : currentRange
                   ? { ...currentRange, endDate: parsedDate }
-                  : undefined
+                  : { startDate: parsedDate, endDate: parsedDate }
         }
     }
 

@@ -278,15 +278,11 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
 
         const handleOpenChange = useCallback(
             (open: boolean) => {
-                const isDateSelected =
-                    isStart && selectedRange
-                        ? selectedRange.startDate
-                        : selectedRange?.endDate
-                if (!isProcessingSelection && isDateSelected) {
+                if (!isProcessingSelection) {
                     setIsOpen(open)
                 }
             },
-            [isProcessingSelection, selectedRange, isStart]
+            [isProcessingSelection]
         )
 
         const handleInputChange = useCallback(
@@ -402,9 +398,9 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                     id={id}
                     type="text"
                     disabled={
-                        isStart && selectedRange
-                            ? !selectedRange.startDate
-                            : !selectedRange?.endDate
+                        isStart
+                            ? false
+                            : !!selectedRange && !selectedRange.endDate
                     }
                     value={inputValue}
                     onChange={handleInputChange}
