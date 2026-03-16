@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { CodeEditorV2Tokens } from './codeEditorV2.tokens'
-export enum CodeV2Variant {
+export enum CodeEditorV2Variant {
     DEFAULT = 'default',
     NO_GUTTER = 'no-gutter',
     DIFF = 'diff',
@@ -34,24 +34,10 @@ export type SupportedLanguage =
     | 'python'
     | 'rust'
     | 'haskell'
-
-export type CodeV2Props = {
-    code: string
-    variant?: CodeV2Variant
-    showLineNumbers?: boolean
-    showHeader?: boolean
-    header?: string
-    headerLeftSlot?: ReactNode
-    headerRightSlot?: ReactNode
-    diffLines?: DiffLine[]
-    showCopyButton?: boolean
-    autoFormat?: boolean
-    language?: SupportedLanguage
-}
 export type CodeEditorV2Props = {
     value: string
     onChange?: (value: string) => void
-    variant?: CodeV2Variant
+    variant?: CodeEditorV2Variant
     showLineNumbers?: boolean
     showHeader?: boolean
     header?: string
@@ -77,7 +63,7 @@ export type CodeEditorV2Props = {
     /** Render diffs inline (single column) instead of side-by-side. */
     renderSideBySide?: boolean
 }
-export type CodeV2HeaderProps = {
+export type CodeEditorV2HeaderProps = {
     header: string
     headerLeftSlot?: ReactNode
     headerRightSlot?: ReactNode

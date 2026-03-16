@@ -1,4 +1,4 @@
-import { CodeV2Variant } from './codeEditorV2.types'
+import { CodeEditorV2Variant } from './codeEditorV2.types'
 import type * as Monaco from 'monaco-editor'
 import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
 export const createCopyToClipboard = (
@@ -25,12 +25,12 @@ export const createCopyToClipboard = (
 
 export const shouldShowLineNumbers = (
     showLineNumbers: boolean | undefined,
-    variant: CodeV2Variant
+    variant: CodeEditorV2Variant
 ): boolean => {
     if (showLineNumbers !== undefined) {
         return showLineNumbers
     }
-    return variant === CodeV2Variant.DEFAULT
+    return variant === CodeEditorV2Variant.DEFAULT
 }
 
 /**

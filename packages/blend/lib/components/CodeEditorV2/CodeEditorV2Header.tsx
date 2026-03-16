@@ -2,9 +2,9 @@ import { Check, Copy, FileCode } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
 import { ButtonSize, ButtonSubType, ButtonType } from '../Button/types'
-import { CodeV2HeaderProps } from './codeEditorV2.types'
+import { CodeEditorV2HeaderProps } from './codeEditorV2.types'
 
-export const CodeV2Header = ({
+export const CodeEditorV2Header = ({
     header,
     headerLeftSlot,
     headerRightSlot,
@@ -13,7 +13,7 @@ export const CodeV2Header = ({
     isCopied,
     onCopy,
     tokens,
-}: CodeV2HeaderProps) => {
+}: CodeEditorV2HeaderProps) => {
     const headerPaddingX =
         typeof tokens.header.padding.x === 'number'
             ? `${tokens.header.padding.x}px`

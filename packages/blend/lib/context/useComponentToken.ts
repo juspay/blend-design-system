@@ -58,7 +58,7 @@ import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/
 import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
-import { ResponsiveCodeV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -124,7 +124,7 @@ export const useComponentToken = (
     | ResponsiveKeyValuePairV2Tokens
     | ResponsiveRadioV2Tokens
     | ResponsivePopoverV2Tokens
-    | ResponsiveCodeV2Tokens
+    | ResponsiveCodeEditorV2Tokens
     | ResponsiveTextInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {

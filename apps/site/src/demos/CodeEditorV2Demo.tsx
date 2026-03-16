@@ -3,7 +3,7 @@ import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSe
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import CodeEditorV2 from '../../../../packages/blend/lib/components/CodeEditorV2/CodeEditorV2'
-import { CodeV2Variant } from '../../../../packages/blend/lib/components/CodeEditorV2/codeEditorV2.types'
+import { CodeEditorV2Variant } from '../../../../packages/blend/lib/components/CodeEditorV2/codeEditorV2.types'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import {
     Button,
@@ -15,7 +15,9 @@ import { Save, Play, Download, GitCompareArrows } from 'lucide-react'
 
 const CodeEditorV2Demo = () => {
     // State for controls
-    const [variant, setVariant] = useState<CodeV2Variant>(CodeV2Variant.DEFAULT)
+    const [variant, setVariant] = useState<CodeEditorV2Variant>(
+        CodeEditorV2Variant.DEFAULT
+    )
     const [showLineNumbers, setShowLineNumbers] = useState(true)
     const [showHeader, setShowHeader] = useState(true)
     const [headerText, setHeaderText] = useState('editor.js')
@@ -103,10 +105,10 @@ def process_transactions(transactions):
     // Options for selects
     const variantOptions = [
         {
-            value: CodeV2Variant.DEFAULT,
+            value: CodeEditorV2Variant.DEFAULT,
             label: 'Default (with line numbers)',
         },
-        { value: CodeV2Variant.NO_GUTTER, label: 'No Gutter' },
+        { value: CodeEditorV2Variant.NO_GUTTER, label: 'No Gutter' },
     ]
 
     const languageOptions = [
@@ -176,7 +178,7 @@ def process_transactions(transactions):
                             items={[{ items: variantOptions }]}
                             selected={variant}
                             onSelect={(value) =>
-                                setVariant(value as CodeV2Variant)
+                                setVariant(value as CodeEditorV2Variant)
                             }
                             placeholder="Select variant"
                         />
@@ -352,7 +354,7 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.payment}
                             onChange={() => {}}
-                            variant={CodeV2Variant.DEFAULT}
+                            variant={CodeEditorV2Variant.DEFAULT}
                             header="payment.js"
                             language="javascript"
                         />
@@ -367,7 +369,7 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.payment}
                             onChange={() => {}}
-                            variant={CodeV2Variant.NO_GUTTER}
+                            variant={CodeEditorV2Variant.NO_GUTTER}
                             header="payment.js"
                             language="javascript"
                         />
@@ -383,7 +385,7 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.typescript}
                             onChange={() => {}}
-                            variant={CodeV2Variant.DEFAULT}
+                            variant={CodeEditorV2Variant.DEFAULT}
                             header="types.ts"
                             language="typescript"
                             readOnly={true}
@@ -399,7 +401,7 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.python}
                             onChange={() => {}}
-                            variant={CodeV2Variant.DEFAULT}
+                            variant={CodeEditorV2Variant.DEFAULT}
                             header="process.py"
                             language="python"
                             disabled={true}
@@ -427,7 +429,7 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.payment}
                             onChange={() => {}}
-                            variant={CodeV2Variant.DEFAULT}
+                            variant={CodeEditorV2Variant.DEFAULT}
                             header="fixed-height.js"
                             language="javascript"
                             height="200px"
@@ -443,7 +445,7 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.react}
                             onChange={() => {}}
-                            variant={CodeV2Variant.DEFAULT}
+                            variant={CodeEditorV2Variant.DEFAULT}
                             header="auto-grow.jsx"
                             language="jsx"
                             minHeight="180px"
@@ -801,7 +803,7 @@ def process_transactions(transactions):
                 <CodeEditorV2
                     value={codeExamples.payment}
                     onChange={() => {}}
-                    variant={CodeV2Variant.DEFAULT}
+                    variant={CodeEditorV2Variant.DEFAULT}
                     showLineNumbers={true}
                     showHeader={true}
                     header="payment.js"
