@@ -18,14 +18,6 @@ type ThemeProviderProps = {
      * The element should be inside a shadow root.
      */
     target?: HTMLElement
-    /**
-     * @deprecated Use `target` prop instead.
-     */
-    shadowRoot?: ShadowRoot
-    /**
-     * @deprecated Use `target` prop instead.
-     */
-    autoShadowDetection?: boolean
 }
 
 const ThemeProvider = ({
@@ -35,21 +27,7 @@ const ThemeProvider = ({
     theme = Theme.LIGHT,
     children,
     target,
-    shadowRoot,
-    autoShadowDetection,
 }: ThemeProviderProps) => {
-    // Warn about deprecated props
-    if (autoShadowDetection !== undefined) {
-        console.warn(
-            '[ThemeProvider] autoShadowDetection is deprecated. Use target prop instead.'
-        )
-    }
-    if (shadowRoot !== undefined) {
-        console.warn(
-            '[ThemeProvider] shadowRoot is deprecated. Use target prop instead.'
-        )
-    }
-
     const defaultThemeContextValue = {
         foundationTokens,
         componentTokens: initTokens(componentTokens, foundationTokens, theme),
