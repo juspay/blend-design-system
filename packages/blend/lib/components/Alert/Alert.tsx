@@ -71,13 +71,12 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                 <Block
                     display="flex"
                     justifyContent="space-between"
-                    alignItems="center"
-                    gap={FOUNDATION_THEME.unit[8]}
+                    alignItems="flex-end"
                 >
                     <Block
                         display="flex"
                         contentCentered
-                        gap={FOUNDATION_THEME.unit[8]}
+                        gap={alertTokens.gap}
                         alignItems="start"
                     >
                         {icon && (
@@ -119,13 +118,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             {description && (
                                 <Block
                                     display="flex"
-                                    flexDirection={
-                                        finalActionPlacement ===
-                                        AlertActionPlacement.BOTTOM
-                                            ? 'column'
-                                            : 'row'
-                                    }
-                                    alignItems="flex-start"
+                                    alignItems="center"
                                     justifyContent="space-between"
                                     gap={FOUNDATION_THEME.unit[18]}
                                 >
@@ -171,6 +164,12 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                 >
                                                     {primaryAction && (
                                                         <PrimitiveButton
+                                                            lineHeight={
+                                                                alertTokens
+                                                                    .button
+                                                                    .primaryAction
+                                                                    .lineHeight
+                                                            }
                                                             data-element="primary-action"
                                                             data-id={
                                                                 primaryAction.label
@@ -221,6 +220,12 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
 
                                                     {secondaryAction && (
                                                         <PrimitiveButton
+                                                            lineHeight={
+                                                                alertTokens
+                                                                    .button
+                                                                    .secondaryAction
+                                                                    .lineHeight
+                                                            }
                                                             data-element="secondary-action"
                                                             data-id={
                                                                 secondaryAction.label
@@ -280,10 +285,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                             aria-hidden="true"
                                                             role="separator"
                                                             width={'1px'}
-                                                            height={
-                                                                FOUNDATION_THEME
-                                                                    .unit[20]
-                                                            }
                                                             backgroundColor={
                                                                 FOUNDATION_THEME
                                                                     .colors
