@@ -284,59 +284,61 @@ const MultiSelectItem = ({
     )
 }
 
-const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
-    selectedValues,
-    onChange,
-    items = [],
-    label,
-    sublabel,
-    disabled,
-    helpIconHintText,
-    name,
-    required,
-    variant = MultiSelectVariant.CONTAINER,
-    selectionTagType = MultiSelectSelectionTagType.COUNT,
-    slot,
-    hintText,
-    placeholder,
-    size = MultiSelectMenuSize.MEDIUM,
-    enableSearch = true,
-    searchPlaceholder = 'Search options...',
-    enableSelectAll = false,
-    selectAllText = 'Select All',
-    maxSelections,
-    customTrigger,
-    onBlur,
-    onFocus,
-    error,
-    errorMessage,
-    showActionButtons = true,
-    primaryAction = {
-        text: 'Apply',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
-    secondaryAction,
-    showItemDividers = false,
-    showHeaderBorder = false,
-    enableVirtualization = false,
-    virtualListItemHeight = 56,
-    virtualListOverscan = 5,
-    onEndReached,
-    endReachedThreshold,
-    hasMore,
-    skeleton = {
-        count: 3,
-        show: false,
-        variant: 'pulse',
-    },
-    maxTriggerWidth,
-    minTriggerWidth,
-    allowCustomValue = false,
-    customValueLabel = 'Specify',
-    onOpenChange,
-}) => {
+const MobileMultiSelect: React.FC<MobileMultiSelectProps> = (props) => {
+    const {
+        selectedValues,
+        onChange,
+        items = [],
+        label,
+        sublabel,
+        disabled,
+        helpIconHintText,
+        name,
+        required,
+        variant = MultiSelectVariant.CONTAINER,
+        selectionTagType = MultiSelectSelectionTagType.COUNT,
+        slot,
+        hintText,
+        placeholder,
+        size = MultiSelectMenuSize.MEDIUM,
+        enableSearch = true,
+        searchPlaceholder = 'Search options...',
+        enableSelectAll = false,
+        selectAllText = 'Select All',
+        maxSelections,
+        customTrigger,
+        error,
+        errorMessage,
+        showActionButtons = true,
+        primaryAction = {
+            text: 'Apply',
+            onClick: () => {},
+            disabled: false,
+            loading: false,
+        },
+        secondaryAction,
+        showItemDividers = false,
+        showHeaderBorder = false,
+        enableVirtualization = false,
+        virtualListItemHeight = 56,
+        virtualListOverscan = 5,
+        onEndReached,
+        endReachedThreshold,
+        hasMore,
+        skeleton = {
+            count: 3,
+            show: false,
+            variant: 'pulse',
+        },
+        maxTriggerWidth,
+        minTriggerWidth,
+        allowCustomValue = false,
+        customValueLabel = 'Specify',
+        onOpenChange,
+        ...rest
+    } = props
+
+    const { onFocus, onBlur, ...triggerRest } = rest
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const multiSelectTokens =
@@ -414,9 +416,17 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                 onOpenChange={(isOpen) => {
                     setDrawerOpen(isOpen)
                     if (isOpen) {
-                        onFocus?.()
+                        if (typeof onFocus === 'function') {
+                            onFocus(
+                                undefined as unknown as React.FocusEvent<HTMLButtonElement>
+                            )
+                        }
                     } else {
-                        onBlur?.()
+                        if (typeof onBlur === 'function') {
+                            onBlur(
+                                undefined as unknown as React.FocusEvent<HTMLButtonElement>
+                            )
+                        }
                         if (enableSearch) {
                             setSearchText('')
                         }
@@ -446,6 +456,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                             multiSelectTokens={multiSelectTokens}
                             error={error}
                             disabled={disabled}
+                            {...triggerRest}
                         />
                     )}
                 </DrawerTrigger>

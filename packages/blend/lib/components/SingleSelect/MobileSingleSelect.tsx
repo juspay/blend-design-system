@@ -221,8 +221,6 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     searchPlaceholder = 'Search options...',
     slot,
     customTrigger,
-    onBlur,
-    onFocus,
     inline = false,
     skeleton = {
         count: 3,
@@ -269,6 +267,8 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     ])
 
     const isItemSelected = selected.length > 0
+
+    const { onFocus, onBlur, ...triggerRest } = rest
     const isSmallScreenWithLargeSize =
         isSmallScreen && size === SelectMenuSize.LARGE
 
@@ -309,16 +309,27 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                 onOpenChange={(isOpen) => {
                     setDrawerOpen(isOpen)
                     if (isOpen) {
-                        onFocus?.()
+                        if (typeof onFocus === 'function') {
+                            onFocus(
+                                undefined as unknown as React.FocusEvent<HTMLButtonElement>
+                            )
+                        }
                     } else {
-                        onBlur?.()
+                        if (typeof onBlur === 'function') {
+                            onBlur(
+                                undefined as unknown as React.FocusEvent<HTMLButtonElement>
+                            )
+                        }
                         if (enableSearch) {
                             setSearchText('')
                         }
                     }
                 }}
             >
-                <DrawerTrigger>
+                <DrawerTrigger
+                    onClick={triggerRest.onClick as (() => void) | undefined}
+                    aria-label={triggerRest['aria-label'] as string | undefined}
+                >
                     {customTrigger || (
                         <SingleSelectTrigger
                             maxTriggerWidth={maxTriggerWidth}
@@ -343,6 +354,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                             error={error}
                             disabled={disabled}
                             {...ariaAttributes}
+                            {...triggerRest}
                         />
                     )}
                 </DrawerTrigger>
