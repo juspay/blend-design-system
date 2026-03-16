@@ -94,7 +94,7 @@ export const darkCodeEditorV2Tokens = (
             borderRadius: foundationToken.border.radius[8],
             boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
             header: {
-                backgroundColor: foundationToken.colors.gray[50],
+                backgroundColor: foundationToken.colors.gray[900],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
                     x: foundationToken.unit[16],
@@ -108,7 +108,7 @@ export const darkCodeEditorV2Tokens = (
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                     lineHeight: '20px',
-                    color: foundationToken.colors.gray[900],
+                    color: foundationToken.colors.gray[0],
                 },
             },
             body: {
@@ -120,11 +120,11 @@ export const darkCodeEditorV2Tokens = (
 
                 gutter: {
                     width: '44px',
-                    color: foundationToken.colors.gray[400],
+                    color: foundationToken.colors.gray[0],
                     backgroundColor: {
                         [DiffLineType.UNCHANGED]: 'transparent',
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[200],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[200],
+                        [DiffLineType.REMOVED]: foundationToken.colors.red[500],
+                        [DiffLineType.ADDED]: foundationToken.colors.green[500],
                     },
                     borderLeft: {
                         [DiffLineType.UNCHANGED]: 'none',
@@ -152,19 +152,19 @@ export const darkCodeEditorV2Tokens = (
                 highlightedLine: {
                     backgroundColor: {
                         [DiffLineType.UNCHANGED]: 'transparent',
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[100],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[100],
+                        [DiffLineType.REMOVED]: foundationToken.colors.red[700],
+                        [DiffLineType.ADDED]: foundationToken.colors.green[700],
                     },
                 },
                 syntax: {
                     keyword: foundationToken.colors.purple[600],
                     function: foundationToken.colors.primary[600],
-                    string: foundationToken.colors.green[600],
+                    string: foundationToken.colors.green[100],
                     number: foundationToken.colors.orange[500],
-                    operator: foundationToken.colors.gray[600],
-                    variable: foundationToken.colors.gray[800],
+                    operator: foundationToken.colors.gray[0],
+                    variable: foundationToken.colors.gray[0],
                     comment: foundationToken.colors.gray[400],
-                    text: foundationToken.colors.gray[900],
+                    text: foundationToken.colors.gray[0],
                 },
             },
         },
