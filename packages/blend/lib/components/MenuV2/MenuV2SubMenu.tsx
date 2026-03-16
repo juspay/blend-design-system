@@ -199,9 +199,7 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                         <Block display="flex" alignItems="center" width="100%">
                             <PrimitiveText
                                 color={subLabelColor}
-                                fontWeight={
-                                    itemTokens.text.subtText.fontWeight
-                                }
+                                fontWeight={itemTokens.text.subtText.fontWeight}
                                 fontSize={itemTokens.text.subtText.fontSize}
                                 lineHeight={addPxToValue(
                                     itemTokens.text.subtText.lineHeight

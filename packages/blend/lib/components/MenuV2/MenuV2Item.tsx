@@ -164,9 +164,7 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                         >
                             <PrimitiveText
                                 fontSize={itemTokens.text.subtText.fontSize}
-                                fontWeight={
-                                    itemTokens.text.subtText.fontWeight
-                                }
+                                fontWeight={itemTokens.text.subtText.fontWeight}
                                 color={descColor}
                                 lineHeight={addPxToValue(
                                     itemTokens.text.subtText.lineHeight
