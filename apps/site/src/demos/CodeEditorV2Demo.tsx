@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
-import CodeEditorV2 from '../../../../packages/blend/lib/components/CodeV2/CodeEditorV2/CodeEditorV2'
-import { CodeV2Variant } from '../../../../packages/blend/lib/components/CodeV2/codeV2.types'
+import CodeEditorV2 from '../../../../packages/blend/lib/components/CodeEditorV2/CodeEditorV2'
+import { CodeV2Variant } from '../../../../packages/blend/lib/components/CodeEditorV2/codeEditorV2.types'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import {
     Button,
@@ -131,7 +131,7 @@ def process_transactions(transactions):
                 <div className="flex items-center gap-3">
                     <div>
                         <h1 className="text-3xl font-bold">
-                            CodeEditor Component Demo
+                            CodeEditorV2 Component Demo
                         </h1>
                         <p className="text-gray-600 mt-1">
                             Edit code with syntax highlighting and real-time

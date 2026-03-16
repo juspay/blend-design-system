@@ -1,13 +1,13 @@
 import type { CSSObject } from 'styled-components'
-import { DiffLineType } from './codeV2.types'
+import { DiffLineType } from './codeEditorV2.types'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { darkCodeTokens } from './codeV2.dark.tokens'
-import { lightCodeTokens } from './codeV2.light.token'
+import { darkCodeTokens } from './codeEditorV2.dark.tokens'
+import { lightCodeTokens } from './codeEditorV2.light.token'
 import { Theme } from '../../context/theme.enum'
-import { MonacoTheme } from './codeV2.types'
+import { MonacoTheme } from './codeEditorV2.types'
 
-export type CodeV2Tokens = {
+export type CodeEditorV2Tokens = {
     backgroundColor: CSSObject['backgroundColor']
     border: CSSObject['border']
     borderRadius: CSSObject['borderRadius']
@@ -88,7 +88,7 @@ export type CodeV2Tokens = {
 }
 
 export type ResponsiveCodeV2Tokens = {
-    [key in keyof BreakpointType]: CodeV2Tokens
+    [key in keyof BreakpointType]: CodeEditorV2Tokens
 }
 
 export const getCodeV2Tokens = (

@@ -1,17 +1,17 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveCodeV2Tokens } from './codeV2.tokens'
-import { DiffLineType, MonacoTheme } from './codeV2.types'
+import { ResponsiveCodeV2Tokens } from './codeEditorV2.tokens'
+import { DiffLineType, MonacoTheme } from './codeEditorV2.types'
 
-export const lightCodeTokens = (
+export const darkCodeTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveCodeV2Tokens => {
     return {
         sm: {
+            theme: MonacoTheme.DARK,
             backgroundColor: foundationToken.colors.gray[25],
             border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
-            theme: MonacoTheme.LIGHT,
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
@@ -88,11 +88,11 @@ export const lightCodeTokens = (
             },
         },
         lg: {
+            theme: MonacoTheme.DARK,
             backgroundColor: foundationToken.colors.gray[25],
             border: `1px solid ${foundationToken.colors.gray[200]}`,
             borderRadius: foundationToken.border.radius[8],
             boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
-            theme: MonacoTheme.LIGHT,
             header: {
                 backgroundColor: foundationToken.colors.gray[50],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
