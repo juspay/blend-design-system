@@ -328,3 +328,28 @@ export function getInitialEditorOptions(
         },
     }
 }
+
+export const backupColor = {
+    body: {
+        backgroundColor: '#FAFAFA',
+        gutter: {
+            color: '#57606A',
+            backgroundColor: {
+                added: '#dafbe1',
+                removed: '#ffebe9',
+                unchanged: 'transparent',
+            },
+            borderColor: {
+                added: '#2da44e',
+                removed: '#cf222e',
+                unchanged: 'transparent',
+            },
+        },
+        highlightedLine: {
+            backgroundColor: '#dafbe1',
+        },
+    },
+    header: {
+        backgroundColor: '#FAFAFA',
+    },
+}

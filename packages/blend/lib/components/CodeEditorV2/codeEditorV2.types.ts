@@ -8,7 +8,7 @@ export enum CodeEditorV2Variant {
 
 export enum MonacoTheme {
     LIGHT = 'light',
-    DARK = 'vs-dark',
+    DARK = 'dark',
 }
 export enum DiffLineType {
     ADDED = 'added',

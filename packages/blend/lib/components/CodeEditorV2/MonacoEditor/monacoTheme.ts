@@ -1,5 +1,6 @@
 import type * as Monaco from 'monaco-editor'
 import type { CodeEditorV2Tokens } from '../codeEditorV2.tokens'
+import { backupColor } from '../utils'
 const MONACO_COLOR_FALLBACK = '#24292F'
 
 const toMonacoColor = (
@@ -60,25 +61,28 @@ export function createEditorTheme(
     const gutter = tokens.body.gutter
     const highlight = tokens.body.highlightedLine.backgroundColor
     const keyword = syntax.keyword ?? MONACO_COLOR_FALLBACK
-    const gutterColor = gutter.color ?? '#6E7681'
+    const gutterColor = gutter.color ?? backupColor.body.gutter.color
 
     const rules = SYNTAX_RULE_SPEC.map(({ token, syntaxKey, fontStyle }) => ({
         token,
         foreground: toMonacoColor(syntax[syntaxKey]),
         ...(fontStyle && { fontStyle }),
     }))
-
     return {
         base: 'vs',
         inherit: true,
         rules,
         colors: {
-            'editor.background': tokens.body.backgroundColor || '#FAFAFA',
+            'editor.background':
+                tokens.body.backgroundColor || backupColor.body.backgroundColor,
             'editor.foreground': syntax.text || MONACO_COLOR_FALLBACK,
             'editor.lineHighlightBackground':
-                highlight.unchanged || 'transparent',
-            'editor.lineHighlightBorder': 'transparent',
-            'editorLineNumber.foreground': gutter.color || '#57606A',
+                highlight.unchanged ||
+                backupColor.body.highlightedLine.backgroundColor,
+            'editor.lineHighlightBorder':
+                backupColor.body.highlightedLine.backgroundColor,
+            'editorLineNumber.foreground':
+                gutter.color || backupColor.body.gutter.color,
             'editorLineNumber.activeForeground':
                 syntax.text || MONACO_COLOR_FALLBACK,
             'editor.selectionBackground': `${keyword}20`,
@@ -93,18 +97,26 @@ export function createEditorTheme(
             'scrollbar.shadow': `${gutterColor}10`,
 
             // Diff: inserted (added) line & gutter backgrounds
-            'diffEditor.insertedLineBackground': highlight.added || '#dafbe1',
+            'diffEditor.insertedLineBackground':
+                highlight.added ||
+                backupColor.body.highlightedLine.backgroundColor,
             'diffEditorGutter.insertedLineBackground':
-                gutter.backgroundColor.added || '#dafbe1',
+                gutter.backgroundColor.added ||
+                backupColor.body.highlightedLine.backgroundColor,
             'diffEditorOverview.insertedForeground':
-                gutter.borderColor.added || '#2da44e',
+                gutter.borderColor.added ||
+                backupColor.body.gutter.borderColor.added,
 
             // Diff: removed line & gutter backgrounds
-            'diffEditor.removedLineBackground': highlight.removed || '#ffebe9',
+            'diffEditor.removedLineBackground':
+                highlight.removed ||
+                backupColor.body.highlightedLine.backgroundColor,
             'diffEditorGutter.removedLineBackground':
-                gutter.backgroundColor.removed || '#ffebe9',
+                gutter.backgroundColor.removed ||
+                backupColor.body.gutter.backgroundColor.removed,
             'diffEditorOverview.removedForeground':
-                gutter.borderColor.removed || '#cf222e',
+                gutter.borderColor.removed ||
+                backupColor.body.gutter.borderColor.removed,
 
             // Diff: unchanged area border
             'diffEditor.diagonalFill': `${gutterColor}15`,

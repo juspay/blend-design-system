@@ -6,7 +6,6 @@ import type { CodeEditorV2Tokens } from '../codeEditorV2.tokens'
 import { createEditorTheme } from './monacoTheme'
 import { MonacoEditorWrapperProps } from '../codeEditorV2.types'
 import {
-    BLEND_EDITOR_THEME_NAME,
     EDITOR_FOCUS_DELAY_MS,
     configureLanguageDefaults,
     getContainerDimensions,
@@ -210,13 +209,25 @@ export function MonacoEditorWrapper({
             monacoRef.current = monaco
             try {
                 configureLanguageDefaults(monaco)
-                monaco.editor.defineTheme(BLEND_EDITOR_THEME_NAME, editorTheme)
+                monaco.editor.defineTheme(tokens.theme, editorTheme)
+                monaco.editor.setTheme(tokens.theme)
             } catch (err) {
                 console.warn('Failed to initialise Monaco theme:', err)
             }
         },
         [editorTheme]
     )
+
+    // Keep Monaco theme in sync when tokens/theme change after mount
+    useEffect(() => {
+        if (!monacoRef.current) return
+        try {
+            monacoRef.current.editor.defineTheme(tokens.theme, editorTheme)
+            monacoRef.current.editor.setTheme(tokens.theme)
+        } catch (err) {
+            console.warn('Failed to update Monaco theme:', err)
+        }
+    }, [editorTheme])
 
     const initialOptions = useMemo(
         () =>
@@ -261,7 +272,6 @@ export function MonacoEditorWrapper({
                         height={
                             containerStyle.height ?? containerStyle.minHeight
                         }
-                        theme={tokens.theme}
                         beforeMount={beforeMount}
                         onMount={handleDiffMount}
                         options={diffOptions}
@@ -280,7 +290,6 @@ export function MonacoEditorWrapper({
                         language={monacoLanguage}
                         onChange={handleChange}
                         onMount={handleMount}
-                        theme={tokens.theme}
                         beforeMount={beforeMount}
                         options={initialOptions}
                         loading={

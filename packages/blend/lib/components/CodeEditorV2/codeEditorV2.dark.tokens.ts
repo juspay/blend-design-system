@@ -116,7 +116,7 @@ export const darkCodeEditorV2Tokens = (
                     x: foundationToken.unit[0],
                     y: foundationToken.unit[16],
                 },
-                backgroundColor: foundationToken.colors.gray[25],
+                backgroundColor: foundationToken.colors.gray[900],
 
                 gutter: {
                     width: '44px',
