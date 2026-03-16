@@ -9,9 +9,9 @@ const createBasicItems = (): MenuV2GroupType[] => [
     {
         label: 'Account',
         items: [
-            { label: 'Profile', onClick: vi.fn() },
-            { label: 'Settings', onClick: vi.fn() },
-            { label: 'Sign out', disabled: true },
+            { label: { text: 'Profile' }, onClick: vi.fn() },
+            { label: { text: 'Settings' }, onClick: vi.fn() },
+            { label: { text: 'Sign out' }, disabled: true },
         ],
     },
 ]
@@ -22,10 +22,10 @@ const createGroupedItemsWithSubmenu = (): MenuV2GroupType[] => [
         showSeparator: true,
         items: [
             {
-                label: 'United States',
+                label: { text: 'United States' },
                 subMenu: [
-                    { label: 'California', onClick: vi.fn() },
-                    { label: 'New York', onClick: vi.fn() },
+                    { label: { text: 'California' }, onClick: vi.fn() },
+                    { label: { text: 'New York' }, onClick: vi.fn() },
                 ],
             },
         ],
@@ -35,7 +35,11 @@ const createGroupedItemsWithSubmenu = (): MenuV2GroupType[] => [
 const createSearchItems = (): MenuV2GroupType[] => [
     {
         label: 'Cities',
-        items: [{ label: 'Mostar' }, { label: 'Moscow' }, { label: 'Mumbai' }],
+        items: [
+            { label: { text: 'Mostar' } },
+            { label: { text: 'Moscow' } },
+            { label: { text: 'Mumbai' } },
+        ],
     },
 ]
 

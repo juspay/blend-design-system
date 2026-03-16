@@ -14,24 +14,13 @@ describe('MenuV2 utils', () => {
     const createItem = (
         overrides: Partial<MenuV2ItemType> = {}
     ): MenuV2ItemType => ({
-        label: 'Item',
+        label: { text: 'Item' },
         ...overrides,
     })
 
     describe('getItemSlots', () => {
-        it('returns slot as first element when set', () => {
-            const item = createItem({
-                slot: 'Lead',
-            })
-            const [s1, s2, s3, s4] = getItemSlots(item)
-            expect(s1).toBe('Lead')
-            expect(s2).toBeUndefined()
-            expect(s3).toBeUndefined()
-            expect(s4).toBeUndefined()
-        })
-
         it('returns undefined for all when slot is not set', () => {
-            const item = createItem({ label: 'Only' })
+            const item = createItem({ label: { text: 'Only' } })
             const [s1, s2, s3, s4] = getItemSlots(item)
             expect(s1).toBeUndefined()
             expect(s2).toBeUndefined()
@@ -46,13 +35,13 @@ describe('MenuV2 utils', () => {
                 {
                     id: 'g1',
                     label: 'Group A',
-                    items: [createItem({ id: 'i1', label: 'One' })],
+                    items: [createItem({ id: 'i1', label: { text: 'One' } })],
                     showSeparator: true,
                 },
                 {
                     id: 'g2',
                     label: 'Group B',
-                    items: [createItem({ label: 'Two' })],
+                    items: [createItem({ label: { text: 'Two' } })],
                     showSeparator: false,
                 },
             ]
@@ -87,7 +76,7 @@ describe('MenuV2 utils', () => {
 
         it('omits group label when not provided', () => {
             const groups: MenuV2GroupType[] = [
-                { items: [createItem({ label: 'Only' })] },
+                { items: [createItem({ label: { text: 'Only' } })] },
             ]
             const rows = flattenMenuV2Groups(groups)
             expect(rows).toHaveLength(1)
@@ -98,12 +87,12 @@ describe('MenuV2 utils', () => {
             const groups: MenuV2GroupType[] = [
                 {
                     label: 'A',
-                    items: [createItem({ label: 'a' })],
+                    items: [createItem({ label: { text: 'a' } })],
                     showSeparator: true,
                 },
                 {
                     label: 'B',
-                    items: [createItem({ label: 'b' })],
+                    items: [createItem({ label: { text: 'b' } })],
                     showSeparator: false,
                 },
             ]
@@ -114,37 +103,37 @@ describe('MenuV2 utils', () => {
     })
 
     it('filterMenuItem returns item when label matches search', () => {
-        const item = createItem({ label: 'Profile' })
+        const item = createItem({ label: { text: 'Profile' } })
         const result = filterMenuItem(item, 'pro')
         expect(result).not.toBeNull()
-        expect(result?.label).toBe('Profile')
+        expect(result?.label.text).toBe('Profile')
     })
 
     it('filterMenuItem returns null when no match and no submenu', () => {
-        const item = createItem({ label: 'Settings' })
+        const item = createItem({ label: { text: 'Settings' } })
         const result = filterMenuItem(item, 'xyz')
         expect(result).toBeNull()
     })
 
     it('filterMenuItem filters nested submenu items and preserves parent when any child matches', () => {
         const item: MenuV2ItemType = {
-            label: 'Parent',
+            label: { text: 'Parent' },
             subMenu: [
-                { label: 'California' },
-                { label: 'New York' },
-                { label: 'Texas' },
+                { label: { text: 'California' } },
+                { label: { text: 'New York' } },
+                { label: { text: 'Texas' } },
             ],
         }
 
         const result = filterMenuItem(item, 'york')
         expect(result).not.toBeNull()
         expect(result?.subMenu).toHaveLength(1)
-        expect(result?.subMenu?.[0].label).toBe('New York')
+        expect(result?.subMenu?.[0].label.text).toBe('New York')
     })
 
     it('filterMenuGroups returns original groups when search text is empty', () => {
         const groups: MenuV2GroupType[] = [
-            { label: 'Group', items: [createItem({ label: 'A' })] },
+            { label: 'Group', items: [createItem({ label: { text: 'A' } })] },
         ]
 
         const result = filterMenuGroups(groups, '')
@@ -155,17 +144,17 @@ describe('MenuV2 utils', () => {
         const groups: MenuV2GroupType[] = [
             {
                 label: 'First',
-                items: [createItem({ label: 'Alpha' })],
+                items: [createItem({ label: { text: 'Alpha' } })],
             },
             {
                 label: 'Second',
-                items: [createItem({ label: 'Beta' })],
+                items: [createItem({ label: { text: 'Beta' } })],
             },
         ]
 
         const result = filterMenuGroups(groups, 'beta')
         expect(result).toHaveLength(1)
         expect(result[0].label).toBe('Second')
-        expect(result[0].items[0].label).toBe('Beta')
+        expect(result[0].items[0].label.text).toBe('Beta')
     })
 })

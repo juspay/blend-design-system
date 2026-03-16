@@ -11,9 +11,12 @@ const createItems = (): MenuV2GroupType[] => [
         label: 'Primary',
         showSeparator: true,
         items: [
-            { label: 'Profile' },
-            { label: 'Settings', subLabel: 'Preferences and account' },
-            { label: 'Sign out', disabled: true },
+            { label: { text: 'Profile' } },
+            {
+                label: { text: 'Settings' },
+                subLabel: 'Preferences and account',
+            },
+            { label: { text: 'Sign out' }, disabled: true },
         ],
     },
 ]
