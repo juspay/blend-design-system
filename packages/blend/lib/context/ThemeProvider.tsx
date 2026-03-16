@@ -13,9 +13,17 @@ type ThemeProviderProps = {
     theme?: Theme | string
     children: React.ReactNode
     /**
-     * When true, automatically detects Shadow DOM and injects styles into it.
-     * Set to false if you want to manually control ShadowAware wrapping.
-     * @default false
+     * Target element for styled-components to inject styles into.
+     * Use this when rendering inside a Shadow DOM.
+     * The element should be inside a shadow root.
+     */
+    target?: HTMLElement
+    /**
+     * @deprecated Use `target` prop instead.
+     */
+    shadowRoot?: ShadowRoot
+    /**
+     * @deprecated Use `target` prop instead.
      */
     autoShadowDetection?: boolean
 }
@@ -26,8 +34,22 @@ const ThemeProvider = ({
     breakpoints = BREAKPOINTS,
     theme = Theme.LIGHT,
     children,
-    autoShadowDetection = false,
+    target,
+    shadowRoot,
+    autoShadowDetection,
 }: ThemeProviderProps) => {
+    // Warn about deprecated props
+    if (autoShadowDetection !== undefined) {
+        console.warn(
+            '[ThemeProvider] autoShadowDetection is deprecated. Use target prop instead.'
+        )
+    }
+    if (shadowRoot !== undefined) {
+        console.warn(
+            '[ThemeProvider] shadowRoot is deprecated. Use target prop instead.'
+        )
+    }
+
     const defaultThemeContextValue = {
         foundationTokens,
         componentTokens: initTokens(componentTokens, foundationTokens, theme),
@@ -35,13 +57,19 @@ const ThemeProvider = ({
         theme,
     }
 
+    const content = (
+        <>
+            <AutofillStyles />
+            {children}
+        </>
+    )
+
     return (
         <ThemeContext.Provider value={defaultThemeContextValue}>
-            <AutofillStyles />
-            {autoShadowDetection ? (
-                <ShadowAware autoDetect={true}>{children}</ShadowAware>
+            {target ? (
+                <ShadowAware target={target}>{content}</ShadowAware>
             ) : (
-                children
+                content
             )}
         </ThemeContext.Provider>
     )
