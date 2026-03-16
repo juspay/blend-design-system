@@ -61,7 +61,7 @@ import { ResponsiveStatCardV2Tokens } from '../components/StatCardV2/statcardV2.
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
-import { ResponsiveCodeV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -130,7 +130,7 @@ export const useComponentToken = (
     | ResponsivePopoverV2Tokens
     | ResponsiveTextInputV2Tokens
     | ResponsiveBreadcrumbV2Tokens
-    | ResponsiveCodeV2Tokens => {
+    | ResponsiveCodeEditorV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':

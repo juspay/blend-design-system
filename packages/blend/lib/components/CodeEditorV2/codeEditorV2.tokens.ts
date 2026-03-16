@@ -2,8 +2,8 @@ import type { CSSObject } from 'styled-components'
 import { DiffLineType } from './codeEditorV2.types'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { darkCodeTokens } from './codeEditorV2.dark.tokens'
-import { lightCodeTokens } from './codeEditorV2.light.token'
+import { darkCodeEditorV2Tokens } from './codeEditorV2.dark.tokens'
+import { lightCodeEditorV2Tokens } from './codeEditorV2.light.token'
 import { Theme } from '../../context/theme.enum'
 import { MonacoTheme } from './codeEditorV2.types'
 
@@ -87,17 +87,17 @@ export type CodeEditorV2Tokens = {
     }
 }
 
-export type ResponsiveCodeV2Tokens = {
+export type ResponsiveCodeEditorV2Tokens = {
     [key in keyof BreakpointType]: CodeEditorV2Tokens
 }
 
-export const getCodeV2Tokens = (
+export const getCodeEditorV2Tokens = (
     foundationToken: FoundationTokenType,
     theme: Theme | string = Theme.LIGHT
-): ResponsiveCodeV2Tokens => {
+): ResponsiveCodeEditorV2Tokens => {
     if (theme === Theme.DARK || theme === 'dark') {
-        return darkCodeTokens(foundationToken)
+        return darkCodeEditorV2Tokens(foundationToken)
     }
 
-    return lightCodeTokens(foundationToken)
+    return lightCodeEditorV2Tokens(foundationToken)
 }

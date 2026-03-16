@@ -2,11 +2,11 @@ import { forwardRef, useState } from 'react'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
-import { CodeV2Variant } from './codeEditorV2.types'
+import { CodeEditorV2Variant } from './codeEditorV2.types'
 import { CodeEditorV2Props } from './codeEditorV2.types'
 import { createCopyToClipboard } from './utils'
 import { shouldShowLineNumbers, getContainerStyles } from './utils'
-import { CodeV2Header } from './CodeEditorV2Header'
+import { CodeEditorV2Header } from './CodeEditorV2Header'
 import { MonacoEditorWrapper } from './MonacoEditor/MonacoEditorWrapper'
 
 const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
@@ -14,7 +14,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
         {
             value,
             onChange,
-            variant = CodeV2Variant.DEFAULT,
+            variant = CodeEditorV2Variant.DEFAULT,
             showLineNumbers,
             showHeader = true,
             header = 'Editor',
@@ -67,7 +67,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                 data-codeeditor={header}
             >
                 {showHeader && (
-                    <CodeV2Header
+                    <CodeEditorV2Header
                         header={header}
                         headerLeftSlot={headerLeftSlot}
                         headerRightSlot={headerRightSlot}

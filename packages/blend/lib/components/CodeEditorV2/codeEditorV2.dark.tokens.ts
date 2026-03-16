@@ -1,10 +1,10 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveCodeV2Tokens } from './codeEditorV2.tokens'
+import { ResponsiveCodeEditorV2Tokens } from './codeEditorV2.tokens'
 import { DiffLineType, MonacoTheme } from './codeEditorV2.types'
 
-export const darkCodeTokens = (
+export const darkCodeEditorV2Tokens = (
     foundationToken: FoundationTokenType
-): ResponsiveCodeV2Tokens => {
+): ResponsiveCodeEditorV2Tokens => {
     return {
         sm: {
             theme: MonacoTheme.DARK,

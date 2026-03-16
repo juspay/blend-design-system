@@ -64,7 +64,7 @@ import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.token
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
 import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
-import { getCodeV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import { getCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -211,7 +211,7 @@ const initTokens = (
             getPopoverV2Tokens(foundationTokens, theme),
         CODEEDITORV2:
             componentTokens.CODEEDITORV2 ??
-            getCodeV2Tokens(foundationTokens, theme),
+            getCodeEditorV2Tokens(foundationTokens, theme),
     }
 }
 
