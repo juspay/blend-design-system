@@ -34,7 +34,16 @@ export type SupportedLanguage =
     | 'python'
     | 'rust'
     | 'haskell'
-export type CodeEditorV2Props = {
+
+export type CodeEditorV2Dimensions = {
+    width?: string | number
+    maxWidth?: string | number
+    minWidth?: string | number
+    height?: string | number
+    maxHeight?: string | number
+    minHeight?: string | number
+}
+export type CodeEditorV2Props = CodeEditorV2Dimensions & {
     value: string
     onChange?: (value: string) => void
     variant?: CodeEditorV2Variant
@@ -49,9 +58,6 @@ export type CodeEditorV2Props = {
     placeholder?: string
     readOnly?: boolean
     disabled?: boolean
-    minHeight?: string | number
-    maxHeight?: string | number
-    height?: string | number
     className?: string
     onBlur?: () => void
     onFocus?: () => void
@@ -62,7 +68,7 @@ export type CodeEditorV2Props = {
     originalValue?: string
     /** Render diffs inline (single column) instead of side-by-side. */
     renderSideBySide?: boolean
-}
+} & CodeEditorV2Dimensions
 export type CodeEditorV2HeaderProps = {
     header: string
     headerLeftSlot?: ReactNode
@@ -73,6 +79,14 @@ export type CodeEditorV2HeaderProps = {
     onCopy: () => void
     tokens: CodeEditorV2Tokens
 }
+export type MonacoEditorWrapperDimensions = {
+    minHeight: string | number
+    maxHeight?: string | number
+    height?: string | number
+    width?: string | number
+    maxWidth?: string | number
+    minWidth?: string | number
+}
 export type MonacoEditorWrapperProps = {
     value: string
     language: string
@@ -81,9 +95,6 @@ export type MonacoEditorWrapperProps = {
     disabled: boolean
     placeholder?: string
     showLineNumbers: boolean
-    minHeight: string | number
-    maxHeight?: string | number
-    height?: string | number
     tokens: CodeEditorV2Tokens
     onFocus?: () => void
     onBlur?: () => void
@@ -95,4 +106,4 @@ export type MonacoEditorWrapperProps = {
     originalValue?: string
     /** Render diffs inline (single column) instead of side-by-side. */
     renderSideBySide?: boolean
-}
+} & MonacoEditorWrapperDimensions
