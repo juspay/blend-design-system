@@ -61,6 +61,7 @@ import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkbo
 import { getStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
+import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -197,6 +198,9 @@ const initTokens = (
         RADIOV2:
             componentTokens.RADIOV2 ??
             getRadioV2Tokens(foundationTokens, theme),
+        POPOVERV2:
+            componentTokens.POPOVERV2 ??
+            getPopoverV2Tokens(foundationTokens, theme),
     }
 }
 

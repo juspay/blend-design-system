@@ -58,6 +58,7 @@ import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/
 import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import { ResponsiveStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
+import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -124,6 +125,7 @@ export const useComponentToken = (
     | ResponsiveTextInputV2Tokens
     | ResponsiveStatCardV2Tokens
     | ResponsiveRadioV2Tokens
+    | ResponsivePopoverV2Tokens
     | ResponsiveTextInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -161,6 +163,8 @@ export const useComponentToken = (
             return componentTokens.BREADCRUMB
         case 'POPOVER':
             return componentTokens.POPOVER
+        case 'POPOVERV2':
+            return componentTokens.POPOVERV2
         case 'MENU':
             return componentTokens.MENU
         case 'MULTI_SELECT':

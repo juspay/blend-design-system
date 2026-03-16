@@ -90,6 +90,7 @@ import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
+import PopoverV2Demo from './PopoverV2Demo'
 import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
@@ -219,6 +220,8 @@ const SidebarDemo = () => {
         | 'timeline'
         | 'statCardV2'
         | 'tooltipV2'
+        | 'singleSelectV2'
+        | 'popoverV2'
     >('statCardV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
@@ -517,6 +520,8 @@ const SidebarDemo = () => {
                 return <OutageChartDemoV2 />
             case 'popover':
                 return <PopoverDemo />
+            case 'popoverV2':
+                return <PopoverV2Demo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
             case 'stepper':
@@ -1200,6 +1205,16 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'popover',
                     onClick: () => setActiveComponent('popover'),
+                },
+                {
+                    label: 'Popover V2',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'popoverV2',
+                    onClick: () => setActiveComponent('popoverV2'),
                 },
                 {
                     label: 'Drawer',
