@@ -172,7 +172,7 @@ export const getAlertTokens = (
                     },
                     fontWeight: foundationToken.font.weight[600],
                     fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                    lineHeight: `${foundationToken.font.size.body.md.lineHeight}px`,
+                    lineHeight: foundationToken.unit[16],
                 },
                 description: {
                     color: {
@@ -186,7 +186,7 @@ export const getAlertTokens = (
                     },
                     fontWeight: foundationToken.font.weight[400],
                     fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                    lineHeight: `${foundationToken.font.size.body.md.lineHeight}px`,
+                    lineHeight: foundationToken.unit[16],
                 },
             },
             button: {
@@ -316,7 +316,7 @@ export const getAlertTokens = (
                     },
                     fontWeight: foundationToken.font.weight[600],
                     fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                    lineHeight: `${foundationToken.font.size.body.md.lineHeight}px`,
+                    lineHeight: foundationToken.unit[16],
                 },
                 description: {
                     color: {
@@ -330,7 +330,7 @@ export const getAlertTokens = (
                     },
                     fontWeight: foundationToken.font.weight[400],
                     fontSize: `${foundationToken.font.size.body.md.fontSize}px`,
-                    lineHeight: `${foundationToken.font.size.body.md.lineHeight}px`,
+                    lineHeight: foundationToken.unit[16],
                 },
             },
 
