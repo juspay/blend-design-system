@@ -17,7 +17,7 @@ Create a composable, accessible Stat Card component that can display:
 - **Action Icon**: Optional icon anchored to the top-right corner (hidden on small screens)
 - **Title Icon**: Optional icon rendered beside the title (hidden on small screens)
 - **Responsive Design**: Layout adapts between `sm` and `md` breakpoints using `useBreakpoints` and `useResponsiveTokens`
-- **Accessibility**: Full WCAG A/AA/AAA compliance — `role="region"`, `role="img"` on charts, `aria-label`, `aria-labelledby`, `aria-describedby`, unique IDs via `useId`
+- **Accessibility**: Designed with WCAG guidelines in mind, including use of `role="region"`, `role="img"` on charts, `aria-label`, `aria-labelledby`, `aria-describedby`, and unique IDs via `useId`
 - **Theme Support**: Light and dark mode token support
 
 ---

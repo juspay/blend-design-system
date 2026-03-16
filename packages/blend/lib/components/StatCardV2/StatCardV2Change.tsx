@@ -2,7 +2,10 @@ import { ArrowDown, ArrowUp } from 'lucide-react'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import type { StatCardV2ChangeProps } from './statcardV2.types'
+import {
+    StatCardV2ArrowDirection,
+    type StatCardV2ChangeProps,
+} from './statcardV2.types'
 
 const StatCardV2Change = ({
     changeValueText,
@@ -37,7 +40,7 @@ const StatCardV2Change = ({
                 alignItems="center"
                 justifyContent="center"
             >
-                {arrowDirection === 'up' ? (
+                {arrowDirection === StatCardV2ArrowDirection.UP ? (
                     <ArrowUp
                         width={
                             tokens.topContainer.dataContainer.statsContainer

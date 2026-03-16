@@ -118,15 +118,12 @@ export const useComponentToken = (
     | ResponsiveTextInputV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
-    | ResponsiveTextInputV2Tokens
     | ResponsiveTimelineTokens
     | ResponsiveCheckboxV2Tokens
     | ResponsiveKeyValuePairV2Tokens
-    | ResponsiveTextInputV2Tokens
     | ResponsiveStatCardV2Tokens
     | ResponsiveRadioV2Tokens
-    | ResponsivePopoverV2Tokens
-    | ResponsiveTextInputV2Tokens => {
+    | ResponsivePopoverV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':

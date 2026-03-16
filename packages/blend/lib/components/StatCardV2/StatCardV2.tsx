@@ -55,6 +55,9 @@ const StatCardV2 = ({
     const isProgressBarVariant = variant === StatCardV2Variant.PROGRESS_BAR
     const isNumberVariant = variant === StatCardV2Variant.NUMBER
 
+    const numberVariantAlignment =
+        isNumberVariant && !isSmallScreen ? 'center' : 'flex-start'
+
     const { label, placeholder, items, selected, onSelect } =
         dropdownProps || {}
 
@@ -83,23 +86,29 @@ const StatCardV2 = ({
         [title, value, subtitle, change]
     )
 
+    type ChartOptions = {
+        series?: { data?: unknown[] }[]
+    }
+
+    const chartOptions = options as ChartOptions | undefined
+
     const hasChartData =
         isChartVariant &&
-        Array.isArray(
-            (options as { series?: { data?: unknown[] }[] } | undefined)?.series
-        ) &&
-        (
-            options as { series?: { data?: unknown[] }[] } | undefined
-        )?.series?.some(
+        Array.isArray(chartOptions?.series) &&
+        chartOptions.series?.some(
             (seriesItem) =>
                 Array.isArray(seriesItem?.data) && seriesItem.data.length > 0
         )
 
+    const hasValue = value !== undefined && value !== null && value !== ''
+    const hasProgressValue =
+        progressValue !== undefined && progressValue !== null
+
     if (
         !skeleton?.show &&
-        !value &&
+        !hasValue &&
         !change &&
-        !progressValue &&
+        !hasProgressValue &&
         !hasChartData
     ) {
         return (
@@ -139,7 +148,6 @@ const StatCardV2 = ({
             height={resolvedHeight}
             role="region"
             aria-label={cardLabel || title}
-            aria-labelledby={titleId}
             aria-describedby={subtitle ? subtitleId : undefined}
             {...filteredProps}
         >
@@ -155,13 +163,7 @@ const StatCardV2 = ({
                         position="relative"
                         display="flex"
                         flexDirection={isNumberVariant ? 'column' : 'row'}
-                        alignItems={
-                            isNumberVariant
-                                ? isSmallScreen
-                                    ? 'flex-start'
-                                    : 'center'
-                                : 'flex-start'
-                        }
+                        alignItems={numberVariantAlignment}
                         gap={tokens.topContainer.gap}
                     >
                         {actionIcon && !isSmallScreen && (
@@ -183,13 +185,7 @@ const StatCardV2 = ({
                             display="flex"
                             flexDirection="column"
                             gap={tokens.topContainer.dataContainer.gap}
-                            alignItems={
-                                isNumberVariant
-                                    ? isSmallScreen
-                                        ? 'flex-start'
-                                        : 'center'
-                                    : 'flex-start'
-                            }
+                            alignItems={numberVariantAlignment}
                         >
                             <StatCardV2Title
                                 id={titleId}
@@ -200,13 +196,7 @@ const StatCardV2 = ({
                             <Block
                                 display="flex"
                                 flexDirection="column"
-                                alignItems={
-                                    isNumberVariant
-                                        ? isSmallScreen
-                                            ? 'flex-start'
-                                            : 'center'
-                                        : 'flex-start'
-                                }
+                                alignItems={numberVariantAlignment}
                             >
                                 <Block
                                     display="flex"
@@ -279,7 +269,7 @@ const StatCardV2 = ({
                             )
                         ))}
                     {isProgressBarVariant &&
-                        (progressValue ? (
+                        (hasProgressValue ? (
                             <ProgressBar
                                 value={progressValue}
                                 size={ProgressBarSize.SMALL}

@@ -10,68 +10,74 @@ const StatCardV2Title = ({
     helpIconText,
     tokens,
     id,
-}: StatCardV2TitleProps) => (
-    <Block
-        display="flex"
-        alignItems="center"
-        gap={tokens.topContainer.dataContainer.titleContainer.gap}
-    >
-        <Text
-            id={id}
-            fontSize={
-                tokens.topContainer.dataContainer.titleContainer.title.fontSize
-            }
-            fontWeight={
-                tokens.topContainer.dataContainer.titleContainer.title
-                    .fontWeight
-            }
-            lineHeight={addPxToValue(
-                tokens.topContainer.dataContainer.titleContainer.title
-                    .lineHeight
-            )}
-            color={tokens.topContainer.dataContainer.titleContainer.title.color}
-            data-element="statcard-header"
-            data-id={title || 'statcard-header'}
+}: StatCardV2TitleProps) => {
+    if (!title) return null
+    return (
+        <Block
+            display="flex"
+            alignItems="center"
+            gap={tokens.topContainer.dataContainer.titleContainer.gap}
         >
-            {title}
-        </Text>
-        {helpIconText && (
-            <Block
-                data-element="help-icon"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+            <Text
+                id={id}
+                fontSize={
+                    tokens.topContainer.dataContainer.titleContainer.title
+                        .fontSize
+                }
+                fontWeight={
+                    tokens.topContainer.dataContainer.titleContainer.title
+                        .fontWeight
+                }
+                lineHeight={addPxToValue(
+                    tokens.topContainer.dataContainer.titleContainer.title
+                        .lineHeight
+                )}
+                color={
+                    tokens.topContainer.dataContainer.titleContainer.title.color
+                }
+                data-element="statcard-header"
+                data-id={title || 'statcard-header'}
             >
-                <Tooltip content={helpIconText}>
-                    <Block
-                        as="span"
-                        display="inline-flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        role="button"
-                        tabIndex={0}
-                        aria-label={helpIconText || `Help for ${title}`}
-                    >
-                        <CircleHelp
-                            width={
-                                tokens.topContainer.dataContainer.titleContainer
-                                    .helpIcon.width
-                            }
-                            height={
-                                tokens.topContainer.dataContainer.titleContainer
-                                    .helpIcon.width
-                            }
-                            color={
-                                tokens.topContainer.dataContainer.titleContainer
-                                    .helpIcon.color.default
-                            }
-                            aria-hidden="true"
-                        />
-                    </Block>
-                </Tooltip>
-            </Block>
-        )}
-    </Block>
-)
+                {title}
+            </Text>
+            {helpIconText && (
+                <Block
+                    data-element="help-icon"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Tooltip content={helpIconText}>
+                        <Block
+                            as="span"
+                            display="inline-flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            role="button"
+                            tabIndex={0}
+                            aria-label={helpIconText || `Help for ${title}`}
+                        >
+                            <CircleHelp
+                                width={
+                                    tokens.topContainer.dataContainer
+                                        .titleContainer.helpIcon.width
+                                }
+                                height={
+                                    tokens.topContainer.dataContainer
+                                        .titleContainer.helpIcon.height
+                                }
+                                color={
+                                    tokens.topContainer.dataContainer
+                                        .titleContainer.helpIcon.color.default
+                                }
+                                aria-hidden="true"
+                            />
+                        </Block>
+                    </Tooltip>
+                </Block>
+            )}
+        </Block>
+    )
+}
 
 export default StatCardV2Title
