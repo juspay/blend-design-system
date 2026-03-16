@@ -40,7 +40,7 @@ const DEFAULT_VIRTUAL_THRESHOLD = 30
 
 function renderFlatRow(
     row: MenuV2FlatRow,
-    itemTokens: MenuV2TokensType['item'],
+    tokens: MenuV2TokensType,
     maxHeight?: number
 ) {
     if (row.type === 'label') {
@@ -48,16 +48,14 @@ function renderFlatRow(
             <RadixMenu.Label asChild>
                 <PrimitiveText
                     data-element="menu-group-label"
-                    fontSize={itemTokens.optionsLabel.fontSize}
-                    fontWeight={itemTokens.optionsLabel.fontWeight}
-                    color={itemTokens.optionsLabel.color}
-                    lineHeight={addPxToValue(
-                        itemTokens.optionsLabel.lineHeight
-                    )}
-                    padding={`${itemTokens.optionsLabel.paddingTop} ${itemTokens.optionsLabel.paddingRight} ${itemTokens.optionsLabel.paddingBottom} ${itemTokens.optionsLabel.paddingLeft}`}
+                    fontSize={tokens.group.label.fontSize}
+                    fontWeight={tokens.group.label.fontWeight}
+                    color={tokens.group.label.color}
+                    lineHeight={addPxToValue(tokens.group.label.lineHeight)}
+                    padding={`${tokens.group.label.paddingTop} ${tokens.group.label.paddingRight} ${tokens.group.label.paddingBottom} ${tokens.group.label.paddingLeft}`}
                     userSelect="none"
                     textTransform="uppercase"
-                    margin={`${itemTokens.optionsLabel.marginTop} ${itemTokens.optionsLabel.marginRight} ${itemTokens.optionsLabel.marginBottom} ${itemTokens.optionsLabel.marginLeft}`}
+                    margin={`${tokens.group.label.marginTop} ${tokens.group.label.marginRight} ${tokens.group.label.marginBottom} ${tokens.group.label.marginLeft}`}
                 >
                     {row.label}
                 </PrimitiveText>
@@ -70,12 +68,12 @@ function renderFlatRow(
                 <Block
                     as="div"
                     role="separator"
-                    height={itemTokens.separator.height}
-                    backgroundColor={itemTokens.separator.color}
-                    marginTop={itemTokens.separator.marginTop}
-                    marginRight={itemTokens.separator.marginRight}
-                    marginBottom={itemTokens.separator.marginBottom}
-                    marginLeft={itemTokens.separator.marginLeft}
+                    height={tokens.group.separator.height}
+                    backgroundColor={tokens.group.separator.color}
+                    marginTop={tokens.group.separator.marginTop}
+                    marginRight={tokens.group.separator.marginRight}
+                    marginBottom={tokens.group.separator.marginBottom}
+                    marginLeft={tokens.group.separator.marginLeft}
                     aria-hidden="true"
                 />
             </RadixMenu.Separator>
@@ -94,7 +92,7 @@ function renderFlatRow(
             key={row.id}
             item={item}
             index={itemIndex}
-            itemTokens={itemTokens}
+            itemTokens={tokens.group.item}
         />
     )
 }
@@ -147,8 +145,7 @@ const MenuV2Content = ({
 }: MenuV2ContentProps) => {
     const searchInputRef = useRef<HTMLInputElement>(null)
     const virtualScrollRef = useRef<HTMLDivElement>(null)
-    const content = menuTokens.content
-    const itemTokens = menuTokens.item
+    const content = menuTokens
 
     const minWidth =
         minWidthProp ??
@@ -236,7 +233,7 @@ const MenuV2Content = ({
                         ref={searchInputRef}
                         leftSlot={
                             <Search
-                                size={16}
+                                size={content.search.width}
                                 color="currentColor"
                                 aria-hidden
                             />
@@ -291,11 +288,7 @@ const MenuV2Content = ({
                                             transform: `translateY(${virtualRow.start}px)`,
                                         }}
                                     >
-                                        {renderFlatRow(
-                                            row,
-                                            itemTokens,
-                                            maxHeight
-                                        )}
+                                        {renderFlatRow(row, content, maxHeight)}
                                     </Block>
                                 )
                             })}
@@ -320,40 +313,36 @@ const MenuV2Content = ({
                                                 ? `menu-group-${groupId}`
                                                 : 'menu-group-label'
                                         }
-                                        fontSize={
-                                            itemTokens.optionsLabel.fontSize
-                                        }
+                                        fontSize={content.group.label.fontSize}
                                         fontWeight={
-                                            itemTokens.optionsLabel.fontWeight
+                                            content.group.label.fontWeight
                                         }
-                                        color={itemTokens.optionsLabel.color}
+                                        lineHeight={addPxToValue(
+                                            content.group.label.lineHeight
+                                        )}
+                                        color={content.group.label.color}
                                         style={{
                                             userSelect: 'none',
                                             textTransform: 'uppercase',
                                             paddingTop:
-                                                itemTokens.optionsLabel
-                                                    .paddingTop,
+                                                content.group.label.paddingTop,
                                             paddingRight:
-                                                itemTokens.optionsLabel
+                                                content.group.label
                                                     .paddingRight,
                                             paddingBottom:
-                                                itemTokens.optionsLabel
+                                                content.group.label
                                                     .paddingBottom,
                                             paddingLeft:
-                                                itemTokens.optionsLabel
-                                                    .paddingLeft,
+                                                content.group.label.paddingLeft,
                                             marginTop:
-                                                itemTokens.optionsLabel
-                                                    .marginTop,
+                                                content.group.label.marginTop,
                                             marginRight:
-                                                itemTokens.optionsLabel
-                                                    .marginRight,
+                                                content.group.label.marginRight,
                                             marginBottom:
-                                                itemTokens.optionsLabel
+                                                content.group.label
                                                     .marginBottom,
                                             marginLeft:
-                                                itemTokens.optionsLabel
-                                                    .marginLeft,
+                                                content.group.label.marginLeft,
                                         }}
                                     >
                                         {group.label}
@@ -380,7 +369,7 @@ const MenuV2Content = ({
                                             }
                                             item={item}
                                             index={itemIndex}
-                                            itemTokens={itemTokens}
+                                            itemTokens={content.group.item}
                                         />
                                     )
                             )}
@@ -390,22 +379,27 @@ const MenuV2Content = ({
                                         <Block
                                             as="div"
                                             role="separator"
-                                            height={itemTokens.separator.height}
+                                            height={
+                                                content.group.separator.height
+                                            }
                                             backgroundColor={
-                                                itemTokens.separator.color
+                                                content.group.separator.color
                                             }
                                             marginTop={
-                                                itemTokens.separator.marginTop
+                                                content.group.separator
+                                                    .marginTop
                                             }
                                             marginRight={
-                                                itemTokens.separator.marginRight
+                                                content.group.separator
+                                                    .marginRight
                                             }
                                             marginBottom={
-                                                itemTokens.separator
+                                                content.group.separator
                                                     .marginBottom
                                             }
                                             marginLeft={
-                                                itemTokens.separator.marginLeft
+                                                content.group.separator
+                                                    .marginLeft
                                             }
                                             aria-hidden="true"
                                         />

@@ -5,12 +5,12 @@ import type { MenuV2TokensType } from './menuV2.tokens'
 import { MenuV2ItemActionType, MenuV2ItemVariant } from './menuV2.types'
 import type { MenuV2ItemStates } from './menuV2.tokens'
 
-type MenuV2ItemTokens = MenuV2TokensType['item']
+type MenuV2ItemTokens = MenuV2TokensType['group']['item']
 
 export const getItemSlots = (
     item: MenuV2ItemType
 ): [ReactNode?, ReactNode?, ReactNode?, ReactNode?] => {
-    return [item.slot]
+    return [item.label.leftSlot]
 }
 
 export const filterMenuItem = (
@@ -18,7 +18,7 @@ export const filterMenuItem = (
     lower: string
 ): MenuV2ItemType | null => {
     const matches =
-        (item.label && item.label.toLowerCase().includes(lower)) ||
+        (item.label.text && item.label.text.toLowerCase().includes(lower)) ||
         (item.subLabel && item.subLabel.toLowerCase().includes(lower))
     if (item.subMenu) {
         const filteredSub = item.subMenu
@@ -40,13 +40,18 @@ export const getMenuItemBackgroundColor = (
     const bg = itemTokens.backgroundColor
     const variant = item.variant ?? MenuV2ItemVariant.DEFAULT
     if (variant === MenuV2ItemVariant.DEFAULT) {
-        return item.disabled
-            ? bg.default.disabled[state]
-            : bg.default.enabled[state]
+        const tokensForVariant = bg[MenuV2ItemVariant.DEFAULT]
+        if (item.disabled) {
+            return tokensForVariant.disabled
+        }
+        return tokensForVariant[state]
     }
     const actionType = item.actionType ?? MenuV2ItemActionType.PRIMARY
-    const actionBg = bg.action[actionType]
-    return item.disabled ? actionBg.disabled[state] : actionBg.enabled[state]
+    const actionBg = bg[MenuV2ItemVariant.ACTION][actionType]
+    if (item.disabled) {
+        return actionBg.disabled
+    }
+    return actionBg[state]
 }
 
 export const getMenuItemOptionColor = (
@@ -54,18 +59,21 @@ export const getMenuItemOptionColor = (
     itemTokens: MenuV2ItemTokens,
     item: MenuV2ItemType
 ): string | undefined => {
-    const colors = itemTokens.option.color
+    const colors = itemTokens.text.color
     const variant = item.variant ?? MenuV2ItemVariant.DEFAULT
     if (variant === MenuV2ItemVariant.DEFAULT) {
-        return item.disabled
-            ? colors.default.disabled[state]
-            : colors.default.enabled[state]
+        const tokensForVariant = colors[MenuV2ItemVariant.DEFAULT]
+        if (item.disabled) {
+            return tokensForVariant.disabled
+        }
+        return tokensForVariant[state]
     }
     const actionType = item.actionType ?? MenuV2ItemActionType.PRIMARY
-    const actionColors = colors.action[actionType]
-    return item.disabled
-        ? actionColors.disabled[state]
-        : actionColors.enabled[state]
+    const actionColors = colors[MenuV2ItemVariant.ACTION][actionType]
+    if (item.disabled) {
+        return actionColors.disabled
+    }
+    return actionColors[state]
 }
 
 export const getMenuItemDescriptionColor = (
@@ -73,18 +81,21 @@ export const getMenuItemDescriptionColor = (
     itemTokens: MenuV2ItemTokens,
     item: MenuV2ItemType
 ): string | undefined => {
-    const colors = itemTokens.description.color
+    const colors = itemTokens.text.subtText.color
     const variant = item.variant ?? MenuV2ItemVariant.DEFAULT
     if (variant === MenuV2ItemVariant.DEFAULT) {
-        return item.disabled
-            ? colors.default.disabled[state]
-            : colors.default.enabled[state]
+        const tokensForVariant = colors[MenuV2ItemVariant.DEFAULT]
+        if (item.disabled) {
+            return tokensForVariant.disabled
+        }
+        return tokensForVariant[state]
     }
     const actionType = item.actionType ?? MenuV2ItemActionType.PRIMARY
-    const actionColors = colors.action[actionType]
-    return item.disabled
-        ? actionColors.disabled[state]
-        : actionColors.enabled[state]
+    const actionColors = colors[MenuV2ItemVariant.ACTION][actionType]
+    if (item.disabled) {
+        return actionColors.disabled
+    }
+    return actionColors[state]
 }
 
 export type MenuV2FlatRow =

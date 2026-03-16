@@ -28,18 +28,24 @@ const basicItems: MenuV2GroupType[] = [
     {
         items: [
             {
-                label: 'Profile',
-                slot: <User size={16} />,
+                label: {
+                    text: 'Profile',
+                    leftSlot: <User size={16} />,
+                },
                 onClick: () => console.log('Profile clicked'),
             },
             {
-                label: 'Settings',
-                slot: <Settings size={16} />,
+                label: {
+                    text: 'Settings',
+                    leftSlot: <Settings size={16} />,
+                },
                 onClick: () => console.log('Settings clicked'),
             },
             {
-                label: 'Sign Out',
-                slot: <LogOut size={16} />,
+                label: {
+                    text: 'Sign Out',
+                    leftSlot: <LogOut size={16} />,
+                },
                 variant: MenuV2ItemVariant.ACTION,
                 actionType: MenuV2ItemActionType.DANGER,
                 onClick: () => console.log('Sign out clicked'),
@@ -54,9 +60,11 @@ const groupedItems: MenuV2GroupType[] = [
         showSeparator: true,
         items: [
             {
-                label: 'Create New',
+                label: {
+                    text: 'Create New',
+                    leftSlot: <Plus size={16} />,
+                },
                 subLabel: 'Start a new project',
-                slot: <Plus size={16} />,
                 variant: MenuV2ItemVariant.ACTION,
                 actionType: MenuV2ItemActionType.PRIMARY,
                 onClick: () => console.log('Create new clicked'),
@@ -68,29 +76,54 @@ const groupedItems: MenuV2GroupType[] = [
         showSeparator: true,
         items: [
             {
-                label: 'United States',
-                slot: <MapPin size={16} />,
+                label: {
+                    text: 'United States',
+                    leftSlot: <MapPin size={16} />,
+                },
                 subMenu: [
                     {
-                        label: 'California',
+                        label: {
+                            text: 'California',
+                            leftSlot: <MapPin size={16} />,
+                        },
                         onClick: () => console.log('California'),
                     },
                     {
-                        label: 'New York',
+                        label: {
+                            text: 'New York',
+                            leftSlot: <MapPin size={16} />,
+                        },
                         onClick: () => console.log('New York'),
                     },
-                    { label: 'Texas', onClick: () => console.log('Texas') },
+                    {
+                        label: {
+                            text: 'Texas',
+                            leftSlot: <MapPin size={16} />,
+                        },
+                        onClick: () => console.log('Texas'),
+                    },
                 ],
             },
             {
-                label: 'Europe',
-                slot: <MapPin size={16} />,
+                label: {
+                    text: 'Europe',
+                    leftSlot: <MapPin size={16} />,
+                },
                 subMenu: [
                     {
-                        label: 'United Kingdom',
+                        label: {
+                            text: 'United Kingdom',
+                            leftSlot: <MapPin size={16} />,
+                        },
                         onClick: () => console.log('UK'),
                     },
-                    { label: 'Germany', onClick: () => console.log('Germany') },
+                    {
+                        label: {
+                            text: 'Germany',
+                            leftSlot: <MapPin size={16} />,
+                        },
+                        onClick: () => console.log('Germany'),
+                    },
                 ],
             },
         ],
@@ -103,19 +136,29 @@ const manyItems: MenuV2GroupType[] = [
         showSeparator: true,
         items: [
             {
-                label: 'Most Popular',
-                slot: <Star size={16} />,
+                label: {
+                    text: 'Most Popular',
+                    leftSlot: <Star size={16} />,
+                },
                 onClick: () => {},
             },
-            { label: 'Trending', slot: <Star size={16} />, onClick: () => {} },
+            {
+                label: {
+                    text: 'Trending',
+                    leftSlot: <Star size={16} />,
+                },
+                onClick: () => {},
+            },
         ],
     },
     {
         label: 'Security',
         items: [
             {
-                label: 'Enterprise',
-                slot: <Shield size={16} />,
+                label: {
+                    text: 'Enterprise',
+                    leftSlot: <Shield size={16} />,
+                },
                 subLabel: 'Full feature set',
                 onClick: () => {},
             },
@@ -125,7 +168,10 @@ const manyItems: MenuV2GroupType[] = [
 function generateLargeMenu(count: number): MenuV2GroupType[] {
     const items: MenuV2ItemType[] = Array.from({ length: count }, (_, i) => ({
         id: `item-${i}`,
-        label: `Menu Item ${i + 1}`,
+        label: {
+            text: `Menu Item ${i + 1}`,
+            leftSlot: <Star size={16} />,
+        },
         slot: <Star size={16} />,
         onClick: () => console.log(`Item ${i + 1} clicked`),
     }))
@@ -163,7 +209,7 @@ const MenuV2Demo = () => {
                 onClick: item.onClick
                     ? () => {
                           item.onClick?.()
-                          setLastAction(item.label)
+                          setLastAction(item.label.text)
                       }
                     : undefined,
                 subMenu: item.subMenu?.map((sub: MenuV2ItemType) => ({

@@ -68,17 +68,10 @@ const MenuV2 = ({
             event.preventDefault()
         }
     }, [])
-
     const triggerElement = useMemo(() => {
-        if (!trigger) return null
-
-        if (typeof trigger === 'object' && 'type' in (trigger as any)) {
-            return React.cloneElement(trigger as React.ReactElement, {
-                ...triggerProps,
-            })
-        }
-
-        return trigger
+        return React.cloneElement(trigger, {
+            ...triggerProps,
+        })
     }, [trigger, triggerProps])
 
     return (

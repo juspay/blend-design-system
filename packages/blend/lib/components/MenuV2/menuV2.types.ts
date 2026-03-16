@@ -33,11 +33,14 @@ export type MenuV2ItemTooltipProps = {
     offset?: number
 }
 
+export type MenuV2ItemLabel = {
+    text: string
+    leftSlot?: React.ReactElement
+}
 export type MenuV2ItemType = {
     id?: string
-    label: string
+    label: MenuV2ItemLabel
     subLabel?: string
-    slot?: ReactNode
     variant?: MenuV2ItemVariant
     actionType?: MenuV2ItemActionType
     disabled?: boolean

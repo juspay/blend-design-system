@@ -11,106 +11,94 @@ export type { SelectV2ItemStates as MenuV2ItemStates } from '../SelectV2/selectV
 
 type StateToken<T> = Record<SelectV2ItemStates, T>
 
-export type MenuV2TokensType = {
-    content: {
-        backgroundColor: CSSObject['backgroundColor']
-        border: CSSObject['border']
-        borderRadius: CSSObject['borderRadius']
-        boxShadow: CSSObject['boxShadow']
-        zIndex: CSSObject['zIndex']
-        minWidth: CSSObject['minWidth']
-        maxWidth: CSSObject['maxWidth']
-        paddingTop: CSSObject['paddingTop']
-        paddingRight: CSSObject['paddingRight']
-        paddingBottom: CSSObject['paddingBottom']
-        paddingLeft: CSSObject['paddingLeft']
+type MenuV2VariantToken<T> = {
+    [MenuV2ItemVariant.DEFAULT]: T
+    [MenuV2ItemVariant.ACTION]: {
+        [MenuV2ItemActionType.PRIMARY]: T
+        [MenuV2ItemActionType.DANGER]: T
     }
-    item: {
-        paddingTop: CSSObject['paddingTop']
-        paddingRight: CSSObject['paddingRight']
-        paddingBottom: CSSObject['paddingBottom']
-        paddingLeft: CSSObject['paddingLeft']
-        marginTop: CSSObject['marginTop']
-        marginRight: CSSObject['marginRight']
-        marginBottom: CSSObject['marginBottom']
-        marginLeft: CSSObject['marginLeft']
-        borderRadius: CSSObject['borderRadius']
-        gap: CSSObject['gap']
-        backgroundColor: {
-            [MenuV2ItemVariant.DEFAULT]: {
-                enabled: StateToken<CSSObject['backgroundColor']>
-                disabled: StateToken<CSSObject['backgroundColor']>
-            }
-            [MenuV2ItemVariant.ACTION]: {
-                [MenuV2ItemActionType.PRIMARY]: {
-                    enabled: StateToken<CSSObject['backgroundColor']>
-                    disabled: StateToken<CSSObject['backgroundColor']>
-                }
-                [MenuV2ItemActionType.DANGER]: {
-                    enabled: StateToken<CSSObject['backgroundColor']>
-                    disabled: StateToken<CSSObject['backgroundColor']>
-                }
-            }
-        }
-        optionsLabel: {
+}
+
+export type MenuV2TokensType = {
+    backgroundColor: CSSObject['backgroundColor']
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    boxShadow: CSSObject['boxShadow']
+    zIndex: CSSObject['zIndex']
+
+    minWidth: CSSObject['minWidth']
+    maxWidth: CSSObject['maxWidth']
+
+    paddingTop: CSSObject['paddingTop']
+    paddingRight: CSSObject['paddingRight']
+    paddingBottom: CSSObject['paddingBottom']
+    paddingLeft: CSSObject['paddingLeft']
+
+    search: {
+        width: CSSObject['width']
+    }
+
+    group: {
+        label: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
             lineHeight: CSSObject['lineHeight']
             color: CSSObject['color']
+
             paddingTop: CSSObject['paddingTop']
             paddingRight: CSSObject['paddingRight']
             paddingBottom: CSSObject['paddingBottom']
             paddingLeft: CSSObject['paddingLeft']
+
             marginTop: CSSObject['marginTop']
             marginRight: CSSObject['marginRight']
             marginBottom: CSSObject['marginBottom']
             marginLeft: CSSObject['marginLeft']
         }
-        option: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            lineHeight: CSSObject['lineHeight']
-            color: {
-                [MenuV2ItemVariant.DEFAULT]: {
-                    enabled: StateToken<CSSObject['color']>
-                    disabled: StateToken<CSSObject['color']>
+        item: {
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+
+            marginTop: CSSObject['marginTop']
+            marginRight: CSSObject['marginRight']
+            marginBottom: CSSObject['marginBottom']
+            marginLeft: CSSObject['marginLeft']
+
+            gap: CSSObject['gap']
+            borderRadius: CSSObject['borderRadius']
+
+            backgroundColor: MenuV2VariantToken<
+                StateToken<CSSObject['backgroundColor']>
+            >
+
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
+
+                color: MenuV2VariantToken<StateToken<CSSObject['color']>>
+
+                subtText: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+
+                    color: MenuV2VariantToken<StateToken<CSSObject['color']>>
                 }
-                [MenuV2ItemVariant.ACTION]: {
-                    [MenuV2ItemActionType.PRIMARY]: {
-                        enabled: StateToken<CSSObject['color']>
-                        disabled: StateToken<CSSObject['color']>
-                    }
-                    [MenuV2ItemActionType.DANGER]: {
-                        enabled: StateToken<CSSObject['color']>
-                        disabled: StateToken<CSSObject['color']>
-                    }
-                }
-            }
-        }
-        description: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            lineHeight: CSSObject['lineHeight']
-            color: {
-                [MenuV2ItemVariant.DEFAULT]: {
-                    enabled: StateToken<CSSObject['color']>
-                    disabled: StateToken<CSSObject['color']>
-                }
-                [MenuV2ItemVariant.ACTION]: {
-                    [MenuV2ItemActionType.PRIMARY]: {
-                        enabled: StateToken<CSSObject['color']>
-                        disabled: StateToken<CSSObject['color']>
-                    }
-                    [MenuV2ItemActionType.DANGER]: {
-                        enabled: StateToken<CSSObject['color']>
-                        disabled: StateToken<CSSObject['color']>
-                    }
+
+                leftSlot: {
+                    maxWidth: CSSObject['maxWidth']
+                    maxHeight: CSSObject['maxHeight']
                 }
             }
         }
+
         separator: {
             color: CSSObject['color']
             height: CSSObject['height']
+
             marginTop: CSSObject['marginTop']
             marginRight: CSSObject['marginRight']
             marginBottom: CSSObject['marginBottom']

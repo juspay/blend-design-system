@@ -43,6 +43,9 @@ const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (
         flexShrink={0}
         height="auto"
         contentCentered
+        maxWidth={24}
+        maxHeight={24}
+        overflow="hidden"
     >
         {slot}
     </Block>
@@ -50,7 +53,7 @@ const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (
 
 const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
     const menuTokens = useResponsiveTokens<MenuV2TokensType>('MENU_V2')
-    const itemTokens = menuTokens.item
+    const itemTokens = menuTokens.group.item
     const [slot1] = getItemSlots(item)
     const [searchText, setSearchText] = useState('')
     const searchInputRef = useRef<HTMLInputElement | null>(null)
@@ -112,7 +115,7 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
         }
     }, [itemTokens, item])
 
-    const contentPadding = menuTokens.content
+    const contentPadding = menuTokens
     const borderStyle = contentPadding.border
     const borderRadius = contentPadding.borderRadius
 
@@ -169,10 +172,10 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                             overflow="hidden"
                         >
                             <PrimitiveText
-                                fontSize={itemTokens.option.fontSize}
-                                fontWeight={itemTokens.option.fontWeight}
+                                fontSize={itemTokens.text.fontSize}
+                                fontWeight={itemTokens.text.fontWeight}
                                 lineHeight={addPxToValue(
-                                    itemTokens.option.lineHeight
+                                    itemTokens.text.lineHeight
                                 )}
                                 color={labelColor}
                                 style={{
@@ -181,7 +184,7 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                {item.label}
+                                {item.label.text}
                             </PrimitiveText>
                         </Block>
                         <Block
@@ -196,10 +199,12 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                         <Block display="flex" alignItems="center" width="100%">
                             <PrimitiveText
                                 color={subLabelColor}
-                                fontWeight={itemTokens.description.fontWeight}
-                                fontSize={itemTokens.description.fontSize}
+                                fontWeight={
+                                    itemTokens.text.subtText.fontWeight
+                                }
+                                fontSize={itemTokens.text.subtText.fontSize}
                                 lineHeight={addPxToValue(
-                                    itemTokens.description.lineHeight
+                                    itemTokens.text.subtText.lineHeight
                                 )}
                             >
                                 {item.subLabel}

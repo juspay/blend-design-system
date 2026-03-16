@@ -4,26 +4,29 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Tooltip } from '../Tooltip'
 import type { MenuV2ItemType } from './menuV2.types'
-import type { MenuV2TokensType } from './menuV2.tokens'
 import {
     getMenuItemBackgroundColor,
     getMenuItemOptionColor,
     getMenuItemDescriptionColor,
     getItemSlots,
 } from './menuV2.utils'
+import type { MenuV2TokensType } from './menuV2.tokens'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 type MenuV2ItemProps = {
     item: MenuV2ItemType
     index: number
-    itemTokens: MenuV2TokensType['item']
+    itemTokens: MenuV2TokensType['group']['item']
 }
 
 const SlotWrapper = ({
     slot,
+    itemTokens,
     decorative = true,
 }: {
     slot: React.ReactNode
     decorative?: boolean
+    itemTokens: MenuV2TokensType['group']['item']
 }) => {
     const content =
         decorative && isValidElement(slot) ? (
@@ -34,7 +37,15 @@ const SlotWrapper = ({
             slot
         )
     return (
-        <Block data-element="icon" flexShrink={0} height="auto" contentCentered>
+        <Block
+            data-element="icon"
+            flexShrink={0}
+            height="auto"
+            contentCentered
+            maxWidth={itemTokens.text.leftSlot.maxWidth}
+            maxHeight={itemTokens.text.leftSlot.maxHeight}
+            overflow="hidden"
+        >
             {content}
         </Block>
     )
@@ -42,7 +53,7 @@ const SlotWrapper = ({
 
 const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
     ({ item, index, itemTokens }, ref) => {
-        const [slot1] = getItemSlots(item)
+        const [slot] = getItemSlots(item)
         const itemStyle = {
             paddingTop: itemTokens.paddingTop,
             paddingRight: itemTokens.paddingRight,
@@ -111,7 +122,9 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                         width="100%"
                         overflow="hidden"
                     >
-                        {slot1 != null && <SlotWrapper slot={slot1} />}
+                        {slot != null && (
+                            <SlotWrapper slot={slot} itemTokens={itemTokens} />
+                        )}
                         <Block
                             data-element="select-item-label"
                             data-id={
@@ -125,8 +138,11 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                         >
                             <PrimitiveText
                                 data-text={item.label}
-                                fontSize={itemTokens.option.fontSize}
-                                fontWeight={itemTokens.option.fontWeight}
+                                fontSize={itemTokens.text.fontSize}
+                                fontWeight={itemTokens.text.fontWeight}
+                                lineHeight={addPxToValue(
+                                    itemTokens.text.lineHeight
+                                )}
                                 color={colorDefault}
                                 style={{
                                     overflow: 'hidden',
@@ -134,7 +150,7 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                {item.label}
+                                {item.label.text}
                             </PrimitiveText>
                         </Block>
                     </Block>
@@ -147,9 +163,14 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                             width="100%"
                         >
                             <PrimitiveText
-                                fontSize={itemTokens.description.fontSize}
-                                fontWeight={itemTokens.description.fontWeight}
+                                fontSize={itemTokens.text.subtText.fontSize}
+                                fontWeight={
+                                    itemTokens.text.subtText.fontWeight
+                                }
                                 color={descColor}
+                                lineHeight={addPxToValue(
+                                    itemTokens.text.subtText.lineHeight
+                                )}
                             >
                                 {item.subLabel}
                             </PrimitiveText>
