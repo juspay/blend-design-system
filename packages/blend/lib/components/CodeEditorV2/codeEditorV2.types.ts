@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { CodeV2Tokens } from './codeV2.tokens'
+import { CodeEditorV2Tokens } from './codeEditorV2.tokens'
 export enum CodeV2Variant {
     DEFAULT = 'default',
     NO_GUTTER = 'no-gutter',
@@ -85,7 +85,7 @@ export type CodeV2HeaderProps = {
     showCopyButton: boolean
     isCopied: boolean
     onCopy: () => void
-    tokens: CodeV2Tokens
+    tokens: CodeEditorV2Tokens
 }
 export type MonacoEditorWrapperProps = {
     value: string
@@ -98,7 +98,7 @@ export type MonacoEditorWrapperProps = {
     minHeight: string | number
     maxHeight?: string | number
     height?: string | number
-    tokens: CodeV2Tokens
+    tokens: CodeEditorV2Tokens
     onFocus?: () => void
     onBlur?: () => void
     /** When true, focuses the editor on mount. Defaults to false. */

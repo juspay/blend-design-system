@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Editor, { DiffEditor, OnMount, DiffOnMount } from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../../Primitives/Block/Block'
-import type { CodeV2Tokens } from '../codeV2.tokens'
+import type { CodeEditorV2Tokens } from '../codeEditorV2.tokens'
 import { createEditorTheme } from './monacoTheme'
-import { MonacoEditorWrapperProps } from '../codeV2.types'
+import { MonacoEditorWrapperProps } from '../codeEditorV2.types'
 import {
     BLEND_EDITOR_THEME_NAME,
     EDITOR_FOCUS_DELAY_MS,
@@ -40,7 +40,7 @@ function EditorLoading({
     tokens,
 }: {
     minHeight: string | number
-    tokens: CodeV2Tokens
+    tokens: CodeEditorV2Tokens
 }) {
     return (
         <Block
@@ -64,7 +64,7 @@ function EditorPlaceholder({
 }: {
     placeholder: string
     position: { top: string; left: string }
-    tokens: CodeV2Tokens
+    tokens: CodeEditorV2Tokens
 }) {
     return (
         <Block

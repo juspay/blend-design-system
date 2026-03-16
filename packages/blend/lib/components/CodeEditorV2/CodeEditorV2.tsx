@@ -1,13 +1,13 @@
 import { forwardRef, useState } from 'react'
-import Block from '../../Primitives/Block/Block'
-import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import type { CodeV2Tokens } from '../codeV2.tokens'
-import { CodeV2Variant } from '../codeV2.types'
-import { CodeEditorV2Props } from '../codeV2.types'
-import { createCopyToClipboard } from '../utils'
-import { shouldShowLineNumbers, getContainerStyles } from '../utils'
-import { CodeV2Header } from '../CodeV2Header'
-import { MonacoEditorWrapper } from '../MonacoEditor/MonacoEditorWrapper'
+import Block from '../Primitives/Block/Block'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
+import { CodeV2Variant } from './codeEditorV2.types'
+import { CodeEditorV2Props } from './codeEditorV2.types'
+import { createCopyToClipboard } from './utils'
+import { shouldShowLineNumbers, getContainerStyles } from './utils'
+import { CodeV2Header } from './CodeEditorV2Header'
+import { MonacoEditorWrapper } from './MonacoEditor/MonacoEditorWrapper'
 
 const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
     (
@@ -39,7 +39,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
         },
         ref
     ) => {
-        const tokens = useResponsiveTokens<CodeV2Tokens>('CODEEDITORV2')
+        const tokens = useResponsiveTokens<CodeEditorV2Tokens>('CODEEDITORV2')
         const [isCopied, setIsCopied] = useState(false)
 
         // Determine if line numbers should be shown

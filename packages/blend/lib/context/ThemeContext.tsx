@@ -170,7 +170,7 @@ import {
 import {
     getCodeV2Tokens,
     ResponsiveCodeV2Tokens,
-} from '../components/CodeV2/codeV2.tokens'
+} from '../components/CodeEditorV2/codeEditorV2.tokens'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens

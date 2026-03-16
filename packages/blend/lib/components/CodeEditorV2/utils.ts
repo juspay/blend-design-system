@@ -1,6 +1,6 @@
-import { CodeV2Variant } from './codeV2.types'
+import { CodeV2Variant } from './codeEditorV2.types'
 import type * as Monaco from 'monaco-editor'
-import type { CodeV2Tokens } from './codeV2.tokens'
+import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
 export const createCopyToClipboard = (
     code: string,
     setIsCopied: (copied: boolean) => void
@@ -92,7 +92,7 @@ export type EditorMetrics = {
 }
 
 export function getEditorMetrics(
-    tokens: CodeV2Tokens,
+    tokens: CodeEditorV2Tokens,
     showLineNumbers: boolean
 ): EditorMetrics {
     const fontSize = toNumericValue(tokens.body.code.fontSize, 12)
@@ -205,7 +205,7 @@ function getPaddingOptions(metrics: EditorMetrics) {
 /** Options applied on editor mount (full set) */
 export function getMountEditorOptions(
     metrics: EditorMetrics,
-    tokens: CodeV2Tokens,
+    tokens: CodeEditorV2Tokens,
     showLineNumbers: boolean,
     readOnly: boolean,
     disabled: boolean
@@ -268,7 +268,7 @@ export function getUpdateEditorOptions(
 
 export function getDiffEditorOptions(
     metrics: EditorMetrics,
-    tokens: CodeV2Tokens,
+    tokens: CodeEditorV2Tokens,
     showLineNumbers: boolean,
     renderSideBySide: boolean,
     readOnly: boolean,
@@ -301,7 +301,7 @@ export function getDiffEditorOptions(
 
 export function getInitialEditorOptions(
     metrics: EditorMetrics,
-    tokens: CodeV2Tokens,
+    tokens: CodeEditorV2Tokens,
     showLineNumbers: boolean,
     readOnly: boolean,
     disabled: boolean
