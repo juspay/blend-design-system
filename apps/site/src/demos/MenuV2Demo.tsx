@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { MenuV2 } from '../../../../packages/blend/lib/components/MenuV2'
 import type {
     MenuV2GroupType,
@@ -122,6 +122,21 @@ const manyItems: MenuV2GroupType[] = [
         ],
     },
 ]
+function generateLargeMenu(count: number): MenuV2GroupType[] {
+    const items: MenuV2ItemType[] = Array.from({ length: count }, (_, i) => ({
+        id: `item-${i}`,
+        label: `Menu Item ${i + 1}`,
+        slot: <Star size={16} />,
+        onClick: () => console.log(`Item ${i + 1} clicked`),
+    }))
+
+    return [
+        {
+            label: 'Large Dataset',
+            items,
+        },
+    ]
+}
 
 const MenuV2Demo = () => {
     const [lastAction, setLastAction] = useState<string>('')
@@ -137,6 +152,8 @@ const MenuV2Demo = () => {
         MenuV2Alignment.CENTER
     )
     const [side, setSide] = useState<MenuV2Side>(MenuV2Side.BOTTOM)
+    const [enableVirtualScrolling, setEnableVirtualScrolling] = useState(false)
+    const largeItems = useMemo(() => generateLargeMenu(500), [])
 
     const withLog = (items: MenuV2GroupType[]): MenuV2GroupType[] =>
         items.map((group) => ({
@@ -259,6 +276,13 @@ const MenuV2Demo = () => {
                             checked={asModal}
                             onChange={() => setAsModal(!asModal)}
                         />
+                        <Switch
+                            label="Enable virtual scrolling"
+                            checked={enableVirtualScrolling}
+                            onChange={() =>
+                                setEnableVirtualScrolling((prev) => !prev)
+                            }
+                        />
                     </div>
                 </div>
 
@@ -269,9 +293,13 @@ const MenuV2Demo = () => {
                                 <Button
                                     buttonType={ButtonType.SECONDARY}
                                     text={triggerLabel || 'Open menu'}
-                                ></Button>
+                                />
                             }
-                            items={withLog(groupedItems)}
+                            items={
+                                enableVirtualScrolling
+                                    ? withLog(largeItems)
+                                    : withLog(groupedItems)
+                            }
                             enableSearch={enableSearch}
                             searchPlaceholder="Search options..."
                             asModal={asModal}
@@ -293,6 +321,12 @@ const MenuV2Demo = () => {
                             }
                             alignment={alignment}
                             side={side}
+                            enableVirtualScrolling={enableVirtualScrolling}
+                            virtualScrolling={
+                                enableVirtualScrolling
+                                    ? { itemHeight: 40, overscan: 4 }
+                                    : undefined
+                            }
                         />
                     </div>
                 </div>
@@ -338,7 +372,11 @@ const MenuV2Demo = () => {
                                     text="Open menu (groups + submenu)"
                                 ></Button>
                             }
-                            items={withLog(groupedItems)}
+                            items={
+                                enableVirtualScrolling
+                                    ? withLog(largeItems)
+                                    : withLog(groupedItems)
+                            }
                         />
                     </div>
                 </div>

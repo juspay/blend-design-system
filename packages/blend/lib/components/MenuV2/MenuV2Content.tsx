@@ -14,6 +14,8 @@ import type { MenuV2VirtualScrollingConfig } from './menuV2.types'
 import type { MenuV2TokensType } from './menuV2.tokens'
 import { menuV2ContentAnimations } from './menuV2.animations'
 import { flattenMenuV2Groups, type MenuV2FlatRow } from './menuV2.utils'
+import { getBaseVirtualViewportHeight } from '../common/virtualViewport'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 type ContentStyledProps = { $zIndex?: number | string }
 
@@ -49,18 +51,13 @@ function renderFlatRow(
                     fontSize={itemTokens.optionsLabel.fontSize}
                     fontWeight={itemTokens.optionsLabel.fontWeight}
                     color={itemTokens.optionsLabel.color}
-                    style={{
-                        userSelect: 'none',
-                        textTransform: 'uppercase',
-                        paddingTop: itemTokens.optionsLabel.paddingTop,
-                        paddingRight: itemTokens.optionsLabel.paddingRight,
-                        paddingBottom: itemTokens.optionsLabel.paddingBottom,
-                        paddingLeft: itemTokens.optionsLabel.paddingLeft,
-                        marginTop: itemTokens.optionsLabel.marginTop,
-                        marginRight: itemTokens.optionsLabel.marginRight,
-                        marginBottom: itemTokens.optionsLabel.marginBottom,
-                        marginLeft: itemTokens.optionsLabel.marginLeft,
-                    }}
+                    lineHeight={addPxToValue(
+                        itemTokens.optionsLabel.lineHeight
+                    )}
+                    padding={`${itemTokens.optionsLabel.paddingTop} ${itemTokens.optionsLabel.paddingRight} ${itemTokens.optionsLabel.paddingBottom} ${itemTokens.optionsLabel.paddingLeft}`}
+                    userSelect="none"
+                    textTransform="uppercase"
+                    margin={`${itemTokens.optionsLabel.marginTop} ${itemTokens.optionsLabel.marginRight} ${itemTokens.optionsLabel.marginBottom} ${itemTokens.optionsLabel.marginLeft}`}
                 >
                     {row.label}
                 </PrimitiveText>
@@ -170,9 +167,7 @@ const MenuV2Content = ({
     const threshold = virtualScrolling?.threshold ?? DEFAULT_VIRTUAL_THRESHOLD
     const useVirtual = enableVirtualScrolling && flatRows.length >= threshold
 
-    const viewportHeight = maxHeight
-        ? Math.max(maxHeight - (enableSearch ? 48 : 0), 120)
-        : 340
+    const viewportHeight = getBaseVirtualViewportHeight(maxHeight)
     const virtualizer = useVirtualizer({
         count: flatRows.length,
         getScrollElement: () => virtualScrollRef.current,

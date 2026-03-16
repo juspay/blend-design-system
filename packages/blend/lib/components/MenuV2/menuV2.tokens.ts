@@ -7,7 +7,6 @@ import { MenuV2ItemActionType, MenuV2ItemVariant } from './menuV2.types'
 import { getMenuV2LightTokens } from './menuV2.light.tokens'
 import { getMenuV2DarkTokens } from './menuV2.dark.tokens'
 
-/** Re-export shared item states; MenuV2 uses the same states as SelectV2 (selected unused for menu items). */
 export type { SelectV2ItemStates as MenuV2ItemStates } from '../SelectV2/selectV2.tokenStates'
 
 type StateToken<T> = Record<SelectV2ItemStates, T>
@@ -56,6 +55,7 @@ export type MenuV2TokensType = {
         optionsLabel: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
+            lineHeight: CSSObject['lineHeight']
             color: CSSObject['color']
             paddingTop: CSSObject['paddingTop']
             paddingRight: CSSObject['paddingRight']
@@ -69,6 +69,7 @@ export type MenuV2TokensType = {
         option: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
+            lineHeight: CSSObject['lineHeight']
             color: {
                 [MenuV2ItemVariant.DEFAULT]: {
                     enabled: StateToken<CSSObject['color']>
@@ -89,6 +90,7 @@ export type MenuV2TokensType = {
         description: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
+            lineHeight: CSSObject['lineHeight']
             color: {
                 [MenuV2ItemVariant.DEFAULT]: {
                     enabled: StateToken<CSSObject['color']>

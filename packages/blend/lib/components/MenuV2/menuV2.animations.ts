@@ -65,9 +65,6 @@ export const menuV2ContentAnimations = `
   }
 `
 
-/**
- * MenuV2 submenu content animations
- */
 export const menuV2SubmenuContentAnimations = `
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 

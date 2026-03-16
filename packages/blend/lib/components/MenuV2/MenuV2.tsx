@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useDropdownInteractionLock } from '../../hooks'
@@ -14,6 +14,7 @@ import MenuV2Content from './MenuV2Content'
 
 const MenuV2 = ({
     trigger,
+    triggerProps,
     items = [] as MenuV2GroupType[],
     maxHeight,
     minHeight,
@@ -68,6 +69,18 @@ const MenuV2 = ({
         }
     }, [])
 
+    const triggerElement = useMemo(() => {
+        if (!trigger) return null
+
+        if (typeof trigger === 'object' && 'type' in (trigger as any)) {
+            return React.cloneElement(trigger as React.ReactElement, {
+                ...triggerProps,
+            })
+        }
+
+        return trigger
+    }, [trigger, triggerProps])
+
     return (
         <RadixMenu.Root
             data-element="menu"
@@ -76,7 +89,7 @@ const MenuV2 = ({
             onOpenChange={handleOpenChange}
         >
             <RadixMenu.Trigger asChild data-element="menu-trigger">
-                {trigger}
+                {triggerElement}
             </RadixMenu.Trigger>
             <RadixMenu.Portal>
                 <MenuV2Content

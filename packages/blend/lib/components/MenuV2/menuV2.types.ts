@@ -56,7 +56,6 @@ export type MenuV2GroupType = {
     showSeparator?: boolean
 }
 
-/** Config for TanStack Virtual when rendering large item lists. */
 export type MenuV2VirtualScrollingConfig = {
     /** Estimated height per item (px). Used by useVirtualizer. */
     itemHeight?: number
@@ -67,21 +66,15 @@ export type MenuV2VirtualScrollingConfig = {
 }
 
 export type MenuV2Props = {
-    trigger: ReactNode
+    trigger: React.ReactElement
     items?: MenuV2GroupType[]
-    /** Max height of the menu content (px). */
     maxHeight?: number
-    /** Min height of the menu content (px). */
     minHeight?: number
-    /** Max width of the menu content (px). Falls back to tokens if omitted. */
     maxWidth?: number
-    /** Min width of the menu content (px). Falls back to tokens if omitted. */
     minWidth?: number
     enableSearch?: boolean
     searchPlaceholder?: string
-    /** When true, menu content uses TanStack Virtual for large lists. */
     enableVirtualScrolling?: boolean
-    /** Optional config for virtual scrolling (itemHeight, overscan). */
     virtualScrolling?: MenuV2VirtualScrollingConfig
     open?: boolean
     onOpenChange?: (open: boolean) => void
@@ -91,4 +84,8 @@ export type MenuV2Props = {
     sideOffset?: number
     alignOffset?: number
     collisionBoundaryRef?: HTMLElement | null | (HTMLElement | null)[]
+    triggerProps?: Omit<
+        React.ButtonHTMLAttributes<HTMLButtonElement>,
+        'className' | 'style'
+    >
 }

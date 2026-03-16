@@ -17,6 +17,7 @@ import {
 } from './menuV2.utils'
 import { menuV2SubmenuContentAnimations } from './menuV2.animations'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 type SubContentStyledProps = { $zIndex: number | string }
 
@@ -170,6 +171,9 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                             <PrimitiveText
                                 fontSize={itemTokens.option.fontSize}
                                 fontWeight={itemTokens.option.fontWeight}
+                                lineHeight={addPxToValue(
+                                    itemTokens.option.lineHeight
+                                )}
                                 color={labelColor}
                                 style={{
                                     overflow: 'hidden',
@@ -194,6 +198,9 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                                 color={subLabelColor}
                                 fontWeight={itemTokens.description.fontWeight}
                                 fontSize={itemTokens.description.fontSize}
+                                lineHeight={addPxToValue(
+                                    itemTokens.description.lineHeight
+                                )}
                             >
                                 {item.subLabel}
                             </PrimitiveText>
