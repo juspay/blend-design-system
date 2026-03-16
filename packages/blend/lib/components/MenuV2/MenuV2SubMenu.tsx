@@ -192,7 +192,11 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                             flexShrink={0}
                             contentCentered
                         >
-                            <ChevronRightIcon size={16} aria-hidden />
+                            <ChevronRightIcon
+                                size={itemTokens.text.rightChevron.width}
+                                color={itemTokens.text.rightChevron.color}
+                                aria-hidden
+                            />
                         </Block>
                     </Block>
                     {item.subLabel && (

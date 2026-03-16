@@ -34,7 +34,7 @@ export type MenuV2TokensType = {
     paddingBottom: CSSObject['paddingBottom']
     paddingLeft: CSSObject['paddingLeft']
 
-    search: {
+    searchIcon: {
         width: CSSObject['width']
     }
 
@@ -92,18 +92,22 @@ export type MenuV2TokensType = {
                     maxWidth: CSSObject['maxWidth']
                     maxHeight: CSSObject['maxHeight']
                 }
+
+                rightChevron: {
+                    color: CSSObject['color']
+                    width: CSSObject['width']
+                }
             }
         }
+    }
+    separator: {
+        color: CSSObject['color']
+        height: CSSObject['height']
 
-        separator: {
-            color: CSSObject['color']
-            height: CSSObject['height']
-
-            marginTop: CSSObject['marginTop']
-            marginRight: CSSObject['marginRight']
-            marginBottom: CSSObject['marginBottom']
-            marginLeft: CSSObject['marginLeft']
-        }
+        marginTop: CSSObject['marginTop']
+        marginRight: CSSObject['marginRight']
+        marginBottom: CSSObject['marginBottom']
+        marginLeft: CSSObject['marginLeft']
     }
 }
 

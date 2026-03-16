@@ -21,7 +21,7 @@ export const getMenuV2LightTokens = (
             paddingBottom: foundationToken.unit[6],
             paddingLeft: foundationToken.unit[6],
 
-            search: {
+            searchIcon: {
                 width: foundationToken.unit[16],
             },
 
@@ -29,7 +29,7 @@ export const getMenuV2LightTokens = (
                 label: {
                     fontSize: foundationToken.font.size.body.sm.fontSize,
                     fontWeight: foundationToken.font.weight[400],
-                    lineHeight: foundationToken.font.lineHeight[12],
+                    lineHeight: foundationToken.font.lineHeight[14],
                     color: foundationToken.colors.gray[400],
 
                     paddingTop: foundationToken.unit[6],
@@ -93,7 +93,7 @@ export const getMenuV2LightTokens = (
                     text: {
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         fontWeight: foundationToken.font.weight[500],
-                        lineHeight: foundationToken.font.lineHeight[14],
+                        lineHeight: foundationToken.font.lineHeight[16],
                         color: {
                             [MenuV2ItemVariant.DEFAULT]: {
                                 default: foundationToken.colors.gray[600],
@@ -134,7 +134,7 @@ export const getMenuV2LightTokens = (
                             fontSize:
                                 foundationToken.font.size.body.sm.fontSize,
                             fontWeight: foundationToken.font.weight[400],
-                            lineHeight: foundationToken.font.lineHeight[12],
+                            lineHeight: foundationToken.font.lineHeight[14],
                             color: {
                                 [MenuV2ItemVariant.DEFAULT]: {
                                     default: foundationToken.colors.gray[400],
@@ -184,17 +184,22 @@ export const getMenuV2LightTokens = (
                             maxWidth: foundationToken.unit[16],
                             maxHeight: foundationToken.unit[16],
                         },
+
+                        rightChevron: {
+                            color: foundationToken.colors.gray[500],
+                            width: foundationToken.unit[16],
+                        },
                     },
                 },
+            },
 
-                separator: {
-                    color: foundationToken.colors.gray[200],
-                    height: foundationToken.unit[1],
-                    marginTop: foundationToken.unit[6],
-                    marginRight: foundationToken.unit[0],
-                    marginBottom: foundationToken.unit[6],
-                    marginLeft: foundationToken.unit[0],
-                },
+            separator: {
+                color: foundationToken.colors.gray[200],
+                height: foundationToken.unit[1],
+                marginTop: foundationToken.unit[6],
+                marginRight: foundationToken.unit[0],
+                marginBottom: foundationToken.unit[6],
+                marginLeft: foundationToken.unit[0],
             },
         },
         lg: {
@@ -212,7 +217,7 @@ export const getMenuV2LightTokens = (
             paddingBottom: foundationToken.unit[6],
             paddingLeft: foundationToken.unit[6],
 
-            search: {
+            searchIcon: {
                 width: foundationToken.unit[16],
             },
 
@@ -220,7 +225,7 @@ export const getMenuV2LightTokens = (
                 label: {
                     fontSize: foundationToken.font.size.body.sm.fontSize,
                     fontWeight: foundationToken.font.weight[400],
-                    lineHeight: foundationToken.font.lineHeight[12],
+                    lineHeight: foundationToken.font.lineHeight[14],
                     color: foundationToken.colors.gray[400],
 
                     paddingTop: foundationToken.unit[6],
@@ -284,7 +289,7 @@ export const getMenuV2LightTokens = (
                     text: {
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         fontWeight: foundationToken.font.weight[500],
-                        lineHeight: foundationToken.font.lineHeight[14],
+                        lineHeight: foundationToken.font.lineHeight[16],
                         color: {
                             [MenuV2ItemVariant.DEFAULT]: {
                                 default: foundationToken.colors.gray[600],
@@ -325,7 +330,7 @@ export const getMenuV2LightTokens = (
                             fontSize:
                                 foundationToken.font.size.body.sm.fontSize,
                             fontWeight: foundationToken.font.weight[400],
-                            lineHeight: foundationToken.font.lineHeight[12],
+                            lineHeight: foundationToken.font.lineHeight[14],
                             color: {
                                 [MenuV2ItemVariant.DEFAULT]: {
                                     default: foundationToken.colors.gray[400],
@@ -375,17 +380,21 @@ export const getMenuV2LightTokens = (
                             maxWidth: foundationToken.unit[16],
                             maxHeight: foundationToken.unit[16],
                         },
+
+                        rightChevron: {
+                            color: foundationToken.colors.gray[500],
+                            width: foundationToken.unit[16],
+                        },
                     },
                 },
-
-                separator: {
-                    color: foundationToken.colors.gray[200],
-                    height: foundationToken.unit[1],
-                    marginTop: foundationToken.unit[6],
-                    marginRight: foundationToken.unit[0],
-                    marginBottom: foundationToken.unit[6],
-                    marginLeft: foundationToken.unit[0],
-                },
+            },
+            separator: {
+                color: foundationToken.colors.gray[200],
+                height: foundationToken.unit[1],
+                marginTop: foundationToken.unit[6],
+                marginRight: foundationToken.unit[0],
+                marginBottom: foundationToken.unit[6],
+                marginLeft: foundationToken.unit[0],
             },
         },
     }

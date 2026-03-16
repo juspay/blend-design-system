@@ -68,12 +68,12 @@ function renderFlatRow(
                 <Block
                     as="div"
                     role="separator"
-                    height={tokens.group.separator.height}
-                    backgroundColor={tokens.group.separator.color}
-                    marginTop={tokens.group.separator.marginTop}
-                    marginRight={tokens.group.separator.marginRight}
-                    marginBottom={tokens.group.separator.marginBottom}
-                    marginLeft={tokens.group.separator.marginLeft}
+                    height={tokens.separator.height}
+                    backgroundColor={tokens.separator.color}
+                    marginTop={tokens.separator.marginTop}
+                    marginRight={tokens.separator.marginRight}
+                    marginBottom={tokens.separator.marginBottom}
+                    marginLeft={tokens.separator.marginLeft}
                     aria-hidden="true"
                 />
             </RadixMenu.Separator>
@@ -233,7 +233,7 @@ const MenuV2Content = ({
                         ref={searchInputRef}
                         leftSlot={
                             <Search
-                                size={content.search.width}
+                                size={content.searchIcon.width}
                                 color="currentColor"
                                 aria-hidden
                             />
@@ -379,27 +379,21 @@ const MenuV2Content = ({
                                         <Block
                                             as="div"
                                             role="separator"
-                                            height={
-                                                content.group.separator.height
-                                            }
+                                            height={content.separator.height}
                                             backgroundColor={
-                                                content.group.separator.color
+                                                content.separator.color
                                             }
                                             marginTop={
-                                                content.group.separator
-                                                    .marginTop
+                                                content.separator.marginTop
                                             }
                                             marginRight={
-                                                content.group.separator
-                                                    .marginRight
+                                                content.separator.marginRight
                                             }
                                             marginBottom={
-                                                content.group.separator
-                                                    .marginBottom
+                                                content.separator.marginBottom
                                             }
                                             marginLeft={
-                                                content.group.separator
-                                                    .marginLeft
+                                                content.separator.marginLeft
                                             }
                                             aria-hidden="true"
                                         />
