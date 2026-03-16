@@ -15,7 +15,7 @@ Both support: trigger, grouped items with labels and separators, search, submenu
 
 - **Trigger**: Any `ReactNode`; opens the menu on click (Radix Trigger).
 - **Items**: Grouped list (`MenuGroupType[]` / `MenuV2GroupType[]`) with optional group labels, separators, and nested submenus.
-- **Item content**: Label, optional subLabel, up to 4 slot positions (v1 and V2: `slot` or `slot1` for leading, then `slot2`, `slot3`, `slot4`; V2 `slot` takes priority over `slot1`), variant (default/action), actionType (primary/danger), disabled, onClick, tooltip/tooltipProps.
+- **Item content**: Label, optional subLabel, single `slot` prop for leading content (e.g. icon), variant (default/action), actionType (primary/danger), disabled, onClick, tooltip/tooltipProps.
 - **Submenus**: Nested items; optional `enableSubMenuSearch`, `subMenuSearchPlaceholder`.
 - **Search**: Top-level `enableSearch`, `searchPlaceholder`; filters items and submenus by label/sublabel.
 - **Virtualization**: V1: `enableVirtualScrolling`, `virtualItemHeight` (number or function), `virtualOverscan`, `virtualScrollThreshold`. V2: `enableVirtualScrolling` and `virtualScrolling?: { itemHeight?, overscan?, threshold? }`; uses TanStack Virtual when item count ≥ threshold (default 30).
@@ -87,7 +87,7 @@ V2 keeps flat props for positioning and dimensions but:
 | virtualItemHeight                                            | number or (item, index) => number | virtualScrolling?.itemHeight (number) |
 | virtualOverscan                                              | ✓                                 | virtualScrolling?.overscan            |
 | virtualScrollThreshold                                       | ✓                                 | virtualScrolling?.threshold           |
-| Item: label, subLabel, slot / slot1, slot2, slot3, slot4     | slot1–slot4                       | slot (or slot1), slot2, slot3, slot4  |
+| Item: label, subLabel, slot                                  | slot1–slot4                       | slot                                  |
 | Item: variant, actionType, disabled, onClick                 | ✓                                 | ✓                                     |
 | Item: subMenu, enableSubMenuSearch, subMenuSearchPlaceholder | ✓                                 | ✓                                     |
 | Item: tooltip, tooltipProps                                  | ✓                                 | ✓                                     |
@@ -164,11 +164,11 @@ Usage: `tokens.content.zIndex`, `tokens.content.minWidth`, `tokens.content.maxWi
 
 **Rationale**: Grouped config is easier to extend and mirrors patterns used elsewhere (e.g. SingleSelectV2). TanStack Virtual is used when count ≥ threshold (default 30).
 
-### 4. Slots: slot + slot2/slot3/slot4
+### 4. Slots: single `slot`
 
-**Decision**: V2 uses **`slot`** for the leading position (same as v1’s slot1) and **slot2**, **slot3**, **slot4** for other positions. **slot1** is supported for backward compatibility; when both `slot` and `slot1` are set, `slot` takes priority. `getItemSlots(item)` returns `[item.slot ?? item.slot1, item.slot2, item.slot3, item.slot4]`.
+**Decision**: V2 uses a single **`slot`** prop for leading content (icons, badges, etc.). Additional visuals can be composed inside that slot by the caller if needed. `getItemSlots(item)` returns `[slot]`.
 
-**Rationale**: Aligns with original Menu’s slot positions; single leading prop `slot` with explicit slot2–slot4; no separate slots object.
+**Rationale**: Keeps the API small and clear; multiple physical positions with identical behavior are unnecessary when callers can manage layout inside the slot themselves.
 
 ### 5. collisionBoundaryRef spelling
 
@@ -191,7 +191,7 @@ Usage: `tokens.content.zIndex`, `tokens.content.minWidth`, `tokens.content.maxWi
 | Token-driven styling, no hardcoded z-index/dimensions                  | MenuV2                                 |
 | Single token entry point: `getMenuV2Tokens` from `menuV2.tokens`       | MenuV2                                 |
 | Grouped virtual config and TanStack Virtual                            | MenuV2                                 |
-| Clear slots API (`slots.leading` / `trailing`) with legacy support     | MenuV2                                 |
+| Simple single-slot API                                                 | MenuV2                                 |
 | Correct `collisionBoundaryRef` spelling                                | MenuV2                                 |
 | Per-item virtual height function                                       | Menu (v1)                              |
 | Existing V1 usage with no breaking changes                             | Menu (v1)                              |

@@ -19,33 +19,18 @@ describe('MenuV2 utils', () => {
     })
 
     describe('getItemSlots', () => {
-        it('returns [slot, slot2, slot3, slot4] when slot is set', () => {
+        it('returns slot as first element when set', () => {
             const item = createItem({
                 slot: 'Lead',
-                slot2: 'S2',
-                slot3: 'S3',
-                slot4: 'S4',
             })
             const [s1, s2, s3, s4] = getItemSlots(item)
             expect(s1).toBe('Lead')
-            expect(s2).toBe('S2')
-            expect(s3).toBe('S3')
-            expect(s4).toBe('S4')
+            expect(s2).toBeUndefined()
+            expect(s3).toBeUndefined()
+            expect(s4).toBeUndefined()
         })
 
-        it('uses slot1 when slot is not set (backward compat)', () => {
-            const item = createItem({ slot1: 'Legacy' })
-            const [s1] = getItemSlots(item)
-            expect(s1).toBe('Legacy')
-        })
-
-        it('slot takes priority over slot1 when both set', () => {
-            const item = createItem({ slot: 'New', slot1: 'Old' })
-            const [s1] = getItemSlots(item)
-            expect(s1).toBe('New')
-        })
-
-        it('returns undefined for missing slots', () => {
+        it('returns undefined for all when slot is not set', () => {
             const item = createItem({ label: 'Only' })
             const [s1, s2, s3, s4] = getItemSlots(item)
             expect(s1).toBeUndefined()

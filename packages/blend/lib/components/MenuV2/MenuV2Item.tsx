@@ -42,7 +42,7 @@ const SlotWrapper = ({
 
 const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
     ({ item, index, itemTokens }, ref) => {
-        const [slot1, slot2, slot3, slot4] = getItemSlots(item)
+        const [slot1] = getItemSlots(item)
         const itemStyle = {
             paddingTop: itemTokens.paddingTop,
             paddingRight: itemTokens.paddingRight,
@@ -137,9 +137,6 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                                 {item.label}
                             </PrimitiveText>
                         </Block>
-                        {slot2 != null && <SlotWrapper slot={slot2} />}
-                        {slot3 != null && <SlotWrapper slot={slot3} />}
-                        {slot4 != null && <SlotWrapper slot={slot4} />}
                     </Block>
                     {item.subLabel && (
                         <Block

@@ -46,13 +46,10 @@ describe('MenuV2 parts', () => {
         expect(screen.getByText('View your profile')).toBeInTheDocument()
     })
 
-    it('renders MenuV2Item slots and tooltip content', () => {
+    it('renders MenuV2Item slot and tooltip content', () => {
         const item: MenuV2ItemType = {
-            label: 'With slots',
-            slot1: <span data-testid="slot1">1</span>,
-            slot2: <span data-testid="slot2">2</span>,
-            slot3: <span data-testid="slot3">3</span>,
-            slot4: <span data-testid="slot4">4</span>,
+            label: 'With slot',
+            slot: <span data-testid="slot">1</span>,
             tooltip: 'Tooltip text',
         }
 
@@ -68,16 +65,13 @@ describe('MenuV2 parts', () => {
             </RadixMenu.Root>
         )
 
-        expect(screen.getByTestId('slot1')).toBeInTheDocument()
-        expect(screen.getByTestId('slot2')).toBeInTheDocument()
-        expect(screen.getByTestId('slot3')).toBeInTheDocument()
-        expect(screen.getByTestId('slot4')).toBeInTheDocument()
+        expect(screen.getByTestId('slot')).toBeInTheDocument()
     })
 
     it('renders MenuV2Item with non-element slot as decorative text', () => {
         const item: MenuV2ItemType = {
             label: 'With string slot',
-            slot1: '*',
+            slot: '*',
         }
 
         render(

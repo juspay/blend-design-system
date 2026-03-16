@@ -50,7 +50,7 @@ const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (
 const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
     const menuTokens = useResponsiveTokens<MenuV2TokensType>('MENU_V2')
     const itemTokens = menuTokens.item
-    const [slot1, slot2, slot3, slot4] = getItemSlots(item)
+    const [slot1] = getItemSlots(item)
     const [searchText, setSearchText] = useState('')
     const searchInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -180,9 +180,6 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                                 {item.label}
                             </PrimitiveText>
                         </Block>
-                        {slot2 != null && <SlotWrapper slot={slot2} />}
-                        {slot3 != null && <SlotWrapper slot={slot3} />}
-                        {slot4 != null && <SlotWrapper slot={slot4} />}
                         <Block
                             data-element="chevron-icon"
                             flexShrink={0}
