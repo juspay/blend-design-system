@@ -87,10 +87,7 @@ function preventKeyboardInteraction(
     e.stopPropagation()
 }
 
-function injectStyle(
-    selectors: DropdownSelectors,
-    shadowRoot: ShadowRoot | null
-) {
+function injectStyle(selectors: DropdownSelectors, target: HTMLElement | null) {
     if (styleInjected || typeof document === 'undefined') return
 
     const disableSelectors =
@@ -100,9 +97,13 @@ function injectStyle(
 
     if (disableSelectors.length === 0) return
 
-    const disableSelectorString = disableSelectors
-        .map((sel) => `:host ${sel}`)
-        .join(',\n      ')
+    // If we have a target element (inside shadow DOM), styles go there
+    // Otherwise use body class for scoping in document.head
+    const disableSelectorString = target
+        ? disableSelectors.join(',\n      ')
+        : disableSelectors
+              .map((sel) => `body.${CLASS_NAME} ${sel}`)
+              .join(',\n      ')
 
     const style = document.createElement('style')
     style.id = STYLE_ID
@@ -113,8 +114,8 @@ function injectStyle(
       }
     `
 
-    // Inject to shadow root if available, otherwise to document.head
-    const targetContainer = shadowRoot || document.head
+    // Inject to target element's parent (shadow root) or document.head
+    const targetContainer = target?.parentNode || document.head
 
     // Check if style already exists in target container
     const existingStyle = targetContainer.querySelector(`#${STYLE_ID}`)
@@ -124,11 +125,8 @@ function injectStyle(
     styleInjected = true
 }
 
-function applyLock(
-    selectors: DropdownSelectors,
-    shadowRoot: ShadowRoot | null
-) {
-    injectStyle(selectors, shadowRoot)
+function applyLock(selectors: DropdownSelectors, target: HTMLElement | null) {
+    injectStyle(selectors, target)
 
     const contentSelectors =
         selectors.content || DEFAULT_SELECTORS.content || []
@@ -198,7 +196,7 @@ export default function useDropdownInteractionLock(
     selectors?: DropdownSelectors
 ) {
     const selectorsRef = useRef(selectors)
-    const { shadowRoot } = useShadowRoot()
+    const { target } = useShadowRoot()
 
     useEffect(() => {
         selectorsRef.current = selectors
@@ -211,7 +209,7 @@ export default function useDropdownInteractionLock(
             lockCount++
 
             if (lockCount === 1) {
-                applyLock(selectorsRef.current || {}, shadowRoot)
+                applyLock(selectorsRef.current || {}, target)
             }
         }
 
@@ -225,5 +223,5 @@ export default function useDropdownInteractionLock(
                 removeLock()
             }
         }
-    }, [isOpen, shadowRoot])
+    }, [isOpen, target])
 }

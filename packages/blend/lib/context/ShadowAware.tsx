@@ -3,10 +3,12 @@ import { StyleSheetManager } from 'styled-components'
 
 type ShadowRootContextType = {
     shadowRoot: ShadowRoot | null
+    target: HTMLElement | null
 }
 
 const ShadowRootContext = createContext<ShadowRootContextType>({
     shadowRoot: null,
+    target: null,
 })
 
 export const useShadowRoot = () => useContext(ShadowRootContext)
@@ -33,7 +35,7 @@ const ShadowAware = ({ children, target }: ShadowAwareProps) => {
     const shadowRoot = isInsideShadowRoot ? parent : null
 
     return (
-        <ShadowRootContext.Provider value={{ shadowRoot }}>
+        <ShadowRootContext.Provider value={{ shadowRoot, target }}>
             <StyleSheetManager target={target} disableCSSOMInjection={true}>
                 {children}
             </StyleSheetManager>
