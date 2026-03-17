@@ -356,6 +356,7 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
     },
     zIndex: {
         0: 0,
+        101: 101,
         9999: 9999,
         1000: 1000,
         1100: 1100,

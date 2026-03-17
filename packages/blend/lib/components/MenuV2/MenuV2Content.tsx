@@ -1,7 +1,7 @@
 import type { FocusEvent, KeyboardEvent } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled from 'styled-components'
-import { useRef, useMemo } from 'react'
+import styled, { type CSSObject } from 'styled-components'
+import React, { useRef, useMemo } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { Search } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
@@ -41,7 +41,7 @@ const DEFAULT_VIRTUAL_THRESHOLD = 30
 function renderFlatRow(
     row: MenuV2FlatRow,
     tokens: MenuV2TokensType,
-    maxHeight?: number
+    maxHeight?: CSSObject['maxHeight']
 ) {
     if (row.type === 'label') {
         return (
@@ -104,10 +104,10 @@ export type MenuV2ContentProps = {
     searchPlaceholder: string
     searchText: string
     onSearchTextChange: (value: string) => void
-    maxHeight?: number
-    minHeight?: number
-    minWidth?: number
-    maxWidth?: number
+    maxHeight?: CSSObject['maxHeight']
+    minHeight?: CSSObject['minHeight']
+    minWidth?: CSSObject['minWidth']
+    maxWidth?: CSSObject['maxWidth']
     enableVirtualScrolling?: boolean
     virtualScrolling?: MenuV2VirtualScrollingConfig
     alignment?: 'start' | 'center' | 'end'
@@ -121,292 +121,322 @@ export type MenuV2ContentProps = {
     onKeyDown?: (e: KeyboardEvent<HTMLDivElement>) => void
 }
 
-const MenuV2Content = ({
-    filteredItems,
-    menuTokens,
-    enableSearch,
-    searchPlaceholder,
-    searchText,
-    onSearchTextChange,
-    maxHeight,
-    minHeight,
-    minWidth: minWidthProp,
-    maxWidth: maxWidthProp,
-    enableVirtualScrolling = false,
-    virtualScrolling,
-    alignment = 'center',
-    side = 'bottom',
-    sideOffset = 8,
-    alignOffset = 0,
-    collisionBoundaryRef,
-    onInteractOutside,
-    onPointerDownOutside,
-    onKeyDown,
-}: MenuV2ContentProps) => {
-    const searchInputRef = useRef<HTMLInputElement>(null)
-    const virtualScrollRef = useRef<HTMLDivElement>(null)
-    const content = menuTokens
-
-    const minWidth =
-        minWidthProp ??
-        (typeof content.minWidth === 'number' ? content.minWidth : 200)
-    const maxWidth =
-        maxWidthProp ??
-        (typeof content.maxWidth === 'number' ? content.maxWidth : 280)
-
-    const flatRows = useMemo(
-        () => flattenMenuV2Groups(filteredItems),
-        [filteredItems]
-    )
-    const itemHeight =
-        virtualScrolling?.itemHeight ?? DEFAULT_VIRTUAL_ITEM_HEIGHT
-    const overscan = virtualScrolling?.overscan ?? DEFAULT_VIRTUAL_OVERSCAN
-    const threshold = virtualScrolling?.threshold ?? DEFAULT_VIRTUAL_THRESHOLD
-    const useVirtual = enableVirtualScrolling && flatRows.length >= threshold
-
-    const viewportHeight = getBaseVirtualViewportHeight(maxHeight)
-    const virtualizer = useVirtualizer({
-        count: flatRows.length,
-        getScrollElement: () => virtualScrollRef.current,
-        getItemKey: (index) => flatRows[index]?.id ?? index,
-        estimateSize: (index) => {
-            const row = flatRows[index]
-            if (row?.type === 'label') return 28
-            if (row?.type === 'separator') return 8
-            return itemHeight
+const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
+    (
+        {
+            filteredItems,
+            menuTokens,
+            enableSearch,
+            searchPlaceholder,
+            searchText,
+            onSearchTextChange,
+            maxHeight,
+            minHeight,
+            minWidth: minWidthProp,
+            maxWidth: maxWidthProp,
+            enableVirtualScrolling = false,
+            virtualScrolling,
+            alignment = 'center',
+            side = 'bottom',
+            sideOffset = 8,
+            alignOffset = 0,
+            collisionBoundaryRef,
+            onInteractOutside,
+            onPointerDownOutside,
+            onKeyDown,
         },
-        overscan,
-        enabled: useVirtual,
-        initialRect: { width: 0, height: viewportHeight },
-    })
+        ref
+    ) => {
+        const searchInputRef = useRef<HTMLInputElement>(null)
+        const virtualScrollRef = useRef<HTMLDivElement>(null)
+        const content = menuTokens
 
-    return (
-        <Content
-            data-menu="menu"
-            data-dropdown="dropdown"
-            sideOffset={sideOffset}
-            alignOffset={alignOffset}
-            side={side}
-            align={alignment}
-            collisionBoundary={collisionBoundaryRef ?? undefined}
-            onInteractOutside={onInteractOutside}
-            onPointerDownOutside={onPointerDownOutside}
-            onKeyDown={onKeyDown}
-            onFocusCapture={(e) => {
-                if (enableSearch && searchInputRef.current) {
-                    if (e.target === e.currentTarget) {
-                        searchInputRef.current.focus()
+        const minWidth =
+            minWidthProp ??
+            (typeof content.minWidth === 'number' ? content.minWidth : 200)
+        const maxWidth =
+            maxWidthProp ??
+            (typeof content.maxWidth === 'number' ? content.maxWidth : 280)
+
+        const flatRows = useMemo(
+            () => flattenMenuV2Groups(filteredItems),
+            [filteredItems]
+        )
+        const itemHeight =
+            virtualScrolling?.itemHeight ?? DEFAULT_VIRTUAL_ITEM_HEIGHT
+        const overscan = virtualScrolling?.overscan ?? DEFAULT_VIRTUAL_OVERSCAN
+        const threshold =
+            virtualScrolling?.threshold ?? DEFAULT_VIRTUAL_THRESHOLD
+        const useVirtual =
+            enableVirtualScrolling && flatRows.length >= threshold
+
+        const viewportHeight = getBaseVirtualViewportHeight(maxHeight as number)
+        const virtualizer = useVirtualizer({
+            count: flatRows.length,
+            getScrollElement: () => virtualScrollRef.current,
+            getItemKey: (index) => flatRows[index]?.id ?? index,
+            estimateSize: (index) => {
+                const row = flatRows[index]
+                if (row?.type === 'label') return 28
+                if (row?.type === 'separator') return 8
+                return itemHeight
+            },
+            overscan,
+            enabled: useVirtual,
+            initialRect: { width: 0, height: viewportHeight },
+        })
+
+        return (
+            <Content
+                ref={ref}
+                data-menu="menu"
+                data-dropdown="dropdown"
+                sideOffset={sideOffset}
+                alignOffset={alignOffset}
+                side={side}
+                align={alignment}
+                collisionBoundary={collisionBoundaryRef ?? undefined}
+                onInteractOutside={onInteractOutside}
+                onPointerDownOutside={onPointerDownOutside}
+                onKeyDown={onKeyDown}
+                onFocusCapture={(e: FocusEvent<HTMLDivElement>) => {
+                    if (enableSearch && searchInputRef.current) {
+                        if (e.target === e.currentTarget) {
+                            searchInputRef.current.focus()
+                        }
                     }
-                }
-            }}
-            onCloseAutoFocus={(e) => e.preventDefault()}
-            $zIndex={content.zIndex}
-            style={{
-                maxHeight: maxHeight
-                    ? `${maxHeight}px`
-                    : 'var(--radix-popper-available-height)',
-                minHeight: minHeight ? `${minHeight}px` : undefined,
-                minWidth: `${minWidth}px`,
-                maxWidth: `${maxWidth}px`,
-                paddingTop: enableSearch ? 0 : content.paddingTop,
-                paddingRight: content.paddingRight,
-                paddingBottom: content.paddingBottom,
-                paddingLeft: content.paddingLeft,
-                backgroundColor: content.backgroundColor,
-                border: content.border,
-                borderRadius: content.borderRadius,
-                boxShadow: content.boxShadow,
-            }}
-        >
-            {enableSearch && (
-                <Block
-                    width="100%"
-                    position="sticky"
-                    top={0}
-                    left={0}
-                    right={0}
-                    zIndex={content.zIndex}
-                    backgroundColor={content.backgroundColor}
-                    padding="0"
-                >
-                    <SearchInput
-                        ref={searchInputRef}
-                        leftSlot={
-                            <Search
-                                size={content.searchIcon.width}
-                                color="currentColor"
-                                aria-hidden
-                            />
-                        }
-                        placeholder={searchPlaceholder}
-                        value={searchText}
-                        onChange={(e) => onSearchTextChange(e.target.value)}
-                        onKeyDown={(e) => {
-                            e.stopPropagation()
-                        }}
-                        aria-label={
-                            searchPlaceholder
-                                ? `Search menu items: ${searchPlaceholder}`
-                                : 'Search menu items'
-                        }
-                    />
-                </Block>
-            )}
-            {useVirtual ? (
-                <Block
-                    ref={virtualScrollRef}
-                    style={{
-                        paddingTop: enableSearch ? 0 : content.paddingTop,
-                        maxHeight: maxHeight
-                            ? `${maxHeight}px`
-                            : 'var(--radix-popper-available-height)',
-                        minHeight: minHeight ? `${minHeight}px` : undefined,
-                        overflow: 'auto',
-                    }}
-                >
+                }}
+                onCloseAutoFocus={(event: Event) => event.preventDefault()}
+                $zIndex={content.zIndex}
+                style={{
+                    maxHeight: maxHeight
+                        ? `${maxHeight}px`
+                        : 'var(--radix-popper-available-height)',
+                    minHeight: minHeight ? `${minHeight}px` : undefined,
+                    minWidth: `${minWidth}px`,
+                    maxWidth: `${maxWidth}px`,
+                    paddingTop: enableSearch ? 0 : content.paddingTop,
+                    paddingRight: content.paddingRight,
+                    paddingBottom: content.paddingBottom,
+                    paddingLeft: content.paddingLeft,
+                    backgroundColor: content.backgroundColor,
+                    border: content.border,
+                    borderRadius: content.borderRadius,
+                    boxShadow: content.boxShadow,
+                }}
+            >
+                {enableSearch && (
                     <Block
+                        width="100%"
+                        position="sticky"
+                        top={0}
+                        left={0}
+                        right={0}
+                        zIndex={content.zIndex}
+                        backgroundColor={content.backgroundColor}
+                        padding="0"
+                    >
+                        <SearchInput
+                            ref={searchInputRef}
+                            leftSlot={
+                                <Search
+                                    size={content.searchIcon.width}
+                                    color="currentColor"
+                                    aria-hidden
+                                />
+                            }
+                            placeholder={searchPlaceholder}
+                            value={searchText}
+                            onChange={(e) => onSearchTextChange(e.target.value)}
+                            onKeyDown={(e) => {
+                                e.stopPropagation()
+                            }}
+                            aria-label={
+                                searchPlaceholder
+                                    ? `Search menu items: ${searchPlaceholder}`
+                                    : 'Search menu items'
+                            }
+                        />
+                    </Block>
+                )}
+                {useVirtual ? (
+                    <Block
+                        ref={virtualScrollRef}
                         style={{
-                            height: `${virtualizer.getTotalSize()}px`,
-                            width: '100%',
-                            position: 'relative',
+                            paddingTop: enableSearch ? 0 : content.paddingTop,
+                            maxHeight: maxHeight
+                                ? `${maxHeight}px`
+                                : 'var(--radix-popper-available-height)',
+                            minHeight: minHeight ? `${minHeight}px` : undefined,
+                            overflow: 'auto',
                         }}
                     >
-                        <RadixMenu.Group>
-                            {virtualizer.getVirtualItems().map((virtualRow) => {
-                                const row = flatRows[virtualRow.index] as
-                                    | MenuV2FlatRow
-                                    | undefined
-                                if (!row) return null
-                                return (
-                                    <Block
-                                        key={virtualRow.key}
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            width: '100%',
-                                            transform: `translateY(${virtualRow.start}px)`,
-                                        }}
-                                    >
-                                        {renderFlatRow(row, content, maxHeight)}
-                                    </Block>
-                                )
-                            })}
-                        </RadixMenu.Group>
+                        <Block
+                            style={{
+                                height: `${virtualizer.getTotalSize()}px`,
+                                width: '100%',
+                                position: 'relative',
+                            }}
+                        >
+                            <RadixMenu.Group>
+                                {virtualizer
+                                    .getVirtualItems()
+                                    .map((virtualRow) => {
+                                        const row = flatRows[
+                                            virtualRow.index
+                                        ] as MenuV2FlatRow | undefined
+                                        if (!row) return null
+                                        return (
+                                            <Block
+                                                key={virtualRow.key}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                    width: '100%',
+                                                    transform: `translateY(${virtualRow.start}px)`,
+                                                }}
+                                            >
+                                                {renderFlatRow(
+                                                    row,
+                                                    content,
+                                                    maxHeight
+                                                )}
+                                            </Block>
+                                        )
+                                    })}
+                            </RadixMenu.Group>
+                        </Block>
                     </Block>
-                </Block>
-            ) : (
-                <Block
-                    style={{
-                        paddingTop: enableSearch ? 0 : content.paddingTop,
-                        minHeight: minHeight ? `${minHeight}px` : undefined,
-                    }}
-                >
-                    {filteredItems.map((group, groupId) => (
-                        <RadixMenu.Group key={group.id ?? `group-${groupId}`}>
-                            {group.label && (
-                                <RadixMenu.Label asChild>
-                                    <PrimitiveText
-                                        data-element="menu-group-label"
-                                        data-id={
-                                            group.label
-                                                ? `menu-group-${groupId}`
-                                                : 'menu-group-label'
-                                        }
-                                        fontSize={content.group.label.fontSize}
-                                        fontWeight={
-                                            content.group.label.fontWeight
-                                        }
-                                        lineHeight={addPxToValue(
-                                            content.group.label.lineHeight
-                                        )}
-                                        color={content.group.label.color}
-                                        style={{
-                                            userSelect: 'none',
-                                            textTransform: 'uppercase',
-                                            paddingTop:
-                                                content.group.label.paddingTop,
-                                            paddingRight:
-                                                content.group.label
-                                                    .paddingRight,
-                                            paddingBottom:
-                                                content.group.label
-                                                    .paddingBottom,
-                                            paddingLeft:
-                                                content.group.label.paddingLeft,
-                                            marginTop:
-                                                content.group.label.marginTop,
-                                            marginRight:
-                                                content.group.label.marginRight,
-                                            marginBottom:
-                                                content.group.label
-                                                    .marginBottom,
-                                            marginLeft:
-                                                content.group.label.marginLeft,
-                                        }}
-                                    >
-                                        {group.label}
-                                    </PrimitiveText>
-                                </RadixMenu.Label>
-                            )}
-                            {group.items.map(
-                                (item: MenuV2ItemType, itemIndex: number) =>
-                                    item.subMenu && item.subMenu.length > 0 ? (
-                                        <MenuV2SubMenu
-                                            key={
-                                                item.id ??
-                                                `group-${groupId}-item-${itemIndex}`
+                ) : (
+                    <Block
+                        style={{
+                            paddingTop: enableSearch ? 0 : content.paddingTop,
+                            minHeight: minHeight ? `${minHeight}px` : undefined,
+                        }}
+                    >
+                        {filteredItems.map((group, groupId) => (
+                            <RadixMenu.Group
+                                key={group.id ?? `group-${groupId}`}
+                            >
+                                {group.label && (
+                                    <RadixMenu.Label asChild>
+                                        <PrimitiveText
+                                            data-element="menu-group-label"
+                                            data-id={
+                                                group.label
+                                                    ? `menu-group-${groupId}`
+                                                    : 'menu-group-label'
                                             }
-                                            item={item}
-                                            index={itemIndex}
-                                            maxHeight={maxHeight}
-                                        />
-                                    ) : (
-                                        <MenuV2Item
-                                            key={
-                                                item.id ??
-                                                `group-${groupId}-item-${itemIndex}`
+                                            fontSize={
+                                                content.group.label.fontSize
                                             }
-                                            item={item}
-                                            index={itemIndex}
-                                            itemTokens={content.group.item}
-                                        />
-                                    )
-                            )}
-                            {groupId !== filteredItems.length - 1 &&
-                                group.showSeparator && (
-                                    <RadixMenu.Separator asChild>
-                                        <Block
-                                            as="div"
-                                            role="separator"
-                                            height={content.separator.height}
-                                            backgroundColor={
-                                                content.separator.color
+                                            fontWeight={
+                                                content.group.label.fontWeight
                                             }
-                                            marginTop={
-                                                content.separator.marginTop
-                                            }
-                                            marginRight={
-                                                content.separator.marginRight
-                                            }
-                                            marginBottom={
-                                                content.separator.marginBottom
-                                            }
-                                            marginLeft={
-                                                content.separator.marginLeft
-                                            }
-                                            aria-hidden="true"
-                                        />
-                                    </RadixMenu.Separator>
+                                            lineHeight={addPxToValue(
+                                                content.group.label.lineHeight
+                                            )}
+                                            color={content.group.label.color}
+                                            style={{
+                                                userSelect: 'none',
+                                                textTransform: 'uppercase',
+                                                paddingTop:
+                                                    content.group.label
+                                                        .paddingTop,
+                                                paddingRight:
+                                                    content.group.label
+                                                        .paddingRight,
+                                                paddingBottom:
+                                                    content.group.label
+                                                        .paddingBottom,
+                                                paddingLeft:
+                                                    content.group.label
+                                                        .paddingLeft,
+                                                marginTop:
+                                                    content.group.label
+                                                        .marginTop,
+                                                marginRight:
+                                                    content.group.label
+                                                        .marginRight,
+                                                marginBottom:
+                                                    content.group.label
+                                                        .marginBottom,
+                                                marginLeft:
+                                                    content.group.label
+                                                        .marginLeft,
+                                            }}
+                                        >
+                                            {group.label}
+                                        </PrimitiveText>
+                                    </RadixMenu.Label>
                                 )}
-                        </RadixMenu.Group>
-                    ))}
-                </Block>
-            )}
-        </Content>
-    )
-}
-
+                                {group.items.map(
+                                    (
+                                        item: MenuV2ItemType,
+                                        itemIndex: number
+                                    ) =>
+                                        item.subMenu &&
+                                        item.subMenu.length > 0 ? (
+                                            <MenuV2SubMenu
+                                                key={
+                                                    item.id ??
+                                                    `group-${groupId}-item-${itemIndex}`
+                                                }
+                                                item={item}
+                                                index={itemIndex}
+                                                maxHeight={maxHeight}
+                                            />
+                                        ) : (
+                                            <MenuV2Item
+                                                key={
+                                                    item.id ??
+                                                    `group-${groupId}-item-${itemIndex}`
+                                                }
+                                                item={item}
+                                                index={itemIndex}
+                                                itemTokens={content.group.item}
+                                            />
+                                        )
+                                )}
+                                {groupId !== filteredItems.length - 1 &&
+                                    group.showSeparator && (
+                                        <RadixMenu.Separator asChild>
+                                            <Block
+                                                as="div"
+                                                role="separator"
+                                                height={
+                                                    content.separator.height
+                                                }
+                                                backgroundColor={
+                                                    content.separator.color
+                                                }
+                                                marginTop={
+                                                    content.separator.marginTop
+                                                }
+                                                marginRight={
+                                                    content.separator
+                                                        .marginRight
+                                                }
+                                                marginBottom={
+                                                    content.separator
+                                                        .marginBottom
+                                                }
+                                                marginLeft={
+                                                    content.separator.marginLeft
+                                                }
+                                                aria-hidden="true"
+                                            />
+                                        </RadixMenu.Separator>
+                                    )}
+                            </RadixMenu.Group>
+                        ))}
+                    </Block>
+                )}
+            </Content>
+        )
+    }
+)
 MenuV2Content.displayName = 'MenuV2Content'
 
 export default MenuV2Content

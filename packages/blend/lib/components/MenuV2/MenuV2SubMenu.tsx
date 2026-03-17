@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled from 'styled-components'
+import styled, { CSSObject } from 'styled-components'
 import { ChevronRightIcon, Search } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
@@ -33,7 +33,7 @@ const SubContent = styled(RadixMenu.SubContent)<SubContentStyledProps>`
 type MenuV2SubMenuProps = {
     item: MenuV2ItemType
     index: number
-    maxHeight?: number
+    maxHeight?: CSSObject['maxHeight']
 }
 
 const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (

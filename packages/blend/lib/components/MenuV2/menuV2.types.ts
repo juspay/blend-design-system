@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+import type { CSSObject } from 'styled-components'
 
 export enum MenuV2Alignment {
     START = 'start',
@@ -68,13 +69,17 @@ export type MenuV2VirtualScrollingConfig = {
     threshold?: number
 }
 
+export type MenuV2Dimensions = {
+    minWidth?: CSSObject['minWidth']
+    maxWidth?: CSSObject['maxWidth']
+    minHeight?: CSSObject['minHeight']
+    maxHeight?: CSSObject['maxHeight']
+}
+
 export type MenuV2Props = {
     trigger: React.ReactElement
     items?: MenuV2GroupType[]
-    maxHeight?: number
-    minHeight?: number
-    maxWidth?: number
-    minWidth?: number
+    dimensions?: MenuV2Dimensions
     enableSearch?: boolean
     searchPlaceholder?: string
     enableVirtualScrolling?: boolean
