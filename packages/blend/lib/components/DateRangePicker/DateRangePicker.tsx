@@ -878,13 +878,17 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                           isSingleDatePicker
                       )
 
-                return triggerConfig.renderTrigger({
-                    selectedRange: displayRange,
-                    isOpen,
-                    isDisabled,
-                    formattedValue,
-                    onClick: () => setIsOpen(!isOpen),
-                })
+                return (
+                    <Block width="100%" display="flex">
+                        {triggerConfig.renderTrigger({
+                            selectedRange: displayRange,
+                            isOpen,
+                            isDisabled,
+                            formattedValue,
+                            onClick: () => setIsOpen(!isOpen),
+                        })}
+                    </Block>
+                )
             }
 
             if (triggerConfig?.element || triggerElement) {
@@ -893,6 +897,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         style={{
                             opacity: isDisabled ? 0.5 : 1,
                             cursor: isDisabled ? 'not-allowed' : 'pointer',
+                            width: '100%',
                             ...triggerConfig?.style,
                         }}
                     >
@@ -980,6 +985,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             return (
                 <PrimitiveButton
                     display="flex"
+                    width="100%"
                     alignItems="center"
                     justifyContent="space-between"
                     backgroundColor={
@@ -1165,6 +1171,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 data-datepicker={getPresetLabel(activePreset) || 'datepicker'}
                 ref={ref}
                 display="flex"
+                width="100%"
             >
                 {showPresets && !hasCustomTrigger && (
                     <QuickRangeSelector

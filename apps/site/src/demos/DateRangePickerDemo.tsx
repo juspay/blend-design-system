@@ -758,7 +758,7 @@ const DateRangePickerDemo = () => {
                         <div className="p-6 bg-white border border-gray-200 rounded-lg overflow-hidden">
                             <div className="overflow-hidden">
                                 <DateRangePicker
-                                    value={undefined}
+                                    value={playgroundRange}
                                     onChange={handlePlaygroundRangeChange}
                                     onPresetSelection={
                                         handlePlaygroundPresetSelection
@@ -885,7 +885,7 @@ const DateRangePickerDemo = () => {
                         </p>
                         <div className="overflow-hidden">
                             <DateRangePicker
-                                value={undefined}
+                                value={formatRange}
                                 onChange={handleFormatRangeChange}
                                 formatConfig={{
                                     preset: DateFormatPreset.SHORT_RANGE,
@@ -922,7 +922,7 @@ const DateRangePickerDemo = () => {
                                         <CustomButton
                                             onClick={onClick}
                                             variant="primary"
-                                            style={{ maxWidth: '100%' }}
+                                            style={{ width: '100%' }}
                                         >
                                             <CalendarIcon />
                                             <span className="truncate">
@@ -1199,7 +1199,6 @@ const DateRangePickerDemo = () => {
                         </div>
                     </div>
 
-                    {/* Undefined Value Test Case */}
                     <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
                             Undefined Value Test Case
