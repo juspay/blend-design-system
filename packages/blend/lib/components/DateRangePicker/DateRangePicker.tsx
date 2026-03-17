@@ -369,6 +369,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             value,
             onChange,
             onPresetSelection,
+            showDateInput = true,
             showDateTimePicker = true,
             showPresets: shouldShowPresets = true,
             customPresets,
@@ -1202,7 +1203,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             ...calendarToken.calendar,
                         }}
                     >
-                        {showDateTimePicker && (
+                        {showDateInput && (
                             <DateInputsSection
                                 startDate={startDate}
                                 endDate={endDate}
