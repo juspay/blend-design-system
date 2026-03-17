@@ -1,6 +1,9 @@
-import { SwitchV2Size, SwitchV2State } from '../SwitchV2/switchV2.types'
+import {
+    SelectorV2InteractionState,
+    SelectorV2Size,
+} from '../SelectorV2/selectorV2.types'
 
-export type SelectorsSize = SwitchV2Size
+export type SelectorsSize = SelectorV2Size
 
 export type SelectorsLabelTokensType = {
     content: {
@@ -8,7 +11,7 @@ export type SelectorsLabelTokensType = {
             fontSize: Record<SelectorsSize, string | number>
             fontWeight: Record<SelectorsSize, string | number>
             lineHeight: Record<SelectorsSize, string | number>
-            color: Record<SwitchV2State, string>
+            color: Record<SelectorV2InteractionState, string>
         }
         required: {
             color: string
@@ -22,7 +25,7 @@ export type SelectorsSubLabelTokensType = {
             fontSize: Record<SelectorsSize, string | number>
             fontWeight: Record<SelectorsSize, string | number>
             lineHeight: Record<SelectorsSize, string | number>
-            color: Record<SwitchV2State, string>
+            color: Record<SelectorV2InteractionState, string>
         }
     }
 }
@@ -37,6 +40,7 @@ export type SelectorsLabelProps = {
     label: string
     tokens: SelectorsLabelTokensType
     maxLength?: number
+    elementType?: string
 }
 
 export type SelectorsSubLabelProps = {
@@ -47,4 +51,5 @@ export type SelectorsSubLabelProps = {
     error: boolean
     tokens: SelectorsSubLabelTokensType
     maxLength?: number
+    elementType?: string
 }

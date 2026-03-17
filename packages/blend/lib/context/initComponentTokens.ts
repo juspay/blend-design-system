@@ -49,9 +49,18 @@ import { getTagV2Tokens } from '../components/TagV2/tagV2.tokens'
 import { getAlertV2Tokens } from '../components/AlertV2'
 import { getAccordionV2Tokens } from '../components/AccordionV2'
 import { getSnackbarV2Tokens } from '../components/SnackbarV2'
-import { getSwitchV2Tokens } from '../components/SwitchV2/switchV2.tokens'
+import { getSwitchV2Tokens } from '../components/SelectorV2/SwitchV2/switchV2.tokens'
+import { getSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
+import { getMultiSelectV2Tokens } from '../components/MultiSelectV2/multiSelectV2.tokens'
+import { getKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import { getAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
+import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
+import { getTimelineTokens } from '../components/Timeline/timeline.token'
+import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
+import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
+import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -155,12 +164,39 @@ const initTokens = (
         SWITCHV2:
             componentTokens.SWITCHV2 ??
             getSwitchV2Tokens(foundationTokens, theme),
+        SINGLE_SELECT_V2:
+            componentTokens.SINGLE_SELECT_V2 ??
+            getSingleSelectV2Tokens(foundationTokens, theme),
+        MULTI_SELECT_V2:
+            componentTokens.MULTI_SELECT_V2 ??
+            getMultiSelectV2Tokens(foundationTokens, theme),
         AVATARV2:
             componentTokens.AVATARV2 ??
             getAvatarV2Tokens(foundationTokens, theme),
         TEXT_INPUTV2:
             componentTokens.TEXT_INPUTV2 ??
             getTextInputV2Tokens(foundationTokens, theme),
+        CHARTSV2:
+            componentTokens.CHARTSV2 ??
+            getChartV2Tokens(foundationTokens, theme),
+        TIMELINE:
+            componentTokens.TIMELINE ??
+            getTimelineTokens(foundationTokens, theme),
+        CHECKBOXV2:
+            componentTokens.CHECKBOXV2 ??
+            getCheckboxV2Tokens(foundationTokens, theme),
+        KEYVALUEPAIRV2:
+            componentTokens.KEYVALUEPAIRV2 ??
+            getKeyValuePairV2Tokens(foundationTokens, theme),
+        TOOLTIPV2:
+            componentTokens.TOOLTIPV2 ??
+            getTooltipV2Tokens(foundationTokens, theme),
+        RADIOV2:
+            componentTokens.RADIOV2 ??
+            getRadioV2Tokens(foundationTokens, theme),
+        POPOVERV2:
+            componentTokens.POPOVERV2 ??
+            getPopoverV2Tokens(foundationTokens, theme),
     }
 }
 

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useTableOfContents } from '../context/TableOfContentsContext'
-import { TOCItem } from '@/app/components/layout/Navigation/TableOfContents'
+import { TOCItem } from '../../../components/layout/Navigation/TableOfContents'
 
 type PageClientProps = {
     headings: TOCItem[]

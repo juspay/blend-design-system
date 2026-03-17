@@ -120,7 +120,9 @@ describe.skip('useResponsiveTokens Hook', () => {
                 'BUTTON',
                 'ALERT',
                 'CHECKBOX',
+                'CHECKBOXV2',
                 'RADIO',
+                'RADIOV2',
                 'SWITCH',
             ] as const
 

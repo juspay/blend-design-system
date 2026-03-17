@@ -15,6 +15,7 @@ import {
     Scatter,
     AreaChart,
     Area,
+    ComposedChart,
 } from 'recharts'
 import {
     ChartType,
@@ -23,6 +24,7 @@ import {
     AxisType,
     SankeyData,
     DotItemDotProps,
+    FlattenedDataPoint,
 } from './types'
 import SankeyChartWrapper from './SankeyChartWrapper'
 import {
@@ -58,6 +60,8 @@ export const renderChart = ({
     noData,
     height,
     CustomizedDot,
+    lineSeriesKeys,
+    onKeyClick,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -621,10 +625,286 @@ export const renderChart = ({
                             animationDuration={350}
                             radius={[4, 4, 0, 0]}
                             maxBarSize={barsize}
+                            onMouseOver={() => setHoveredKey(key)}
+                            onClick={() => onKeyClick?.(key)}
                         />
                     ))}
                 </BarChart>
             )
+        case ChartType.LINE_BAR: {
+            return (
+                <ComposedChart
+                    margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                    data={processedData}
+                    onMouseLeave={() => setHoveredKey(null)}
+                >
+                    <CartesianGrid
+                        vertical={false}
+                        stroke={FOUNDATION_THEME.colors.gray[150]}
+                    />
+                    <XAxis
+                        dataKey={xAxisDataKey}
+                        type={isDateTimeAxis ? 'number' : 'category'}
+                        scale={isDateTimeAxis ? 'time' : 'auto'}
+                        domain={
+                            isDateTimeAxis ? ['dataMin', 'dataMax'] : undefined
+                        }
+                        allowDuplicatedCategory={!isDateTimeAxis}
+                        axisLine={false}
+                        tickLine={false}
+                        interval={finalXAxis.interval}
+                        tickMargin={20}
+                        ticks={
+                            finalXAxis.ticks as (number | string)[] | undefined
+                        }
+                        tickFormatter={
+                            finalXAxis.customTick
+                                ? undefined
+                                : finalXAxis.tickFormatter
+                                  ? finalXAxis.tickFormatter
+                                  : finalXAxis.type
+                                    ? getAxisFormatter(finalXAxis)
+                                    : (value) => formatNumber(value)
+                        }
+                        tick={
+                            (!finalXAxis.show
+                                ? false
+                                : finalXAxis.customTick
+                                  ? finalXAxis.customTick
+                                  : {
+                                        fill: FOUNDATION_THEME.colors.gray[400],
+                                        fontSize: isSmallScreen ? 10 : 12,
+                                        fontWeight:
+                                            FOUNDATION_THEME.font.weight[500],
+                                    }) as TickProps
+                        }
+                    />
+                    <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        interval={finalYAxis.interval}
+                        tickFormatter={
+                            finalYAxis.customTick
+                                ? undefined
+                                : finalYAxis.tickFormatter
+                                  ? finalYAxis.tickFormatter
+                                  : finalYAxis.type
+                                    ? getAxisFormatter(finalYAxis)
+                                    : (value) => formatNumber(value)
+                        }
+                        tick={
+                            (finalYAxis.customTick
+                                ? finalYAxis.customTick
+                                : {
+                                      fill: FOUNDATION_THEME.colors.gray[400],
+                                      fontSize: 12,
+                                      fontWeight:
+                                          FOUNDATION_THEME.font.weight[500],
+                                  }) as TickProps
+                        }
+                    />
+                    <Tooltip
+                        cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
+                        position={tooltip?.position}
+                        allowEscapeViewBox={tooltip?.allowEscapeViewBox}
+                        content={(props) =>
+                            CustomTooltip({
+                                ...props,
+                                hoveredKey,
+                                originalData,
+                                setHoveredKey,
+                                chartType,
+                                selectedKeys,
+                                xAxis: finalXAxis,
+                                yAxis: finalYAxis,
+                            })
+                        }
+                    />
+                    {(() => {
+                        const barSeries = lineKeys.filter(
+                            (k) =>
+                                !lineSeriesKeys || !lineSeriesKeys.includes(k)
+                        )
+                        return lineKeys.map((key, index) => {
+                            const isLine = lineSeriesKeys
+                                ? lineSeriesKeys.includes(key)
+                                : index === lineKeys.length - 1
+                            const color = getColor(
+                                key,
+                                isLine ? ChartType.LINE : ChartType.BAR
+                            )
+
+                            if (isLine) {
+                                const hasOtherHovered =
+                                    hoveredKey !== null && hoveredKey !== key
+                                const dotOpacity = hasOtherHovered ? 0.3 : 1
+
+                                return (
+                                    <Line
+                                        key={key}
+                                        type="linear"
+                                        dataKey={key}
+                                        stroke={color}
+                                        strokeWidth={2}
+                                        activeDot={(props: {
+                                            cx?: number
+                                            cy?: number
+                                            payload?: Record<string, unknown>
+                                        }) => {
+                                            const dataPoint = originalData.find(
+                                                (d) =>
+                                                    d.name ===
+                                                    props.payload?.name
+                                            )
+                                            const hasError =
+                                                !!dataPoint?.data?.[key]?.error
+
+                                            return (
+                                                <circle
+                                                    cx={props.cx}
+                                                    cy={props.cy}
+                                                    r={
+                                                        hoveredKey === key
+                                                            ? 4
+                                                            : 0
+                                                    }
+                                                    stroke={
+                                                        hasError
+                                                            ? 'none'
+                                                            : color
+                                                    }
+                                                    fill={
+                                                        hasError
+                                                            ? 'none'
+                                                            : color
+                                                    }
+                                                />
+                                            )
+                                        }}
+                                        dot={
+                                            CustomizedDot
+                                                ? (props: DotItemDotProps) => {
+                                                      const dotElement =
+                                                          CustomizedDot(props)
+                                                      if (
+                                                          dotElement &&
+                                                          React.isValidElement(
+                                                              dotElement
+                                                          )
+                                                      ) {
+                                                          const elementProps =
+                                                              dotElement.props as unknown as Record<
+                                                                  string,
+                                                                  unknown
+                                                              >
+                                                          const existingStyle =
+                                                              elementProps?.style as
+                                                                  | Record<
+                                                                        string,
+                                                                        unknown
+                                                                    >
+                                                                  | undefined
+                                                          return React.cloneElement(
+                                                              dotElement,
+                                                              {
+                                                                  ...elementProps,
+                                                                  opacity:
+                                                                      dotOpacity,
+                                                                  style: {
+                                                                      ...existingStyle,
+                                                                      opacity:
+                                                                          dotOpacity,
+                                                                  },
+                                                              } as React.Attributes
+                                                          )
+                                                      }
+                                                      return dotElement
+                                                  }
+                                                : false
+                                        }
+                                        animationDuration={350}
+                                        onMouseOver={() => setHoveredKey(key)}
+                                        onClick={() => onKeyClick?.(key)}
+                                        hide={
+                                            selectedKeys.length > 0 &&
+                                            !selectedKeys.includes(key)
+                                        }
+                                    />
+                                )
+                            }
+
+                            const barIndex = barSeries.indexOf(key)
+                            const isTopBar =
+                                barIndex !== -1 &&
+                                barIndex === barSeries.length - 1
+                            const radius: [number, number, number, number] =
+                                isTopBar ? [4, 4, 0, 0] : [0, 0, 0, 0]
+
+                            return (
+                                <Bar
+                                    key={key}
+                                    dataKey={key}
+                                    fill={color}
+                                    maxBarSize={barsize}
+                                    stackId={'a'}
+                                    radius={radius}
+                                    hide={
+                                        selectedKeys.length > 0 &&
+                                        !selectedKeys.includes(key)
+                                    }
+                                    onMouseOver={() => setHoveredKey(key)}
+                                    onClick={() => onKeyClick?.(key)}
+                                >
+                                    {processedData.map((d, i) => {
+                                        // find top non-zero bar series at this index (scan from last to first)
+                                        let topSeries: string | null = null
+                                        for (
+                                            let j = barSeries.length - 1;
+                                            j >= 0;
+                                            j--
+                                        ) {
+                                            const seriesKey = barSeries[j]
+                                            const val = (
+                                                d as FlattenedDataPoint
+                                            )[seriesKey]
+                                            if (
+                                                typeof val === 'number'
+                                                    ? val !== 0
+                                                    : Boolean(val)
+                                            ) {
+                                                topSeries = seriesKey
+                                                break
+                                            }
+                                        }
+
+                                        const cellRadius =
+                                            topSeries === key
+                                                ? [4, 4, 0, 0]
+                                                : [0, 0, 0, 0]
+
+                                        return (
+                                            <Cell
+                                                key={i}
+                                                {...({
+                                                    radius: cellRadius,
+                                                } as unknown as React.ComponentProps<
+                                                    typeof Cell
+                                                >)}
+                                            />
+                                        )
+                                    })}
+                                </Bar>
+                            )
+                        })
+                    })()}
+                </ComposedChart>
+            )
+        }
 
         case ChartType.PIE: {
             const keysToInclude =

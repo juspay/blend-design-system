@@ -2,7 +2,7 @@ import type { CSSObject } from 'styled-components'
 import type { FoundationTokenType } from '../../tokens/theme.token'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
-export type ChartState = 'default' | 'hover' | 'active'
+export type ChartState = 'default' | 'hover' | 'active' | 'total'
 export type ChartHeight = 'default' | 'fullscreen' | 'small'
 export type ChartTokensType = {
     border: CSSObject['border']
@@ -77,9 +77,10 @@ export const getChartTokens = (
                     item: {
                         gap: foundationToken.unit[8],
                         color: {
-                            default: foundationToken.colors.gray[600],
+                            default: foundationToken.colors.gray[700],
                             hover: foundationToken.colors.gray[700],
                             active: foundationToken.colors.gray[800],
+                            total: foundationToken.colors.gray[500],
                         },
                         fontSize: 12,
                         fontWeight: 500,
@@ -120,11 +121,12 @@ export const getChartTokens = (
                     item: {
                         gap: foundationToken.unit[8],
                         color: {
-                            default: foundationToken.colors.gray[600],
+                            default: foundationToken.colors.gray[700],
                             hover: foundationToken.colors.gray[700],
                             active: foundationToken.colors.gray[800],
+                            total: foundationToken.colors.gray[500],
                         },
-                        fontSize: 12,
+                        fontSize: 14,
                         fontWeight: 500,
                     },
                 },

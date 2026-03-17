@@ -42,6 +42,281 @@ import {
     last7daysHourlyData,
 } from './ChartsData'
 
+const LineBarDemo = () => {
+    const lineBarData: NewNestedDataPoint[] = [
+        {
+            name: 'Notifications sent to Juspay',
+            data: {
+                Success: { primary: { label: 'Success', val: 1309681 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 10000 },
+                },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked Post-Notification', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 0 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1309681 },
+                },
+            },
+        },
+        {
+            name: 'Notification sent to PG',
+            data: {
+                Success: { primary: { label: 'Success', val: 1299111 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 0 },
+                },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked Post-Notification', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 10570 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1299111 },
+                },
+            },
+        },
+        {
+            name: 'Initial Handshake',
+            data: {
+                Success: { primary: { label: 'Success', val: 1500000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 50000 },
+                },
+                Pending: { primary: { label: 'Pending', val: 10000 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 5000 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1550000 },
+                },
+            },
+        },
+        {
+            name: 'Authentication',
+            data: {
+                Success: { primary: { label: 'Success', val: 1450000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 20000 },
+                },
+                Pending: { primary: { label: 'Pending', val: 5000 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 25000 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1470000 },
+                },
+            },
+        },
+        {
+            name: 'Risk Assessment',
+            data: {
+                Success: { primary: { label: 'Success', val: 1400000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 15000 },
+                },
+                Pending: { primary: { label: 'Pending', val: 2000 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 1000 },
+                },
+                Failure: { primary: { label: 'Failure', val: 12000 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1415000 },
+                },
+            },
+        },
+        {
+            name: 'Notification Status',
+            data: {
+                Success: { primary: { label: 'Success', val: 1273098 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 512 },
+                },
+                Pending: { primary: { label: 'Pending', val: 7906 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked Post-Notification', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 17162 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1273610 },
+                },
+            },
+        },
+        {
+            name: 'Processing',
+            data: {
+                Success: { primary: { label: 'Success', val: 1200000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 30000 },
+                },
+                Pending: { primary: { label: 'Pending', val: 15000 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 8000 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1230000 },
+                },
+            },
+        },
+        {
+            name: 'PG Redirect',
+            data: {
+                Success: { primary: { label: 'Success', val: 1100000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 0 },
+                },
+                Pending: { primary: { label: 'Pending', val: 40000 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 500 },
+                },
+                Failure: { primary: { label: 'Failure', val: 15000 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1100000 },
+                },
+            },
+        },
+        {
+            name: 'Execution sent to PG',
+            data: {
+                Success: { primary: { label: 'Success', val: 0 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 120000 },
+                },
+                Pending: { primary: { label: 'Pending', val: 1273610 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked Post-Notification', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 0 } },
+                'Success Rate': { primary: { label: 'Success Rate', val: 0 } },
+            },
+        },
+        {
+            name: 'Callback Received',
+            data: {
+                Success: { primary: { label: 'Success', val: 1000000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 10000 },
+                },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 20000 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 1010000 },
+                },
+            },
+        },
+        {
+            name: 'Settlement',
+            data: {
+                Success: { primary: { label: 'Success', val: 950000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 5000 },
+                },
+                Pending: { primary: { label: 'Pending', val: 20000 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 2000 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 955000 },
+                },
+            },
+        },
+        {
+            name: 'Reconciliation',
+            data: {
+                Success: { primary: { label: 'Success', val: 940000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 0 },
+                },
+                Pending: { primary: { label: 'Pending', val: 10000 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 500 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 940000 },
+                },
+            },
+        },
+        {
+            name: 'Final Order Status',
+            data: {
+                Success: { primary: { label: 'Success', val: 0 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 0 },
+                },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked Post-Notification', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 0 } },
+                'Success Rate': { primary: { label: 'Success Rate', val: 0 } },
+            },
+        },
+        {
+            name: 'Final Archival',
+            data: {
+                Success: { primary: { label: 'Success', val: 900000 } },
+                'Retry-Success': {
+                    primary: { label: 'Retry-Success', val: 0 },
+                },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'Revoked Post-Notification': {
+                    primary: { label: 'Revoked', val: 0 },
+                },
+                Failure: { primary: { label: 'Failure', val: 0 } },
+                'Success Rate': {
+                    primary: { label: 'Success Rate', val: 900000 },
+                },
+            },
+        },
+    ]
+
+    return (
+        <div className="space-y-8">
+            <Charts
+                data={lineBarData}
+                chartType={ChartType.LINE_BAR}
+                lineSeriesKeys={['Success Rate', 'Pending']}
+                // colors={[
+                //     { key: 'Success', color: '#94B9FD' },
+                //     { key: 'Retry-Success', color: '#6B9DFC' },
+                //     { key: 'Pending', color: '#FADBB4' },
+                //     { key: 'Revoked Post-Notification', color: '#FD9B9B' },
+                //     { key: 'Business Failure', color: '#F9CECF' },
+                //     { key: 'Insufficient Balance', color: '#E09A9B' },
+                //     { key: 'Technical Failure', color: '#FEC3D4' },
+                //     { key: 'Failure', color: '#F8B2B3' },
+                //     { key: 'Success Rate', color: '#499DFF' },
+                // ]}
+                xAxis={{
+                    label: 'Workflow Stages',
+                    type: AxisType.NUMBER, // Using categorization by name string
+                }}
+                yAxis={{
+                    label: 'Volume',
+                    type: AxisType.NUMBER,
+                }}
+                chartHeaderSlot={
+                    <div className="chart-header">
+                        <h4 style={{ margin: 0, fontSize: '14px' }}>
+                            📊 Hybrid Line and Bar Chart
+                        </h4>
+                    </div>
+                }
+            />
+        </div>
+    )
+}
+
 const TimezoneDemo = () => {
     const [selectedTimezone, setSelectedTimezone] = useState('UTC')
     const [use12HourFormat, setUse12HourFormat] = useState(false)
@@ -6036,7 +6311,7 @@ const ChartDemo = () => {
                     </div>
                 }
             />
-
+            <LineBarDemo />
             <Charts
                 chartType={ChartType.AREA}
                 data={[

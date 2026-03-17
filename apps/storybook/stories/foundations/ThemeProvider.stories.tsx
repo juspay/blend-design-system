@@ -251,7 +251,9 @@ function App() {
                     'MODAL',
                     'TOOLTIP',
                     'CHECKBOX',
+                    'CHECKBOXV2',
                     'RADIO',
+                    'RADIOV2',
                     'SWITCH',
                     'TEXT_INPUT',
                     'SEARCH_INPUT',
@@ -276,6 +278,7 @@ function App() {
                     'SKELETON',
                     'AVATAR',
                     'SIDEBAR',
+                    'TOOLTIPV2',
                 ].map((component) => (
                     <code
                         key={component}

@@ -35,6 +35,7 @@ export enum ChartLegendPosition {
 export enum ChartType {
     LINE = 'line',
     BAR = 'bar',
+    LINE_BAR = 'lineBar',
     PIE = 'pie',
     SCATTER = 'scatter',
     AREA = 'area',
@@ -144,6 +145,8 @@ export type RenderChartProps = {
     noData?: NoDataProps
     height?: number | string
     CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
+    lineSeriesKeys?: string[]
+    onKeyClick?: (key: string) => void
 }
 
 export type CoreChartProps = {
@@ -161,7 +164,7 @@ export type CoreChartProps = {
     hoveredKey?: string | null
     onHoveredKeyChange?: (key: string | null) => void
     selectedKeys?: string[]
-
+    lineSeriesKeys?: string[]
     enableHover?: boolean
 }
 
@@ -195,6 +198,7 @@ export type ChartsProps = {
     skeleton?: ChartsSkeletonProps
     legends?: { title: string; total?: string }[]
     CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
+    lineSeriesKeys?: string[]
 }
 
 export type FlattenedDataPoint = {

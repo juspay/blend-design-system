@@ -94,7 +94,9 @@ export function lightenHexColor(hex: string, amount: number = 0.3): string {
 
     const [h, s, l] = rgbToHsl(r, g, b)
 
-    const newL = Math.min(1, l + amount)
+    // Prevent lightening from reaching pure white by capping lightness
+    const MAX_LIGHTNESS = 0.85
+    const newL = Math.min(MAX_LIGHTNESS, l + amount)
 
     const [newR, newG, newB] = hslToRgb(h, s, newL)
 

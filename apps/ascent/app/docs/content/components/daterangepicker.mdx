@@ -409,6 +409,19 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'maxYearOffset',
+                hintText:
+                    'Maximum Year offset allowed in the future. Must be Greater than or equal to 0. (For Example: If passed as 7, then the date range will show dates maximum upto 7 years into the future, ie., if current year is 2026, then it will show till 2033)',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'positive number that gives the maximum offset from current year into the future',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"

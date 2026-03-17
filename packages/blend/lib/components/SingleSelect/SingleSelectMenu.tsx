@@ -129,6 +129,10 @@ const Content = styled(RadixMenu.Content)`
     scrollbar-width: none;
     scrollbar-color: transparent transparent;
 
+    &[data-state='closed'] {
+        pointer-events: none;
+    }
+
     ${dropdownContentAnimations}
 `
 
@@ -381,6 +385,7 @@ const SingleSelectMenu = ({
     const [searchText, setSearchText] = useState('')
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
+
     let itemCounter = 0
     const selectors = [
         '[data-dropdown="dropdown"]',
@@ -429,9 +434,7 @@ const SingleSelectMenu = ({
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
-        if (!newOpen && enableSearch) {
-            setSearchText('')
-        }
+        if (newOpen && enableSearch) setSearchText('')
         onOpenChange(newOpen)
     }
 

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import React, { isValidElement, useState } from 'react'
+import React, { isValidElement, useState, useEffect } from 'react'
 import { Hash, Bell } from 'lucide-react'
 
 import {
@@ -7,11 +7,9 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
 
-import { SwitchV2 } from '../../../../../packages/blend/lib/components/SwitchV2'
-import {
-    SwitchV2Size,
-    type SwitchV2Props,
-} from '../../../../../packages/blend/lib/components/SwitchV2/switchV2.types'
+import { SwitchV2 } from '../../../../../packages/blend/lib/components/SelectorV2/SwitchV2'
+import { type SwitchV2Props } from '../../../../../packages/blend/lib/components/SelectorV2/SwitchV2/switchV2.types'
+import { SelectorV2Size as SwitchV2Size } from '../../../../../packages/blend/lib/components/SelectorV2/selectorV2.types'
 
 type SwitchV2Slot = NonNullable<SwitchV2Props['slot']>
 
@@ -124,7 +122,7 @@ const [enabled, setEnabled] = useState(false);
             description:
                 'Maximum lengths for label and subLabel before truncation + tooltip',
         },
-        onChange: {
+        onCheckedChange: {
             action: 'changed',
             description: 'Callback fired when the switch toggles',
         },
@@ -137,13 +135,19 @@ type Story = StoryObj<typeof SwitchV2>
 
 export const Default: Story = {
     render: function DefaultSwitchV2(args: Story['args']) {
-        const [checked, setChecked] = useState<boolean>(args?.checked ?? false)
+        const [checkedState, setCheckedState] = useState<boolean>(
+            args?.checked ?? false
+        )
+
+        useEffect(() => {
+            setCheckedState(args?.checked ?? false)
+        }, [args?.checked])
 
         return (
             <SwitchV2
                 {...args}
-                checked={checked}
-                onChange={(next: boolean) => setChecked(next)}
+                checked={checkedState}
+                onCheckedChange={(next: boolean) => setCheckedState(next)}
                 slot={getSlotContent(args?.slot as string | React.ReactNode)}
             />
         )
@@ -184,16 +188,22 @@ export const Sizes: Story = {
                         label="Small switch"
                         size={SwitchV2Size.SM}
                         checked={states.sm}
-                        onChange={(next: boolean) =>
-                            setStates((prev) => ({ ...prev, sm: next }))
+                        onCheckedChange={(next: boolean) =>
+                            setStates((prev: { sm: boolean; md: boolean }) => ({
+                                ...prev,
+                                sm: next,
+                            }))
                         }
                     />
                     <SwitchV2
                         label="Medium switch"
                         size={SwitchV2Size.MD}
                         checked={states.md}
-                        onChange={(next: boolean) =>
-                            setStates((prev) => ({ ...prev, md: next }))
+                        onCheckedChange={(next: boolean) =>
+                            setStates((prev: { sm: boolean; md: boolean }) => ({
+                                ...prev,
+                                md: next,
+                            }))
                         }
                     />
                 </div>
@@ -234,7 +244,7 @@ export const WithSlotAndSubLabel: Story = {
                     label="Marketing emails"
                     subLabel="Receive product updates and announcements"
                     checked={checked}
-                    onChange={setChecked}
+                    onCheckedChange={setChecked}
                     slot={{ slot: <Bell size={16} />, maxHeight: 16 }}
                 />
             )

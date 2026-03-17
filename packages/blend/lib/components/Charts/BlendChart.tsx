@@ -46,14 +46,14 @@ const BlendChart = forwardRef<BlendChartReactRefObject, BlendChartProps>(
             color: xAxis?.lineColor ?? FOUNDATION_THEME.colors.gray[150],
         }
 
-        const defaultYAxisLineStyle = {
-            width: yAxis?.lineWidth ?? 0,
-            color: yAxis?.lineColor ?? FOUNDATION_THEME.colors.gray[150],
-        }
-
         const defaultXAxisGridLineStyle = {
             width: xAxis?.gridLineWidth ?? 0,
             color: xAxis?.gridLineColor ?? FOUNDATION_THEME.colors.gray[150],
+        }
+
+        const defaultYAxisLineStyle = {
+            width: yAxis?.lineWidth ?? 0,
+            color: yAxis?.lineColor ?? FOUNDATION_THEME.colors.gray[150],
         }
 
         const defaultYAxisGridLineStyle = {

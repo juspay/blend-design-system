@@ -2349,10 +2349,15 @@ export const calculateDayCellProps = (
     }
 }
 
-const getPickerYearRange = (selectedRange: DateRange | undefined) => {
+const getPickerYearRange = (
+    selectedRange: DateRange | undefined,
+    maxYearOffset?: number
+) => {
     const { MIN_YEAR, MAX_YEAR_OFFSET } = DATE_RANGE_PICKER_CONSTANTS
     const currentYear = new Date().getFullYear()
-    const defaultMaxYear = currentYear + MAX_YEAR_OFFSET
+    const defaultMaxYear =
+        currentYear +
+        (maxYearOffset && maxYearOffset >= 0 ? maxYearOffset : MAX_YEAR_OFFSET)
 
     const selectedYears: number[] = []
     if (selectedRange && isValidDate(selectedRange.startDate)) {
@@ -2400,7 +2405,8 @@ export const generatePickerData = (
     tabType: 'start' | 'end',
     selectedRange?: DateRange,
     startTime?: string,
-    endTime?: string
+    endTime?: string,
+    maxYearOffset?: number
 ) => {
     const rawDate =
         tabType === 'start' ? selectedRange?.startDate : selectedRange?.endDate
@@ -2411,7 +2417,10 @@ export const generatePickerData = (
 
     const safeDate = rawDate && isValidDate(rawDate) ? new Date(rawDate) : today
 
-    const { minYear, maxYear } = getPickerYearRange(selectedRange)
+    const { minYear, maxYear } = getPickerYearRange(
+        selectedRange,
+        maxYearOffset
+    )
     const yearOptions = buildYearOptions(minYear, maxYear)
     const monthIndex = safeDate.getMonth()
     const daysInMonth = new Date(
@@ -2486,7 +2495,8 @@ export const createSelectionHandler = (
     setSelectedRange: (range: DateRange) => void,
     setStartDate: (date: string) => void,
     setEndDate: (date: string) => void,
-    selectedRange?: DateRange
+    selectedRange?: DateRange,
+    maxYearOffset?: number
 ) => {
     return (index: number) => {
         const now = new Date()
@@ -2502,7 +2512,10 @@ export const createSelectionHandler = (
 
         switch (type) {
             case 'year': {
-                const { minYear, maxYear } = getPickerYearRange(selectedRange)
+                const { minYear, maxYear } = getPickerYearRange(
+                    selectedRange,
+                    maxYearOffset
+                )
                 const years = buildYearOptions(minYear, maxYear)
                 const safeIndex = clampPickerIndex(index, years.length)
                 const newYear = years[safeIndex]

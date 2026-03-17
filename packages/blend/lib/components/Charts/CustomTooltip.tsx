@@ -184,7 +184,9 @@ export const CustomTooltip = ({
                     yAxis={yAxis}
                 />
             )}
-            {(chartType === ChartType.BAR || chartType === ChartType.AREA) && (
+            {(chartType === ChartType.BAR ||
+                chartType === ChartType.AREA ||
+                chartType === ChartType.LINE_BAR) && (
                 <BarChartTooltip
                     originalData={originalData}
                     label={label}

@@ -10,7 +10,6 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             sidebarItems={[]}
             showThemeToggle={false}
             showSidebar={false}
-            showFooter={true}
         >
             <ChangelogThemeForcer />
             {children}

@@ -174,7 +174,7 @@ npm run deploy:prod
 
 **Live URLs:**
 
-- **Production**: [https://juspay.design](https://juspay.design)
+- **Production**: [https://blend.juspay.design](https://blend.juspay.design)
 - **Staging**: [https://blend-staging.web.app](https://blend-staging.web.app)
 
 ### Manual Build
@@ -243,7 +243,7 @@ The site includes automatic search functionality:
 ## 🔗 Links
 
 - **Live Site**: [Blend Design System](https://blend.juspay.in)
-- **Storybook**: [Component Library](https://juspay.design/storybook)
+- **Storybook**: [Component Library](https://blend.juspay.design/storybook)
 - **GitHub**: [Source Code](https://github.com/juspay/blend-design-system)
 
 ---

@@ -43,6 +43,7 @@ const Charts: React.FC<ChartsProps> = ({
     skeleton,
     legends,
     CustomizedDot,
+    lineSeriesKeys,
     ...props
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -449,6 +450,9 @@ const Charts: React.FC<ChartsProps> = ({
                                                       },
                                                       tooltip,
                                                       noData,
+                                                      onKeyClick:
+                                                          handleLegendClick,
+                                                      lineSeriesKeys,
                                                       height:
                                                           typeof height ===
                                                           'number'
@@ -518,6 +522,9 @@ const Charts: React.FC<ChartsProps> = ({
                                                       },
                                                       tooltip,
                                                       noData,
+                                                      onKeyClick:
+                                                          handleLegendClick,
+                                                      lineSeriesKeys,
                                                       height:
                                                           typeof height ===
                                                           'number'
@@ -757,6 +764,9 @@ const Charts: React.FC<ChartsProps> = ({
                                                       },
                                                       tooltip,
                                                       noData,
+                                                      onKeyClick:
+                                                          handleLegendClick,
+                                                      lineSeriesKeys,
                                                       height:
                                                           typeof height ===
                                                           'number'
@@ -933,6 +943,9 @@ const Charts: React.FC<ChartsProps> = ({
                                                       },
                                                       tooltip,
                                                       noData,
+                                                      onKeyClick:
+                                                          handleLegendClick,
+                                                      lineSeriesKeys,
                                                       height:
                                                           typeof height ===
                                                           'number'

@@ -447,7 +447,8 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                         <Block
                                             display="flex"
                                             alignItems="center"
-                                            gap={8}
+                                            justifyContent="center"
+                                            gap={FOUNDATION_THEME.unit[4]}
                                         >
                                             <Text
                                                 fontSize={
@@ -467,6 +468,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                 {dataKey}
                                             </Text>
                                             <Text
+                                                aria-hidden={true}
                                                 fontSize={
                                                     legendTokens.item.fontSize
                                                 }
@@ -475,10 +477,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                 }
                                                 color={
                                                     legendTokens.item.color
-                                                        .default
+                                                        .total
                                                 }
                                             >
-                                                |
+                                                I
                                             </Text>
                                             <Text
                                                 fontSize={
@@ -489,7 +491,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                                 }
                                                 color={
                                                     legendTokens.item.color
-                                                        .default
+                                                        .total
                                                 }
                                             >
                                                 {legend.total}

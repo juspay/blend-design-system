@@ -122,7 +122,15 @@ import {
 import {
     getSwitchV2Tokens,
     ResponsiveSwitchV2Tokens,
-} from '../components/SwitchV2/switchV2.tokens'
+} from '../components/SelectorV2/SwitchV2/switchV2.tokens'
+import {
+    getSingleSelectV2Tokens,
+    ResponsiveSingleSelectV2Tokens,
+} from '../components/SingleSelectV2/singleSelectV2.tokens'
+import {
+    getMultiSelectV2Tokens,
+    ResponsiveMultiSelectV2Tokens,
+} from '../components/MultiSelectV2/multiSelectV2.tokens'
 import {
     getAvatarV2Tokens,
     ResponsiveAvatarV2Tokens,
@@ -131,6 +139,34 @@ import {
     getTextInputV2Tokens,
     ResponsiveTextInputV2Tokens,
 } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
+import {
+    getChartV2Tokens,
+    ResponsiveChartV2Tokens,
+} from '../components/ChartsV2/chartV2.tokens'
+import {
+    getTimelineTokens,
+    ResponsiveTimelineTokens,
+} from '../components/Timeline/timeline.token'
+import {
+    getCheckboxV2Tokens,
+    ResponsiveCheckboxV2Tokens,
+} from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import {
+    getKeyValuePairV2Tokens,
+    ResponsiveKeyValuePairV2Tokens,
+} from '../components/KeyValuePairV2/keyValuePairV2.tokens'
+import {
+    getTooltipV2Tokens,
+    ResponsiveTooltipV2Tokens,
+} from '../components/TooltipV2/tooltipV2.tokens'
+import {
+    getRadioV2Tokens,
+    ResponsiveRadioV2Tokens,
+} from '../components/SelectorV2/RadioV2/radioV2.tokens'
+import {
+    getPopoverV2Tokens,
+    ResponsivePopoverV2Tokens,
+} from '../components/PopoverV2/popoverV2.token'
 
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
@@ -176,14 +212,23 @@ export type ComponentTokenType = {
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
+    TIMELINE?: ResponsiveTimelineTokens
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
     ALERTV2?: ResponsiveAlertV2Tokens
     ACCORDIONV2?: ResponsiveAccordionV2Tokens
     SNACKBARV2?: ResponsiveSnackbarV2Tokens
     SWITCHV2?: ResponsiveSwitchV2Tokens
+    SINGLE_SELECT_V2?: ResponsiveSingleSelectV2Tokens
+    MULTI_SELECT_V2?: ResponsiveMultiSelectV2Tokens
     AVATARV2?: ResponsiveAvatarV2Tokens
     TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
+    CHARTSV2?: ResponsiveChartV2Tokens
+    CHECKBOXV2?: ResponsiveCheckboxV2Tokens
+    KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
+    TOOLTIPV2?: ResponsiveTooltipV2Tokens
+    RADIOV2?: ResponsiveRadioV2Tokens
+    POPOVERV2?: ResponsivePopoverV2Tokens
 }
 
 type ThemeContextType = {
@@ -247,6 +292,18 @@ const ThemeContext = createContext<ThemeContextType>({
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATARV2: getAvatarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHARTSV2: getChartV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
+        SINGLE_SELECT_V2: getSingleSelectV2Tokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
+        MULTI_SELECT_V2: getMultiSelectV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

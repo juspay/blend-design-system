@@ -115,7 +115,7 @@ figma.connect(
             },
             {
                 name: 'Storybook',
-                url: 'https://juspay.design/storybook/?path=/docs/components-inputs-textarea--docs',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-textarea--docs',
             },
         ],
     }

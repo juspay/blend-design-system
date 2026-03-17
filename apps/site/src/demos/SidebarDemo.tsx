@@ -58,6 +58,7 @@ import StatCardDemo from './StatCardDemo'
 import SnackbarDemo from './SnackbarDemo'
 import AvatarGroupDemo from './AvatarGroupDemo'
 import TooltipDemo from './TooltipDemo'
+import TooltipV2Demo from './TooltipV2Demo'
 import ModalDemo from './ModalDemo'
 import RadioDemo from './RadioDemo'
 import CheckboxDemo from './CheckboxDemo'
@@ -89,6 +90,7 @@ import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
+import PopoverV2Demo from './PopoverV2Demo'
 import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
@@ -111,7 +113,8 @@ import FormElementsDemo from './FormElementsDemo'
 import SkeletonDemo from './SkeletonDemo'
 import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
 import OutageChartsDemo from './OutageChartsDemo'
-import ChartDemoV2 from './ChartDemoV2'
+import OutageChartDemoV2 from './OutageChartDemoV2'
+import BlendChartDemo from './BlendChartDemo'
 import TextInputAutofillTest from './TextInputAutofillTest'
 import TagV2Demo from './TagV2Demo'
 import TagGroupV2Demo from './TagGroupV2Demo'
@@ -119,9 +122,16 @@ import AlertV2Demo from './AlertV2Demo'
 import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
+import SingleSelectDemoV2 from './SingleSelectDemoV2'
+import MultiSelectDemoV2 from './MultiSelectDemoV2'
+import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
+import ChartV2Demo from './ChartV2Demo'
+import TimelineDemo from './TimelineDemo'
+import CheckboxV2Demo from './CheckboxV2Demo'
+import RadioV2Demo from './RadioV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -135,13 +145,16 @@ const SidebarDemo = () => {
         | 'breadcrumb'
         | 'tabs'
         | 'checkbox'
+        | 'checkboxV2'
         | 'radio'
+        | 'radioV2'
         | 'switch'
         | 'textInput'
         | 'alerts'
         | 'avatarGroup'
         | 'charts'
-        | 'chartsV2'
+        | 'blendChart'
+        | 'chartV2'
         | 'fonts'
         | 'datePicker'
         | 'selectors'
@@ -173,6 +186,7 @@ const SidebarDemo = () => {
         | 'singleSelectGroup'
         | 'multiSelectGroup'
         | 'multiSelect'
+        | 'multiSelectV2'
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
@@ -190,6 +204,7 @@ const SidebarDemo = () => {
         | 'codeEditor'
         | 'formElements'
         | 'outageCharts'
+        | 'outageChartV2'
         | 'chartDemoV2'
         | 'textInputAutofillTest'
         | 'alertV2'
@@ -198,8 +213,14 @@ const SidebarDemo = () => {
         | 'switchV2'
         | 'textInputV2'
         | 'textInputAutofillTestV2'
+        | 'keyValuePairV2'
         | 'textInputGroup'
-    >('avatarV2')
+        | 'singleSelectV2'
+        | 'timeline'
+        | 'tooltipV2'
+        | 'singleSelectV2'
+        | 'popoverV2'
+    >('popoverV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -214,7 +235,7 @@ const SidebarDemo = () => {
     const [hideOnIconOnlyToggle, setHideOnIconOnlyToggle] =
         useState<boolean>(false)
     const [isExpanded, setIsExpanded] = useState<boolean>(true)
-    const [_sidebarState, setSidebarState] = useState('expanded')
+    const [, setSidebarState] = useState('expanded')
 
     const tenants = [
         {
@@ -453,12 +474,18 @@ const SidebarDemo = () => {
                 return <ModalDemo />
             case 'radio':
                 return <RadioDemo />
+            case 'radioV2':
+                return <RadioV2Demo />
             case 'checkbox':
                 return <CheckboxDemo />
             case 'switch':
                 return <SwitchDemo />
             case 'switchV2':
                 return <SwitchV2Demo />
+            case 'singleSelectV2':
+                return <SingleSelectDemoV2 />
+            case 'checkboxV2':
+                return <CheckboxV2Demo />
             case 'menu':
                 return <MenuDemo />
             case 'singleSelect':
@@ -471,6 +498,8 @@ const SidebarDemo = () => {
                 return <MultiSelectGroupDemo />
             case 'multiSelect':
                 return <MultiSelectDemo />
+            case 'multiSelectV2':
+                return <MultiSelectDemoV2 />
             case 'progressBar':
                 return <ProgressBarDemo />
             case 'drawer':
@@ -485,8 +514,12 @@ const SidebarDemo = () => {
                 return <ChartsDemo />
             case 'outageCharts':
                 return <OutageChartsDemo />
+            case 'outageChartV2':
+                return <OutageChartDemoV2 />
             case 'popover':
                 return <PopoverDemo />
+            case 'popoverV2':
+                return <PopoverV2Demo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
             case 'stepper':
@@ -511,14 +544,22 @@ const SidebarDemo = () => {
                 return <CodeEditorDemo />
             case 'formElements':
                 return <FormElementsDemo />
-            case 'chartDemoV2':
-                return <ChartDemoV2 />
+            case 'blendChart':
+                return <BlendChartDemo />
             case 'textInputAutofillTest':
                 return <TextInputAutofillTest />
             case 'textInputV2':
                 return <TextInputV2Demo />
             case 'textInputAutofillTestV2':
                 return <TextInputAutofillTestV2 />
+            case 'chartV2':
+                return <ChartV2Demo />
+            case 'timeline':
+                return <TimelineDemo />
+            case 'keyValuePairV2':
+                return <KeyValuePairV2Demo />
+            case 'tooltipV2':
+                return <TooltipV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -671,6 +712,7 @@ const SidebarDemo = () => {
                         <Square style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'buttons',
+                    href: 'https://react.dev',
                     onClick: () => {
                         setActiveComponent('buttons')
                         // Show topbar when navigating to regular components (controlled mode only)
@@ -926,6 +968,14 @@ const SidebarDemo = () => {
                     isSelected: activeComponent === 'keyValuePair',
                     onClick: () => setActiveComponent('keyValuePair'),
                 },
+                {
+                    label: 'Key Value Pair V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'keyValuePairV2',
+                    onClick: () => setActiveComponent('keyValuePairV2'),
+                },
             ],
         },
         {
@@ -1008,6 +1058,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('singleSelect'),
                 },
                 {
+                    label: 'Single Select V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelectV2',
+                    onClick: () => setActiveComponent('singleSelectV2'),
+                },
+                {
                     label: 'Single Select Group',
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
@@ -1022,6 +1080,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'multiSelect',
                     onClick: () => setActiveComponent('multiSelect'),
+                },
+                {
+                    label: 'Multi Select V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelectV2',
+                    onClick: () => setActiveComponent('multiSelectV2'),
                 },
                 {
                     label: 'Multi Select Group',
@@ -1113,6 +1179,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('tooltips'),
                 },
                 {
+                    label: 'Tooltip V2',
+                    leftSlot: (
+                        <Info style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tooltipV2',
+                    onClick: () => setActiveComponent('tooltipV2'),
+                },
+                {
                     label: 'Modal',
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
                     isSelected: activeComponent === 'modal',
@@ -1127,6 +1201,16 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'popover',
                     onClick: () => setActiveComponent('popover'),
+                },
+                {
+                    label: 'Popover V2',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'popoverV2',
+                    onClick: () => setActiveComponent('popoverV2'),
                 },
                 {
                     label: 'Drawer',
@@ -1158,12 +1242,20 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
-                    label: 'Chart Demo V2',
+                    label: 'Blend Chart V2',
                     leftSlot: (
                         <BarChart2 style={{ width: '16px', height: '16px' }} />
                     ),
-                    isSelected: activeComponent === 'chartDemoV2',
-                    onClick: () => setActiveComponent('chartDemoV2'),
+                    isSelected: activeComponent === 'blendChart',
+                    onClick: () => setActiveComponent('blendChart'),
+                },
+                {
+                    label: 'Chart V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'chartV2',
+                    onClick: () => setActiveComponent('chartV2'),
                 },
                 {
                     label: 'Outage Charts',
@@ -1172,6 +1264,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'outageCharts',
                     onClick: () => setActiveComponent('outageCharts'),
+                },
+                {
+                    label: 'Outage Charts V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'outageChartV2',
+                    onClick: () => setActiveComponent('outageChartV2'),
                 },
                 {
                     label: 'Stat Card',
@@ -1240,6 +1340,14 @@ const SidebarDemo = () => {
                     isSelected: activeComponent === 'codeEditor',
                     onClick: () => setActiveComponent('codeEditor'),
                 },
+                {
+                    label: 'Timeline',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'timeline',
+                    onClick: () => setActiveComponent('timeline'),
+                },
             ],
         },
         {
@@ -1264,12 +1372,28 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('radio'),
                 },
                 {
+                    label: 'Radio V2',
+                    leftSlot: (
+                        <Radio style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'radioV2',
+                    onClick: () => setActiveComponent('radioV2'),
+                },
+                {
                     label: 'Checkbox',
                     leftSlot: (
                         <Square style={{ width: '16px', height: '16px' }} />
                     ), // Using Square as a placeholder icon
                     isSelected: activeComponent === 'checkbox',
                     onClick: () => setActiveComponent('checkbox'),
+                },
+                {
+                    label: 'Checkbox V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ), // Using Square as a placeholder icon
+                    isSelected: activeComponent === 'checkboxV2',
+                    onClick: () => setActiveComponent('checkboxV2'),
                 },
                 {
                     label: 'Switch',

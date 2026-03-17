@@ -20,6 +20,7 @@ export const CoreChart: React.FC<CoreChartProps> = ({
     onHoveredKeyChange,
     selectedKeys = [],
     enableHover = false,
+    lineSeriesKeys,
 }) => {
     const [internalHoveredKey, setInternalHoveredKey] = useState<string | null>(
         null
@@ -63,6 +64,7 @@ export const CoreChart: React.FC<CoreChartProps> = ({
                 xAxis,
                 yAxis,
                 tooltip,
+                lineSeriesKeys,
             })}
         </ResponsiveContainer>
     )

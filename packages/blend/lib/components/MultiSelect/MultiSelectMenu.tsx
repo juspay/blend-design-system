@@ -44,6 +44,10 @@ const Content = styled(RadixMenu.Content)`
     flex-direction: column;
     overflow: hidden;
 
+    &[data-state='closed'] {
+        pointer-events: none;
+    }
+
     ${dropdownContentAnimations}
 `
 
@@ -60,7 +64,8 @@ const ScrollableContent = styled(Block)(() => ({
     overflowY: 'auto',
     scrollbarWidth: 'none',
     msOverflowStyle: 'none',
-    flexGrow: 1,
+    flex: '1 1 auto',
+    minHeight: 0,
     '&::-webkit-scrollbar': {
         display: 'none',
     },
@@ -277,10 +282,9 @@ const MultiSelectMenu = ({
             if (disabled) return
 
             if (newOpen) {
+                if (enableSearch) setSearchText('')
                 justOpenedRef.current = true
-                if (timeoutRef.current) {
-                    clearTimeout(timeoutRef.current)
-                }
+                if (timeoutRef.current) clearTimeout(timeoutRef.current)
                 timeoutRef.current = setTimeout(() => {
                     justOpenedRef.current = false
                     timeoutRef.current = null
@@ -291,9 +295,6 @@ const MultiSelectMenu = ({
                     timeoutRef.current = null
                 }
                 justOpenedRef.current = false
-                if (enableSearch) {
-                    setSearchText('')
-                }
             }
 
             onOpenChange(newOpen)
@@ -330,6 +331,15 @@ const MultiSelectMenu = ({
         typeof trigger.props === 'object' &&
         'content' in trigger.props &&
         'children' in trigger.props
+
+    const maxScrollHeight = maxMenuHeight ? maxMenuHeight - 80 : 320
+    const scrollAreaHeight =
+        enableVirtualization && flattenedItems.length > 0
+            ? Math.min(
+                  flattenedItems.length * virtualListItemHeight,
+                  maxScrollHeight
+              )
+            : null
 
     return (
         <RadixMenu.Root
@@ -386,6 +396,7 @@ const MultiSelectMenu = ({
                         maxHeight:
                             maxMenuHeight ||
                             'var(--radix-popper-available-height)',
+                        height: 'fit-content',
                     }}
                 >
                     {skeleton.show ? (
@@ -445,7 +456,12 @@ const MultiSelectMenu = ({
                                                 availableValues={
                                                     availableValues
                                                 }
-                                                onSelectAll={onSelectAll}
+                                                onSelectAll={(selectAll) =>
+                                                    onSelectAll(
+                                                        selectAll,
+                                                        filteredItems
+                                                    )
+                                                }
                                                 selectAllText={selectAllText}
                                                 disabled={disabled}
                                             />
@@ -454,9 +470,10 @@ const MultiSelectMenu = ({
                             </StickyHeader>
                             <ScrollableContent
                                 style={{
-                                    maxHeight: maxMenuHeight
-                                        ? `${maxMenuHeight - 80}px`
-                                        : '320px',
+                                    maxHeight: `${maxScrollHeight}px`,
+                                    ...(scrollAreaHeight !== null && {
+                                        height: `${scrollAreaHeight}px`,
+                                    }),
                                 }}
                             >
                                 {items.length === 0 ||
@@ -495,7 +512,10 @@ const MultiSelectMenu = ({
                                     >
                                         <VirtualList
                                             items={flattenedItems}
-                                            height={(maxMenuHeight || 400) - 80}
+                                            height={
+                                                scrollAreaHeight ??
+                                                maxScrollHeight
+                                            }
                                             itemHeight={virtualListItemHeight}
                                             overscan={virtualListOverscan}
                                             onEndReached={onEndReached}

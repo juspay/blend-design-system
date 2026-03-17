@@ -267,6 +267,7 @@ type CalendarSectionProps = {
     showDateTimePicker: boolean
     timezone?: string
     isSingleDatePicker?: boolean
+    maxYearOffset?: number
 }
 
 const CalendarSection: React.FC<
@@ -286,6 +287,7 @@ const CalendarSection: React.FC<
     resetScrollPosition,
     timezone,
     isSingleDatePicker,
+    maxYearOffset,
 }) => (
     <Block>
         <CalendarGrid
@@ -303,6 +305,7 @@ const CalendarSection: React.FC<
             resetScrollPosition={resetScrollPosition}
             timezone={timezone}
             isSingleDatePicker={isSingleDatePicker}
+            maxYearOffset={maxYearOffset}
         />
     </Block>
 )
@@ -388,6 +391,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             maxMenuHeight = 250,
             showPreset = false,
             timezone,
+            maxYearOffset,
         },
         ref
     ) => {
@@ -1110,6 +1114,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         applyDisabledMessage={applyButtonValidation.message}
                         disableFutureDates={disableFutureDates}
                         disablePastDates={disablePastDates}
+                        maxYearOffset={maxYearOffset}
                     />
                 </Block>
             )
@@ -1235,6 +1240,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             resetScrollPosition={popoverKey}
                             timezone={timezone}
                             isSingleDatePicker={isSingleDatePicker}
+                            maxYearOffset={maxYearOffset}
                         />
 
                         <FooterControls

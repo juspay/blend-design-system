@@ -148,7 +148,7 @@ figma.connect(
             },
             {
                 name: 'Storybook',
-                url: 'https://juspay.design/storybook/?path=/docs/components-datatable--docs',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-datatable--docs',
             },
         ],
     }

@@ -230,6 +230,20 @@ const ChatInputDemo = () => {
                                     onClick={handlePlaygroundVoiceRecord}
                                 />
                             }
+                            slot2={
+                                <Block
+                                    backgroundColor={'#ECEFF3'}
+                                    padding={10}
+                                    borderRadius={10}
+                                >
+                                    Slot 2
+                                    <ul>
+                                        <li>Item 1</li>
+                                        <li>Item 2</li>
+                                        <li>Item 3</li>
+                                    </ul>
+                                </Block>
+                            }
                             value={playgroundMessage}
                             onChange={setPlaygroundMessage}
                             onAttachFiles={handlePlaygroundAttachFiles}

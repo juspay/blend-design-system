@@ -1111,6 +1111,76 @@ const SimpleDataTableExample = () => {
                             columns={
                                 [
                                     {
+                                        field: 'tags',
+                                        header: 'Product Tags (React Elements)',
+                                        headerSubtext:
+                                            'Cannot be sorted (React elements)',
+                                        type: ColumnType.CUSTOM,
+                                        isSortable: false,
+                                        renderCell: (value: unknown) => {
+                                            const tagsData = value as {
+                                                values: string[]
+                                                labels: string[]
+                                            }
+                                            const getTagColor = (
+                                                tag: string
+                                            ): TagColor => {
+                                                switch (tag.toLowerCase()) {
+                                                    case 'premium':
+                                                    case 'flagship':
+                                                        return TagColor.SUCCESS
+                                                    case 'professional':
+                                                    case 'powerful':
+                                                        return TagColor.WARNING
+                                                    case 'creative':
+                                                    case 'health':
+                                                        return TagColor.NEUTRAL
+                                                    default:
+                                                        return TagColor.NEUTRAL
+                                                }
+                                            }
+
+                                            return (
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        flexWrap: 'nowrap',
+                                                        gap: '4px',
+                                                        overflow: 'auto',
+                                                        whiteSpace: 'nowrap',
+                                                        maxWidth: '100%',
+                                                        scrollbarWidth: 'thin',
+                                                    }}
+                                                >
+                                                    {tagsData.values.map(
+                                                        (tag, index) => (
+                                                            <Tag
+                                                                key={index}
+                                                                text={
+                                                                    tagsData
+                                                                        .labels?.[
+                                                                        index
+                                                                    ] || tag
+                                                                }
+                                                                variant={
+                                                                    TagVariant.SUBTLE
+                                                                }
+                                                                color={getTagColor(
+                                                                    tag
+                                                                )}
+                                                                size={
+                                                                    TagSize.SM
+                                                                }
+                                                            />
+                                                        )
+                                                    )}
+                                                </div>
+                                            )
+                                        },
+                                        minWidth: 'fit-content',
+                                        maxWidth: '400px',
+                                    },
+                                    {
                                         field: 'name',
                                         header: 'Product Name',
                                         type: ColumnType.TEXT,
@@ -1249,77 +1319,6 @@ const SimpleDataTableExample = () => {
                                         maxWidth: '150px',
                                     },
                                     {
-                                        field: 'tags',
-                                        header: 'Product Tags (React Elements)',
-                                        headerSubtext:
-                                            'Cannot be sorted (React elements)',
-                                        type: ColumnType.REACT_ELEMENT,
-                                        isSortable: false,
-                                        renderCell: (value: unknown) => {
-                                            const tagsData = value as {
-                                                values: string[]
-                                                labels: string[]
-                                            }
-                                            const getTagColor = (
-                                                tag: string
-                                            ): TagColor => {
-                                                switch (tag.toLowerCase()) {
-                                                    case 'premium':
-                                                    case 'flagship':
-                                                        return TagColor.SUCCESS
-                                                    case 'professional':
-                                                    case 'powerful':
-                                                        return TagColor.WARNING
-                                                    case 'creative':
-                                                    case 'health':
-                                                        return TagColor.NEUTRAL
-                                                    default:
-                                                        return TagColor.NEUTRAL
-                                                }
-                                            }
-
-                                            return (
-                                                <div
-                                                    style={{
-                                                        display: 'flex',
-                                                        flexWrap: 'nowrap',
-                                                        gap: '4px',
-                                                        overflow: 'auto',
-                                                        whiteSpace: 'nowrap',
-                                                        minWidth: '150px',
-                                                        maxWidth: '100%',
-                                                        scrollbarWidth: 'thin',
-                                                    }}
-                                                >
-                                                    {tagsData.values.map(
-                                                        (tag, index) => (
-                                                            <Tag
-                                                                key={index}
-                                                                text={
-                                                                    tagsData
-                                                                        .labels?.[
-                                                                        index
-                                                                    ] || tag
-                                                                }
-                                                                variant={
-                                                                    TagVariant.SUBTLE
-                                                                }
-                                                                color={getTagColor(
-                                                                    tag
-                                                                )}
-                                                                size={
-                                                                    TagSize.SM
-                                                                }
-                                                            />
-                                                        )
-                                                    )}
-                                                </div>
-                                            )
-                                        },
-                                        minWidth: '150px',
-                                        maxWidth: '250px',
-                                    },
-                                    {
                                         field: 'specialNote',
                                         header: 'Special Note (Sortable)',
                                         type: ColumnType.TEXT,
@@ -1353,7 +1352,7 @@ const SimpleDataTableExample = () => {
                             enableRowSelection={false}
                             enableColumnManager={true}
                             showSettings={false}
-                            columnFreeze={0}
+                            columnFreeze={2}
                             pagination={{
                                 currentPage: 1,
                                 pageSize: 10,
@@ -3426,9 +3425,11 @@ const DataTableDemo = () => {
                         <code>tableBodyHeight</code> property. This creates a
                         fixed-height table with scrollable content, perfect for
                         dashboard layouts or when you need consistent table
-                        dimensions. The table below has a fixed height of{' '}
-                        <strong>400px</strong> - try scrolling within the table
-                        body!
+                        dimensions. The table below has a fixed height with
+                        scrollable content. It uses{' '}
+                        <code>showBulkActionBar={'{false}'}</code> so checkbox
+                        selection is available without the bulk action bar
+                        (download, deselect all).
                     </p>
                 </div>
 
@@ -3448,6 +3449,7 @@ const DataTableDemo = () => {
                     enableInlineEdit={false}
                     enableRowExpansion={false}
                     enableRowSelection={true}
+                    showBulkActionBar={false}
                     enableColumnManager={false}
                     showSettings={false}
                     columnFreeze={0}
@@ -3459,11 +3461,6 @@ const DataTableDemo = () => {
                         pageSizeOptions: [20, 50, 100],
                     }}
                     onRowSelectionChange={handleRowSelectionChange}
-                    bulkActions={{
-                        // showExport defaults to true - Export button will be shown
-                        // Set to false to hide it and only show customActions
-                        showExport: true,
-                    }}
                     headerSlot1={
                         <Button
                             text="Settings"

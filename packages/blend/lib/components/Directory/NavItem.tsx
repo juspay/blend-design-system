@@ -50,7 +50,7 @@ const StyledElement = styled(Block)<{
     cursor: pointer;
 
     &:hover,
-    &:focus {
+    &:focus-visible {
         background-color: ${({ $isActive, $tokens }) =>
             $isActive
                 ? $tokens.section.itemList.item.backgroundColor.active
@@ -209,13 +209,33 @@ const NavItem = ({
         []
     )
 
-    const handleClick = () => {
+    const activateItem = () => {
         if (hasChildren && !iconOnlyMode) {
             setIsExpanded(!isExpanded)
         } else {
             setActiveItem(itemPath)
             item.onClick?.()
         }
+    }
+
+    const handleClick = (
+        event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+    ) => {
+        if (
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+        ) {
+            return
+        }
+
+        if (item.href) {
+            event.preventDefault()
+        }
+
+        activateItem()
     }
 
     const Element = item.href ? 'a' : 'button'
@@ -332,7 +352,7 @@ const NavItem = ({
                     hasChildren,
                     isExpanded,
                     setIsExpanded,
-                    handleClick,
+                    handleClick: activateItem,
                     index,
                     onNavigate,
                 })

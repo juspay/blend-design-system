@@ -1,7 +1,7 @@
 {
     "name": "@juspay/blend-design-system",
     "private": false,
-    "version": "0.0.35",
+    "version": "0.0.36-beta.2",
     "description": "A comprehensive React component library and design system by Juspay",
     "type": "module",
     "main": "./dist/main.js",
@@ -58,6 +58,7 @@
         "recharts": "^2.15.3",
         "sonner": "^2.0.3",
         "styled-components": "^6.1.18",
+        "@tanstack/react-virtual": "^3.11.0",
         "vaul": "^1.1.2"
     },
     "devDependencies": {
@@ -110,7 +111,7 @@
     ],
     "author": "Juspay",
     "license": "MIT",
-    "homepage": "https://juspay.design/",
+    "homepage": "https://blend.juspay.design/",
     "repository": {
         "type": "git",
         "url": "https://github.com/juspay/blend-design-system.git"
