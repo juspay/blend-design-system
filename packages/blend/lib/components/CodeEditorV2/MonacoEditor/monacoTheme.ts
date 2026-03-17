@@ -14,7 +14,7 @@ const SYNTAX_RULE_SPEC: Array<{
     syntaxKey: keyof CodeEditorV2Tokens['body']['syntax']
     fontStyle?: string
 }> = [
-    { token: 'keyword', syntaxKey: 'keyword', fontStyle: 'bold' },
+    { token: 'keyword', syntaxKey: 'keyword' },
     { token: 'keyword.control', syntaxKey: 'keyword', fontStyle: 'bold' },
     { token: 'keyword.operator', syntaxKey: 'operator' },
     { token: 'function', syntaxKey: 'function' },
