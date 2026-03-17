@@ -1,6 +1,6 @@
 import React from 'react'
-import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { render, waitFor } from '@testing-library/react'
 import ShadowAware, { useShadowRoot } from '../../lib/context/ShadowAware'
 import ThemeProvider from '../../lib/context/ThemeProvider'
 import styled from 'styled-components'
@@ -13,251 +13,168 @@ const StyledButton = styled.button`
 
 describe('ShadowAware', () => {
     describe('Rendering', () => {
-        it('renders children without shadowRoot prop', () => {
-            render(
-                <ShadowAware>
+        it('renders children with target prop', () => {
+            const host = document.createElement('div')
+            const shadowRoot = host.attachShadow({ mode: 'open' })
+            const target = document.createElement('div')
+            shadowRoot.appendChild(target)
+
+            const { container } = render(
+                <ShadowAware target={target}>
                     <button>Test Button</button>
-                </ShadowAware>
+                </ShadowAware>,
+                { container: target }
             )
 
-            expect(screen.getByText('Test Button')).toBeInTheDocument()
+            expect(container.querySelector('button')?.textContent).toBe(
+                'Test Button'
+            )
         })
 
         it('renders children with ThemeProvider integration', () => {
-            render(
-                <ThemeProvider>
-                    <ShadowAware>
-                        <button>Themed Button</button>
-                    </ShadowAware>
-                </ThemeProvider>
+            const host = document.createElement('div')
+            const shadowRoot = host.attachShadow({ mode: 'open' })
+            const target = document.createElement('div')
+            shadowRoot.appendChild(target)
+
+            const { container } = render(
+                <ThemeProvider target={target}>
+                    <button>Themed Button</button>
+                </ThemeProvider>,
+                { container: target }
             )
 
-            expect(screen.getByText('Themed Button')).toBeInTheDocument()
+            expect(container.querySelector('button')?.textContent).toBe(
+                'Themed Button'
+            )
         })
     })
 
     describe('useShadowRoot hook', () => {
         it('returns null when not inside ShadowAware', () => {
             const TestComponent = () => {
-                const { shadowRoot } = useShadowRoot()
+                const { shadowRoot, target } = useShadowRoot()
                 return (
                     <span data-testid="shadow-root">
-                        {shadowRoot ? 'has-shadow' : 'no-shadow'}
+                        {shadowRoot ? 'has-shadow' : 'no-shadow'}-
+                        {target ? 'has-target' : 'no-target'}
                     </span>
                 )
             }
 
-            render(<TestComponent />)
+            const { getByTestId } = render(<TestComponent />)
 
-            expect(screen.getByTestId('shadow-root')).toHaveTextContent(
-                'no-shadow'
+            expect(getByTestId('shadow-root').textContent).toBe(
+                'no-shadow-no-target'
             )
         })
 
-        it('returns null when shadowRoot prop is not provided', () => {
-            const TestComponent = () => {
-                const { shadowRoot } = useShadowRoot()
-                return (
-                    <span data-testid="shadow-root">
-                        {shadowRoot ? 'has-shadow' : 'no-shadow'}
-                    </span>
-                )
-            }
-
-            render(
-                <ShadowAware>
-                    <TestComponent />
-                </ShadowAware>
-            )
-
-            expect(screen.getByTestId('shadow-root')).toHaveTextContent(
-                'no-shadow'
-            )
-        })
-
-        it('returns shadowRoot when provided', () => {
+        it('returns shadowRoot and target when inside ShadowAware', () => {
             const host = document.createElement('div')
             const shadowRoot = host.attachShadow({ mode: 'open' })
+            const target = document.createElement('div')
+            shadowRoot.appendChild(target)
 
             const TestComponent = () => {
-                const { shadowRoot: contextShadowRoot } = useShadowRoot()
+                const { shadowRoot: contextShadowRoot, target: contextTarget } =
+                    useShadowRoot()
                 return (
                     <span data-testid="shadow-root">
-                        {contextShadowRoot ? 'has-shadow' : 'no-shadow'}
+                        {contextShadowRoot ? 'has-shadow' : 'no-shadow'}-
+                        {contextTarget ? 'has-target' : 'no-target'}
                     </span>
                 )
             }
 
-            const container = document.createElement('div')
-            shadowRoot.appendChild(container)
-
-            const { getByTestId } = render(
-                <ShadowAware shadowRoot={shadowRoot}>
+            const { container } = render(
+                <ShadowAware target={target}>
                     <TestComponent />
                 </ShadowAware>,
-                { container }
+                { container: target }
             )
 
-            expect(getByTestId('shadow-root')).toHaveTextContent('has-shadow')
+            expect(
+                container.querySelector('[data-testid="shadow-root"]')
+                    ?.textContent
+            ).toBe('has-shadow-has-target')
         })
     })
 
     describe('Style Injection', () => {
-        it('injects styles into shadowRoot when provided', () => {
+        it('renders styled components inside shadow DOM context', () => {
             const host = document.createElement('div')
             const shadowRoot = host.attachShadow({ mode: 'open' })
+            const target = document.createElement('div')
+            shadowRoot.appendChild(target)
 
-            const container = document.createElement('div')
-            shadowRoot.appendChild(container)
-
-            render(
-                <ThemeProvider>
-                    <ShadowAware shadowRoot={shadowRoot}>
-                        <StyledButton>Styled</StyledButton>
-                    </ShadowAware>
+            const { container } = render(
+                <ThemeProvider target={target}>
+                    <StyledButton>Styled</StyledButton>
                 </ThemeProvider>,
-                { container }
+                { container: target }
             )
 
-            const styledElements = shadowRoot.querySelectorAll('[data-styled]')
-            expect(styledElements.length).toBeGreaterThan(0)
-        })
-    })
-
-    describe('Auto-Detection', () => {
-        it('auto-detects shadowRoot when rendered inside Shadow DOM with ShadowAware', async () => {
-            const host = document.createElement('div')
-            const shadowRoot = host.attachShadow({ mode: 'open' })
-
-            const TestComponent = () => {
-                const { shadowRoot: contextShadowRoot } = useShadowRoot()
-                return (
-                    <span data-testid="shadow-root">
-                        {contextShadowRoot ? 'has-shadow' : 'no-shadow'}
-                    </span>
-                )
-            }
-
-            const container = document.createElement('div')
-            shadowRoot.appendChild(container)
-
-            const { getByTestId } = render(
-                <ThemeProvider autoShadowDetection={true}>
-                    <TestComponent />
-                </ThemeProvider>,
-                { container }
-            )
-
-            // Wait for useEffect to run and state to update
-            await waitFor(
-                () => {
-                    expect(getByTestId('shadow-root')).toHaveTextContent(
-                        'has-shadow'
-                    )
-                },
-                { timeout: 1000 }
-            )
-        })
-
-        it('auto-detects shadowRoot for styled components with ShadowAware', async () => {
-            const host = document.createElement('div')
-            const shadowRoot = host.attachShadow({ mode: 'open' })
-
-            const container = document.createElement('div')
-            shadowRoot.appendChild(container)
-
-            render(
-                <ThemeProvider autoShadowDetection={true}>
-                    <StyledButton>Auto-styled</StyledButton>
-                </ThemeProvider>,
-                { container }
-            )
-
-            // Wait for useEffect to run and styles to be injected
-            await waitFor(
-                () => {
-                    const styledElements =
-                        shadowRoot.querySelectorAll('[data-styled]')
-                    expect(styledElements.length).toBeGreaterThan(0)
-                },
-                { timeout: 1000 }
-            )
-        })
-
-        it('respects autoShadowDetection=false to disable auto-detection', () => {
-            const host = document.createElement('div')
-            const shadowRoot = host.attachShadow({ mode: 'open' })
-
-            const TestComponent = () => {
-                const { shadowRoot: contextShadowRoot } = useShadowRoot()
-                return (
-                    <span data-testid="shadow-root">
-                        {contextShadowRoot ? 'has-shadow' : 'no-shadow'}
-                    </span>
-                )
-            }
-
-            const container = document.createElement('div')
-            shadowRoot.appendChild(container)
-
-            const { getByTestId } = render(
-                <ThemeProvider autoShadowDetection={false}>
-                    <TestComponent />
-                </ThemeProvider>,
-                { container }
-            )
-
-            expect(getByTestId('shadow-root')).toHaveTextContent('no-shadow')
+            // Verify the styled button renders inside the shadow DOM target
+            const button = container.querySelector('button')
+            expect(button).not.toBeNull()
+            expect(button?.textContent).toBe('Styled')
         })
     })
 
     describe('Edge Cases', () => {
-        it('handles null children gracefully', () => {
-            render(<ShadowAware>{null}</ShadowAware>)
+        it('warns when target is not inside shadow root', () => {
+            const consoleSpy = vi.spyOn(console, 'warn')
+            const target = document.createElement('div')
+            document.body.appendChild(target)
 
-            expect(document.body).toBeInTheDocument()
-        })
-
-        it('handles undefined shadowRoot gracefully', () => {
             render(
-                <ShadowAware shadowRoot={undefined}>
+                <ShadowAware target={target}>
                     <button>Test</button>
-                </ShadowAware>
+                </ShadowAware>,
+                { container: target }
             )
 
-            expect(screen.getByText('Test')).toBeInTheDocument()
+            expect(consoleSpy).toHaveBeenCalledWith(
+                '[ShadowAware] Target element is NOT inside a ShadowRoot!'
+            )
+            consoleSpy.mockRestore()
         })
 
         it('handles multiple children', () => {
-            render(
-                <ShadowAware>
+            const host = document.createElement('div')
+            const shadowRoot = host.attachShadow({ mode: 'open' })
+            const target = document.createElement('div')
+            shadowRoot.appendChild(target)
+
+            const { container } = render(
+                <ShadowAware target={target}>
                     <button>First</button>
                     <button>Second</button>
-                </ShadowAware>
+                </ShadowAware>,
+                { container: target }
             )
 
-            expect(screen.getByText('First')).toBeInTheDocument()
-            expect(screen.getByText('Second')).toBeInTheDocument()
+            const buttons = container.querySelectorAll('button')
+            expect(buttons[0]?.textContent).toBe('First')
+            expect(buttons[1]?.textContent).toBe('Second')
         })
     })
 
     describe('Backward Compatibility', () => {
-        it('works without ShadowAware wrapper (default behavior)', () => {
-            render(
+        it('works without target prop in ThemeProvider (default behavior)', () => {
+            const { getByText } = render(
                 <ThemeProvider>
                     <StyledButton>Default Behavior</StyledButton>
                 </ThemeProvider>
             )
 
-            expect(screen.getByText('Default Behavior')).toBeInTheDocument()
+            expect(getByText('Default Behavior')).toBeInTheDocument()
         })
 
-        it('does not affect existing components when shadowRoot is not provided', () => {
+        it('does not affect existing components when target is not provided', () => {
             const { container } = render(
                 <ThemeProvider>
-                    <ShadowAware>
-                        <StyledButton>Unaffected</StyledButton>
-                    </ShadowAware>
+                    <StyledButton>Unaffected</StyledButton>
                 </ThemeProvider>
             )
 
