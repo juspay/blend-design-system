@@ -536,6 +536,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     setEndDate(
                         formatDate(dateRangeObj.endDate, dateFormat, timezone)
                     )
+                } else if (!dateRangeObj) {
+                    setEndDate(undefined)
                 }
                 setStartTime(
                     dateRangeObj &&
@@ -545,6 +547,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     setEndTime(
                         formatDate(dateRangeObj.endDate, 'HH:mm', timezone)
                     )
+                } else if (!dateRangeObj) {
+                    setEndTime(undefined)
                 }
                 setStartDateValidation({ isValid: true, error: 'none' })
                 setEndDateValidation({
@@ -557,7 +561,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         useEffect(() => {
             if (!value) {
-                lastExternalValueRef.current = null
+                if (lastExternalValueRef.current !== null) {
+                    lastExternalValueRef.current = null
+                    resetValues(undefined)
+                }
                 return
             }
 
