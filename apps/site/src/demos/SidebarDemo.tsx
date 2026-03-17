@@ -90,6 +90,7 @@ import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
 import PopoverDemo from './PopoverDemo'
+import PopoverV2Demo from './PopoverV2Demo'
 import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
@@ -121,6 +122,8 @@ import AlertV2Demo from './AlertV2Demo'
 import AccordionV2Demo from './AccordionV2Demo'
 import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
+import SingleSelectDemoV2 from './SingleSelectDemoV2'
+import MultiSelectDemoV2 from './MultiSelectDemoV2'
 import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
@@ -183,6 +186,7 @@ const SidebarDemo = () => {
         | 'singleSelectGroup'
         | 'multiSelectGroup'
         | 'multiSelect'
+        | 'multiSelectV2'
         | 'dropdownInput'
         | 'dataRangePicker'
         | 'multiValueInput'
@@ -211,9 +215,12 @@ const SidebarDemo = () => {
         | 'textInputAutofillTestV2'
         | 'keyValuePairV2'
         | 'textInputGroup'
+        | 'singleSelectV2'
         | 'timeline'
         | 'tooltipV2'
-    >('radioV2')
+        | 'singleSelectV2'
+        | 'popoverV2'
+    >('popoverV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -475,6 +482,8 @@ const SidebarDemo = () => {
                 return <SwitchDemo />
             case 'switchV2':
                 return <SwitchV2Demo />
+            case 'singleSelectV2':
+                return <SingleSelectDemoV2 />
             case 'checkboxV2':
                 return <CheckboxV2Demo />
             case 'menu':
@@ -489,6 +498,8 @@ const SidebarDemo = () => {
                 return <MultiSelectGroupDemo />
             case 'multiSelect':
                 return <MultiSelectDemo />
+            case 'multiSelectV2':
+                return <MultiSelectDemoV2 />
             case 'progressBar':
                 return <ProgressBarDemo />
             case 'drawer':
@@ -507,6 +518,8 @@ const SidebarDemo = () => {
                 return <OutageChartDemoV2 />
             case 'popover':
                 return <PopoverDemo />
+            case 'popoverV2':
+                return <PopoverV2Demo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
             case 'stepper':
@@ -1045,6 +1058,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('singleSelect'),
                 },
                 {
+                    label: 'Single Select V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelectV2',
+                    onClick: () => setActiveComponent('singleSelectV2'),
+                },
+                {
                     label: 'Single Select Group',
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
@@ -1059,6 +1080,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'multiSelect',
                     onClick: () => setActiveComponent('multiSelect'),
+                },
+                {
+                    label: 'Multi Select V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelectV2',
+                    onClick: () => setActiveComponent('multiSelectV2'),
                 },
                 {
                     label: 'Multi Select Group',
@@ -1172,6 +1201,16 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'popover',
                     onClick: () => setActiveComponent('popover'),
+                },
+                {
+                    label: 'Popover V2',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'popoverV2',
+                    onClick: () => setActiveComponent('popoverV2'),
                 },
                 {
                     label: 'Drawer',
