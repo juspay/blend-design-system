@@ -5,9 +5,9 @@
 The Blend design system provides two Menu components:
 
 - **Menu (v1)** – Original component; uses internal or controlled open state; flat props for alignment, side, dimensions, and virtualization; optional `MENU` tokens; some hardcoded styles (e.g. content background, z-index); typo in prop name `collisonBoundaryRef`.
-- **MenuV2** – Refactored API with **token-driven styling** (no hardcoded colors/z-index/dimensions; content z-index from tokens), **grouped virtual config** (`virtualScrolling?: { itemHeight?, overscan?, threshold? }`), **slot + slot2/slot3/slot4** (same positions as v1; `slot` for leading, `slot1` supported for backward compat), optional `id` on groups and items; correct `collisionBoundaryRef`; TanStack Virtual for large lists; theme via `getMenuV2Tokens(foundationToken, theme)` from `menuV2.tokens`.
+- **MenuV2** – Refactored API with **token-driven styling** (no hardcoded colors/z-index/dimensions; content z-index from tokens), **grouped virtual config** (`virtualScrolling?: { itemHeight?, overscan?, threshold? }`), a **single leading slot on the item label** (`label.leftSlot`), optional `id` on groups and items; correct `collisionBoundaryRef`; TanStack Virtual for large lists; theme via `getMenuV2Tokens(foundationToken, theme)` from `menuV2.tokens`.
 
-Both support: trigger, grouped items with labels and separators, search, submenus with optional submenu search, item variants (default/action), action types (primary/danger), slots, tooltips, virtualization, controlled open state, and Radix-based positioning (alignment, side, offsets, collision boundary).
+Both support: trigger, grouped items with labels and separators, search, submenus with optional submenu search, item variants (default/action), action types (primary/danger), a leading slot, tooltips, virtualization, controlled open state, and Radix-based positioning (alignment, side, offsets, collision boundary).
 
 ---
 
@@ -15,7 +15,7 @@ Both support: trigger, grouped items with labels and separators, search, submenu
 
 - **Trigger**: Any `ReactNode`; opens the menu on click (Radix Trigger).
 - **Items**: Grouped list (`MenuGroupType[]` / `MenuV2GroupType[]`) with optional group labels, separators, and nested submenus.
-- **Item content**: Label, optional subLabel, single `slot` prop for leading content (e.g. icon), variant (default/action), actionType (primary/danger), disabled, onClick, tooltip/tooltipProps.
+- **Item content**: Label, optional subLabel, single leading slot for content (e.g. icon) — in V2 this is exposed as `label.leftSlot` on the item — plus variant (default/action), actionType (primary/danger), disabled, onClick, tooltip/tooltipProps.
 - **Submenus**: Nested items; optional `enableSubMenuSearch`, `subMenuSearchPlaceholder`.
 - **Search**: Top-level `enableSearch`, `searchPlaceholder`; filters items and submenus by label/sublabel.
 - **Virtualization**: V1: `enableVirtualScrolling`, `virtualItemHeight` (number or function), `virtualOverscan`, `virtualScrollThreshold`. V2: `enableVirtualScrolling` and `virtualScrolling?: { itemHeight?, overscan?, threshold? }`; uses TanStack Virtual when item count ≥ threshold (default 30).
@@ -39,7 +39,7 @@ Menu (dropdown):
 │  [Search input] (if enableSearch)   │
 ├─────────────────────────────────────┤
 │  Group label (optional)             │
-│    Item 1  [slot1] label [slot2..4] │
+│    Item 1  [label.leftSlot] label   │
 │    Item 2  (subLabel, tooltip)      │
 │  ───────── separator ─────────      │
 │  Group 2                            │
@@ -65,7 +65,7 @@ V1 uses flat props: `alignment`, `side`, `sideOffset`, `alignOffset`, `maxHeight
 
 V2 keeps flat props for positioning and dimensions but:
 
-- **Virtualization**: Replaces `virtualItemHeight`, `virtualOverscan`, `virtualScrollThreshold` with **`virtualScrolling?`**: `{ itemHeight?, overscan?, threshold? }` (`MenuV2VirtualScrollingConfig`). TanStack Virtual is used when `enableVirtualScrolling` is true and flattened row count ≥ `threshold` (default 30).
+- **Slots**: Items expose a single **leading slot** on the label object: **`label.leftSlot`**. The helper `getItemSlots(item)` returns `[item.label.leftSlot]`.
 - **Slots**: **`slot`** for leading (same role as v1’s `slot1`); **`slot2`, `slot3`, `slot4`** for other positions. **`slot1`** supported for backward compatibility; `getItemSlots(item)` returns `[slot ?? slot1, slot2, slot3, slot4]` (slot takes priority when both set).
 - **Spelling**: **`collisionBoundaryRef`** (correct).
 - **Ids**: **`id`** optional on `MenuV2GroupType` and `MenuV2ItemType` for stable keys and a11y.

@@ -137,7 +137,7 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                             overflow="hidden"
                         >
                             <PrimitiveText
-                                data-text={item.label}
+                                data-text={item.label.text}
                                 fontSize={itemTokens.text.fontSize}
                                 fontWeight={itemTokens.text.fontWeight}
                                 lineHeight={addPxToValue(
@@ -163,11 +163,11 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                             width="100%"
                         >
                             <PrimitiveText
-                                fontSize={itemTokens.text.subtText.fontSize}
-                                fontWeight={itemTokens.text.subtText.fontWeight}
+                                fontSize={itemTokens.text.subText.fontSize}
+                                fontWeight={itemTokens.text.subText.fontWeight}
                                 color={descColor}
                                 lineHeight={addPxToValue(
-                                    itemTokens.text.subtText.lineHeight
+                                    itemTokens.text.subText.lineHeight
                                 )}
                             >
                                 {item.subLabel}

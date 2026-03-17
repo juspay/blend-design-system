@@ -217,7 +217,9 @@ const MenuV2Demo = () => {
                     onClick: sub.onClick
                         ? () => {
                               sub.onClick?.()
-                              setLastAction(`${item.label} → ${sub.label}`)
+                              setLastAction(
+                                  `${item.label.text} → ${sub.label.text}`
+                              )
                           }
                         : undefined,
                 })),

@@ -80,7 +80,7 @@ export type MenuV2TokensType = {
 
                 color: MenuV2VariantToken<StateToken<CSSObject['color']>>
 
-                subtText: {
+                subText: {
                     fontSize: CSSObject['fontSize']
                     fontWeight: CSSObject['fontWeight']
                     lineHeight: CSSObject['lineHeight']

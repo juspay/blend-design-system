@@ -6,6 +6,7 @@ export type ZIndexTokensType = Readonly<{
     1000: CSSObject['zIndex']
     1100: CSSObject['zIndex']
     1200: CSSObject['zIndex']
+    101: CSSObject['zIndex']
     [key: string]: CSSObject['zIndex']
 }>
 

@@ -7,9 +7,7 @@ import type { MenuV2ItemStates } from './menuV2.tokens'
 
 type MenuV2ItemTokens = MenuV2TokensType['group']['item']
 
-export const getItemSlots = (
-    item: MenuV2ItemType
-): [ReactNode?, ReactNode?, ReactNode?, ReactNode?] => {
+export const getItemSlots = (item: MenuV2ItemType): [ReactNode?] => {
     return [item.label.leftSlot]
 }
 
@@ -81,7 +79,7 @@ export const getMenuItemDescriptionColor = (
     itemTokens: MenuV2ItemTokens,
     item: MenuV2ItemType
 ): string | undefined => {
-    const colors = itemTokens.text.subtText.color
+    const colors = itemTokens.text.subText.color
     const variant = item.variant ?? MenuV2ItemVariant.DEFAULT
     if (variant === MenuV2ItemVariant.DEFAULT) {
         const tokensForVariant = colors[MenuV2ItemVariant.DEFAULT]

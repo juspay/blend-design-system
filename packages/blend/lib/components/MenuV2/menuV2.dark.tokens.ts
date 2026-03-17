@@ -130,7 +130,7 @@ export const getMenuV2DarkTokens = (
                             },
                         },
 
-                        subtText: {
+                        subText: {
                             fontSize:
                                 foundationToken.font.size.body.sm.fontSize,
                             fontWeight: foundationToken.font.weight[400],
@@ -326,7 +326,7 @@ export const getMenuV2DarkTokens = (
                             },
                         },
 
-                        subtText: {
+                        subText: {
                             fontSize:
                                 foundationToken.font.size.body.sm.fontSize,
                             fontWeight: foundationToken.font.weight[400],

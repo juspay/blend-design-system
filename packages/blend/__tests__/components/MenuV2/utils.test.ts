@@ -21,11 +21,8 @@ describe('MenuV2 utils', () => {
     describe('getItemSlots', () => {
         it('returns undefined for all when slot is not set', () => {
             const item = createItem({ label: { text: 'Only' } })
-            const [s1, s2, s3, s4] = getItemSlots(item)
-            expect(s1).toBeUndefined()
-            expect(s2).toBeUndefined()
-            expect(s3).toBeUndefined()
-            expect(s4).toBeUndefined()
+            const [s] = getItemSlots(item)
+            expect(s).toBeUndefined()
         })
     })
 

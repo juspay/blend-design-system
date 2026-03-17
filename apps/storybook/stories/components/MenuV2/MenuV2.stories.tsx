@@ -19,9 +19,9 @@ const basicItems: MenuV2GroupType[] = [
     {
         label: 'Account',
         items: [
-            { label: 'Profile' },
-            { label: 'Settings' },
-            { label: 'Sign out' },
+            { label: { text: 'Profile' } },
+            { label: { text: 'Settings' } },
+            { label: { text: 'Sign out' } },
         ],
     },
 ]
@@ -32,19 +32,19 @@ const itemsWithSubmenu: MenuV2GroupType[] = [
         showSeparator: true,
         items: [
             {
-                label: 'United States',
+                label: { text: 'United States' },
                 subMenu: [
-                    { label: 'California' },
-                    { label: 'New York' },
-                    { label: 'Texas' },
+                    { label: { text: 'California' } },
+                    { label: { text: 'New York' } },
+                    { label: { text: 'Texas' } },
                 ],
             },
             {
-                label: 'Europe',
+                label: { text: 'Europe' },
                 subMenu: [
-                    { label: 'United Kingdom' },
-                    { label: 'Germany' },
-                    { label: 'France' },
+                    { label: { text: 'United Kingdom' } },
+                    { label: { text: 'Germany' } },
+                    { label: { text: 'France' } },
                 ],
             },
         ],
@@ -55,10 +55,10 @@ const searchableItems: MenuV2GroupType[] = [
     {
         label: 'Cities',
         items: [
-            { label: 'Mostar' },
-            { label: 'Moscow' },
-            { label: 'Mumbai' },
-            { label: 'Madrid' },
+            { label: { text: 'Mostar' } },
+            { label: { text: 'Moscow' } },
+            { label: { text: 'Mumbai' } },
+            { label: { text: 'Madrid' } },
         ],
     },
 ]
@@ -293,11 +293,11 @@ export const Interactive: Story = {
                 label: 'Actions',
                 items: [
                     {
-                        label: 'Primary Action',
+                        label: { text: 'Primary Action' },
                         onClick: () => setSelected('Primary Action'),
                     },
                     {
-                        label: 'Secondary Action',
+                        label: { text: 'Secondary Action' },
                         onClick: () => setSelected('Secondary Action'),
                     },
                 ],
