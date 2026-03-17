@@ -1,0 +1,62 @@
+{
+    "componentDescription": "Switch is a toggle control for binary on/off settings. Use Switch instead of Checkbox when the action takes immediate effect without requiring a form submit (e.g., enabling a feature, toggling dark mode). SwitchGroup wraps multiple Switch components that share a name, useful for related toggles.",
+    "features": [
+        "Two sizes: SMALL and MEDIUM",
+        "Controlled (checked + onChange) and uncontrolled (defaultChecked) modes",
+        "SwitchGroup compound component for grouping related switches",
+        "Error state support",
+        "Label and subtext for context",
+        "slot prop for supplementary React node content",
+        "required prop for form validation"
+    ],
+    "compositionPattern": "SwitchGroup wraps multiple Switch components. The group manages shared name and disabled state. Individual Switch components inside the group can still be individually controlled. Use SwitchGroup when presenting a set of related on/off settings under a common label.",
+    "usageExamples": [
+        {
+            "title": "Single controlled switch",
+            "description": "Feature toggle that takes immediate effect when changed.",
+            "code": "<Switch\n  id=\"dark-mode\"\n  label=\"Dark mode\"\n  subtext=\"Switch between light and dark theme\"\n  size={SwitchSize.MEDIUM}\n  checked={isDarkMode}\n  onChange={(checked) => setIsDarkMode(checked)}\n/>"
+        },
+        {
+            "title": "SwitchGroup with multiple toggles",
+            "description": "Group of notification preference switches under a common label.",
+            "code": "<SwitchGroup\n  id=\"notifications\"\n  label=\"Notification preferences\"\n  name=\"notifications\"\n>\n  <Switch\n    id=\"email-notif\"\n    label=\"Email notifications\"\n    subtext=\"Receive updates via email\"\n    checked={emailEnabled}\n    onChange={setEmailEnabled}\n  />\n  <Switch\n    id=\"sms-notif\"\n    label=\"SMS notifications\"\n    subtext=\"Receive alerts via text message\"\n    checked={smsEnabled}\n    onChange={setSmsEnabled}\n  />\n  <Switch\n    id=\"push-notif\"\n    label=\"Push notifications\"\n    subtext=\"Receive in-app push notifications\"\n    checked={pushEnabled}\n    onChange={setPushEnabled}\n  />\n</SwitchGroup>"
+        },
+        {
+            "title": "Disabled switch for locked setting",
+            "description": "Switch that is locked due to insufficient permissions.",
+            "code": "<Switch\n  id=\"2fa\"\n  label=\"Two-factor authentication\"\n  subtext=\"Managed by your organization\"\n  checked={true}\n  disabled\n  size={SwitchSize.MEDIUM}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "checked": {
+            "llmContext": "Controlled checked state. Provide boolean from state. Pair with onChange to update state. Use controlled mode for switches that affect immediate application behavior.",
+            "propDescription": "Controlled on/off state of the switch"
+        },
+        "onChange": {
+            "llmContext": "Callback fired with the new boolean value when the switch is toggled. Trigger your state update and any side effects (API calls, theme changes) here.",
+            "propDescription": "Called with new boolean value when switch is toggled"
+        },
+        "defaultChecked": {
+            "llmContext": "For uncontrolled mode — set the initial state without managing it in React state. Suitable for preferences read only on form submit.",
+            "propDescription": "Initial on/off state in uncontrolled mode"
+        },
+        "label": {
+            "llmContext": "The primary label describing what the switch controls. Use active-voice descriptions like 'Enable notifications' or 'Allow analytics'.",
+            "propDescription": "Text label for the switch"
+        },
+        "subtext": {
+            "llmContext": "Additional description below the label explaining the consequence of toggling. E.g., 'You will receive an email for every new comment'.",
+            "propDescription": "Secondary descriptive text below the label"
+        },
+        "size": {
+            "llmContext": "Use SMALL for dense settings panels or when the switch is inside a table or list row. Use MEDIUM for standalone or prominent settings.",
+            "propDescription": "Controls the size of the switch toggle and text"
+        },
+        "error": {
+            "llmContext": "Set to true to display the switch in an error state. Rarely needed for switches, but use if the toggle state conflicts with a system requirement (e.g., a required feature that must be enabled).",
+            "propDescription": "Applies error styling to the switch"
+        }
+    },
+    "isCompound": true,
+    "subComponents": ["SwitchGroup"]
+}

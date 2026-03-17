@@ -1,0 +1,50 @@
+{
+    "componentDescription": "MultiValueInput is a text input that converts typed entries into tag/chip items. The user types a value, presses Enter or comma, and it becomes a chip. Use for email recipients, tag entry, keyword lists, and any field where the user creates multiple free-text values.",
+    "features": [
+        "Converts text input to chips/tags on Enter or comma",
+        "Removable chip items",
+        "Maximum items limit",
+        "Error state for invalid entries",
+        "Label support",
+        "Disabled state"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Email recipients input",
+            "description": "Multi-value input for composing email recipients.",
+            "code": "<MultiValueInput\n  label=\"Recipients\"\n  placeholder=\"Type email and press Enter\"\n  values={recipients}\n  onValuesChange={setRecipients}\n  maxValues={20}\n  error={hasInvalidEmail}\n/>"
+        },
+        {
+            "title": "Tag entry for a blog post",
+            "description": "Input for adding tags to a content item.",
+            "code": "<MultiValueInput\n  label=\"Tags\"\n  placeholder=\"Add tag...\"\n  values={tags}\n  onValuesChange={setTags}\n  maxValues={10}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "values": {
+            "llmContext": "Required. Array of currently entered value strings, each displayed as a chip. Manage with useState initialized to []. Each string in the array appears as a removable chip.",
+            "propDescription": "Required. Array of current chip values"
+        },
+        "onValuesChange": {
+            "llmContext": "Required. Callback receiving the full updated string[] whenever values change — either a new value is added or an existing chip is removed. Replace your values state with the received array.",
+            "propDescription": "Required. Called with updated values array on any change"
+        },
+        "placeholder": {
+            "llmContext": "Hint text shown in the input area. Guide the user on how to add values, e.g., 'Type and press Enter' or 'Add email address'. Shown when the input field is empty.",
+            "propDescription": "Placeholder text in the input field"
+        },
+        "maxValues": {
+            "llmContext": "Maximum number of chips allowed. Once reached, the input is disabled until a chip is removed. Always set a reasonable limit to prevent abuse and performance issues.",
+            "propDescription": "Maximum number of chip values allowed"
+        },
+        "error": {
+            "llmContext": "Set to true to show the input in error state. Use when a newly entered value is invalid (e.g., invalid email format). Consider showing an errorMessage below explaining what's wrong.",
+            "propDescription": "Applies error styling to the input"
+        },
+        "disabled": {
+            "llmContext": "Set to true to prevent adding or removing chips. Use for read-only display of existing values or when the field is locked.",
+            "propDescription": "Prevents adding or removing chip values"
+        }
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "componentDescription": "Breadcrumb shows the user's current location in the application hierarchy and allows navigating back to parent pages. Use it at the top of content pages to orient users within deep navigation structures (3+ levels). Not needed on top-level pages.",
+    "features": [
+        "Ordered list of path items with labels",
+        "Each item can be a link (href) or clickable (onClick)",
+        "Last item is automatically rendered as the current page (non-clickable)",
+        "Customizable separator between items",
+        "Truncation for very long breadcrumb trails"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Standard page breadcrumb",
+            "description": "Breadcrumb for a settings sub-page.",
+            "code": "<Breadcrumb\n  items={[\n    { label: 'Home', href: '/' },\n    { label: 'Settings', href: '/settings' },\n    { label: 'Security', href: '/settings/security' },\n    { label: 'Two-Factor Authentication' },\n  ]}\n/>"
+        },
+        {
+            "title": "Breadcrumb with onClick handlers",
+            "description": "Breadcrumb using onClick for SPA navigation instead of href.",
+            "code": "<Breadcrumb\n  items={[\n    { label: 'Projects', onClick: () => navigate('/projects') },\n    { label: project.name, onClick: () => navigate(`/projects/${project.id}`) },\n    { label: 'Members' },\n  ]}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "items": {
+            "llmContext": "Required. Array of breadcrumb items from root to current page. Each item: { label: string, href?: string, onClick?: () => void }. The last item represents the current page and should have no href or onClick — it renders as plain text. All preceding items should have either href or onClick for navigation.",
+            "propDescription": "Required. Ordered array of breadcrumb path items"
+        },
+        "separator": {
+            "llmContext": "Custom separator element between items. Default is a '/' or chevron. Override with a React node if your design requires a different separator character or icon.",
+            "propDescription": "Custom separator element between breadcrumb items"
+        }
+    }
+}
