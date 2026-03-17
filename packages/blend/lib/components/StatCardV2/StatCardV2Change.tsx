@@ -22,7 +22,7 @@ const StatCardV2Change = ({
     const changeTokens =
         tokens.topContainer.dataContainer.statsContainer.changeContainer.change
 
-    if (!changeValueText) return null
+    if (changeValueText === undefined || changeValueText === null) return null
 
     return (
         <Block

@@ -292,12 +292,12 @@ describe('StatCardV2 Component', () => {
             expect(region).toHaveAttribute('aria-label')
         })
 
-        it('root has aria-labelledby pointing to title element', () => {
+        it('root accessible name comes from aria-label', () => {
             const { container } = render(<StatCardV2 {...baseProps} />)
             const region = container.querySelector('[role="region"]')
             const labelledBy = region?.getAttribute('aria-labelledby')
-            expect(labelledBy).toBeTruthy()
-            expect(document.getElementById(labelledBy!)).toBeInTheDocument()
+            expect(labelledBy).toBeNull()
+            expect(region).toHaveAttribute('aria-label')
         })
 
         it('root has aria-describedby when subtitle is provided', () => {
