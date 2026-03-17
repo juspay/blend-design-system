@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode } from 'react'
 import { StyleSheetManager } from 'styled-components'
 
-interface ShadowRootContextType {
+type ShadowRootContextType = {
     shadowRoot: ShadowRoot | null
 }
 
@@ -11,7 +11,7 @@ const ShadowRootContext = createContext<ShadowRootContextType>({
 
 export const useShadowRoot = () => useContext(ShadowRootContext)
 
-interface ShadowAwareProps {
+type ShadowAwareProps = {
     children: ReactNode
     /**
      * Target HTMLElement for styled-components to inject styles into.
@@ -34,7 +34,9 @@ const ShadowAware = ({ children, target }: ShadowAwareProps) => {
 
     return (
         <ShadowRootContext.Provider value={{ shadowRoot }}>
-            <StyleSheetManager target={target}>{children}</StyleSheetManager>
+            <StyleSheetManager target={target} disableCSSOMInjection={true}>
+                {children}
+            </StyleSheetManager>
         </ShadowRootContext.Provider>
     )
 }

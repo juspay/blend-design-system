@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useShadowRoot } from '../context/ShadowAware'
 
 let lockCount = 0
 let styleInjected = false
@@ -76,21 +77,20 @@ function preventKeyboardInteraction(
 ) {
     const target = e.target as HTMLElement | null
 
-    // Allow keyboard navigation inside dropdowns
     if (isInsideDropdown(target, contentSelectors)) return
 
-    // Allow keyboard input in inputs/textareas
     if (target?.closest('input, textarea')) return
 
-    // Allow keyboard on triggers
     if (isTrigger(target, triggerSelectors)) return
 
-    // Block all other keyboard interactions
     e.preventDefault()
     e.stopPropagation()
 }
 
-function injectStyle(selectors: DropdownSelectors) {
+function injectStyle(
+    selectors: DropdownSelectors,
+    shadowRoot: ShadowRoot | null
+) {
     if (styleInjected || typeof document === 'undefined') return
 
     const disableSelectors =
@@ -101,7 +101,7 @@ function injectStyle(selectors: DropdownSelectors) {
     if (disableSelectors.length === 0) return
 
     const disableSelectorString = disableSelectors
-        .map((sel) => `body.${CLASS_NAME} ${sel}`)
+        .map((sel) => `:host ${sel}`)
         .join(',\n      ')
 
     const style = document.createElement('style')
@@ -112,12 +112,23 @@ function injectStyle(selectors: DropdownSelectors) {
         pointer-events: none !important;
       }
     `
-    document.head.appendChild(style)
+
+    // Inject to shadow root if available, otherwise to document.head
+    const targetContainer = shadowRoot || document.head
+
+    // Check if style already exists in target container
+    const existingStyle = targetContainer.querySelector(`#${STYLE_ID}`)
+    if (!existingStyle) {
+        targetContainer.appendChild(style)
+    }
     styleInjected = true
 }
 
-function applyLock(selectors: DropdownSelectors) {
-    injectStyle(selectors)
+function applyLock(
+    selectors: DropdownSelectors,
+    shadowRoot: ShadowRoot | null
+) {
+    injectStyle(selectors, shadowRoot)
 
     const contentSelectors =
         selectors.content || DEFAULT_SELECTORS.content || []
@@ -129,7 +140,6 @@ function applyLock(selectors: DropdownSelectors) {
 
     document.body.classList.add(CLASS_NAME)
 
-    // Prevent scrolling
     document.documentElement.style.overflow = 'hidden'
     document.documentElement.style.overscrollBehavior = 'none'
     document.documentElement.style.touchAction = 'none'
@@ -141,7 +151,6 @@ function applyLock(selectors: DropdownSelectors) {
     document.body.style.height = '100%'
     document.body.style.overflow = 'hidden'
 
-    // Prevent scroll events
     const handleWheel = (e: WheelEvent) => preventScroll(e, contentSelectors)
     const handleTouchMove = (e: TouchEvent) =>
         preventScroll(e, contentSelectors)
@@ -151,8 +160,6 @@ function applyLock(selectors: DropdownSelectors) {
     document.addEventListener('wheel', handleWheel, { passive: false })
     document.addEventListener('touchmove', handleTouchMove, { passive: false })
     document.addEventListener('keydown', handleKeyDown, { passive: false })
-
-    // Store handlers for cleanup
     ;(document.body as HTMLElementWithHandlers).__dropdownLockHandlers = {
         wheel: handleWheel,
         touchmove: handleTouchMove,
@@ -163,7 +170,6 @@ function applyLock(selectors: DropdownSelectors) {
 function removeLock() {
     document.body.classList.remove(CLASS_NAME)
 
-    // Restore scroll styles
     document.documentElement.style.overflow = ''
     document.documentElement.style.overscrollBehavior = ''
     document.documentElement.style.touchAction = ''
@@ -175,10 +181,8 @@ function removeLock() {
     document.body.style.height = ''
     document.body.style.overflow = ''
 
-    // Restore scroll position
     window.scrollTo(scrollX, scrollY)
 
-    // Remove event listeners
     const bodyWithHandlers = document.body as HTMLElementWithHandlers
     const handlers = bodyWithHandlers.__dropdownLockHandlers
     if (handlers) {
@@ -194,6 +198,7 @@ export default function useDropdownInteractionLock(
     selectors?: DropdownSelectors
 ) {
     const selectorsRef = useRef(selectors)
+    const shadowRoot = useShadowRoot()
 
     useEffect(() => {
         selectorsRef.current = selectors
@@ -206,7 +211,7 @@ export default function useDropdownInteractionLock(
             lockCount++
 
             if (lockCount === 1) {
-                applyLock(selectorsRef.current || {})
+                applyLock(selectorsRef.current || {}, shadowRoot)
             }
         }
 
@@ -220,5 +225,5 @@ export default function useDropdownInteractionLock(
                 removeLock()
             }
         }
-    }, [isOpen])
+    }, [isOpen, shadowRoot])
 }
