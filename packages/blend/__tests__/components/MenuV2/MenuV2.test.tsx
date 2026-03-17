@@ -217,9 +217,11 @@ describe('MenuV2', () => {
             <MenuV2
                 trigger={<button type="button">Dimensions</button>}
                 items={createBasicItems()}
-                maxHeight={300}
-                minWidth={240}
-                maxWidth={320}
+                dimensions={{
+                    maxHeight: 300,
+                    minWidth: 240,
+                    maxWidth: 320,
+                }}
             />
         )
 

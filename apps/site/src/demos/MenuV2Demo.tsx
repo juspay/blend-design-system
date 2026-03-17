@@ -351,22 +351,18 @@ const MenuV2Demo = () => {
                             enableSearch={enableSearch}
                             searchPlaceholder="Search options..."
                             asModal={asModal}
-                            maxHeight={
-                                maxHeight.trim()
+                            dimensions={{
+                                maxHeight: maxHeight.trim()
                                     ? Number.parseInt(maxHeight, 10) ||
                                       undefined
-                                    : undefined
-                            }
-                            minWidth={
-                                minWidth.trim()
+                                    : undefined,
+                                minWidth: minWidth.trim()
                                     ? Number.parseInt(minWidth, 10) || undefined
-                                    : undefined
-                            }
-                            maxWidth={
-                                maxWidth.trim()
+                                    : undefined,
+                                maxWidth: maxWidth.trim()
                                     ? Number.parseInt(maxWidth, 10) || undefined
-                                    : undefined
-                            }
+                                    : undefined,
+                            }}
                             alignment={alignment}
                             side={side}
                             enableVirtualScrolling={enableVirtualScrolling}

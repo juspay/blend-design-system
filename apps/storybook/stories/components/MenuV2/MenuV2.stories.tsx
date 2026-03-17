@@ -101,9 +101,11 @@ import { MenuV2 } from '@juspay/blend-design-system';
         items: basicItems,
         enableSearch: false,
         searchPlaceholder: 'Search menu items...',
-        maxHeight: 320,
-        minWidth: 200,
-        maxWidth: 280,
+        dimensions: {
+            maxHeight: 320,
+            minWidth: 200,
+            maxWidth: 280,
+        },
         onOpenChange: fn(),
     },
     argTypes: {
@@ -124,17 +126,9 @@ import { MenuV2 } from '@juspay/blend-design-system';
             control: 'text',
             description: 'Placeholder for the search input',
         },
-        maxHeight: {
-            control: 'number',
-            description: 'Maximum height of the menu content (px)',
-        },
-        minWidth: {
-            control: 'number',
-            description: 'Minimum width of the menu content (px)',
-        },
-        maxWidth: {
-            control: 'number',
-            description: 'Maximum width of the menu content (px)',
+        dimensions: {
+            control: 'object',
+            description: 'Dimensions of the menu content',
         },
         alignment: {
             control: 'inline-radio',
