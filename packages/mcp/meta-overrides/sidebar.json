@@ -1,0 +1,46 @@
+{
+    "componentDescription": "Sidebar is a vertical navigation component for application-level navigation. Use it as the primary navigation structure in dashboards and admin panels. Supports collapsible sections, nested navigation items, and a collapsed/icon-only mode for compact layouts.",
+    "features": [
+        "Collapsible to icon-only mode",
+        "Nested navigation item groups",
+        "Active item highlighting",
+        "Logo slot at the top",
+        "Footer slot for user profile or settings",
+        "Configurable width"
+    ],
+    "compositionPattern": "Provide navigation items as a hierarchical array. Each item has a label, icon, and optional children for nested sections. The sidebar handles active state based on current route.",
+    "usageExamples": [
+        {
+            "title": "Dashboard sidebar",
+            "description": "Full application sidebar with grouped navigation items.",
+            "code": "<Sidebar\n  logo={<Logo />}\n  items={[\n    { id: 'dashboard', label: 'Dashboard', icon: <HomeIcon />, onClick: () => navigate('/') },\n    { id: 'analytics', label: 'Analytics', icon: <ChartIcon />, onClick: () => navigate('/analytics') },\n    {\n      id: 'manage',\n      label: 'Management',\n      icon: <FolderIcon />,\n      children: [\n        { id: 'users', label: 'Users', onClick: () => navigate('/users') },\n        { id: 'roles', label: 'Roles', onClick: () => navigate('/roles') },\n      ]\n    },\n    { id: 'settings', label: 'Settings', icon: <SettingsIcon />, onClick: () => navigate('/settings') },\n  ]}\n  footer={<UserProfileItem user={currentUser} />}\n/>"
+        },
+        {
+            "title": "Collapsible sidebar",
+            "description": "Sidebar that can be toggled to icon-only mode.",
+            "code": "<Sidebar\n  logo={<Logo />}\n  collapsed={isSidebarCollapsed}\n  onCollapse={setIsSidebarCollapsed}\n  width={240}\n  items={navigationItems}\n  footer={<UserProfile user={user} />}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "items": {
+            "llmContext": "Required. Array of navigation item objects. Each item: { id: string, label: string, icon: ReactNode, onClick?: () => void, children?: item[], disabled?: boolean }. Children create collapsible sub-groups. Always provide an icon — it's shown in collapsed mode as the only identifier.",
+            "propDescription": "Required. Navigation item hierarchy"
+        },
+        "collapsed": {
+            "llmContext": "Controls whether the sidebar is in icon-only collapsed mode. Pass false for expanded (full labels visible) and true for collapsed (icons only with tooltips). Manage with useState and persist the preference to localStorage.",
+            "propDescription": "Controls collapsed (icon-only) state"
+        },
+        "onCollapse": {
+            "llmContext": "Callback fired when the user clicks the collapse/expand toggle button. Update your collapsed state here. Typically also persist the preference.",
+            "propDescription": "Called when user toggles collapsed state"
+        },
+        "logo": {
+            "llmContext": "React node for the application logo displayed at the top of the sidebar. Should work at both full and collapsed widths — provide a mark/icon version that works at ~40px wide for collapsed mode.",
+            "propDescription": "Logo displayed at the top of the sidebar"
+        },
+        "footer": {
+            "llmContext": "React node pinned to the bottom of the sidebar. Typically used for the current user's avatar/name with a settings or logout action.",
+            "propDescription": "Content pinned to the sidebar footer"
+        }
+    }
+}

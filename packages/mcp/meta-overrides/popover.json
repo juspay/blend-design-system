@@ -1,0 +1,50 @@
+{
+    "componentDescription": "Popover is a click-triggered floating panel for richer content than a tooltip — forms, filters, date pickers, color pickers, and contextual menus. Unlike Modal, it doesn't block the page. Unlike Tooltip, it's click-triggered and can contain interactive elements.",
+    "features": [
+        "Click-triggered open/close",
+        "Configurable placement (side and align)",
+        "Controlled and uncontrolled open state",
+        "Close on outside click (configurable)",
+        "Portal rendering to avoid clipping",
+        "Custom trigger element"
+    ],
+    "compositionPattern": "Pass a trigger element and content element. The trigger is rendered in place; the content floats as a positioned overlay. For complex interactive content (forms, filter panels), manage open state with onOpenChange.",
+    "usageExamples": [
+        {
+            "title": "Filter popover",
+            "description": "Button that opens a filter configuration panel.",
+            "code": "<Popover\n  trigger={\n    <Button\n      buttonType={ButtonType.SECONDARY}\n      size={ButtonSize.MEDIUM}\n      text=\"Filters\"\n      leadingIcon={<FilterIcon />}\n    />\n  }\n  content={\n    <div style={{ padding: 16, width: 280 }}>\n      <h4 style={{ margin: '0 0 12px' }}>Filter options</h4>\n      <SingleSelect label=\"Status\" placeholder=\"All statuses\" selected={statusFilter} onSelect={setStatusFilter} items={[{ items: statuses }]} />\n      <SingleSelect label=\"Priority\" placeholder=\"All priorities\" selected={priorityFilter} onSelect={setPriorityFilter} items={[{ items: priorities }]} style={{ marginTop: 12 }} />\n    </div>\n  }\n  side=\"bottom\"\n  align=\"start\"\n/>"
+        },
+        {
+            "title": "Controlled popover for inline editing",
+            "description": "Popover that opens programmatically for inline field editing.",
+            "code": "<Popover\n  open={isEditOpen}\n  onOpenChange={setIsEditOpen}\n  trigger={<span onClick={() => setIsEditOpen(true)}>{displayValue || 'Click to edit'}</span>}\n  content={\n    <div style={{ padding: 16 }}>\n      <TextInput label=\"Value\" value={editValue} onChange={setEditValue} size={TextInputSize.SMALL} />\n      <Button buttonType={ButtonType.PRIMARY} size={ButtonSize.SMALL} text=\"Save\" onClick={handleSave} style={{ marginTop: 8 }} />\n    </div>\n  }\n  closeOnOutsideClick={false}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "trigger": {
+            "llmContext": "Required. The element that the user clicks to open the popover. Can be any React node — typically a Button, icon button, or text. The trigger is rendered inline in the DOM.",
+            "propDescription": "Required. Element that triggers the popover on click"
+        },
+        "content": {
+            "llmContext": "Required. The content rendered inside the floating popover panel. Can be any React node including forms, lists, and interactive elements. Keep it focused and reasonably sized — use a Modal for large complex content.",
+            "propDescription": "Required. Content rendered inside the floating popover"
+        },
+        "open": {
+            "llmContext": "Controlled open state. Pair with onOpenChange for external control. Use controlled mode when you need to open/close the popover programmatically from outside (e.g., after a save action, from a keyboard shortcut).",
+            "propDescription": "Controlled open state of the popover"
+        },
+        "onOpenChange": {
+            "llmContext": "Callback fired with the new boolean open state. Use to sync with controlled open state or to run side effects when the popover opens/closes.",
+            "propDescription": "Called with new open state when popover opens or closes"
+        },
+        "closeOnOutsideClick": {
+            "llmContext": "Default true. Set to false when the popover contains forms or actions that should not be accidentally dismissed (e.g., a popover with unsaved filter changes). Remember to provide an explicit close mechanism.",
+            "propDescription": "Whether clicking outside closes the popover"
+        },
+        "side": {
+            "llmContext": "'bottom' is the most common for button-triggered popovers. Use 'top' if the button is near the bottom of the screen. 'left' or 'right' for side-panel adjacent triggers. The popover auto-flips when there's insufficient space.",
+            "propDescription": "Preferred side to display the popover"
+        }
+    }
+}

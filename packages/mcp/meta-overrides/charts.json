@@ -1,0 +1,45 @@
+{
+    "componentDescription": "Charts renders data visualizations — line, bar, pie, and area charts. Use for analytics dashboards, trend displays, and data comparison views. For simple metric cards with sparklines, use StatCard instead.",
+    "features": [
+        "Four chart types: LINE, BAR, PIE, AREA",
+        "Header slot for chart title and controls",
+        "X and Y axis labels",
+        "Configurable dimensions",
+        "Responsive width support"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Monthly revenue line chart",
+            "description": "Line chart showing revenue trend over the past 12 months.",
+            "code": "<Charts\n  chartType=\"LINE\"\n  data={[\n    { month: 'Jan', revenue: 85000 },\n    { month: 'Feb', revenue: 92000 },\n    { month: 'Mar', revenue: 88000 },\n    { month: 'Apr', revenue: 110000 },\n    { month: 'May', revenue: 124500 },\n  ]}\n  xAxisLabel=\"Month\"\n  yAxisLabel=\"Revenue ($)\"\n  width=\"100%\"\n  height={320}\n  chartHeaderSlot={\n    <div style={{ display: 'flex', justifyContent: 'space-between' }}>\n      <h3>Monthly Revenue</h3>\n      <SingleSelect placeholder=\"Last 12 months\" selected={period} onSelect={setPeriod} items={periodOptions} />\n    </div>\n  }\n/>"
+        },
+        {
+            "title": "Category distribution pie chart",
+            "description": "Pie chart showing distribution of support tickets by category.",
+            "code": "<Charts\n  chartType=\"PIE\"\n  data={[\n    { category: 'Billing', count: 42 },\n    { category: 'Technical', count: 58 },\n    { category: 'Account', count: 23 },\n    { category: 'Other', count: 15 },\n  ]}\n  width=\"100%\"\n  height={280}\n  chartHeaderSlot={<h3>Tickets by Category</h3>}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "data": {
+            "llmContext": "Required. Array of data objects. Each object should have consistent keys across all entries. The chart infers series from the data structure. For multi-series charts, include multiple value keys in each object.",
+            "propDescription": "Required. Array of data objects for the chart"
+        },
+        "chartType": {
+            "llmContext": "LINE is best for trends over time (revenue, users, traffic). BAR is best for comparing discrete categories or periods side-by-side. PIE is best for showing composition/distribution as parts of a whole (use sparingly, max 5-6 segments). AREA is like LINE but emphasizes volume — good for cumulative metrics.",
+            "propDescription": "Type of chart visualization to render"
+        },
+        "chartHeaderSlot": {
+            "llmContext": "React node rendered above the chart. Use for chart title, time period selector, legend, or export button. Provides context without being part of the chart canvas itself.",
+            "propDescription": "React node rendered above the chart area"
+        },
+        "xAxisLabel": {
+            "llmContext": "Label for the horizontal axis. Describe what the x-axis represents (e.g., 'Month', 'Date', 'Category'). Required for LINE, BAR, and AREA charts for clarity.",
+            "propDescription": "Label for the x-axis"
+        },
+        "yAxisLabel": {
+            "llmContext": "Label for the vertical axis. Describe the metric and include units where relevant (e.g., 'Revenue ($)', 'Users', 'Conversion Rate (%)').",
+            "propDescription": "Label for the y-axis"
+        }
+    }
+}

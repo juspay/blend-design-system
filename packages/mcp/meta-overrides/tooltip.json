@@ -1,0 +1,50 @@
+{
+    "componentDescription": "Tooltip shows a brief informational label on hover or focus. Use it to explain icon buttons, clarify truncated text, show keyboard shortcuts, or provide additional context for disabled elements. Tooltips should be short (under 60 characters) — use Popover for richer content.",
+    "features": [
+        "Hover and focus triggered",
+        "Configurable placement: side (top/bottom/left/right) and align (start/center/end)",
+        "Side offset for spacing from trigger",
+        "Disabled prop to conditionally suppress tooltip",
+        "Portal-based rendering to avoid clipping"
+    ],
+    "compositionPattern": "Wrap the trigger element with Tooltip. The trigger must be a focusable element (button, link, or a div with tabIndex). Pass the tooltip text to the content prop.",
+    "usageExamples": [
+        {
+            "title": "Icon button with tooltip",
+            "description": "Icon-only button with a tooltip explaining its action.",
+            "code": "<Tooltip content=\"Copy to clipboard\" side=\"top\">\n  <Button\n    buttonType={ButtonType.SECONDARY}\n    size={ButtonSize.SMALL}\n    subType={ButtonSubType.ICON_ONLY}\n    leadingIcon={<CopyIcon />}\n    onClick={handleCopy}\n  />\n</Tooltip>"
+        },
+        {
+            "title": "Tooltip on disabled button",
+            "description": "Tooltip explaining why a button is disabled.",
+            "code": "<Tooltip content=\"You don't have permission to delete this item\" side=\"top\">\n  <span>\n    <Button\n      buttonType={ButtonType.DANGER}\n      size={ButtonSize.MEDIUM}\n      text=\"Delete\"\n      disabled\n    />\n  </span>\n</Tooltip>"
+        },
+        {
+            "title": "Truncated text with full value in tooltip",
+            "description": "Long text truncated in a table cell, with full value on hover.",
+            "code": "<Tooltip content={longDescription} side=\"bottom\" align=\"start\">\n  <span style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>\n    {longDescription}\n  </span>\n</Tooltip>"
+        }
+    ],
+    "propOverrides": {
+        "content": {
+            "llmContext": "Required. The tooltip text or React node. Keep text under 60 characters for hover tooltips. For longer content or interactive elements (links, buttons), use Popover instead.",
+            "propDescription": "Required. Content displayed in the tooltip"
+        },
+        "children": {
+            "llmContext": "Required. The element that triggers the tooltip on hover/focus. Must be a focusable element. If wrapping a disabled button (which can't receive events), wrap the button in a <span> to allow the tooltip to still work.",
+            "propDescription": "Required. Trigger element"
+        },
+        "side": {
+            "llmContext": "Preferred side of the trigger to display the tooltip. 'top' is default and most common. Use 'bottom' when the trigger is near the top of the viewport. Use 'left' or 'right' for tooltips on list items or side-positioned elements. The tooltip will auto-flip if there's not enough space.",
+            "propDescription": "Preferred side to show the tooltip"
+        },
+        "align": {
+            "llmContext": "'start', 'center', or 'end' alignment relative to the trigger. 'center' is default. Use 'start' or 'end' when the tooltip text would be clipped at viewport edges.",
+            "propDescription": "Alignment of tooltip relative to trigger"
+        },
+        "disabled": {
+            "llmContext": "Set to true to suppress the tooltip. Use for conditional tooltips (e.g., only show when button is disabled, or only when text is truncated).",
+            "propDescription": "Prevents the tooltip from appearing when true"
+        }
+    }
+}

@@ -177,3 +177,5 @@ apps/storybook/storybook-static/
 
 packages/blend/dist/*
 **/dist
+
+.claude/

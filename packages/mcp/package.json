@@ -1,27 +1,31 @@
 {
-    "name": "@design-juspay/blend-mcp-server",
-    "version": "1.0.0",
-    "description": "MCP server for Blend design system - provides tools for generating React components and documentation",
-    "private": true,
+    "name": "blend-ui-mcp",
+    "version": "2.0.1",
+    "description": "MCP server for Blend design system - provides tools for generating React components, documentation and design tokens",
     "type": "module",
     "bin": {
-        "blend-mcp-server": "./index.js"
+        "blend-mcp": "./index.js"
     },
     "files": [
         "index.js",
-        "metaReader.js",
+        "validators.js",
+        "manifest.json",
         "README.md"
     ],
     "scripts": {
-        "build": "node -e \"require('fs').chmodSync('index.js', '755')\"",
+        "generate-manifest": "node generateManifest.js",
+        "prepublishOnly": "node generateManifest.js",
+        "build": "node generateManifest.js && node -e \"import('fs').then(fs => fs.default.chmodSync('index.js', '755'))\"",
         "watch": "echo 'No watch needed for JavaScript files'",
-        "inspector": "npx @modelcontextprotocol/inspector index.js"
+        "inspector": "npx @modelcontextprotocol/inspector index.js",
+        "test": "node test.js"
     },
     "dependencies": {
-        "@modelcontextprotocol/sdk": "0.6.0"
+        "@modelcontextprotocol/sdk": "^1.10.0"
     },
     "devDependencies": {
-        "@types/node": "^20.11.24"
+        "@types/node": "^20.11.24",
+        "ts-morph": "^23.0.0"
     },
     "keywords": [
         "mcp",
@@ -31,17 +35,17 @@
         "react",
         "components"
     ],
-    "author": "Design Juspay",
+    "author": "Juspay",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/design-juspay/cloved.git",
+        "url": "git+https://github.com/juspay/blend-design-system.git",
         "directory": "packages/mcp"
     },
     "bugs": {
-        "url": "https://github.com/design-juspay/cloved/issues"
+        "url": "https://github.com/juspay/blend-design-system/issues"
     },
-    "homepage": "https://github.com/design-juspay/cloved/tree/main/packages/mcp#readme",
+    "homepage": "https://github.com/juspay/blend-design-system/tree/main/packages/mcp#readme",
     "engines": {
         "node": ">=18.0.0"
     }

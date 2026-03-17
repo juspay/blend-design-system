@@ -1,0 +1,40 @@
+{
+    "componentDescription": "KeyValuePair displays a labeled piece of data in a structured row. Use it in detail views, summary panels, and profile pages where you need to show field-value pairs consistently (e.g., 'Email: user@example.com', 'Status: Active'). Compose multiple KeyValuePairs for structured data displays.",
+    "features": [
+        "Consistent label-value layout",
+        "Multiple display variants",
+        "Size options",
+        "Configurable label width for aligned multi-row displays"
+    ],
+    "compositionPattern": "Combine multiple KeyValuePairs in a vertical stack to create a data detail panel. For aligned layouts, set a consistent labelWidth across all pairs.",
+    "usageExamples": [
+        {
+            "title": "User detail panel",
+            "description": "Multiple key-value pairs showing user account details.",
+            "code": "<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>\n  <KeyValuePair label=\"Full name\" value={user.name} labelWidth={120} />\n  <KeyValuePair label=\"Email\" value={user.email} labelWidth={120} />\n  <KeyValuePair label=\"Role\" value={user.role} labelWidth={120} />\n  <KeyValuePair label=\"Member since\" value={formatDate(user.createdAt)} labelWidth={120} />\n  <KeyValuePair label=\"Status\" value={<Tags label={user.status} variant=\"success\" />} labelWidth={120} />\n</div>"
+        },
+        {
+            "title": "Order summary",
+            "description": "Order details in a summary card.",
+            "code": "<Card>\n  <h3>Order #12345</h3>\n  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>\n    <KeyValuePair label=\"Date\" value={order.date} />\n    <KeyValuePair label=\"Items\" value={`${order.items.length} items`} />\n    <KeyValuePair label=\"Subtotal\" value={`$${order.subtotal.toFixed(2)}`} />\n    <KeyValuePair label=\"Total\" value={`$${order.total.toFixed(2)}`} />\n  </div>\n</Card>"
+        }
+    ],
+    "propOverrides": {
+        "label": {
+            "llmContext": "Required. The field name/label displayed on the left. Use consistent Title Case or sentence case across all pairs in a section. Keep labels concise (1-3 words).",
+            "propDescription": "Required. The label/key text"
+        },
+        "value": {
+            "llmContext": "Required. The value to display. Can be a string, number, or React node (for Tags, Avatar, formatted content). When the value might be empty, provide a fallback like '—' or 'Not set'.",
+            "propDescription": "Required. The value — string, number, or React node"
+        },
+        "labelWidth": {
+            "llmContext": "Set a consistent pixel width for the label column across multiple KeyValuePairs to create aligned columns. Choose a width that accommodates your longest label. E.g., if the longest label is 'Member since' (~110px), set labelWidth={130} for all pairs.",
+            "propDescription": "Fixed width for the label column to enable alignment"
+        },
+        "variant": {
+            "llmContext": "Controls the visual style of the label-value layout. Use 'horizontal' for side-by-side label and value on the same row. Use 'vertical' (stacked) when labels are long or the container is narrow.",
+            "propDescription": "Layout variant: horizontal (inline) or vertical (stacked)"
+        }
+    }
+}
