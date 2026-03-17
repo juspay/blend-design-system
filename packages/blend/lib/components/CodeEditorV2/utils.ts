@@ -342,7 +342,7 @@ export const backupColor = {
             borderColor: {
                 added: '#2da44e',
                 removed: '#cf222e',
-                unchanged: 'transparent',
+                unchanged: 'none',
             },
         },
         highlightedLine: {

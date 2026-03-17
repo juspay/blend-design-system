@@ -77,10 +77,11 @@ export function createEditorTheme(
                 tokens.body.backgroundColor || backupColor.body.backgroundColor,
             'editor.foreground': syntax.text || MONACO_COLOR_FALLBACK,
             'editor.lineHighlightBackground':
-                highlight.unchanged ||
-                backupColor.body.highlightedLine.backgroundColor,
+                gutter.backgroundColor.unchanged ||
+                backupColor.body.gutter.backgroundColor.unchanged,
             'editor.lineHighlightBorder':
-                backupColor.body.highlightedLine.backgroundColor,
+                gutter.borderColor.unchanged ||
+                backupColor.body.gutter.borderColor.unchanged,
             'editorLineNumber.foreground':
                 gutter.color || backupColor.body.gutter.color,
             'editorLineNumber.activeForeground':

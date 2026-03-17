@@ -41,7 +41,8 @@ export const lightCodeEditorV2Tokens = (
                     width: '40px',
                     color: foundationToken.colors.gray[400],
                     backgroundColor: {
-                        [DiffLineType.UNCHANGED]: 'transparent',
+                        [DiffLineType.UNCHANGED]:
+                            foundationToken.colors.gray[200],
                         [DiffLineType.REMOVED]: foundationToken.colors.red[200],
                         [DiffLineType.ADDED]: foundationToken.colors.green[200],
                     },
@@ -51,7 +52,8 @@ export const lightCodeEditorV2Tokens = (
                         [DiffLineType.ADDED]: `2px solid ${foundationToken.colors.green[600]}`,
                     },
                     borderColor: {
-                        [DiffLineType.UNCHANGED]: 'transparent',
+                        [DiffLineType.UNCHANGED]:
+                            foundationToken.colors.gray[0],
                         [DiffLineType.REMOVED]: foundationToken.colors.red[600],
                         [DiffLineType.ADDED]: foundationToken.colors.green[600],
                     },
@@ -122,7 +124,8 @@ export const lightCodeEditorV2Tokens = (
                     width: '44px',
                     color: foundationToken.colors.gray[400],
                     backgroundColor: {
-                        [DiffLineType.UNCHANGED]: 'transparent',
+                        [DiffLineType.UNCHANGED]:
+                            foundationToken.colors.gray[200],
                         [DiffLineType.REMOVED]: foundationToken.colors.red[200],
                         [DiffLineType.ADDED]: foundationToken.colors.green[200],
                     },
@@ -132,7 +135,8 @@ export const lightCodeEditorV2Tokens = (
                         [DiffLineType.ADDED]: `2px solid ${foundationToken.colors.green[600]}`,
                     },
                     borderColor: {
-                        [DiffLineType.UNCHANGED]: 'transparent',
+                        [DiffLineType.UNCHANGED]:
+                            foundationToken.colors.gray[0],
                         [DiffLineType.REMOVED]: foundationToken.colors.red[600],
                         [DiffLineType.ADDED]: foundationToken.colors.green[600],
                     },
