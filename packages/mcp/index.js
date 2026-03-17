@@ -195,6 +195,18 @@ function _generateSingleComponentJSX(
     return componentCode
 }
 
+/**
+ * Escape a string for safe use inside a Markdown table cell.
+ * Backslashes must be escaped first, then pipe characters, then newlines
+ * replaced with spaces so the table row stays on a single line.
+ */
+function escapeMdTableCell(value) {
+    return String(value ?? '')
+        .replace(/\\/g, '\\\\')
+        .replace(/\|/g, '\\|')
+        .replace(/\n/g, ' ')
+}
+
 function groupPropsByCategory(props) {
     const grouped = {}
     props.forEach((prop) => {
@@ -1721,17 +1733,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         md += `| Prop | Type | Required | Default | Description |\n`
                         md += `|------|------|----------|---------|-------------|\n`
                         props.forEach((prop) => {
-                            const propName = prop.propName || prop.name || ''
-                            const propType = (
-                                prop.propType ||
-                                prop.type ||
-                                ''
-                            ).replace(/\|/g, '\\|')
+                            const propName = escapeMdTableCell(
+                                prop.propName || prop.name || ''
+                            )
+                            const propType = escapeMdTableCell(
+                                prop.propType || prop.type || ''
+                            )
                             const required = prop.required ? 'Yes' : 'No'
-                            const defaultVal =
+                            const defaultVal = escapeMdTableCell(
                                 prop.propDefault ?? prop.defaultValue ?? '—'
-                            const desc =
+                            )
+                            const desc = escapeMdTableCell(
                                 prop.propDescription || prop.description || ''
+                            )
                             md += `| \`${propName}\` | \`${propType}\` | ${required} | \`${defaultVal}\` | ${desc} |\n`
                         })
                         md += '\n'
