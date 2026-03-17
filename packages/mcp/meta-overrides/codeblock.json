@@ -1,0 +1,55 @@
+{
+    "componentDescription": "CodeBlock is a read-only code display component with syntax highlighting, optional line numbers, and a copy button. Use it for displaying code examples, API responses, command-line instructions, and configuration snippets. For editable code, use CodeEditor.",
+    "features": [
+        "Syntax highlighting",
+        "Optional line numbers",
+        "Copy-to-clipboard button",
+        "Light and dark themes",
+        "Optional title/filename label",
+        "Scrollable overflow for long lines"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Installation command",
+            "description": "Shell command display with copy button.",
+            "code": "<CodeBlock\n  code=\"npm install @blend-ui/core\"\n  language=\"bash\"\n  copyable\n/>"
+        },
+        {
+            "title": "API response example with title",
+            "description": "JSON API response with filename and line numbers.",
+            "code": "<CodeBlock\n  title=\"response.json\"\n  code={JSON.stringify(exampleResponse, null, 2)}\n  language=\"json\"\n  showLineNumbers\n  copyable\n/>"
+        },
+        {
+            "title": "Dark-themed code snippet in docs",
+            "description": "TypeScript example in dark theme for documentation.",
+            "code": "<CodeBlock\n  title=\"example.ts\"\n  code={`import { Button, ButtonType } from '@blend-ui/core';\n\nfunction App() {\n  return <Button buttonType={ButtonType.PRIMARY} text=\"Click me\" />;\n}`}\n  language=\"typescript\"\n  theme=\"dark\"\n  showLineNumbers\n  copyable\n/>"
+        }
+    ],
+    "propOverrides": {
+        "code": {
+            "llmContext": "Required. The code string to display. Pass pre-formatted strings — use JSON.stringify(obj, null, 2) for JSON objects. For multi-line code, use template literals.",
+            "propDescription": "Required. The code string to display"
+        },
+        "language": {
+            "llmContext": "Syntax highlighting language. Common values: 'bash', 'javascript', 'typescript', 'json', 'python', 'sql', 'yaml'. Match to the actual content type for correct token coloring.",
+            "propDescription": "Language for syntax highlighting"
+        },
+        "copyable": {
+            "llmContext": "Set to true to show a copy-to-clipboard button. Always enable for installation commands, API keys, code snippets, and any content the user will likely want to copy. Do not set for decorative or trivially short displays.",
+            "propDescription": "Shows a copy-to-clipboard button"
+        },
+        "showLineNumbers": {
+            "llmContext": "Set to true to display line numbers on the left margin. Use for code examples with 5+ lines where users might reference specific lines. Leave false for single-line commands and short snippets.",
+            "propDescription": "Displays line numbers in the code block"
+        },
+        "title": {
+            "llmContext": "Optional filename or label shown above the code block (e.g., 'config.json', 'index.ts', 'Terminal'). Use for code from specific files to help users identify where the code belongs.",
+            "propDescription": "Filename or label displayed above the code block"
+        },
+        "theme": {
+            "llmContext": "'light' for documentation pages and standard UI. 'dark' for terminal output, developer tool contexts, or dark-themed documentation sites.",
+            "propDescription": "Color theme for the code block"
+        }
+    }
+}

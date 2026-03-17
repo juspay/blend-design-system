@@ -1,0 +1,49 @@
+{
+    "componentDescription": "VirtualList renders large lists efficiently by only mounting visible items in the DOM. Use it when rendering 100+ items where a standard map + render would cause performance issues. For interactive lists with selection, sorting, and pagination, use DataTable.",
+    "features": [
+        "Only renders visible items (windowing)",
+        "Configurable item height for calculation",
+        "Configurable container height",
+        "Overscan for smoother scrolling",
+        "Infinite scroll via onEndReached"
+    ],
+    "compositionPattern": "Provide items array and a renderItem function. VirtualList calls renderItem for each visible item. All items must have a consistent, known height for correct virtualization calculations.",
+    "usageExamples": [
+        {
+            "title": "Large contact list",
+            "description": "Virtualized list of thousands of contacts.",
+            "code": "<VirtualList\n  items={contacts}\n  renderItem={(contact) => (\n    <div style={{ height: 60, display: 'flex', alignItems: 'center', gap: 12, padding: '0 16px', borderBottom: '1px solid #eee' }}>\n      <Avatar src={contact.avatar} name={contact.name} size=\"sm\" />\n      <div>\n        <Text variant=\"body.md\">{contact.name}</Text>\n        <Text variant=\"body.sm\" color=\"text.subtle\">{contact.email}</Text>\n      </div>\n    </div>\n  )}\n  itemHeight={60}\n  containerHeight={600}\n/>"
+        },
+        {
+            "title": "Infinite scroll feed",
+            "description": "Virtualized feed with automatic loading of more items at bottom.",
+            "code": "<VirtualList\n  items={feedItems}\n  renderItem={(item) => <FeedItem key={item.id} item={item} />}\n  itemHeight={120}\n  containerHeight={window.innerHeight - 120}\n  overscan={3}\n  onEndReached={loadMoreItems}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "items": {
+            "llmContext": "Required. Array of data objects to render. The array can be large (10,000+ items) — VirtualList handles rendering efficiently. Each item will be passed to renderItem.",
+            "propDescription": "Required. Full data array to virtualize"
+        },
+        "renderItem": {
+            "llmContext": "Required. Function receiving a single item and returning a React node. The rendered node must have a height exactly matching the itemHeight prop — inconsistent heights will cause rendering artifacts.",
+            "propDescription": "Required. Function rendering a single list item"
+        },
+        "itemHeight": {
+            "llmContext": "Required for accurate virtualization. The fixed pixel height of each rendered item. All items must be the same height. If your items have variable heights, this virtualization approach may not work — use a library with dynamic height support.",
+            "propDescription": "Required. Fixed pixel height of each list item"
+        },
+        "containerHeight": {
+            "llmContext": "The visible height of the scroll container in pixels. Only items fitting within this height are rendered. Use the viewport height minus any fixed chrome (e.g., window.innerHeight - topbarHeight - padding).",
+            "propDescription": "Height of the visible scroll container"
+        },
+        "overscan": {
+            "llmContext": "Number of extra items rendered above and below the visible area as a buffer. Higher values (3-5) produce smoother scroll experience at the cost of more DOM nodes. Default is 2-3.",
+            "propDescription": "Extra items rendered outside the visible area for scroll smoothness"
+        },
+        "onEndReached": {
+            "llmContext": "Callback fired when the user scrolls to the bottom of the list. Use to load the next page of items and append to the items array. Pair with a loading state to prevent duplicate requests.",
+            "propDescription": "Called when user scrolls to the bottom of the list"
+        }
+    }
+}

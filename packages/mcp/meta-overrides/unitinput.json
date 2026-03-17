@@ -1,0 +1,46 @@
+{
+    "componentDescription": "UnitInput is a numeric input paired with a unit selector dropdown (e.g., USD/EUR, kg/lbs, px/rem). Use it when a value's meaning depends on its unit and the user needs to specify both — currency amounts, measurements, weight, temperature.",
+    "features": [
+        "Numeric text input for the value",
+        "Unit selector dropdown integrated into the input",
+        "Multiple unit options",
+        "Error state with error message",
+        "Multiple sizes",
+        "Label support"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Currency amount input",
+            "description": "Price input with currency selector.",
+            "code": "<UnitInput\n  label=\"Amount\"\n  value={amount}\n  onChange={setAmount}\n  unit={currency}\n  units={[\n    { label: 'USD', value: 'USD' },\n    { label: 'EUR', value: 'EUR' },\n    { label: 'GBP', value: 'GBP' },\n    { label: 'INR', value: 'INR' },\n  ]}\n  onUnitChange={setCurrency}\n  size={TextInputSize.MEDIUM}\n/>"
+        },
+        {
+            "title": "Dimension input with units",
+            "description": "CSS dimension input with px/rem/% unit options.",
+            "code": "<UnitInput\n  label=\"Width\"\n  value={width}\n  onChange={setWidth}\n  unit={widthUnit}\n  units={[\n    { label: 'px', value: 'px' },\n    { label: 'rem', value: 'rem' },\n    { label: '%', value: '%' },\n    { label: 'vw', value: 'vw' },\n  ]}\n  onUnitChange={setWidthUnit}\n  size={TextInputSize.SMALL}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. The numeric value as a string or number. Store just the numeric part — the unit is managed separately. Manage with useState.",
+            "propDescription": "Required. The input value (numeric part)"
+        },
+        "onChange": {
+            "llmContext": "Required. Called with the new value when the user types in the input field. Only receives the numeric portion — unit changes are handled by onUnitChange.",
+            "propDescription": "Required. Called with new value on input change"
+        },
+        "unit": {
+            "llmContext": "The currently selected unit string (matching a value in the units array). Manage with useState alongside value. The complete representation is value + unit (e.g., '100' + 'px' = '100px').",
+            "propDescription": "Currently selected unit value"
+        },
+        "units": {
+            "llmContext": "Array of unit options for the unit dropdown. Each option: { label: string (display text), value: string (identifier) }. List the most commonly used unit first.",
+            "propDescription": "Array of available unit options"
+        },
+        "onUnitChange": {
+            "llmContext": "Called with the new unit string when the user changes the unit dropdown selection. Update your unit state here. Consider whether you need to convert the value when the unit changes (e.g., kg → lbs requires conversion).",
+            "propDescription": "Called with new unit value when unit selector changes"
+        }
+    }
+}

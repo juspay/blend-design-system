@@ -1,0 +1,49 @@
+{
+    "componentDescription": "Skeleton displays animated loading placeholders that match the shape of the content being loaded. Use Skeleton instead of spinners for page sections, cards, and lists where the content layout is known in advance — it reduces perceived loading time by showing the expected layout structure.",
+    "features": [
+        "Three variants: TEXT (inline text lines), CIRCULAR (avatar/icon placeholders), RECTANGULAR (block/card placeholders)",
+        "Configurable width and height",
+        "Repeat count for multiple skeleton lines",
+        "Animation (shimmer effect by default)"
+    ],
+    "compositionPattern": "Compose multiple Skeleton components to approximate the loading layout. For a card with an avatar, title, and body text, use CIRCULAR for the avatar and TEXT for the text lines.",
+    "usageExamples": [
+        {
+            "title": "Card loading skeleton",
+            "description": "Skeleton matching the layout of a profile card.",
+            "code": "<div style={{ display: 'flex', gap: 12, padding: 16 }}>\n  <Skeleton variant=\"CIRCULAR\" width={48} height={48} />\n  <div style={{ flex: 1 }}>\n    <Skeleton variant=\"TEXT\" width=\"60%\" height={16} />\n    <Skeleton variant=\"TEXT\" width=\"40%\" height={12} style={{ marginTop: 8 }} />\n  </div>\n</div>"
+        },
+        {
+            "title": "List loading skeleton",
+            "description": "Multiple rows of text skeletons simulating a list.",
+            "code": "<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>\n  <Skeleton variant=\"TEXT\" count={5} height={20} />\n</div>"
+        },
+        {
+            "title": "Image/chart placeholder",
+            "description": "Rectangular skeleton for an image or chart area.",
+            "code": "<Skeleton\n  variant=\"RECTANGULAR\"\n  width=\"100%\"\n  height={240}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "variant": {
+            "llmContext": "TEXT renders a rounded-end horizontal bar suitable for text lines. CIRCULAR renders a circle for avatars and icons. RECTANGULAR renders a block for images, cards, and chart areas. Always match the variant to the shape of the content it replaces.",
+            "propDescription": "Shape of the skeleton placeholder"
+        },
+        "width": {
+            "llmContext": "Width of the skeleton. Use percentage strings ('100%', '60%') for responsive widths that scale with their container. Use pixel numbers for fixed-size elements like avatars.",
+            "propDescription": "Width of the skeleton element"
+        },
+        "height": {
+            "llmContext": "Height of the skeleton. Match the expected height of the content: ~14-16px for body text, ~20-24px for headings, exact pixel size for images and avatars.",
+            "propDescription": "Height of the skeleton element"
+        },
+        "count": {
+            "llmContext": "Number of identical skeleton elements to render. Use for lists and repeated content (e.g., count=5 for 5 loading table rows). All instances share the same dimensions.",
+            "propDescription": "Number of skeleton elements to render"
+        },
+        "animation": {
+            "llmContext": "Controls the shimmer/pulse animation. Enable by default — only disable for screenshots, tests, or accessibility contexts where animation is problematic.",
+            "propDescription": "Controls the loading animation effect"
+        }
+    }
+}

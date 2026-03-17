@@ -1,0 +1,65 @@
+{
+    "componentDescription": "DataTable renders tabular data with built-in support for sorting, pagination, row selection, loading states, and empty states. Use DataTable for lists of resources (users, orders, transactions) where users need to scan, sort, and act on rows.",
+    "features": [
+        "Column definitions with header labels, field accessors, and custom cell renderers",
+        "Row click handler for navigation or detail views",
+        "Loading skeleton state",
+        "Empty state for zero-data scenarios",
+        "Pagination configuration",
+        "Column sorting",
+        "Row selection with checkboxes",
+        "idField for unique row identification"
+    ],
+    "compositionPattern": "Define columns as an array of column definition objects, each with a header (display label) and field (key in data object) or custom cell renderer. Pass data as an array of plain objects. idField identifies the unique key in each row object.",
+    "usageExamples": [
+        {
+            "title": "Basic user list table",
+            "description": "Simple table showing a list of users with name, email, and role columns.",
+            "code": "<DataTable\n  idField=\"id\"\n  columns={[\n    { header: 'Name', field: 'name' },\n    { header: 'Email', field: 'email' },\n    { header: 'Role', field: 'role' },\n    { header: 'Status', cell: (row) => <Tags label={row.status} variant={row.active ? 'success' : 'neutral'} /> },\n  ]}\n  data={users}\n  loading={isLoading}\n  emptyState={<EmptyState message=\"No users found\" />}\n  onRowClick={(row) => navigate(`/users/${row.id}`)}\n/>"
+        },
+        {
+            "title": "Table with sorting and pagination",
+            "description": "Transaction table with server-side sorting and pagination.",
+            "code": "<DataTable\n  idField=\"transactionId\"\n  columns={[\n    { header: 'Date', field: 'date', sortable: true },\n    { header: 'Description', field: 'description' },\n    { header: 'Amount', field: 'amount', sortable: true, cell: (row) => `$${row.amount.toFixed(2)}` },\n    { header: 'Status', field: 'status' },\n  ]}\n  data={transactions}\n  sorting={{ field: sortField, direction: sortDir, onChange: handleSort }}\n  pagination={{\n    currentPage,\n    totalPages,\n    pageSize,\n    onPageChange: setCurrentPage\n  }}\n  loading={isFetching}\n/>"
+        },
+        {
+            "title": "Table with row selection",
+            "description": "Product table where users can select multiple rows for bulk actions.",
+            "code": "<DataTable\n  idField=\"productId\"\n  columns={[\n    { header: 'Product', field: 'name' },\n    { header: 'SKU', field: 'sku' },\n    { header: 'Stock', field: 'stock' },\n    { header: 'Price', field: 'price' },\n  ]}\n  data={products}\n  selection={{\n    selectedIds,\n    onSelectionChange: setSelectedIds\n  }}\n  loading={isLoading}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "columns": {
+            "llmContext": "Required. Array of column definitions. Each column needs at minimum header (display label string) and either field (key in row data object) or cell (function(row) => ReactNode for custom rendering). Use cell for formatted values (currency, dates, status badges), action buttons, or composite content.",
+            "propDescription": "Required. Array of column definition objects"
+        },
+        "data": {
+            "llmContext": "Required. Array of row data objects. Each object should have all the fields referenced in your column definitions. The shape should be consistent across all rows.",
+            "propDescription": "Required. Array of row data objects"
+        },
+        "idField": {
+            "llmContext": "Required. The property name in each row object that uniquely identifies that row (e.g., 'id', 'userId', 'orderId'). Used for row selection, key assignment, and click handlers. Must be unique across all rows.",
+            "propDescription": "Required. Property name used as unique row identifier"
+        },
+        "onRowClick": {
+            "llmContext": "Callback receiving the row data object when a row is clicked. Use for navigation to detail pages, opening a side panel, or triggering row-level actions. Adds a pointer cursor to rows when provided.",
+            "propDescription": "Called with row data object when user clicks a row"
+        },
+        "isLoading": {
+            "llmContext": "Set to true while data is being fetched. Displays skeleton loading rows instead of actual data. Always set this during initial fetch and refetch operations.",
+            "propDescription": "Shows skeleton loading state instead of data rows"
+        },
+        "pagination": {
+            "llmContext": "Pass pagination configuration object when the dataset is paginated. Include currentPage, totalPages, pageSize, and onPageChange callback. For server-side pagination, fetch new data in onPageChange.",
+            "propDescription": "Pagination configuration for multi-page data"
+        },
+        "defaultSort": {
+            "llmContext": "Pass a default sort configuration object to pre-sort the table on initial render. Include the sort field and direction ('asc'/'desc'). For server-side sorting, use onSortChange to refetch data with new sort params.",
+            "propDescription": "Default sort configuration for initial column-based data ordering"
+        },
+        "enableRowSelection": {
+            "llmContext": "Set to true to enable row checkboxes for multi-select. Use showBulkActionBar and bulkActions to expose bulk operations (delete, export, status change) once rows are selected.",
+            "propDescription": "Enables row selection checkboxes for multi-select"
+        }
+    }
+}

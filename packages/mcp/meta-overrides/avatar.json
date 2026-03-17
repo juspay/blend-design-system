@@ -1,0 +1,42 @@
+{
+    "componentDescription": "Avatar displays a visual representation of a user or entity — either an image, initials derived from a name, or a fallback icon. Use Avatar wherever you need to visually identify a person: comments, user lists, assignee pickers, profile headers, and notification items.",
+    "features": [
+        "Three content modes: image URL, initials (auto-derived from name), or icon fallback",
+        "Multiple size variants for different UI contexts",
+        "Circular shape by default with optional square variant",
+        "Color-coded initials backgrounds when no image is provided",
+        "Status indicator dot overlay (online, offline, busy)"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "User avatar with image",
+            "description": "Avatar showing a user profile photo.",
+            "code": "<Avatar\n  src={user.avatarUrl}\n  name={user.name}\n  size=\"md\"\n/>"
+        },
+        {
+            "title": "Initials avatar when no image is available",
+            "description": "Avatar that shows initials when no image src is provided.",
+            "code": "<Avatar\n  name=\"Sarah Johnson\"\n  size=\"lg\"\n/>"
+        },
+        {
+            "title": "Avatar in a comment thread",
+            "description": "Small avatar used inline in a comment list.",
+            "code": "<div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>\n  <Avatar src={comment.authorAvatar} name={comment.authorName} size=\"sm\" />\n  <div>\n    <strong>{comment.authorName}</strong>\n    <p>{comment.text}</p>\n  </div>\n</div>"
+        }
+    ],
+    "propOverrides": {
+        "src": {
+            "llmContext": "URL of the user's profile image. When provided, the image is displayed. If the image fails to load, falls back to initials (if name is provided) or a default icon.",
+            "propDescription": "URL of the avatar image"
+        },
+        "name": {
+            "llmContext": "The user's full name. Used to auto-generate initials when no image is available (e.g., 'Sarah Johnson' → 'SJ'). Also used as the alt text for the image for accessibility.",
+            "propDescription": "User name for initials fallback and accessibility"
+        },
+        "size": {
+            "llmContext": "Use 'xs' or 'sm' in dense lists, table cells, and inline mentions. Use 'md' for comment threads, cards, and list items. Use 'lg' or 'xl' for profile headers and prominent user displays.",
+            "propDescription": "Controls avatar dimensions"
+        }
+    }
+}

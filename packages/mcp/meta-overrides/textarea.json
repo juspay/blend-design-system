@@ -1,0 +1,57 @@
+{
+    "componentDescription": "TextArea is a multi-line text input for longer free-form content — descriptions, comments, messages, and notes. Use TextArea when the expected input is more than one sentence. For short single-line text, use TextInput.",
+    "features": [
+        "Multi-line expandable input",
+        "Character count with maxLength",
+        "Configurable row height",
+        "Resize control (none/vertical/both)",
+        "Error state with error message",
+        "Hint text and sublabel",
+        "Multiple size variants",
+        "Disabled state"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Comment or note field",
+            "description": "TextArea for entering a comment with character limit.",
+            "code": "<TextArea\n  label=\"Comment\"\n  placeholder=\"Add a comment...\"\n  value={comment}\n  onChange={setComment}\n  rows={4}\n  maxLength={500}\n  hintText=\"Be specific and constructive\"\n/>"
+        },
+        {
+            "title": "Product description with error",
+            "description": "Required description field with validation.",
+            "code": "<TextArea\n  label=\"Description\"\n  sublabel=\"Required\"\n  placeholder=\"Describe the product in detail...\"\n  value={description}\n  onChange={setDescription}\n  rows={6}\n  maxLength={2000}\n  error={!description.trim() && submitted}\n  errorMessage=\"Description is required\"\n  size={TextInputSize.MEDIUM}\n/>"
+        },
+        {
+            "title": "Support message with no resize",
+            "description": "Fixed-size support ticket message field.",
+            "code": "<TextArea\n  label=\"Message\"\n  placeholder=\"Describe your issue in detail\"\n  value={message}\n  onChange={setMessage}\n  rows={8}\n  maxLength={1000}\n  resize=\"none\"\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. Controlled textarea value. Manage with useState initialized to empty string or pre-populated content.",
+            "propDescription": "Required. Controlled textarea value"
+        },
+        "onChange": {
+            "llmContext": "Required. Called with new string value on every keystroke.",
+            "propDescription": "Required. Called with new string on input change"
+        },
+        "rows": {
+            "llmContext": "Initial visible height of the textarea in text rows. Use 3-4 for short descriptions and notes. Use 6-8 for longer content like messages and essays. The user can resize beyond this if resize is not 'none'.",
+            "propDescription": "Initial visible row height"
+        },
+        "maxLength": {
+            "llmContext": "Maximum character limit. Shows a character counter below the textarea (e.g., '234/500'). Setting maxLength also enforces the limit in the input. Always display the limit so users can plan their input.",
+            "propDescription": "Maximum character count — shows counter when set"
+        },
+        "resize": {
+            "llmContext": "'none' prevents user resizing — use for fixed-layout forms where textarea size affects surrounding elements. 'vertical' (default) lets users resize height only. 'both' allows both axes.",
+            "propDescription": "Controls user resize behavior"
+        },
+        "error": {
+            "llmContext": "Set to true for validation errors (empty required field, content policy violation, etc.). Pair with errorMessage.",
+            "propDescription": "Shows error styling on the textarea"
+        }
+    }
+}

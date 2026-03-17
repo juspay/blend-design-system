@@ -1,0 +1,459 @@
+import type { FoundationTokenType } from '../../tokens/theme.token'
+import {
+    MultiSelectV2SelectionTagType,
+    MultiSelectV2Size,
+    MultiSelectV2Variant,
+} from './multiSelectV2.types'
+import type { ResponsiveMultiSelectV2Tokens } from './multiSelectV2.tokens'
+
+export const getMultiSelectV2DarkTokens = (
+    foundationToken: FoundationTokenType
+): ResponsiveMultiSelectV2Tokens => {
+    const createBaseTokens = (): ResponsiveMultiSelectV2Tokens['sm'] => ({
+        gap: foundationToken.unit[8],
+        label: {
+            fontSize: foundationToken.font.size.body.md.fontSize,
+            fontWeight: foundationToken.font.weight[500],
+            color: {
+                default: foundationToken.colors.gray[200],
+                hover: foundationToken.colors.gray[200],
+                active: foundationToken.colors.gray[200],
+                focus: foundationToken.colors.gray[200],
+                focusVisible: foundationToken.colors.gray[200],
+                disabled: foundationToken.colors.gray[600],
+                selected: foundationToken.colors.gray[200],
+            },
+        },
+        subLabel: {
+            fontSize: foundationToken.font.size.body.md.fontSize,
+            fontWeight: foundationToken.font.weight[400],
+            color: {
+                default: foundationToken.colors.gray[400],
+                hover: foundationToken.colors.gray[400],
+                active: foundationToken.colors.gray[400],
+                focus: foundationToken.colors.gray[400],
+                focusVisible: foundationToken.colors.gray[400],
+                disabled: foundationToken.colors.gray[600],
+                selected: foundationToken.colors.gray[400],
+            },
+        },
+        hintText: {
+            fontSize: foundationToken.font.size.body.md.fontSize,
+            fontWeight: foundationToken.font.weight[400],
+            color: {
+                default: foundationToken.colors.gray[400],
+                hover: foundationToken.colors.gray[400],
+                active: foundationToken.colors.gray[400],
+                focus: foundationToken.colors.gray[400],
+                focusVisible: foundationToken.colors.gray[400],
+                disabled: foundationToken.colors.gray[600],
+                selected: foundationToken.colors.gray[400],
+            },
+        },
+        errorMessage: {
+            fontSize: foundationToken.font.size.body.md.fontSize,
+            fontWeight: foundationToken.font.weight[500],
+            color: foundationToken.colors.red[400],
+        },
+        required: { color: foundationToken.colors.red[400] },
+
+        trigger: {
+            height: {
+                [MultiSelectV2Size.SM]: {
+                    [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[32],
+                    [MultiSelectV2Variant.NO_CONTAINER]:
+                        foundationToken.unit[32],
+                },
+                [MultiSelectV2Size.MD]: {
+                    [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[36],
+                    [MultiSelectV2Variant.NO_CONTAINER]:
+                        foundationToken.unit[36],
+                },
+                [MultiSelectV2Size.LG]: {
+                    [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[40],
+                    [MultiSelectV2Variant.NO_CONTAINER]:
+                        foundationToken.unit[40],
+                },
+            },
+            padding: {
+                [MultiSelectV2Size.SM]: {
+                    [MultiSelectV2Variant.CONTAINER]: {
+                        top: foundationToken.unit[7],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[7],
+                        left: foundationToken.unit[14],
+                    },
+                    [MultiSelectV2Variant.NO_CONTAINER]: {
+                        top: foundationToken.unit[7],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[7],
+                        left: foundationToken.unit[14],
+                    },
+                },
+                [MultiSelectV2Size.MD]: {
+                    [MultiSelectV2Variant.CONTAINER]: {
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[14],
+                    },
+                    [MultiSelectV2Variant.NO_CONTAINER]: {
+                        top: foundationToken.unit[8],
+                        right: foundationToken.unit[14],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[14],
+                    },
+                },
+                [MultiSelectV2Size.LG]: {
+                    [MultiSelectV2Variant.CONTAINER]: {
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
+                    },
+                    [MultiSelectV2Variant.NO_CONTAINER]: {
+                        top: foundationToken.unit[10],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[10],
+                        left: foundationToken.unit[12],
+                    },
+                },
+            },
+            borderRadius: {
+                [MultiSelectV2Size.SM]: {
+                    [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[10],
+                    [MultiSelectV2Variant.NO_CONTAINER]:
+                        foundationToken.unit[10],
+                },
+                [MultiSelectV2Size.MD]: {
+                    [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[10],
+                    [MultiSelectV2Variant.NO_CONTAINER]:
+                        foundationToken.unit[10],
+                },
+                [MultiSelectV2Size.LG]: {
+                    [MultiSelectV2Variant.CONTAINER]: foundationToken.unit[10],
+                    [MultiSelectV2Variant.NO_CONTAINER]:
+                        foundationToken.unit[10],
+                },
+            },
+            boxShadow: {
+                [MultiSelectV2Variant.CONTAINER]: foundationToken.shadows.xs,
+                [MultiSelectV2Variant.NO_CONTAINER]: 'none',
+            },
+            backgroundColor: {
+                [MultiSelectV2Variant.CONTAINER]: {
+                    open: foundationToken.colors.gray[800],
+                    closed: foundationToken.colors.gray[800],
+                    hover: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[800],
+                    error: foundationToken.colors.red[900],
+                },
+                [MultiSelectV2Variant.NO_CONTAINER]: {
+                    open: 'transparent',
+                    closed: 'transparent',
+                    hover: 'transparent',
+                    focus: 'transparent',
+                    error: 'transparent',
+                },
+            },
+            outline: {
+                [MultiSelectV2Variant.CONTAINER]: {
+                    open: `1px solid ${foundationToken.colors.primary[500]}`,
+                    closed: `1px solid ${foundationToken.colors.gray[700]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[600]}`,
+                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
+                    error: `1px solid ${foundationToken.colors.red[500]}`,
+                },
+                [MultiSelectV2Variant.NO_CONTAINER]: {
+                    open: 'none',
+                    closed: 'none',
+                    hover: 'none',
+                    focus: 'none',
+                    error: 'none',
+                },
+            },
+            slot: {
+                gap: foundationToken.unit[8],
+                width: foundationToken.unit[20],
+            },
+            selectionTag: {
+                [MultiSelectV2Variant.CONTAINER]: {
+                    [MultiSelectV2SelectionTagType.COUNT]: {
+                        color: foundationToken.colors.gray[0],
+                        backgroundColor: foundationToken.colors.primary[500],
+                        fontWeight: foundationToken.font.weight[500],
+                        paddingTop: 0,
+                        paddingRight: foundationToken.unit[6],
+                        paddingBottom: 0,
+                        paddingLeft: foundationToken.unit[6],
+                    },
+                    [MultiSelectV2SelectionTagType.TEXT]: {
+                        color: foundationToken.colors.gray[400],
+                        backgroundColor: 'transparent',
+                        fontWeight: foundationToken.font.weight[500],
+                        paddingTop: 0,
+                        paddingRight: 0,
+                        paddingBottom: 0,
+                        paddingLeft: 0,
+                    },
+                },
+                [MultiSelectV2Variant.NO_CONTAINER]: {
+                    [MultiSelectV2SelectionTagType.COUNT]: {
+                        color: foundationToken.colors.gray[0],
+                        backgroundColor: foundationToken.colors.primary[500],
+                        fontWeight: foundationToken.font.weight[500],
+                        paddingTop: 0,
+                        paddingRight: foundationToken.unit[6],
+                        paddingBottom: 0,
+                        paddingLeft: foundationToken.unit[6],
+                    },
+                    [MultiSelectV2SelectionTagType.TEXT]: {
+                        color: foundationToken.colors.gray[400],
+                        backgroundColor: 'transparent',
+                        fontWeight: foundationToken.font.weight[500],
+                        paddingTop: 0,
+                        paddingRight: 0,
+                        paddingBottom: 0,
+                        paddingLeft: 0,
+                    },
+                },
+                marginLeft: foundationToken.unit[8],
+                borderRadius: foundationToken.unit[4],
+            },
+            chevron: {
+                gap: foundationToken.unit[4],
+                width: 20,
+                height: 20,
+                iconSize: 16,
+            },
+            clearButton: {
+                backgroundColor: {
+                    open: foundationToken.colors.gray[800],
+                    closed: foundationToken.colors.gray[800],
+                    hover: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
+                    error: foundationToken.colors.gray[800],
+                },
+                outline: {
+                    open: `1px solid ${foundationToken.colors.gray[700]} !important`,
+                    closed: `1px solid ${foundationToken.colors.gray[700]} !important`,
+                    hover: `1px solid ${foundationToken.colors.gray[700]} !important`,
+                    focus: `1px solid ${foundationToken.colors.gray[400]} !important`,
+                    error: `1px solid ${foundationToken.colors.red[500]} !important`,
+                },
+                color: foundationToken.colors.gray[400],
+                width: foundationToken.unit[16],
+            },
+            floatingLabel: {
+                paddingTop: '0.375rem',
+                paddingRight: 0,
+                paddingBottom: 0,
+                paddingLeft: 0,
+            },
+            placeholder: {
+                color: foundationToken.colors.gray[500],
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[400],
+            },
+            selectedValue: {
+                color: foundationToken.colors.gray[100],
+                fontSize: foundationToken.font.size.body.md.fontSize,
+                fontWeight: foundationToken.font.weight[500],
+            },
+        },
+
+        menu: {
+            backgroundColor: foundationToken.colors.gray[800],
+            border: `1px solid ${foundationToken.colors.gray[700]}`,
+            borderRadius: foundationToken.unit[8],
+            padding: {
+                [MultiSelectV2Size.SM]: {
+                    [MultiSelectV2Variant.CONTAINER]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
+                    },
+                    [MultiSelectV2Variant.NO_CONTAINER]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
+                    },
+                },
+                [MultiSelectV2Size.MD]: {
+                    [MultiSelectV2Variant.CONTAINER]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
+                    },
+                    [MultiSelectV2Variant.NO_CONTAINER]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
+                    },
+                },
+                [MultiSelectV2Size.LG]: {
+                    [MultiSelectV2Variant.CONTAINER]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
+                    },
+                    [MultiSelectV2Variant.NO_CONTAINER]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[6],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[6],
+                    },
+                },
+            },
+            minWidth: 250,
+            scroll: {
+                height: 80,
+                maxHeight: 320,
+            },
+            header: {
+                backgroundColor: foundationToken.colors.gray[800],
+                borderBottom: `1px solid ${foundationToken.colors.gray[700]}`,
+                selectAllRowPaddingLeft: foundationToken.unit[4],
+                selectAllRowPaddingRight: foundationToken.unit[4],
+            },
+            selectAll: {
+                paddingTop: foundationToken.unit[8],
+                paddingRight: foundationToken.unit[8],
+                paddingBottom: foundationToken.unit[8],
+                paddingLeft: foundationToken.unit[8],
+                borderRadius: foundationToken.unit[4],
+            },
+            list: {
+                paddingTop: foundationToken.unit[6],
+                paddingRight: foundationToken.unit[6],
+                paddingBottom: foundationToken.unit[6],
+                paddingLeft: foundationToken.unit[6],
+            },
+            actions: {
+                paddingTop: foundationToken.unit[16],
+                paddingRight: foundationToken.unit[16],
+                paddingBottom: foundationToken.unit[16],
+                paddingLeft: foundationToken.unit[16],
+                gap: foundationToken.unit[8],
+                backgroundColor: foundationToken.colors.gray[800],
+                borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[700]}`,
+            },
+            item: {
+                paddingTop: foundationToken.unit[4],
+                paddingRight: foundationToken.unit[4],
+                paddingBottom: foundationToken.unit[4],
+                paddingLeft: foundationToken.unit[4],
+                margin: foundationToken.unit[4],
+                borderRadius: foundationToken.unit[10],
+                gap: foundationToken.unit[4],
+                backgroundColor: {
+                    default: foundationToken.colors.gray[800],
+                    hover: foundationToken.colors.gray[700],
+                    active: foundationToken.colors.gray[600],
+                    focus: foundationToken.colors.gray[700],
+                    focusVisible: foundationToken.colors.gray[700],
+                    disabled: 'transparent',
+                    selected: foundationToken.colors.gray[700],
+                },
+                optionsLabel: {
+                    fontSize: 12,
+                    fontWeight: foundationToken.font.weight[400],
+                    color: {
+                        default: foundationToken.colors.gray[400],
+                        hover: foundationToken.colors.gray[400],
+                        active: foundationToken.colors.gray[400],
+                        focus: foundationToken.colors.gray[400],
+                        focusVisible: foundationToken.colors.gray[400],
+                        disabled: foundationToken.colors.gray[600],
+                        selected: foundationToken.colors.gray[400],
+                    },
+                    paddingTop: foundationToken.unit[6],
+                    paddingRight: foundationToken.unit[8],
+                    paddingBottom: foundationToken.unit[6],
+                    paddingLeft: foundationToken.unit[8],
+                },
+                option: {
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
+                    color: {
+                        default: foundationToken.colors.gray[200],
+                        hover: foundationToken.colors.gray[200],
+                        active: foundationToken.colors.gray[200],
+                        focus: foundationToken.colors.gray[200],
+                        focusVisible: foundationToken.colors.gray[200],
+                        disabled: foundationToken.colors.gray[600],
+                        selected: foundationToken.colors.gray[200],
+                    },
+                },
+                description: {
+                    fontSize: foundationToken.font.size.body.xs.fontSize,
+                    fontWeight: foundationToken.font.weight[400],
+                    color: {
+                        default: foundationToken.colors.gray[400],
+                        hover: foundationToken.colors.gray[400],
+                        active: foundationToken.colors.gray[400],
+                        focus: foundationToken.colors.gray[400],
+                        focusVisible: foundationToken.colors.gray[400],
+                        disabled: foundationToken.colors.gray[600],
+                        selected: foundationToken.colors.gray[400],
+                    },
+                },
+                seperator: {
+                    color: foundationToken.colors.gray[700],
+                    height: '1px',
+                    margin: `${foundationToken.unit[6]} 0`,
+                },
+            },
+        },
+
+        subMenu: {
+            trigger: {
+                paddingTop: foundationToken.unit[8],
+                paddingRight: foundationToken.unit[6],
+                paddingBottom: foundationToken.unit[8],
+                paddingLeft: foundationToken.unit[6],
+                margin: `0 ${foundationToken.unit[6]}`,
+                borderRadius: foundationToken.unit[4],
+            },
+            content: {
+                borderRadius: foundationToken.unit[8],
+                paddingTop: foundationToken.unit[8],
+                paddingRight: 0,
+                paddingBottom: foundationToken.unit[8],
+                paddingLeft: 0,
+            },
+        },
+
+        drawer: {
+            header: {
+                paddingTop: 0,
+                paddingRight: foundationToken.unit[16],
+                paddingBottom: foundationToken.unit[12],
+                paddingLeft: foundationToken.unit[16],
+                borderBottom: `1px solid ${foundationToken.colors.gray[700]}`,
+            },
+            search: {
+                paddingTop: 0,
+                paddingRight: foundationToken.unit[16],
+                paddingBottom: 0,
+                paddingLeft: foundationToken.unit[16],
+                marginTop: foundationToken.unit[8],
+                marginBottom: foundationToken.unit[4],
+            },
+            content: {
+                gap: foundationToken.unit[4],
+            },
+        },
+    })
+
+    const baseTokens = createBaseTokens()
+    return {
+        sm: baseTokens,
+        lg: baseTokens,
+    }
+}

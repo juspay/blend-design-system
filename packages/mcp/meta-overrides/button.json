@@ -1,0 +1,73 @@
+{
+    "componentDescription": "Button is the primary interactive element for triggering actions. It supports multiple visual types (primary, secondary, danger, success), sizes, and subtypes including icon-only and inline text variants. Use Button for form submissions, modal actions, confirmations, and any user-initiated action.",
+    "features": [
+        "Four semantic button types: PRIMARY (main CTA), SECONDARY (secondary action), DANGER (destructive), SUCCESS (positive confirmation)",
+        "Three sizes: SMALL, MEDIUM, LARGE",
+        "Three subtypes: DEFAULT (text + optional icons), ICON_ONLY (square icon button), INLINE (text-only, no background)",
+        "Loading state with spinner replaces content while async action is in progress",
+        "Leading and trailing icon slots for icons alongside text",
+        "Full-width and custom width support",
+        "buttonGroupPosition for rendering buttons as a connected group"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Primary and Secondary actions",
+            "description": "Typical primary CTA with a secondary cancel button alongside it.",
+            "code": "<div style={{ display: 'flex', gap: 8 }}>\n  <Button buttonType={ButtonType.PRIMARY} size={ButtonSize.MEDIUM} text=\"Save changes\" onClick={handleSave} />\n  <Button buttonType={ButtonType.SECONDARY} size={ButtonSize.MEDIUM} text=\"Cancel\" onClick={handleCancel} />\n</div>"
+        },
+        {
+            "title": "Danger button with loading state",
+            "description": "Destructive action that shows a loading spinner while the deletion is in progress.",
+            "code": "<Button\n  buttonType={ButtonType.DANGER}\n  size={ButtonSize.MEDIUM}\n  text=\"Delete account\"\n  loading={isDeleting}\n  onClick={handleDelete}\n/>"
+        },
+        {
+            "title": "Icon-only button",
+            "description": "Compact square button showing only an icon, useful in toolbars.",
+            "code": "<Button\n  buttonType={ButtonType.SECONDARY}\n  size={ButtonSize.SMALL}\n  subType={ButtonSubType.ICON_ONLY}\n  leadingIcon={<EditIcon />}\n  onClick={handleEdit}\n/>"
+        },
+        {
+            "title": "Button with leading icon and full width",
+            "description": "Full-width primary button with a leading icon for mobile or form footers.",
+            "code": "<Button\n  buttonType={ButtonType.PRIMARY}\n  size={ButtonSize.LARGE}\n  text=\"Continue\"\n  leadingIcon={<ArrowRightIcon />}\n  fullWidth\n  onClick={handleContinue}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "buttonType": {
+            "llmContext": "Controls the visual hierarchy and semantic meaning. Use PRIMARY for the single most important action on a screen (e.g., 'Submit', 'Save'). Use SECONDARY for alternatives and cancel actions. Use DANGER for irreversible destructive actions (e.g., 'Delete', 'Remove'). Use SUCCESS for positive confirmations (e.g., 'Approve', 'Confirm'). Never use more than one PRIMARY per action group.",
+            "propDescription": "Semantic type determining button color and hierarchy"
+        },
+        "size": {
+            "llmContext": "Use SMALL in dense UIs like tables, toolbars, and inline actions. Use MEDIUM as the default for most dialogs and forms. Use LARGE for prominent hero CTAs or full-width mobile buttons.",
+            "propDescription": "Controls button height and font size"
+        },
+        "subType": {
+            "llmContext": "DEFAULT is standard text button with optional icons. Use ICON_ONLY when you have a well-known icon and limited horizontal space (always add a tooltip for accessibility). Use INLINE for subtle text-only actions that should not draw heavy attention, like 'Learn more' or 'View details' inside a card.",
+            "propDescription": "Controls button shape and content layout"
+        },
+        "leadingIcon": {
+            "llmContext": "Accepts a React node (icon component). Place icons that clarify the action before the text, e.g., a download icon before 'Export'. Do not use both leadingIcon and trailingIcon together unless the design explicitly calls for it.",
+            "propDescription": "Icon rendered before the button text"
+        },
+        "trailingIcon": {
+            "llmContext": "Accepts a React node (icon component). Use a trailing icon for direction cues (e.g., arrow-right for navigation) or dropdown indicators. Prefer leadingIcon for action-clarifying icons.",
+            "propDescription": "Icon rendered after the button text"
+        },
+        "loading": {
+            "llmContext": "Set to true while an async operation triggered by this button is in progress. Automatically disables the button and shows a spinner. Always set this during form submission or API calls to prevent double-submission.",
+            "propDescription": "Shows loading spinner and disables the button"
+        },
+        "disabled": {
+            "llmContext": "Use disabled when the action is not currently available (e.g., form is invalid, user lacks permissions). Prefer showing a tooltip explaining why the button is disabled rather than hiding it.",
+            "propDescription": "Prevents interaction and applies disabled visual style"
+        },
+        "fullWidth": {
+            "llmContext": "Set to true to make the button stretch to fill its container. Commonly used in mobile layouts, modal footers, and stacked form actions.",
+            "propDescription": "Button expands to 100% of its container width"
+        },
+        "buttonGroupPosition": {
+            "llmContext": "Use this when rendering multiple buttons as a connected visual group (like a segmented control). Set to 'left' for the leftmost button, 'middle' for intermediate ones, and 'right' for the last one. This removes border-radius between adjacent buttons.",
+            "propDescription": "Position within a button group to control border-radius styling"
+        }
+    }
+}

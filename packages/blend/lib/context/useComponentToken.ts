@@ -48,6 +48,8 @@ import { ResponsiveAlertV2Tokens } from '../components/AlertV2'
 import { ResponsiveAccordionV2Tokens } from '../components/AccordionV2'
 import { ResponsiveSnackbarV2Tokens } from '../components/SnackbarV2'
 import { ResponsiveSwitchV2Tokens } from '../components/SelectorV2/SwitchV2/switchV2.tokens'
+import { ResponsiveSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
+import type { ResponsiveMultiSelectV2Tokens } from '../components/MultiSelectV2/multiSelectV2.tokens'
 import { ResponsiveAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
@@ -55,6 +57,7 @@ import { ResponsiveTimelineTokens } from '../components/Timeline/timeline.token'
 import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
+import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -109,6 +112,8 @@ export const useComponentToken = (
     | ResponsiveAccordionV2Tokens
     | ResponsiveSnackbarV2Tokens
     | ResponsiveSwitchV2Tokens
+    | ResponsiveSingleSelectV2Tokens
+    | ResponsiveMultiSelectV2Tokens
     | ResponsiveTextInputV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
@@ -117,6 +122,7 @@ export const useComponentToken = (
     | ResponsiveCheckboxV2Tokens
     | ResponsiveKeyValuePairV2Tokens
     | ResponsiveRadioV2Tokens
+    | ResponsivePopoverV2Tokens
     | ResponsiveTextInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -154,6 +160,8 @@ export const useComponentToken = (
             return componentTokens.BREADCRUMB
         case 'POPOVER':
             return componentTokens.POPOVER
+        case 'POPOVERV2':
+            return componentTokens.POPOVERV2
         case 'MENU':
             return componentTokens.MENU
         case 'MULTI_SELECT':
@@ -218,6 +226,10 @@ export const useComponentToken = (
             return componentTokens.SNACKBARV2
         case 'SWITCHV2':
             return componentTokens.SWITCHV2
+        case 'SINGLE_SELECT_V2':
+            return componentTokens.SINGLE_SELECT_V2
+        case 'MULTI_SELECT_V2':
+            return componentTokens.MULTI_SELECT_V2
         case 'AVATARV2':
             return componentTokens.AVATARV2
         case 'TEXT_INPUTV2':
