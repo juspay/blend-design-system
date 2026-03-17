@@ -198,7 +198,7 @@ export default function useDropdownInteractionLock(
     selectors?: DropdownSelectors
 ) {
     const selectorsRef = useRef(selectors)
-    const shadowRoot = useShadowRoot()
+    const { shadowRoot } = useShadowRoot()
 
     useEffect(() => {
         selectorsRef.current = selectors
