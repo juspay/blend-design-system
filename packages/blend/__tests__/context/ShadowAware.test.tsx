@@ -138,6 +138,11 @@ describe('ShadowAware', () => {
                 '[ShadowAware] Target element is NOT inside a ShadowRoot!'
             )
             consoleSpy.mockRestore()
+
+            // Cleanup: remove target from DOM to prevent leaks
+            if (target.parentNode) {
+                target.parentNode.removeChild(target)
+            }
         })
 
         it('handles multiple children', () => {
