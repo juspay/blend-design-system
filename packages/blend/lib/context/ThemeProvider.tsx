@@ -13,9 +13,12 @@ type ThemeProviderProps = {
     theme?: Theme | string
     children: React.ReactNode
     /**
-     * Target element for styled-components to inject styles into.
+     * Target HTMLElement for styled-components to inject styles into.
      * Use this when rendering inside a Shadow DOM.
-     * The element should be inside a shadow root.
+     * The element must be inside a shadow root.
+     *
+     * Note: This is the actual DOM element (not the ShadowRoot itself) that
+     * styled-components will use as the style injection target.
      */
     target?: HTMLElement
 }
