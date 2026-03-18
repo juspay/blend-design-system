@@ -107,6 +107,10 @@ const SingleSelect = ({
     ...rest
 }: SingleSelectProps) => {
     const { onFocus, onBlur, ...buttonRest } = rest
+    const buttonRestWithoutAria = { ...buttonRest } as Record<string, unknown>
+    delete buttonRestWithoutAria['aria-describedby']
+    delete buttonRestWithoutAria['aria-label']
+    delete buttonRestWithoutAria['aria-labelledby']
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const slotRef = useRef<HTMLDivElement>(null)
@@ -134,7 +138,7 @@ const SingleSelect = ({
             hintText,
             error,
             errorMessage,
-            rest,
+            rest: buttonRest,
             prefix: 'singleselect',
             needsMenuId: true,
         })
@@ -412,7 +416,7 @@ const SingleSelect = ({
                                     onBlur={() => {
                                         callOnBlur()
                                     }}
-                                    {...buttonRest}
+                                    {...buttonRestWithoutAria}
                                 >
                                     <Block
                                         display="flex"

@@ -281,9 +281,14 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
             hintText,
             error,
             errorMessage,
-            rest,
+            rest: triggerRest,
             prefix: 'singleselect-mobile',
         })
+
+    const triggerRestWithoutAria = { ...triggerRest } as Record<string, unknown>
+    delete triggerRestWithoutAria['aria-describedby']
+    delete triggerRestWithoutAria['aria-label']
+    delete triggerRestWithoutAria['aria-labelledby']
 
     return (
         <Block
@@ -354,7 +359,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                             error={error}
                             disabled={disabled}
                             {...ariaAttributes}
-                            {...triggerRest}
+                            {...triggerRestWithoutAria}
                         />
                     )}
                 </DrawerTrigger>
