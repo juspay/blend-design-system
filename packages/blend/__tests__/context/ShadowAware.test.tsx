@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, waitFor } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import ShadowAware, { useShadowRoot } from '../../lib/context/ShadowAware'
 import ThemeProvider from '../../lib/context/ThemeProvider'
 import styled from 'styled-components'
