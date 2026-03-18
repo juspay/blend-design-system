@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 import { useShadowRoot } from '../context/ShadowAware'
 
 let lockCount = 0
-let styleInjected = false
 let scrollX = 0
 let scrollY = 0
 
@@ -88,7 +87,7 @@ function preventKeyboardInteraction(
 }
 
 function injectStyle(selectors: DropdownSelectors, target: HTMLElement | null) {
-    if (styleInjected || typeof document === 'undefined') return
+    if (typeof document === 'undefined') return
 
     const disableSelectors =
         selectors.disablePointerEvents ||
@@ -96,6 +95,14 @@ function injectStyle(selectors: DropdownSelectors, target: HTMLElement | null) {
         []
 
     if (disableSelectors.length === 0) return
+
+    // Inject to target element's parent (shadow root) or document.head
+    const targetContainer = target?.parentNode || document.head
+
+    // Check if style already exists in this specific container
+    // This makes injection container-specific for multi-MFE support
+    const existingStyle = targetContainer.querySelector(`#${STYLE_ID}`)
+    if (existingStyle) return
 
     // If we have a target element (inside shadow DOM), styles go there
     // Otherwise use body class for scoping in document.head
@@ -114,15 +121,7 @@ function injectStyle(selectors: DropdownSelectors, target: HTMLElement | null) {
       }
     `
 
-    // Inject to target element's parent (shadow root) or document.head
-    const targetContainer = target?.parentNode || document.head
-
-    // Check if style already exists in target container
-    const existingStyle = targetContainer.querySelector(`#${STYLE_ID}`)
-    if (!existingStyle) {
-        targetContainer.appendChild(style)
-    }
-    styleInjected = true
+    targetContainer.appendChild(style)
 }
 
 function applyLock(selectors: DropdownSelectors, target: HTMLElement | null) {

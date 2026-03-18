@@ -23,16 +23,22 @@ type ShadowAwareProps = {
 }
 
 const ShadowAware = ({ children, target }: ShadowAwareProps) => {
-    // Verify target is inside a shadow root
-    const parent = target.parentNode
-    const isInsideShadowRoot = parent instanceof ShadowRoot
+    // Use getRootNode() to properly detect shadow DOM even when target is nested
+    // This handles cases where target is not a direct child of ShadowRoot
+    const rootNode =
+        typeof target.getRootNode === 'function'
+            ? target.getRootNode()
+            : target.parentNode
+
+    const isInsideShadowRoot =
+        typeof ShadowRoot !== 'undefined' && rootNode instanceof ShadowRoot
 
     if (!isInsideShadowRoot) {
         console.warn('[ShadowAware] Target element is NOT inside a ShadowRoot!')
     }
 
     // Get the shadow root from the target
-    const shadowRoot = isInsideShadowRoot ? parent : null
+    const shadowRoot = isInsideShadowRoot ? (rootNode as ShadowRoot) : null
 
     return (
         <ShadowRootContext.Provider value={{ shadowRoot, target }}>
