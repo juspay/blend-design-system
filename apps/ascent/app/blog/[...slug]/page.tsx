@@ -125,7 +125,9 @@ export default async function BlogPostPage({ params }: PageProps) {
         // Extract headings with error handling
         let headings: TOCItem[]
         try {
-            headings = extractHeadings(post.content)
+            headings = extractHeadings(post.content).filter(
+                (h) => h.level === 1
+            )
         } catch (tocError) {
             // eslint-disable-next-line no-console
             console.error(

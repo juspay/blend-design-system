@@ -1,10 +1,7 @@
 {
     "order": [
         "why-we-named-it-blend",
-        "introducing-blend-v2",
-        "design-system-best-practices",
-        "component-library-updates",
-        "getting-started-guide",
-        "migration-guide-v2"
+        "theme-provider-token-architecture",
+        "blend-mcp-server-documentation"
     ]
 }

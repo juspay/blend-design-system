@@ -9,77 +9,68 @@ interface BlogPostCardProps {
 export function BlogPostCard({ post }: BlogPostCardProps) {
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric',
+            year: 'numeric',
         })
     }
 
     return (
-        <article className="group relative bg-[var(--card)] border border-[var(--border)] rounded-lg p-6 hover:shadow-lg transition-all duration-200 hover:border-[var(--accent)] h-full flex flex-col">
-            {post.featured && (
-                <div className="absolute -top-2 -right-2">
-                    <span className="bg-[var(--accent)] text-[var(--accent-foreground)] text-xs font-medium px-2 py-1 rounded-full">
-                        Featured
-                    </span>
-                </div>
-            )}
-
-            <div className="flex-1">
-                <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] mb-3">
-                    <time dateTime={post.publishDate}>
-                        {formatDate(post.publishDate)}
-                    </time>
-                    <span>•</span>
-                    <span>{post.readTime}</span>
-                    <span>•</span>
-                    <span className="capitalize">{post.category}</span>
-                </div>
-
-                <Link
-                    href={`/blog/${sanitizeSlug(post.slug)}`}
-                    className="group-hover:text-[var(--accent)] transition-colors"
-                >
-                    <h3 className="text-xl font-semibold text-[var(--foreground)] mb-3 line-clamp-2">
+        <Link
+            href={`/blog/${sanitizeSlug(post.slug)}`}
+            className="relative flex h-full flex-col overflow-hidden border-b border-r border-[#e1e4ea] bg-white px-6 pt-8"
+        >
+            {/* Content */}
+            <div className="flex min-h-0 flex-1 flex-col gap-[42px] items-start w-full">
+                {/* Title + Author */}
+                <div className="flex flex-col gap-[15px] items-start w-full shrink-0">
+                    <p
+                        className="text-[24px] font-medium leading-[1.1] tracking-[-0.48px] text-[#202020]"
+                        style={{
+                            fontFamily: 'var(--font-manrope), sans-serif',
+                        }}
+                    >
                         {post.title}
-                    </h3>
-                </Link>
-
-                <p className="text-[var(--muted-foreground)] mb-4 line-clamp-3">
-                    {post.excerpt || post.description}
-                </p>
-
-                <div className="flex items-center justify-between">
+                    </p>
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-[var(--muted)] rounded-full flex items-center justify-center">
-                            <span className="text-sm font-medium text-[var(--muted-foreground)]">
+                        <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#e1e4ea] overflow-hidden">
+                            <span className="text-[8px] font-medium text-[#525866]">
                                 {post.author.charAt(0).toUpperCase()}
                             </span>
                         </div>
-                        <span className="text-sm text-[var(--muted-foreground)]">
+                        <p
+                            className="whitespace-nowrap text-[16px] font-normal leading-[30px] tracking-[-0.32px] text-[#717784]"
+                            style={{
+                                fontFamily:
+                                    'var(--font-geist-sans), sans-serif',
+                            }}
+                        >
                             {post.author}
-                        </span>
+                        </p>
                     </div>
                 </div>
+
+                {/* Excerpt */}
+                <p
+                    className="text-[16px] font-normal leading-[30px] tracking-[-0.32px] text-[#717784] text-justify w-full"
+                    style={{ fontFamily: 'var(--font-geist-sans), sans-serif' }}
+                >
+                    {post.excerpt || post.description}
+                </p>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-[var(--border)]">
-                <div className="flex flex-wrap gap-2">
-                    {post.tags.slice(0, 3).map((tag) => (
-                        <span
-                            key={tag}
-                            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)] transition-colors cursor-pointer"
-                        >
-                            #{tag}
-                        </span>
-                    ))}
-                    {post.tags.length > 3 && (
-                        <span className="text-xs text-[var(--muted-foreground)]">
-                            +{post.tags.length - 3} more
-                        </span>
-                    )}
-                </div>
+            {/* Gradient fade overlay */}
+            <div className="pointer-events-none absolute bottom-[42px] left-0 right-0 h-[218px] bg-gradient-to-b from-transparent to-white" />
+
+            {/* Date */}
+            <div className="absolute bottom-[30px] left-0 right-0 flex justify-center">
+                <p
+                    className="whitespace-nowrap text-[14px] font-normal leading-normal tracking-[-0.28px] text-[#525866]"
+                    style={{ fontFamily: 'var(--font-geist-sans), sans-serif' }}
+                >
+                    {formatDate(post.publishDate)}
+                </p>
             </div>
-        </article>
+        </Link>
     )
 }

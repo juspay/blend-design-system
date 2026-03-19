@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Manrope } from 'next/font/google'
 import { METADATA_CONFIG } from '@/lib/config'
 import { GoogleAnalytics } from '@/app/components/GoogleAnalytics'
 import './globals.css'
@@ -15,6 +15,12 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
     variable: '--font-geist-mono',
+    subsets: ['latin'],
+    display: 'swap',
+})
+
+const manrope = Manrope({
+    variable: '--font-manrope',
     subsets: ['latin'],
     display: 'swap',
 })
@@ -52,7 +58,7 @@ export default function RootLayout({
                 <meta name="theme-color" content="#000000" />
             </head>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+                className={`${geistSans.variable} ${geistMono.variable} ${manrope.variable} font-sans antialiased`}
                 suppressHydrationWarning
             >
                 {children}
