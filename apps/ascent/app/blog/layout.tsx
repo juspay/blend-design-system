@@ -18,7 +18,6 @@ const BLOG_LIGHT_STYLE = `
 const BlogLayout: React.FC<BlogLayoutProps> = ({ children }) => {
     return (
         <>
-            {/* eslint-disable-next-line react/no-danger */}
             <style dangerouslySetInnerHTML={{ __html: BLOG_LIGHT_STYLE }} />
             <div
                 className="blog-root min-h-screen w-full bg-white"
