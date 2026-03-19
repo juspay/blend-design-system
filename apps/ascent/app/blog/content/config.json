@@ -1,7 +1,3 @@
 {
-    "order": [
-        "why-we-named-it-blend",
-        "theme-provider-token-architecture",
-        "blend-mcp-server-documentation"
-    ]
+    "order": []
 }

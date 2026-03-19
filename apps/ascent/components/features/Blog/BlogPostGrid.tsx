@@ -5,6 +5,8 @@ interface BlogPostGridProps {
     posts: BlogPost[]
 }
 
+const COLS = 4
+
 export function BlogPostGrid({ posts }: BlogPostGridProps) {
     if (posts.length === 0) {
         return (
@@ -19,9 +21,24 @@ export function BlogPostGrid({ posts }: BlogPostGridProps) {
         )
     }
 
+    // Single row → fill the remaining viewport height, no scroll.
+    // Multi row  → scroll within the bounded container.
+    const isMultiRow = posts.length > COLS
+
     return (
-        <div className="flex flex-1 flex-col border-b border-l border-r border-[#e1e4ea] bg-white">
-            <div className="grid h-full grid-cols-4">
+        <div
+            className={[
+                'flex flex-1 flex-col',
+                'border-b border-l border-r border-[#e1e4ea] bg-white',
+                isMultiRow ? 'overflow-y-auto' : 'overflow-hidden',
+            ].join(' ')}
+        >
+            <div
+                className={[
+                    'grid grid-cols-4',
+                    isMultiRow ? '' : 'h-full',
+                ].join(' ')}
+            >
                 {posts.map((post) => (
                     <BlogPostCard key={post.slug} post={post} />
                 ))}

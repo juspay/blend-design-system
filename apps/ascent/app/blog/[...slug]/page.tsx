@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { compileMDX } from 'next-mdx-remote/rsc'
+import remarkGfm from 'remark-gfm'
 import {
     getBlogPost,
     getAllBlogPosts,
@@ -9,8 +10,12 @@ import {
 import { extractHeadings } from '@/docs/utils'
 import { BlogPostWithTOC, TOCItem } from '@/components/features/Blog'
 
-// Import MDX components directly to avoid hook issues
+// Blog-specific MDX components (clean light-theme typography)
+import { BlogMDXComponents } from '@/components/features/Blog/BlogMDXComponents'
 import { components as mdxComponents } from '@/mdx-components'
+
+// Blog components take precedence; fall back to global for custom blocks
+const blogComponents = { ...mdxComponents, ...BlogMDXComponents }
 
 interface PageProps {
     params: Promise<{
@@ -108,9 +113,12 @@ export default async function BlogPostPage({ params }: PageProps) {
         try {
             const compiled = await compileMDX({
                 source: post.content,
-                components: mdxComponents,
+                components: blogComponents,
                 options: {
                     parseFrontmatter: false,
+                    mdxOptions: {
+                        remarkPlugins: [remarkGfm],
+                    },
                 },
             })
             content = compiled.content

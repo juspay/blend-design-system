@@ -9,6 +9,7 @@ export {
     default as BlogTableOfContentsDefault,
 } from './BlogTableOfContents'
 export { default as BlogPostWithTOC } from './BlogPostWithTOC'
+export { BlogMDXComponents } from './BlogMDXComponents'
 
 // Type exports
 export type * from './types'

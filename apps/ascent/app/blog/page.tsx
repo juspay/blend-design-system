@@ -14,7 +14,7 @@ export default function BlogPage() {
 
             {/* Content — exactly fills the space between the two fixed grids */}
             <div
-                className="mx-auto flex w-full max-w-[1172px] flex-col"
+                className="mx-auto flex w-full max-w-[1172px] flex-col overflow-hidden"
                 style={{ height: 'calc(100vh - 142px)', marginTop: '71px' }}
             >
                 <BlogHeader />

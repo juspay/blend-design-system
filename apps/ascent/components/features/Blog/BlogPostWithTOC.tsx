@@ -98,53 +98,11 @@ export default function BlogPostWithTOC({
                     )}
                 </div>
 
-                {/* Content with forced light-theme prose */}
+                {/* Content */}
                 <div className="flex flex-col gap-8">
                     <div
-                        className="
-                            prose max-w-none
-                            text-[16px] leading-[36px] tracking-[-0.32px]
-                            [color-scheme:light]
-                            [&_*]:color-scheme-light
-                            text-[#2b303b]
-                            [&_p]:text-[#2b303b] [&_p]:text-justify
-                            [&_h1]:text-[#202020] [&_h1]:font-semibold
-                            [&_h2]:text-[#202020] [&_h2]:font-medium [&_h2]:tracking-[-0.5px] [&_h2]:mt-8
-                            [&_h3]:text-[#202020] [&_h3]:font-medium [&_h3]:mt-6
-                            [&_h4]:text-[#202020] [&_h4]:font-medium
-                            [&_strong]:text-[#202020] [&_strong]:font-semibold
-                            [&_em]:text-[#2b303b]
-                            [&_li]:text-[#2b303b]
-                            [&_ul]:text-[#2b303b]
-                            [&_ol]:text-[#2b303b]
-                            [&_blockquote]:border-l-[#e1e4ea] [&_blockquote]:text-[#525866] [&_blockquote]:not-italic
-                            [&_a]:text-[#525866] [&_a:hover]:text-[#202020] [&_a]:no-underline [&_a:hover]:underline
-                            [&_hr]:border-[#e1e4ea]
-                            [&_table]:border-[#e1e4ea]
-                            [&_thead]:bg-[#f9fafb] [&_thead_th]:text-[#202020] [&_thead_th]:border-[#e1e4ea]
-                            [&_td]:text-[#2b303b] [&_td]:border-[#e1e4ea]
-                            [&_code]:rounded [&_code]:bg-[#f5f5f5] [&_code]:px-1.5 [&_code]:py-0.5
-                            [&_code]:text-[14px] [&_code]:text-[#525866] [&_code]:font-normal
-                            [&_code]:before:content-none [&_code]:after:content-none
-                            [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-[#e1e4ea]
-                            [&_pre]:bg-[#f8f8f8] [&_pre]:text-[#2b303b]
-                            [&_pre_code]:bg-transparent [&_pre_code]:text-[#2b303b] [&_pre_code]:p-0
-                        "
-                        style={{
-                            fontFamily: 'var(--font-geist-sans), sans-serif',
-                            ['--sh-class' as string]: '#144f9e',
-                            ['--sh-identifier' as string]: '#b01b1b',
-                            ['--sh-sign' as string]: '#465462',
-                            ['--sh-property' as string]: '#0550ae',
-                            ['--sh-entity' as string]: '#1a6e6b',
-                            ['--sh-jsxliterals' as string]: '#3438b4',
-                            ['--sh-string' as string]: '#00766c',
-                            ['--sh-keyword' as string]: '#f53527',
-                            ['--sh-comment' as string]: '#a19595',
-                            ['--sh-background' as string]: '#f6f8fa',
-                            ['--code-background' as string]: '#fefefe',
-                            ['--code-border' as string]: '#e0e0e0',
-                        }}
+                        className="w-full min-w-0"
+                        style={{ colorScheme: 'light' }}
                     >
                         {content}
                     </div>
