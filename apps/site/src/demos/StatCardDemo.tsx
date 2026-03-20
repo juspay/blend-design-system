@@ -412,7 +412,7 @@ const StatCardDemo = () => {
                                 selected: dropdownValue,
                                 onSelect: handleDropdownSelect,
                             }}
-                            title="GMV Trend "
+                            title="GMV Trend lorem ipsum dolor sit amet"
                             value="$8,234"
                             subtitle="last 7 days"
                             variant={StatCardVariant.LINE}
