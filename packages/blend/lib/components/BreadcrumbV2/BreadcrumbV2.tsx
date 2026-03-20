@@ -295,7 +295,7 @@ const BreadcrumbV2: BreadcrumbV2Component = ({
             >
                 {baseItem && (
                     <li
-                        key={`breadcrumb-item-${0}`}
+                        key={baseItem.label}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -322,8 +322,6 @@ const BreadcrumbV2: BreadcrumbV2Component = ({
                             color={FOUNDATION_THEME.colors.gray[400]}
                             size={24}
                             aria-label={`Show ${menuItems.length} more breadcrumb items`}
-                            aria-expanded="false"
-                            aria-haspopup="menu"
                             type="button"
                         >
                             <Ellipsis
