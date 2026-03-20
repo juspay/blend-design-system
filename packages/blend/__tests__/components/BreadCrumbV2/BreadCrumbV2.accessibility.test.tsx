@@ -40,4 +40,22 @@ describe('BreadcrumbV2 Accessibility', () => {
         )
         expect(nav).toBeInTheDocument()
     })
+
+    it('has no accessibility violations for composable API', async () => {
+        const { container } = render(
+            <Breadcrumb>
+                <Breadcrumb.Item href="/">
+                    <Breadcrumb.Page>Home</Breadcrumb.Page>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href="/docs">
+                    <Breadcrumb.Page>Docs</Breadcrumb.Page>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item isActive>
+                    <Breadcrumb.Page>Components</Breadcrumb.Page>
+                </Breadcrumb.Item>
+            </Breadcrumb>
+        )
+        const results = await axe(container)
+        expect(results).toHaveNoViolations()
+    })
 })
