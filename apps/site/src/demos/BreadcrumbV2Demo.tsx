@@ -11,6 +11,7 @@ import {
     Database,
     Globe,
     Star,
+    ChevronRight,
 } from 'lucide-react'
 import { useState } from 'react'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
@@ -270,6 +271,43 @@ const BreadcrumbV2Demo = () => {
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Basic Examples</h2>
                 <div className="space-y-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Composable API (Compound Components)
+                        </h3>
+                        <div className="p-4 border rounded-lg">
+                            <BreadcrumbV2>
+                                <BreadcrumbV2.Item href="/">
+                                    <BreadcrumbV2.StartIcon>
+                                        <Home size={16} />
+                                    </BreadcrumbV2.StartIcon>
+                                    <BreadcrumbV2.Page>Home</BreadcrumbV2.Page>
+                                    <BreadcrumbV2.EndIcon>
+                                        <ChevronRight size={14} />
+                                    </BreadcrumbV2.EndIcon>
+                                </BreadcrumbV2.Item>
+
+                                <BreadcrumbV2.Item href="/docs">
+                                    <BreadcrumbV2.Page>Docs</BreadcrumbV2.Page>
+                                    <BreadcrumbV2.EndIcon>
+                                        <ChevronRight size={14} />
+                                    </BreadcrumbV2.EndIcon>
+                                </BreadcrumbV2.Item>
+
+                                <BreadcrumbV2.Item isActive>
+                                    <BreadcrumbV2.Page>
+                                        Components
+                                    </BreadcrumbV2.Page>
+                                </BreadcrumbV2.Item>
+                            </BreadcrumbV2>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                            Use <code>BreadcrumbV2.Item</code> and optional{' '}
+                            <code>StartIcon</code>/<code>EndIcon</code> for a
+                            fully composable breadcrumb structure.
+                        </p>
+                    </div>
+
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
                             Simple Navigation

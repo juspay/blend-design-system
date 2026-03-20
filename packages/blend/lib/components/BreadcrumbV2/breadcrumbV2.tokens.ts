@@ -21,6 +21,14 @@ export type BreadcrumbV2TokensType = {
             }
         }
     }
+    ellipsis: {
+        color: CSSObject['color']
+        borderRadius: CSSObject['borderRadius']
+        size: number
+    }
+    separator: {
+        color: CSSObject['color']
+    }
 }
 
 export type ResponsiveBreadcrumbV2Tokens = {

@@ -22,6 +22,14 @@ export const getBreadcrumbV2LightTokens = (
                     },
                 },
             },
+            ellipsis: {
+                color: foundationToken.colors.gray[400],
+                borderRadius: foundationToken.border.radius[6],
+                size: 14,
+            },
+            separator: {
+                color: foundationToken.colors.gray[400],
+            },
         },
         lg: {
             gap: foundationToken.unit[0],
@@ -39,6 +47,14 @@ export const getBreadcrumbV2LightTokens = (
                         active: foundationToken.colors.gray[700],
                     },
                 },
+            },
+            ellipsis: {
+                color: foundationToken.colors.gray[400],
+                borderRadius: foundationToken.border.radius[6],
+                size: 14,
+            },
+            separator: {
+                color: foundationToken.colors.gray[400],
             },
         },
     }
