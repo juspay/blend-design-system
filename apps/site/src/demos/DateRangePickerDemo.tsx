@@ -922,7 +922,7 @@ const DateRangePickerDemo = () => {
                                         <CustomButton
                                             onClick={onClick}
                                             variant="primary"
-                                            style={{ maxWidth: '100%' }}
+                                            style={{ width: '100%' }}
                                         >
                                             <CalendarIcon />
                                             <span className="truncate">
@@ -1195,6 +1195,55 @@ const DateRangePickerDemo = () => {
                                 }}
                                 showPresets={true}
                                 showDateTimePicker={true}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Undefined Value Test Case
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Tests behavior when undefined is passed (should show
+                            placeholder)
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={undefined}
+                                onChange={(range) =>
+                                    console.log(
+                                        'Undefined test value changed:',
+                                        range
+                                    )
+                                }
+                                showDateTimePicker={false}
+                                formatConfig={{ includeTime: false }}
+                                showPresets={true}
+                                isDisabled={false}
+                                size={DateRangePickerSize.SMALL}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Date Input Only Test Case */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Date Input Only
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Shows manual date input fields without the time
+                            selectors.
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={playgroundRange}
+                                onChange={handlePlaygroundRangeChange}
+                                showDateInput={true}
+                                showDateTimePicker={false}
+                                formatConfig={{ includeTime: false }}
+                                showPresets={true}
+                                isDisabled={false}
+                                size={DateRangePickerSize.SMALL}
                             />
                         </div>
                     </div>

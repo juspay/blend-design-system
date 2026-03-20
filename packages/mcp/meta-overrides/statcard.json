@@ -1,0 +1,54 @@
+{
+    "componentDescription": "StatCard displays a KPI or metric with an optional trend indicator and chart visualization. Use it in dashboards for key business metrics — revenue, user counts, conversion rates, and other numeric KPIs.",
+    "features": [
+        "Four visualization variants: LINE (sparkline chart), PROGRESS_BAR (completion bar), BAR (bar chart), NUMBER (metric only)",
+        "Change indicator showing increase/decrease with percentage or value",
+        "Title and optional subtitle",
+        "Chart data slot for sparkline and bar variants",
+        "Progress value for PROGRESS_BAR variant"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Revenue metric with sparkline",
+            "description": "Monthly revenue KPI with trend sparkline chart.",
+            "code": "<StatCard\n  title=\"Monthly Revenue\"\n  value=\"$124,500\"\n  variant=\"LINE\"\n  change={{ value: 12.5, type: 'INCREASE' }}\n  chartData={[\n    { month: 'Jan', value: 98000 },\n    { month: 'Feb', value: 105000 },\n    { month: 'Mar', value: 110000 },\n    { month: 'Apr', value: 124500 },\n  ]}\n/>"
+        },
+        {
+            "title": "Goal completion with progress bar",
+            "description": "Sales target completion shown as a progress bar.",
+            "code": "<StatCard\n  title=\"Q4 Sales Target\"\n  value=\"82%\"\n  variant=\"PROGRESS_BAR\"\n  progressValue={82}\n  subtitle=\"$82,000 of $100,000\"\n  change={{ value: 15, type: 'INCREASE' }}\n/>"
+        },
+        {
+            "title": "Simple number metric",
+            "description": "User count metric with no chart.",
+            "code": "<StatCard\n  title=\"Total Users\"\n  value=\"24,891\"\n  variant=\"NUMBER\"\n  change={{ value: 8.3, type: 'INCREASE' }}\n  subtitle=\"+2,100 this month\"\n/>"
+        }
+    ],
+    "propOverrides": {
+        "title": {
+            "llmContext": "Required. Short metric name displayed above the value. Use concise nouns or noun phrases (e.g., 'Monthly Revenue', 'Active Users', 'Conversion Rate'). Keep under 30 characters.",
+            "propDescription": "Required. Metric title/label"
+        },
+        "value": {
+            "llmContext": "Required. The primary metric value displayed prominently. Pass pre-formatted strings (e.g., '$124,500', '82%', '24.8K'). Format numbers appropriately for the metric type before passing.",
+            "propDescription": "Required. The primary metric value (pre-formatted string)"
+        },
+        "variant": {
+            "llmContext": "LINE adds a sparkline trend chart — use for time-series metrics like revenue or traffic. PROGRESS_BAR shows goal completion — use with progressValue for percentage-based targets. BAR adds a bar chart — use for comparing recent periods. NUMBER shows only the metric — use for simple counts or derived values where a chart would not add meaningful context.",
+            "propDescription": "Chart visualization variant"
+        },
+        "change": {
+            "llmContext": "Object { value: number, type: 'INCREASE' | 'DECREASE' } showing the trend. Use INCREASE for positive direction (green) and DECREASE for negative (red). Note that for some metrics (like 'Error Rate'), a decrease is actually positive — consider your framing.",
+            "propDescription": "Trend change indicator with value and direction"
+        },
+        "progressValue": {
+            "llmContext": "Required when variant is PROGRESS_BAR. A number 0–100 representing the completion percentage. This drives the visual bar fill, while value is the display text above.",
+            "propDescription": "0–100 completion value for PROGRESS_BAR variant"
+        },
+        "chartData": {
+            "llmContext": "Array of data points for LINE and BAR variants. Each point should have a value field and a label/category field. Keep to 5-12 data points for readable sparklines.",
+            "propDescription": "Data points for LINE or BAR chart visualization"
+        }
+    }
+}

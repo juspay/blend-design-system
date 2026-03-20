@@ -18,7 +18,7 @@ export type SingleSelectTriggerProps = {
     required: boolean
     valueLabelMap: Record<string, string>
     open: boolean
-    onClick?: () => void
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
     slot: React.ReactNode
     variant: SelectMenuVariant
     isSmallScreenWithLargeSize: boolean

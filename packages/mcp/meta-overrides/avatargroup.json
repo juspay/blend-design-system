@@ -1,0 +1,37 @@
+{
+    "componentDescription": "AvatarGroup displays multiple Avatar components in a stacked/overlapping row with an overflow count. Use it to show the members of a team, the assignees of a task, or the participants of a meeting when horizontal space is limited.",
+    "features": [
+        "Overlapping stack layout for space efficiency",
+        "Overflow count badge when avatars exceed the max display limit",
+        "Configurable max displayed avatars",
+        "Consistent sizing applied to all avatars in the group",
+        "Tooltip on each avatar showing the user's name"
+    ],
+    "compositionPattern": "Pass an array of avatar data objects (each with src and name) to the avatars prop. The component handles overlap layout and overflow counting automatically.",
+    "usageExamples": [
+        {
+            "title": "Task assignees",
+            "description": "Show up to 3 assignees with overflow count for a task card.",
+            "code": "<AvatarGroup\n  avatars={task.assignees.map(a => ({ src: a.avatarUrl, name: a.name }))}\n  max={3}\n  size=\"sm\"\n/>"
+        },
+        {
+            "title": "Team members in a project header",
+            "description": "Show all team members, stacked with overlap.",
+            "code": "<AvatarGroup\n  avatars={project.members.map(m => ({ src: m.photo, name: m.fullName }))}\n  max={5}\n  size=\"md\"\n/>"
+        }
+    ],
+    "propOverrides": {
+        "avatars": {
+            "llmContext": "Required. Array of avatar data objects. Each should have at minimum name (for initials/alt text) and optionally src (image URL). Passed in the order they should appear.",
+            "propDescription": "Required. Array of avatar data objects with src and name"
+        },
+        "max": {
+            "llmContext": "Maximum number of avatars to display before showing an overflow count badge. Set based on available space — typically 3-5. The overflow badge shows '+N' for the remaining count.",
+            "propDescription": "Maximum number of avatars shown before overflow count"
+        },
+        "size": {
+            "llmContext": "Applied uniformly to all avatars in the group. Use 'sm' for compact cards and table cells. Use 'md' for standard card headers and list items.",
+            "propDescription": "Size applied to all avatars in the group"
+        }
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "componentDescription": "Alert displays important contextual messages — feedback, warnings, errors, or informational notices — inline within a page. Unlike Snackbar (ephemeral), Alert is persistent and part of the page layout. Use it for form validation summaries, system status messages, and contextual guidance.",
+    "features": [
+        "Seven semantic variants: PRIMARY, SUCCESS, WARNING, ERROR, PURPLE, ORANGE, NEUTRAL",
+        "Two fill styles: SUBTLE (light tinted background) and NO_FILL (transparent, border only)",
+        "Optional primary and secondary action buttons embedded in the alert",
+        "Configurable action placement: BOTTOM (stacked under description) or RIGHT (inline with heading)",
+        "Optional close button via onClose callback",
+        "Custom icon override slot",
+        "Width control via minWidth, maxWidth, width props"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Error alert after form submission failure",
+            "description": "Show an error alert when a server-side error occurs during form submission.",
+            "code": "<Alert\n  variant={AlertVariant.ERROR}\n  style={AlertStyle.SUBTLE}\n  heading=\"Submission failed\"\n  description=\"We couldn't save your changes. Please check your connection and try again.\"\n  primaryAction={{ label: 'Retry', onClick: handleRetry }}\n  onClose={() => setShowError(false)}\n/>"
+        },
+        {
+            "title": "Success confirmation with no fill",
+            "description": "Lightweight success message after a successful save, using NO_FILL style.",
+            "code": "<Alert\n  variant={AlertVariant.SUCCESS}\n  style={AlertStyle.NO_FILL}\n  heading=\"Changes saved\"\n  description=\"Your profile has been updated successfully.\"\n  onClose={() => setShowSuccess(false)}\n/>"
+        },
+        {
+            "title": "Warning alert with bottom action placement",
+            "description": "Warning requiring the user to take action, with action buttons below the description.",
+            "code": "<Alert\n  variant={AlertVariant.WARNING}\n  style={AlertStyle.SUBTLE}\n  heading=\"Trial ending soon\"\n  description=\"Your free trial expires in 3 days. Upgrade to keep access to all features.\"\n  actionPlacement={AlertActionPlacement.BOTTOM}\n  primaryAction={{ label: 'Upgrade now', onClick: handleUpgrade }}\n  secondaryAction={{ label: 'Remind me later', onClick: handleDismiss }}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "heading": {
+            "llmContext": "Required. Short, direct title for the alert (e.g., 'Payment failed', 'File uploaded'). Keep it under 60 characters. This is the first thing users read, so make it immediately clear what happened.",
+            "propDescription": "Required. The bold title text of the alert"
+        },
+        "description": {
+            "llmContext": "Required. Supporting text that explains the heading in more detail. Provide actionable next steps or context. For errors, explain what went wrong and how to fix it. For success, confirm what was accomplished.",
+            "propDescription": "Required. The body text beneath the heading"
+        },
+        "variant": {
+            "llmContext": "Choose based on the semantic meaning: ERROR for failures and validation errors; WARNING for potential problems that need attention; SUCCESS for completed actions; PRIMARY for general informational notices; NEUTRAL for low-priority context; PURPLE/ORANGE for branded or custom contexts.",
+            "propDescription": "Controls color scheme and icon"
+        },
+        "style": {
+            "llmContext": "SUBTLE (default) uses a lightly tinted background — appropriate for most alerts. NO_FILL uses only a border with no background, good when the alert sits inside a card or already-colored container and a filled background would clash.",
+            "propDescription": "Controls the background fill of the alert"
+        },
+        "primaryAction": {
+            "llmContext": "Pass an object { label: string, onClick: () => void } for the main action button within the alert. Use for actions like 'Retry', 'Upgrade', or 'View details'. Rendered as a primary button.",
+            "propDescription": "Primary action button displayed inside the alert"
+        },
+        "secondaryAction": {
+            "llmContext": "Pass an object { label: string, onClick: () => void } for a secondary action. Use for softer alternatives like 'Dismiss', 'Later', or 'Learn more'. Rendered as a secondary/ghost button.",
+            "propDescription": "Secondary action button displayed inside the alert"
+        },
+        "actionPlacement": {
+            "llmContext": "BOTTOM places action buttons in a new row beneath the description — use when button labels are long or when both primary and secondary actions are present. RIGHT places actions inline with the heading — use for single short-label actions in compact layouts.",
+            "propDescription": "Controls where action buttons are rendered relative to the description"
+        },
+        "onClose": {
+            "llmContext": "Provide a callback to show a close (X) button in the alert. Without this prop, the alert is not dismissible. Use for alerts the user should be able to clear manually.",
+            "propDescription": "Callback fired when the close button is clicked; presence enables the close button"
+        },
+        "icon": {
+            "llmContext": "Accepts a React node to override the default variant icon. Use this only when the default icon doesn't communicate the right meaning for your specific use case.",
+            "propDescription": "Custom icon to display instead of the default variant icon"
+        }
+    }
+}

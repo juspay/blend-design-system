@@ -1,0 +1,50 @@
+{
+    "componentDescription": "Snackbar displays temporary notifications that auto-dismiss after a brief period. Use for non-critical, transient feedback: 'Saved', 'Copied to clipboard', 'Email sent'. For persistent important messages requiring user attention, use Alert instead. Snackbar is typically invoked via a toast utility function rather than rendered directly.",
+    "features": [
+        "Auto-dismisses after a configurable duration",
+        "Multiple semantic variants matching Alert variants",
+        "Optional action button within the notification",
+        "Configurable screen position",
+        "Manual close callback"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Success notification after save",
+            "description": "Brief success confirmation after a save operation.",
+            "code": "// Typically called imperatively:\nshowSnackbar({\n  message: 'Changes saved successfully',\n  variant: 'success',\n  duration: 3000\n});"
+        },
+        {
+            "title": "Snackbar with undo action",
+            "description": "Notification with an undo action button for reversible operations.",
+            "code": "showSnackbar({\n  message: 'Item deleted',\n  variant: 'neutral',\n  duration: 5000,\n  action: { label: 'Undo', onClick: handleUndo },\n  onClose: () => finalizeDelete()\n});"
+        },
+        {
+            "title": "Direct Snackbar rendering",
+            "description": "Rendering Snackbar as a component when not using a toast utility.",
+            "code": "<Snackbar\n  message=\"File uploaded successfully\"\n  variant=\"success\"\n  duration={4000}\n  position=\"bottom-right\"\n  onClose={() => setShowSnackbar(false)}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "message": {
+            "llmContext": "Required. The notification text. Keep it under 80 characters. Use past tense for completed actions ('Saved', 'Deleted') and present tense for ongoing states. Avoid technical jargon.",
+            "propDescription": "Required. The notification message text"
+        },
+        "variant": {
+            "llmContext": "Choose based on the type of feedback: 'success' for completed actions (save, copy, send), 'error' for failed actions, 'warning' for important cautions, 'neutral' for informational messages. Avoid 'error' for snackbar — use Alert for persistent errors instead.",
+            "propDescription": "Semantic variant controlling color and icon"
+        },
+        "action": {
+            "llmContext": "Optional action button inside the snackbar. Pass { label: string, onClick: () => void }. Best used for reversible actions ('Undo', 'View'). Keep label short (1-2 words). Providing an action implicitly extends the duration so users have time to click it.",
+            "propDescription": "Optional action button shown in the snackbar"
+        },
+        "duration": {
+            "llmContext": "Milliseconds before auto-dismiss. Default is 3000ms (3 seconds). Use 5000ms when an action button is present. Use 2000ms for simple confirmations like 'Copied'. Do not set very long durations — use Alert for persistent messages.",
+            "propDescription": "Milliseconds before the snackbar auto-dismisses"
+        },
+        "position": {
+            "llmContext": "'bottom-right' is the most common position. Use 'bottom-center' for mobile-first UIs. Avoid 'top-*' positions as they conflict with navigation bars and alerts.",
+            "propDescription": "Screen position where the snackbar appears"
+        }
+    }
+}

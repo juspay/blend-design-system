@@ -1,0 +1,74 @@
+{
+    "componentDescription": "Modal is a dialog overlay that captures user focus for important interactions — confirmations, forms, detail views, and multi-step flows. It blocks the underlying page and must be explicitly dismissed. For mobile-friendly layouts, use useDrawerOnMobile to automatically switch to a Drawer on small screens.",
+    "features": [
+        "Controlled open/close state via isOpen and onClose",
+        "Standard header (title + subtitle) and footer (primaryAction + secondaryAction) with show/hide toggles",
+        "Fully custom header and footer slots for non-standard layouts",
+        "headerRightSlot for adding actions or badges in the header without replacing it entirely",
+        "Optional divider between header and body content",
+        "Responsive: switches to bottom-sheet Drawer on mobile when useDrawerOnMobile is true",
+        "Skeleton loading mode while content is being fetched",
+        "Width control via minWidth, maxWidth; height via maxHeight",
+        "Backdrop click to close (enabled by default, disable with closeOnBackdropClick=false)"
+    ],
+    "compositionPattern": "Pass content as children between the Modal tags. For simple confirmation dialogs, use title + primaryAction + secondaryAction props. For complex forms or custom layouts, use isCustom=true with customHeader and customFooter slots.",
+    "usageExamples": [
+        {
+            "title": "Confirmation dialog",
+            "description": "Simple modal asking the user to confirm a destructive action.",
+            "code": "<Modal\n  isOpen={isOpen}\n  onClose={() => setIsOpen(false)}\n  title=\"Delete project\"\n  subtitle=\"This action cannot be undone. All project data will be permanently removed.\"\n  primaryAction={{ label: 'Delete', onClick: handleDelete }}\n  secondaryAction={{ label: 'Cancel', onClick: () => setIsOpen(false) }}\n  closeOnBackdropClick={false}\n>\n  <p>Are you sure you want to delete <strong>{projectName}</strong>?</p>\n</Modal>"
+        },
+        {
+            "title": "Form modal with custom footer",
+            "description": "Modal containing a form with a custom footer for more control over button layout.",
+            "code": "<Modal\n  isOpen={isOpen}\n  onClose={() => setIsOpen(false)}\n  title=\"Edit profile\"\n  showFooter={false}\n  maxWidth={600}\n  useDrawerOnMobile\n>\n  <form onSubmit={handleSubmit}>\n    <TextInput label=\"Name\" value={name} onChange={setName} />\n    <TextInput label=\"Email\" value={email} onChange={setEmail} />\n    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>\n      <Button buttonType={ButtonType.SECONDARY} text=\"Cancel\" onClick={() => setIsOpen(false)} />\n      <Button buttonType={ButtonType.PRIMARY} text=\"Save\" loading={isSaving} onClick={handleSubmit} />\n    </div>\n  </form>\n</Modal>"
+        },
+        {
+            "title": "Fully custom modal",
+            "description": "Custom modal with isCustom=true for a non-standard layout like an image viewer.",
+            "code": "<Modal\n  isOpen={isOpen}\n  onClose={() => setIsOpen(false)}\n  isCustom\n  maxWidth={900}\n  maxHeight={700}\n>\n  <div style={{ display: 'flex', height: '100%' }}>\n    <div style={{ flex: 1 }}>\n      <img src={imageUrl} alt=\"Preview\" style={{ width: '100%' }} />\n    </div>\n    <div style={{ width: 280, padding: 24 }}>\n      <h3>{imageTitle}</h3>\n      <p>{imageDescription}</p>\n    </div>\n  </div>\n</Modal>"
+        }
+    ],
+    "propOverrides": {
+        "isOpen": {
+            "llmContext": "Required. Controls whether the modal is visible. Always manage this with useState. Set to true to open, false to close. The modal renders as a portal, so state should live in the parent component.",
+            "propDescription": "Required. Controls modal visibility"
+        },
+        "onClose": {
+            "llmContext": "Required. Called when the user clicks the close button or presses Escape. Set isOpen to false inside this handler. If you need to prevent accidental dismissal (e.g., unsaved form), also set closeOnBackdropClick=false and handle confirmation logic here.",
+            "propDescription": "Required. Callback fired on close button click or Escape key"
+        },
+        "isCustom": {
+            "llmContext": "Set to true to suppress the default header/footer rendering entirely and take full control of the modal content via children. Use for non-standard layouts like image galleries, multi-panel views, or fully custom forms. When isCustom is true, title, subtitle, primaryAction, and secondaryAction props are ignored.",
+            "propDescription": "Disables default header/footer; full content control via children"
+        },
+        "useDrawerOnMobile": {
+            "llmContext": "Set to true for modals that appear in mobile contexts. The modal automatically renders as a bottom-sheet Drawer on small screens, providing a better mobile UX without any extra logic.",
+            "propDescription": "Renders as a Drawer (bottom sheet) on mobile screen sizes"
+        },
+        "closeOnBackdropClick": {
+            "llmContext": "Default is true. Set to false for modals with forms or multi-step flows where accidental backdrop clicks would lose user data. Always disable for checkout flows, complex forms, and irreversible confirmations.",
+            "propDescription": "Whether clicking the backdrop closes the modal"
+        },
+        "headerRightSlot": {
+            "llmContext": "Accepts a React node rendered on the right side of the modal header, next to the close button. Use for status badges, step indicators, or contextual actions without replacing the full header.",
+            "propDescription": "React node rendered in the top-right of the header"
+        },
+        "skeleton": {
+            "llmContext": "Set to true while the modal's content data is being fetched. Displays a skeleton loading state instead of children. Use this to avoid showing an empty or partially-loaded modal.",
+            "propDescription": "Shows skeleton loading state instead of children"
+        },
+        "showDivider": {
+            "llmContext": "Set to true to add a visible horizontal rule between the modal header and body. Useful when the modal header and body content are visually similar and need separation.",
+            "propDescription": "Shows a divider line between header and body"
+        },
+        "primaryAction": {
+            "llmContext": "Pass { label: string, onClick: () => void, loading?: boolean, disabled?: boolean } for the main footer action. Rendered as a PRIMARY button. If using a form inside the modal, prefer handling submission directly in children for more control over loading/disabled states.",
+            "propDescription": "Primary action button in the modal footer"
+        },
+        "secondaryAction": {
+            "llmContext": "Pass { label: string, onClick: () => void } for the footer's secondary action. Typically 'Cancel' or 'Back'. Rendered as a SECONDARY button.",
+            "propDescription": "Secondary action button in the modal footer"
+        }
+    }
+}

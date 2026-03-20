@@ -1,0 +1,73 @@
+{
+    "componentDescription": "Tabs organizes content into multiple panels where only one panel is visible at a time. Use Tabs for switching between distinct views of the same resource (e.g., Overview / Settings / Analytics). It supports four visual variants and integrates with Radix UI for accessible keyboard navigation.",
+    "features": [
+        "Four visual variants: BOXED (card-style), FLOATING (elevated tabs), UNDERLINE (minimal, bottom border active indicator), PILLS (rounded pill-shaped tabs)",
+        "Two sizes: MD and LG",
+        "Rich tab items: each can have left/right icon slots, new-item badge, and disabled state",
+        "Controlled and uncontrolled modes via value/onValueChange or defaultValue",
+        "Optional add-tab button and close-tab callbacks for dynamic tab management",
+        "Overflow dropdown for tabs that don't fit in the available width",
+        "Sticky header with configurable offsetTop for scrollable tab panels",
+        "expanded prop to fill the full container width"
+    ],
+    "compositionPattern": "Pass all tab definitions as the items array. Each item has a value (unique key), label (display text), and content (ReactNode for the tab panel). The Tabs component renders both the tab strip and the panel — you do not need to manually conditionally render panels.",
+    "usageExamples": [
+        {
+            "title": "Basic underline tabs",
+            "description": "Simple tabs with the UNDERLINE variant, suitable for page-level navigation sections.",
+            "code": "<Tabs\n  variant={TabsVariant.UNDERLINE}\n  size={TabsSize.MD}\n  defaultValue=\"overview\"\n  items={[\n    { value: 'overview', label: 'Overview', content: <OverviewPanel /> },\n    { value: 'analytics', label: 'Analytics', content: <AnalyticsPanel /> },\n    { value: 'settings', label: 'Settings', content: <SettingsPanel /> },\n  ]}\n/>"
+        },
+        {
+            "title": "Controlled tabs with icons and disabled state",
+            "description": "Controlled tabs where the active tab is managed externally, with icons and a disabled tab.",
+            "code": "<Tabs\n  variant={TabsVariant.BOXED}\n  size={TabsSize.LG}\n  value={activeTab}\n  onValueChange={setActiveTab}\n  items={[\n    { value: 'users', label: 'Users', leftSlot: <UsersIcon />, content: <UsersPanel /> },\n    { value: 'roles', label: 'Roles', leftSlot: <ShieldIcon />, content: <RolesPanel /> },\n    { value: 'audit', label: 'Audit log', leftSlot: <LogIcon />, content: <AuditPanel />, disable: true },\n  ]}\n/>"
+        },
+        {
+            "title": "Dynamic tabs with add and close",
+            "description": "Tabs where users can add new tabs and close existing ones.",
+            "code": "<Tabs\n  variant={TabsVariant.PILLS}\n  size={TabsSize.MD}\n  value={activeTab}\n  onValueChange={setActiveTab}\n  items={tabs}\n  showAddButton\n  onTabAdd={handleAddTab}\n  onTabClose={handleCloseTab}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "variant": {
+            "llmContext": "UNDERLINE is the most common — clean and minimal, best for page-level sections. BOXED gives a card-like appearance, good for settings or dashboard widgets. FLOATING adds elevation/shadow to the active tab, suitable for prominent navigation. PILLS uses rounded shapes, good for filter-style tabs or compact UIs.",
+            "propDescription": "Visual style of the tab strip"
+        },
+        "items": {
+            "llmContext": "Required. Array of TabItem objects. Each must have: value (unique string key used for controlled state), label (display text), and content (ReactNode rendered when the tab is active). Optional: leftSlot/rightSlot (React nodes for icons or badges), disable (boolean), newItem (boolean to show a 'new' badge).",
+            "propDescription": "Array of tab definitions including labels, content, and optional slots"
+        },
+        "defaultValue": {
+            "llmContext": "Use for uncontrolled mode — set this to the value of the tab that should be active on first render. Do not use alongside value/onValueChange. Prefer uncontrolled mode for simple use cases where parent state doesn't need to know the active tab.",
+            "propDescription": "Initially active tab value in uncontrolled mode"
+        },
+        "value": {
+            "llmContext": "Use for controlled mode — the currently active tab value. Must be paired with onValueChange. Use controlled mode when the parent needs to programmatically switch tabs (e.g., navigating to a specific tab from a URL param or another action).",
+            "propDescription": "Currently active tab value in controlled mode"
+        },
+        "onValueChange": {
+            "llmContext": "Callback fired with the new tab value when the user switches tabs. Use this to update state in controlled mode. Also useful for syncing tab state to URL query params for deep-linking.",
+            "propDescription": "Called with the new active tab value when user switches tabs"
+        },
+        "expanded": {
+            "llmContext": "Set to true to make tabs stretch to fill the full width of their container, distributing tab widths evenly. Use in full-width layouts where you don't want tabs to be left-aligned.",
+            "propDescription": "Tabs fill the full container width"
+        },
+        "stickyHeader": {
+            "llmContext": "Set to true to make the tab strip stick to the top of the viewport when scrolling through a long tab panel. Use in pages with long scrollable content inside tabs. Pair with offsetTop to account for a fixed topbar.",
+            "propDescription": "Tab strip sticks to top of viewport while scrolling"
+        },
+        "showDropdown": {
+            "llmContext": "Set to true to show an overflow dropdown for tabs that don't fit in the available horizontal space. Use when the number of tabs is dynamic or could be large.",
+            "propDescription": "Shows overflow dropdown when tabs overflow the container"
+        },
+        "showAddButton": {
+            "llmContext": "Set to true to display a '+' button at the end of the tab strip for adding new tabs. Must also provide onTabAdd callback. Use for workspaces or editors where users can create new tabs.",
+            "propDescription": "Displays a button to add new tabs"
+        },
+        "onTabClose": {
+            "llmContext": "Callback fired with the tab value when a tab's close button is clicked. Presence of this prop enables close buttons on all non-disabled tabs. Update the items array in this callback to actually remove the tab.",
+            "propDescription": "Called with tab value when user clicks the tab close button"
+        }
+    }
+}

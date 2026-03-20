@@ -1,0 +1,69 @@
+{
+    "componentDescription": "Checkbox is a binary selection input for forms. Use it for opt-in choices, multi-item selection lists, and acknowledgement flows (e.g., 'I agree to terms'). Supports controlled and uncontrolled modes, error states, and supplementary content via subtext and children.",
+    "features": [
+        "Two sizes: SMALL and MEDIUM",
+        "Controlled (checked + onCheckedChange) and uncontrolled (defaultChecked) modes",
+        "Error state with visual indicator",
+        "Label with optional subtext for additional context",
+        "Children slot for custom content below the label",
+        "slot prop for React node alongside the label (e.g., badge or icon)",
+        "maxLength for label truncation",
+        "required prop for form validation"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Basic controlled checkbox",
+            "description": "Simple terms acceptance checkbox in controlled mode.",
+            "code": "<Checkbox\n  id=\"terms\"\n  label=\"I agree to the Terms of Service\"\n  checked={agreedToTerms}\n  onCheckedChange={setAgreedToTerms}\n  required\n/>"
+        },
+        {
+            "title": "Checkbox with subtext and error state",
+            "description": "Checkbox showing validation error when required and unchecked.",
+            "code": "<Checkbox\n  id=\"newsletter\"\n  label=\"Subscribe to newsletter\"\n  subtext=\"You'll receive weekly updates about new features\"\n  checked={subscribed}\n  onCheckedChange={setSubscribed}\n  error={!subscribed && submitted}\n/>"
+        },
+        {
+            "title": "Multi-select checkbox list",
+            "description": "List of checkboxes for selecting multiple options.",
+            "code": "<div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>\n  {options.map(option => (\n    <Checkbox\n      key={option.id}\n      id={option.id}\n      label={option.label}\n      subtext={option.description}\n      size={CheckboxSize.MEDIUM}\n      checked={selected.includes(option.id)}\n      onCheckedChange={(checked) => handleToggle(option.id, checked)}\n    />\n  ))}\n</div>"
+        }
+    ],
+    "propOverrides": {
+        "checked": {
+            "llmContext": "Use for controlled mode. Provide the boolean value from state and update it via onCheckedChange. Use controlled mode when the checkbox state affects other UI or needs to be validated.",
+            "propDescription": "Controlled checked state"
+        },
+        "defaultChecked": {
+            "llmContext": "Use for uncontrolled mode when you don't need to track the checkbox state in parent component state. Suitable for simple settings or preferences where you only read the value on form submit.",
+            "propDescription": "Initial checked state in uncontrolled mode"
+        },
+        "onCheckedChange": {
+            "llmContext": "Callback receiving the new boolean value whenever the checkbox is toggled. Update your state variable here. Note: this receives a boolean, not a DOM event.",
+            "propDescription": "Called with new boolean value when checkbox is toggled"
+        },
+        "error": {
+            "llmContext": "Set to true to show the checkbox in an error state (typically red border/indicator). Use this for form validation — e.g., when a required checkbox is not checked on form submit.",
+            "propDescription": "Applies error styling to the checkbox"
+        },
+        "label": {
+            "llmContext": "The primary text label displayed next to the checkbox. Keep it concise. For longer explanations, use the subtext prop.",
+            "propDescription": "Text label displayed beside the checkbox"
+        },
+        "subtext": {
+            "llmContext": "Secondary text displayed below the label. Use for additional context, consequences, or clarifications about what the checkbox controls.",
+            "propDescription": "Secondary descriptive text below the label"
+        },
+        "slot": {
+            "llmContext": "Accepts a React node rendered alongside the label. Use for badges (e.g., 'New', 'Beta'), icons, or status indicators that provide additional context about the option.",
+            "propDescription": "React node rendered alongside the label"
+        },
+        "size": {
+            "llmContext": "Use SMALL for dense lists, table rows, or compact filter panels. Use MEDIUM (default) for standard forms and settings pages.",
+            "propDescription": "Controls the size of the checkbox indicator and label"
+        },
+        "disabled": {
+            "llmContext": "Set to true when the checkbox option is not available in the current state (e.g., feature not enabled, user lacks permission). The checkbox remains visible but cannot be interacted with.",
+            "propDescription": "Prevents interaction with the checkbox"
+        }
+    }
+}

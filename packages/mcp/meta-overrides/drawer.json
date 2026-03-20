@@ -1,0 +1,55 @@
+{
+    "componentDescription": "Drawer is a slide-in side panel that overlays the page without fully blocking it. Use for detail views, configuration panels, multi-field editing, and navigation menus. Prefer Drawer over Modal when the content benefits from retaining page context — e.g., editing a row while still seeing the table.",
+    "features": [
+        "Slides in from LEFT or RIGHT side",
+        "Configurable width",
+        "Optional close button",
+        "Optional header and footer sections",
+        "Backdrop click to close (configurable)",
+        "Controlled open/close state"
+    ],
+    "compositionPattern": "Provide children as the drawer body content. Use the header prop (or title string) for the panel title, and footer for action buttons. For complex forms, build the footer with Save/Cancel buttons.",
+    "usageExamples": [
+        {
+            "title": "Detail view drawer",
+            "description": "Drawer that slides in from the right to show details of a selected table row.",
+            "code": "<Drawer\n  isOpen={!!selectedItem}\n  onClose={() => setSelectedItem(null)}\n  title={selectedItem?.name}\n  side=\"RIGHT\"\n  width={480}\n  showCloseButton\n>\n  {selectedItem && <ItemDetailPanel item={selectedItem} />}\n</Drawer>"
+        },
+        {
+            "title": "Edit form drawer with footer actions",
+            "description": "Drawer containing an edit form with Save and Cancel buttons in the footer.",
+            "code": "<Drawer\n  isOpen={isEditOpen}\n  onClose={() => setIsEditOpen(false)}\n  title=\"Edit user\"\n  side=\"RIGHT\"\n  width={520}\n  closeOnBackdropClick={false}\n  footer={\n    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>\n      <Button buttonType={ButtonType.SECONDARY} text=\"Cancel\" onClick={() => setIsEditOpen(false)} />\n      <Button buttonType={ButtonType.PRIMARY} text=\"Save changes\" loading={isSaving} onClick={handleSave} />\n    </div>\n  }\n>\n  <UserEditForm user={selectedUser} onChange={setFormData} />\n</Drawer>"
+        },
+        {
+            "title": "Mobile navigation drawer from left",
+            "description": "Left-side drawer for mobile navigation menu.",
+            "code": "<Drawer\n  isOpen={isNavOpen}\n  onClose={() => setIsNavOpen(false)}\n  side=\"LEFT\"\n  width={280}\n  showCloseButton\n>\n  <nav>\n    <NavMenu items={navItems} onNavigate={() => setIsNavOpen(false)} />\n  </nav>\n</Drawer>"
+        }
+    ],
+    "propOverrides": {
+        "isOpen": {
+            "llmContext": "Required. Controls drawer visibility. Manage with useState. Set to true to slide in, false to slide out.",
+            "propDescription": "Required. Controls whether the drawer is visible"
+        },
+        "onClose": {
+            "llmContext": "Required. Called when the close button or backdrop is clicked. Set isOpen to false here. For forms, check for unsaved changes before closing.",
+            "propDescription": "Required. Callback to close the drawer"
+        },
+        "side": {
+            "llmContext": "RIGHT is most common for detail panels, edit forms, and configuration panels. LEFT is conventional for navigation menus and sidebars.",
+            "propDescription": "Which side of the screen the drawer slides in from"
+        },
+        "width": {
+            "llmContext": "Pixel width of the drawer. Use 320-400px for simple lists and details. Use 480-560px for forms with multiple fields. Use 640px+ for complex multi-column content. On mobile, the drawer typically fills the full width regardless of this setting.",
+            "propDescription": "Width of the drawer panel in pixels"
+        },
+        "closeOnBackdropClick": {
+            "llmContext": "Default true. Set to false for drawers containing forms to prevent accidental data loss from backdrop clicks. Always provide a visible Cancel or Close button when disabling backdrop click.",
+            "propDescription": "Whether clicking the backdrop closes the drawer"
+        },
+        "footer": {
+            "llmContext": "React node rendered at the bottom of the drawer, typically containing action buttons. Use for Save/Cancel pairs on edit forms, or confirm/dismiss on detail drawers.",
+            "propDescription": "React node rendered in the drawer footer"
+        }
+    }
+}

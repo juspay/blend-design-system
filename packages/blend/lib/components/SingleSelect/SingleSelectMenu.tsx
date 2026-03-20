@@ -9,7 +9,11 @@ import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
 import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll, useScrollLock } from '../../hooks'
+import {
+    usePreventParentScroll,
+    useScrollLock,
+    useShadowRoot,
+} from '../../hooks'
 import { SingleSelectTokensType } from './singleSelect.tokens'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 import {
@@ -381,6 +385,7 @@ const SingleSelectMenu = ({
 }: SingleSelectMenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
+    const { target: portalContainer } = useShadowRoot()
 
     const [searchText, setSearchText] = useState('')
     const searchInputRef = React.useRef<HTMLInputElement>(null)
@@ -567,7 +572,7 @@ const SingleSelectMenu = ({
                     {trigger}
                 </RadixMenu.Trigger>
             )}
-            <RadixMenu.Portal>
+            <RadixMenu.Portal container={portalContainer ?? undefined}>
                 <Content
                     ref={contentRef}
                     data-dropdown="dropdown"

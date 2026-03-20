@@ -19,7 +19,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
 import { menuContentAnimations } from './menu.animations'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
-import { useDropdownInteractionLock } from '../../hooks'
+import { useDropdownInteractionLock, useShadowRoot } from '../../hooks'
 import useScrollLock from '../../hooks/useScrollLock'
 
 export const contentBaseStyle: CSSObject = {
@@ -83,6 +83,7 @@ const Menu = ({
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
     const filteredItems = filterMenuGroups(items, searchText)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
+    const { target: portalContainer } = useShadowRoot()
 
     const menuIsOpen = open ?? isOpen
     useDropdownInteractionLock(menuIsOpen)
@@ -240,7 +241,7 @@ const Menu = ({
             onOpenChange={handleOpenChange}
         >
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
-            <RadixMenu.Portal>
+            <RadixMenu.Portal container={portalContainer ?? undefined}>
                 <Content
                     data-menu="menu"
                     data-dropdown="dropdown"

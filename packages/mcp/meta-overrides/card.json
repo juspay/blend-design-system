@@ -1,0 +1,28 @@
+{
+    "componentDescription": "Card is a generic container component with consistent padding, border, border-radius, and optional shadow. Use it to group related content into a visually distinct section — dashboard widgets, list item details, form sections, and feature highlight blocks.",
+    "features": [
+        "Consistent padding and border-radius matching the design system",
+        "Optional shadow elevation variants",
+        "Clickable card variant with hover state",
+        "Flexible children slot for any content layout"
+    ],
+    "compositionPattern": "Card is a simple wrapper — place any content as children. For common patterns, combine with a header section (title + action), a body section, and an optional footer.",
+    "usageExamples": [
+        {
+            "title": "Dashboard metric card",
+            "description": "Card wrapping a KPI metric display.",
+            "code": "<Card>\n  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>\n    <h3 style={{ margin: 0 }}>Total Revenue</h3>\n    <Button buttonType={ButtonType.SECONDARY} size={ButtonSize.SMALL} text=\"View details\" />\n  </div>\n  <p style={{ fontSize: 32, fontWeight: 700 }}>$124,500</p>\n  <p style={{ color: '#22c55e' }}>↑ 12% from last month</p>\n</Card>"
+        },
+        {
+            "title": "Clickable resource card",
+            "description": "Card that navigates to a detail page when clicked.",
+            "code": "<Card onClick={() => navigate(`/projects/${project.id}`)} style={{ cursor: 'pointer' }}>\n  <h4>{project.name}</h4>\n  <p>{project.description}</p>\n  <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>\n    <AvatarGroup avatars={project.members} max={3} size=\"sm\" />\n    <Tags label={project.status} />\n  </div>\n</Card>"
+        }
+    ],
+    "propOverrides": {
+        "children": {
+            "llmContext": "Required. Any React content to render inside the card. Card only provides the visual container — structure the internal layout yourself using flexbox, grid, or other layout primitives.",
+            "propDescription": "Required. Content to render inside the card"
+        }
+    }
+}
