@@ -1,4 +1,11 @@
-import { useCallback, useMemo, useRef, useState, useId } from 'react'
+import {
+    useCallback,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+    useId,
+} from 'react'
 import {
     BarChart,
     Bar,
@@ -74,9 +81,16 @@ const StatCard = ({
     const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
 
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const [isTextContainerTooWide, setIsTextContainerTooWide] =
+        useState<boolean>(false)
+    const [titleIconWidth, setTitleIconWidth] = useState(0)
+    const [actionIconWidth, setActionIconWidth] = useState(0)
+
     const isSmallScreen = breakPointLabel === 'sm'
+    const wrapperRef = useRef<HTMLDivElement>(null)
     const titleIconRef = useRef<HTMLDivElement>(null)
-    const titleIconWidth = titleIconRef.current?.offsetWidth || 0
+    const actionIconRef = useRef<HTMLDivElement>(null)
+    const textContainerRef = useRef<HTMLDivElement>(null)
 
     const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null)
 
@@ -86,6 +100,54 @@ const StatCard = ({
     const changeId = `${baseId}-change`
     const subtitleId = `${baseId}-subtitle`
     const chartId = `${baseId}-chart`
+    useLayoutEffect(() => {
+        const measure = () => {
+            setTitleIconWidth(titleIconRef.current?.offsetWidth ?? 0)
+
+            const actionW = actionIconRef.current?.offsetWidth ?? 0
+            setActionIconWidth(actionW)
+
+            const container = wrapperRef.current
+            const textEl = textContainerRef.current
+            if (!container || !textEl) {
+                setIsTextContainerTooWide(false)
+                return
+            }
+            const cw = container.offsetWidth
+            const tw = textEl.offsetWidth
+            setIsTextContainerTooWide(tw > cw - (actionW + 10))
+        }
+
+        measure()
+
+        const nodes = [
+            wrapperRef.current,
+            textContainerRef.current,
+            actionIconRef.current,
+            titleIconRef.current,
+        ].filter((n): n is HTMLDivElement => n != null)
+
+        const ro =
+            typeof ResizeObserver !== 'undefined'
+                ? new ResizeObserver(measure)
+                : null
+        nodes.forEach((n) => ro?.observe(n))
+
+        window.addEventListener('resize', measure)
+        return () => {
+            ro?.disconnect()
+            window.removeEventListener('resize', measure)
+        }
+    }, [
+        actionIcon,
+        direction,
+        helpIconText,
+        isSmallScreen,
+        skeleton?.show,
+        title,
+        titleIcon,
+        variant,
+    ])
 
     const getCardLabel = useCallback(
         (formatMainValueFn: (val: string | number) => string) => {
@@ -749,6 +811,7 @@ const StatCard = ({
                                             position="absolute"
                                             right={0}
                                             top={0}
+                                            ref={actionIconRef}
                                         >
                                             {actionIcon}
                                         </Block>
@@ -764,6 +827,7 @@ const StatCard = ({
                                             : 'center'
                                     }
                                     gap={statCardToken.textContainer.stats.gap}
+                                    ref={wrapperRef}
                                 >
                                     {direction ===
                                         StatCardDirection.HORIZONTAL && (
@@ -771,6 +835,7 @@ const StatCard = ({
                                             display="flex"
                                             alignItems="center"
                                             gap={8}
+                                            ref={textContainerRef}
                                         >
                                             {titleIcon && (
                                                 <Block
@@ -854,6 +919,12 @@ const StatCard = ({
                                                         display="flex"
                                                         alignItems="center"
                                                         justifyContent="center"
+                                                        style={{
+                                                            marginRight:
+                                                                isTextContainerTooWide
+                                                                    ? `${actionIconWidth + 8}px`
+                                                                    : 'auto',
+                                                        }}
                                                     >
                                                         <Tooltip
                                                             content={
@@ -1040,6 +1111,7 @@ const StatCard = ({
                                         right={0}
                                         top={0}
                                         flexShrink={0}
+                                        ref={actionIconRef}
                                     >
                                         {actionIcon}
                                     </Block>
