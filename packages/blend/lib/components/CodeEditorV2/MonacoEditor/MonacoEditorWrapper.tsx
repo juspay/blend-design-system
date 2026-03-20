@@ -48,7 +48,7 @@ function EditorLoading({
             justifyContent="center"
             width="100%"
             style={{ minHeight: toCssValue(minHeight) }}
-            color={tokens.body.syntax.comment}
+            color={tokens.body.syntax.comment.color}
             fontSize={tokens.body.code.fontSize}
         >
             Loading editor...
@@ -70,7 +70,7 @@ function EditorPlaceholder({
             position="absolute"
             top={position.top}
             left={position.left}
-            color={tokens.body.syntax.comment}
+            color={tokens.body.syntax.comment.color}
             style={{
                 pointerEvents: 'none',
                 fontSize: tokens.body.code.fontSize,
@@ -227,7 +227,7 @@ export function MonacoEditorWrapper({
         } catch (err) {
             console.warn('Failed to update Monaco theme:', err)
         }
-    }, [editorTheme])
+    }, [editorTheme, tokens.theme])
 
     const initialOptions = useMemo(
         () =>

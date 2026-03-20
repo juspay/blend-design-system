@@ -65,7 +65,7 @@ export function createEditorTheme(
 
     const rules = SYNTAX_RULE_SPEC.map(({ token, syntaxKey, fontStyle }) => ({
         token,
-        foreground: toMonacoColor(syntax[syntaxKey]),
+        foreground: toMonacoColor(syntax[syntaxKey].color),
         ...(fontStyle && { fontStyle }),
     }))
     return {
@@ -75,7 +75,7 @@ export function createEditorTheme(
         colors: {
             'editor.background':
                 tokens.body.backgroundColor || backupColor.body.backgroundColor,
-            'editor.foreground': syntax.text || MONACO_COLOR_FALLBACK,
+            'editor.foreground': syntax.text.color || MONACO_COLOR_FALLBACK,
             'editor.lineHighlightBackground':
                 gutter.backgroundColor.unchanged ||
                 backupColor.body.gutter.backgroundColor.unchanged,
@@ -85,10 +85,11 @@ export function createEditorTheme(
             'editorLineNumber.foreground':
                 gutter.color || backupColor.body.gutter.color,
             'editorLineNumber.activeForeground':
-                syntax.text || MONACO_COLOR_FALLBACK,
+                syntax.text.color || MONACO_COLOR_FALLBACK,
             'editor.selectionBackground': `${keyword}20`,
             'editor.inactiveSelectionBackground': `${keyword}10`,
-            'editorCursor.foreground': syntax.text || MONACO_COLOR_FALLBACK,
+            'editorCursor.foreground':
+                syntax.text.color || MONACO_COLOR_FALLBACK,
             'editorWhitespace.foreground': 'transparent',
             'editorIndentGuide.background': 'transparent',
             'editorIndentGuide.activeBackground': 'transparent',

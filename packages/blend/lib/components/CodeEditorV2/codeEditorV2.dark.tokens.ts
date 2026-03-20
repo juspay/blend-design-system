@@ -13,12 +13,12 @@ export const darkCodeEditorV2Tokens = (
             borderRadius: foundationToken.border.radius[8],
             boxShadow: '0px 2px 3px 0px rgba(5, 5, 6, 0.05)',
             header: {
-                backgroundColor: foundationToken.colors.gray[50],
+                backgroundColor: foundationToken.colors.gray[900],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                padding: {
-                    x: foundationToken.unit[12],
-                    y: foundationToken.unit[10],
-                },
+                paddingTop: foundationToken.unit[10],
+                paddingBottom: foundationToken.unit[10],
+                paddingLeft: foundationToken.unit[12],
+                paddingRight: foundationToken.unit[12],
                 gap: foundationToken.unit[8],
                 icon: {
                     width: 16,
@@ -27,24 +27,24 @@ export const darkCodeEditorV2Tokens = (
                     fontSize: foundationToken.font.size.body.md.fontSize,
                     fontWeight: foundationToken.font.weight[500],
                     lineHeight: '18px',
-                    color: foundationToken.colors.gray[900],
+                    color: foundationToken.colors.gray[0],
                 },
             },
             body: {
-                padding: {
-                    x: foundationToken.unit[0],
-                    y: foundationToken.unit[12],
-                },
-                backgroundColor: foundationToken.colors.gray[25],
+                paddingTop: foundationToken.unit[12],
+                paddingBottom: foundationToken.unit[12],
+                paddingLeft: foundationToken.unit[0],
+                paddingRight: foundationToken.unit[0],
+                backgroundColor: foundationToken.colors.gray[900],
 
                 gutter: {
                     width: '40px',
-                    color: foundationToken.colors.gray[400],
+                    color: foundationToken.colors.gray[0],
                     backgroundColor: {
                         [DiffLineType.UNCHANGED]:
                             foundationToken.colors.gray[200],
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[200],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[200],
+                        [DiffLineType.REMOVED]: foundationToken.colors.red[500],
+                        [DiffLineType.ADDED]: foundationToken.colors.green[500],
                     },
                     borderLeft: {
                         [DiffLineType.UNCHANGED]: 'none',
@@ -61,30 +61,27 @@ export const darkCodeEditorV2Tokens = (
                     fontFamily: "'JetBrains Mono'",
                     fontSize: '11px',
                     lineHeight: '1.5',
-                    padding: {
-                        x: {
-                            left: foundationToken.unit[12],
-                            right: foundationToken.unit[32],
-                        },
-                        y: foundationToken.unit[4],
-                    },
+                    paddingTop: foundationToken.unit[4],
+                    paddingBottom: foundationToken.unit[4],
+                    paddingLeft: foundationToken.unit[12],
+                    paddingRight: foundationToken.unit[32],
                 },
                 highlightedLine: {
                     backgroundColor: {
                         [DiffLineType.UNCHANGED]: 'transparent',
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[100],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[100],
+                        [DiffLineType.REMOVED]: foundationToken.colors.red[700],
+                        [DiffLineType.ADDED]: foundationToken.colors.green[700],
                     },
                 },
                 syntax: {
-                    keyword: foundationToken.colors.purple[600],
-                    function: foundationToken.colors.primary[600],
-                    string: foundationToken.colors.green[600],
-                    number: foundationToken.colors.orange[500],
-                    operator: foundationToken.colors.gray[600],
-                    variable: foundationToken.colors.gray[800],
-                    comment: foundationToken.colors.gray[400],
-                    text: foundationToken.colors.gray[900],
+                    keyword: { color: foundationToken.colors.purple[600] },
+                    function: { color: foundationToken.colors.primary[600] },
+                    string: { color: foundationToken.colors.green[100] },
+                    number: { color: foundationToken.colors.orange[500] },
+                    operator: { color: foundationToken.colors.gray[0] },
+                    variable: { color: foundationToken.colors.gray[0] },
+                    comment: { color: foundationToken.colors.gray[400] },
+                    text: { color: foundationToken.colors.gray[0] },
                 },
             },
         },
@@ -97,10 +94,10 @@ export const darkCodeEditorV2Tokens = (
             header: {
                 backgroundColor: foundationToken.colors.gray[900],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
-                padding: {
-                    x: foundationToken.unit[16],
-                    y: foundationToken.unit[10],
-                },
+                paddingTop: foundationToken.unit[10],
+                paddingBottom: foundationToken.unit[10],
+                paddingLeft: foundationToken.unit[16],
+                paddingRight: foundationToken.unit[16],
                 gap: foundationToken.unit[12],
                 icon: {
                     width: 20,
@@ -113,10 +110,10 @@ export const darkCodeEditorV2Tokens = (
                 },
             },
             body: {
-                padding: {
-                    x: foundationToken.unit[0],
-                    y: foundationToken.unit[16],
-                },
+                paddingTop: foundationToken.unit[16],
+                paddingBottom: foundationToken.unit[16],
+                paddingLeft: foundationToken.unit[0],
+                paddingRight: foundationToken.unit[0],
                 backgroundColor: foundationToken.colors.gray[900],
 
                 gutter: {
@@ -143,13 +140,10 @@ export const darkCodeEditorV2Tokens = (
                     fontFamily: "'JetBrains Mono'",
                     fontSize: '12px',
                     lineHeight: '1.6',
-                    padding: {
-                        x: {
-                            left: foundationToken.unit[12],
-                            right: foundationToken.unit[32],
-                        },
-                        y: foundationToken.unit[4],
-                    },
+                    paddingTop: foundationToken.unit[4],
+                    paddingBottom: foundationToken.unit[4],
+                    paddingLeft: foundationToken.unit[12],
+                    paddingRight: foundationToken.unit[32],
                 },
                 highlightedLine: {
                     backgroundColor: {
@@ -159,14 +153,14 @@ export const darkCodeEditorV2Tokens = (
                     },
                 },
                 syntax: {
-                    keyword: foundationToken.colors.purple[600],
-                    function: foundationToken.colors.primary[600],
-                    string: foundationToken.colors.green[100],
-                    number: foundationToken.colors.orange[500],
-                    operator: foundationToken.colors.gray[0],
-                    variable: foundationToken.colors.gray[0],
-                    comment: foundationToken.colors.gray[400],
-                    text: foundationToken.colors.gray[0],
+                    keyword: { color: foundationToken.colors.purple[600] },
+                    function: { color: foundationToken.colors.primary[600] },
+                    string: { color: foundationToken.colors.green[100] },
+                    number: { color: foundationToken.colors.orange[500] },
+                    operator: { color: foundationToken.colors.gray[0] },
+                    variable: { color: foundationToken.colors.gray[0] },
+                    comment: { color: foundationToken.colors.gray[400] },
+                    text: { color: foundationToken.colors.gray[0] },
                 },
             },
         },

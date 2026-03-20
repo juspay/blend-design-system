@@ -294,8 +294,8 @@ def process_transactions(transactions):
                         </div>
                     )}
                     <form
-                        onSubmit={() => {
-                            // e.preventDefault()
+                        onSubmit={(e) => {
+                            e.preventDefault()
                             setFormSubmitCount((prev) => prev + 1)
                             console.log('Form submitted!')
                         }}
@@ -613,26 +613,28 @@ def process_transactions(transactions):
                             onChange={() => {}}
                             header="payment.js"
                             language="javascript"
-                            headerRightSlot={
-                                <div className="flex items-center gap-2">
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.SMALL}
-                                        leadingIcon={<Save size={14} />}
-                                        onClick={() =>
-                                            console.log('Save clicked')
-                                        }
-                                    />
-                                    <Button
-                                        buttonType={ButtonType.PRIMARY}
-                                        size={ButtonSize.SMALL}
-                                        leadingIcon={<Play size={14} />}
-                                        onClick={() =>
-                                            console.log('Run clicked')
-                                        }
-                                    />
-                                </div>
-                            }
+                            headerSlot={{
+                                right: (
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            size={ButtonSize.SMALL}
+                                            leadingIcon={<Save size={14} />}
+                                            onClick={() =>
+                                                console.log('Save clicked')
+                                            }
+                                        />
+                                        <Button
+                                            buttonType={ButtonType.PRIMARY}
+                                            size={ButtonSize.SMALL}
+                                            leadingIcon={<Play size={14} />}
+                                            onClick={() =>
+                                                console.log('Run clicked')
+                                            }
+                                        />
+                                    </div>
+                                ),
+                            }}
                         />
                     </div>
 
@@ -668,16 +670,18 @@ def process_transactions(transactions):
                             onChange={() => {}}
                             header="download.py"
                             language="python"
-                            headerLeftSlot={
-                                <Download
-                                    size={16}
-                                    style={{
-                                        flexShrink: 0,
-                                        color: '#10b981',
-                                        opacity: 0.8,
-                                    }}
-                                />
-                            }
+                            headerSlot={{
+                                left: (
+                                    <Download
+                                        size={16}
+                                        style={{
+                                            flexShrink: 0,
+                                            color: '#10b981',
+                                            opacity: 0.8,
+                                        }}
+                                    />
+                                ),
+                            }}
                         />
                     </div>
 
@@ -696,24 +700,26 @@ def process_transactions(transactions):
                             header="app.jsx"
                             language="jsx"
                             showCopyButton={false}
-                            headerLeftSlot={
-                                <Play
-                                    size={16}
-                                    style={{
-                                        flexShrink: 0,
-                                        color: '#3b82f6',
-                                        opacity: 0.8,
-                                    }}
-                                />
-                            }
-                            headerRightSlot={
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs text-gray-500">
-                                        Modified • Autosave on
-                                    </span>
-                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                                </div>
-                            }
+                            headerSlot={{
+                                left: (
+                                    <Play
+                                        size={16}
+                                        style={{
+                                            flexShrink: 0,
+                                            color: '#3b82f6',
+                                            opacity: 0.8,
+                                        }}
+                                    />
+                                ),
+                                right: (
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs text-gray-500">
+                                            Modified • Autosave on
+                                        </span>
+                                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                    </div>
+                                ),
+                            }}
                         />
                     </div>
                 </div>

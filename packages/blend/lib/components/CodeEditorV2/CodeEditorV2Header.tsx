@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { Check, Copy, FileCode } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
@@ -14,15 +15,18 @@ export const CodeEditorV2Header = ({
     onCopy,
     tokens,
 }: CodeEditorV2HeaderProps) => {
+    const titleId = useId()
+    const headerLabel = header.trim()
+
     const headerPaddingX =
-        typeof tokens.header.padding.x === 'number'
-            ? `${tokens.header.padding.x}px`
-            : tokens.header.padding.x
+        typeof tokens.header.paddingLeft === 'number'
+            ? `${tokens.header.paddingLeft}px`
+            : tokens.header.paddingLeft
 
     const headerPaddingY =
-        typeof tokens.header.padding.y === 'number'
-            ? `${tokens.header.padding.y}px`
-            : tokens.header.padding.y
+        typeof tokens.header.paddingBottom === 'number'
+            ? `${tokens.header.paddingBottom}px`
+            : tokens.header.paddingBottom
 
     const headerGap =
         typeof tokens.header.gap === 'number'
@@ -32,9 +36,13 @@ export const CodeEditorV2Header = ({
     const iconSize =
         typeof tokens.header.icon.width === 'number'
             ? tokens.header.icon.width
-            : parseInt(String(tokens.header.icon.width || '16'))
+            : String(tokens.header.icon.width || '16')
     return (
         <Block
+            as="header"
+            {...(headerLabel
+                ? { 'aria-labelledby': titleId }
+                : { 'aria-label': 'Code editor header' })}
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -64,6 +72,7 @@ export const CodeEditorV2Header = ({
                     data-element="codeeditor-title"
                     data-id={header}
                     as="span"
+                    id={headerLabel ? titleId : undefined}
                     fontSize={tokens.header.text.fontSize}
                     fontWeight={tokens.header.text.fontWeight}
                     lineHeight={tokens.header.text.lineHeight}
@@ -86,32 +95,19 @@ export const CodeEditorV2Header = ({
             </Block>
 
             {showCopyButton && (
-                <Block
-                    style={{
-                        opacity: 0.7,
-                        transition: 'opacity 0.2s ease',
-                    }}
-                    onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
-                        e.currentTarget.style.opacity = '1'
-                    }}
-                    onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
-                        e.currentTarget.style.opacity = '0.7'
-                    }}
-                >
-                    <Button
-                        data-element="copy-button"
-                        type="button"
-                        onClick={onCopy}
-                        aria-label={isCopied ? 'Copied' : 'Copy code'}
-                        title={isCopied ? 'Copied' : 'Copy code'}
-                        buttonType={ButtonType.SECONDARY}
-                        subType={ButtonSubType.ICON_ONLY}
-                        size={ButtonSize.SMALL}
-                        leadingIcon={
-                            isCopied ? <Check size={14} /> : <Copy size={14} />
-                        }
-                    />
-                </Block>
+                <Button
+                    data-element="copy-button"
+                    type="button"
+                    onClick={onCopy}
+                    aria-label={isCopied ? 'Copied' : 'Copy code'}
+                    title={isCopied ? 'Copied' : 'Copy code'}
+                    buttonType={ButtonType.SECONDARY}
+                    subType={ButtonSubType.ICON_ONLY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={
+                        isCopied ? <Check size={14} /> : <Copy size={14} />
+                    }
+                />
             )}
         </Block>
     )

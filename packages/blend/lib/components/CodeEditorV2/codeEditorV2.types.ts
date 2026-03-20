@@ -16,7 +16,7 @@ export enum DiffLineType {
     UNCHANGED = 'unchanged',
 }
 
-export interface DiffLine {
+export type DiffLine = {
     content: string
     type: DiffLineType
 }
@@ -50,8 +50,10 @@ export type CodeEditorV2Props = CodeEditorV2Dimensions & {
     showLineNumbers?: boolean
     showHeader?: boolean
     header?: string
-    headerLeftSlot?: ReactNode
-    headerRightSlot?: ReactNode
+    headerSlot?: {
+        left?: ReactNode
+        right?: ReactNode
+    }
     showLeftIcon?: boolean
     showCopyButton?: boolean
     language?: SupportedLanguage
@@ -68,7 +70,11 @@ export type CodeEditorV2Props = CodeEditorV2Dimensions & {
     originalValue?: string
     /** Render diffs inline (single column) instead of side-by-side. */
     renderSideBySide?: boolean
-} & CodeEditorV2Dimensions
+} & CodeEditorV2Dimensions &
+    Omit<
+        React.HTMLAttributes<HTMLDivElement>,
+        'style' | 'className' | 'onChange'
+    >
 export type CodeEditorV2HeaderProps = {
     header: string
     headerLeftSlot?: ReactNode

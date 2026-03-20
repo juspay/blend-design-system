@@ -1,11 +1,14 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
 import { CodeEditorV2Variant } from './codeEditorV2.types'
 import { CodeEditorV2Props } from './codeEditorV2.types'
-import { createCopyToClipboard } from './utils'
-import { shouldShowLineNumbers, getContainerStyles } from './utils'
+import {
+    copyToClipboardWithTemporaryFeedback,
+    shouldShowLineNumbers,
+    getContainerStyles,
+} from './utils'
 import { CodeEditorV2Header } from './CodeEditorV2Header'
 import { MonacoEditorWrapper } from './MonacoEditor/MonacoEditorWrapper'
 
@@ -18,8 +21,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             showLineNumbers,
             showHeader = true,
             header = 'Editor',
-            headerLeftSlot,
-            headerRightSlot,
+            headerSlot,
             showLeftIcon = true,
             showCopyButton = true,
             language = 'javascript',
@@ -41,6 +43,17 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
     ) => {
         const tokens = useResponsiveTokens<CodeEditorV2Tokens>('CODEEDITORV2')
         const [isCopied, setIsCopied] = useState(false)
+        const copyFeedbackTimeoutRef = useRef<ReturnType<
+            typeof setTimeout
+        > | null>(null)
+
+        useEffect(() => {
+            return () => {
+                if (copyFeedbackTimeoutRef.current !== null) {
+                    clearTimeout(copyFeedbackTimeoutRef.current)
+                }
+            }
+        }, [])
 
         // Determine if line numbers should be shown
         const shouldShowLineNumbersValue = shouldShowLineNumbers(
@@ -48,8 +61,13 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             variant
         )
 
-        // Handlers
-        const copyToClipboard = createCopyToClipboard(value, setIsCopied)
+        const copyToClipboard = useCallback(() => {
+            copyToClipboardWithTemporaryFeedback(
+                value,
+                setIsCopied,
+                copyFeedbackTimeoutRef
+            )
+        }, [value])
         const containerStyles = getContainerStyles(minHeight, maxHeight)
 
         return (
@@ -69,8 +87,8 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                 {showHeader && (
                     <CodeEditorV2Header
                         header={header}
-                        headerLeftSlot={headerLeftSlot}
-                        headerRightSlot={headerRightSlot}
+                        headerLeftSlot={headerSlot?.left}
+                        headerRightSlot={headerSlot?.right}
                         showLeftIcon={showLeftIcon}
                         showCopyButton={showCopyButton}
                         isCopied={isCopied}
