@@ -30,6 +30,7 @@ import MultiSelectV2MenuItems from './MultiSelectV2MenuItems'
 import MultiSelectV2MenuActions from './MultiSelectV2MenuActions'
 import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
+import { VIRTUAL_MIN_VIEWPORT } from '../common/virtualViewport'
 
 const JUST_OPENED_DEBOUNCE_MS = 150
 const DEFAULT_MIN_MENU_WIDTH = 250
@@ -427,11 +428,12 @@ const MultiSelectV2Menu = ({
                                         onSelect={onSelect}
                                         maxSelections={maxSelections}
                                         tokens={multiSelectTokens}
-                                        height={
+                                        height={Math.max(
                                             (maxMenuHeight ??
                                                 DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK) -
-                                            headerFooterHeight
-                                        }
+                                                headerFooterHeight,
+                                            VIRTUAL_MIN_VIEWPORT
+                                        )}
                                         itemHeight={virtualListItemHeight}
                                         overscan={virtualListOverscan}
                                         onEndReached={onEndReached}

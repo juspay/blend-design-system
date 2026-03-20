@@ -97,10 +97,10 @@ import { MultiSelectV2, MultiSelectV2Size, MultiSelectV2SelectionTagType } from 
         items: defaultItems,
         selectedValues: [],
         onChange: fn(),
-        size: MultiSelectV2Size.MEDIUM,
+        size: MultiSelectV2Size.MD,
         variant: MultiSelectV2Variant.CONTAINER,
         selectionTagType: MultiSelectV2SelectionTagType.COUNT,
-        enableSearch: true,
+        search: { show: true, placeholder: 'Search options...' },
         enableSelectAll: false,
     },
     argTypes: {
@@ -131,10 +131,6 @@ import { MultiSelectV2, MultiSelectV2Size, MultiSelectV2SelectionTagType } from 
             options: Object.values(MultiSelectV2SelectionTagType),
             description: 'Show selected as count or comma-separated text',
         },
-        enableSearch: {
-            control: 'boolean',
-            description: 'Show search input in menu',
-        },
         enableSelectAll: {
             control: 'boolean',
             description: 'Show Select All row',
@@ -147,17 +143,9 @@ import { MultiSelectV2, MultiSelectV2Size, MultiSelectV2SelectionTagType } from 
             control: 'boolean',
             description: 'Error state',
         },
-        errorMessage: {
-            control: 'text',
-            description: 'Error message when error is true',
-        },
         required: {
             control: 'boolean',
             description: 'Required field',
-        },
-        fullWidth: {
-            control: 'boolean',
-            description: 'Trigger full width',
         },
         items: {
             control: false,
@@ -329,8 +317,10 @@ export const Visual: Story = {
                             items={defaultItems}
                             selectedValues={[]}
                             onChange={() => {}}
-                            error
-                            errorMessage="This field is required"
+                            error={{
+                                show: true,
+                                message: 'This field is required',
+                            }}
                         />
                         <MultiSelectV2
                             label="Required"
@@ -492,7 +482,7 @@ export const Accessibility: Story = {
                     items={defaultItems}
                     selectedValues={[]}
                     onChange={() => {}}
-                    enableSearch
+                    search={{ show: true }}
                 />
             </div>
             <div>
@@ -506,8 +496,10 @@ export const Accessibility: Story = {
                     selectedValues={[]}
                     onChange={() => {}}
                     required
-                    error
-                    errorMessage="Please select at least one option"
+                    error={{
+                        show: true,
+                        message: 'Please select at least one option',
+                    }}
                 />
             </div>
         </div>

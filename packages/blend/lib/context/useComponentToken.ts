@@ -20,6 +20,7 @@ import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
+import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
@@ -81,6 +82,7 @@ export const useComponentToken = (
     | ResponsiveBreadcrumbTokens
     | ResponsivePopoverTokens
     | ResponsiveMenuTokensType
+    | ResponsiveMenuV2TokensType
     | ResponsiveMultiSelectTokens
     | ResponsiveSingleSelectTokens
     | ResponsiveTableTokens
@@ -164,6 +166,8 @@ export const useComponentToken = (
             return componentTokens.POPOVERV2
         case 'MENU':
             return componentTokens.MENU
+        case 'MENU_V2':
+            return componentTokens.MENU_V2
         case 'MULTI_SELECT':
             return componentTokens.MULTI_SELECT
         case 'TABLE':
