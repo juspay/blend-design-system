@@ -1,26 +1,80 @@
+import type { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import { CodeEditorV2Variant } from './codeEditorV2.types'
 import type * as Monaco from 'monaco-editor'
 import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
-export const createCopyToClipboard = (
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+/** Delay before focusing the editor after mount (ms). */
+export const EDITOR_FOCUS_DELAY_MS = 100
+
+/** How long the “copied” state stays visible after copy (ms). */
+export const COPY_FEEDBACK_RESET_MS = 2000
+
+/** Minimum Monaco vertical/horizontal scrollbar thickness (px). */
+export const MIN_SCROLLBAR_SIZE = 8
+
+/** Scrollbar size as a fraction of editor font size. */
+const SCROLLBAR_SIZE_RATIO = 0.8
+
+/** Multiplier for placeholder `top` offset vs vertical padding. */
+const PLACEHOLDER_VERTICAL_OFFSET_MULTIPLIER = 2
+
+export const BLEND_EDITOR_THEME_NAME = 'light'
+
+// --- Editor metrics fallbacks (when tokens omit values) ---
+
+const DEFAULT_EDITOR_FONT_SIZE_PX = 12
+const DEFAULT_LINE_HEIGHT_MULTIPLIER = 1.6
+const DEFAULT_BODY_PADDING_TOP_PX = 16
+const DEFAULT_CODE_PADDING_LEFT_PX = 12
+const DEFAULT_GUTTER_WIDTH_PX = 40
+
+/** `lineDecorationsWidth ≈ codePaddingLeft / this` when line numbers are on. */
+const LINE_DECORATIONS_WIDTH_DIVISOR = 2
+
+const LINE_DECORATIONS_WIDTH_OFF = 0
+
+/** Minimum Monaco `lineNumbersMinChars`. */
+const MIN_LINE_NUMBERS_MIN_CHARS = 2
+
+/** Derive min char count from gutter width: `floor(gutterWidth / this)`. */
+const LINE_NUMBERS_CHARS_FROM_GUTTER_DIVISOR = 10
+
+/** Default for `toNumericValue` when value is missing. */
+const DEFAULT_NUMERIC_COERCION_FALLBACK = 0
+
+// ---------------------------------------------------------------------------
+// Clipboard / behavior
+// ---------------------------------------------------------------------------
+
+/** Ref must be stable across renders (e.g. from `useRef`) so timeout ids persist. */
+export type CopyFeedbackTimeoutRef = MutableRefObject<ReturnType<
+    typeof setTimeout
+> | null>
+
+/**
+ * Writes `code` to the clipboard, sets copied feedback to true, and schedules
+ * resetting it after `resetMs`. Clears any previous reset timeout on the same ref.
+ */
+export const copyToClipboardWithTemporaryFeedback = (
     code: string,
-    setIsCopied: (copied: boolean) => void
-) => {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    setIsCopied: Dispatch<SetStateAction<boolean>>,
+    feedbackTimeoutRef: CopyFeedbackTimeoutRef,
+    resetMs: number = COPY_FEEDBACK_RESET_MS
+): void => {
+    void navigator.clipboard.writeText(code)
+    setIsCopied(true)
 
-    return () => {
-        navigator.clipboard.writeText(code)
-        setIsCopied(true)
-
-        // Clear any existing timeout
-        if (timeoutId) {
-            clearTimeout(timeoutId)
-        }
-
-        timeoutId = setTimeout(() => {
-            setIsCopied(false)
-            timeoutId = null
-        }, 2000)
+    if (feedbackTimeoutRef.current !== null) {
+        clearTimeout(feedbackTimeoutRef.current)
     }
+    feedbackTimeoutRef.current = setTimeout(() => {
+        setIsCopied(false)
+        feedbackTimeoutRef.current = null
+    }, resetMs)
 }
 
 export const shouldShowLineNumbers = (
@@ -47,17 +101,6 @@ export const getContainerStyles = (
 }
 
 // ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-export const EDITOR_FOCUS_DELAY_MS = 100
-export const MIN_SCROLLBAR_SIZE = 8
-const SCROLLBAR_SIZE_RATIO = 0.8
-const PLACEHOLDER_VERTICAL_OFFSET_MULTIPLIER = 2
-
-export const BLEND_EDITOR_THEME_NAME = 'light'
-
-// ---------------------------------------------------------------------------
 // Value coercion
 // ---------------------------------------------------------------------------
 
@@ -68,7 +111,7 @@ export const toCssValue = (value?: string | number): string | undefined => {
 
 export const toNumericValue = (
     value: string | number | undefined,
-    fallback = 0
+    fallback = DEFAULT_NUMERIC_COERCION_FALLBACK
 ): number => {
     if (typeof value === 'number') return value
     if (value === undefined || value === null) return fallback
@@ -95,17 +138,31 @@ export function getEditorMetrics(
     tokens: CodeEditorV2Tokens,
     showLineNumbers: boolean
 ): EditorMetrics {
-    const fontSize = toNumericValue(tokens.body.code.fontSize, 12)
+    const fontSize = toNumericValue(
+        tokens.body.code.fontSize,
+        DEFAULT_EDITOR_FONT_SIZE_PX
+    )
     const lineHeightToken = tokens.body.code.lineHeight
     const lineHeightMultiplier =
         typeof lineHeightToken === 'number'
             ? lineHeightToken
-            : parseFloat(String(lineHeightToken ?? 1.6))
+            : parseFloat(
+                  String(lineHeightToken ?? DEFAULT_LINE_HEIGHT_MULTIPLIER)
+              )
     const lineHeight = lineHeightMultiplier * fontSize
 
-    const verticalPadding = toNumericValue(tokens.body.padding.y, 16)
-    const codePaddingLeft = toNumericValue(tokens.body.code.padding.x.left, 12)
-    const gutterWidth = toNumericValue(tokens.body.gutter.width, 40)
+    const verticalPadding = toNumericValue(
+        tokens.body.paddingTop,
+        DEFAULT_BODY_PADDING_TOP_PX
+    )
+    const codePaddingLeft = toNumericValue(
+        tokens.body.code.paddingLeft,
+        DEFAULT_CODE_PADDING_LEFT_PX
+    )
+    const gutterWidth = toNumericValue(
+        tokens.body.gutter.width,
+        DEFAULT_GUTTER_WIDTH_PX
+    )
 
     return {
         fontSize,
@@ -114,9 +171,12 @@ export function getEditorMetrics(
         codePaddingLeft,
         gutterWidth,
         lineDecorationsWidth: showLineNumbers
-            ? Math.floor(codePaddingLeft / 2)
-            : 0,
-        lineNumbersMinChars: Math.max(2, Math.floor(gutterWidth / 10)),
+            ? Math.floor(codePaddingLeft / LINE_DECORATIONS_WIDTH_DIVISOR)
+            : LINE_DECORATIONS_WIDTH_OFF,
+        lineNumbersMinChars: Math.max(
+            MIN_LINE_NUMBERS_MIN_CHARS,
+            Math.floor(gutterWidth / LINE_NUMBERS_CHARS_FROM_GUTTER_DIVISOR)
+        ),
         scrollbarSize: Math.max(
             MIN_SCROLLBAR_SIZE,
             Math.floor(fontSize * SCROLLBAR_SIZE_RATIO)

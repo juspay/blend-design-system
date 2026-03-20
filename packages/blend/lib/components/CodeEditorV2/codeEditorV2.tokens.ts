@@ -17,10 +17,10 @@ export type CodeEditorV2Tokens = {
     header: {
         backgroundColor: CSSObject['backgroundColor']
         borderBottom: CSSObject['borderBottom']
-        padding: {
-            x: CSSObject['padding']
-            y: CSSObject['padding']
-        }
+        paddingTop: CSSObject['paddingTop']
+        paddingBottom: CSSObject['paddingBottom']
+        paddingLeft: CSSObject['paddingLeft']
+        paddingRight: CSSObject['paddingRight']
         gap: CSSObject['gap']
         icon: {
             width: CSSObject['width']
@@ -34,10 +34,10 @@ export type CodeEditorV2Tokens = {
     }
     // Content area tokens
     body: {
-        padding: {
-            x: CSSObject['padding']
-            y: CSSObject['padding']
-        }
+        paddingTop: CSSObject['paddingTop']
+        paddingBottom: CSSObject['paddingBottom']
+        paddingLeft: CSSObject['paddingLeft']
+        paddingRight: CSSObject['paddingRight']
         backgroundColor: CSSObject['backgroundColor']
 
         // Gutter (line numbers) tokens
@@ -59,13 +59,10 @@ export type CodeEditorV2Tokens = {
             fontFamily: CSSObject['fontFamily']
             fontSize: CSSObject['fontSize']
             lineHeight: CSSObject['lineHeight']
-            padding: {
-                x: {
-                    left: CSSObject['paddingLeft']
-                    right: CSSObject['paddingRight']
-                }
-                y: CSSObject['padding']
-            }
+            paddingTop: CSSObject['paddingTop']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+            paddingRight: CSSObject['paddingRight']
         }
         // Highlighted line tokens (for diff mode and code highlighting)
         highlightedLine: {
@@ -75,14 +72,14 @@ export type CodeEditorV2Tokens = {
         }
         // Syntax highlighting tokens
         syntax: {
-            keyword: CSSObject['color']
-            function: CSSObject['color']
-            string: CSSObject['color']
-            number: CSSObject['color']
-            operator: CSSObject['color']
-            variable: CSSObject['color']
-            comment: CSSObject['color']
-            text: CSSObject['color']
+            keyword: { color: CSSObject['color'] }
+            function: { color: CSSObject['color'] }
+            string: { color: CSSObject['color'] }
+            number: { color: CSSObject['color'] }
+            operator: { color: CSSObject['color'] }
+            variable: { color: CSSObject['color'] }
+            comment: { color: CSSObject['color'] }
+            text: { color: CSSObject['color'] }
         }
     }
 }
