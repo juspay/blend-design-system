@@ -1,3 +1,4 @@
+import React from 'react'
 import { SkeletonVariant } from '../Skeleton'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
@@ -45,7 +46,7 @@ export type MenuProps = {
     alignOffset?: number
     collisonBoundaryRef?: Element | null | Array<Element | null>
     skeleton?: MenuSkeletonProps
-}
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'slot'>
 
 export type SubMenuVirtualScrollProps = {
     enableVirtualScrolling?: boolean
