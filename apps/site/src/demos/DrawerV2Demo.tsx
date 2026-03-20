@@ -54,6 +54,17 @@ const getFooterClassName = () => {
     return 'px-5 py-4 border-t border-gray-100 flex items-center justify-end gap-2'
 }
 
+/**
+ * When closing a modal Vaul/Radix drawer from a click on a control *inside* the
+ * drawer, calling `setOpen(false)` in the same synchronous turn can leave focus
+ * on that control while the dialog subtree is torn down / `aria-hidden` updates.
+ * Chrome then logs: "Blocked aria-hidden on an element because its descendant
+ * retained focus." Deferring the close lets focus management complete first.
+ */
+const scheduleClose = (setClosed: (next: boolean) => void) => {
+    queueMicrotask(() => setClosed(false))
+}
+
 type SelectItem = {
     value: string
     label: string
@@ -456,7 +467,7 @@ const DrawerV2Demo = () => {
                                         singleSelected,
                                         (v) => {
                                             setSingleSelected(v)
-                                            setOpen(false)
+                                            scheduleClose(setOpen)
                                         }
                                     )}
                                 {variant === 'multiSelect' &&
@@ -592,7 +603,9 @@ const DrawerV2Demo = () => {
                                                             setNestedSingleSelected(
                                                                 v
                                                             )
-                                                            setNestedOpen(false)
+                                                            scheduleClose(
+                                                                setNestedOpen
+                                                            )
                                                         }
                                                     )}
                                                     <div
