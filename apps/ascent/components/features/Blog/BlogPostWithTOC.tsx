@@ -75,12 +75,12 @@ export default function BlogPostWithTOC({
 
     return (
         <div
-            className="mx-auto flex min-h-screen max-w-[1172px] items-start border-l border-r border-[#e1e4ea] bg-white"
+            className="mx-auto flex min-h-screen max-w-[1172px] items-start border-l border-r border-blog-border bg-white"
             style={{ colorScheme: 'light' }}
         >
             {/* ── Left: main content ─────────────────────────────────────── */}
-            <div className="flex flex-1 flex-col border-r border-[#e1e4ea] px-8 pb-[84px] pt-8">
-                {/* Cover — no text overlay */}
+            <article className="flex flex-1 flex-col border-r border-blog-border px-8 pb-[84px] pt-8">
+                {/* Cover */}
                 <div className="relative mb-8 h-[206px] w-full overflow-hidden">
                     {post.coverImage ? (
                         <Image
@@ -111,11 +111,7 @@ export default function BlogPostWithTOC({
                     <div className="flex items-center justify-center py-6">
                         <Link
                             href="/blog"
-                            className="flex items-center gap-2 text-[16px] tracking-[-0.32px] text-[#7d7d7d] transition-colors hover:text-[#202020]"
-                            style={{
-                                fontFamily:
-                                    'var(--font-geist-sans), sans-serif',
-                            }}
+                            className="flex items-center gap-2 text-[16px] tracking-[-0.32px] text-blog-muted transition-colors hover:text-blog-ink"
                         >
                             <svg
                                 width="16"
@@ -135,30 +131,27 @@ export default function BlogPostWithTOC({
                         </Link>
                     </div>
                 </div>
-            </div>
+            </article>
 
-            {/* ── Right: sticky sidebar — always full viewport height ──── */}
-            {/* Fix 2 & 3: sidebar uses 100vh, TOC scrolls, author/date pinned at bottom */}
-            <div className="sticky top-0 flex h-screen w-[248px] shrink-0 flex-col">
-                {/* Title — fixed at top */}
+            {/* ── Right: sticky sidebar ────────────────────────────────── */}
+            <aside className="sticky top-0 flex h-screen w-[248px] shrink-0 flex-col">
+                {/* Title */}
                 <div className="shrink-0 px-4 pb-2 pt-4">
-                    <p
-                        className="text-[24px] font-medium leading-[1.1] tracking-[-0.96px] text-[#202020]"
-                        style={{
-                            fontFamily: 'var(--font-manrope), sans-serif',
-                        }}
-                    >
+                    <p className="font-manrope text-[24px] font-medium leading-[1.1] tracking-[-0.96px] text-blog-ink">
                         {post.title}
                     </p>
                 </div>
 
-                {/* TOC — scrollable, fills remaining space between title and author */}
+                {/* TOC */}
                 {headings.length > 0 && (
-                    <div className="flex-1 overflow-y-auto px-4 py-6">
+                    <nav
+                        aria-label="Table of contents"
+                        className="flex-1 overflow-y-auto px-4 py-6"
+                    >
                         <div className="relative flex gap-3">
                             {/* Vertical rail */}
-                            <div className="w-px self-stretch rounded-md bg-[#e1e4ea]" />
-                            {/* Active indicator pill — height matches active item text */}
+                            <div className="w-px self-stretch rounded-md bg-blog-border" />
+                            {/* Active indicator pill */}
                             <div
                                 className="pointer-events-none absolute -left-px w-[3px] rounded-[7px] bg-black transition-all duration-200"
                                 style={{
@@ -179,15 +172,11 @@ export default function BlogPostWithTOC({
                                                 itemRefs.current[i] = el
                                             }}
                                             href={`#${heading.id}`}
-                                            className={`text-[14px] uppercase leading-normal tracking-[-0.28px] transition-colors ${
+                                            className={`font-mono text-[14px] uppercase leading-normal tracking-[-0.28px] transition-colors ${
                                                 isActive
                                                     ? 'text-black'
-                                                    : 'text-[#adadad] hover:text-[#525866]'
+                                                    : 'text-blog-subtle hover:text-blog-secondary'
                                             }`}
-                                            style={{
-                                                fontFamily:
-                                                    'var(--font-geist-mono), monospace',
-                                            }}
                                         >
                                             {heading.text}
                                         </a>
@@ -195,51 +184,29 @@ export default function BlogPostWithTOC({
                                 })}
                             </div>
                         </div>
-                    </div>
+                    </nav>
                 )}
 
-                {/* Author + Date — always pinned at bottom */}
-                <div className="shrink-0 border-t border-[#e1e4ea] p-4 flex flex-col gap-6">
+                {/* Author + Date */}
+                <div className="flex shrink-0 flex-col gap-6 border-t border-blog-border p-4">
                     <div className="flex flex-col gap-1.5">
-                        <p
-                            className="text-[14px] uppercase tracking-[-0.28px] text-[#99a0ae]"
-                            style={{
-                                fontFamily: 'var(--font-geist-mono), monospace',
-                            }}
-                        >
+                        <p className="font-mono text-[14px] uppercase tracking-[-0.28px] text-blog-label">
                             Author
                         </p>
-                        <p
-                            className="text-[14px] tracking-[-0.28px] text-[#525866]"
-                            style={{
-                                fontFamily:
-                                    'var(--font-geist-sans), sans-serif',
-                            }}
-                        >
+                        <p className="text-[14px] tracking-[-0.28px] text-blog-secondary">
                             {post.author}
                         </p>
                     </div>
                     <div className="flex flex-col gap-1.5">
-                        <p
-                            className="text-[14px] uppercase tracking-[-0.28px] text-[#99a0ae]"
-                            style={{
-                                fontFamily: 'var(--font-geist-mono), monospace',
-                            }}
-                        >
+                        <p className="font-mono text-[14px] uppercase tracking-[-0.28px] text-blog-label">
                             Date
                         </p>
-                        <p
-                            className="text-[14px] tracking-[-0.28px] text-[#525866]"
-                            style={{
-                                fontFamily:
-                                    'var(--font-geist-sans), sans-serif',
-                            }}
-                        >
+                        <p className="text-[14px] tracking-[-0.28px] text-blog-secondary">
                             {formatDate(post.publishDate)}
                         </p>
                     </div>
                 </div>
-            </div>
+            </aside>
         </div>
     )
 }

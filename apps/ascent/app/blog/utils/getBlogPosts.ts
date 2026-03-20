@@ -70,10 +70,21 @@ export function getAllBlogPosts(): BlogPost[] {
 
         const postsBySlug = new Map(posts.map((post) => [post.slug, post]))
 
-        // Only return posts explicitly listed in config order.
-        return order
+        // Return posts in config order first, then remaining posts sorted by date.
+        const orderedPosts = order
             .map((slug) => postsBySlug.get(slug))
             .filter((post): post is BlogPost => post !== undefined)
+
+        const orderedSlugs = new Set(orderedPosts.map((post) => post.slug))
+        const remainingPosts = posts
+            .filter((post) => !orderedSlugs.has(post.slug))
+            .sort(
+                (a, b) =>
+                    new Date(b.publishDate).getTime() -
+                    new Date(a.publishDate).getTime()
+            )
+
+        return [...orderedPosts, ...remainingPosts]
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error reading blog posts:', error)

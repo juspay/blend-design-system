@@ -10,11 +10,8 @@ const COLS = 4
 export function BlogPostGrid({ posts }: BlogPostGridProps) {
     if (posts.length === 0) {
         return (
-            <div className="border-b border-l border-r border-[#e1e4ea] py-12 text-center">
-                <p
-                    className="text-[16px] text-[#717784]"
-                    style={{ fontFamily: 'var(--font-geist-sans), sans-serif' }}
-                >
+            <div className="border-b border-l border-r border-blog-border py-12 text-center">
+                <p className="text-[16px] text-blog-tertiary">
                     No posts published yet. Check back soon!
                 </p>
             </div>
@@ -26,23 +23,27 @@ export function BlogPostGrid({ posts }: BlogPostGridProps) {
     const isMultiRow = posts.length > COLS
 
     return (
-        <div
+        <section
+            aria-label="Blog posts"
             className={[
                 'flex flex-1 flex-col',
-                'border-b border-l border-r border-[#e1e4ea] bg-white',
+                'border-b border-l border-r border-blog-border bg-white',
                 isMultiRow ? 'overflow-y-auto' : 'overflow-hidden',
             ].join(' ')}
         >
-            <div
+            <ul
+                role="list"
                 className={[
                     'grid grid-cols-4',
                     isMultiRow ? '' : 'h-full',
                 ].join(' ')}
             >
                 {posts.map((post) => (
-                    <BlogPostCard key={post.slug} post={post} />
+                    <li key={post.slug} className="contents">
+                        <BlogPostCard post={post} />
+                    </li>
                 ))}
-            </div>
-        </div>
+            </ul>
+        </section>
     )
 }
