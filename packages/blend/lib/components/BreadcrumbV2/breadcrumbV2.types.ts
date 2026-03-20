@@ -43,6 +43,7 @@ export type BreadcrumbV2Props = {
 export type BreadcrumbV2Component = ((
     props: BreadcrumbV2Props
 ) => React.ReactElement | null) & {
+    displayName?: string
     Item: typeof BreadcrumbV2CompoundItem
     StartIcon: typeof BreadcrumbV2StartIcon
     EndIcon: typeof BreadcrumbV2EndIcon

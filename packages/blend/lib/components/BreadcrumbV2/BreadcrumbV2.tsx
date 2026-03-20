@@ -361,7 +361,7 @@ const BreadcrumbV2: BreadcrumbV2Component = ({
     )
 }
 
-;(BreadcrumbV2 as any).displayName = 'BreadcrumbV2'
+BreadcrumbV2.displayName = 'BreadcrumbV2'
 
 BreadcrumbV2.Item = BreadcrumbV2CompoundItem
 BreadcrumbV2.StartIcon = BreadcrumbV2StartIcon
