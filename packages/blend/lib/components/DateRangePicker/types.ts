@@ -303,6 +303,7 @@ export type DateRangePickerProps = {
     onChange?: (range: DateRange) => void
     onPresetSelection?: (data: PresetSelectionData) => void
     showDateTimePicker?: boolean
+    showDateInput?: boolean
     showPresets?: boolean
     customPresets?: PresetsConfig
     placeholder?: string

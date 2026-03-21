@@ -1,3 +1,4 @@
+import React from 'react'
 import { SkeletonVariant } from '../Skeleton'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
@@ -112,8 +113,6 @@ export type SingleSelectProps = {
     maxMenuWidth?: number
     maxMenuHeight?: number
     inline?: boolean
-    onBlur?: () => void
-    onFocus?: () => void
 
     // error
     error?: boolean
@@ -139,4 +138,4 @@ export type SingleSelectProps = {
     singleSelectGroupPosition?: 'center' | 'left' | 'right'
 
     allowDeselect?: boolean
-}
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'slot' | 'onSelect'>
