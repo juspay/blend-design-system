@@ -1,169 +1,212 @@
 'use client'
 
-import { BlogTableOfContents } from '@/components/features/Blog'
+import Link from 'next/link'
+import Image from 'next/image'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { BlogPostWithTOCProps } from '@/components/features/Blog/types'
 import { formatDate } from '@/components/features/Blog/utils'
-import Link from 'next/link'
 
-// Simple constants for this component
-const ARIA_LABELS = {
-    BREADCRUMB: 'Breadcrumb navigation',
-    BACK_TO_BLOG: 'Back to Blog',
-} as const
+// ─── Gradient cover fallback (deterministic per slug) ────────────────────────
+const COVER_GRADIENTS = [
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+    'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)',
+    'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
+    'linear-gradient(135deg, #fd7043 0%, #ff8a65 100%)',
+    'linear-gradient(135deg, #26c6da 0%, #00838f 100%)',
+]
 
-const ICON_PATHS = {
-    CHEVRON_RIGHT:
-        'M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.49226 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z',
-    CHEVRON_LEFT:
-        'M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.50796 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.96669 8.84182 3.13514Z',
-} as const
+function getCoverGradient(slug: string): string {
+    let hash = 0
+    for (let i = 0; i < slug.length; i++) {
+        hash = slug.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return COVER_GRADIENTS[Math.abs(hash) % COVER_GRADIENTS.length]
+}
 
+// ─── Component ───────────────────────────────────────────────────────────────
 export default function BlogPostWithTOC({
     post,
     content,
     headings,
-    className: _className = '',
 }: BlogPostWithTOCProps) {
+    const coverGradient = getCoverGradient(post.slug)
+    const [activeId, setActiveId] = useState<string>(headings[0]?.id ?? '')
+    const observerRef = useRef<IntersectionObserver | null>(null)
+    const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
+    const [pillStyle, setPillStyle] = useState<{ top: number; height: number }>(
+        { top: 0, height: 21 }
+    )
+
+    const updatePill = useCallback(() => {
+        const activeIndex = headings.findIndex(
+            (h, i) => h.id === activeId || (i === 0 && !activeId)
+        )
+        const el = itemRefs.current[activeIndex]
+        if (el) {
+            setPillStyle({ top: el.offsetTop, height: el.offsetHeight })
+        }
+    }, [activeId, headings])
+
+    useEffect(() => {
+        if (headings.length === 0) return
+        observerRef.current?.disconnect()
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                const visible = entries.filter((e) => e.isIntersecting)
+                if (visible.length > 0) setActiveId(visible[0].target.id)
+            },
+            { rootMargin: '0px 0px -70% 0px', threshold: 0 }
+        )
+        headings.forEach(({ id }) => {
+            const el = document.getElementById(id)
+            if (el) observerRef.current?.observe(el)
+        })
+        return () => observerRef.current?.disconnect()
+    }, [headings])
+
+    useEffect(() => {
+        updatePill()
+    }, [updatePill])
+
     return (
-        <>
-            {/* Main Content */}
-            <article className="max-w-4xl mx-auto px-6 py-8">
-                {/* Breadcrumb */}
-                <nav className="mb-6" aria-label={ARIA_LABELS.BREADCRUMB}>
-                    <ol className="flex items-center text-sm text-[var(--muted-foreground)]">
-                        <li>
-                            <Link
-                                href="/blog"
-                                className="hover:text-[var(--foreground)] transition-colors"
-                            >
-                                Blog
-                            </Link>
-                        </li>
-                        <li className="mx-2" aria-hidden="true">
-                            <svg
-                                width="15"
-                                height="15"
-                                viewBox="0 0 15 15"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    d={ICON_PATHS.CHEVRON_RIGHT}
-                                    fill="currentColor"
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </li>
-                        <li
-                            className="text-[var(--foreground)] font-medium"
-                            aria-current="page"
-                        >
-                            {post.title}
-                        </li>
-                    </ol>
-                </nav>
-
-                {/* Blog Post Header */}
-                <header className="mb-8">
-                    <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] mb-4">
-                        <time dateTime={post.publishDate}>
-                            {formatDate(post.publishDate)}
-                        </time>
-                        <span>•</span>
-                        <span>{post.readTime}</span>
-                        <span>•</span>
-                        <span className="capitalize">{post.category}</span>
-                    </div>
-
-                    <h1 className="text-4xl font-bold text-[var(--foreground)] mb-4 leading-tight">
-                        {post.title}
-                    </h1>
-
-                    <p className="text-xl text-[var(--muted-foreground)] mb-6 leading-relaxed">
-                        {post.description}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-[var(--muted)] rounded-full flex items-center justify-center">
-                                <span className="text-sm font-medium text-[var(--muted-foreground)]">
-                                    {post.author.charAt(0).toUpperCase()}
-                                </span>
-                            </div>
-                            <div>
-                                <div className="font-medium text-[var(--foreground)]">
-                                    {post.author}
-                                </div>
-                                <div className="text-sm text-[var(--muted-foreground)]">
-                                    Author
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                            {post.tags.map((tag) => (
-                                <span
-                                    key={tag}
-                                    className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-[var(--muted)] text-[var(--muted-foreground)]"
-                                >
-                                    #{tag}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                </header>
-
-                {/* Blog Post Content */}
-                <div className="prose prose-gray dark:prose-invert max-w-none">
-                    {content}
+        <div
+            className="mx-auto flex min-h-screen max-w-[1172px] items-start border-l border-r border-blog-border bg-white"
+            style={{ colorScheme: 'light' }}
+        >
+            {/* ── Left: main content ─────────────────────────────────────── */}
+            <article className="flex flex-1 flex-col border-r border-blog-border px-8 pb-[84px] pt-8">
+                {/* Cover */}
+                <div className="relative mb-8 h-[206px] w-full overflow-hidden">
+                    {post.coverImage ? (
+                        <Image
+                            src={post.coverImage}
+                            alt={post.title}
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                    ) : (
+                        <div
+                            className="absolute inset-0"
+                            style={{ background: coverGradient }}
+                        />
+                    )}
                 </div>
 
-                {/* Blog Post Footer */}
-                <footer className="mt-12 pt-8 border-t border-[var(--border)]">
-                    <div className="flex items-center justify-between">
+                {/* Content */}
+                <div className="flex flex-col gap-8">
+                    <div
+                        className="w-full min-w-0"
+                        style={{ colorScheme: 'light' }}
+                    >
+                        {content}
+                    </div>
+
+                    {/* Done, go back */}
+                    <div className="flex items-center justify-center py-6">
                         <Link
                             href="/blog"
-                            className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
-                            aria-label={ARIA_LABELS.BACK_TO_BLOG}
+                            className="flex items-center gap-2 text-[16px] tracking-[-0.32px] text-blog-muted transition-colors hover:text-blog-ink"
                         >
                             <svg
                                 width="16"
                                 height="16"
-                                viewBox="0 0 15 15"
+                                viewBox="0 0 16 16"
                                 fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
                             >
                                 <path
-                                    d={ICON_PATHS.CHEVRON_LEFT}
-                                    fill="currentColor"
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
+                                    d="M10 13L5 8l5-5"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                 />
                             </svg>
-                            {ARIA_LABELS.BACK_TO_BLOG}
+                            Done, go back
                         </Link>
-
-                        <div className="text-sm text-[var(--muted-foreground)]">
-                            {post.lastModified && (
-                                <>
-                                    Last updated:{' '}
-                                    {formatDate(post.lastModified)}
-                                </>
-                            )}
-                        </div>
                     </div>
-                </footer>
+                </div>
             </article>
 
-            {/* Sidebar Content - This will be positioned by the layout */}
-            <div className="fixed top-[var(--navbar-height)] right-0 w-[240px] h-[calc(100vh-var(--navbar-height))] overflow-y-auto p-4 space-y-6">
-                {/* Table of Contents with Active Highlighting */}
+            {/* ── Right: sticky sidebar ────────────────────────────────── */}
+            <aside className="sticky top-0 flex h-screen w-[248px] shrink-0 flex-col">
+                {/* Title */}
+                <div className="shrink-0 px-4 pb-2 pt-4">
+                    <p className="font-manrope text-[24px] font-medium leading-[1.1] tracking-[-0.96px] text-blog-ink">
+                        {post.title}
+                    </p>
+                </div>
+
+                {/* TOC */}
                 {headings.length > 0 && (
-                    <BlogTableOfContents items={headings} />
+                    <nav
+                        aria-label="Table of contents"
+                        className="flex-1 overflow-y-auto px-4 py-6"
+                    >
+                        <div className="relative flex gap-3">
+                            {/* Vertical rail */}
+                            <div className="w-px self-stretch rounded-md bg-blog-border" />
+                            {/* Active indicator pill */}
+                            <div
+                                className="pointer-events-none absolute -left-px w-[3px] rounded-[7px] bg-black transition-all duration-200"
+                                style={{
+                                    top: pillStyle.top,
+                                    height: pillStyle.height,
+                                }}
+                            />
+                            {/* Items */}
+                            <div className="flex flex-1 flex-col gap-3">
+                                {headings.map((heading, i) => {
+                                    const isActive =
+                                        heading.id === activeId ||
+                                        (i === 0 && !activeId)
+                                    return (
+                                        <a
+                                            key={heading.id}
+                                            ref={(el) => {
+                                                itemRefs.current[i] = el
+                                            }}
+                                            href={`#${heading.id}`}
+                                            className={`font-mono text-[14px] uppercase leading-normal tracking-[-0.28px] transition-colors ${
+                                                isActive
+                                                    ? 'text-black'
+                                                    : 'text-blog-subtle hover:text-blog-secondary'
+                                            }`}
+                                        >
+                                            {heading.text}
+                                        </a>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </nav>
                 )}
-            </div>
-        </>
+
+                {/* Author + Date */}
+                <div className="flex shrink-0 flex-col gap-6 border-t border-blog-border p-4">
+                    <div className="flex flex-col gap-1.5">
+                        <p className="font-mono text-[14px] uppercase tracking-[-0.28px] text-blog-label">
+                            Author
+                        </p>
+                        <p className="text-[14px] tracking-[-0.28px] text-blog-secondary">
+                            {post.author}
+                        </p>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                        <p className="font-mono text-[14px] uppercase tracking-[-0.28px] text-blog-label">
+                            Date
+                        </p>
+                        <p className="text-[14px] tracking-[-0.28px] text-blog-secondary">
+                            {formatDate(post.publishDate)}
+                        </p>
+                    </div>
+                </div>
+            </aside>
+        </div>
     )
 }

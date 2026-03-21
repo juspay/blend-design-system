@@ -7,6 +7,28 @@ import { BlogPost, BlogPostWithContent } from '@/components/features/Blog/types'
 export type { BlogPost, BlogPostWithContent }
 
 const BLOG_CONTENT_DIR = path.join(process.cwd(), 'app/blog/content')
+const BLOG_CONFIG_PATH = path.join(BLOG_CONTENT_DIR, 'config.json')
+
+type BlogConfig = {
+    order?: string[]
+}
+
+const getBlogConfig = (): BlogConfig => {
+    try {
+        if (!fs.existsSync(BLOG_CONFIG_PATH)) {
+            return {}
+        }
+
+        const rawConfig = fs.readFileSync(BLOG_CONFIG_PATH, 'utf8')
+        const parsedConfig = JSON.parse(rawConfig) as BlogConfig
+
+        return parsedConfig
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error reading blog config:', error)
+        return {}
+    }
+}
 
 export function getAllBlogPosts(): BlogPost[] {
     try {
@@ -35,12 +57,34 @@ export function getAllBlogPosts(): BlogPost[] {
             } as BlogPost
         })
 
-        // Sort by publish date (newest first)
-        return posts.sort(
-            (a, b) =>
-                new Date(b.publishDate).getTime() -
-                new Date(a.publishDate).getTime()
-        )
+        const { order = [] } = getBlogConfig()
+
+        if (order.length === 0) {
+            // Fallback to date sort when no explicit config order exists.
+            return posts.sort(
+                (a, b) =>
+                    new Date(b.publishDate).getTime() -
+                    new Date(a.publishDate).getTime()
+            )
+        }
+
+        const postsBySlug = new Map(posts.map((post) => [post.slug, post]))
+
+        // Return posts in config order first, then remaining posts sorted by date.
+        const orderedPosts = order
+            .map((slug) => postsBySlug.get(slug))
+            .filter((post): post is BlogPost => post !== undefined)
+
+        const orderedSlugs = new Set(orderedPosts.map((post) => post.slug))
+        const remainingPosts = posts
+            .filter((post) => !orderedSlugs.has(post.slug))
+            .sort(
+                (a, b) =>
+                    new Date(b.publishDate).getTime() -
+                    new Date(a.publishDate).getTime()
+            )
+
+        return [...orderedPosts, ...remainingPosts]
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error reading blog posts:', error)

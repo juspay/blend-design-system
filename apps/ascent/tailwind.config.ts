@@ -3,6 +3,7 @@ import type { Config } from 'tailwindcss'
 const config: Config = {
     content: [
         './app/**/*.{js,ts,jsx,tsx,mdx}',
+        './components/**/*.{js,ts,jsx,tsx}',
         './mdx-components.tsx',
         './src/**/*.{js,ts,jsx,tsx}',
     ],
@@ -23,8 +24,29 @@ const config: Config = {
                 ],
                 heading: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
                 inter: ['var(--font-inter-display)', 'InterDisplay'],
+                manrope: ['var(--font-manrope)', 'sans-serif'],
             },
             colors: {
+                blog: {
+                    // Text
+                    ink: '#202020',
+                    heading: '#111827',
+                    body: '#374151',
+                    secondary: '#525866',
+                    tertiary: '#717784',
+                    muted: '#7d7d7d',
+                    label: '#99a0ae',
+                    subtle: '#adadad',
+                    // Borders
+                    border: '#e1e4ea',
+                    'border-muted': '#c8cdd6',
+                    separator: '#e5e7eb',
+                    // Surfaces
+                    surface: '#fcfcfd',
+                    'surface-subtle': '#fafafa',
+                    'surface-raised': '#f4f5f7',
+                    code: '#f3f4f6',
+                },
                 border: 'hsl(var(--border))',
                 input: 'hsl(var(--input))',
                 ring: 'hsl(var(--ring))',
