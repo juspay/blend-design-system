@@ -600,6 +600,7 @@ export const MultiSelectItems: React.FC<{
             display="flex"
             flexDirection="column"
             marginTop={FOUNDATION_THEME.unit[2]}
+            padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[4]}`}
         >
             {items.length === 0 ? (
                 <PrimitiveText
@@ -620,7 +621,7 @@ export const MultiSelectItems: React.FC<{
                 <Block
                     ref={virtualScrollRef}
                     style={{
-                        height: viewportHeight,
+                        maxHeight: viewportHeight,
                         overflow: 'auto',
                         position: 'relative',
                     }}
