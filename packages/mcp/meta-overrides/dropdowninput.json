@@ -1,0 +1,42 @@
+{
+    "componentDescription": "DropdownInput combines a text input with an integrated dropdown selector for the input's prefix or context. Use it when the input field's meaning changes based on a dropdown selection — e.g., a phone number input where the country code dropdown changes the format, or a search input where the category dropdown changes the search scope.",
+    "features": [
+        "Text input paired with dropdown selector",
+        "Multiple size variants",
+        "Error state with error message",
+        "Label support",
+        "Disabled state",
+        "Placeholder for both input and dropdown"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Phone number with country code",
+            "description": "Phone input with integrated country code dropdown.",
+            "code": "<DropdownInput\n  label=\"Phone number\"\n  value={phoneNumber}\n  onChange={setPhoneNumber}\n  options={countryCodes.map(c => ({ label: `${c.flag} ${c.dialCode}`, value: c.dialCode }))}\n  placeholder=\"Enter phone number\"\n  size={TextInputSize.MEDIUM}\n  error={!!phoneError}\n  errorMessage={phoneError}\n/>"
+        },
+        {
+            "title": "Scoped search input",
+            "description": "Search with category selector to scope the query.",
+            "code": "<DropdownInput\n  label=\"Search\"\n  value={query}\n  onChange={setQuery}\n  options={[\n    { label: 'All', value: 'all' },\n    { label: 'Users', value: 'users' },\n    { label: 'Orders', value: 'orders' },\n    { label: 'Products', value: 'products' },\n  ]}\n  placeholder=\"Search...\"\n  size={TextInputSize.MEDIUM}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. The text input's current value. Manage with useState. This is the text portion — the dropdown selection is managed separately.",
+            "propDescription": "Required. Controlled text input value"
+        },
+        "onChange": {
+            "llmContext": "Required. Called with new string value as user types in the text input.",
+            "propDescription": "Required. Called with new string value on text input change"
+        },
+        "options": {
+            "llmContext": "Required. Array of dropdown options. Each option: { label: string, value: string }. These populate the integrated dropdown selector. The currently selected option is typically displayed as a prefix or suffix to the input.",
+            "propDescription": "Required. Array of dropdown options for the selector"
+        },
+        "error": {
+            "llmContext": "Set to true for validation errors. Show an errorMessage explaining the issue. Common errors: phone number format doesn't match selected country code, invalid characters.",
+            "propDescription": "Shows error styling on the input"
+        }
+    }
+}

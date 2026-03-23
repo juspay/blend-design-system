@@ -1,0 +1,82 @@
+{
+    "componentDescription": "SingleSelect is the standard dropdown for selecting one value from a list. Use it for form fields like country, category, status, or any enumerated single-choice. For multi-choice, use MultiSelect. For simple navigation menus, use Menu. SingleSelect supports search, virtualization for large lists, sub-menus, and mobile drawer mode.",
+    "features": [
+        "Three sizes: SMALL, MEDIUM, LARGE",
+        "Two variants: CONTAINER (bordered trigger) and NO_CONTAINER (minimal trigger)",
+        "Built-in search with customizable placeholder",
+        "Grouped items with optional group labels and separators",
+        "Virtualized rendering for large item lists",
+        "Infinite scroll with onEndReached and hasMore",
+        "Sub-menu support per item",
+        "Mobile drawer mode with useDrawerOnMobile",
+        "Custom trigger via customTrigger slot",
+        "Skeleton loading state",
+        "Allow custom value entry",
+        "Allow deselect to clear selection",
+        "Inline mode (no portal, renders inline)"
+    ],
+    "compositionPattern": "Items are passed as SelectMenuGroupType[]. Each group has an optional groupLabel and an items array of SelectMenuItemType. If you don't need groups, pass a single group without a groupLabel. Each item needs at minimum label and value strings.",
+    "usageExamples": [
+        {
+            "title": "Basic country selector",
+            "description": "Single select for country with search enabled.",
+            "code": "<SingleSelect\n  label=\"Country\"\n  placeholder=\"Select country\"\n  selected={selectedCountry}\n  onSelect={setSelectedCountry}\n  enableSearch\n  searchPlaceholder=\"Search countries...\"\n  size={SelectMenuSize.MEDIUM}\n  items={[\n    {\n      items: countries.map(c => ({ label: c.name, value: c.code }))\n    }\n  ]}\n/>"
+        },
+        {
+            "title": "Status selector with grouped items",
+            "description": "Grouped dropdown for ticket status with active and archived categories.",
+            "code": "<SingleSelect\n  label=\"Status\"\n  placeholder=\"Select status\"\n  selected={status}\n  onSelect={setStatus}\n  size={SelectMenuSize.MEDIUM}\n  variant={SelectMenuVariant.CONTAINER}\n  items={[\n    {\n      groupLabel: 'Active',\n      items: [\n        { label: 'Open', value: 'open', slot1: <GreenDot /> },\n        { label: 'In Progress', value: 'in_progress', slot1: <YellowDot /> },\n      ]\n    },\n    {\n      groupLabel: 'Closed',\n      showSeparator: true,\n      items: [\n        { label: 'Resolved', value: 'resolved', slot1: <BlueDot /> },\n        { label: 'Cancelled', value: 'cancelled', slot1: <GreyDot /> },\n      ]\n    }\n  ]}\n/>"
+        },
+        {
+            "title": "Large list with virtualization and infinite scroll",
+            "description": "Virtualized select for a large user list with infinite scroll.",
+            "code": "<SingleSelect\n  label=\"Assign to\"\n  placeholder=\"Select team member\"\n  selected={assignee}\n  onSelect={setAssignee}\n  enableSearch\n  enableVirtualization\n  hasMore={hasMoreUsers}\n  onEndReached={loadMoreUsers}\n  loadingComponent={<Spinner />}\n  size={SelectMenuSize.MEDIUM}\n  items={[{ items: users.map(u => ({ label: u.name, value: u.id, slot1: <Avatar name={u.name} /> })) }]}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "placeholder": {
+            "llmContext": "Required. Text shown when no option is selected. Use descriptive action phrases like 'Select a country' or 'Choose status' rather than generic 'Select...'.",
+            "propDescription": "Required. Trigger text when no item is selected"
+        },
+        "items": {
+            "llmContext": "Required. Array of SelectMenuGroupType. Each group: { groupLabel?: string, items: SelectMenuItemType[], showSeparator?: boolean }. Each item: { label: string, value: string, subLabel?: string, slot1?: ReactNode, slot2?: ReactNode, slot3?: ReactNode, disabled?: boolean, onClick?: () => void, subMenu?: SelectMenuGroupType[], tooltip?: string }. For non-grouped lists, pass a single group object with no groupLabel.",
+            "propDescription": "Required. Grouped array of selectable items"
+        },
+        "selected": {
+            "llmContext": "Required. The currently selected value string (matching a value in your items array). Pass empty string or null/undefined for no selection. Always manage with useState.",
+            "propDescription": "Required. Currently selected item value"
+        },
+        "onSelect": {
+            "llmContext": "Required. Callback fired with the selected item's value string when user picks an option. Update your selected state here.",
+            "propDescription": "Required. Called with selected value string on item pick"
+        },
+        "enableSearch": {
+            "llmContext": "Set to true when the item list has more than 7-8 items. Adds a search input at the top of the dropdown. Essential for country lists, user lists, and any long enumeration.",
+            "propDescription": "Adds a search input to filter items"
+        },
+        "variant": {
+            "llmContext": "CONTAINER (default) renders a bordered input-like trigger — use in forms. NO_CONTAINER renders a minimal trigger with no border — use for settings toggles, inline editors, or toolbar selectors.",
+            "propDescription": "Controls trigger border/container style"
+        },
+        "useDrawerOnMobile": {
+            "llmContext": "Set to true for dropdowns used in mobile-responsive UIs. Automatically switches to a full bottom-sheet Drawer on small screens, which is much easier to interact with on touch devices.",
+            "propDescription": "Renders as bottom-sheet Drawer on mobile"
+        },
+        "enableVirtualization": {
+            "llmContext": "Set to true when the items list exceeds ~100 items. Renders only visible items in the DOM, preventing performance issues. Required for user lists, product catalogs, and other large datasets.",
+            "propDescription": "Enables virtual rendering for large item lists"
+        },
+        "allowDeselect": {
+            "llmContext": "Set to true to allow the user to click a selected item again to deselect it (clearing the value). Use for optional fields where 'no selection' is a valid state.",
+            "propDescription": "Allows clicking selected item to deselect it"
+        },
+        "allowCustomValue": {
+            "llmContext": "Set to true to let users type a custom value not in the items list. Useful for open-ended fields like tags or categories where the full list of valid values isn't known in advance.",
+            "propDescription": "Allows user to enter a custom value not in the items list"
+        },
+        "inline": {
+            "llmContext": "Set to true to render the dropdown inline in the document flow instead of as a portal. Use in scrollable containers or when z-index conflicts make portals problematic.",
+            "propDescription": "Renders dropdown inline instead of as a portal"
+        }
+    }
+}

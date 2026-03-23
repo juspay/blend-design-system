@@ -275,7 +275,6 @@ const StatCardV2 = ({
                                 size={ProgressBarSize.SMALL}
                                 variant={ProgressBarVariant.SEGMENTED}
                                 showLabel={true}
-                                data-single-stat-progress={title}
                             />
                         ) : (
                             renderVariantFallbackValue(

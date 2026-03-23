@@ -1,0 +1,55 @@
+{
+    "componentDescription": "Tags (also called badges or chips) display categorization labels, status indicators, and filterable attributes. Use Tags to show status (Active, Pending), categories (Design, Engineering), or removable filter chips. For filter chip groups with removal, provide onClose.",
+    "features": [
+        "Multiple semantic variants for color-coded meaning",
+        "Multiple size options",
+        "Optional icon slot",
+        "Optional close/remove button via onClose",
+        "Disabled state",
+        "Custom slot for additional content"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Status badge in a table",
+            "description": "Colored tags showing entity status in a data table cell.",
+            "code": "<Tags\n  label={order.status}\n  variant={order.status === 'completed' ? 'success' : order.status === 'pending' ? 'warning' : 'neutral'}\n  size=\"sm\"\n/>"
+        },
+        {
+            "title": "Removable filter chips",
+            "description": "Active filter tags that can be removed individually.",
+            "code": "<div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>\n  {activeFilters.map(filter => (\n    <Tags\n      key={filter.id}\n      label={filter.label}\n      onClose={() => removeFilter(filter.id)}\n      variant=\"primary\"\n      size=\"md\"\n    />\n  ))}\n</div>"
+        },
+        {
+            "title": "Category tags with icons",
+            "description": "Tags with icons for technology categories on a project card.",
+            "code": "<div style={{ display: 'flex', gap: 6 }}>\n  {project.technologies.map(tech => (\n    <Tags\n      key={tech.name}\n      label={tech.name}\n      icon={<tech.Icon />}\n      variant=\"neutral\"\n      size=\"sm\"\n    />\n  ))}\n</div>"
+        }
+    ],
+    "propOverrides": {
+        "label": {
+            "llmContext": "The text displayed inside the tag. Keep it very short — ideally 1-2 words. Use Title Case for status labels (Active, Pending) and lowercase for category tags.",
+            "propDescription": "Text content of the tag"
+        },
+        "variant": {
+            "llmContext": "Controls the color scheme. Use semantic variants: 'success' (green) for active/completed states, 'warning' (yellow) for pending/attention states, 'error' (red) for failed/blocked states, 'neutral' (grey) for inactive/archived, 'primary' (blue) for information/selected. Use color variants consistently so users learn the color meanings.",
+            "propDescription": "Color variant controlling tag appearance"
+        },
+        "onClose": {
+            "llmContext": "Provide a callback to show a close/remove icon on the tag. Use when the tag represents an active filter, selected item, or any removable entity. Clicking the X calls this callback — remove the tag from your state in this handler.",
+            "propDescription": "Callback fired when the close button is clicked; presence adds close button"
+        },
+        "size": {
+            "llmContext": "Use 'sm' in table cells and compact lists. Use 'md' for standard inline tags and filter chips.",
+            "propDescription": "Controls tag size"
+        },
+        "icon": {
+            "llmContext": "React node for an icon displayed inside the tag before the label. Use for technology logos, status icons, or category icons that reinforce the tag's meaning visually.",
+            "propDescription": "Icon displayed inside the tag"
+        },
+        "disabled": {
+            "llmContext": "Set to true to show the tag in a disabled/muted state. Use when the tag represents an unavailable option or when the user cannot interact with it.",
+            "propDescription": "Applies disabled visual styling"
+        }
+    }
+}
