@@ -4,7 +4,6 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveLink from '../Primitives/PrimitiveLink'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { FOUNDATION_THEME } from '../../tokens'
 import type { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
 import BreadcrumbV2CompoundItem from './BreadcrumbV2Item'
 import BreadcrumbV2EndIcon from './BreadcrumbV2EndIcon'
@@ -112,7 +111,7 @@ const BreadcrumbItem = ({
             </PrimitiveLink>
             {!isActive && (
                 <Block
-                    color={FOUNDATION_THEME.colors.gray[400]}
+                    color={breadcrumbTokens.separator.color}
                     aria-hidden="true"
                     role="separator"
                 >
@@ -208,9 +207,11 @@ const BreadcrumbV2: BreadcrumbV2Component = ({
                         >
                             <PrimitiveButton
                                 background={'none'}
-                                borderRadius={FOUNDATION_THEME.border.radius[6]}
+                                borderRadius={
+                                    breadcrumbTokens.ellipsis.borderRadius
+                                }
                                 contentCentered
-                                color={FOUNDATION_THEME.colors.gray[400]}
+                                color={breadcrumbTokens.ellipsis.color}
                                 size={24}
                                 aria-label={`Show ${menuItems.length} more breadcrumb items`}
                                 aria-expanded="false"
@@ -218,8 +219,8 @@ const BreadcrumbV2: BreadcrumbV2Component = ({
                                 type="button"
                             >
                                 <Ellipsis
-                                    size={FOUNDATION_THEME.unit[14]}
-                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                    size={breadcrumbTokens.ellipsis.size}
+                                    color={breadcrumbTokens.ellipsis.color}
                                     aria-hidden="true"
                                 />
                             </PrimitiveButton>
@@ -317,21 +318,23 @@ const BreadcrumbV2: BreadcrumbV2Component = ({
                     >
                         <PrimitiveButton
                             background={'none'}
-                            borderRadius={FOUNDATION_THEME.border.radius[6]}
+                            borderRadius={
+                                breadcrumbTokens.ellipsis.borderRadius
+                            }
                             contentCentered
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                            color={breadcrumbTokens.ellipsis.color}
                             size={24}
                             aria-label={`Show ${menuItems.length} more breadcrumb items`}
                             type="button"
                         >
                             <Ellipsis
-                                size={FOUNDATION_THEME.unit[14]}
-                                color={FOUNDATION_THEME.colors.gray[400]}
+                                size={breadcrumbTokens.ellipsis.size}
+                                color={breadcrumbTokens.ellipsis.color}
                                 aria-hidden="true"
                             />
                         </PrimitiveButton>
                         <Block
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                            color={breadcrumbTokens.separator.color}
                             aria-hidden="true"
                             role="separator"
                         >
