@@ -1,8 +1,8 @@
 {
     "version": "2.0.0",
-    "generatedAt": "2026-03-17T09:19:53.770Z",
+    "generatedAt": "2026-03-23T11:22:06.961Z",
     "packageName": "@juspay/blend-design-system",
-    "blendPackageVersion": "0.0.36",
+    "blendPackageVersion": "0.0.37-beta.0",
     "components": {
         "Accordion": {
             "componentName": "Accordion",
@@ -2818,6 +2818,16 @@
                     "llmContext": "Set to true to enable showDateTimePicker"
                 },
                 {
+                    "propName": "showDateInput",
+                    "propType": "boolean",
+                    "typeDefinition": "boolean",
+                    "propDescription": "Set to true to enable showDateInput",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Set to true to enable showDateInput"
+                },
+                {
                     "propName": "showPresets",
                     "propType": "boolean",
                     "typeDefinition": "boolean",
@@ -4122,26 +4132,6 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Set to true to enable inline"
-                },
-                {
-                    "propName": "onBlur",
-                    "propType": "() => void",
-                    "typeDefinition": "() => void",
-                    "propDescription": "Callback function for onBlur",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Callback function for onBlur"
-                },
-                {
-                    "propName": "onFocus",
-                    "propType": "() => void",
-                    "typeDefinition": "() => void",
-                    "propDescription": "Callback function for onFocus",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Callback function for onFocus"
                 },
                 {
                     "propName": "onOpenChange",
@@ -5652,26 +5642,6 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Set to true to render the dropdown inline in the document flow instead of as a portal. Use in scrollable containers or when z-index conflicts make portals problematic."
-                },
-                {
-                    "propName": "onBlur",
-                    "propType": "() => void",
-                    "typeDefinition": "() => void",
-                    "propDescription": "Callback function for onBlur",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Callback function for onBlur"
-                },
-                {
-                    "propName": "onFocus",
-                    "propType": "() => void",
-                    "typeDefinition": "() => void",
-                    "propDescription": "Callback function for onFocus",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Callback function for onFocus"
                 },
                 {
                     "propName": "error",
