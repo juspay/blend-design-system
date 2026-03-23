@@ -464,7 +464,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             defaultActiveItem={
                                                 defaultActiveItem
                                             }
-                                            iconOnlyMode={false}
+                                            iconOnlyMode={!isHovering}
                                             footer={footer}
                                         />
                                     </Block>
