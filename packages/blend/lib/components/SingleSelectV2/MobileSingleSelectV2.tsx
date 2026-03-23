@@ -51,7 +51,11 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
     slot,
     customTrigger,
     inline = false,
-    triggerDimensions,
+    triggerDimensions = {
+        width: 'auto',
+        minWidth: 'auto',
+        maxWidth: 'auto',
+    },
     skeleton = {
         count: 3,
         show: false,
@@ -73,9 +77,6 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
     const isSmallScreen = breakPointLabel === 'sm'
     const enableSearch = search?.show
     const searchPlaceholder = search?.placeholder ?? 'Search options...'
-    const wrapperWidth = isSmallScreen
-        ? '100%'
-        : (triggerDimensions?.width ?? 'fit-content')
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
@@ -139,7 +140,7 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
         <Block
             data-single-select-v2={label || 'single-select-v2'}
             data-status={disabled ? 'disabled' : 'enabled'}
-            width={wrapperWidth}
+            width={triggerDimensions?.width}
             display="flex"
             flexDirection="column"
             gap={8}

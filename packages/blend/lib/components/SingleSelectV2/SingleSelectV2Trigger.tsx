@@ -37,7 +37,9 @@ export type SingleSelectV2TriggerProps = {
 }
 
 const DEFAULT_TRIGGER_DIMENSIONS: SelectV2TriggerDimensions = {
-    width: 'fit-content',
+    width: 'auto',
+    minWidth: 'auto',
+    maxWidth: 'auto',
 }
 
 const SingleSelectV2Trigger = ({
@@ -79,12 +81,6 @@ const SingleSelectV2Trigger = ({
     const resolvedBorderRadius =
         borderRadius ?? singleSelectTokens.trigger.borderRadius[size][variant]
 
-    const resolvedWidth =
-        triggerDimensions.width ??
-        (triggerDimensions.maxWidth || triggerDimensions.minWidth
-            ? undefined
-            : 'fit-content')
-
     return (
         <PrimitiveButton
             data-element="single-select-button"
@@ -92,7 +88,7 @@ const SingleSelectV2Trigger = ({
             disabled={disabled}
             maxWidth={triggerDimensions.maxWidth}
             minWidth={triggerDimensions.minWidth}
-            width={resolvedWidth}
+            width={triggerDimensions.width}
             name={name}
             id={name}
             position="relative"
