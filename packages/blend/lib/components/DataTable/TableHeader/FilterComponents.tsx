@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { ArrowUp, ArrowDown, Search, ChevronRight, Check } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
@@ -32,8 +33,10 @@ import { Popover } from '../../Popover'
 import MobileFilterDrawer from './MobileFilterDrawer'
 import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
-import { VirtualList, VirtualListItem } from '../../VirtualList'
+import { VirtualListItem } from '../../VirtualList'
 
+const FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT = 40
+const FILTER_VIRTUAL_LIST_MAX_HEIGHT = 220
 type FilterComponentsProps = {
     column: ColumnDefinition<Record<string, unknown>>
     data?: Record<string, unknown>[]
@@ -369,116 +372,180 @@ export const SingleSelectItems: React.FC<{
             value: item.value,
         })
     )
+    const virtualScrollRef = useRef<HTMLDivElement>(null)
+    const virtualizer = useVirtualizer({
+        count: items.length,
+        getScrollElement: () => virtualScrollRef.current,
+        estimateSize: () => FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT,
+        overscan: 5,
+        getItemKey: (index: number) => items[index]?.id ?? index,
+    })
+    const virtualItems = virtualizer.getVirtualItems()
+    const viewportHeight = Math.min(
+        FILTER_VIRTUAL_LIST_MAX_HEIGHT,
+        Math.max(items.length * FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT, 0)
+    )
 
     return (
         <Block
             display="flex"
             flexDirection="column"
-            maxHeight={tableToken.dataTable.table.header.filter.maxHeight}
-            overflowY={tableToken.dataTable.table.header.filter.overflowY}
             marginTop={FOUNDATION_THEME.unit[2]}
-            padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[4]}`}
+            padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[4]}`}
         >
-            <VirtualList
-                items={items}
-                height={400}
-                itemHeight={60}
-                overscan={5}
-                renderItem={({ item }) => {
-                    const value = item.value as string
-                    const label = item.label as React.ReactNode
-                    const selectedValues =
-                        filterState.columnSelectedValues[fieldKey]
-                    const currentSelected = Array.isArray(selectedValues)
-                        ? selectedValues[0]
-                        : typeof selectedValues === 'string'
-                          ? selectedValues
-                          : ''
+            {items.length === 0 ? (
+                <PrimitiveText
+                    style={{
+                        fontSize:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .fontSize,
+                        color: tableToken.dataTable.table.header.filter
+                            .groupLabelColor,
+                        padding:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .padding,
+                    }}
+                >
+                    No results found
+                </PrimitiveText>
+            ) : (
+                <Block
+                    ref={virtualScrollRef}
+                    style={{
+                        maxHeight: viewportHeight,
+                        overflow: 'auto',
+                        position: 'relative',
+                    }}
+                >
+                    <Block
+                        style={{
+                            height: virtualizer.getTotalSize(),
+                            width: '100%',
+                            position: 'relative',
+                        }}
+                    >
+                        {virtualItems.map((virtualItem) => {
+                            const item = items[virtualItem.index]
+                            const value = item.value as string
+                            const label = item.label as React.ReactNode
+                            const selectedValues =
+                                filterState.columnSelectedValues[fieldKey]
+                            const currentSelected = Array.isArray(
+                                selectedValues
+                            )
+                                ? selectedValues[0]
+                                : typeof selectedValues === 'string'
+                                  ? selectedValues
+                                  : ''
+                            const isSelected = currentSelected === value
 
-                    const isSelected = currentSelected === value
-
-                    return (
-                        <Block
-                            key={value}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            padding={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.padding
-                            }
-                            borderRadius={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.borderRadius
-                            }
-                            cursor="pointer"
-                            backgroundColor={
-                                isSelected
-                                    ? tableToken.dataTable.table.header.filter
-                                          .sortOption.hoverBackground
-                                    : 'transparent'
-                            }
-                            _hover={{
-                                backgroundColor:
-                                    tableToken.dataTable.table.header.filter
-                                        .sortOption.hoverBackground,
-                            }}
-                            onClick={() => {
-                                filterHandlers.handleSelectFilter(
-                                    column,
-                                    fieldKey,
-                                    value,
-                                    onColumnFilter
-                                )
-                                onPopoverClose?.()
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    filterHandlers.handleSelectFilter(
-                                        column,
-                                        fieldKey,
-                                        value,
-                                        onColumnFilter
-                                    )
-                                    onPopoverClose?.()
-                                }
-                            }}
-                            tabIndex={0}
-                            role="menuitemradio"
-                            aria-checked={isSelected}
-                            _focus={{ outline: 'none' }}
-                            _focusVisible={{
-                                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                                outlineOffset: '2px',
-                            }}
-                        >
-                            <PrimitiveText
-                                style={{
-                                    fontSize:
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.fontSize,
-                                    color: tableToken.dataTable.table.header
-                                        .filter.sortOption.textColor,
-                                    fontWeight:
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.fontWeight,
-                                    flexGrow: 1,
-                                }}
-                            >
-                                {label}
-                            </PrimitiveText>
-                            {isSelected && (
-                                <Check
-                                    size={FOUNDATION_THEME.unit[16]}
-                                    color={FOUNDATION_THEME.colors.gray[600]}
-                                />
-                            )}
-                        </Block>
-                    )
-                }}
-            />
+                            return (
+                                <Block
+                                    key={String(virtualItem.key)}
+                                    data-index={virtualItem.index}
+                                    ref={virtualizer.measureElement}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        transform: `translateY(${virtualItem.start}px)`,
+                                    }}
+                                >
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        padding={
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.padding
+                                        }
+                                        borderRadius={
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.borderRadius
+                                        }
+                                        cursor="pointer"
+                                        backgroundColor={
+                                            isSelected
+                                                ? tableToken.dataTable.table
+                                                      .header.filter.sortOption
+                                                      .hoverBackground
+                                                : 'transparent'
+                                        }
+                                        _hover={{
+                                            backgroundColor:
+                                                tableToken.dataTable.table
+                                                    .header.filter.sortOption
+                                                    .hoverBackground,
+                                        }}
+                                        onClick={() => {
+                                            filterHandlers.handleSelectFilter(
+                                                column,
+                                                fieldKey,
+                                                value,
+                                                onColumnFilter
+                                            )
+                                            onPopoverClose?.()
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Enter' ||
+                                                e.key === ' '
+                                            ) {
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                                filterHandlers.handleSelectFilter(
+                                                    column,
+                                                    fieldKey,
+                                                    value,
+                                                    onColumnFilter
+                                                )
+                                                onPopoverClose?.()
+                                            }
+                                        }}
+                                        tabIndex={0}
+                                        role="menuitemradio"
+                                        aria-checked={isSelected}
+                                        _focus={{ outline: 'none' }}
+                                        _focusVisible={{
+                                            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                            outlineOffset: '2px',
+                                        }}
+                                    >
+                                        <PrimitiveText
+                                            style={{
+                                                fontSize:
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.fontSize,
+                                                color: tableToken.dataTable
+                                                    .table.header.filter
+                                                    .sortOption.textColor,
+                                                fontWeight:
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.fontWeight,
+                                                flexGrow: 1,
+                                            }}
+                                        >
+                                            {label}
+                                        </PrimitiveText>
+                                        {isSelected && (
+                                            <Check
+                                                size={FOUNDATION_THEME.unit[16]}
+                                                color={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[600]
+                                                }
+                                            />
+                                        )}
+                                    </Block>
+                                </Block>
+                            )
+                        })}
+                    </Block>
+                </Block>
+            )}
         </Block>
     )
 }
@@ -514,109 +581,171 @@ export const MultiSelectItems: React.FC<{
             value: item.value,
         })
     )
+    const virtualScrollRef = useRef<HTMLDivElement>(null)
+    const virtualizer = useVirtualizer({
+        count: items.length,
+        getScrollElement: () => virtualScrollRef.current,
+        estimateSize: () => FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT,
+        overscan: 5,
+        getItemKey: (index: number) => items[index]?.id ?? index,
+    })
+    const virtualItems = virtualizer.getVirtualItems()
+    const viewportHeight = Math.min(
+        FILTER_VIRTUAL_LIST_MAX_HEIGHT,
+        Math.max(items.length * FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT, 0)
+    )
 
     return (
         <Block
             display="flex"
             flexDirection="column"
-            maxHeight={tableToken.dataTable.table.header.filter.maxHeight}
-            overflowY={tableToken.dataTable.table.header.filter.overflowY}
             marginTop={FOUNDATION_THEME.unit[2]}
         >
-            <VirtualList
-                items={items}
-                height={400}
-                itemHeight={60}
-                overscan={5}
-                renderItem={({ item }) => {
-                    const value = item.value as string
-                    const label = item.label as React.ReactNode
-                    const selectedValues =
-                        filterState.columnSelectedValues[fieldKey]
-                    const currentSelected = Array.isArray(selectedValues)
-                        ? selectedValues
-                        : []
+            {items.length === 0 ? (
+                <PrimitiveText
+                    style={{
+                        fontSize:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .fontSize,
+                        color: tableToken.dataTable.table.header.filter
+                            .groupLabelColor,
+                        padding:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .padding,
+                    }}
+                >
+                    No results found
+                </PrimitiveText>
+            ) : (
+                <Block
+                    ref={virtualScrollRef}
+                    style={{
+                        height: viewportHeight,
+                        overflow: 'auto',
+                        position: 'relative',
+                    }}
+                >
+                    <Block
+                        style={{
+                            height: virtualizer.getTotalSize(),
+                            width: '100%',
+                            position: 'relative',
+                        }}
+                    >
+                        {virtualItems.map((virtualItem) => {
+                            const item = items[virtualItem.index]
+                            const value = item.value as string
+                            const label = item.label as React.ReactNode
+                            const selectedValues =
+                                filterState.columnSelectedValues[fieldKey]
+                            const currentSelected = Array.isArray(
+                                selectedValues
+                            )
+                                ? selectedValues
+                                : []
 
-                    const isSelected = currentSelected.includes(value)
+                            const isSelected = currentSelected.includes(value)
 
-                    return (
-                        <Block
-                            key={value}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            padding={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.padding
-                            }
-                            borderRadius={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.borderRadius
-                            }
-                            cursor="pointer"
-                            backgroundColor={
-                                isSelected
-                                    ? tableToken.dataTable.table.header.filter
-                                          .sortOption.hoverBackground
-                                    : 'transparent'
-                            }
-                            _hover={{
-                                backgroundColor:
-                                    tableToken.dataTable.table.header.filter
-                                        .sortOption.hoverBackground,
-                            }}
-                            onClick={() => {
-                                filterHandlers.handleMultiSelectFilter(
-                                    column,
-                                    fieldKey,
-                                    value,
-                                    onColumnFilter
-                                )
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    filterHandlers.handleMultiSelectFilter(
-                                        column,
-                                        fieldKey,
-                                        value,
-                                        onColumnFilter
-                                    )
-                                }
-                            }}
-                            tabIndex={0}
-                            role="menuitemcheckbox"
-                            aria-checked={isSelected}
-                            _focus={{ outline: 'none' }}
-                            _focusVisible={{
-                                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                                outlineOffset: '2px',
-                            }}
-                        >
-                            <PrimitiveText
-                                style={{
-                                    fontSize:
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.fontSize,
-                                    color: tableToken.dataTable.table.header
-                                        .filter.sortOption.textColor,
-                                    fontWeight:
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.fontWeight,
-                                    flexGrow: 1,
-                                }}
-                            >
-                                {label}
-                            </PrimitiveText>
-                            <Checkbox
-                                checked={isSelected}
-                                size={CheckboxSize.SMALL}
-                            />
-                        </Block>
-                    )
-                }}
-            />
+                            return (
+                                <Block
+                                    key={String(virtualItem.key)}
+                                    data-index={virtualItem.index}
+                                    ref={virtualizer.measureElement}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        transform: `translateY(${virtualItem.start}px)`,
+                                    }}
+                                >
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        padding={
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.padding
+                                        }
+                                        borderRadius={
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.borderRadius
+                                        }
+                                        cursor="pointer"
+                                        backgroundColor={
+                                            isSelected
+                                                ? tableToken.dataTable.table
+                                                      .header.filter.sortOption
+                                                      .hoverBackground
+                                                : 'transparent'
+                                        }
+                                        _hover={{
+                                            backgroundColor:
+                                                tableToken.dataTable.table
+                                                    .header.filter.sortOption
+                                                    .hoverBackground,
+                                        }}
+                                        onClick={() => {
+                                            filterHandlers.handleMultiSelectFilter(
+                                                column,
+                                                fieldKey,
+                                                value,
+                                                onColumnFilter
+                                            )
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Enter' ||
+                                                e.key === ' '
+                                            ) {
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                                filterHandlers.handleMultiSelectFilter(
+                                                    column,
+                                                    fieldKey,
+                                                    value,
+                                                    onColumnFilter
+                                                )
+                                            }
+                                        }}
+                                        tabIndex={0}
+                                        role="menuitemcheckbox"
+                                        aria-checked={isSelected}
+                                        _focus={{ outline: 'none' }}
+                                        _focusVisible={{
+                                            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                            outlineOffset: '2px',
+                                        }}
+                                    >
+                                        <PrimitiveText
+                                            style={{
+                                                fontSize:
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.fontSize,
+                                                color: tableToken.dataTable
+                                                    .table.header.filter
+                                                    .sortOption.textColor,
+                                                fontWeight:
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.fontWeight,
+                                                flexGrow: 1,
+                                            }}
+                                        >
+                                            {label}
+                                        </PrimitiveText>
+                                        <Checkbox
+                                            checked={isSelected}
+                                            size={CheckboxSize.SMALL}
+                                        />
+                                    </Block>
+                                </Block>
+                            )
+                        })}
+                    </Block>
+                </Block>
+            )}
         </Block>
     )
 }
