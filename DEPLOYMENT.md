@@ -257,6 +257,17 @@ pnpm install
 npm run build:all
 ```
 
+#### Next.js: `PageNotFoundError` / `Cannot find module for page: /changelog` (ENOENT)
+
+This usually means a **stale or corrupted** `apps/ascent/.next` cache (often after an interrupted build). Fix:
+
+```bash
+rm -rf apps/ascent/.next
+pnpm --filter ascent run build
+```
+
+Deploy uses **`pnpm install` at the repo root** and **`pnpm --filter ascent run build`** so `workspace:*` links resolve correctly—do not run `npm install` only inside `apps/ascent`.
+
 #### Search Not Working
 
 The search index is generated at build time. If search isn't working:
