@@ -132,6 +132,7 @@ import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
 import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
+import StatCardV2Demo from './StatCardV2Demo'
 import RadioV2Demo from './RadioV2Demo'
 
 const SidebarDemo = () => {
@@ -219,10 +220,11 @@ const SidebarDemo = () => {
         | 'textInputGroup'
         | 'singleSelectV2'
         | 'timeline'
+        | 'statCardV2'
         | 'tooltipV2'
         | 'singleSelectV2'
         | 'popoverV2'
-    >('menuV2')
+    >('statCardV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -562,6 +564,8 @@ const SidebarDemo = () => {
                 return <TimelineDemo />
             case 'keyValuePairV2':
                 return <KeyValuePairV2Demo />
+            case 'statCardV2':
+                return <StatCardV2Demo />
             case 'tooltipV2':
                 return <TooltipV2Demo />
             default:
@@ -1292,6 +1296,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'statCard',
                     onClick: () => setActiveComponent('statCard'),
+                },
+                {
+                    label: 'Stat Card V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'statCardV2',
+                    onClick: () => setActiveComponent('statCardV2'),
                 },
                 {
                     label: 'Skeleton',
