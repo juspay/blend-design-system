@@ -428,6 +428,42 @@ const StatCardDemo = () => {
                     </div>
 
                     <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Line Chart</h3>
+                        <StatCard
+                            // direction={StatCardDirection.HORIZONTAL}
+                            // height="200px"
+                            dropdownProps={{
+                                label: 'Currency',
+                                placeholder: 'Currency',
+                                items: [
+                                    {
+                                        items: [
+                                            { label: 'USD', value: 'USD' },
+                                            { label: 'EUR', value: 'EUR' },
+                                            { label: 'GBP', value: 'GBP' },
+                                            { label: 'INR', value: 'INR' },
+                                        ],
+                                    },
+                                ],
+                                selected: dropdownValue,
+                                onSelect: handleDropdownSelect,
+                            }}
+                            title="GMV Trend "
+                            value="$8,234"
+                            subtitle="last 7 days"
+                            variant={StatCardVariant.LINE}
+                            change={{
+                                value: 8.2,
+                                valueType: ChangeType.INCREASE,
+                            }}
+                            helpIconText="This is a help icon"
+                            titleIcon={<TrendingUp size={16} />}
+                            chartData={sampleLineData}
+                            actionIcon={<InfoPopoverExample />}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Bar Chart</h3>
                         <StatCard
                             height="190px"

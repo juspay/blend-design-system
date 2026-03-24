@@ -70,6 +70,7 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
             28: 28,
             32: 32,
             36: 36,
+            38: 38,
             40: 40,
             44: 44,
             48: 48,
@@ -97,6 +98,7 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
             28: 28,
             32: 32,
             36: 36,
+            38: 38,
             40: 40,
             44: 44,
             48: 48,
@@ -356,6 +358,7 @@ const ALT_FOUNDATION_TOKENS: FoundationTokenType = {
     },
     zIndex: {
         0: 0,
+        101: 101,
         9999: 9999,
         1000: 1000,
         1100: 1100,
