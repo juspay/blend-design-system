@@ -184,6 +184,7 @@ const SingleSelectV2 = ({
     return (
         <Block
             data-single-select-v2={label || 'single-select-v2'}
+            data-single-select={label || 'single-select-v2'}
             data-status={disabled ? 'disabled' : 'enabled'}
             width={'auto'}
             display="flex"

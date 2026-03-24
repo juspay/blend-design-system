@@ -69,7 +69,42 @@ const SingleSelectV2Trigger = ({
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
 
-    const padding = singleSelectTokens.trigger.padding[size][variant]
+    const fallbackPadding = {
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        left: '0px',
+    }
+    const triggerTokens = singleSelectTokens?.trigger
+    const labelDisabledColor = singleSelectTokens?.label?.color?.disabled
+    const placeholderTokens = triggerTokens?.placeholder ?? {
+        color: 'inherit',
+        fontSize: '14px',
+        fontWeight: 400,
+    }
+    const selectedValueTokens = triggerTokens?.selectedValue ?? {
+        color: 'inherit',
+        fontSize: '14px',
+        fontWeight: 400,
+    }
+    const variantOutlineTokens = triggerTokens?.outline?.[variant] ?? {
+        open: 'none',
+        closed: 'none',
+        hover: 'none',
+        focus: 'none',
+        error: 'none',
+    }
+    const variantBackgroundTokens = triggerTokens?.backgroundColor?.[
+        variant
+    ] ?? {
+        open: 'transparent',
+        closed: 'transparent',
+        hover: 'transparent',
+        focus: 'transparent',
+        error: 'transparent',
+    }
+    const triggerHeight = triggerTokens?.height?.[size]?.[variant] ?? 'auto'
+    const padding = triggerTokens?.padding?.[size]?.[variant] ?? fallbackPadding
     const paddingLeft = toPixels(padding.left)
     const paddingRight = toPixels(padding.right)
     const paddingTop = toPixels(padding.top)
@@ -79,7 +114,7 @@ const SingleSelectV2Trigger = ({
 
     const isContainer = variant === SingleSelectV2Variant.CONTAINER
     const resolvedBorderRadius =
-        borderRadius ?? singleSelectTokens.trigger.borderRadius[size][variant]
+        borderRadius ?? triggerTokens?.borderRadius?.[size]?.[variant] ?? '0px'
 
     return (
         <PrimitiveButton
@@ -99,9 +134,7 @@ const SingleSelectV2Trigger = ({
             gap={8}
             borderRadius={resolvedBorderRadius}
             border={
-                singleSelectTokens.trigger.outline[variant][
-                    error ? 'error' : open ? 'open' : 'closed'
-                ]
+                variantOutlineTokens[error ? 'error' : open ? 'open' : 'closed']
             }
             borderRight={borderRight}
             {...((!inline || isContainer) && {
@@ -110,40 +143,29 @@ const SingleSelectV2Trigger = ({
                 paddingTop: paddingTop,
                 paddingBottom: paddingBottom,
                 backgroundColor:
-                    singleSelectTokens.trigger.backgroundColor[variant][
+                    variantBackgroundTokens[
                         error ? 'error' : open ? 'open' : 'closed'
                     ],
-                height: singleSelectTokens.trigger.height[size][variant],
-                maxHeight: singleSelectTokens.trigger.height[size][variant],
+                height: triggerHeight,
+                maxHeight: triggerHeight,
                 ...(!disabled && {
                     _hover: {
-                        border: singleSelectTokens.trigger.outline[variant][
-                            error ? 'error' : 'hover'
-                        ],
+                        border: variantOutlineTokens[error ? 'error' : 'hover'],
                         backgroundColor:
-                            singleSelectTokens.trigger.backgroundColor[variant][
-                                error ? 'error' : 'hover'
-                            ],
+                            variantBackgroundTokens[error ? 'error' : 'hover'],
                         borderRight: borderRight,
                     },
                 }),
                 _focus: {
-                    border: singleSelectTokens.trigger.outline[variant][
-                        error ? 'error' : 'focus'
-                    ],
+                    border: variantOutlineTokens[error ? 'error' : 'focus'],
                     backgroundColor:
-                        singleSelectTokens.trigger.backgroundColor[variant][
-                            error ? 'error' : 'focus'
-                        ],
+                        variantBackgroundTokens[error ? 'error' : 'focus'],
                     borderRight: borderRight,
                 },
                 _disabled: {
                     cursor: 'not-allowed',
-                    backgroundColor:
-                        singleSelectTokens.trigger.backgroundColor[variant][
-                            'closed'
-                        ],
-                    color: singleSelectTokens.label.color.disabled,
+                    backgroundColor: variantBackgroundTokens.closed,
+                    color: labelDisabledColor,
                 },
             })}
             {...rest}
@@ -220,17 +242,11 @@ const SingleSelectV2Trigger = ({
                             <TruncatedTextWithTooltip
                                 text={valueLabelMap[selected] || selected}
                                 style={{
-                                    fontSize:
-                                        singleSelectTokens.trigger.placeholder
-                                            .fontSize,
+                                    fontSize: placeholderTokens.fontSize,
                                     color: disabled
-                                        ? singleSelectTokens.label.color
-                                              .disabled
-                                        : singleSelectTokens.trigger.placeholder
-                                              .color,
-                                    fontWeight:
-                                        singleSelectTokens.trigger.placeholder
-                                            .fontWeight,
+                                        ? labelDisabledColor
+                                        : placeholderTokens.color,
+                                    fontWeight: placeholderTokens.fontWeight,
                                 }}
                             />
                         )}
@@ -253,22 +269,16 @@ const SingleSelectV2Trigger = ({
                             flexShrink: 1,
                             minWidth: 0,
                             color: disabled
-                                ? singleSelectTokens.label.color.disabled
+                                ? labelDisabledColor
                                 : selected
-                                  ? singleSelectTokens.trigger.selectedValue
-                                        .color
-                                  : singleSelectTokens.trigger.placeholder
-                                        .color,
+                                  ? selectedValueTokens.color
+                                  : placeholderTokens.color,
                             fontWeight: selected
-                                ? singleSelectTokens.trigger.selectedValue
-                                      .fontWeight
-                                : singleSelectTokens.trigger.placeholder
-                                      .fontWeight,
+                                ? selectedValueTokens.fontWeight
+                                : placeholderTokens.fontWeight,
                             fontSize: selected
-                                ? singleSelectTokens.trigger.selectedValue
-                                      .fontSize
-                                : singleSelectTokens.trigger.placeholder
-                                      .fontSize,
+                                ? selectedValueTokens.fontSize
+                                : placeholderTokens.fontSize,
                         }}
                     />
                 )}
@@ -284,10 +294,10 @@ const SingleSelectV2Trigger = ({
                     size={16}
                     color={
                         disabled
-                            ? singleSelectTokens.label.color.disabled
+                            ? labelDisabledColor
                             : selected
-                              ? singleSelectTokens.trigger.selectedValue.color
-                              : singleSelectTokens.trigger.placeholder.color
+                              ? selectedValueTokens.color
+                              : placeholderTokens.color
                     }
                 />
             </Block>
