@@ -7,8 +7,7 @@ import { CodeEditorV2HeaderProps } from './codeEditorV2.types'
 
 export const CodeEditorV2Header = ({
     header,
-    headerLeftSlot,
-    headerRightSlot,
+    headerSlot,
     showLeftIcon,
     showCopyButton,
     isCopied,
@@ -56,8 +55,8 @@ export const CodeEditorV2Header = ({
                 gap={headerGap}
                 style={{ flex: 1 }}
             >
-                {headerLeftSlot ? (
-                    headerLeftSlot
+                {headerSlot?.left ? (
+                    headerSlot.left
                 ) : showLeftIcon ? (
                     <FileCode
                         size={iconSize}
@@ -83,13 +82,13 @@ export const CodeEditorV2Header = ({
                 >
                     {header}
                 </Block>
-                {headerRightSlot && (
+                {headerSlot?.right && (
                     <Block
                         style={{ flexShrink: 0 }}
                         display="flex"
                         alignItems="center"
                     >
-                        {headerRightSlot}
+                        {headerSlot.right}
                     </Block>
                 )}
             </Block>

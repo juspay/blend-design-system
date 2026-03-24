@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { CodeEditorV2Tokens } from './codeEditorV2.tokens'
+import type { CSSObject } from 'styled-components'
 export enum CodeEditorV2Variant {
     DEFAULT = 'default',
     NO_GUTTER = 'no-gutter',
@@ -36,14 +37,14 @@ export type SupportedLanguage =
     | 'haskell'
 
 export type CodeEditorV2Dimensions = {
-    width?: string | number
-    maxWidth?: string | number
-    minWidth?: string | number
-    height?: string | number
-    maxHeight?: string | number
-    minHeight?: string | number
+    width?: CSSObject['width']
+    maxWidth?: CSSObject['maxWidth']
+    minWidth?: CSSObject['minWidth']
+    height?: CSSObject['height']
+    maxHeight?: CSSObject['maxHeight']
+    minHeight?: CSSObject['minHeight']
 }
-export type CodeEditorV2Props = CodeEditorV2Dimensions & {
+export type CodeEditorV2Props = {
     value: string
     onChange?: (value: string) => void
     variant?: CodeEditorV2Variant
@@ -77,8 +78,10 @@ export type CodeEditorV2Props = CodeEditorV2Dimensions & {
     >
 export type CodeEditorV2HeaderProps = {
     header: string
-    headerLeftSlot?: ReactNode
-    headerRightSlot?: ReactNode
+    headerSlot?: {
+        left?: ReactNode
+        right?: ReactNode
+    }
     showLeftIcon: boolean
     showCopyButton: boolean
     isCopied: boolean
@@ -86,12 +89,12 @@ export type CodeEditorV2HeaderProps = {
     tokens: CodeEditorV2Tokens
 }
 export type MonacoEditorWrapperDimensions = {
-    minHeight: string | number
-    maxHeight?: string | number
-    height?: string | number
-    width?: string | number
-    maxWidth?: string | number
-    minWidth?: string | number
+    minHeight: CSSObject['minHeight']
+    maxHeight?: CSSObject['maxHeight']
+    height?: CSSObject['height']
+    width?: CSSObject['width']
+    maxWidth?: CSSObject['maxWidth']
+    minWidth?: CSSObject['minWidth']
 }
 export type MonacoEditorWrapperProps = {
     value: string

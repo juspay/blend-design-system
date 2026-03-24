@@ -87,8 +87,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                 {showHeader && (
                     <CodeEditorV2Header
                         header={header}
-                        headerLeftSlot={headerSlot?.left}
-                        headerRightSlot={headerSlot?.right}
+                        headerSlot={headerSlot}
                         showLeftIcon={showLeftIcon}
                         showCopyButton={showCopyButton}
                         isCopied={isCopied}
