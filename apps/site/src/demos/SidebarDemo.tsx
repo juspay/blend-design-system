@@ -138,6 +138,7 @@ import RadioV2Demo from './RadioV2Demo'
 import TabsV2Demo from './TabsV2Demo'
 import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 import CodeEditorV2Demo from './CodeEditorV2Demo'
+import ProgressBarV2Demo from './ProgressBarV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -232,7 +233,10 @@ const SidebarDemo = () => {
         | 'codeEditorV2'
         | 'singleSelectV2'
         | 'popoverV2'
-    >('tabsV2')
+        | 'codeEditorV2'
+        | 'breadcrumbV2'
+        | 'progressBarV2'
+    >('progressBarV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -585,6 +589,8 @@ const SidebarDemo = () => {
                 return <BreadcrumbV2Demo />
             case 'codeEditorV2':
                 return <CodeEditorV2Demo />
+            case 'progressBarV2':
+                return <ProgressBarV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -1369,6 +1375,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'progressBar',
                     onClick: () => setActiveComponent('progressBar'),
+                },
+                {
+                    label: 'Progress Bar V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'progressBarV2',
+                    onClick: () => setActiveComponent('progressBarV2'),
                 },
                 {
                     label: 'Data Table',

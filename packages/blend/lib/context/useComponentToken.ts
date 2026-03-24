@@ -264,6 +264,8 @@ export const useComponentToken = (
             return componentTokens.BREADCRUMBV2
         case 'CODEEDITORV2':
             return componentTokens.CODEEDITORV2
+        case 'PROGRESS_BARV2':
+            return componentTokens.PROGRESS_BARV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
