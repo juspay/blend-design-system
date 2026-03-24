@@ -133,6 +133,7 @@ import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import TabsV2Demo from './TabsV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -145,6 +146,7 @@ const SidebarDemo = () => {
         | 'tagGroupV2'
         | 'breadcrumb'
         | 'tabs'
+        | 'tabsV2'
         | 'checkbox'
         | 'checkboxV2'
         | 'radio'
@@ -222,7 +224,7 @@ const SidebarDemo = () => {
         | 'tooltipV2'
         | 'singleSelectV2'
         | 'popoverV2'
-    >('menuV2')
+    >('tabs')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -462,6 +464,8 @@ const SidebarDemo = () => {
                 return <SnackbarV2Demo />
             case 'tabs':
                 return <TabsDemo />
+            case 'tabsV2':
+                return <TabsV2Demo />
             case 'accordion':
                 return <AccordionDemo />
             case 'statCard':
@@ -1116,6 +1120,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tabs',
                     onClick: () => setActiveComponent('tabs'),
+                },
+                {
+                    label: 'Tabs V2',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tabsV2',
+                    onClick: () => setActiveComponent('tabsV2'),
                 },
                 {
                     label: 'Accordion',

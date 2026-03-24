@@ -59,6 +59,7 @@ import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/
 import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
+import { ResponsiveTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -125,6 +126,7 @@ export const useComponentToken = (
     | ResponsiveKeyValuePairV2Tokens
     | ResponsiveRadioV2Tokens
     | ResponsivePopoverV2Tokens
+    | ResponsiveTabsV2Tokens
     | ResponsiveTextInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -250,6 +252,8 @@ export const useComponentToken = (
             return componentTokens.TOOLTIPV2
         case 'RADIOV2':
             return componentTokens.RADIOV2
+        case 'TABSV2':
+            return componentTokens.TABSV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

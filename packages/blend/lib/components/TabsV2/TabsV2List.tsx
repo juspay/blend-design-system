@@ -1,0 +1,601 @@
+import * as React from 'react'
+import {
+    forwardRef,
+    useMemo,
+    useRef,
+    useCallback,
+    useId,
+    useEffect,
+} from 'react'
+import { type TabsV2ListProps, TabsV2Variant } from './tabsV2.types'
+import { StyledTabsV2List } from './StyledTabsV2'
+import type { TabsV2TokensType } from './tabsV2.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import TabsV2Trigger from './TabsV2Trigger'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { ChevronDown, Plus } from 'lucide-react'
+import { Tooltip } from '../Tooltip/Tooltip'
+import SingleSelect from '../SingleSelect/SingleSelect'
+import { SelectMenuVariant } from '../Select'
+import {
+    processTabsWithConcatenation,
+    prepareDropdownItems,
+    getActualTabValue,
+    isConcatenatedTab,
+    extractOriginalValues,
+    calculateTabIndicatorPosition,
+} from './tabsV2.utils'
+import Block from '../Primitives/Block/Block'
+import { useTheme } from '../../context/ThemeContext'
+import { Theme } from '../../context/theme.enum'
+import { useTabsV2Chrome } from './useTabsV2Chrome'
+
+const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
+    (
+        {
+            className,
+            variant: variantProp,
+            size: sizeProp,
+            expanded: expandedProp,
+            fitContent: fitContentProp,
+            items = [],
+            originalItems,
+            onTabClose,
+            onTabAdd,
+            showDropdown = false,
+            showAddButton = false,
+            addButtonTooltip = 'Add new tab',
+            onTabChange,
+            activeTab: activeTabProp,
+            disable: disableProp,
+            showSkeleton: showSkeletonProp,
+            skeletonVariant: skeletonVariantProp,
+            stickyHeader: stickyHeaderProp,
+            offsetTop: offsetTopProp,
+            children,
+        },
+        ref
+    ) => {
+        const chrome = useTabsV2Chrome()
+        const variant = variantProp ?? chrome.variant
+        const size = sizeProp ?? chrome.size
+        const expanded = expandedProp ?? chrome.expanded
+        const fitContent = fitContentProp ?? chrome.fitContent
+        const disable = disableProp ?? chrome.disable
+        const showSkeleton = showSkeletonProp ?? chrome.showSkeleton
+        const skeletonVariant = skeletonVariantProp ?? chrome.skeletonVariant
+        const stickyHeader = stickyHeaderProp ?? chrome.stickyHeader
+        const offsetTop = offsetTopProp ?? chrome.offsetTop
+        const activeTab = activeTabProp ?? chrome.activeTab
+
+        const tabsToken = useResponsiveTokens<TabsV2TokensType>('TABSV2')
+        const { theme, foundationTokens } = useTheme()
+        const isDarkTheme = theme === Theme.DARK || theme === 'dark'
+        const stickyHeaderBackground = isDarkTheme
+            ? foundationTokens.colors.gray[900]
+            : foundationTokens.colors.gray[0]
+        const iconButtonHoverBackground = isDarkTheme
+            ? foundationTokens.colors.gray[800]
+            : foundationTokens.colors.gray[100]
+        const tabsGroupId = useId()
+
+        const scrollContainerRef = useRef<HTMLDivElement>(null)
+        const tabsListRef = useRef<HTMLDivElement>(null)
+        const tabRefsMap = useRef<Map<string, HTMLButtonElement>>(new Map())
+
+        const isScrollingRef = useRef(false)
+        const hasMountedRef = useRef(false)
+        const prevItemsLengthRef = useRef(items.length)
+
+        const sourceItems = originalItems || items
+
+        const processedItems = useMemo(
+            () => processTabsWithConcatenation(items),
+            [items]
+        )
+
+        const dropdownItems = useMemo(() => {
+            return prepareDropdownItems(sourceItems, sourceItems)
+        }, [sourceItems])
+
+        const originalTabValues = useMemo(
+            () => new Set<string>(sourceItems.map((item) => item.value)),
+            [sourceItems]
+        )
+
+        const hasAnySkeleton = useMemo(
+            () => processedItems.some((item) => item.showSkeleton === true),
+            [processedItems]
+        )
+
+        const hasAnyChildSkeleton = useMemo(() => {
+            if (showSkeleton) return true
+
+            return React.Children.toArray(children).some((child) => {
+                if (!React.isValidElement(child)) return false
+                const props = child.props as Record<string, unknown>
+                return props.showSkeleton === true
+            })
+        }, [children, showSkeleton])
+
+        const updateIndicator = useCallback(() => {
+            if (variant !== TabsV2Variant.UNDERLINE || hasAnySkeleton) {
+                return
+            }
+
+            const listElement = tabsListRef.current
+            const activeTabElement = tabRefsMap.current?.get(activeTab)
+
+            if (!activeTabElement || !listElement) {
+                return
+            }
+
+            const { tabLeft, tabWidth } = calculateTabIndicatorPosition(
+                activeTabElement,
+                listElement
+            )
+
+            listElement.style.setProperty(
+                '--tabs-indicator-left',
+                `${tabLeft}px`
+            )
+            listElement.style.setProperty(
+                '--tabs-indicator-width',
+                `${tabWidth}`
+            )
+        }, [activeTab, variant, hasAnySkeleton])
+
+        useEffect(() => {
+            if (
+                !activeTab ||
+                variant !== TabsV2Variant.UNDERLINE ||
+                hasAnySkeleton
+            ) {
+                return
+            }
+
+            const listElement = tabsListRef.current
+            const activeTabElement = tabRefsMap.current?.get(activeTab)
+
+            if (!activeTabElement || !listElement) {
+                return
+            }
+
+            const needsDelay =
+                !hasMountedRef.current ||
+                sourceItems.length !== prevItemsLengthRef.current
+            const delay = needsDelay ? 100 : 0
+
+            const timeout = setTimeout(() => {
+                updateIndicator()
+                hasMountedRef.current = true
+                prevItemsLengthRef.current = sourceItems.length
+            }, delay)
+
+            window.addEventListener('resize', updateIndicator)
+
+            // Observe container size changes (e.g., when sidebar expands/collapses)
+            const resizeObserver = new ResizeObserver(() => {
+                updateIndicator()
+            })
+
+            // Observe both the list element and its parent container
+            resizeObserver.observe(listElement)
+            if (listElement.parentElement) {
+                resizeObserver.observe(listElement.parentElement)
+            }
+
+            return () => {
+                clearTimeout(timeout)
+                window.removeEventListener('resize', updateIndicator)
+                resizeObserver.disconnect()
+            }
+        }, [
+            activeTab,
+            variant,
+            hasAnySkeleton,
+            sourceItems.length,
+            expanded,
+            fitContent,
+            originalItems,
+            updateIndicator,
+        ])
+
+        useEffect(() => {
+            if (!activeTab || isScrollingRef.current) {
+                return
+            }
+
+            const scrollContainer = scrollContainerRef.current
+            const activeTabElement = tabRefsMap.current?.get(activeTab)
+
+            if (!activeTabElement) {
+                return
+            }
+
+            if (!scrollContainer) {
+                updateIndicator()
+                return
+            }
+
+            const containerRect = scrollContainer.getBoundingClientRect()
+            const tabRect = activeTabElement.getBoundingClientRect()
+
+            const isTabVisible =
+                tabRect.left >= containerRect.left &&
+                tabRect.right <= containerRect.right
+
+            if (!isTabVisible) {
+                isScrollingRef.current = true
+
+                const containerWidth = scrollContainer.offsetWidth
+                const tabOffsetLeft = activeTabElement.offsetLeft
+                const tabWidth = activeTabElement.offsetWidth
+
+                scrollContainer.scrollTo({
+                    left: Math.max(
+                        0,
+                        tabOffsetLeft - containerWidth / 2 + tabWidth / 2
+                    ),
+                    behavior: 'smooth',
+                })
+
+                const scrollTimer = setTimeout(() => {
+                    isScrollingRef.current = false
+                    updateIndicator()
+                }, 500)
+
+                return () => clearTimeout(scrollTimer)
+            } else {
+                updateIndicator()
+            }
+        }, [activeTab, updateIndicator])
+
+        // Effect: Scroll to end when new tabs are added
+        useEffect(() => {
+            const currentLength = sourceItems.length
+            const previousLength = prevItemsLengthRef.current
+
+            if (currentLength <= previousLength) {
+                prevItemsLengthRef.current = currentLength
+                return
+            }
+
+            const scrollContainer = scrollContainerRef.current
+            if (!scrollContainer) {
+                prevItemsLengthRef.current = currentLength
+                return
+            }
+
+            isScrollingRef.current = true
+
+            scrollContainer.scrollTo({
+                left: scrollContainer.scrollWidth,
+                behavior: 'smooth',
+            })
+
+            const scrollTimeout = setTimeout(() => {
+                isScrollingRef.current = false
+                updateIndicator()
+            }, 350)
+
+            prevItemsLengthRef.current = currentLength
+
+            return () => clearTimeout(scrollTimeout)
+        }, [sourceItems.length, updateIndicator])
+
+        const handleTabClose = useCallback(
+            (processedTabValue: string) => {
+                if (isConcatenatedTab(processedTabValue, originalTabValues)) {
+                    const originalValues =
+                        extractOriginalValues(processedTabValue)
+                    originalValues.forEach((val) => onTabClose?.(val))
+                }
+
+                onTabClose?.(processedTabValue)
+            },
+            [onTabClose, originalTabValues]
+        )
+
+        const handleDropdownSelect = useCallback(
+            (value: string) => {
+                onTabChange?.(value)
+            },
+            [onTabChange]
+        )
+
+        const handleAddClick = useCallback(() => {
+            onTabAdd?.()
+        }, [onTabAdd])
+
+        const registerTabRef = useCallback(
+            (node: HTMLButtonElement | null, value: string) => {
+                if (node && value) {
+                    tabRefsMap.current.set(value, node)
+                } else if (value) {
+                    tabRefsMap.current.delete(value)
+                }
+            },
+            []
+        )
+
+        const setRefs = useCallback(
+            (node: HTMLDivElement | null) => {
+                tabsListRef.current = node
+                if (typeof ref === 'function') {
+                    ref(node)
+                } else if (ref) {
+                    ref.current = node
+                }
+            },
+            [ref]
+        )
+
+        if (items.length > 0) {
+            return (
+                <Block
+                    data-element="tabs-list"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        width: '100%',
+                        overflow: 'hidden',
+                        position: stickyHeader ? 'sticky' : 'relative',
+                        top: stickyHeader ? offsetTop : 'auto',
+                        zIndex: stickyHeader ? 50 : 'auto',
+                        backgroundColor: stickyHeader
+                            ? stickyHeaderBackground
+                            : 'transparent',
+                        borderBottom:
+                            variant === TabsV2Variant.UNDERLINE &&
+                            !hasAnySkeleton
+                                ? tabsToken.borderBottom[variant]
+                                : 'none',
+                        paddingTop:
+                            variant === TabsV2Variant.UNDERLINE
+                                ? foundationTokens.unit[8]
+                                : foundationTokens.unit[0],
+                        boxShadow: stickyHeader
+                            ? tabsToken.chrome.stickyHeaderShadow
+                            : 'none',
+                    }}
+                >
+                    <Block
+                        ref={scrollContainerRef}
+                        style={{
+                            flex: 1,
+                            overflowX: 'auto',
+                            overflowY: 'visible',
+                            WebkitOverflowScrolling: 'touch',
+                            scrollbarWidth: 'none',
+                            msOverflowStyle: 'none',
+                        }}
+                        className="hide-scrollbar"
+                    >
+                        <Block
+                            style={{
+                                position: 'relative',
+                                width: fitContent ? 'fit-content' : '100%',
+                            }}
+                        >
+                            <StyledTabsV2List
+                                ref={setRefs}
+                                className={className}
+                                $variant={variant}
+                                $size={size}
+                                $expanded={expanded}
+                                $fitContent={fitContent}
+                                $tabsToken={tabsToken}
+                                $hideIndicator={hasAnySkeleton}
+                                style={{
+                                    display: 'flex',
+                                    minWidth: 'max-content',
+                                    marginBottom: 0,
+                                }}
+                            >
+                                {processedItems.map((item) => {
+                                    const tabValue = getActualTabValue(
+                                        item.value,
+                                        originalTabValues
+                                    )
+
+                                    return (
+                                        <TabsV2Trigger
+                                            key={item.value}
+                                            ref={(node) =>
+                                                registerTabRef(node, tabValue)
+                                            }
+                                            value={tabValue}
+                                            variant={variant}
+                                            size={size}
+                                            isActive={tabValue === activeTab}
+                                            tabsGroupId={tabsGroupId}
+                                            closable={item.newItem}
+                                            onClose={() =>
+                                                handleTabClose(item.value)
+                                            }
+                                            disabled={item.disable}
+                                            showSkeleton={item.showSkeleton}
+                                            skeletonVariant={
+                                                item.skeletonVariant
+                                            }
+                                            leftSlot={item.leftSlot}
+                                            rightSlot={item.rightSlot}
+                                            style={{
+                                                flexShrink: 0,
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                            data-status={
+                                                item.disable
+                                                    ? 'disabled'
+                                                    : 'enabled'
+                                            }
+                                            data-id={item.label}
+                                        >
+                                            {item.label}
+                                        </TabsV2Trigger>
+                                    )
+                                })}
+                            </StyledTabsV2List>
+                        </Block>
+                    </Block>
+
+                    {(showDropdown || showAddButton) && (
+                        <Block
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: foundationTokens.unit[4],
+                                flexShrink: 0,
+                                height: foundationTokens.unit[20],
+                            }}
+                        >
+                            {showDropdown && (
+                                <SingleSelect
+                                    enableSearch={true}
+                                    items={dropdownItems}
+                                    selected={activeTab}
+                                    onSelect={handleDropdownSelect}
+                                    placeholder="Navigate"
+                                    searchPlaceholder="Search and navigate to tab"
+                                    customTrigger={
+                                        <PrimitiveButton
+                                            height={foundationTokens.unit[20]}
+                                            width={foundationTokens.unit[20]}
+                                            backgroundColor="transparent"
+                                            contentCentered
+                                            aria-label="Navigate to tab"
+                                            _hover={{
+                                                backgroundColor:
+                                                    iconButtonHoverBackground,
+                                            }}
+                                            borderRadius={
+                                                foundationTokens.unit[4]
+                                            }
+                                        >
+                                            <ChevronDown
+                                                size={16}
+                                                aria-hidden="true"
+                                            />
+                                        </PrimitiveButton>
+                                    }
+                                    useDrawerOnMobile={false}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                />
+                            )}
+
+                            {showAddButton && (
+                                <Tooltip content={addButtonTooltip}>
+                                    <PrimitiveButton
+                                        onClick={handleAddClick}
+                                        height={foundationTokens.unit[20]}
+                                        width={foundationTokens.unit[20]}
+                                        backgroundColor="transparent"
+                                        contentCentered
+                                        aria-label={addButtonTooltip}
+                                        _hover={{
+                                            backgroundColor:
+                                                iconButtonHoverBackground,
+                                        }}
+                                        borderRadius={foundationTokens.unit[4]}
+                                    >
+                                        <Plus size={16} aria-hidden="true" />
+                                    </PrimitiveButton>
+                                </Tooltip>
+                            )}
+                        </Block>
+                    )}
+                </Block>
+            )
+        }
+
+        const renderChildren = () => {
+            return React.Children.map(children, (child) => {
+                if (!React.isValidElement(child)) return child
+
+                const existingProps = child.props as Record<string, unknown>
+                const childDisable =
+                    'disable' in existingProps
+                        ? (existingProps.disable as boolean | undefined)
+                        : undefined
+                const childValue =
+                    'value' in existingProps
+                        ? (existingProps.value as string)
+                        : ''
+
+                const isTabsTrigger =
+                    child.type &&
+                    (child.type as { displayName?: string }).displayName ===
+                        'TabsV2Trigger'
+
+                const childProps = {
+                    ...existingProps,
+                    disable: childDisable || disable,
+                    isActive: childValue === activeTab,
+                    tabsGroupId,
+                    ...(isTabsTrigger && {
+                        showSkeleton:
+                            'showSkeleton' in existingProps
+                                ? existingProps.showSkeleton
+                                : showSkeleton,
+                        skeletonVariant:
+                            'skeletonVariant' in existingProps
+                                ? existingProps.skeletonVariant
+                                : skeletonVariant,
+                    }),
+                    ref: (node: HTMLButtonElement) =>
+                        registerTabRef(node, childValue),
+                }
+
+                return React.cloneElement(child, childProps)
+            })
+        }
+
+        return (
+            <Block
+                data-element="tabs-list"
+                data-status={expanded ? 'expanded' : 'collapsed'}
+                style={{
+                    position: stickyHeader ? 'sticky' : 'relative',
+                    top: stickyHeader ? offsetTop : 'auto',
+                    zIndex: stickyHeader ? 50 : 'auto',
+                    backgroundColor: stickyHeader
+                        ? stickyHeaderBackground
+                        : 'transparent',
+                    borderBottom:
+                        variant === TabsV2Variant.UNDERLINE &&
+                        !hasAnyChildSkeleton
+                            ? tabsToken.borderBottom[variant]
+                            : 'none',
+                    boxShadow: stickyHeader
+                        ? tabsToken.chrome.stickyHeaderShadow
+                        : 'none',
+                }}
+            >
+                <Block
+                    style={{
+                        position: 'relative',
+                        width: fitContent ? 'fit-content' : '100%',
+                    }}
+                >
+                    <StyledTabsV2List
+                        ref={setRefs}
+                        className={className}
+                        $variant={variant}
+                        $size={size}
+                        $expanded={expanded}
+                        $fitContent={fitContent}
+                        $tabsToken={tabsToken}
+                        $hideIndicator={hasAnyChildSkeleton}
+                    >
+                        {renderChildren()}
+                    </StyledTabsV2List>
+                </Block>
+            </Block>
+        )
+    }
+)
+
+TabsV2List.displayName = 'TabsV2List'
+
+export default TabsV2List
