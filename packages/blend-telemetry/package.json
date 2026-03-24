@@ -1,15 +1,17 @@
 {
-    "name": "@juspay/blend-telemetry",
-    "version": "0.1.0",
+    "name": "blend-telemetry",
+    "version": "0.1.1",
     "description": "Telemetry CLI for @juspay/blend-design-system component usage — language-aware scanner for ReScript and TypeScript projects",
     "bin": {
-        "blend-telemetry": "./bin/blend-telemetry.js"
+        "blend-telemetry": "bin/blend-telemetry.js"
     },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "author": "Deepanshu Rai (deepanshu_juspay)",
     "files": [
         "bin",
-        "dist"
+        "dist",
+        "README.md"
     ],
     "scripts": {
         "build": "tsup",

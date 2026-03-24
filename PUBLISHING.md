@@ -2,6 +2,10 @@
 
 This guide explains how to publish the Blend Design System package to npm.
 
+For package-specific flows:
+
+- `packages/mcp/PUBLISHING.md` for `blend-ui-mcp`
+
 ## Package Information
 
 - **Package Name**: `@juspay/blend-design-system`
@@ -227,3 +231,19 @@ For questions about publishing:
 ---
 
 **Note**: Always test the package thoroughly before publishing to ensure it works correctly for end users.
+
+## Publishing `blend-ui-mcp` (MCP package)
+
+For the full MCP publishing runbook, see:
+
+- `packages/mcp/PUBLISHING.md`
+
+Quick commands:
+
+```bash
+cd packages/mcp
+npm version patch
+npm run build
+npm pack --dry-run
+npm publish
+```
