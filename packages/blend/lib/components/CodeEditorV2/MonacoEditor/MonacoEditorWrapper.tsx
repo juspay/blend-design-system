@@ -18,6 +18,7 @@ import {
     toCssValue,
 } from '../utils'
 import './monaco-editor.css'
+import { CSSObject } from 'styled-components'
 
 // ---------------------------------------------------------------------------
 // Language mapping
@@ -38,7 +39,7 @@ function EditorLoading({
     minHeight,
     tokens,
 }: {
-    minHeight: string | number
+    minHeight: CSSObject['minHeight']
     tokens: CodeEditorV2Tokens
 }) {
     return (

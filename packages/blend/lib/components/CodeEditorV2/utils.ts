@@ -2,6 +2,7 @@ import type { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import { CodeEditorV2Variant } from './codeEditorV2.types'
 import type * as Monaco from 'monaco-editor'
 import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
+import { CSSObject } from 'styled-components'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -185,10 +186,14 @@ export function getEditorMetrics(
 }
 
 export function getContainerDimensions(
-    height: string | number | undefined,
-    minHeight: string | number,
-    maxHeight?: string | number
-): { minHeight?: string; maxHeight?: string; height?: string } {
+    height: CSSObject['height'] | undefined,
+    minHeight: CSSObject['minHeight'],
+    maxHeight?: CSSObject['maxHeight']
+): {
+    minHeight?: CSSObject['minHeight']
+    maxHeight?: CSSObject['maxHeight']
+    height?: CSSObject['height']
+} {
     const resolvedHeight = toCssValue(height)
     const resolvedMinHeight = toCssValue(minHeight)
     const resolvedMaxHeight = toCssValue(maxHeight)
