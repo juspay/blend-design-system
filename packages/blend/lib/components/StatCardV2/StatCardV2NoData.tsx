@@ -5,8 +5,8 @@ import type { StatCardV2TokensType } from './statcardV2.tokens'
 import StatCardV2Title from './StatCardV2Title'
 import StatCardV2Subtitle from './StatCardV2Subtitle'
 import StatCardV2Value from './StatCardV2Value'
-import SingleSelect from '../SingleSelect/SingleSelect'
-import { SelectMenuSize, SelectMenuVariant } from '../SingleSelect/types'
+import { SingleSelectV2 } from '../SingleSelectV2'
+import { SelectV2Size, SelectV2Variant } from '../SelectV2'
 
 type StatCardV2NoDataProps = Pick<
     StatCardV2Props,
@@ -140,16 +140,15 @@ const StatCardV2NoData = ({
                     {isSmallScreen &&
                         dropdownProps?.items &&
                         dropdownProps.items.length > 0 && (
-                            <SingleSelect
+                            <SingleSelectV2
                                 label={dropdownProps.label ?? ''}
                                 placeholder={dropdownProps.placeholder ?? ''}
                                 items={dropdownProps.items ?? []}
                                 selected={dropdownProps.selected ?? ''}
                                 onSelect={dropdownProps.onSelect ?? (() => {})}
-                                variant={SelectMenuVariant.NO_CONTAINER}
-                                size={SelectMenuSize.SMALL}
+                                variant={SelectV2Variant.NO_CONTAINER}
+                                size={SelectV2Size.SM}
                                 inline={true}
-                                minMenuWidth={100}
                             />
                         )}
                 </Block>
