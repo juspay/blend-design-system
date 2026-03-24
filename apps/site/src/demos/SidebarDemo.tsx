@@ -124,6 +124,7 @@ import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
 import SingleSelectDemoV2 from './SingleSelectDemoV2'
 import MultiSelectDemoV2 from './MultiSelectDemoV2'
+import MenuV2Demo from './MenuV2Demo'
 import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
@@ -163,6 +164,7 @@ const SidebarDemo = () => {
         | 'avatars'
         | 'avatarV2'
         | 'menu'
+        | 'menuV2'
         | 'dropdown'
         | 'accordion'
         | 'statCard'
@@ -220,7 +222,7 @@ const SidebarDemo = () => {
         | 'tooltipV2'
         | 'singleSelectV2'
         | 'popoverV2'
-    >('popoverV2')
+    >('menuV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -488,6 +490,8 @@ const SidebarDemo = () => {
                 return <CheckboxV2Demo />
             case 'menu':
                 return <MenuDemo />
+            case 'menuV2':
+                return <MenuV2Demo />
             case 'singleSelect':
                 return <SingleSelectDemo />
             case 'singleSelectGroup':
@@ -1064,6 +1068,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'singleSelectV2',
                     onClick: () => setActiveComponent('singleSelectV2'),
+                },
+                {
+                    label: 'Menu V2',
+                    leftSlot: (
+                        <MenuIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'menuV2',
+                    onClick: () => setActiveComponent('menuV2'),
                 },
                 {
                     label: 'Single Select Group',

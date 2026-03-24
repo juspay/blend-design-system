@@ -22,6 +22,7 @@ import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
+import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
@@ -69,6 +70,7 @@ import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
 import { getMenuTokens } from '../components/Menu/menu.tokens'
+import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
 import { getMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import { getSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { getTableToken } from '../components/DataTable/dataTable.tokens'
@@ -189,6 +191,7 @@ export type ComponentTokenType = {
     BREADCRUMB?: ResponsiveBreadcrumbTokens
     POPOVER?: ResponsivePopoverTokens
     MENU?: ResponsiveMenuTokensType
+    MENU_V2?: ResponsiveMenuV2TokensType
     MULTI_SELECT?: ResponsiveMultiSelectTokens
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: ResponsiveTableTokens
@@ -261,6 +264,7 @@ const ThemeContext = createContext<ThemeContextType>({
         BREADCRUMB: getBreadcrumbTokens(FOUNDATION_THEME),
         POPOVER: getPopoverTokens(FOUNDATION_THEME),
         MENU: getMenuTokens(FOUNDATION_THEME),
+        MENU_V2: getMenuV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         MULTI_SELECT: getMultiSelectTokens(FOUNDATION_THEME),
         SINGLE_SELECT: getSingleSelectTokens(FOUNDATION_THEME),
         TABLE: getTableToken(FOUNDATION_THEME),
