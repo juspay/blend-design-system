@@ -52,6 +52,8 @@ const MultiSelectDemoV2 = () => {
     const [playgroundFullWidth, setPlaygroundFullWidth] = useState(false)
     const [playgroundShowActionButtons, setPlaygroundShowActionButtons] =
         useState(false)
+    const [playgroundEnableVirtualization, setPlaygroundEnableVirtualization] =
+        useState(false)
 
     const [actionButtonsSelected, setActionButtonsSelected] = useState<
         string[]
@@ -391,6 +393,15 @@ const MultiSelectDemoV2 = () => {
                                 )
                             }
                         />
+                        <Switch
+                            label="Enable virtual list"
+                            checked={playgroundEnableVirtualization}
+                            onChange={() =>
+                                setPlaygroundEnableVirtualization(
+                                    (prev) => !prev
+                                )
+                            }
+                        />
                     </div>
                 </div>
 
@@ -442,6 +453,9 @@ const MultiSelectDemoV2 = () => {
                                     : undefined
                             }
                             showActionButtons={playgroundShowActionButtons}
+                            enableVirtualization={
+                                playgroundEnableVirtualization
+                            }
                             primaryAction={
                                 playgroundShowActionButtons
                                     ? {
