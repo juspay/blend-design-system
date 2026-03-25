@@ -38,6 +38,7 @@ export type DrawerTokensType = {
     // Overlay section
     overlay: {
         backgroundColor: CSSObject['backgroundColor']
+        opacity: CSSObject['opacity']
     }
 
     offset: {
@@ -82,7 +83,8 @@ export const getDrawerComponentTokens = (
             // border: `1px solid ${foundationToken.colors.gray[200]}`,
 
             overlay: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                backgroundColor: foundationToken.colors.gray[700],
+                opacity: foundationToken.opacity[50],
             },
             offset: {
                 top: '74px',
@@ -115,7 +117,8 @@ export const getDrawerComponentTokens = (
             // border: `1px solid ${foundationToken.colors.gray[200]}`,
 
             overlay: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                backgroundColor: foundationToken.colors.gray[700],
+                opacity: foundationToken.opacity[50],
             },
             offset: {
                 top: '74px',

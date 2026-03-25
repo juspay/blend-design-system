@@ -44,8 +44,16 @@ const DrawerOpenChangeContext =
 const StyledOverlay = styled(VaulDrawer.Overlay)<{ tokens: DrawerTokensType }>`
     position: fixed;
     inset: 0;
-    background-color: ${({ tokens }) => tokens.overlay.backgroundColor};
     z-index: 99;
+    background: transparent;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-color: ${({ tokens }) => tokens.overlay.backgroundColor};
+        opacity: ${({ tokens }) => tokens.overlay.opacity};
+    }
 `
 
 const StyledContent = styled(VaulDrawer.Content)<{

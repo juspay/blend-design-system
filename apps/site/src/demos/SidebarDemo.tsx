@@ -224,7 +224,7 @@ const SidebarDemo = () => {
         | 'tooltipV2'
         | 'singleSelectV2'
         | 'popoverV2'
-    >('statCardV2')
+    >('drawer')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
