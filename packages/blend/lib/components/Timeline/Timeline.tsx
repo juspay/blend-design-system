@@ -25,7 +25,7 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
         const filteredProps = filterBlockedProps(rest)
         const [lineLayout, setLineLayout] = useState<LineLayout | null>(null)
-        const containerRef = useRef<HTMLDivElement>(null)
+        const containerRef = useRef<HTMLDivElement | null>(null)
 
         useLayoutEffect(() => {
             const container = containerRef.current
@@ -53,7 +53,8 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
 
         const setRef = (el: HTMLDivElement | null) => {
             containerRef.current = el
-            const refObj = ref as React.RefObject<HTMLDivElement | null> | null
+            const refObj =
+                ref as React.MutableRefObject<HTMLDivElement | null> | null
             if (typeof ref === 'function') ref(el)
             else if (refObj) refObj.current = el
         }

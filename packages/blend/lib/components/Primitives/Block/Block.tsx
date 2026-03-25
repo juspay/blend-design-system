@@ -1,5 +1,9 @@
-import React, { type JSX, forwardRef } from 'react'
-import styled, { css, type CSSObject } from 'styled-components'
+import React, { forwardRef } from 'react'
+import styled, {
+    css,
+    type CSSObject,
+    type ShouldForwardProp,
+} from 'styled-components'
 
 type SpacingValue = string | number
 
@@ -130,7 +134,7 @@ type StyledBlockProps = StateStyles & {
     transitionDelay?: CSSObject['transitionDelay']
 }
 
-const blockedProps = [
+const blockedProps = new Set([
     // All base props
     'color',
     'padding',
@@ -225,10 +229,18 @@ const blockedProps = [
     'transitionDuration',
     'transitionTimingFunction',
     'transitionDelay',
-]
+])
 
-const shouldForwardProp = (prop: string) => !blockedProps.includes(prop)
-
+// styled-components v6 expects a `ShouldForwardProp` signature that takes the
+// element target as the 2nd argument (not the defaultValidatorFn).
+const shouldForwardProp: ShouldForwardProp<'web'> = (
+    prop,
+    elementToBeCreated
+) => {
+    void elementToBeCreated // required by the type; not needed for our filtering
+    if (blockedProps.has(prop)) return false
+    return true
+}
 const getStyles = (props: StyledBlockProps): CSSObject => {
     const styles: CSSObject = {}
 
@@ -396,7 +408,7 @@ const stateToSelector: Record<keyof StateStyles, string> = {
     _focusVisible: '&:focus-visible',
 }
 
-const StyledBlock = styled.div.withConfig({
+const StyledBlockBase = styled.div.withConfig({
     shouldForwardProp,
 })<StyledBlockProps>((props) => {
     const base = getStyles(props)
@@ -415,8 +427,7 @@ const StyledBlock = styled.div.withConfig({
     return css({ ...base, ...stateStyles })
 })
 
-type SemanticTagType = keyof Pick<
-    JSX.IntrinsicElements,
+type SemanticTagType =
     | 'div'
     | 'section'
     | 'article'
@@ -427,30 +438,15 @@ type SemanticTagType = keyof Pick<
     | 'nav'
     | 'hr'
     | 'label'
->
 
 export type BlockProps = StyledBlockProps &
-    Omit<React.HTMLAttributes<HTMLElement>, 'as' | 'color'> & {
-        children?: React.ReactNode
+    Omit<React.ComponentPropsWithoutRef<'div'>, keyof StyledBlockProps> & {
         as?: SemanticTagType
     }
 
-/**
- * Block Component
- * @description
- * The Block component is a primitive component that renders a styled div element.
- * It is used to create consistent spacing and layout patterns across the application.
- *
- * @todo
- * - Add support for focus-visible outline
- */
 const Block = forwardRef<HTMLDivElement, BlockProps>(
-    ({ children, as, ...rest }, ref) => {
-        return (
-            <StyledBlock ref={ref} {...rest} as={as}>
-                {children}
-            </StyledBlock>
-        )
+    ({ as = 'div', ...props }, ref) => {
+        return <StyledBlockBase as={as} {...props} ref={ref} />
     }
 )
 

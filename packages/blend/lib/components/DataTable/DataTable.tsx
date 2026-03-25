@@ -154,7 +154,7 @@ const DataTable = forwardRef(
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
         const scrollContainerRef = useRef<HTMLDivElement>(null)
-        const tableContainerRef = useRef<HTMLDivElement>(null)
+        const tableContainerRef = useRef<HTMLDivElement | null>(null)
         const [isNarrowContainer, setIsNarrowContainer] =
             useState<boolean>(false)
         const tableId = useId()
@@ -1272,7 +1272,9 @@ const DataTable = forwardRef(
                 if (typeof ref === 'function') {
                     ref(node)
                 } else if (ref) {
-                    ref.current = node
+                    ;(
+                        ref as React.MutableRefObject<HTMLDivElement | null>
+                    ).current = node
                 }
             },
             [ref]

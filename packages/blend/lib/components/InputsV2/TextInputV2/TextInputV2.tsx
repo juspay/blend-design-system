@@ -52,7 +52,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         }: TextInputV2Props,
         ref
     ) => {
-        const inputRef = useRef<HTMLInputElement>(null)
+        const inputRef = useRef<HTMLInputElement | null>(null)
         const leftSlotRef = useRef<HTMLDivElement>(null)
         const rightSlotRef = useRef<HTMLDivElement>(null)
 

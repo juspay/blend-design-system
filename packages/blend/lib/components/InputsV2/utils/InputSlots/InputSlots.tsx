@@ -5,7 +5,7 @@ type InputSlotPosition = 'left' | 'right'
 
 type InputSlotProps = {
     position: InputSlotPosition
-    slotRef: React.RefObject<HTMLDivElement | null>
+    slotRef: React.RefObject<HTMLDivElement>
     top: number
     bottom: number
     left: number

@@ -58,7 +58,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         const tabsGroupId = useId()
 
         const scrollContainerRef = useRef<HTMLDivElement>(null)
-        const tabsListRef = useRef<HTMLDivElement>(null)
+        const tabsListRef = useRef<HTMLDivElement | null>(null)
         const tabRefsMap = useRef<Map<string, HTMLButtonElement>>(new Map())
 
         const isScrollingRef = useRef(false)

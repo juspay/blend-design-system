@@ -241,7 +241,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         },
         ref
     ) => {
-        const scrollContainerRef = useRef<HTMLDivElement>(null)
+        const scrollContainerRef = useRef<HTMLDivElement | null>(null)
         const cellsRef = useRef<Map<string, HTMLDivElement>>(new Map())
         const activeCellRef = useRef<HTMLDivElement | null>(null)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')

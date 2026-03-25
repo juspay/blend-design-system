@@ -47,7 +47,7 @@ import ChatInputAccessibility from '../../ChatInput/accessibility/ChatInputAcces
 export type ComponentAccessibilitySection = {
     name: string
     displayName: string
-    component: React.ComponentType<Record<string, never>>
+    component: React.ComponentType<Record<string, unknown>>
 }
 
 // Component registry - import all accessibility components here

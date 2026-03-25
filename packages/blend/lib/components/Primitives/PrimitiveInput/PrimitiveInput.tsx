@@ -464,19 +464,18 @@ const StyledInput = styled.input.withConfig({
     })
 })
 
-const PrimitiveInput: React.FC<InputProps> = forwardRef<
-    HTMLInputElement,
-    InputProps
->(({ as, ...props }, ref) => {
-    return (
-        <StyledInput
-            as={as}
-            name={props.name}
-            id={props.id ?? (props.name as string | undefined)}
-            {...props}
-            ref={ref}
-        />
-    )
-})
+const PrimitiveInput = forwardRef<HTMLInputElement, InputProps>(
+    ({ as, ...props }, ref) => {
+        return (
+            <StyledInput
+                as={as}
+                name={props.name}
+                id={props.id ?? (props.name as string | undefined)}
+                {...props}
+                ref={ref}
+            />
+        )
+    }
+)
 
 export default PrimitiveInput

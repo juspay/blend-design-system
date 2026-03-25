@@ -11,7 +11,7 @@ export type MultiSelectV2MenuHeaderProps = {
     itemsCount: number
     searchValue: string
     searchPlaceholder?: string
-    searchInputRef: React.RefObject<HTMLInputElement | null>
+    searchInputRef: React.RefObject<HTMLInputElement>
     onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     onSearchArrowKeyToFirst: () => void
     showSelectAll: boolean

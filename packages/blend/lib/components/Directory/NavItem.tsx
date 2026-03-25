@@ -200,7 +200,9 @@ const NavItem = ({
             : !hasChildren &&
               (activeItem === itemPath || activeItem === item.label)
 
-    const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
+    const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement | null>(
+        null
+    )
 
     const refCallback = React.useCallback(
         (node: HTMLButtonElement | HTMLAnchorElement | null) => {

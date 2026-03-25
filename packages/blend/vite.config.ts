@@ -13,7 +13,13 @@ export default defineConfig({
             formats: ['es'],
         },
         rollupOptions: {
-            external: ['react', 'react/jsx-runtime'],
+            external: (id) =>
+                [
+                    'react',
+                    'react-dom',
+                    'react/jsx-runtime',
+                    'styled-components',
+                ].some((pkg) => id === pkg || id.startsWith(`${pkg}/`)),
             output: {
                 assetFileNames: 'assets/[name][extname]',
                 entryFileNames: '[name].js',
