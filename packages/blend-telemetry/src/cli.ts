@@ -8,6 +8,8 @@ import { collectMetrics } from './metrics/collector.js'
 import { printConsoleReport } from './reporters/console.js'
 import { writeJsonReport } from './reporters/json.js'
 import { writeHtmlReport } from './reporters/html.js'
+import { uploadToCloud } from './reporters/cloud.js'
+import { detectRepoIdentity } from './utils/repoDetect.js'
 import {
     confirmDetection,
     promptForConfiguration,
@@ -20,7 +22,9 @@ import type {
 import { findRescriptConfigs } from './detect/rescript/project-finder.js'
 import { findTsConfigs } from './detect/typescript/project-finder.js'
 
-const pkg = { version: '0.1.0' }
+// Injected at build time by tsup define — reads from package.json, never drifts.
+declare const __BLEND_TOOL_VERSION__: string
+const pkg = { version: __BLEND_TOOL_VERSION__ }
 
 const program = new Command()
 
@@ -70,6 +74,9 @@ program
     .option('--no-cache', 'Disable incremental scan cache')
     .option('-v, --verbose', 'Show per-file breakdown in console output')
     .option('-q, --quiet', 'Suppress all output except errors')
+    // Cloud upload flags
+    .option('--cloud', 'Force cloud upload even on local (non-CI) runs')
+    .option('--no-cloud', 'Disable cloud upload entirely for this run')
     .action(run)
 
 program.parse(process.argv)
@@ -220,10 +227,49 @@ async function run(options: Record<string, unknown>): Promise<void> {
         console.log()
     }
 
-    // ── CI exit code ────────────────────────────────────────────────────────────
-    if (report.ci && !report.ci.passed) {
-        process.exit(1)
+    // ── Cloud upload ────────────────────────────────────────────────────────────
+    // Runs by default in CI (process.env.CI is truthy).
+    // --cloud  forces upload on local runs.
+    // --no-cloud (options.cloud === false) disables it entirely.
+    // Errors are always suppressed — a network blip must never fail the pipeline.
+    const cloudEnabled = process.env.BLEND_TELEMETRY_CLOUD !== 'false'
+    const isCI = !!(process.env.CI || process.env.CONTINUOUS_INTEGRATION)
+    const shouldUpload =
+        options['cloud'] === true ||
+        (options['cloud'] !== false && cloudEnabled && isCI)
+
+    if (shouldUpload) {
+        try {
+            if (!config.quiet) {
+                process.stdout.write(chalk.dim('  ↑ Uploading telemetry…'))
+            }
+
+            const identity = await detectRepoIdentity(projectRoot)
+            const result = await uploadToCloud(report, identity)
+
+            if (!config.quiet) {
+                process.stdout.write('\r' + ' '.repeat(40) + '\r')
+                if (result.success && result.reason !== 'not configured') {
+                    const tag =
+                        result.reason === 'deduplicated'
+                            ? chalk.dim('(already uploaded)')
+                            : chalk.dim(`(${result.docId})`)
+                    console.log(chalk.dim(`  ✓ Telemetry synced ${tag}`))
+                }
+            }
+        } catch {
+            // Completely silent — upload must never interrupt the main flow
+            if (!config.quiet) {
+                process.stdout.write('\r' + ' '.repeat(40) + '\r')
+            }
+        }
     }
+
+    // ── Exit ─────────────────────────────────────────────────────────────────────
+    // Explicit process.exit() is required: the Firebase SDK (web client) keeps a
+    // background gRPC/WebSocket connection open which prevents the Node.js event
+    // loop from draining naturally in a CLI context after cloud upload.
+    process.exit(report.ci && !report.ci.passed ? 1 : 0)
 }
 
 // ─── Build detection result from interactive prompt output ────────────────────

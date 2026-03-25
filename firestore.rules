@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── blend-telemetry collection ──────────────────────────────────────────
+    //
+    // Structure:
+    //   /blend-telemetry/{repoId}          ← repo-level latest summary doc
+    //   /blend-telemetry/{repoId}/runs/{runId}  ← individual scan snapshots
+    //
+    // Security model:
+    //   WRITE (create)  → open to any caller (the CLI tool, no auth needed)
+    //   READ            → denied from unauthenticated clients
+    //                     Dashboard reads via Firebase Admin SDK (bypasses rules)
+    //
+    // The Firebase apiKey is public — security is enforced here, not by hiding
+    // the config. The write-only model means the worst an attacker can do is
+    // submit junk telemetry, which the dashboard can filter out.
+    // ────────────────────────────────────────────────────────────────────────
+
+    // Repo-level summary document (one per consumer repo)
+    match /blend-telemetry/{repoId} {
+      allow create, update: if
+        // Required fields must exist
+        request.resource.data.keys().hasAll(['repoId', 'repoName', 'lastUpdated']) &&
+        // Field types — prevent junk data
+        request.resource.data.repoId is string &&
+        request.resource.data.repoName is string &&
+        request.resource.data.repoId.size() <= 400 &&
+        request.resource.data.repoName.size() <= 400 &&
+        // Prevent oversized writes
+        request.resource.data.size() < 100000;  // 100KB cap on summary doc
+
+      allow read, delete: if false; // Admin SDK only
+    }
+
+    // Individual scan run documents (subcollection under each repo)
+    match /blend-telemetry/{repoId}/runs/{runId} {
+      allow create, update: if
+        // Required fields must exist
+        request.resource.data.keys().hasAll([
+          'repoId', 'repoName', 'generatedAt',
+          'adoptionRate', 'totalComponentsUsed'
+        ]) &&
+        // Field types — prevent junk data
+        request.resource.data.repoId is string &&
+        request.resource.data.repoName is string &&
+        request.resource.data.generatedAt is string &&
+        request.resource.data.adoptionRate is number &&
+        request.resource.data.totalComponentsUsed is number &&
+        request.resource.data.repoId.size() <= 400 &&
+        request.resource.data.repoName.size() <= 400 &&
+        // Hard cap — prevents abuse and stays well under Firestore's 1MB doc limit
+        request.resource.data.size() < 500000;  // 500KB cap per run doc
+        // Doc ID = commitSha (deterministic) — same commit run twice just overwrites.
+
+      // No reads or deletes from unauthenticated clients
+      // Dashboard uses Admin SDK which bypasses these rules entirely
+      allow read, delete: if false;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

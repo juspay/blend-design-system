@@ -1,17 +1,15 @@
 {
     "name": "blend-telemetry",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Telemetry CLI for @juspay/blend-design-system component usage — language-aware scanner for ReScript and TypeScript projects",
     "bin": {
-        "blend-telemetry": "bin/blend-telemetry.js"
+        "blend-telemetry": "./bin/blend-telemetry.js"
     },
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "author": "Deepanshu Rai (deepanshu_juspay)",
     "files": [
         "bin",
-        "dist",
-        "README.md"
+        "dist"
     ],
     "scripts": {
         "build": "tsup",
@@ -19,7 +17,7 @@
         "test": "vitest run",
         "test:watch": "vitest",
         "lint": "tsc --noEmit",
-        "prepublishOnly": "npm run build"
+        "prepublishOnly": "NODE_ENV=production npm run build"
     },
     "dependencies": {
         "@inquirer/prompts": "^7.5.2",
@@ -29,6 +27,7 @@
         "commander": "^13.1.0",
         "cosmiconfig": "^9.0.0",
         "fast-glob": "^3.3.3",
+        "firebase": "^11.10.0",
         "strip-json-comments": "^5.0.3"
     },
     "devDependencies": {

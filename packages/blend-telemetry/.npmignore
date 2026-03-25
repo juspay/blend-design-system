@@ -1,0 +1,28 @@
+# Source — consumers get the compiled dist/ only
+src/
+tests/
+*.ts
+!dist/*.d.ts
+
+# Config files
+tsup.config.ts
+tsconfig.json
+vitest.config.ts
+.blendrc.example.json
+.eslintrc*
+
+# Dev artifacts
+*.js.map
+*.tsbuildinfo
+coverage/
+.blend-telemetry/
+
+# Env / secrets — never ship these
+.env*
+*.pem
+*.key
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
