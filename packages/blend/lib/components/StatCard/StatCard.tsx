@@ -685,20 +685,23 @@ const StatCard = ({
                                             />
                                         </Block>
                                     )}
-                                    {actionIcon && !isSmallScreen && (
-                                        <Block
-                                            data-element="view-more"
-                                            display="flex"
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            flexShrink={0}
-                                            position="absolute"
-                                            right={0}
-                                            top={0}
-                                        >
-                                            {actionIcon}
-                                        </Block>
-                                    )}
+                                    {actionIcon &&
+                                        !isSmallScreen &&
+                                        direction !==
+                                            StatCardDirection.HORIZONTAL && (
+                                            <Block
+                                                data-element="view-more"
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                                flexShrink={0}
+                                                position="absolute"
+                                                right={0}
+                                                top={0}
+                                            >
+                                                {actionIcon}
+                                            </Block>
+                                        )}
                                 </Block>
 
                                 <Block
@@ -716,7 +719,11 @@ const StatCard = ({
                                         <Block
                                             display="flex"
                                             alignItems="center"
-                                            gap={8}
+                                            width={'100%'}
+                                            gap={
+                                                statCardToken.textContainer
+                                                    .header.gap
+                                            }
                                         >
                                             {titleIcon && (
                                                 <Block
@@ -745,25 +752,125 @@ const StatCard = ({
                                             <Block
                                                 display="flex"
                                                 alignItems="center"
+                                                justifyContent="space-between"
                                                 gap={
                                                     statCardToken.textContainer
                                                         .header.gap
                                                 }
+                                                width="100%"
                                             >
-                                                <StatCardHeaderTitleText
-                                                    title={title}
-                                                    titleId={titleId}
-                                                    statCardToken={
+                                                <Block
+                                                    display="flex"
+                                                    gap={
                                                         statCardToken
+                                                            .textContainer
+                                                            .header.gap
                                                     }
-                                                />
-                                                <StatCardHelpIcon
-                                                    helpIconText={helpIconText}
-                                                    title={title}
-                                                    statCardToken={
-                                                        statCardToken
-                                                    }
-                                                />
+                                                >
+                                                    <Tooltip content={title}>
+                                                        <Text
+                                                            as="span"
+                                                            id={titleId}
+                                                            fontSize={
+                                                                statCardToken
+                                                                    .textContainer
+                                                                    .header
+                                                                    .title
+                                                                    .fontSize
+                                                            }
+                                                            fontWeight={
+                                                                statCardToken
+                                                                    .textContainer
+                                                                    .header
+                                                                    .title
+                                                                    .fontWeight
+                                                            }
+                                                            color={
+                                                                statCardToken
+                                                                    .textContainer
+                                                                    .header
+                                                                    .title.color
+                                                            }
+                                                            style={{
+                                                                display:
+                                                                    '-webkit-box',
+                                                                WebkitLineClamp: 1,
+                                                                WebkitBoxOrient:
+                                                                    'vertical',
+                                                                overflow:
+                                                                    'hidden',
+                                                                textOverflow:
+                                                                    'ellipsis',
+                                                                wordBreak:
+                                                                    'break-word',
+                                                            }}
+                                                            data-element="statcard-header"
+                                                            data-id={
+                                                                title ||
+                                                                'statcard-header'
+                                                            }
+                                                        >
+                                                            {title}
+                                                        </Text>
+                                                    </Tooltip>
+                                                    {helpIconText && (
+                                                        <Block
+                                                            data-element="help-icon"
+                                                            flexShrink={0}
+                                                            display="flex"
+                                                            alignItems="center"
+                                                            justifyContent="center"
+                                                        >
+                                                            <Tooltip
+                                                                content={
+                                                                    helpIconText
+                                                                }
+                                                            >
+                                                                <Block
+                                                                    as="span"
+                                                                    display="inline-flex"
+                                                                    alignItems="center"
+                                                                    justifyContent="center"
+                                                                    role="button"
+                                                                    tabIndex={0}
+                                                                    aria-label={
+                                                                        helpIconText ||
+                                                                        `Help for ${title}`
+                                                                    }
+                                                                >
+                                                                    <CircleHelp
+                                                                        width={parseInt(
+                                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                                '16'
+                                                                        )}
+                                                                        height={parseInt(
+                                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                                '16'
+                                                                        )}
+                                                                        color={
+                                                                            statCardToken
+                                                                                .textContainer
+                                                                                .header
+                                                                                .helpIcon
+                                                                                .color
+                                                                                .default
+                                                                        }
+                                                                        aria-hidden="true"
+                                                                    />
+                                                                </Block>
+                                                            </Tooltip>
+                                                        </Block>
+                                                    )}
+                                                </Block>
+                                                {actionIcon &&
+                                                    !isSmallScreen && (
+                                                        <Block
+                                                            data-element="view-more"
+                                                            flexShrink={0}
+                                                        >
+                                                            {actionIcon}
+                                                        </Block>
+                                                    )}
                                             </Block>
                                         </Block>
                                     )}
