@@ -566,6 +566,7 @@ const DataTableHeader = forwardRef<
                             flexShrink: 1,
                             minHeight: FOUNDATION_THEME.unit[40],
                         }}
+                        justifyContent="center"
                     >
                         {title && (
                             <PrimitiveText
