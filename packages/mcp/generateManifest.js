@@ -74,6 +74,7 @@ const V1_COMPONENTS = [
     'Topbar',
     'Upload',
     'VirtualList',
+    'StepperV2',
 ]
 
 // Inputs namespace sub-directories
