@@ -95,7 +95,7 @@ export type VirtualListProps = MenuListSharedProps & {
     measureElement: (node: Element | null) => void
     loadingComponent?: ReactNode
     hasMore?: boolean
-    virtualScrollRef: RefObject<HTMLDivElement>
+    virtualScrollRef: RefObject<HTMLDivElement | null>
 }
 
 export type MenuSearchProps = {
@@ -105,8 +105,8 @@ export type MenuSearchProps = {
     searchPlaceholder: string
     searchText: string
     onSearchTextChange: (value: string) => void
-    searchInputRef: RefObject<HTMLInputElement>
-    containerRef?: RefObject<HTMLDivElement>
+    searchInputRef: RefObject<HTMLInputElement | null>
+    containerRef?: RefObject<HTMLDivElement | null>
 }
 
 export type MenuRootProps = SelectV2MenuRootPropsBase

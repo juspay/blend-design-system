@@ -360,7 +360,9 @@ const MultiSelectV2Menu = ({
                                 itemsCount={items.length}
                                 searchValue={searchText}
                                 searchPlaceholder={searchPlaceholder}
-                                searchInputRef={searchInputRef}
+                                searchInputRef={
+                                    searchInputRef as React.RefObject<HTMLInputElement>
+                                }
                                 onSearchChange={(e) =>
                                     setSearchText(e.target.value)
                                 }

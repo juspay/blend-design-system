@@ -1,4 +1,4 @@
-import { forwardRef, useId, useMemo, useRef, useState } from 'react'
+import { forwardRef, useId, useMemo, useRef, useState, RefObject } from 'react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useInputSlotPadding } from '../../../hooks/useInputSlotPadding'
 import Block from '../../Primitives/Block/Block'
@@ -52,7 +52,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         }: TextInputV2Props,
         ref
     ) => {
-        const inputRef = useRef<HTMLInputElement | null>(null)
+        const inputRef = useRef<HTMLInputElement>(null)
         const leftSlotRef = useRef<HTMLDivElement>(null)
         const rightSlotRef = useRef<HTMLDivElement>(null)
 
@@ -151,7 +151,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                     {leftSlot && (
                         <InputSlots
                             position="left"
-                            slotRef={leftSlotRef}
+                            slotRef={leftSlotRef as RefObject<HTMLDivElement>}
                             top={inputContainerPaddingTop}
                             bottom={inputContainerPaddingBottom}
                             left={inputContainerPaddingLeft}
@@ -246,7 +246,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                     {rightSlot && (
                         <InputSlots
                             position="right"
-                            slotRef={rightSlotRef}
+                            slotRef={rightSlotRef as RefObject<HTMLDivElement>}
                             top={inputContainerPaddingTop}
                             bottom={inputContainerPaddingBottom}
                             left={inputContainerPaddingLeft}

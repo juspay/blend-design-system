@@ -91,7 +91,7 @@ const SingleSelectV2Menu = ({
     const alignOffset = menuPosition?.alignOffset ?? 0
 
     const [searchText, setSearchText] = useState('')
-    const searchInputRef = useRef<HTMLInputElement>(null)
+    const searchInputRef = useRef<HTMLInputElement | null>(null)
     const searchContainerRef = useRef<HTMLDivElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const virtualScrollRef = useRef<HTMLDivElement>(null)
