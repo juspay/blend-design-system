@@ -1602,6 +1602,15 @@ const DataTableDemo = () => {
     const [enableColumnManager, setEnableColumnManager] = useState(true)
     const [showSettings, setShowSettings] = useState(true)
 
+    // Insert column modal state
+    const [isInsertModalOpen, setIsInsertModalOpen] = useState(false)
+    const [insertDirection, setInsertDirection] = useState<'left' | 'right'>(
+        'right'
+    )
+    const [insertTargetField, setInsertTargetField] = useState<string>('')
+    const [newColumnTitle, setNewColumnTitle] = useState('')
+    const [newColumnField, setNewColumnField] = useState('')
+
     // Define strict user row type matching column requirements
     type UserRow = {
         id: number
@@ -1862,7 +1871,7 @@ const DataTableDemo = () => {
         totalRecords: 3000,
     })
 
-    const columns: ColumnDefinition<UserRow>[] = [
+    const initialColumns: ColumnDefinition<UserRow>[] = [
         {
             field: 'name',
             header: 'User Profile Information and Account Details',
@@ -2084,6 +2093,9 @@ const DataTableDemo = () => {
             maxWidth: '180px',
         },
     ]
+
+    const [columns, setColumns] =
+        useState<ColumnDefinition<UserRow>[]>(initialColumns)
 
     const [currentPage, setCurrentPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
@@ -3234,6 +3246,39 @@ const DataTableDemo = () => {
                 onSearchChange={handleSearchChange}
                 onFilterChange={handleFilterChange}
                 onAdvancedFiltersChange={handleAdvancedFiltersChange}
+                onOperations={(field) => {
+                    console.log('⚙️ Operations clicked for column:', field)
+                    alert(
+                        `Operations modal would open for column: ${String(field)}`
+                    )
+                }}
+                onInsertLeft={(field) => {
+                    setInsertTargetField(String(field))
+                    setInsertDirection('left')
+                    setNewColumnTitle('')
+                    setNewColumnField('')
+                    setIsInsertModalOpen(true)
+                }}
+                onInsertRight={(field) => {
+                    setInsertTargetField(String(field))
+                    setInsertDirection('right')
+                    setNewColumnTitle('')
+                    setNewColumnField('')
+                    setIsInsertModalOpen(true)
+                }}
+                onDeleteColumn={(field) => {
+                    if (
+                        confirm(
+                            `Are you sure you want to delete column: ${String(field)}?`
+                        )
+                    ) {
+                        setColumns((prev) =>
+                            prev.filter(
+                                (c) => String(c.field) !== String(field)
+                            )
+                        )
+                    }
+                }}
                 onRowSave={handleRowSave}
                 onRowCancel={handleRowCancel}
                 onRowExpansionChange={handleRowExpansionChange}
@@ -3550,6 +3595,106 @@ const DataTableDemo = () => {
             <EmptyDataTableExamples />
 
             <SkeletonLoadingDemo />
+
+            <Modal
+                isOpen={isInsertModalOpen}
+                onClose={() => setIsInsertModalOpen(false)}
+                title={`Insert Column ${insertDirection === 'left' ? 'Before' : 'After'} ${insertTargetField}`}
+                primaryAction={{
+                    text: 'Insert Column',
+                    onClick: () => {
+                        if (!newColumnTitle || !newColumnField) return
+
+                        setColumns((prev) => {
+                            const newCols = [...prev]
+                            const targetIndex = newCols.findIndex(
+                                (c) => String(c.field) === insertTargetField
+                            )
+                            if (targetIndex === -1) return prev
+
+                            const newCol: ColumnDefinition<UserRow> = {
+                                field: newColumnField as any,
+                                header: newColumnTitle,
+                                type: ColumnType.TEXT,
+                                isSortable: true,
+                                isEditable: true,
+                                minWidth: '150px',
+                            }
+
+                            const insertIndex =
+                                insertDirection === 'left'
+                                    ? targetIndex
+                                    : targetIndex + 1
+                            newCols.splice(insertIndex, 0, newCol)
+                            return newCols
+                        })
+                        setIsInsertModalOpen(false)
+                    },
+                    disabled: !newColumnTitle || !newColumnField,
+                }}
+                secondaryAction={{
+                    text: 'Cancel',
+                    buttonType: ButtonType.SECONDARY,
+                    onClick: () => setIsInsertModalOpen(false),
+                }}
+                minWidth="400px"
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        padding: '8px 0',
+                    }}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px',
+                        }}
+                    >
+                        <label style={{ fontSize: '14px', fontWeight: 500 }}>
+                            Column Title
+                        </label>
+                        <input
+                            type="text"
+                            value={newColumnTitle}
+                            onChange={(e) => setNewColumnTitle(e.target.value)}
+                            placeholder="e.g. Phone Number"
+                            style={{
+                                padding: '8px',
+                                borderRadius: '4px',
+                                border: '1px solid #d1d5db',
+                                width: '100%',
+                            }}
+                        />
+                    </div>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px',
+                        }}
+                    >
+                        <label style={{ fontSize: '14px', fontWeight: 500 }}>
+                            Field ID
+                        </label>
+                        <input
+                            type="text"
+                            value={newColumnField}
+                            onChange={(e) => setNewColumnField(e.target.value)}
+                            placeholder="e.g. phone"
+                            style={{
+                                padding: '8px',
+                                borderRadius: '4px',
+                                border: '1px solid #d1d5db',
+                                width: '100%',
+                            }}
+                        />
+                    </div>
+                </div>
+            </Modal>
         </div>
     )
 }

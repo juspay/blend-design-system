@@ -425,6 +425,11 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     rowActions?: RowActionsConfig<T>
 
+    onOperations?: (field: keyof T) => void
+    onInsertLeft?: (field: keyof T) => void
+    onInsertRight?: (field: keyof T) => void
+    onDeleteColumn?: (field: keyof T) => void
+
     getRowStyle?: (row: T, index: number) => React.CSSProperties
 
     tableBodyHeight?: string | number

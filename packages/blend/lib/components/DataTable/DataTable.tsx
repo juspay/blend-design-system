@@ -144,6 +144,10 @@ const DataTable = forwardRef(
             headerSlot2,
             bulkActions,
             rowActions,
+            onOperations,
+            onInsertLeft,
+            onInsertRight,
+            onDeleteColumn,
             getRowStyle,
             tableBodyHeight,
             mobileColumnsToShow,
@@ -198,6 +202,10 @@ const DataTable = forwardRef(
             return allVisibleColumns
         })
         useEffect(() => {
+            const existingVisibleKeys = new Set(
+                visibleColumns.map((c) => c.field)
+            )
+
             const updatedVisibleColumns: ColumnDefinition<T>[] = []
 
             visibleColumns.forEach((col) => {
@@ -206,20 +214,39 @@ const DataTable = forwardRef(
                 )
 
                 if (matchingColumn) {
-                    const updatedColumn = {
-                        ...col,
-                        ...matchingColumn,
-                    } as ColumnDefinition<T>
-                    updatedVisibleColumns.push(updatedColumn)
-                } else {
-                    updatedVisibleColumns.push(col)
+                    if (matchingColumn.isVisible !== false) {
+                        const updatedColumn = {
+                            ...col,
+                            ...matchingColumn,
+                        } as ColumnDefinition<T>
+                        updatedVisibleColumns.push(updatedColumn)
+                    }
                 }
             })
 
-            const hasChanges = updatedVisibleColumns.some(
-                (updatedCol, index) => {
+            const newColumns = initialColumns.filter(
+                (col) =>
+                    !existingVisibleKeys.has(col.field) &&
+                    col.isVisible !== false
+            )
+
+            newColumns.forEach((newCol) => {
+                const initialIndex = initialColumns.findIndex(
+                    (c) => c.field === newCol.field
+                )
+                const insertIndex = Math.min(
+                    initialIndex,
+                    updatedVisibleColumns.length
+                )
+                updatedVisibleColumns.splice(insertIndex, 0, newCol)
+            })
+
+            const hasChanges =
+                visibleColumns.length !== updatedVisibleColumns.length ||
+                updatedVisibleColumns.some((updatedCol, index) => {
                     const originalCol = visibleColumns[index]
                     if (!originalCol) return true
+                    if (updatedCol.field !== originalCol.field) return true
 
                     return (
                         updatedCol.headerSubtext !==
@@ -228,8 +255,7 @@ const DataTable = forwardRef(
                         (updatedCol.type === ColumnType.CUSTOM &&
                             updatedCol.renderCell !== originalCol.renderCell)
                     )
-                }
-            )
+                })
 
             if (hasChanges) {
                 setVisibleColumns(updatedVisibleColumns)
@@ -1565,6 +1591,10 @@ const DataTable = forwardRef(
                                             onSortDescending={
                                                 handleSortDescending
                                             }
+                                            onOperations={onOperations}
+                                            onInsertLeft={onInsertLeft}
+                                            onInsertRight={onInsertRight}
+                                            onDeleteColumn={onDeleteColumn}
                                             onSelectAll={handleSelectAll}
                                             onColumnChange={(columns) =>
                                                 setVisibleColumns(
