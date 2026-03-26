@@ -31,7 +31,11 @@ import {
     SortState,
     FilterState,
 } from './handlers'
-import { getPopoverAlignment, getFrozenColumnStyles } from './utils'
+import {
+    getPopoverAlignment,
+    getFrozenColumnStyles,
+    getFrozenRightColumnStyles,
+} from './utils'
 import { ColumnFilter } from './FilterComponents'
 import { ColumnType } from '../types'
 import { getColumnTypeConfig } from '../columnTypes'
@@ -215,6 +219,7 @@ const TableHeader = forwardRef<
             rowActions,
             data,
             columnFreeze = 0,
+            columnFreezeRight = 0,
             mobileConfig,
             mobileOverflowColumns = [],
             onMobileOverflowClick,
@@ -775,6 +780,25 @@ const TableHeader = forwardRef<
                             measuredFrozenWidths
                         )
 
+                        const rightStickyOffsetPx = enableColumnManager
+                            ? parseInt(
+                                  String(FOUNDATION_THEME.unit[48]).replace(
+                                      'px',
+                                      ''
+                                  ) || '48',
+                                  10
+                              )
+                            : 0
+                        const rightFrozenStyles = getFrozenRightColumnStyles(
+                            index,
+                            columnFreezeRight,
+                            visibleColumns,
+                            getColumnWidth,
+                            tableToken.dataTable.table.header.backgroundColor ||
+                                '#ffffff',
+                            rightStickyOffsetPx
+                        )
+
                         const isLastColumn =
                             !enableColumnManager &&
                             !(
@@ -800,6 +824,7 @@ const TableHeader = forwardRef<
                                 tableToken.dataTable.table.header.sortable),
                             ...columnStyles,
                             ...frozenStyles,
+                            ...rightFrozenStyles,
                             padding: cellPadding,
                             // Ensure border bottom is always present
                             borderBottom:

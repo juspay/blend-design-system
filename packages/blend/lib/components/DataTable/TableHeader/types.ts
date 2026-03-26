@@ -37,6 +37,7 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     rowActions?: RowActionsConfig<T>
     data?: T[]
     columnFreeze?: number
+    columnFreezeRight?: number
     mobileConfig?: MobileDataTableConfig
     mobileOverflowColumns?: ColumnDefinition<T>[]
     onMobileOverflowClick?: (row: T) => void

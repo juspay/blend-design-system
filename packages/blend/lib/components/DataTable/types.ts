@@ -358,6 +358,8 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onFilterChange?: (filters: ColumnFilter[]) => void
     onAdvancedFiltersChange?: (filters: unknown[]) => void
     columnFreeze?: number
+    /** Freeze last N columns on the right side (sticky right). */
+    columnFreezeRight?: number
     enableColumnManager?: boolean
     enableColumnReordering?: boolean
     onColumnReorder?: (columns: ColumnDefinition<T>[]) => void

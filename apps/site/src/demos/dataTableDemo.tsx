@@ -793,6 +793,7 @@ const SimpleDataTableExample = () => {
                 enableColumnManager={true}
                 showSettings={true}
                 columnFreeze={0}
+                columnFreezeRight={1}
                 mobileColumnsToShow={2}
                 pagination={{
                     currentPage: 1,

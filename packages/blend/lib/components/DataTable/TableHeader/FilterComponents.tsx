@@ -1448,6 +1448,8 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     }
                     label="Operations"
                     onClick={() => {
+                        setNestedFilterOpen(false)
+                        setNestedSortOpen(false)
                         onOperations()
                         onPopoverClose?.()
                     }}
@@ -1470,7 +1472,10 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     }
                     label="Rename"
                     onClick={() => {
+                        setNestedFilterOpen(false)
+                        setNestedSortOpen(false)
                         onRenameHeader()
+                        onPopoverClose?.()
                     }}
                     tableToken={tableToken}
                 />
@@ -1488,6 +1493,8 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     }
                     label="Insert Left"
                     onClick={() => {
+                        setNestedFilterOpen(false)
+                        setNestedSortOpen(false)
                         onInsertLeft()
                         onPopoverClose?.()
                     }}
@@ -1506,6 +1513,8 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     }
                     label="Insert Right"
                     onClick={() => {
+                        setNestedFilterOpen(false)
+                        setNestedSortOpen(false)
                         onInsertRight()
                         onPopoverClose?.()
                     }}
@@ -1527,6 +1536,8 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     label="Delete"
                     isDestructive
                     onClick={() => {
+                        setNestedFilterOpen(false)
+                        setNestedSortOpen(false)
                         onDeleteColumn()
                         onPopoverClose?.()
                     }}

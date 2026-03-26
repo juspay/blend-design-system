@@ -97,6 +97,7 @@ const DataTable = forwardRef(
             advancedFilterComponent,
             advancedFilters = [],
             columnFreeze = 0,
+            columnFreezeRight = 0,
             serverSideSearch = false,
             serverSideFiltering = false,
             serverSidePagination = false,
@@ -674,19 +675,27 @@ const DataTable = forwardRef(
             updateSelectAllState(selectedRows)
         }, [currentData, selectedRows])
 
+        const hasMountedScrollRef = useRef(false)
         useEffect(() => {
             const currentColumnCount = visibleColumns.length
 
-            if (
-                currentColumnCount > previousColumnCount &&
-                scrollContainerRef.current
-            ) {
-                setTimeout(() => {
-                    if (scrollContainerRef.current) {
-                        scrollContainerRef.current.scrollLeft =
-                            scrollContainerRef.current.scrollWidth
-                    }
-                }, 100)
+            if (hasMountedScrollRef.current) {
+                const el = scrollContainerRef.current
+                const shouldScrollToEnd =
+                    currentColumnCount > previousColumnCount &&
+                    !!el &&
+                    el.scrollWidth - (el.scrollLeft + el.clientWidth) < 16
+
+                if (shouldScrollToEnd) {
+                    setTimeout(() => {
+                        if (scrollContainerRef.current) {
+                            scrollContainerRef.current.scrollLeft =
+                                scrollContainerRef.current.scrollWidth
+                        }
+                    }, 100)
+                }
+            } else {
+                hasMountedScrollRef.current = true
             }
 
             setPreviousColumnCount(currentColumnCount)
@@ -1612,6 +1621,9 @@ const DataTable = forwardRef(
                                                 ) => React.CSSProperties
                                             }
                                             columnFreeze={effectiveColumnFreeze}
+                                            columnFreezeRight={
+                                                columnFreezeRight
+                                            }
                                             measuredFrozenWidths={
                                                 measuredFrozenWidths
                                             }
@@ -1658,6 +1670,9 @@ const DataTable = forwardRef(
                                                 }
                                                 columnFreeze={
                                                     effectiveColumnFreeze
+                                                }
+                                                columnFreezeRight={
+                                                    columnFreezeRight
                                                 }
                                                 measuredFrozenWidths={
                                                     measuredFrozenWidths

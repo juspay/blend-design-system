@@ -157,6 +157,96 @@ export function getFrozenLeftOffset(
     return leftOffset
 }
 
+const parseWidthPx = (value: unknown, fallback: number): number => {
+    const num = parseInt(String(value ?? '').replace(/px|%|em|rem/g, ''), 10)
+    return Number.isFinite(num) ? num : fallback
+}
+
+export function getFrozenRightOffset(
+    index: number,
+    columnFreezeRight: number,
+    visibleColumns: ColumnDefinition<Record<string, unknown>>[],
+    getColumnWidth: (
+        column: ColumnDefinition<Record<string, unknown>>,
+        i: number
+    ) => React.CSSProperties,
+    rightStickyOffsetPx: number
+): number {
+    if (columnFreezeRight <= 0) return rightStickyOffsetPx
+
+    const startIndex = Math.max(visibleColumns.length - columnFreezeRight, 0)
+    if (index < startIndex) return rightStickyOffsetPx
+
+    let rightOffset = rightStickyOffsetPx
+    for (let i = visibleColumns.length - 1; i > index; i--) {
+        const nextColumn = visibleColumns[i]
+        const nextStyles = getColumnWidth(nextColumn, i)
+        const width = nextColumn.maxWidth
+            ? parseWidthPx(nextColumn.maxWidth, 140)
+            : nextColumn.minWidth
+              ? parseWidthPx(nextColumn.minWidth, 140)
+              : nextStyles.maxWidth
+                ? parseWidthPx(nextStyles.maxWidth, 140)
+                : nextStyles.minWidth
+                  ? parseWidthPx(nextStyles.minWidth, 120)
+                  : 140
+        rightOffset += width
+    }
+    return rightOffset
+}
+
+export const getFrozenRightColumnStyles = (
+    index: number,
+    columnFreezeRight: number,
+    visibleColumns: ColumnDefinition<Record<string, unknown>>[],
+    getColumnWidth: (
+        column: ColumnDefinition<Record<string, unknown>>,
+        index: number
+    ) => React.CSSProperties,
+    backgroundColor: string,
+    rightStickyOffsetPx: number
+) => {
+    if (columnFreezeRight <= 0) return {}
+    const startIndex = Math.max(visibleColumns.length - columnFreezeRight, 0)
+    if (index < startIndex) return {}
+
+    const currentColumn = visibleColumns[index]
+    const currentColumnStyles = getColumnWidth(currentColumn, index)
+
+    const rightOffset = getFrozenRightOffset(
+        index,
+        columnFreezeRight,
+        visibleColumns,
+        getColumnWidth,
+        rightStickyOffsetPx
+    )
+
+    const isFirstRightFrozen = index === startIndex
+
+    const minWidth =
+        currentColumn.minWidth ||
+        String(currentColumnStyles.minWidth ?? '140px')
+    const maxWidth =
+        currentColumn.maxWidth ||
+        String(currentColumnStyles.maxWidth ?? '200px')
+
+    return {
+        position: 'sticky' as const,
+        right: `${rightOffset}px`,
+        zIndex: 9,
+        backgroundColor,
+        padding: `0 ${FOUNDATION_THEME.unit[16]}`,
+        minWidth,
+        maxWidth,
+        width: 'auto',
+        boxSizing: 'border-box' as const,
+        overflow: 'hidden',
+        ...(isFirstRightFrozen && {
+            borderLeft: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+        }),
+    }
+}
+
 export const getFrozenColumnStyles = (
     index: number,
     columnFreeze: number,

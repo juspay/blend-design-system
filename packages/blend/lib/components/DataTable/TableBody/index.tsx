@@ -10,7 +10,7 @@ import {
 import { styled, css } from 'styled-components'
 import { motion } from 'framer-motion'
 import { TableBodyProps } from './types'
-import { getFrozenLeftOffset } from '../TableHeader/utils'
+import { getFrozenLeftOffset, getFrozenRightOffset } from '../TableHeader/utils'
 import TableCell from '../TableCell'
 import Block from '../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -522,6 +522,7 @@ const TableBody = forwardRef<
             enableRowSelection = true,
             rowActions,
             columnFreeze = 0,
+            columnFreezeRight = 0,
             measuredFrozenWidths,
             mobileConfig,
             mobileOverflowColumns = [],
@@ -915,6 +916,55 @@ const TableBody = forwardRef<
 
                                               const getFrozenBodyStyles =
                                                   (): React.CSSProperties => {
+                                                      const rightStickyOffsetPx =
+                                                          enableColumnManager
+                                                              ? parseInt(
+                                                                    String(
+                                                                        FOUNDATION_THEME
+                                                                            .unit[48]
+                                                                    ).replace(
+                                                                        'px',
+                                                                        ''
+                                                                    ) || '48',
+                                                                    10
+                                                                )
+                                                              : 0
+                                                      const rightFreezeStartIndex =
+                                                          Math.max(
+                                                              visibleColumns.length -
+                                                                  columnFreezeRight,
+                                                              0
+                                                          )
+
+                                                      if (
+                                                          columnFreezeRight >
+                                                              0 &&
+                                                          colIndex >=
+                                                              rightFreezeStartIndex
+                                                      ) {
+                                                          return {
+                                                              position:
+                                                                  'sticky' as const,
+                                                              right: `${getFrozenRightOffset(
+                                                                  colIndex,
+                                                                  columnFreezeRight,
+                                                                  visibleColumns,
+                                                                  getColumnWidth,
+                                                                  rightStickyOffsetPx
+                                                              )}px`,
+                                                              zIndex: 8,
+                                                              backgroundColor:
+                                                                  rowStyling.backgroundColor ||
+                                                                  FOUNDATION_THEME
+                                                                      .colors
+                                                                      .gray[0],
+                                                              ...(colIndex ===
+                                                                  rightFreezeStartIndex && {
+                                                                  borderLeft: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                                                              }),
+                                                          }
+                                                      }
+
                                                       if (
                                                           colIndex >=
                                                           columnFreeze
