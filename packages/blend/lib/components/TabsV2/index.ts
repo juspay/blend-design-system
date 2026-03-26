@@ -5,5 +5,9 @@ export { default as TabsV2Content } from './TabsV2Content'
 export { TabsV2ChromeProvider } from './tabsV2.context'
 export { useTabsV2Chrome } from './useTabsV2Chrome'
 export type { TabsV2ChromeContextValue } from './tabsV2.context'
-export * from './tabsV2.tokens'
+export {
+    getTabsV2Tokens,
+    type TabsV2TokensType,
+    type ResponsiveTabsV2Tokens,
+} from './tabsV2.tokens'
 export * from './tabsV2.types'

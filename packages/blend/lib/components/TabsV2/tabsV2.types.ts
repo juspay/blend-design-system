@@ -49,16 +49,6 @@ export type TabsV2ListProps = ComponentPropsWithoutRef<
     size?: TabsV2Size
     expanded?: boolean
     fitContent?: boolean
-    items?: TabsV2TabItem[]
-    originalItems?: TabsV2TabItem[]
-    onTabClose?: (value: string) => void
-    onTabAdd?: () => void
-    showDropdown?: boolean
-    showAddButton?: boolean
-    dropdownTooltip?: string
-    addButtonTooltip?: string
-    onTabChange?: (value: string) => void
-    activeTab?: string
     disable?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
@@ -75,8 +65,6 @@ export type TabsV2TriggerProps = ComponentPropsWithoutRef<
     leftSlot?: ReactNode
     rightSlot?: ReactNode
     children: string | number
-    closable?: boolean
-    onClose?: () => void
     disable?: boolean
     isActive?: boolean
     isOverlay?: boolean
