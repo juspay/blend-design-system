@@ -86,6 +86,7 @@ import MultiSelectGroupDemo from './MultiSelectGroupDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
+import DrawerV2Demo from './DrawerV2Demo'
 import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
@@ -179,6 +180,7 @@ const SidebarDemo = () => {
         | 'snackbar'
         | 'dataTable'
         | 'drawer'
+        | 'drawerV2'
         | 'colorPalette'
         | 'popover'
         | 'progressBar'
@@ -224,7 +226,7 @@ const SidebarDemo = () => {
         | 'tooltipV2'
         | 'singleSelectV2'
         | 'popoverV2'
-    >('statCardV2')
+    >('drawerV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -510,6 +512,8 @@ const SidebarDemo = () => {
                 return <ProgressBarDemo />
             case 'drawer':
                 return <DrawerDemo />
+            case 'drawerV2':
+                return <DrawerV2Demo />
             case 'dropdownInput':
                 return <DropdownInputDemo />
             case 'dataRangePicker':
@@ -1233,6 +1237,13 @@ const SidebarDemo = () => {
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
                     isSelected: activeComponent === 'drawer',
                     onClick: () => setActiveComponent('drawer'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Drawer V2',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'drawerV2',
+                    onClick: () => setActiveComponent('drawerV2'),
                     showOnMobile: true,
                 },
             ],
