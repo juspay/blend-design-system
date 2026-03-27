@@ -6,18 +6,18 @@ import React, {
     useEffect,
     useId,
 } from 'react'
-import Block from '../Primitives/Block/Block'
-import Text from '../Text/Text'
-import StepperLineV2 from './StepperLineV2'
+import Block from '../../Primitives/Block/Block'
+import Text from '../../Text/Text'
+import StepperLineV2 from '../StepperLineV2'
 import { Check, InfoIcon, Lock } from 'lucide-react'
 import {
     StepperV2Props,
     StepperV2StepProps,
     StepperV2StepStatus,
-} from './stepperV2.types'
-import { StepperV2TokensType } from './stepperV2.tokens'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { Tooltip } from '../Tooltip'
+} from '../stepperV2.types'
+import { StepperV2TokensType } from '../stepperV2.tokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { Tooltip } from '../../Tooltip'
 
 const StepComponent = forwardRef<
     HTMLDivElement,

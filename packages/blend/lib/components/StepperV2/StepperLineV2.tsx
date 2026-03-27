@@ -1,6 +1,6 @@
-import HorizontalLineV2 from './HorizontalLineV2'
+import HorizontalLineV2 from './HorizontalStepper/HorizontalLineV2'
 import { StepperV2Type } from './stepperV2.types'
-import VerticalLineV2 from './VerticalLineV2'
+import VerticalLineV2 from './VerticalStepper/VerticalLineV2'
 
 const StepperLineV2 = ({
     stepperType = StepperV2Type.HORIZONTAL,

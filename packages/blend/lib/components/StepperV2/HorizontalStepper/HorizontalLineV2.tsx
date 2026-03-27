@@ -1,5 +1,5 @@
-import { FOUNDATION_THEME } from '../../tokens'
-import Block from '../Primitives/Block/Block'
+import { FOUNDATION_THEME } from '../../../tokens'
+import Block from '../../Primitives/Block/Block'
 
 const HorizontalLineV2 = ({
     color = FOUNDATION_THEME.colors.gray[300],

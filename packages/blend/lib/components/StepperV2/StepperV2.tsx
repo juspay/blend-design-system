@@ -1,8 +1,8 @@
 import { forwardRef, useCallback } from 'react'
 import type { StepperV2Props } from './stepperV2.types'
 import { StepperV2Type } from './stepperV2.types'
-import Block from '../Primitives/Block/Block'
-import HorizontalStepperV2 from './HorizontalStepperV2'
+import HorizontalStepperV2 from './HorizontalStepper/HorizontalStepperV2'
+import VerticalStepperV2 from './VerticalStepper/VerticalStepperV2'
 
 const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
     (
@@ -26,7 +26,16 @@ const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
         )
 
         if (stepperType === StepperV2Type.VERTICAL) {
-            return <Block>Vertical Stepper</Block>
+            return (
+                <VerticalStepperV2
+                    ref={ref}
+                    steps={steps}
+                    onStepClick={handleStepClick}
+                    onSubstepClick={onSubstepClick}
+                    clickable={clickable}
+                    {...rest}
+                />
+            )
         }
 
         return (

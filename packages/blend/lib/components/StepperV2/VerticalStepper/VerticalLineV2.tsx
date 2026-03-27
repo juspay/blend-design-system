@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
-import Block from '../Primitives/Block/Block'
-import { FOUNDATION_THEME } from '../../tokens'
+import Block from '../../Primitives/Block/Block'
+import { FOUNDATION_THEME } from '../../../tokens'
 
 const VerticalLineV2 = forwardRef<
     HTMLDivElement,
