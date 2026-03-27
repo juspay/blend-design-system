@@ -144,7 +144,7 @@ function SankeyChart() {
                 content: 'ChartType',
                 hintText: 'Enum that determines the chart visualization type',
             },
-            { content: 'LINE, BAR, PIE, SCATTER, SANKEY' },
+            { content: 'LINE, BAR, LINE_BAR, AREA, PIE, SCATTER, SANKEY' },
         ],
         [
             {
@@ -387,11 +387,183 @@ function SankeyChart() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Optional configuration for showing skeleton loading state. When show is true, displays skeleton placeholders instead of the actual chart content. Useful for loading states while chart data is being fetched.',
+            },
+            {
+                content: '{ show: boolean, variant: SkeletonVariant }',
+                hintText:
+                    'Object with show (required boolean) and variant (required - pulse or shimmer)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'legends',
+                hintText:
+                    'Optional array of custom legend items with titles and optional totals. Used with stackedLegends to display rich legend information. Each item has a title (required) and optional total string.',
+            },
+            {
+                content: '{ title: string; total?: string }[]',
+                hintText:
+                    'Array of objects with title (required) and optional total value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'CustomizedDot',
+                hintText:
+                    'Optional custom render function for scatter chart data points. Receives dot props (cx, cy, value, payload) and must return an SVG element. Useful for custom shapes, conditional colors, or animations.',
+            },
+            {
+                content: '(props: DotItemDotProps) => ReactElement<SVGElement>',
+                hintText:
+                    'Function that receives dot properties and returns an SVG element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'lineSeriesKeys',
+                hintText:
+                    'Optional array of data series keys to render as lines in LINE_BAR chart type. Series not in this array render as bars. Useful for mixed line/bar visualizations.',
+            },
+            {
+                content: 'string[]',
+                hintText:
+                    'Array of data series keys to render as lines (others become bars)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'tooltip',
+                hintText:
+                    'Optional configuration for tooltip position and behavior. Controls fixed position and whether tooltip can extend beyond chart boundaries.',
+            },
+            {
+                content:
+                    '{ position?: { x?: number; y?: number }; allowEscapeViewBox?: { x?: boolean; y?: boolean } }',
+                hintText:
+                    'Object with optional position (fixed coordinates) and allowEscapeViewBox (overflow control)',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
+
+## Axis Configuration
+
+The `xAxis` and `yAxis` props accept configuration objects with extensive customization options:
+
+### Basic Axis Config
+
+```tsx
+xAxis={{
+    label: 'Month',
+    type: AxisType.DATE_TIME,
+    showLabel: true,
+    show: true,
+}}
+
+yAxis={{
+    label: 'Revenue',
+    type: AxisType.CURRENCY,
+    showLabel: true,
+}}
+```
+
+### AxisIntervalType
+
+Controls how axis labels are spaced when there are too many to fit:
+
+**`PRESERVE_START`** - Keep first label, hide overlapping others
+
+**`PRESERVE_END`** - Keep last label, hide overlapping others
+
+**`PRESERVE_START_END`** - Keep first and last, hide middle overlaps
+
+```tsx
+xAxis={{
+    interval: AxisIntervalType.PRESERVE_START_END,
+}}
+```
+
+### tickFormatter
+
+Custom function to format tick values:
+
+```tsx
+yAxis={{
+    tickFormatter: (value) => `$${value.toLocaleString()}`,
+}}
+
+xAxis={{
+    type: AxisType.DATE_TIME,
+    tickFormatter: (timestamp) => new Date(timestamp).toLocaleDateString(),
+}}
+```
+
+### customTick
+
+Custom React component to render tick marks:
+
+```tsx
+const CustomTick = ({ x, y, payload }) => (
+    <text x={x} y={y} dy={16} fill="#666" fontSize={12}>
+        {payload.value}
+    </text>
+)
+
+xAxis={{
+    customTick: CustomTick,
+}}
+```
+
+### Date Formatting Options (DATE_TIME type)
+
+Available options when using `type: AxisType.DATE_TIME`:
+
+**`dateOnly`** - Show only date (no time)
+
+**`timeOnly`** - Show only time (no date)
+
+**`useUTC`** - Use UTC timezone
+
+**`formatString`** - Custom format string (e.g., "YYYY-MM-DD")
+
+**`showYear`** - Always include year
+
+**`smartDateTimeFormat`** - Auto-alternate between date and time
+
+```tsx
+xAxis={{
+    type: AxisType.DATE_TIME,
+    dateOnly: true,
+    showYear: false,
+    smartDateTimeFormat: true,
+}}
+```
+
+### Tick Control
+
+```tsx
+xAxis={{
+    // Specific tick values to display
+    ticks: [0, 25, 50, 75, 100],
+
+    // Auto-generate consistent ticks
+    autoConsistentTicks: true,
+    maxTicks: 8,
+}}
+```
 
 ## Sankey Chart Features
 

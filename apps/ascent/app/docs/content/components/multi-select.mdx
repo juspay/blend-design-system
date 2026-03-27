@@ -827,6 +827,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'MultiSelect.multiSelectGroupPosition',
+                hintText:
+                    'Optional positioning string for when MultiSelect is used within a button group. Controls border radius adjustments for proper visual grouping. "left" for the leftmost item, "right" for the rightmost item, "center" for middle items. If not provided, uses default border radius.',
+            },
+            {
+                content: "'center' | 'left' | 'right'",
+                hintText:
+                    'String indicating position within a button group for border radius adjustments',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'MultiSelectMenuGroupType.groupLabel',
                 hintText:
                     'Optional string label displayed above the menu items in this group. Provides a heading or category name for organizing related items (e.g., "Frontend", "Backend", "Tools"). The label is styled distinctly from menu items.',

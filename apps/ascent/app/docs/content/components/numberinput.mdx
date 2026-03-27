@@ -276,6 +276,19 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'NumberInput.preventNegative',
+                hintText:
+                    'When true, prevents the input from accepting negative values. The down stepper button is disabled at 0, and negative values cannot be entered via keyboard. Useful for quantities, counts, and other non-negative numeric values. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true prevents negative values, false allows negative values',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"

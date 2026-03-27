@@ -289,19 +289,6 @@ function MyComponent() {
         ],
         [
             {
-                content: 'SingleSelect.collisionBoundary',
-                hintText:
-                    'Optional reference to DOM element(s) that define collision boundaries for the dropdown positioning. The dropdown will automatically reposition itself to stay within these boundaries. Can be a single Element, null, or an array of Elements. Useful for keeping dropdowns within specific containers or avoiding overlap with sidebars and other UI elements. When not provided, the viewport is used as the default boundary.',
-            },
-            {
-                content: 'Element | null | Array<Element | null>',
-                hintText:
-                    'Single element, array of elements, or null for collision boundaries',
-            },
-            { content: '' },
-        ],
-        [
-            {
                 content: 'SingleSelect.minMenuWidth',
                 hintText: 'Minimum width of the dropdown menu in pixels',
             },
@@ -487,6 +474,32 @@ function MyComponent() {
             { content: 'string', hintText: 'string' },
             { content: '' },
             { content: '"Specify"' },
+        ],
+        [
+            {
+                content: 'SingleSelect.singleSelectGroupPosition',
+                hintText:
+                    'Optional positioning string for when SingleSelect is used within a button group. Controls border radius adjustments for the group context. "left" removes right border radius, "center" removes both left and right border radius, "right" removes left border radius. Useful for creating cohesive button group appearances.',
+            },
+            {
+                content: "'center' | 'left' | 'right'",
+                hintText: 'String indicating position within a button group',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.allowDeselect',
+                hintText:
+                    'When true, allows users to deselect the currently selected option by clicking on it again. When false, clicking the selected option keeps it selected. Useful for scenarios where users may want to clear their selection without choosing another option. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true allows deselecting by clicking again, false prevents deselection',
+            },
+            { content: '' },
+            { content: 'false' },
         ],
         [
             {
