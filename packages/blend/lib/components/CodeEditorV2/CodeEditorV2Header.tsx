@@ -3,7 +3,29 @@ import { Check, Copy } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
 import { ButtonSize, ButtonSubType, ButtonType } from '../Button/types'
+import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
 import { CodeEditorV2HeaderProps } from './codeEditorV2.types'
+
+function formatHeaderSpacing(value: string | number | undefined): string {
+    if (value === undefined || value === null) {
+        return '0'
+    }
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return `${value}px`
+    }
+    return String(value)
+}
+
+/** Lucide `size` expects a number; mirror CodeEditor header parsing. */
+function headerIconWidthToPx(
+    width: CodeEditorV2Tokens['header']['icon']['width']
+): number {
+    if (typeof width === 'number' && Number.isFinite(width)) {
+        return width
+    }
+    const parsed = parseInt(String(width ?? '16'), 10)
+    return Number.isFinite(parsed) ? parsed : 16
+}
 
 export const CodeEditorV2Header = ({
     title,
@@ -17,20 +39,19 @@ export const CodeEditorV2Header = ({
     const titleId = useId()
     const headerLabel = title?.trim()
 
-    const headerPaddingX =
-        typeof tokens.header.paddingLeft === 'number'
-            ? `${tokens.header.paddingLeft}px`
-            : tokens.header.paddingLeft
-
-    const headerPaddingY =
-        typeof tokens.header.paddingBottom === 'number'
-            ? `${tokens.header.paddingBottom}px`
-            : tokens.header.paddingBottom
+    const headerPadding = [
+        formatHeaderSpacing(tokens.header.paddingTop),
+        formatHeaderSpacing(tokens.header.paddingRight),
+        formatHeaderSpacing(tokens.header.paddingBottom),
+        formatHeaderSpacing(tokens.header.paddingLeft),
+    ].join(' ')
 
     const headerGap =
         typeof tokens.header.gap === 'number'
             ? `${tokens.header.gap}px`
             : tokens.header.gap
+
+    const headerIconPx = headerIconWidthToPx(tokens.header.icon.width)
 
     return (
         <Block
@@ -41,7 +62,7 @@ export const CodeEditorV2Header = ({
             display="flex"
             justifyContent="space-between"
             alignItems="center"
-            padding={`${headerPaddingY} ${headerPaddingX}`}
+            padding={headerPadding}
             backgroundColor={tokens.header.backgroundColor}
             borderBottom={tokens.header.borderBottom}
         >
@@ -89,7 +110,11 @@ export const CodeEditorV2Header = ({
                     subType={ButtonSubType.ICON_ONLY}
                     size={ButtonSize.SMALL}
                     leadingIcon={
-                        isCopied ? <Check size={14} /> : <Copy size={14} />
+                        isCopied ? (
+                            <Check size={headerIconPx} />
+                        ) : (
+                            <Copy size={headerIconPx} />
+                        )
                     }
                 />
             )}

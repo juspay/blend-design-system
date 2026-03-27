@@ -216,7 +216,7 @@ export function MonacoEditorWrapper({
                 console.warn('Failed to initialise Monaco theme:', err)
             }
         },
-        [editorTheme]
+        [editorTheme, tokens.theme]
     )
 
     // Keep Monaco theme in sync when tokens/theme change after mount

@@ -1,5 +1,6 @@
 import type * as Monaco from 'monaco-editor'
 import type { CodeEditorV2Tokens } from '../codeEditorV2.tokens'
+import { MonacoTheme } from '../codeEditorV2.types'
 import { backupColor } from '../utils'
 const MONACO_COLOR_FALLBACK = '#24292F'
 
@@ -68,8 +69,12 @@ export function createEditorTheme(
         foreground: toMonacoColor(syntax[syntaxKey].color),
         ...(fontStyle && { fontStyle }),
     }))
+
+    const base: Monaco.editor.IStandaloneThemeData['base'] =
+        tokens.theme === MonacoTheme.DARK ? 'vs-dark' : 'vs'
+
     return {
-        base: 'vs',
+        base,
         inherit: true,
         rules,
         colors: {

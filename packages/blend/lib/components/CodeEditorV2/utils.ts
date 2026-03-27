@@ -85,7 +85,10 @@ export const shouldShowLineNumbers = (
     if (showLineNumbers !== undefined) {
         return showLineNumbers
     }
-    return variant === CodeEditorV2Variant.DEFAULT
+    return (
+        variant === CodeEditorV2Variant.DEFAULT ||
+        variant === CodeEditorV2Variant.DIFF
+    )
 }
 
 /**
