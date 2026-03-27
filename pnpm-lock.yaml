@@ -592,6 +592,9 @@ importers:
             fast-glob:
                 specifier: ^3.3.3
                 version: 3.3.3
+            firebase:
+                specifier: ^11.10.0
+                version: 11.10.0
             strip-json-comments:
                 specifier: ^5.0.3
                 version: 5.0.3
