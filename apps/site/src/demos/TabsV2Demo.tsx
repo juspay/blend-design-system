@@ -45,6 +45,7 @@ const TabsV2Demo = () => {
     const [disable, setDisable] = useState(false)
     const [showDropdown, setShowDropdown] = useState(true)
     const [showAddButton, setShowAddButton] = useState(true)
+    const [closableNewTabs, setClosableNewTabs] = useState(false)
     const [skeletonVariant, setSkeletonVariant] = useState<
         'pulse' | 'wave' | 'shimmer'
     >('pulse')
@@ -79,6 +80,17 @@ const TabsV2Demo = () => {
         setActiveTab(value)
     }
 
+    const handleTabClose = (tabValue: string) => {
+        setTabs((prev) => {
+            const updated = prev.filter((tab) => tab.value !== tabValue)
+            setActiveTab((prevActive) => {
+                if (prevActive !== tabValue) return prevActive
+                return updated[updated.length - 1]?.value ?? 'overview'
+            })
+            return updated
+        })
+    }
+
     const dropdownItems = [
         { items: tabs.map((tab) => ({ value: tab.value, label: tab.label })) },
     ]
@@ -97,7 +109,19 @@ const TabsV2Demo = () => {
             <div className="flex items-center gap-2">
                 <TabsV2List>
                     {tabs.map((tab) => (
-                        <TabsV2Trigger key={tab.value} value={tab.value}>
+                        <TabsV2Trigger
+                            key={tab.value}
+                            value={tab.value}
+                            closable={
+                                closableNewTabs && tab.value.startsWith('new-')
+                            }
+                            onClose={
+                                closableNewTabs &&
+                                tab.value.startsWith('new-')
+                                    ? () => handleTabClose(tab.value)
+                                    : undefined
+                            }
+                        >
                             {tab.label}
                         </TabsV2Trigger>
                     ))}
@@ -234,6 +258,11 @@ const TabsV2Demo = () => {
                     label="Show Add Button"
                     checked={showAddButton}
                     onChange={() => setShowAddButton((prev) => !prev)}
+                />
+                <Switch
+                    label="Closable New Tabs"
+                    checked={closableNewTabs}
+                    onChange={() => setClosableNewTabs((prev) => !prev)}
                 />
             </div>
 

@@ -8,6 +8,18 @@ export const processTabsWithConcatenation = (
     const contentGroups = new Map<ReactNode, TabsV2TabItem[]>()
     const processedDynamic: TabsV2TabItem[] = []
 
+    // Group tabs by the actual content node reference.
+    // (This matches the v1 approach which relies on referential equality.)
+    tabs.forEach((tab) => {
+        const key = tab.content
+        const existing = contentGroups.get(key)
+        if (existing) {
+            existing.push(tab)
+        } else {
+            contentGroups.set(key, [tab])
+        }
+    })
+
     contentGroups.forEach((groupItems) => {
         if (groupItems.length > 1) {
             const limitedItems = groupItems.slice(0, 3)
@@ -94,7 +106,7 @@ export const mergeItemsWithDefaultOrdering = (
             const isNewItem = newlyAddedTabs.has(item.value)
             return {
                 ...item,
-                ...(isNewItem && { isNew: true }),
+                ...(isNewItem && { newItem: true }),
             }
         }
         return { ...item }
@@ -112,13 +124,14 @@ export const mergeItemsWithDefaultOrdering = (
 export const applyTabItemDisplayDefaults = (
     items: TabsV2TabItem[],
     disabled: boolean,
-    loading: boolean,
+    showSkeleton: boolean,
     skeletonVariant: SkeletonVariant
 ): TabsV2TabItem[] => {
     return items.map((item) => ({
         ...item,
         disabled: item.disabled || disabled,
-        loading: item.showSkeleton !== undefined ? item.showSkeleton : loading,
+        showSkeleton:
+            item.showSkeleton !== undefined ? item.showSkeleton : showSkeleton,
         skeletonVariant:
             item.skeletonVariant !== undefined
                 ? item.skeletonVariant

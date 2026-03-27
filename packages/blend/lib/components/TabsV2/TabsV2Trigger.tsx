@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
+import { X } from 'lucide-react'
 import { type TabsV2TriggerProps, TabsV2Variant } from './tabsV2.types'
 import { StyledTabsTrigger, TabsV2IconContainer } from './StyledTabsV2'
 import type { TabsV2TokensType } from './tabsV2.tokens'
@@ -7,6 +8,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Skeleton from '../Skeleton/Skeleton'
 import { getSkeletonState } from '../Skeleton/utils'
 import { useTabsV2Context } from './tabsV2.context'
+import Block from '../Primitives/Block/Block'
 
 const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
     (
@@ -19,6 +21,8 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
             leftSlot,
             rightSlot,
             disabled: disabledProp,
+            closable = false,
+            onClose,
             isOverlay = false,
             tabsGroupId = '',
             showSkeleton: showSkeletonProp,
@@ -36,13 +40,37 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
 
         const tabsToken = useResponsiveTokens<TabsV2TokensType>('TABSV2')
         const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
+        const closeButtonTokens = tabsToken.trigger.closeButton
+        const closeButtonSize = closeButtonTokens.width
+        const closeIconSize =
+            typeof closeButtonSize === 'number'
+                ? closeButtonSize
+                : Number.parseInt(String(closeButtonSize), 10) || 16
 
         const isDisabled = shouldShowSkeleton ? true : disabled
+        const closeButtonBackgroundColor = isDisabled
+            ? closeButtonTokens.backgroundColor.disabled
+            : closeButtonTokens.backgroundColor.default
 
         const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
 
         const { isActive: _isActive, style, ...domProps } = props
         void _isActive
+
+        const handleCloseClick = useCallback(
+            (e: React.MouseEvent) => {
+                e.stopPropagation()
+                e.preventDefault()
+                if (e.nativeEvent && 'stopImmediatePropagation' in e.nativeEvent) {
+                    ;(e.nativeEvent as unknown as { stopImmediatePropagation: () => void }).stopImmediatePropagation()
+                }
+
+                if (!isDisabled) {
+                    onClose?.()
+                }
+            },
+            [onClose, isDisabled]
+        )
 
         const triggerContent = (
             <StyledTabsTrigger
@@ -133,6 +161,48 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                         }
                     >
                         {rightSlot}
+                    </TabsV2IconContainer>
+                )}
+
+                {closable && (
+                    <TabsV2IconContainer
+                        data-element="close-slot"
+                        $tabsToken={tabsToken}
+                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                    >
+                        <Block
+                            as="span"
+                            role="button"
+                            aria-label={`Close ${children ?? 'tab'}`}
+                            tabIndex={isDisabled ? -1 : 0}
+                            onClick={handleCloseClick}
+                            onKeyDown={(e: React.KeyboardEvent) => {
+                                if (isDisabled) return
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    onClose?.()
+                                }
+                            }}
+                            width={closeButtonSize}
+                            height={closeButtonSize}
+                            borderRadius={closeButtonTokens.borderRadius}
+                            backgroundColor={closeButtonBackgroundColor}
+                            cursor="pointer"
+                            _hover={{
+                                backgroundColor:
+                                    closeButtonTokens.backgroundColor.hover,
+                            }}
+                            _active={{
+                                backgroundColor:
+                                    closeButtonTokens.backgroundColor.active,
+                            }}
+                        >
+                            <X
+                                size={closeIconSize}
+                                aria-hidden="true"
+                            />
+                        </Block>
                     </TabsV2IconContainer>
                 )}
             </StyledTabsTrigger>

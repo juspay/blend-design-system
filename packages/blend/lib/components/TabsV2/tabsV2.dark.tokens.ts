@@ -247,6 +247,16 @@ export const getTabsV2DarkTokens = (
                         [TabsV2Size.LG]: foundationToken.font.weight[500],
                     },
                 },
+                closeButton: {
+                    width: foundationToken.unit[16],
+                    borderRadius: foundationToken.border.radius.full,
+                    backgroundColor: {
+                        default: 'transparent',
+                        hover: foundationToken.colors.gray[700],
+                        active: foundationToken.colors.gray[600],
+                        disabled: 'transparent',
+                    },
+                },
                 outline: 'none',
                 transition: 'color 0.2s ease-in-out',
             },
@@ -493,6 +503,16 @@ export const getTabsV2DarkTokens = (
                     fontWeight: {
                         [TabsV2Size.MD]: foundationToken.font.weight[500],
                         [TabsV2Size.LG]: foundationToken.font.weight[500],
+                    },
+                },
+                closeButton: {
+                    width: foundationToken.unit[16],
+                    borderRadius: foundationToken.border.radius.full,
+                    backgroundColor: {
+                        default: 'transparent',
+                        hover: foundationToken.colors.gray[700],
+                        active: foundationToken.colors.gray[600],
+                        disabled: 'transparent',
                     },
                 },
                 outline: 'none',

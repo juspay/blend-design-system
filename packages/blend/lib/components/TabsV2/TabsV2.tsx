@@ -83,7 +83,7 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
                         }),
                         ...(isTabsTrigger && {
                             showSkeleton:
-                                'loading' in existingProps
+                                'showSkeleton' in existingProps
                                     ? existingProps.showSkeleton
                                     : showSkeleton,
                             skeletonVariant:

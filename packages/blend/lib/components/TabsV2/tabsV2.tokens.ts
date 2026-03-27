@@ -81,6 +81,13 @@ export type TabsV2TokensType = {
                 [key in TabsV2Size]: CSSObject['fontWeight']
             }
         }
+        closeButton: {
+            width: CSSObject['width']
+            borderRadius: CSSObject['borderRadius']
+            backgroundColor: {
+                [key in TabsV2State]: CSSObject['backgroundColor']
+            }
+        }
         outline: CSSObject['outline']
         transition: CSSObject['transition']
     }

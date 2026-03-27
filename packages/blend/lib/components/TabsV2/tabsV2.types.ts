@@ -25,7 +25,7 @@ export type TabsV2TabItem = {
     skeletonVariant?: SkeletonVariant
     leftSlot?: ReactNode
     rightSlot?: ReactNode
-    isNew?: boolean
+    newItem?: boolean
 }
 
 export type TabsV2Props = ComponentPropsWithoutRef<
@@ -50,7 +50,7 @@ export type TabsV2ListProps = ComponentPropsWithoutRef<
     expanded?: boolean
     fitContent?: boolean
     disabled?: boolean
-    loading?: boolean
+    showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     stickyHeader?: boolean
     offsetTop?: number
@@ -66,6 +66,12 @@ export type TabsV2TriggerProps = ComponentPropsWithoutRef<
     rightSlot?: ReactNode
     children: string | number
     disabled?: boolean
+    /**
+     * When true, renders a close (X) affordance inside the trigger.
+     * Useful for "new/temporary" tabs that can be removed.
+     */
+    closable?: boolean
+    onClose?: () => void
     isActive?: boolean
     isOverlay?: boolean
     tabsGroupId?: string

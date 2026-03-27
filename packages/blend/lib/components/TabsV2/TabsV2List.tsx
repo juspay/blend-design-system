@@ -7,7 +7,11 @@ import {
     useEffect,
     useRef,
 } from 'react'
-import { type TabsV2ListProps, TabsV2Variant } from './tabsV2.types'
+import {
+    type TabsV2ListProps,
+    type TabsV2TriggerProps,
+    TabsV2Variant,
+} from './tabsV2.types'
 import { StyledTabsList } from './StyledTabsV2'
 import type { TabsV2TokensType } from './tabsV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -26,7 +30,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
             expanded: expandedProp,
             fitContent: fitContentProp,
             disabled: disabledProp,
-            loading: loadingProp,
+            showSkeleton: showSkeletonProp,
             skeletonVariant: skeletonVariantProp,
             stickyHeader: stickyHeaderProp,
             offsetTop: offsetTopProp,
@@ -41,7 +45,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
         const expanded = expandedProp ?? context.expanded ?? false
         const fitContent = fitContentProp ?? context.fitContent ?? false
         const disabled = disabledProp ?? context.disabled ?? false
-        const loading = loadingProp ?? context.showSkeleton ?? false
+        const showSkeleton = showSkeletonProp ?? context.showSkeleton ?? false
         const skeletonVariant =
             skeletonVariantProp ?? context.skeletonVariant ?? 'pulse'
         const stickyHeader = stickyHeaderProp ?? context.stickyHeader ?? false
@@ -62,18 +66,18 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
         const isScrollingRef = useRef(false)
         const hasMountedRef = useRef(false)
 
-        const hasAnyLoading = useMemo(() => {
-            if (loading) return true
+        const hasAnySkeleton = useMemo(() => {
+            if (showSkeleton) return true
 
             return React.Children.toArray(children).some((child) => {
                 if (!React.isValidElement(child)) return false
                 const props = child.props as Record<string, unknown>
-                return props.loading === true
+                return props.showSkeleton === true
             })
-        }, [children, loading])
+        }, [children, showSkeleton])
 
         const updateIndicator = useCallback(() => {
-            if (variant !== TabsV2Variant.UNDERLINE || hasAnyLoading) {
+            if (variant !== TabsV2Variant.UNDERLINE || hasAnySkeleton) {
                 return
             }
 
@@ -97,13 +101,13 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 '--tabs-indicator-width',
                 `${tabWidth}`
             )
-        }, [activeTab, variant, hasAnyLoading])
+        }, [activeTab, variant, hasAnySkeleton])
 
         useEffect(() => {
             if (
                 !activeTab ||
                 variant !== TabsV2Variant.UNDERLINE ||
-                hasAnyLoading
+                hasAnySkeleton
             ) {
                 return
             }
@@ -139,7 +143,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 window.removeEventListener('resize', updateIndicator)
                 resizeObserver.disconnect()
             }
-        }, [activeTab, variant, hasAnyLoading, updateIndicator])
+        }, [activeTab, variant, hasAnySkeleton, updateIndicator])
 
         useEffect(() => {
             if (!activeTab || isScrollingRef.current) {
@@ -219,10 +223,6 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 if (!React.isValidElement(child)) return child
 
                 const existingProps = child.props as Record<string, unknown>
-                const childDisabled =
-                    'disabled' in existingProps
-                        ? (existingProps.disabled as boolean | undefined)
-                        : undefined
                 const childValue =
                     'value' in existingProps
                         ? (existingProps.value as string)
@@ -233,28 +233,42 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                     (child.type as { displayName?: string }).displayName ===
                         'TabsV2Trigger'
 
-                const childProps = {
-                    ...existingProps,
-                    disabled: childDisabled || disabled,
-                    variant,
-                    size,
-                    isActive: childValue === activeTab,
-                    tabsGroupId,
-                    ...(isTabsTrigger && {
-                        loading:
-                            'loading' in existingProps
-                                ? existingProps.loading
-                                : loading,
+                // Important: only clone/inject props for actual TabsV2Trigger children.
+                // For any other children, return as-is to avoid React warnings
+                // (unknown props forwarded to DOM) and avoid attaching refs to
+                // non-ref-forwarding components.
+                if (!isTabsTrigger) return child
+
+                const childDisable =
+                    'disable' in existingProps
+                        ? (existingProps.disable as boolean | undefined)
+                        : 'disabled' in existingProps
+                          ? (existingProps.disabled as boolean | undefined)
+                          : undefined
+
+                return React.cloneElement(
+                    child as React.ReactElement<TabsV2TriggerProps>,
+                    {
+                        ...existingProps,
+                        disabled: childDisable || disabled,
+                        variant,
+                        size,
+                        isActive: childValue === activeTab,
+                        tabsGroupId,
+                        showSkeleton:
+                            'showSkeleton' in existingProps
+                                ? (existingProps.showSkeleton as boolean)
+                                : showSkeleton,
                         skeletonVariant:
                             'skeletonVariant' in existingProps
-                                ? existingProps.skeletonVariant
+                                ? (existingProps.skeletonVariant as
+                                      | TabsV2TriggerProps['skeletonVariant']
+                                      | undefined)
                                 : skeletonVariant,
-                    }),
-                    ref: (node: HTMLButtonElement) =>
-                        registerTabRef(node, childValue),
-                }
-
-                return React.cloneElement(child, childProps)
+                        ref: (node: HTMLButtonElement | null) =>
+                            registerTabRef(node, childValue),
+                    } as any
+                )
             })
         }
 
@@ -270,7 +284,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                         ? stickyHeaderBackground
                         : 'transparent',
                     borderBottom:
-                        variant === TabsV2Variant.UNDERLINE && !hasAnyLoading
+                        variant === TabsV2Variant.UNDERLINE && !hasAnySkeleton
                             ? tabsToken.borderBottom[variant]
                             : 'none',
                     boxShadow: stickyHeader
@@ -303,7 +317,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                             $expanded={expanded}
                             $fitContent={fitContent}
                             $tabsToken={tabsToken}
-                            $hideIndicator={hasAnyLoading}
+                            $hideIndicator={hasAnySkeleton}
                             style={{
                                 display: 'flex',
                                 minWidth: 'max-content',
