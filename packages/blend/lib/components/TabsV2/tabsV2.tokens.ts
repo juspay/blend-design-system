@@ -8,6 +8,7 @@ import { getTabsV2DarkTokens } from './tabsV2.dark.tokens'
 
 export type TabsV2TokensType = {
     gap: CSSObject['gap']
+    width: CSSObject['width']
     backgroundColor: {
         [key in TabsV2Variant]: {
             [key in TabsV2State]: CSSObject['backgroundColor']
@@ -34,6 +35,8 @@ export type TabsV2TokensType = {
     borderBottom: {
         [key in TabsV2Variant]: CSSObject['borderBottom']
     }
+    outline: CSSObject['outline']
+    transition: CSSObject['transition']
     container: {
         backgroundColor: {
             [key in TabsV2Variant]: CSSObject['backgroundColor']
@@ -59,6 +62,11 @@ export type TabsV2TokensType = {
         activeIndicator: {
             height: CSSObject['height']
             color: CSSObject['color']
+            position: {
+                bottom: CSSObject['bottom']
+            }
+            transition: CSSObject['transition']
+            zIndex: CSSObject['zIndex']
         }
         text: {
             color: {
@@ -73,6 +81,8 @@ export type TabsV2TokensType = {
                 [key in TabsV2Size]: CSSObject['fontWeight']
             }
         }
+        outline: CSSObject['outline']
+        transition: CSSObject['transition']
     }
     chrome: {
         stickyHeaderShadow: CSSObject['boxShadow']

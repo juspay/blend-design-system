@@ -1,12 +1,12 @@
 import React, { forwardRef } from 'react'
 import { motion } from 'framer-motion'
 import { type TabsV2TriggerProps, TabsV2Variant } from './tabsV2.types'
-import { StyledTabsV2Trigger, TabsV2IconContainer } from './StyledTabsV2'
+import { StyledTabsTrigger, TabsV2IconContainer } from './StyledTabsV2'
 import type { TabsV2TokensType } from './tabsV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Skeleton from '../Skeleton/Skeleton'
 import { getSkeletonState } from '../Skeleton/utils'
-import { useTabsV2Chrome } from './useTabsV2Chrome'
+import { useTabsV2Context } from './tabsV2.context'
 
 const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
     (
@@ -18,7 +18,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
             children,
             leftSlot,
             rightSlot,
-            disable: disableProp,
+            disabled: disabledProp,
             isOverlay = false,
             tabsGroupId = '',
             showSkeleton: showSkeletonProp,
@@ -27,17 +27,17 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
         },
         ref
     ) => {
-        const chrome = useTabsV2Chrome()
-        const variant = variantProp ?? chrome.variant
-        const size = sizeProp ?? chrome.size
-        const disable = disableProp ?? chrome.disable
-        const showSkeleton = showSkeletonProp ?? chrome.showSkeleton
-        const skeletonVariant = skeletonVariantProp ?? chrome.skeletonVariant
+        const context = useTabsV2Context()
+        const variant = variantProp ?? context.variant
+        const size = sizeProp ?? context.size
+        const disabled = disabledProp ?? context.disabled
+        const showSkeleton = showSkeletonProp ?? context.showSkeleton
+        const skeletonVariant = skeletonVariantProp ?? context.skeletonVariant
 
         const tabsToken = useResponsiveTokens<TabsV2TokensType>('TABSV2')
         const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
-        const isDisabled = shouldShowSkeleton ? true : disable
+        const isDisabled = shouldShowSkeleton ? true : disabled
 
         const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
 
@@ -45,7 +45,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
         void _isActive
 
         const triggerContent = (
-            <StyledTabsV2Trigger
+            <StyledTabsTrigger
                 data-status={isDisabled ? 'disabled' : 'enabled'}
                 data-id={children ?? ''}
                 ref={ref}
@@ -71,7 +71,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     variant !== TabsV2Variant.UNDERLINE &&
                     !shouldShowSkeleton && (
                         <motion.span
-                            layoutId={`tabs-v2-background-indicator-${tabsGroupId}`}
+                            layoutId={`tabs-background-indicator-${tabsGroupId}`}
                             style={{
                                 position: 'absolute',
                                 inset: 0,
@@ -135,7 +135,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                         {rightSlot}
                     </TabsV2IconContainer>
                 )}
-            </StyledTabsV2Trigger>
+            </StyledTabsTrigger>
         )
 
         if (shouldShowSkeleton) {

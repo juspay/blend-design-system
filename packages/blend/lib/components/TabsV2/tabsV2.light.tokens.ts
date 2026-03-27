@@ -8,6 +8,9 @@ export const getTabsV2LightTokens = (
     return {
         sm: {
             gap: foundationToken.unit[8],
+            width: '100%',
+            outline: 'none',
+            transition: 'color 0.2s ease-in-out',
             backgroundColor: {
                 [TabsV2Variant.UNDERLINE]: {
                     default: 'transparent',
@@ -199,6 +202,12 @@ export const getTabsV2LightTokens = (
                 activeIndicator: {
                     height: foundationToken.border.width[2],
                     color: foundationToken.colors.gray[700],
+                    position: {
+                        bottom: foundationToken.unit[0],
+                    },
+                    transition:
+                        'scale 250ms cubic-bezier(0.4, 0, 0.2, 1), translate 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    zIndex: 2,
                 },
                 text: {
                     color: {
@@ -238,6 +247,8 @@ export const getTabsV2LightTokens = (
                         [TabsV2Size.LG]: foundationToken.font.weight[500],
                     },
                 },
+                outline: 'none',
+                transition: 'color 0.2s ease-in-out',
             },
             chrome: {
                 stickyHeaderShadow: foundationToken.shadows.xs,
@@ -245,6 +256,9 @@ export const getTabsV2LightTokens = (
         },
         lg: {
             gap: foundationToken.unit[8],
+            width: '100%',
+            outline: 'none',
+            transition: 'color 0.2s ease-in-out',
             backgroundColor: {
                 [TabsV2Variant.UNDERLINE]: {
                     default: 'transparent',
@@ -436,6 +450,12 @@ export const getTabsV2LightTokens = (
                 activeIndicator: {
                     height: foundationToken.border.width[2],
                     color: foundationToken.colors.gray[700],
+                    position: {
+                        bottom: foundationToken.unit[0],
+                    },
+                    transition:
+                        'scale 250ms cubic-bezier(0.4, 0, 0.2, 1), translate 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    zIndex: 2,
                 },
                 text: {
                     color: {
@@ -475,6 +495,8 @@ export const getTabsV2LightTokens = (
                         [TabsV2Size.LG]: foundationToken.font.weight[500],
                     },
                 },
+                outline: 'none',
+                transition: 'color 0.2s ease-in-out',
             },
             chrome: {
                 stickyHeaderShadow: foundationToken.shadows.xs,

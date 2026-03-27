@@ -8,13 +8,13 @@ import {
     useRef,
 } from 'react'
 import { type TabsV2ListProps, TabsV2Variant } from './tabsV2.types'
-import { StyledTabsV2List } from './StyledTabsV2'
+import { StyledTabsList } from './StyledTabsV2'
 import type { TabsV2TokensType } from './tabsV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Block from '../Primitives/Block/Block'
 import { useTheme } from '../../context/ThemeContext'
 import { Theme } from '../../context/theme.enum'
-import { useTabsV2Chrome } from './useTabsV2Chrome'
+import { useTabsV2Context } from './tabsV2.context'
 import { calculateTabIndicatorPosition } from './tabsV2.utils'
 
 const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
@@ -25,8 +25,8 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
             size: sizeProp,
             expanded: expandedProp,
             fitContent: fitContentProp,
-            disable: disableProp,
-            showSkeleton: showSkeletonProp,
+            disabled: disabledProp,
+            loading: loadingProp,
             skeletonVariant: skeletonVariantProp,
             stickyHeader: stickyHeaderProp,
             offsetTop: offsetTopProp,
@@ -34,18 +34,19 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
         },
         ref
     ) => {
-        const chrome = useTabsV2Chrome()
-        const variant = variantProp ?? chrome.variant ?? TabsV2Variant.UNDERLINE
-        const size = sizeProp ?? chrome.size
-        const expanded = expandedProp ?? chrome.expanded ?? false
-        const fitContent = fitContentProp ?? chrome.fitContent ?? false
-        const disable = disableProp ?? chrome.disable ?? false
-        const showSkeleton = showSkeletonProp ?? chrome.showSkeleton ?? false
+        const context = useTabsV2Context()
+        const variant =
+            variantProp ?? context.variant ?? TabsV2Variant.UNDERLINE
+        const size = sizeProp ?? context.size
+        const expanded = expandedProp ?? context.expanded ?? false
+        const fitContent = fitContentProp ?? context.fitContent ?? false
+        const disabled = disabledProp ?? context.disabled ?? false
+        const loading = loadingProp ?? context.showSkeleton ?? false
         const skeletonVariant =
-            skeletonVariantProp ?? chrome.skeletonVariant ?? 'pulse'
-        const stickyHeader = stickyHeaderProp ?? chrome.stickyHeader ?? false
-        const offsetTop = offsetTopProp ?? chrome.offsetTop ?? 0
-        const activeTab = chrome.activeTab ?? ''
+            skeletonVariantProp ?? context.skeletonVariant ?? 'pulse'
+        const stickyHeader = stickyHeaderProp ?? context.stickyHeader ?? false
+        const offsetTop = offsetTopProp ?? context.offsetTop ?? 0
+        const activeTab = context.activeTab ?? ''
 
         const tabsToken = useResponsiveTokens<TabsV2TokensType>('TABSV2')
         const { theme, foundationTokens } = useTheme()
@@ -61,18 +62,18 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
         const isScrollingRef = useRef(false)
         const hasMountedRef = useRef(false)
 
-        const hasAnyChildSkeleton = useMemo(() => {
-            if (showSkeleton) return true
+        const hasAnyLoading = useMemo(() => {
+            if (loading) return true
 
             return React.Children.toArray(children).some((child) => {
                 if (!React.isValidElement(child)) return false
                 const props = child.props as Record<string, unknown>
-                return props.showSkeleton === true
+                return props.loading === true
             })
-        }, [children, showSkeleton])
+        }, [children, loading])
 
         const updateIndicator = useCallback(() => {
-            if (variant !== TabsV2Variant.UNDERLINE || hasAnyChildSkeleton) {
+            if (variant !== TabsV2Variant.UNDERLINE || hasAnyLoading) {
                 return
             }
 
@@ -96,13 +97,13 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 '--tabs-indicator-width',
                 `${tabWidth}`
             )
-        }, [activeTab, variant, hasAnyChildSkeleton])
+        }, [activeTab, variant, hasAnyLoading])
 
         useEffect(() => {
             if (
                 !activeTab ||
                 variant !== TabsV2Variant.UNDERLINE ||
-                hasAnyChildSkeleton
+                hasAnyLoading
             ) {
                 return
             }
@@ -138,7 +139,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 window.removeEventListener('resize', updateIndicator)
                 resizeObserver.disconnect()
             }
-        }, [activeTab, variant, hasAnyChildSkeleton, updateIndicator])
+        }, [activeTab, variant, hasAnyLoading, updateIndicator])
 
         useEffect(() => {
             if (!activeTab || isScrollingRef.current) {
@@ -218,9 +219,9 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 if (!React.isValidElement(child)) return child
 
                 const existingProps = child.props as Record<string, unknown>
-                const childDisable =
-                    'disable' in existingProps
-                        ? (existingProps.disable as boolean | undefined)
+                const childDisabled =
+                    'disabled' in existingProps
+                        ? (existingProps.disabled as boolean | undefined)
                         : undefined
                 const childValue =
                     'value' in existingProps
@@ -234,16 +235,16 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
 
                 const childProps = {
                     ...existingProps,
-                    disable: childDisable || disable,
+                    disabled: childDisabled || disabled,
                     variant,
                     size,
                     isActive: childValue === activeTab,
                     tabsGroupId,
                     ...(isTabsTrigger && {
-                        showSkeleton:
-                            'showSkeleton' in existingProps
-                                ? existingProps.showSkeleton
-                                : showSkeleton,
+                        loading:
+                            'loading' in existingProps
+                                ? existingProps.loading
+                                : loading,
                         skeletonVariant:
                             'skeletonVariant' in existingProps
                                 ? existingProps.skeletonVariant
@@ -269,8 +270,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                         ? stickyHeaderBackground
                         : 'transparent',
                     borderBottom:
-                        variant === TabsV2Variant.UNDERLINE &&
-                        !hasAnyChildSkeleton
+                        variant === TabsV2Variant.UNDERLINE && !hasAnyLoading
                             ? tabsToken.borderBottom[variant]
                             : 'none',
                     boxShadow: stickyHeader
@@ -295,7 +295,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                             width: fitContent ? 'fit-content' : '100%',
                         }}
                     >
-                        <StyledTabsV2List
+                        <StyledTabsList
                             ref={setRefs}
                             className={className}
                             $variant={variant}
@@ -303,14 +303,14 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                             $expanded={expanded}
                             $fitContent={fitContent}
                             $tabsToken={tabsToken}
-                            $hideIndicator={hasAnyChildSkeleton}
+                            $hideIndicator={hasAnyLoading}
                             style={{
                                 display: 'flex',
                                 minWidth: 'max-content',
                             }}
                         >
                             {renderChildren()}
-                        </StyledTabsV2List>
+                        </StyledTabsList>
                     </Block>
                 </Block>
             </Block>

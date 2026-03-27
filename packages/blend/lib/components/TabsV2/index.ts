@@ -2,9 +2,8 @@ export { default as TabsV2 } from './TabsV2'
 export { default as TabsV2List } from './TabsV2List'
 export { default as TabsV2Trigger } from './TabsV2Trigger'
 export { default as TabsV2Content } from './TabsV2Content'
-export { TabsV2ChromeProvider } from './tabsV2.context'
-export { useTabsV2Chrome } from './useTabsV2Chrome'
-export type { TabsV2ChromeContextValue } from './tabsV2.context'
+export { TabsV2Provider, useTabsV2Context } from './tabsV2.context'
+export type { TabsV2ContextValue } from './tabsV2.context'
 export {
     getTabsV2Tokens,
     type TabsV2TokensType,

@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { forwardRef, useState, useCallback, useMemo, useEffect } from 'react'
 import { type TabsV2Props, TabsV2Size, TabsV2Variant } from './tabsV2.types'
-import { StyledTabsV2Root } from './StyledTabsV2'
-import { TabsV2ChromeProvider } from './tabsV2.context'
-import type { TabsV2ChromeContextValue } from './tabsV2.context'
+import { StyledTabsRoot } from './StyledTabsV2'
+import { TabsV2Provider } from './tabsV2.context'
+import type { TabsV2ContextValue } from './tabsV2.context'
+import type { TabsV2TokensType } from './tabsV2.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
     (
@@ -16,7 +18,7 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
             value,
             defaultValue,
             onValueChange,
-            disable = false,
+            disabled = false,
             showSkeleton = false,
             skeletonVariant = 'pulse',
             stickyHeader = false,
@@ -29,6 +31,7 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
         const [activeTab, setActiveTab] = useState<string>(
             value || defaultValue || ''
         )
+        const tabsToken = useResponsiveTokens<TabsV2TokensType>('TABSV2')
 
         useEffect(() => {
             if (value !== undefined) {
@@ -51,9 +54,9 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
                 if (!React.isValidElement(child)) return child
 
                 const existingProps = child.props as Record<string, unknown>
-                const childDisable =
-                    'disable' in existingProps
-                        ? (existingProps.disable as boolean | undefined)
+                const childDisabled =
+                    'disabled' in existingProps
+                        ? (existingProps.disabled as boolean | undefined)
                         : undefined
 
                 const isTabsList =
@@ -69,7 +72,7 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
                 if (isTabsList || isTabsTrigger) {
                     const childProps = {
                         ...existingProps,
-                        disable: childDisable || disable,
+                        disabled: childDisabled || disabled,
                         ...(isTabsList && {
                             activeTab,
                             showSkeleton,
@@ -80,7 +83,7 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
                         }),
                         ...(isTabsTrigger && {
                             showSkeleton:
-                                'showSkeleton' in existingProps
+                                'loading' in existingProps
                                     ? existingProps.showSkeleton
                                     : showSkeleton,
                             skeletonVariant:
@@ -106,13 +109,13 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
             })
         }
 
-        const chrome = useMemo<TabsV2ChromeContextValue>(
+        const context = useMemo<TabsV2ContextValue>(
             () => ({
                 variant,
                 size,
                 expanded,
                 fitContent,
-                disable,
+                disabled,
                 showSkeleton,
                 skeletonVariant,
                 stickyHeader,
@@ -124,7 +127,7 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
                 size,
                 expanded,
                 fitContent,
-                disable,
+                disabled,
                 showSkeleton,
                 skeletonVariant,
                 stickyHeader,
@@ -134,19 +137,20 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
         )
 
         return (
-            <TabsV2ChromeProvider value={chrome}>
-                <StyledTabsV2Root
+            <TabsV2Provider value={context}>
+                <StyledTabsRoot
                     data-tabs={value ?? 'tabs'}
                     ref={ref}
                     className={className}
                     value={activeTab}
                     defaultValue={defaultValue}
                     onValueChange={handleValueChange}
+                    $tabsToken={tabsToken}
                     {...props}
                 >
                     {renderChildren(children)}
-                </StyledTabsV2Root>
-            </TabsV2ChromeProvider>
+                </StyledTabsRoot>
+            </TabsV2Provider>
         )
     }
 )

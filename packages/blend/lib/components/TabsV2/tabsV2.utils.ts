@@ -19,7 +19,6 @@ export const processTabsWithConcatenation = (
                 value: limitedItems.map((item) => item.value).join('_'),
                 label: concatenatedLabel,
                 content: limitedItems[0].content,
-                newItem: false,
             })
         } else {
             processedDynamic.push(groupItems[0])
@@ -95,7 +94,7 @@ export const mergeItemsWithDefaultOrdering = (
             const isNewItem = newlyAddedTabs.has(item.value)
             return {
                 ...item,
-                ...(isNewItem && { newItem: true }),
+                ...(isNewItem && { isNew: true }),
             }
         }
         return { ...item }
@@ -112,15 +111,14 @@ export const mergeItemsWithDefaultOrdering = (
 
 export const applyTabItemDisplayDefaults = (
     items: TabsV2TabItem[],
-    disable: boolean,
-    showSkeleton: boolean,
+    disabled: boolean,
+    loading: boolean,
     skeletonVariant: SkeletonVariant
 ): TabsV2TabItem[] => {
     return items.map((item) => ({
         ...item,
-        disable: item.disable || disable,
-        showSkeleton:
-            item.showSkeleton !== undefined ? item.showSkeleton : showSkeleton,
+        disabled: item.disabled || disabled,
+        loading: item.showSkeleton !== undefined ? item.showSkeleton : loading,
         skeletonVariant:
             item.skeletonVariant !== undefined
                 ? item.skeletonVariant

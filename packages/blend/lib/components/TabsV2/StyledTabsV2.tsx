@@ -4,20 +4,22 @@ import { TabsV2Variant, TabsV2Size } from './tabsV2.types'
 import type { TabsV2TokensType } from './tabsV2.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 
-export const StyledTabsV2Root = styled(TabsPrimitive.Root)`
-    width: 100%;
-`
-
-export const StyledTabsV2Content = styled(TabsPrimitive.Content)<{
+export const StyledTabsRoot = styled(TabsPrimitive.Root)<{
     $tabsToken: TabsV2TokensType
-}>(() => ({
-    width: '100%',
-    outline: 'none',
-    position: 'relative',
-    transition: 'all 0.2s ease-in-out',
+}>((props) => ({
+    width: props.$tabsToken.width,
 }))
 
-export const StyledTabsV2List = styled(TabsPrimitive.List)<{
+export const StyledTabsContent = styled(TabsPrimitive.Content)<{
+    $tabsToken: TabsV2TokensType
+}>((props) => ({
+    width: props.$tabsToken.width,
+    outline: props.$tabsToken.outline,
+    position: 'relative',
+    transition: props.$tabsToken.transition,
+}))
+
+export const StyledTabsList = styled(TabsPrimitive.List)<{
     $variant: TabsV2Variant
     $size: TabsV2Size
     $expanded: boolean
@@ -29,7 +31,7 @@ export const StyledTabsV2List = styled(TabsPrimitive.List)<{
     width: props.$fitContent ? 'fit-content' : '100%',
     alignItems: 'center',
     gap: props.$tabsToken.gap,
-    border: 'none',
+    border: props.$tabsToken.outline,
     position: 'relative',
     paddingTop:
         props.$tabsToken.container?.padding?.[props.$size]?.[props.$variant]
@@ -67,20 +69,20 @@ export const StyledTabsV2List = styled(TabsPrimitive.List)<{
                 position: 'absolute',
                 left: 0,
                 right: 0,
-                bottom: '0px',
+                bottom: props.$tabsToken.trigger.activeIndicator.position
+                    .bottom,
                 height: props.$tabsToken.trigger.activeIndicator.height,
                 backgroundColor: props.$tabsToken.trigger.activeIndicator.color,
                 scale: 'var(--tabs-indicator-width, 0.125) 1',
                 translate: 'var(--tabs-indicator-left, 0) 0',
                 transformOrigin: 'left',
-                transition:
-                    'scale 250ms cubic-bezier(0.4, 0, 0.2, 1), translate 250ms cubic-bezier(0.4, 0, 0.2, 1)',
-                zIndex: 2,
+                transition: props.$tabsToken.trigger.activeIndicator.transition,
+                zIndex: props.$tabsToken.trigger.activeIndicator.zIndex,
             },
         }),
 }))
 
-export const StyledTabsV2Trigger = styled(TabsPrimitive.Trigger)<{
+export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
     $variant: TabsV2Variant
     $size: TabsV2Size
     $tabsToken: TabsV2TokensType
@@ -106,8 +108,8 @@ export const StyledTabsV2Trigger = styled(TabsPrimitive.Trigger)<{
         : props.$tabsToken.backgroundColor[props.$variant].default,
     borderRadius: props.$tabsToken.borderRadius[props.$size][props.$variant],
     border: props.$isOverlay ? 'none' : props.$tabsToken.border[props.$variant],
-    transition: 'color 0.2s ease-in-out',
-    outline: 'none',
+    transition: props.$tabsToken.trigger.transition,
+    outline: props.$tabsToken.trigger.outline,
     position: 'relative',
     cursor: 'pointer',
     overflow: 'visible',

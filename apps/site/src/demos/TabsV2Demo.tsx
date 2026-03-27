@@ -91,7 +91,7 @@ const TabsV2Demo = () => {
             onValueChange={setActiveTab}
             stickyHeader={stickyHeader}
             showSkeleton={showSkeleton}
-            disable={disable}
+            disabled={disable}
             skeletonVariant={skeletonVariant}
         >
             <div className="flex items-center gap-2">

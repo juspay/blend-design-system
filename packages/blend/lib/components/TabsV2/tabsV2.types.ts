@@ -20,12 +20,12 @@ export type TabsV2TabItem = {
     value: string
     label: string
     content: ReactNode
-    disable?: boolean
+    disabled?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     leftSlot?: ReactNode
     rightSlot?: ReactNode
-    newItem?: boolean
+    isNew?: boolean
 }
 
 export type TabsV2Props = ComponentPropsWithoutRef<
@@ -35,7 +35,7 @@ export type TabsV2Props = ComponentPropsWithoutRef<
     size?: TabsV2Size
     expanded?: boolean
     fitContent?: boolean
-    disable?: boolean
+    disabled?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     stickyHeader?: boolean
@@ -49,8 +49,8 @@ export type TabsV2ListProps = ComponentPropsWithoutRef<
     size?: TabsV2Size
     expanded?: boolean
     fitContent?: boolean
-    disable?: boolean
-    showSkeleton?: boolean
+    disabled?: boolean
+    loading?: boolean
     skeletonVariant?: SkeletonVariant
     stickyHeader?: boolean
     offsetTop?: number
@@ -65,7 +65,7 @@ export type TabsV2TriggerProps = ComponentPropsWithoutRef<
     leftSlot?: ReactNode
     rightSlot?: ReactNode
     children: string | number
-    disable?: boolean
+    disabled?: boolean
     isActive?: boolean
     isOverlay?: boolean
     tabsGroupId?: string
