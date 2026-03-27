@@ -57,30 +57,10 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
         const { isActive: _isActive, style, ...domProps } = props
         void _isActive
 
-        const handleCloseClick = useCallback(
-            (e: React.MouseEvent) => {
-                e.stopPropagation()
-                e.preventDefault()
-                if (
-                    e.nativeEvent &&
-                    'stopImmediatePropagation' in e.nativeEvent
-                ) {
-                    ;(
-                        e.nativeEvent as unknown as {
-                            stopImmediatePropagation: () => void
-                        }
-                    ).stopImmediatePropagation()
-                }
-
-                if (!isDisabled) {
-                    onClose?.()
-                }
-            },
-            [onClose, isDisabled]
-        )
-
-        const preventCloseAffordanceSelection = useCallback(
-            (e: React.MouseEvent | React.PointerEvent) => {
+        const stopEventPropagation = useCallback(
+            (
+                e: React.MouseEvent | React.PointerEvent | React.KeyboardEvent
+            ) => {
                 e.stopPropagation()
                 e.preventDefault()
                 if (
@@ -95,6 +75,16 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                 }
             },
             []
+        )
+
+        const handleCloseClick = useCallback(
+            (e: React.MouseEvent) => {
+                stopEventPropagation(e)
+                if (!isDisabled) {
+                    onClose?.()
+                }
+            },
+            [onClose, isDisabled, stopEventPropagation]
         )
 
         const triggerContent = (
@@ -116,14 +106,6 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                         border: 'none',
                     }),
                     ...style,
-                }}
-                onClickCapture={(e: React.MouseEvent<HTMLButtonElement>) => {
-                    const target = e.target as HTMLElement | null
-                    if (target?.closest('[data-element="close-slot"]')) {
-                        e.preventDefault()
-                        e.stopPropagation()
-                    }
-                    domProps.onClickCapture?.(e)
                 }}
                 {...domProps}
             >
@@ -209,13 +191,12 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                             aria-label={`Close ${children ?? 'tab'}`}
                             tabIndex={isDisabled ? -1 : 0}
                             onClick={handleCloseClick}
-                            onMouseDown={preventCloseAffordanceSelection}
-                            onPointerDown={preventCloseAffordanceSelection}
+                            onMouseDown={stopEventPropagation}
+                            onPointerDown={stopEventPropagation}
                             onKeyDown={(e: React.KeyboardEvent) => {
                                 if (isDisabled) return
                                 if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault()
-                                    e.stopPropagation()
+                                    stopEventPropagation(e)
                                     onClose?.()
                                 }
                             }}
