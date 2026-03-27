@@ -20,6 +20,30 @@ import {
 import BreadcrumbV2 from '../../../../../packages/blend/lib/components/BreadcrumbV2/BreadcrumbV2'
 import type { BreadcrumbV2ItemType } from '../../../../../packages/blend/lib/components/BreadcrumbV2/breadcrumbV2.types'
 
+/** Story helper: data → composable Item children */
+function BreadcrumbV2FromItems({ items }: { items: BreadcrumbV2ItemType[] }) {
+    return (
+        <BreadcrumbV2>
+            {items.map((item, i) => (
+                <BreadcrumbV2.Item
+                    key={item.href}
+                    href={item.href}
+                    onClick={item.onClick}
+                    isActive={i === items.length - 1}
+                >
+                    {item.leftSlot ? (
+                        <BreadcrumbV2.Icon>{item.leftSlot}</BreadcrumbV2.Icon>
+                    ) : null}
+                    <BreadcrumbV2.Page>{item.label}</BreadcrumbV2.Page>
+                    {item.rightSlot ? (
+                        <BreadcrumbV2.Icon>{item.rightSlot}</BreadcrumbV2.Icon>
+                    ) : null}
+                </BreadcrumbV2.Item>
+            ))}
+        </BreadcrumbV2>
+    )
+}
+
 const meta: Meta<typeof BreadcrumbV2> = {
     title: 'Components/BreadcrumbV2',
     component: BreadcrumbV2,
@@ -30,21 +54,12 @@ const meta: Meta<typeof BreadcrumbV2> = {
         docs: {
             description: {
                 component: `
-Breadcrumb navigation with **items** API, **composable** \`Item / Page / StartIcon / EndIcon\`, optional overflow ellipsis, and skeleton loading.
-
-Use **Interactive** stories to try client-side routing; use **Visual** stories for layout and Chromatic snapshots.
+Composable breadcrumb: \`BreadcrumbV2\` wraps \`Item\`, \`Page\`, optional \`Icon\` (repeat for multiple icons; order = layout), and supports overflow ellipsis when there are many items.
 `,
             },
         },
     },
     tags: ['autodocs'],
-    argTypes: {
-        items: {
-            control: 'object',
-            description: 'Array of breadcrumb segments',
-        },
-        skeleton: { control: 'object' },
-    },
 }
 
 export default meta
@@ -75,53 +90,46 @@ const labelStyle: React.CSSProperties = {
 }
 
 export const Default: Story = {
-    render: (args) => <BreadcrumbV2 {...args} />,
-    args: {
-        items: SAMPLE_ITEMS,
-    },
+    render: () => <BreadcrumbV2FromItems items={SAMPLE_ITEMS} />,
 }
 
 /** Constrain width so the trail wraps or shows overflow behavior in narrow layouts. */
 export const Visual_NarrowContainer: Story = {
     name: 'Visual · Narrow container',
-    render: (args) => (
+    render: () => (
         <div style={{ width: 320, ...sectionStyle }}>
             <div style={labelStyle}>320px wide</div>
-            <BreadcrumbV2 {...args} />
+            <BreadcrumbV2FromItems items={SAMPLE_ITEMS} />
         </div>
     ),
-    args: {
-        items: SAMPLE_ITEMS,
-    },
 }
 
 export const WithOverflowMenu: Story = {
     name: 'Visual · Overflow (7+ items)',
-    render: (args) => (
+    render: () => (
         <div style={sectionStyle}>
             <div style={labelStyle}>Ellipsis + last three segments</div>
-            <BreadcrumbV2 {...args} />
+            <BreadcrumbV2FromItems
+                items={[
+                    { label: 'Home', href: '/' },
+                    { label: 'Level 1', href: '/1' },
+                    { label: 'Level 2', href: '/2' },
+                    { label: 'Level 3', href: '/3' },
+                    { label: 'Level 4', href: '/4' },
+                    { label: 'Level 5', href: '/5' },
+                    { label: 'Level 6', href: '/6' },
+                ]}
+            />
         </div>
     ),
-    args: {
-        items: [
-            { label: 'Home', href: '/' },
-            { label: 'Level 1', href: '/1' },
-            { label: 'Level 2', href: '/2' },
-            { label: 'Level 3', href: '/3' },
-            { label: 'Level 4', href: '/4' },
-            { label: 'Level 5', href: '/5' },
-            { label: 'Level 6', href: '/6' },
-        ],
-    },
 }
 
 export const Visual_WithLeadingIcons: Story = {
     name: 'Visual · Items with left slots',
     render: () => (
         <div style={sectionStyle}>
-            <div style={labelStyle}>leftSlot icons</div>
-            <BreadcrumbV2
+            <div style={labelStyle}>Icon via data helper</div>
+            <BreadcrumbV2FromItems
                 items={[
                     {
                         label: 'Home',
@@ -154,7 +162,7 @@ export const Visual_SingleCurrentPage: Story = {
     render: () => (
         <div style={sectionStyle}>
             <div style={labelStyle}>One crumb — active</div>
-            <BreadcrumbV2
+            <BreadcrumbV2FromItems
                 items={[{ label: 'Dashboard', href: '/dashboard' }]}
             />
         </div>
@@ -165,24 +173,22 @@ export const Visual_Composable: Story = {
     name: 'Visual · Composable API',
     render: () => (
         <div style={sectionStyle}>
-            <div style={labelStyle}>
-                BreadcrumbV2.Item · StartIcon · Page · EndIcon
-            </div>
+            <div style={labelStyle}>BreadcrumbV2.Item · Icon · Page · Icon</div>
             <BreadcrumbV2>
                 <BreadcrumbV2.Item href="/">
-                    <BreadcrumbV2.StartIcon>
+                    <BreadcrumbV2.Icon>
                         <Home size={16} aria-hidden />
-                    </BreadcrumbV2.StartIcon>
+                    </BreadcrumbV2.Icon>
                     <BreadcrumbV2.Page>Home</BreadcrumbV2.Page>
-                    <BreadcrumbV2.EndIcon>
+                    <BreadcrumbV2.Icon>
                         <ChevronRight size={14} aria-hidden />
-                    </BreadcrumbV2.EndIcon>
+                    </BreadcrumbV2.Icon>
                 </BreadcrumbV2.Item>
                 <BreadcrumbV2.Item href="/docs">
                     <BreadcrumbV2.Page>Docs</BreadcrumbV2.Page>
-                    <BreadcrumbV2.EndIcon>
+                    <BreadcrumbV2.Icon>
                         <ChevronRight size={14} aria-hidden />
-                    </BreadcrumbV2.EndIcon>
+                    </BreadcrumbV2.Icon>
                 </BreadcrumbV2.Item>
                 <BreadcrumbV2.Item isActive>
                     <BreadcrumbV2.Page>Components</BreadcrumbV2.Page>
@@ -227,12 +233,12 @@ export const Visual_Showcase: Story = {
 
             <div style={sectionStyle}>
                 <div style={labelStyle}>Default trail</div>
-                <BreadcrumbV2 items={SAMPLE_ITEMS} />
+                <BreadcrumbV2FromItems items={SAMPLE_ITEMS} />
             </div>
 
             <div style={sectionStyle}>
                 <div style={labelStyle}>With icons + right slot</div>
-                <BreadcrumbV2
+                <BreadcrumbV2FromItems
                     items={[
                         {
                             label: 'Workspace',
@@ -255,8 +261,8 @@ export const Visual_Showcase: Story = {
             </div>
 
             <div style={{ width: 360, ...sectionStyle }}>
-                <div style={labelStyle}>Overflow (items API)</div>
-                <BreadcrumbV2
+                <div style={labelStyle}>Overflow</div>
+                <BreadcrumbV2FromItems
                     items={[
                         { label: 'Home', href: '/' },
                         { label: 'A', href: '/a' },
@@ -265,14 +271,6 @@ export const Visual_Showcase: Story = {
                         { label: 'D', href: '/d' },
                         { label: 'E', href: '/e' },
                     ]}
-                />
-            </div>
-
-            <div style={sectionStyle}>
-                <div style={labelStyle}>Skeleton</div>
-                <BreadcrumbV2
-                    items={SAMPLE_ITEMS}
-                    skeleton={{ show: true, variant: 'pulse' }}
                 />
             </div>
         </div>
@@ -333,7 +331,7 @@ function InteractiveRoutingDemo() {
                     Reset
                 </button>
             </div>
-            <BreadcrumbV2 items={items} />
+            <BreadcrumbV2FromItems items={items} />
         </div>
     )
 }
@@ -384,17 +382,4 @@ function InteractiveComposableDemo() {
 export const Interactive_ComposableClicks: Story = {
     name: 'Interactive · Composable clicks',
     render: () => <InteractiveComposableDemo />,
-}
-
-export const Skeleton: Story = {
-    name: 'Visual · Skeleton',
-    render: () => (
-        <div style={sectionStyle}>
-            <div style={labelStyle}>Loading state</div>
-            <BreadcrumbV2
-                items={SAMPLE_ITEMS}
-                skeleton={{ show: true, variant: 'pulse' }}
-            />
-        </div>
-    ),
 }

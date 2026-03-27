@@ -1,15 +1,8 @@
-import { SkeletonVariant } from '../Skeleton'
-import BreadcrumbV2EndIcon from './BreadcrumbV2EndIcon'
+import * as React from 'react'
 import BreadcrumbV2CompoundItem from './BreadcrumbV2Item'
+import BreadcrumbV2Icon from './BreadcrumbV2Icon'
 import BreadcrumbV2Page from './BreadcrumbV2Page'
 import BreadcrumbV2Separator from './BreadcrumbV2Separator'
-import BreadcrumbV2StartIcon from './BreadcrumbV2StartIcon'
-
-export type BreadcrumbV2State = 'default' | 'hover' | 'active'
-export type BreadcrumbV2SkeletonProps = {
-    show: boolean
-    variant: SkeletonVariant
-}
 
 export type BreadcrumbV2ItemType = {
     leftSlot?: React.ReactNode
@@ -17,7 +10,6 @@ export type BreadcrumbV2ItemType = {
     label: string
     href: string
     onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
-    skeleton?: BreadcrumbV2SkeletonProps
 }
 
 export type BreadcrumbCompoundIconProps = {
@@ -35,9 +27,9 @@ export type BreadcrumbCompoundItemProps = {
 }
 
 export type BreadcrumbV2Props = {
-    items?: BreadcrumbV2ItemType[]
-    skeleton?: BreadcrumbV2SkeletonProps
     children?: React.ReactNode
+    /** When the number of `Item` children exceeds this, show ellipsis + last three segments. Default `4`. */
+    maxItems?: number
 }
 
 export type BreadcrumbV2Component = ((
@@ -45,8 +37,7 @@ export type BreadcrumbV2Component = ((
 ) => React.ReactElement | null) & {
     displayName?: string
     Item: typeof BreadcrumbV2CompoundItem
-    StartIcon: typeof BreadcrumbV2StartIcon
-    EndIcon: typeof BreadcrumbV2EndIcon
+    Icon: typeof BreadcrumbV2Icon
     Separator: typeof BreadcrumbV2Separator
     Page: typeof BreadcrumbV2Page
 }

@@ -3,11 +3,11 @@
 ## Requirements
 
 - Display a linear list of navigational links (breadcrumbs) showing the current path.
-- Support optional left/right slot icons for each breadcrumb item.
-- Overflow handling: when item count exceeds a threshold show a menu/ellipsis to collapse middle items.
-- Skeleton state for loading.
-- Fully accessible: nav landmark with an accessible name, programmatically determinable current page via `aria-current="page"`.
-- Responsive layout and horizontal scrolling when necessary.
+- **Composable API**: `Item`, `Page`, optional `Icon` (repeat for multiple icons; **order** defines layout), and `Separator` (used between items by the root; overridable via compound export).
+- **Overflow**: when the number of `Item` children exceeds **`maxItems`** (default `4`), show first crumb, an ellipsis control, then the **last three** segments.
+- Fully accessible: `nav` landmark with an accessible name, current page via `aria-current="page"` on the active item.
+- Responsive layout and horizontal scrolling on the nav container when necessary.
+- **Loading**: no built-in skeleton on `BreadcrumbV2`; compose the shared **`Skeleton`** (or placeholders) beside real items in the app if needed.
 
 ## Anatomy
 
@@ -15,14 +15,58 @@
 Home / … / Category / Subcategory / Current Page
 ```
 
-- Container: nav landmark containing an ordered list of breadcrumb items.
-- Breadcrumb item: link or button with optional leading/trailing icons.
-- Overflow button: ellipsis control that exposes hidden items (aria-haspopup / aria-expanded).
-- Separator: visual divider (e.g., "/") between items.
+- **Root (`BreadcrumbV2`)**: `nav` + `ol`, filters direct **`Item`** children only; injects separators between items; renders overflow ellipsis when needed.
+- **Item (`BreadcrumbV2.Item`)**: wraps content in a link (or current-page text semantics via tokens); accepts **`Page`**, **`Icon`**, and arbitrary composition order.
+- **Page (`BreadcrumbV2.Page`)**: label text styling from tokens.
+- **Icon (`BreadcrumbV2.Icon`)**: decorative icon wrapper (`aria-hidden`, `data-element="breadcrumb-icon"`). Use multiple `Icon` instances before/after `Page` as needed (e.g. home glyph + chevron).
+- **Overflow**: ellipsis `button` with `aria-label` like `Show N more breadcrumb items`, `aria-haspopup="menu"`, `aria-expanded="false"` (menu wiring is app responsibility).
+- **Separator**: `/` (or custom) between items via **`BreadcrumbV2Separator`** inside the root implementation.
 
 ![Breadcrumb Anatomy](./BreadcrumbAnatomy.png)
 
-## Props & Types
+## Root props & compound exports
+
+```typescript
+export type BreadcrumbV2Props = {
+    children?: React.ReactNode
+    /** When `Item` count exceeds this, show ellipsis + last three segments. Default `4`. */
+    maxItems?: number
+}
+
+// Attached to default export:
+// BreadcrumbV2.Item, .Page, .Icon, .Separator
+```
+
+If there are **no** `Item` children, the root renders **nothing** (`null`).
+
+### Composable usage
+
+```tsx
+<BreadcrumbV2 maxItems={4}>
+    <BreadcrumbV2.Item href="/">
+        <BreadcrumbV2.Icon>
+            <Home size={16} />
+        </BreadcrumbV2.Icon>
+        <BreadcrumbV2.Page>Home</BreadcrumbV2.Page>
+        <BreadcrumbV2.Icon>
+            <ChevronRight size={14} />
+        </BreadcrumbV2.Icon>
+    </BreadcrumbV2.Item>
+    <BreadcrumbV2.Item href="/docs">
+        <BreadcrumbV2.Page>Docs</BreadcrumbV2.Page>
+    </BreadcrumbV2.Item>
+    <BreadcrumbV2.Item isActive>
+        <BreadcrumbV2.Page>Components</BreadcrumbV2.Page>
+    </BreadcrumbV2.Item>
+</BreadcrumbV2>
+```
+
+- **`isActive`**: optional per `Item`; if omitted, the **last** `Item` is treated as current.
+- **`onClick`** on `Item`: optional; `preventDefault` is applied when provided for SPA routing.
+
+### Optional data-helper type (demos / mapping)
+
+For app code that keeps an array of segments, you can map rows to `Item`/`Page`/`Icon` yourself. A shared **type** (no runtime API) documents that shape:
 
 ```typescript
 export type BreadcrumbV2ItemType = {
@@ -31,31 +75,16 @@ export type BreadcrumbV2ItemType = {
     label: string
     href: string
     onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
-    skeleton?: { show: boolean; variant: SkeletonVariant }
-}
-
-type BreadcrumbV2Props = {
-    items: BreadcrumbV2ItemType[]
-    skeleton?: { show: boolean; variant: SkeletonVariant }
 }
 ```
 
-Usage:
+Map `leftSlot` / `rightSlot` to `<BreadcrumbV2.Icon>{…}</BreadcrumbV2.Icon>` before/after `<BreadcrumbV2.Page>{label}</BreadcrumbV2.Page>`.
 
-```tsx
-<Breadcrumb
-    items={[
-        { label: 'Home', href: '/' },
-        { label: 'Products', href: '/products' },
-        { label: 'Electronics', href: '/products/electronics' },
-        { label: 'Cameras', href: '/products/electronics/cameras' },
-    ]}
-/>
-```
-
-## Tokens (example shape)
+## Tokens
 
 ```typescript
+export type BreadcrumbV2State = 'default' | 'hover' | 'active'
+
 export type BreadcrumbV2TokensType = {
     gap: CSSObject['gap']
     item: {
@@ -64,47 +93,76 @@ export type BreadcrumbV2TokensType = {
         text: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
-            color: { default: string; active: string }
+            color: {
+                [key in BreadcrumbV2State]: CSSObject['color']
+            }
         }
     }
+    ellipsis: {
+        color: CSSObject['color']
+        borderRadius: CSSObject['borderRadius']
+        size: number
+    }
+    separator: {
+        color: CSSObject['color']
+    }
+}
+
+export type ResponsiveBreadcrumbV2Tokens = {
+    [key in keyof BreakpointType]: BreadcrumbV2TokensType
 }
 ```
 
+Registered as **`BREADCRUMBV2`** in theme / `useResponsiveTokens`.
+
 ## Design Decisions
 
-### 1. Overflow collapsing for long trails
+### 1. Composable-only surface
 
-Decision: Collapse middle items into an overflow menu once items exceed MAX_ITEMS (default 4).
+**Decision**: `BreadcrumbV2` accepts **`Item` children** only; no `items[]` prop on the component.
 
-Rationale: Prevents excessively long breadcrumb trails from breaking layout while keeping the first and last items visible for context.
+**Rationale**: Clear slotting for icons and labels, flexible order, and alignment with other compound components in the design system.
 
-### 2. Use nav landmark with accessible name
+### 2. Single `Icon` subcomponent
 
-Decision: Wrap breadcrumbs in a `<nav aria-label="Breadcrumb navigation">` and use an ordered list for semantic order.
+**Decision**: Replaced separate “start” / “end” icon components with **`BreadcrumbV2.Icon`**; layout is defined by child order next to `Page`.
 
-Rationale: Improves discoverability for screen readers and provides programmatic context.
+**Rationale**: Icons are decorative variants of the same concern; naming matches composition rather than assumed position.
 
-### 3. Mark the current page with aria-current
+### 3. Overflow collapsing
 
-Decision: The active breadcrumb (last item when not collapsed) gets `aria-current="page"` and is not focusable as a link.
+**Decision**: When `Item` count **>** `maxItems` (default `4`), render first item, ellipsis, then the **last three** items. Middle items are not rendered in the bar (ellipsis is a button; hook up a menu in the product).
 
-Rationale: Conveys the current location to assistive technologies and avoids redundant navigation.
+**Rationale**: Preserves context (root + recent path) without breaking narrow layouts.
 
-### 4. Slots and non-text content
+### 4. Nav + ordered list
 
-Decision: Support optional `leftSlot` and `rightSlot` per item for decorative icons; mark them `aria-hidden="true"` when decorative.
+**Decision**: Root uses `<nav aria-label="Breadcrumb navigation">` and an **`ol`** for ordered segments.
 
-Rationale: Allows richer visual representation without harming accessibility.
+**Rationale**: Landmark + list semantics for assistive tech.
 
-### 5. Skeleton support
+### 5. Current page
 
-Decision: Provide a skeleton variant that mirrors the breadcrumb shape while loading.
+**Decision**: Active segment uses `aria-current="page"` and omits `href` behavior from tokens/styling on the active `Item`.
 
-Rationale: Improves perceived performance and layout stability.
+**Rationale**: Standard pattern for “you are here” in a trail.
+
+### 6. No root skeleton
+
+**Decision**: Removed dedicated `BreadcrumbV2Skeleton`; loading states use app-level **`Skeleton`** or conditional `Item` content.
+
+**Rationale**: BreadcrumbV2 stays presentational; loading UX varies by product (number of crumbs, widths, etc.).
 
 ## Accessibility Notes
 
-- The breadcrumb is wrapped in a `nav` element with `aria-label="Breadcrumb navigation"`.
-- Each item is a link (`<a>`) except the current page which is indicated with `aria-current="page"`.
-- Overflow control uses `aria-haspopup="menu"` and an accessible label like `Show N more breadcrumb items`.
-- Ensure keyboard operability for the overflow menu and visible focus styles.
+- Root: `nav` with `aria-label="Breadcrumb navigation"`.
+- Each non-active crumb is navigable as a link; active crumb exposes `aria-current="page"`.
+- `BreadcrumbV2.Icon` sets `aria-hidden="true"` on the wrapper when icons are decorative.
+- Ellipsis: `aria-label` includes the count of hidden items; add keyboard and menu behavior when implementing the overflow panel.
+- Ensure focus styles on links and the ellipsis control meet WCAG contrast for the active theme.
+
+## Related
+
+- Implementation: `packages/blend/lib/components/BreadcrumbV2/`
+- Storybook: `apps/storybook/stories/components/BreadCrumbV2/BreadCrumbV2.stories.tsx`
+- Site demo: `apps/site/src/demos/BreadcrumbV2Demo.tsx`
