@@ -12,6 +12,9 @@ on:
         tags:
             - 'telemetry-v*'
 
+permissions:
+    contents: read
+
 concurrency:
     group: publish-blend-telemetry-${{ github.ref }}
     cancel-in-progress: true
