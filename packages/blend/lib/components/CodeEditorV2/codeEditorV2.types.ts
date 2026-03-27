@@ -49,19 +49,17 @@ export type CodeEditorV2Props = {
     onChange?: (value: string) => void
     variant?: CodeEditorV2Variant
     showLineNumbers?: boolean
-    showHeader?: boolean
-    header?: string
-    headerSlot?: {
-        left?: ReactNode
-        right?: ReactNode
+    header?: {
+        showHeader?: boolean
+        title?: string
+        leftSlot?: ReactNode
+        rightSlot?: ReactNode
+        showCopyButton?: boolean
     }
-    showLeftIcon?: boolean
-    showCopyButton?: boolean
     language?: SupportedLanguage
     placeholder?: string
     readOnly?: boolean
     disabled?: boolean
-    className?: string
     onBlur?: () => void
     onFocus?: () => void
     autoFocus?: boolean
@@ -77,12 +75,9 @@ export type CodeEditorV2Props = {
         'style' | 'className' | 'onChange'
     >
 export type CodeEditorV2HeaderProps = {
-    header: string
-    headerSlot?: {
-        left?: ReactNode
-        right?: ReactNode
-    }
-    showLeftIcon: boolean
+    title?: string
+    leftSlot?: ReactNode
+    rightSlot?: ReactNode
     showCopyButton: boolean
     isCopied: boolean
     onCopy: () => void

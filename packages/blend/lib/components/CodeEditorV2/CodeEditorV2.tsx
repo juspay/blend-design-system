@@ -19,11 +19,13 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             onChange,
             variant = CodeEditorV2Variant.DEFAULT,
             showLineNumbers,
-            showHeader = true,
-            header = 'Editor',
-            headerSlot,
-            showLeftIcon = true,
-            showCopyButton = true,
+            header = {
+                showHeader: true,
+                title: 'Editor',
+                leftSlot: null,
+                rightSlot: null,
+                showCopyButton: true,
+            },
             language = 'javascript',
             placeholder,
             readOnly = false,
@@ -31,7 +33,6 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             minHeight = '300px',
             maxHeight,
             height,
-            className,
             onBlur,
             onFocus,
             autoFocus = false,
@@ -80,16 +81,15 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                 overflow="hidden"
                 backgroundColor={tokens.backgroundColor}
                 boxShadow={tokens.boxShadow}
-                className={className}
                 style={containerStyles}
                 data-codeeditor={header}
             >
-                {showHeader && (
+                {header.showHeader && (
                     <CodeEditorV2Header
-                        header={header}
-                        headerSlot={headerSlot}
-                        showLeftIcon={showLeftIcon}
-                        showCopyButton={showCopyButton}
+                        title={header.title}
+                        leftSlot={header.leftSlot}
+                        rightSlot={header.rightSlot}
+                        showCopyButton={header.showCopyButton ?? true}
                         isCopied={isCopied}
                         onCopy={copyToClipboard}
                         tokens={tokens}

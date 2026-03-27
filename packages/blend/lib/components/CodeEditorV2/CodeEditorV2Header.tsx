@@ -1,21 +1,21 @@
 import { useId } from 'react'
-import { Check, Copy, FileCode } from 'lucide-react'
+import { Check, Copy } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
 import { ButtonSize, ButtonSubType, ButtonType } from '../Button/types'
 import { CodeEditorV2HeaderProps } from './codeEditorV2.types'
 
 export const CodeEditorV2Header = ({
-    header,
-    headerSlot,
-    showLeftIcon,
+    title,
+    leftSlot,
+    rightSlot,
     showCopyButton,
     isCopied,
     onCopy,
     tokens,
 }: CodeEditorV2HeaderProps) => {
     const titleId = useId()
-    const headerLabel = header.trim()
+    const headerLabel = title?.trim()
 
     const headerPaddingX =
         typeof tokens.header.paddingLeft === 'number'
@@ -32,10 +32,6 @@ export const CodeEditorV2Header = ({
             ? `${tokens.header.gap}px`
             : tokens.header.gap
 
-    const iconSize =
-        typeof tokens.header.icon.width === 'number'
-            ? tokens.header.icon.width
-            : String(tokens.header.icon.width || '16')
     return (
         <Block
             as="header"
@@ -55,21 +51,10 @@ export const CodeEditorV2Header = ({
                 gap={headerGap}
                 style={{ flex: 1 }}
             >
-                {headerSlot?.left ? (
-                    headerSlot.left
-                ) : showLeftIcon ? (
-                    <FileCode
-                        size={iconSize}
-                        style={{
-                            flexShrink: 0,
-                            color: tokens.header.text.color,
-                            opacity: 0.7,
-                        }}
-                    />
-                ) : null}
+                {leftSlot ? leftSlot : null}
                 <Block
                     data-element="codeeditor-title"
-                    data-id={header}
+                    data-id={title}
                     as="span"
                     id={headerLabel ? titleId : undefined}
                     fontSize={tokens.header.text.fontSize}
@@ -80,15 +65,15 @@ export const CodeEditorV2Header = ({
                         letterSpacing: '-0.01em',
                     }}
                 >
-                    {header}
+                    {title}
                 </Block>
-                {headerSlot?.right && (
+                {rightSlot && (
                     <Block
                         style={{ flexShrink: 0 }}
                         display="flex"
                         alignItems="center"
                     >
-                        {headerSlot.right}
+                        {rightSlot}
                     </Block>
                 )}
             </Block>

@@ -11,7 +11,14 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
 import type { SupportedLanguage } from '../../../../packages/blend/lib/components/CodeBlock/types'
-import { Save, Play, Download, GitCompareArrows } from 'lucide-react'
+import {
+    Save,
+    Play,
+    Download,
+    GitCompareArrows,
+    FileCode,
+    Copy,
+} from 'lucide-react'
 
 const CodeEditorV2Demo = () => {
     // State for controls
@@ -306,8 +313,13 @@ def process_transactions(transactions):
                             onChange={(newCode) => setCode(newCode)}
                             variant={variant}
                             showLineNumbers={showLineNumbers}
-                            showHeader={showHeader}
-                            header={headerText}
+                            header={{
+                                showHeader: showHeader,
+                                title: headerText,
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: <Copy size={16} />,
+                                showCopyButton: true,
+                            }}
                             language={language}
                             readOnly={readOnly}
                             disabled={disabled}
@@ -355,7 +367,13 @@ def process_transactions(transactions):
                             value={codeExamples.payment}
                             onChange={() => {}}
                             variant={CodeEditorV2Variant.DEFAULT}
-                            header="payment.js"
+                            header={{
+                                showHeader: true,
+                                title: 'payment.js',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="javascript"
                         />
                     </div>
@@ -370,7 +388,13 @@ def process_transactions(transactions):
                             value={codeExamples.payment}
                             onChange={() => {}}
                             variant={CodeEditorV2Variant.NO_GUTTER}
-                            header="payment.js"
+                            header={{
+                                showHeader: true,
+                                title: 'payment.js',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="javascript"
                         />
                     </div>
@@ -386,7 +410,13 @@ def process_transactions(transactions):
                             value={codeExamples.typescript}
                             onChange={() => {}}
                             variant={CodeEditorV2Variant.DEFAULT}
-                            header="types.ts"
+                            header={{
+                                showHeader: true,
+                                title: 'types.ts',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="typescript"
                             readOnly={true}
                         />
@@ -402,7 +432,13 @@ def process_transactions(transactions):
                             value={codeExamples.python}
                             onChange={() => {}}
                             variant={CodeEditorV2Variant.DEFAULT}
-                            header="process.py"
+                            header={{
+                                showHeader: true,
+                                title: 'process.py',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="python"
                             disabled={true}
                         />
@@ -430,7 +466,13 @@ def process_transactions(transactions):
                             value={codeExamples.payment}
                             onChange={() => {}}
                             variant={CodeEditorV2Variant.DEFAULT}
-                            header="fixed-height.js"
+                            header={{
+                                showHeader: true,
+                                title: 'fixed-height.js',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="javascript"
                             height="200px"
                         />
@@ -446,7 +488,13 @@ def process_transactions(transactions):
                             value={codeExamples.react}
                             onChange={() => {}}
                             variant={CodeEditorV2Variant.DEFAULT}
-                            header="auto-grow.jsx"
+                            header={{
+                                showHeader: true,
+                                title: 'auto-grow.jsx',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="jsx"
                             minHeight="180px"
                         />
@@ -498,7 +546,13 @@ def process_transactions(transactions):
   }
   return priorities.length ? priorities : ['DEFAULT'];
 }`}
-                            header="payment.js — diff"
+                            header={{
+                                showHeader: true,
+                                title: 'payment.js — diff',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="javascript"
                             height="300px"
                         />
@@ -527,7 +581,13 @@ def process_transactions(transactions):
   role: 'admin' | 'user' | 'guest';
   createdAt: Date;
 }`}
-                            header="types.ts — inline diff"
+                            header={{
+                                showHeader: true,
+                                title: 'types.ts — inline diff',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="typescript"
                             height="280px"
                         />
@@ -550,7 +610,13 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.payment}
                             onChange={() => {}}
-                            header="payment.js"
+                            header={{
+                                showHeader: true,
+                                title: 'payment.js',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="javascript"
                         />
                     </div>
@@ -561,7 +627,13 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.typescript}
                             onChange={() => {}}
-                            header="types.ts"
+                            header={{
+                                showHeader: true,
+                                title: 'types.ts',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="typescript"
                         />
                     </div>
@@ -572,7 +644,13 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.json}
                             onChange={() => {}}
-                            header="config.json"
+                            header={{
+                                showHeader: true,
+                                title: 'config.json',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="json"
                         />
                     </div>
@@ -583,7 +661,13 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.python}
                             onChange={() => {}}
-                            header="process.py"
+                            header={{
+                                showHeader: true,
+                                title: 'process.py',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="python"
                         />
                     </div>
@@ -611,10 +695,11 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.payment}
                             onChange={() => {}}
-                            header="payment.js"
-                            language="javascript"
-                            headerSlot={{
-                                right: (
+                            header={{
+                                showHeader: true,
+                                title: 'payment.js',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: (
                                     <div className="flex items-center gap-2">
                                         <Button
                                             buttonType={ButtonType.SECONDARY}
@@ -634,7 +719,9 @@ def process_transactions(transactions):
                                         />
                                     </div>
                                 ),
+                                showCopyButton: true,
                             }}
+                            language="javascript"
                         />
                     </div>
 
@@ -650,9 +737,14 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.typescript}
                             onChange={() => {}}
-                            header="types.ts"
+                            header={{
+                                showHeader: true,
+                                title: 'types.ts',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
                             language="typescript"
-                            showLeftIcon={false}
                         />
                     </div>
 
@@ -668,10 +760,10 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.python}
                             onChange={() => {}}
-                            header="download.py"
-                            language="python"
-                            headerSlot={{
-                                left: (
+                            header={{
+                                showHeader: true,
+                                title: 'download.py',
+                                leftSlot: (
                                     <Download
                                         size={16}
                                         style={{
@@ -681,7 +773,10 @@ def process_transactions(transactions):
                                         }}
                                     />
                                 ),
+                                rightSlot: null,
+                                showCopyButton: true,
                             }}
+                            language="python"
                         />
                     </div>
 
@@ -697,11 +792,10 @@ def process_transactions(transactions):
                         <CodeEditorV2
                             value={codeExamples.react}
                             onChange={() => {}}
-                            header="app.jsx"
-                            language="jsx"
-                            showCopyButton={false}
-                            headerSlot={{
-                                left: (
+                            header={{
+                                showHeader: true,
+                                title: 'app.jsx',
+                                leftSlot: (
                                     <Play
                                         size={16}
                                         style={{
@@ -711,7 +805,7 @@ def process_transactions(transactions):
                                         }}
                                     />
                                 ),
-                                right: (
+                                rightSlot: (
                                     <div className="flex items-center gap-2">
                                         <span className="text-xs text-gray-500">
                                             Modified • Autosave on
@@ -719,7 +813,9 @@ def process_transactions(transactions):
                                         <div className="w-2 h-2 rounded-full bg-green-500"></div>
                                     </div>
                                 ),
+                                showCopyButton: false,
                             }}
+                            language="jsx"
                         />
                     </div>
                 </div>
@@ -811,8 +907,13 @@ def process_transactions(transactions):
                     onChange={() => {}}
                     variant={CodeEditorV2Variant.DEFAULT}
                     showLineNumbers={true}
-                    showHeader={true}
-                    header="payment.js"
+                    header={{
+                        showHeader: true,
+                        title: 'payment.js',
+                        leftSlot: <FileCode size={16} />,
+                        rightSlot: null,
+                        showCopyButton: true,
+                    }}
                     language="javascript"
                     minHeight="400px"
                 />
