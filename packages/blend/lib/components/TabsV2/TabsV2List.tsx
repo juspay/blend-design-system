@@ -232,11 +232,6 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                     child.type &&
                     (child.type as { displayName?: string }).displayName ===
                         'TabsV2Trigger'
-
-                // Important: only clone/inject props for actual TabsV2Trigger children.
-                // For any other children, return as-is to avoid React warnings
-                // (unknown props forwarded to DOM) and avoid attaching refs to
-                // non-ref-forwarding components.
                 if (!isTabsTrigger) return child
 
                 const childDisable =
@@ -267,7 +262,9 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                                 : skeletonVariant,
                         ref: (node: HTMLButtonElement | null) =>
                             registerTabRef(node, childValue),
-                    } as any
+                    } as TabsV2TriggerProps & {
+                        ref: (node: HTMLButtonElement | null) => void
+                    }
                 )
             })
         }
