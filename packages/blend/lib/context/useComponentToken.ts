@@ -57,6 +57,7 @@ import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { ResponsiveTimelineTokens } from '../components/Timeline/timeline.token'
 import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
+import { ResponsiveStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 import { ResponsiveTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
@@ -120,10 +121,10 @@ export const useComponentToken = (
     | ResponsiveTextInputV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
-    | ResponsiveTextInputV2Tokens
     | ResponsiveTimelineTokens
     | ResponsiveCheckboxV2Tokens
     | ResponsiveKeyValuePairV2Tokens
+    | ResponsiveStatCardV2Tokens
     | ResponsiveRadioV2Tokens
     | ResponsivePopoverV2Tokens
     | ResponsiveTabsV2Tokens
@@ -248,6 +249,8 @@ export const useComponentToken = (
             return componentTokens.CHECKBOXV2
         case 'KEYVALUEPAIRV2':
             return componentTokens.KEYVALUEPAIRV2
+        case 'STATCARDV2':
+            return componentTokens.STATCARDV2
         case 'TOOLTIPV2':
             return componentTokens.TOOLTIPV2
         case 'RADIOV2':

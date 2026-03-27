@@ -68,9 +68,9 @@ export function getBorderRadius(
     singleSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
     tokens: SingleSelectV2TokensType
 ): { borderRadius: string; borderRight?: string } {
-    const variantBorderRadius = String(
-        tokens.trigger.borderRadius[size][variant]
-    )
+    const variantBorderRadiusToken =
+        tokens?.trigger?.borderRadius?.[size]?.[variant] ?? '0px'
+    const variantBorderRadius = String(variantBorderRadiusToken)
     const styles = {
         borderRadius: '',
         borderRight: '',
