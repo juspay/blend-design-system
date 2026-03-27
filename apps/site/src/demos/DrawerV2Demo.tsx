@@ -2,8 +2,6 @@
 
 import { useMemo, useState } from 'react'
 import {
-    Button,
-    ButtonType,
     DrawerV2,
     DrawerV2Close,
     DrawerV2Content,
@@ -13,7 +11,11 @@ import {
     DrawerV2Portal,
     DrawerV2Title,
     DrawerV2Trigger,
-} from '../../../../packages/blend/lib/main'
+} from '../../../../packages/blend/lib/components/DrawerV2'
+import {
+    Button,
+    ButtonType,
+} from '../../../../packages/blend/lib/components/Button'
 
 type Direction = 'bottom' | 'top' | 'left' | 'right'
 
@@ -31,15 +33,15 @@ const getContentClassName = (direction: Direction) => {
         'fixed z-[1001] bg-white shadow-xl outline-none flex flex-col overflow-hidden rounded-2xl border border-gray-200'
 
     if (direction === 'bottom') {
-        return `${base} left-4 right-4 bottom-4 max-h-[85vh]`
+        return `${base} max-h-[85vh]`
     }
     if (direction === 'top') {
-        return `${base} left-4 right-4 top-4 max-h-[85vh]`
+        return `${base} max-h-[85vh]`
     }
     if (direction === 'left') {
-        return `${base} left-4 top-4 bottom-4 w-[360px] max-w-[90vw]`
+        return `${base} w-[360px] max-w-[90vw]`
     }
-    return `${base} right-4 top-4 bottom-4 w-[360px] max-w-[90vw]`
+    return `${base} w-[360px] max-w-[90vw]`
 }
 
 const getHeaderClassName = () => {
@@ -91,6 +93,9 @@ const DrawerV2Demo = () => {
     const [direction, setDirection] = useState<Direction>('bottom')
     const [isModal, setIsModal] = useState(true)
     const [isDismissible, setIsDismissible] = useState(true)
+    const [showOverlay, setShowOverlay] = useState(true)
+    const [overlayOpacity, setOverlayOpacity] = useState<number>(60)
+    const [contentOffset, setContentOffset] = useState<number>(16)
 
     const [statusAction, setStatusAction] = useState<'confirm' | 'delete'>(
         'confirm'
@@ -107,8 +112,33 @@ const DrawerV2Demo = () => {
     ])
 
     const overlayClassName = useMemo(() => {
-        return isModal ? 'fixed inset-0 z-[1000] bg-black/60' : undefined
-    }, [isModal])
+        return isModal && showOverlay ? 'fixed inset-0 z-[1000]' : undefined
+    }, [isModal, showOverlay])
+
+    const overlayStyle = useMemo(() => {
+        if (!isModal || !showOverlay) {
+            return undefined
+        }
+        return {
+            backgroundColor: `rgba(0, 0, 0, ${
+                Math.min(Math.max(overlayOpacity, 0), 100) / 100
+            })`,
+        }
+    }, [isModal, overlayOpacity, showOverlay])
+
+    const contentStyle = useMemo(() => {
+        const inset = `${contentOffset}px`
+        if (direction === 'bottom') {
+            return { left: inset, right: inset, bottom: inset }
+        }
+        if (direction === 'top') {
+            return { left: inset, right: inset, top: inset }
+        }
+        if (direction === 'left') {
+            return { left: inset, top: inset, bottom: inset }
+        }
+        return { right: inset, top: inset, bottom: inset }
+    }, [contentOffset, direction])
 
     const title = useMemo(() => {
         switch (variant) {
@@ -409,6 +439,49 @@ const DrawerV2Demo = () => {
                         </span>
                     </label>
 
+                    <label className="flex items-center gap-2 h-10 px-3 border border-gray-200 rounded-lg bg-gray-50">
+                        <input
+                            type="checkbox"
+                            checked={showOverlay}
+                            onChange={(e) => setShowOverlay(e.target.checked)}
+                        />
+                        <span className="text-sm text-gray-700">
+                            show overlay
+                        </span>
+                    </label>
+
+                    <div className="flex flex-col gap-1">
+                        <div className="text-xs font-medium text-gray-700">
+                            Overlay opacity
+                        </div>
+                        <input
+                            className="h-10 w-28 px-3 border border-gray-300 rounded-lg bg-white"
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={overlayOpacity}
+                            onChange={(e) =>
+                                setOverlayOpacity(Number(e.target.value))
+                            }
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <div className="text-xs font-medium text-gray-700">
+                            Offset (px)
+                        </div>
+                        <input
+                            className="h-10 w-28 px-3 border border-gray-300 rounded-lg bg-white"
+                            type="number"
+                            min={0}
+                            max={96}
+                            value={contentOffset}
+                            onChange={(e) =>
+                                setContentOffset(Number(e.target.value))
+                            }
+                        />
+                    </div>
+
                     {variant === 'status' && (
                         <div className="flex flex-col gap-1">
                             <div className="text-xs font-medium text-gray-700">
@@ -444,9 +517,13 @@ const DrawerV2Demo = () => {
                         </DrawerV2Trigger>
 
                         <DrawerV2Portal>
-                            <DrawerV2Overlay className={overlayClassName} />
+                            <DrawerV2Overlay
+                                className={overlayClassName}
+                                style={overlayStyle}
+                            />
                             <DrawerV2Content
                                 className={getContentClassName(direction)}
+                                style={contentStyle}
                                 tabIndex={-1}
                             >
                                 <div className={getHeaderClassName()}>
@@ -501,11 +578,13 @@ const DrawerV2Demo = () => {
                                             <DrawerV2Portal>
                                                 <DrawerV2Overlay
                                                     className={overlayClassName}
+                                                    style={overlayStyle}
                                                 />
                                                 <DrawerV2Content
                                                     className={getContentClassName(
                                                         direction
                                                     )}
+                                                    style={contentStyle}
                                                 >
                                                     <div
                                                         className={getHeaderClassName()}
@@ -580,11 +659,13 @@ const DrawerV2Demo = () => {
                                             <DrawerV2Portal>
                                                 <DrawerV2Overlay
                                                     className={overlayClassName}
+                                                    style={overlayStyle}
                                                 />
                                                 <DrawerV2Content
                                                     className={getContentClassName(
                                                         direction
                                                     )}
+                                                    style={contentStyle}
                                                 >
                                                     <div
                                                         className={getHeaderClassName()}
@@ -661,11 +742,13 @@ const DrawerV2Demo = () => {
                                             <DrawerV2Portal>
                                                 <DrawerV2Overlay
                                                     className={overlayClassName}
+                                                    style={overlayStyle}
                                                 />
                                                 <DrawerV2Content
                                                     className={getContentClassName(
                                                         direction
                                                     )}
+                                                    style={contentStyle}
                                                 >
                                                     <div
                                                         className={getHeaderClassName()}
