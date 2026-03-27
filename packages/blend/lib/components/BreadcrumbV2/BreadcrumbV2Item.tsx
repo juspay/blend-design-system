@@ -1,7 +1,9 @@
+import type { MouseEvent } from 'react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import PrimitiveLink from '../Primitives/PrimitiveLink'
 import { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
 import { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
+import { getPlainTextFromReactNode } from './utils'
 
 const BreadcrumbV2CompoundItem = ({
     href,
@@ -12,7 +14,15 @@ const BreadcrumbV2CompoundItem = ({
     const breadcrumbTokens =
         useResponsiveTokens<BreadcrumbV2TokensType>('BREADCRUMBV2')
 
-    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const labelFromChildren = getPlainTextFromReactNode(children).trim()
+    const segment =
+        labelFromChildren.length > 0
+            ? labelFromChildren
+            : isActive
+              ? 'Breadcrumb item'
+              : 'breadcrumb item'
+
+    const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
         if (onClick) {
             event.preventDefault()
             onClick(event)
@@ -39,9 +49,7 @@ const BreadcrumbV2CompoundItem = ({
             onClick={!isActive && onClick ? handleClick : undefined}
             tabIndex={isActive ? 0 : undefined}
             aria-label={
-                isActive
-                    ? `Current page: ${typeof children === 'string' ? children : 'Breadcrumb item'}`
-                    : `Navigate to ${typeof children === 'string' ? children : 'breadcrumb item'}`
+                isActive ? `Current page: ${segment}` : `Navigate to ${segment}`
             }
             aria-current={isActive ? 'page' : undefined}
         >

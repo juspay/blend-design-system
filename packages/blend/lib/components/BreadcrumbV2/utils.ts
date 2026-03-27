@@ -1,6 +1,29 @@
 import * as React from 'react'
 import type { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
 
+/** Collects visible text from React nodes for accessible labels (e.g. Page text inside Item). */
+export function getPlainTextFromReactNode(node: React.ReactNode): string {
+    if (node == null || typeof node === 'boolean') {
+        return ''
+    }
+    if (typeof node === 'string' || typeof node === 'number') {
+        return String(node)
+    }
+    if (Array.isArray(node)) {
+        return node
+            .map(getPlainTextFromReactNode)
+            .filter(Boolean)
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+    }
+    if (React.isValidElement(node)) {
+        const props = node.props as { children?: React.ReactNode }
+        return getPlainTextFromReactNode(props.children)
+    }
+    return ''
+}
+
 export type IndexedBreadcrumbChild = {
     el: React.ReactElement<BreadcrumbCompoundItemProps>
     idx: number

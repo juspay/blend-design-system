@@ -168,7 +168,7 @@ describe('BreadcrumbV2 Component', () => {
         expect(screen.getByTestId('mock-icon')).toBeInTheDocument()
         expect(screen.getByTestId('chev')).toBeInTheDocument()
         expect(
-            screen.getByLabelText('Current page: Breadcrumb item')
+            screen.getByLabelText('Current page: Components')
         ).toBeInTheDocument()
     })
 
@@ -183,12 +183,8 @@ describe('BreadcrumbV2 Component', () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
         )
-        expect(
-            screen.getByLabelText('Current page: Breadcrumb item')
-        ).toBeInTheDocument()
-        expect(
-            screen.getByLabelText('Navigate to breadcrumb item')
-        ).toBeInTheDocument()
+        expect(screen.getByLabelText('Current page: B')).toBeInTheDocument()
+        expect(screen.getByLabelText('Navigate to A')).toBeInTheDocument()
     })
 
     it('shows overflow ellipsis when more than maxItems Item children (default 4)', () => {
@@ -231,7 +227,7 @@ describe('BreadcrumbV2 Component', () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
         )
-        await user.click(screen.getByLabelText('Navigate to breadcrumb item'))
+        await user.click(screen.getByLabelText('Navigate to Click me'))
         expect(onClick).toHaveBeenCalledTimes(1)
     })
 })
