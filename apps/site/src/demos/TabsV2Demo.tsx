@@ -116,8 +116,7 @@ const TabsV2Demo = () => {
                                 closableNewTabs && tab.value.startsWith('new-')
                             }
                             onClose={
-                                closableNewTabs &&
-                                tab.value.startsWith('new-')
+                                closableNewTabs && tab.value.startsWith('new-')
                                     ? () => handleTabClose(tab.value)
                                     : undefined
                             }

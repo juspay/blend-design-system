@@ -61,8 +61,15 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
             (e: React.MouseEvent) => {
                 e.stopPropagation()
                 e.preventDefault()
-                if (e.nativeEvent && 'stopImmediatePropagation' in e.nativeEvent) {
-                    ;(e.nativeEvent as unknown as { stopImmediatePropagation: () => void }).stopImmediatePropagation()
+                if (
+                    e.nativeEvent &&
+                    'stopImmediatePropagation' in e.nativeEvent
+                ) {
+                    ;(
+                        e.nativeEvent as unknown as {
+                            stopImmediatePropagation: () => void
+                        }
+                    ).stopImmediatePropagation()
                 }
 
                 if (!isDisabled) {
@@ -198,10 +205,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                                     closeButtonTokens.backgroundColor.active,
                             }}
                         >
-                            <X
-                                size={closeIconSize}
-                                aria-hidden="true"
-                            />
+                            <X size={closeIconSize} aria-hidden="true" />
                         </Block>
                     </TabsV2IconContainer>
                 )}
