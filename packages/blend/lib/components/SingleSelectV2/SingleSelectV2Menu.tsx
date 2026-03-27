@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import { useVirtualizer } from '@tanstack/react-virtual'
@@ -33,6 +33,10 @@ import SingleSelectV2List from './SingleSelectV2List'
 import SingleSelectV2VirtualList from './SingleSelectV2VirtualList'
 import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
+import {
+    getBaseVirtualViewportHeight,
+    getAdjustedVirtualViewportHeight,
+} from '../common/virtualViewport'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
@@ -91,6 +95,7 @@ const SingleSelectV2Menu = ({
     const searchContainerRef = useRef<HTMLDivElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const virtualScrollRef = useRef<HTMLDivElement>(null)
+    const [virtualReady, setVirtualReady] = useState(false)
 
     usePreventParentScroll(open, contentRef, [...MENU_SCROLL_SELECTORS])
     useScrollLock(open)
@@ -123,9 +128,17 @@ const SingleSelectV2Menu = ({
         () => flattenGroups(filteredItems),
         [filteredItems]
     )
-    const virtualViewportHeight = maxMenuHeight
-        ? Math.max(maxMenuHeight - (enableSearch ? 0 : 0), 120)
-        : 340
+    const virtualViewportHeight = getBaseVirtualViewportHeight(maxMenuHeight)
+
+    useEffect(() => {
+        if (enableVirtualization && open && virtualScrollRef.current) {
+            setVirtualReady(true)
+            return
+        }
+        if (!open) {
+            setVirtualReady(false)
+        }
+    }, [enableVirtualization, open])
 
     const virtualizer = useVirtualizer({
         count: flattenedItems.length,
@@ -139,7 +152,8 @@ const SingleSelectV2Menu = ({
             width: 0,
             height: virtualViewportHeight,
         },
-        enabled: enableVirtualization && flattenedItems.length > 0,
+        enabled:
+            enableVirtualization && flattenedItems.length > 0 && virtualReady,
     })
 
     const { searchHeight } = useSelectV2MenuBehavior({
@@ -158,9 +172,10 @@ const SingleSelectV2Menu = ({
         endReachedThreshold,
     })
 
-    const adjustedVirtualViewportHeight = maxMenuHeight
-        ? Math.max(maxMenuHeight - (enableSearch ? searchHeight : 0), 120)
-        : 340
+    const adjustedVirtualViewportHeight = getAdjustedVirtualViewportHeight(
+        maxMenuHeight,
+        enableSearch ? searchHeight : 0
+    )
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled && newOpen) return
@@ -178,9 +193,11 @@ const SingleSelectV2Menu = ({
         items.length === 0 ? 'No items available' : 'No results found'
 
     const showVirtualList =
-        enableVirtualization && flattenedItems.length > 0 && !showEmptyState
+        enableVirtualization &&
+        flattenedItems.length > 0 &&
+        !showEmptyState &&
+        virtualReady
     const virtualItems = virtualizer.getVirtualItems()
-    const hasVirtualRows = virtualItems.length > 0
 
     return (
         <RadixMenu.Root
@@ -296,7 +313,7 @@ const SingleSelectV2Menu = ({
                                         {emptyMessage}
                                     </Text>
                                 </Block>
-                            ) : showVirtualList && hasVirtualRows ? (
+                            ) : showVirtualList ? (
                                 <SingleSelectV2VirtualList
                                     flattenedItems={flattenedItems}
                                     selected={selected}

@@ -71,6 +71,7 @@ type FontSizesType = Readonly<{
     28: CSSObject['fontSize']
     32: CSSObject['fontSize']
     36: CSSObject['fontSize']
+    38: CSSObject['fontSize']
     40: CSSObject['fontSize']
     44: CSSObject['fontSize']
     48: CSSObject['fontSize']
@@ -98,6 +99,7 @@ type LineHeightType = Readonly<{
     28: CSSObject['lineHeight']
     32: CSSObject['lineHeight']
     36: CSSObject['lineHeight']
+    38: CSSObject['lineHeight']
     40: CSSObject['lineHeight']
     44: CSSObject['lineHeight']
     48: CSSObject['lineHeight']
@@ -259,6 +261,7 @@ const fontTokens: FontTokensType = {
         28: 28,
         32: 32,
         36: 36,
+        38: 38,
         40: 40,
         44: 44,
         48: 48,
@@ -286,6 +289,7 @@ const fontTokens: FontTokensType = {
         28: 28,
         32: 32,
         36: 36,
+        38: 38,
         40: 40,
         44: 44,
         48: 48,

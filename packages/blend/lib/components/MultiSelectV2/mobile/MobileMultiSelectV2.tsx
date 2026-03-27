@@ -343,10 +343,8 @@ const MobileMultiSelectV2 = ({
         <Block
             data-multi-select="multi-select"
             data-status={disabled ? 'disabled' : 'enabled'}
-            width={
-                isSmallScreen ? '100%' : (triggerDimensions?.width ?? '100%')
-            }
-            maxWidth={triggerDimensions?.maxWidth ?? '100%'}
+            width={triggerDimensions?.width}
+            maxWidth={triggerDimensions?.maxWidth}
             minWidth={triggerDimensions?.minWidth}
             display="flex"
             flexDirection="column"
