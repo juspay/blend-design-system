@@ -17,7 +17,7 @@ describe('CodeEditorV2', () => {
             <CodeEditorV2
                 value="const x: number = 1"
                 language="typescript"
-                header="TS Editor"
+                header={{ title: 'TS Editor' }}
             />
         )
 
@@ -31,7 +31,7 @@ describe('CodeEditorV2', () => {
                 originalValue="console.log('old')"
                 diff
                 variant={CodeEditorV2Variant.DIFF}
-                header="Diff view"
+                header={{ title: 'Diff view' }}
             />
         )
 

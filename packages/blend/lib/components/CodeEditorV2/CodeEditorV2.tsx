@@ -3,7 +3,7 @@ import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
 import { CodeEditorV2Variant } from './codeEditorV2.types'
-import { CodeEditorV2Props } from './codeEditorV2.types'
+import type { CodeEditorV2Props } from './codeEditorV2.types'
 import {
     copyToClipboardWithTemporaryFeedback,
     shouldShowLineNumbers,
@@ -12,6 +12,14 @@ import {
 import { CodeEditorV2Header } from './CodeEditorV2Header'
 import { MonacoEditorWrapper } from './MonacoEditor/MonacoEditorWrapper'
 
+const DEFAULT_HEADER: NonNullable<CodeEditorV2Props['header']> = {
+    showHeader: true,
+    title: 'Editor',
+    leftSlot: null,
+    rightSlot: null,
+    showCopyButton: true,
+}
+
 const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
     (
         {
@@ -19,13 +27,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             onChange,
             variant = CodeEditorV2Variant.DEFAULT,
             showLineNumbers,
-            header = {
-                showHeader: true,
-                title: 'Editor',
-                leftSlot: null,
-                rightSlot: null,
-                showCopyButton: true,
-            },
+            header: headerProp,
             language = 'javascript',
             placeholder,
             readOnly = false,
@@ -42,6 +44,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
         },
         ref
     ) => {
+        const header = { ...DEFAULT_HEADER, ...headerProp }
         const tokens = useResponsiveTokens<CodeEditorV2Tokens>('CODEEDITORV2')
         const [isCopied, setIsCopied] = useState(false)
         const copyFeedbackTimeoutRef = useRef<ReturnType<
@@ -82,7 +85,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                 backgroundColor={tokens.backgroundColor}
                 boxShadow={tokens.boxShadow}
                 style={containerStyles}
-                data-codeeditor={header}
+                data-codeeditor={header.title ?? DEFAULT_HEADER.title}
             >
                 {header.showHeader && (
                     <CodeEditorV2Header

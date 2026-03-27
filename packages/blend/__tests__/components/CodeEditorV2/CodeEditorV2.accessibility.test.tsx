@@ -25,7 +25,7 @@ describe('CodeEditorV2 Accessibility', () => {
                 <CodeEditorV2
                     value="const answer = 42"
                     readOnly
-                    header="Read-only editor"
+                    header={{ title: 'Read-only editor' }}
                 />
             )
 
@@ -40,7 +40,7 @@ describe('CodeEditorV2 Accessibility', () => {
                     originalValue="console.log('old')"
                     diff
                     variant={CodeEditorV2Variant.DIFF}
-                    header="Diff editor"
+                    header={{ title: 'Diff editor' }}
                 />
             )
 
