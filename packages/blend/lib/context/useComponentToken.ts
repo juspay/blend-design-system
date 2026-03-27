@@ -20,6 +20,7 @@ import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
+import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
 import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
@@ -56,6 +57,7 @@ import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { ResponsiveTimelineTokens } from '../components/Timeline/timeline.token'
 import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
+import { ResponsiveStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 
@@ -81,6 +83,7 @@ export const useComponentToken = (
     | ResponsiveBreadcrumbTokens
     | ResponsivePopoverTokens
     | ResponsiveMenuTokensType
+    | ResponsiveMenuV2TokensType
     | ResponsiveMultiSelectTokens
     | ResponsiveSingleSelectTokens
     | ResponsiveTableTokens
@@ -117,13 +120,12 @@ export const useComponentToken = (
     | ResponsiveTextInputV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
-    | ResponsiveTextInputV2Tokens
     | ResponsiveTimelineTokens
     | ResponsiveCheckboxV2Tokens
     | ResponsiveKeyValuePairV2Tokens
+    | ResponsiveStatCardV2Tokens
     | ResponsiveRadioV2Tokens
-    | ResponsivePopoverV2Tokens
-    | ResponsiveTextInputV2Tokens => {
+    | ResponsivePopoverV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -164,6 +166,8 @@ export const useComponentToken = (
             return componentTokens.POPOVERV2
         case 'MENU':
             return componentTokens.MENU
+        case 'MENU_V2':
+            return componentTokens.MENU_V2
         case 'MULTI_SELECT':
             return componentTokens.MULTI_SELECT
         case 'TABLE':
@@ -242,6 +246,8 @@ export const useComponentToken = (
             return componentTokens.CHECKBOXV2
         case 'KEYVALUEPAIRV2':
             return componentTokens.KEYVALUEPAIRV2
+        case 'STATCARDV2':
+            return componentTokens.STATCARDV2
         case 'TOOLTIPV2':
             return componentTokens.TOOLTIPV2
         case 'RADIOV2':

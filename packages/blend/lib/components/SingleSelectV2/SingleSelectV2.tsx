@@ -38,7 +38,11 @@ const SingleSelectV2 = ({
     usePanelOnMobile = true,
     menuPosition,
     menuDimensions,
-    triggerDimensions,
+    triggerDimensions = {
+        width: 'auto',
+        minWidth: 'auto',
+        maxWidth: 'auto',
+    },
     inline = false,
     enableVirtualization,
     virtualListItemHeight,
@@ -177,13 +181,12 @@ const SingleSelectV2 = ({
         )
     }
 
-    const triggerWidth = triggerDimensions?.width ?? 'fit-content'
-
     return (
         <Block
             data-single-select-v2={label || 'single-select-v2'}
+            data-single-select={label || 'single-select-v2'}
             data-status={disabled ? 'disabled' : 'enabled'}
-            width={triggerWidth === '100%' ? '100%' : 'fit-content'}
+            width={'auto'}
             display="flex"
             flexDirection="column"
             gap={singleSelectTokens.gap}
@@ -209,8 +212,8 @@ const SingleSelectV2 = ({
             >
                 <Block
                     position="relative"
-                    width={triggerWidth === '100%' ? '100%' : 'fit-content'}
-                    maxWidth={triggerWidth === '100%' ? '100%' : 'fit-content'}
+                    width={triggerDimensions.width}
+                    maxWidth={triggerDimensions.maxWidth}
                     display="flex"
                     alignItems="center"
                 >

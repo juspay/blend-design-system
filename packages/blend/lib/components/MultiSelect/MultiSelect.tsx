@@ -72,8 +72,6 @@ const MultiSelect = ({
     sideOffset,
     alignOffset,
     inline = false,
-    onBlur,
-    onFocus,
     error,
     errorMessage,
     showActionButtons,
@@ -103,7 +101,9 @@ const MultiSelect = ({
     onClearAllClick,
     onOpenChange,
     multiSelectGroupPosition,
+    ...rest
 }: MultiSelectProps) => {
+    const { onFocus, onBlur, ...buttonRest } = rest
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const slotRef = useRef<HTMLDivElement>(null)
@@ -152,6 +152,18 @@ const MultiSelect = ({
 
     const shouldShake = useErrorShake(error || false)
 
+    const callOnFocus = () => {
+        if (typeof onFocus === 'function') {
+            onFocus(undefined as unknown as React.FocusEvent<HTMLButtonElement>)
+        }
+    }
+
+    const callOnBlur = () => {
+        if (typeof onBlur === 'function') {
+            onBlur(undefined as unknown as React.FocusEvent<HTMLButtonElement>)
+        }
+    }
+
     const generatedId = useId()
     const {
         uniqueName,
@@ -195,8 +207,8 @@ const MultiSelect = ({
                 enableSelectAll={enableSelectAll}
                 selectAllText={selectAllText}
                 customTrigger={customTrigger}
-                onBlur={onBlur}
-                onFocus={onFocus}
+                onBlur={callOnBlur}
+                onFocus={callOnFocus}
                 error={error}
                 errorMessage={errorMessage}
                 showActionButtons={shouldShowActionButtons}
@@ -316,9 +328,9 @@ const MultiSelect = ({
                             onOpenChange={(isOpen) => {
                                 setOpen(isOpen)
                                 if (isOpen) {
-                                    onFocus?.()
+                                    callOnFocus()
                                 } else {
-                                    onBlur?.()
+                                    callOnBlur()
                                 }
                                 onOpenChange?.(isOpen)
                             }}
@@ -453,6 +465,13 @@ const MultiSelect = ({
                                                     .color.disabled,
                                             },
                                         })}
+                                        onFocus={() => {
+                                            callOnFocus()
+                                        }}
+                                        onBlur={() => {
+                                            callOnBlur()
+                                        }}
+                                        {...buttonRest}
                                     >
                                         {slot && (
                                             <Block

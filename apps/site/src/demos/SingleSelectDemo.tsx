@@ -574,11 +574,32 @@ const SingleSelectDemo = () => {
                                     // minDropdownWidth={100}
                                     error={playgroundError}
                                     errorMessage={playgroundErrorMessage}
+                                    onFocus={() => {
+                                        console.log('focus')
+                                    }}
                                     onBlur={() => {
                                         console.log('blur')
                                     }}
-                                    onFocus={() => {
-                                        console.log('focus')
+                                    onClick={() => {
+                                        console.log('click')
+                                    }}
+                                    onKeyDown={(e) => {
+                                        console.log('keydown', e.key)
+                                    }}
+                                    onKeyUp={(e) => {
+                                        console.log('keyup', e.key)
+                                    }}
+                                    onMouseEnter={() => {
+                                        console.log('mouse enter')
+                                    }}
+                                    onMouseLeave={() => {
+                                        console.log('mouse leave')
+                                    }}
+                                    onMouseDown={() => {
+                                        console.log('mouse down')
+                                    }}
+                                    onMouseUp={() => {
+                                        console.log('mouse up')
                                     }}
                                     // useDrawerOnMobile={false}
                                     label={playgroundLabel}

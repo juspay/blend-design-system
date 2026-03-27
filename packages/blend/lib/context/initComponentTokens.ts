@@ -58,9 +58,11 @@ import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInp
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
 import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { getStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
+import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -106,6 +108,8 @@ const initTokens = (
             componentTokens.BREADCRUMB ?? getBreadcrumbTokens(foundationTokens),
         POPOVER: componentTokens.POPOVER ?? getPopoverTokens(foundationTokens),
         MENU: componentTokens.MENU ?? getMenuTokens(foundationTokens),
+        MENU_V2:
+            componentTokens.MENU_V2 ?? getMenuV2Tokens(foundationTokens, theme),
         MULTI_SELECT:
             componentTokens.MULTI_SELECT ??
             getMultiSelectTokens(foundationTokens),
@@ -188,6 +192,9 @@ const initTokens = (
         KEYVALUEPAIRV2:
             componentTokens.KEYVALUEPAIRV2 ??
             getKeyValuePairV2Tokens(foundationTokens, theme),
+        STATCARDV2:
+            componentTokens.STATCARDV2 ??
+            getStatCardV2Tokens(foundationTokens, theme),
         TOOLTIPV2:
             componentTokens.TOOLTIPV2 ??
             getTooltipV2Tokens(foundationTokens, theme),

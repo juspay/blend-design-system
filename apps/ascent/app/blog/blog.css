@@ -1,0 +1,106 @@
+/**
+ * Blog light-theme overrides
+ *
+ * globals.css applies CSS variables that flip to dark values under
+ * prefers-color-scheme: dark. These rules force the blog section to
+ * always render in light theme regardless of the user's system preference.
+ *
+ * Blog token classes (text-blog-*, border-blog-*, bg-blog-*) are
+ * intentionally re-declared here rather than relying solely on Tailwind
+ * JIT output. Because this file is imported as a CSS module it is bundled
+ * into the page stylesheet and is guaranteed to be present even when the
+ * Tailwind JIT cache is stale.
+ */
+
+/* ── Force light theme on the blog section ────────────────────────── */
+
+html:has(.blog-root),
+body:has(.blog-root) {
+    background-color: #ffffff !important;
+    color: #202020 !important;
+    color-scheme: light !important;
+    --background: oklch(1 0 0) !important;
+    --foreground: oklch(0.145 0 0) !important;
+    --navbar-height: 0px;
+}
+
+/* ── Border token classes ─────────────────────────────────────────── */
+
+.border-blog-border {
+    border-color: #e1e4ea !important;
+}
+.border-t-blog-border {
+    border-top-color: #e1e4ea !important;
+}
+.border-b-blog-border {
+    border-bottom-color: #e1e4ea !important;
+}
+.border-l-blog-border {
+    border-left-color: #e1e4ea !important;
+}
+.border-r-blog-border {
+    border-right-color: #e1e4ea !important;
+}
+.border-blog-border-muted {
+    border-color: #c8cdd6 !important;
+}
+.border-blog-separator {
+    border-color: #e5e7eb !important;
+}
+.border-blog-ink {
+    border-color: #202020 !important;
+}
+
+/* ── Text token classes ───────────────────────────────────────────── */
+
+.text-blog-ink {
+    color: #202020 !important;
+}
+.text-blog-heading {
+    color: #111827 !important;
+}
+.text-blog-body {
+    color: #374151 !important;
+}
+.text-blog-secondary {
+    color: #525866 !important;
+}
+.text-blog-tertiary {
+    color: #717784 !important;
+}
+.text-blog-muted {
+    color: #7d7d7d !important;
+}
+.text-blog-label {
+    color: #99a0ae !important;
+}
+.text-blog-subtle {
+    color: #adadad !important;
+}
+
+/* ── Background token classes ─────────────────────────────────────── */
+
+.bg-blog-surface {
+    background-color: #fcfcfd !important;
+}
+.bg-blog-surface-subtle {
+    background-color: #fafafa !important;
+}
+.bg-blog-surface-raised {
+    background-color: #f4f5f7 !important;
+}
+.bg-blog-code {
+    background-color: #f3f4f6 !important;
+}
+.bg-blog-border {
+    background-color: #e1e4ea !important;
+}
+
+/* ── Text-decoration token classes ────────────────────────────────── */
+
+.decoration-blog-border-muted {
+    text-decoration-color: #c8cdd6 !important;
+}
+.decoration-blog-heading {
+    text-decoration-color: #111827 !important;
+}
