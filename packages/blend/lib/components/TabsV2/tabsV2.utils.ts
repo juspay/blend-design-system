@@ -37,7 +37,7 @@ export const processTabsWithConcatenation = (
         }
     })
 
-    return [...tabs, ...processedDynamic]
+    return processedDynamic
 }
 
 export const prepareDropdownItems = (

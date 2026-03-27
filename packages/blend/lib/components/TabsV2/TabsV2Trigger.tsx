@@ -79,6 +79,24 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
             [onClose, isDisabled]
         )
 
+        const preventCloseAffordanceSelection = useCallback(
+            (e: React.MouseEvent | React.PointerEvent) => {
+                e.stopPropagation()
+                e.preventDefault()
+                if (
+                    e.nativeEvent &&
+                    'stopImmediatePropagation' in e.nativeEvent
+                ) {
+                    ;(
+                        e.nativeEvent as unknown as {
+                            stopImmediatePropagation: () => void
+                        }
+                    ).stopImmediatePropagation()
+                }
+            },
+            []
+        )
+
         const triggerContent = (
             <StyledTabsTrigger
                 data-status={isDisabled ? 'disabled' : 'enabled'}
@@ -98,6 +116,14 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                         border: 'none',
                     }),
                     ...style,
+                }}
+                onClickCapture={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    const target = e.target as HTMLElement | null
+                    if (target?.closest('[data-element="close-slot"]')) {
+                        e.preventDefault()
+                        e.stopPropagation()
+                    }
+                    domProps.onClickCapture?.(e)
                 }}
                 {...domProps}
             >
@@ -183,6 +209,8 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                             aria-label={`Close ${children ?? 'tab'}`}
                             tabIndex={isDisabled ? -1 : 0}
                             onClick={handleCloseClick}
+                            onMouseDown={preventCloseAffordanceSelection}
+                            onPointerDown={preventCloseAffordanceSelection}
                             onKeyDown={(e: React.KeyboardEvent) => {
                                 if (isDisabled) return
                                 if (e.key === 'Enter' || e.key === ' ') {
