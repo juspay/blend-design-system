@@ -245,6 +245,7 @@ const TableHeader = forwardRef<
         const [editingField, setEditingField] = useState<string | null>(null)
         const editableRef = useRef<HTMLDivElement>(null)
         const headerRowRef = useRef<HTMLTableRowElement>(null)
+        const isRenamingRef = useRef<boolean>(false)
 
         useEffect(() => {
             if (
@@ -543,6 +544,21 @@ const TableHeader = forwardRef<
                 range.collapse(false)
                 selection?.removeAllRanges()
                 selection?.addRange(range)
+
+                // Scroll the editable element into view to ensure cursor is visible
+                editableRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'end',
+                })
+
+                const scrollEditableToEnd = () => {
+                    if (!editableRef.current) return
+                    editableRef.current.scrollLeft =
+                        editableRef.current.scrollWidth
+                }
+                scrollEditableToEnd()
+                requestAnimationFrame(scrollEditableToEnd)
             }
         }, [editingField])
 
@@ -567,10 +583,12 @@ const TableHeader = forwardRef<
                 )
                 onColumnChange?.(updatedColumns)
             }
+            isRenamingRef.current = false
             setEditingField(null)
         }
 
         const handleHeaderRename = (field: string) => {
+            isRenamingRef.current = true
             setEditingField(field)
         }
 
@@ -882,7 +900,8 @@ const TableHeader = forwardRef<
                                                 outline: 'none',
                                                 cursor: 'text',
                                                 whiteSpace: 'nowrap',
-                                                overflow: 'hidden',
+                                                overflowX: 'auto',
+                                                overflowY: 'hidden',
                                             }}
                                         >
                                             {column.header}
@@ -1204,7 +1223,11 @@ const TableHeader = forwardRef<
                                                                         scrollContainer?.scrollLeft ||
                                                                         0
 
-                                                                    buttonRef.focus()
+                                                                    if (
+                                                                        !isRenamingRef.current
+                                                                    ) {
+                                                                        buttonRef.focus()
+                                                                    }
 
                                                                     requestAnimationFrame(
                                                                         () => {
@@ -1436,7 +1459,8 @@ const TableHeader = forwardRef<
                                                                                         )
                                                                                     ]
                                                                                 if (
-                                                                                    buttonRef
+                                                                                    buttonRef &&
+                                                                                    !isRenamingRef.current
                                                                                 ) {
                                                                                     buttonRef.focus()
                                                                                 }
@@ -1466,7 +1490,8 @@ const TableHeader = forwardRef<
                                                                                         )
                                                                                     ]
                                                                                 if (
-                                                                                    buttonRef
+                                                                                    buttonRef &&
+                                                                                    !isRenamingRef.current
                                                                                 ) {
                                                                                     buttonRef.focus()
                                                                                 }
@@ -1738,7 +1763,10 @@ const TableHeader = forwardRef<
                                                                             column.field
                                                                         )
                                                                     ]
-                                                                if (buttonRef) {
+                                                                if (
+                                                                    buttonRef &&
+                                                                    !isRenamingRef.current
+                                                                ) {
                                                                     buttonRef.focus()
                                                                 }
                                                             }, 100)
@@ -1760,7 +1788,10 @@ const TableHeader = forwardRef<
                                                                             column.field
                                                                         )
                                                                     ]
-                                                                if (buttonRef) {
+                                                                if (
+                                                                    buttonRef &&
+                                                                    !isRenamingRef.current
+                                                                ) {
                                                                     buttonRef.focus()
                                                                 }
                                                             }, 100)
