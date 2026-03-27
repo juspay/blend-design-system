@@ -69,7 +69,12 @@ type FilterComponentsProps = {
 type MenuItemProps = {
     icon: React.ReactNode
     label: string
-    onClick?: () => void
+    onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
+    /**
+     * Default true. Set false when MenuItem is used
+     * as a Radix `asChild` trigger (Popover, etc).
+     */
+    stopPropagationOnClick?: boolean
     trailingIcon?: React.ReactNode
     isDestructive?: boolean
     tableToken: TableTokenType
@@ -81,79 +86,91 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
             icon,
             label,
             onClick,
+            stopPropagationOnClick = true,
             trailingIcon,
             isDestructive,
             tableToken,
             ...props
         },
         ref
-    ) => (
-        <Block
-            ref={ref}
-            {...props}
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            gap={tableToken.dataTable.table.header.filter.itemGap}
-            padding={
-                tableToken.dataTable.table.header.filter.sortOption.padding
-            }
-            borderRadius={
-                tableToken.dataTable.table.header.filter.sortOption.borderRadius
-            }
-            cursor="pointer"
-            backgroundColor="transparent"
-            _hover={{
-                backgroundColor:
-                    tableToken.dataTable.table.header.filter.sortOption
-                        .hoverBackground,
-            }}
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                e.stopPropagation()
-                onClick?.()
-            }}
-            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    onClick?.()
-                }
-            }}
-            tabIndex={0}
-            role="menuitem"
-            _focus={{ outline: 'none' }}
-            // _focusVisible={{
-            //     outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-            //     outlineOffset: '2px',
-            // }}
-        >
+    ) => {
+        const interactiveHandlers = onClick
+            ? {
+                  onClick: (e: React.MouseEvent<HTMLDivElement>) => {
+                      if (stopPropagationOnClick) e.stopPropagation()
+                      onClick(e)
+                  },
+                  onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          if (stopPropagationOnClick) e.stopPropagation()
+                          onClick(
+                              e as unknown as React.MouseEvent<HTMLDivElement>
+                          )
+                      }
+                  },
+              }
+            : {}
+
+        return (
             <Block
+                ref={ref}
+                {...props}
                 display="flex"
                 alignItems="center"
+                justifyContent="space-between"
                 gap={tableToken.dataTable.table.header.filter.itemGap}
+                padding={
+                    tableToken.dataTable.table.header.filter.sortOption.padding
+                }
+                borderRadius={
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .borderRadius
+                }
+                cursor="pointer"
+                backgroundColor="transparent"
+                _hover={{
+                    backgroundColor:
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .hoverBackground,
+                }}
+                {...interactiveHandlers}
+                tabIndex={0}
+                role="menuitem"
+                _focus={{ outline: 'none' }}
+                // _focusVisible={{
+                //     outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                //     outlineOffset: '2px',
+                // }}
             >
-                {icon}
-                <PrimitiveText
-                    style={{
-                        fontSize:
-                            tableToken.dataTable.table.header.filter.sortOption
-                                .fontSize,
-                        color: isDestructive
-                            ? FOUNDATION_THEME.colors.red[500]
-                            : tableToken.dataTable.table.header.filter
-                                  .sortOption.textColor,
-                        fontWeight: isDestructive
-                            ? 600
-                            : tableToken.dataTable.table.header.filter
-                                  .sortOption.fontWeight,
-                    }}
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    gap={tableToken.dataTable.table.header.filter.itemGap}
                 >
-                    {label}
-                </PrimitiveText>
+                    {icon}
+                    <PrimitiveText
+                        style={{
+                            fontSize:
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.fontSize,
+                            color: isDestructive
+                                ? FOUNDATION_THEME.colors.red[500]
+                                : tableToken.dataTable.table.header.filter
+                                      .sortOption.textColor,
+                            fontWeight: isDestructive
+                                ? 600
+                                : tableToken.dataTable.table.header.filter
+                                      .sortOption.fontWeight,
+                        }}
+                    >
+                        {label}
+                    </PrimitiveText>
+                </Block>
+                {trailingIcon}
             </Block>
-            {trailingIcon}
-        </Block>
-    )
+        )
+    }
 )
 
 export const SortOptions: React.FC<{
@@ -1356,6 +1373,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                                 />
                             }
                             label="Filter"
+                            stopPropagationOnClick={false}
                             trailingIcon={
                                 <ChevronRight
                                     size={iconSize}
