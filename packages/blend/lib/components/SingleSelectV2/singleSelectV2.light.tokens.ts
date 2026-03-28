@@ -239,7 +239,7 @@ export const getSingleSelectV2LightTokens = (
                 },
             },
             groupLabel: {
-                margin: `0 ${foundationToken.unit[8]}`,
+                margin: '0',
                 paddingTop: foundationToken.unit[8],
                 paddingRight: foundationToken.unit[6],
                 paddingBottom: foundationToken.unit[8],

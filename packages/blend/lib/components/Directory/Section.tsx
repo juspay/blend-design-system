@@ -22,15 +22,20 @@ const useSectionState = () => {
 
 export { SectionStateContext }
 
-const ChevronWrapper = styled(Block)<{ $isOpen: boolean }>`
+const ChevronWrapper = styled(Block)<{
+    $isOpen: boolean
+    $tokens: DirectoryTokenType
+}>`
     display: flex;
     align-items: center;
     justify-content: center;
     margin-left: auto;
 
     & > svg {
-        width: 16px;
-        height: 16px;
+        width: ${({ $tokens }) =>
+            $tokens.section.header.chevron.width} !important;
+        height: ${({ $tokens }) =>
+            $tokens.section.header.chevron.width} !important;
         transition: transform 150ms;
         transform: ${({ $isOpen }) =>
             $isOpen ? 'rotate(180deg)' : 'rotate(0)'};
@@ -184,14 +189,18 @@ const Section = ({
                         variant="body.sm"
                         color={tokens.section.header.label.color}
                         fontWeight={tokens.section.header.label.fontWeight}
+                        fontSize={tokens.section.header.label.fontSize}
                     >
                         {section.label.toUpperCase()}
                     </Text>
                     {isCollapsible && (
-                        <ChevronWrapper $isOpen={isOpen} aria-hidden="true">
+                        <ChevronWrapper
+                            $isOpen={isOpen}
+                            $tokens={tokens}
+                            aria-hidden="true"
+                        >
                             <ChevronDown
                                 color={tokens.section.header.chevron.color}
-                                size={tokens.section.header.chevron.width}
                             />
                         </ChevronWrapper>
                     )}
