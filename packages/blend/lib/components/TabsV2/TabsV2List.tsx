@@ -276,16 +276,15 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 style={{
                     position: stickyHeader ? 'sticky' : 'relative',
                     top: stickyHeader ? offsetTop : 'auto',
-                    zIndex: stickyHeader ? 50 : 'auto',
+                    zIndex: stickyHeader
+                        ? tabsToken.tabList.stickyHeader.zIndex
+                        : 'auto',
                     backgroundColor: stickyHeader
                         ? stickyHeaderBackground
                         : 'transparent',
-                    borderBottom:
-                        variant === TabsV2Variant.UNDERLINE && !hasAnySkeleton
-                            ? tabsToken.borderBottom[variant]
-                            : 'none',
+                    borderBottom: 'none',
                     boxShadow: stickyHeader
-                        ? tabsToken.chrome.stickyHeaderShadow
+                        ? tabsToken.tabList.stickyHeader.boxShadow
                         : 'none',
                 }}
             >

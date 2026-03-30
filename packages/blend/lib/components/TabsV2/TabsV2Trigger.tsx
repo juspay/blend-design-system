@@ -40,7 +40,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
 
         const tabsToken = useResponsiveTokens<TabsV2TokensType>('TABSV2')
         const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
-        const closeButtonTokens = tabsToken.trigger.closeButton
+        const closeButtonTokens = tabsToken.tabList.trigger.closeButton
         const closeButtonSize = closeButtonTokens.width
         const closeIconSize =
             typeof closeButtonSize === 'number'
@@ -52,7 +52,8 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
             ? closeButtonTokens.backgroundColor.disabled
             : closeButtonTokens.backgroundColor.default
 
-        const skeletonBorderRadius = tabsToken.borderRadius[size][variant]
+        const skeletonBorderRadius =
+            tabsToken.tabList.trigger.borderRadius[size][variant]
 
         const { isActive: _isActive, style, ...domProps } = props
         void _isActive
@@ -119,9 +120,13 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                                 position: 'absolute',
                                 inset: 0,
                                 backgroundColor:
-                                    tabsToken.backgroundColor[variant].active,
+                                    tabsToken.tabList.trigger.backgroundColor[
+                                        variant
+                                    ].active,
                                 borderRadius:
-                                    tabsToken.borderRadius[size][variant],
+                                    tabsToken.tabList.trigger.borderRadius[
+                                        size
+                                    ][variant],
                                 zIndex: -1,
                             }}
                             transition={{
@@ -150,16 +155,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     </TabsV2IconContainer>
                 )}
 
-                <span
-                    style={{
-                        flexGrow: 1,
-                        position: 'relative',
-                        zIndex: 1,
-                        opacity: shouldShowSkeleton ? 0 : 1,
-                    }}
-                >
-                    {children}
-                </span>
+                <Block as="span">{children}</Block>
 
                 {rightSlot && (
                     <TabsV2IconContainer

@@ -13,7 +13,7 @@ import {
 } from '../../../../packages/blend/lib/components/TabsV2'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
-import { ChevronDown, Plus } from 'lucide-react'
+import { ChevronDown, Plus, User } from 'lucide-react'
 
 const variantOptions = [
     { value: TabsV2Variant.UNDERLINE, label: 'Underline' },
@@ -119,6 +119,10 @@ const TabsV2Demo = () => {
                                 closableNewTabs && tab.value.startsWith('new-')
                                     ? () => handleTabClose(tab.value)
                                     : undefined
+                            }
+                            leftSlot={<User size={16} aria-hidden="true" />}
+                            rightSlot={
+                                <ChevronDown size={16} aria-hidden="true" />
                             }
                         >
                             {tab.label}

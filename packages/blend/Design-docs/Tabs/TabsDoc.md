@@ -178,7 +178,7 @@ type TabsV2TokensType = {
     }
     outline: CSSObject['outline']
     transition: CSSObject['transition']
-    container: {
+    tabList: {
         backgroundColor: {
             [key in TabsV2Variant]: CSSObject['backgroundColor']
         }
@@ -197,9 +197,6 @@ type TabsV2TokensType = {
                 }
             }
         }
-    }
-    trigger: {
-        gap: CSSObject['gap']
         activeIndicator: {
             height: CSSObject['height']
             color: CSSObject['color']
@@ -209,6 +206,12 @@ type TabsV2TokensType = {
             transition: CSSObject['transition']
             zIndex: CSSObject['zIndex']
         }
+        stickyHeader: {
+            boxShadow: CSSObject['boxShadow']
+        }
+    }
+    trigger: {
+        gap: CSSObject['gap']
         text: {
             color: {
                 [key in TabsV2Variant]: {
@@ -232,9 +235,6 @@ type TabsV2TokensType = {
         outline: CSSObject['outline']
         transition: CSSObject['transition']
     }
-    chrome: {
-        stickyHeaderShadow: CSSObject['boxShadow']
-    }
 }
 
 type ResponsiveTabsV2Tokens = {
@@ -242,7 +242,7 @@ type ResponsiveTabsV2Tokens = {
 }
 ```
 
-**Token Pattern**: `component.container.element.CSSProp.[size].[variant].[state]`
+**Token Pattern**: `component.tabList.element.CSSProp.[size].[variant].[state]`
 
 ## Design Decisions
 
