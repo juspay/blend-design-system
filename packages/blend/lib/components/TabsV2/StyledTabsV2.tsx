@@ -165,4 +165,6 @@ export const TabsV2IconContainer = styled.span<{
     alignItems: 'center',
     justifyContent: 'center',
     gap: props.$tabsToken.tabList.trigger.gap,
+    maxWidth: props.$tabsToken.tabList.trigger.icon.maxWidth,
+    maxHeight: props.$tabsToken.tabList.trigger.icon.maxWidth,
 }))

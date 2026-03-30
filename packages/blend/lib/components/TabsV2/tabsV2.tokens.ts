@@ -44,6 +44,9 @@ export type TabsV2TokensType = {
         }
         trigger: {
             gap: CSSObject['gap']
+            icon: {
+                maxWidth: CSSObject['maxWidth']
+            }
             backgroundColor: {
                 [key in TabsV2Variant]: {
                     [key in TabsV2State]: CSSObject['backgroundColor']

@@ -105,6 +105,9 @@ export const getTabsV2DarkTokens = (
                 },
                 trigger: {
                     gap: foundationToken.unit[8],
+                    icon: {
+                        maxWidth: foundationToken.unit[20],
+                    },
                     backgroundColor: {
                         [TabsV2Variant.UNDERLINE]: {
                             default: 'transparent',
@@ -365,6 +368,9 @@ export const getTabsV2DarkTokens = (
                 },
                 trigger: {
                     gap: foundationToken.unit[8],
+                    icon: {
+                        maxWidth: foundationToken.unit[20],
+                    },
                     backgroundColor: {
                         [TabsV2Variant.UNDERLINE]: {
                             default: 'transparent',

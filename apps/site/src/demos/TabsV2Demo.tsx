@@ -120,7 +120,7 @@ const TabsV2Demo = () => {
                                     ? () => handleTabClose(tab.value)
                                     : undefined
                             }
-                            leftSlot={<User size={16} aria-hidden="true" />}
+                            leftSlot={<User size={28} aria-hidden="true" />}
                             rightSlot={
                                 <ChevronDown size={16} aria-hidden="true" />
                             }
