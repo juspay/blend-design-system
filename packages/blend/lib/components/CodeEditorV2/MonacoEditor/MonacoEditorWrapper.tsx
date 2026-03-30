@@ -109,7 +109,17 @@ export function MonacoEditorWrapper({
 }: MonacoEditorWrapperProps) {
     const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
     const monacoRef = useRef<typeof import('monaco-editor') | null>(null)
+    const diffModifiedOnChangeDisposableRef = useRef<Monaco.IDisposable | null>(
+        null
+    )
+    const onChangeRef = useRef(onChange)
+    const readOnlyRef = useRef(readOnly)
+    const disabledRef = useRef(disabled)
     const [isEditorReady, setIsEditorReady] = useState(false)
+
+    onChangeRef.current = onChange
+    readOnlyRef.current = readOnly
+    disabledRef.current = disabled
 
     const monacoLanguage = useMemo(() => mapLanguage(language), [language])
     const editorTheme = useMemo(() => createEditorTheme(tokens), [tokens])
@@ -162,12 +172,31 @@ export function MonacoEditorWrapper({
         monacoRef.current = monaco
         setIsEditorReady(true)
 
+        diffModifiedOnChangeDisposableRef.current?.dispose()
+        diffModifiedOnChangeDisposableRef.current = null
+
+        const modified = diffEditor.getModifiedEditor()
+        diffModifiedOnChangeDisposableRef.current =
+            modified.onDidChangeModelContent(() => {
+                if (readOnlyRef.current || disabledRef.current) return
+                const cb = onChangeRef.current
+                if (!cb) return
+                cb(modified.getValue())
+            })
+
         const scrollbarOverride = {
             scrollbar: { alwaysConsumeMouseWheel: false },
         }
         diffEditor.getOriginalEditor().updateOptions(scrollbarOverride)
         diffEditor.getModifiedEditor().updateOptions(scrollbarOverride)
     }
+
+    useEffect(() => {
+        return () => {
+            diffModifiedOnChangeDisposableRef.current?.dispose()
+            diffModifiedOnChangeDisposableRef.current = null
+        }
+    }, [diff])
 
     useEffect(() => {
         if (!diff || !diffContainerRef.current) return

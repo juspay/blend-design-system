@@ -147,13 +147,27 @@ export function getEditorMetrics(
         DEFAULT_EDITOR_FONT_SIZE_PX
     )
     const lineHeightToken = tokens.body.code.lineHeight
-    const lineHeightMultiplier =
-        typeof lineHeightToken === 'number'
-            ? lineHeightToken
-            : parseFloat(
-                  String(lineHeightToken ?? DEFAULT_LINE_HEIGHT_MULTIPLIER)
-              )
-    const lineHeight = lineHeightMultiplier * fontSize
+    let lineHeight: number
+
+    if (typeof lineHeightToken === 'number') {
+        // Numeric tokens are treated as unitless multipliers.
+        lineHeight = lineHeightToken * fontSize
+    } else {
+        const raw = lineHeightToken ?? DEFAULT_LINE_HEIGHT_MULTIPLIER
+        const str = String(raw).trim()
+        if (/^[\d.]+$/.test(str)) {
+            // Unitless numeric string: treat as multiplier.
+            const multiplier = parseFloat(str)
+            lineHeight = multiplier * fontSize
+        } else {
+            // CSS-like value with units (e.g. "18px", "1.2rem", "140%"):
+            // parse as an absolute line height and do not scale by font size.
+            const absolute = parseFloat(str)
+            lineHeight = Number.isFinite(absolute)
+                ? absolute
+                : DEFAULT_LINE_HEIGHT_MULTIPLIER * fontSize
+        }
+    }
 
     const verticalPadding = toNumericValue(
         tokens.body.paddingTop,
