@@ -881,6 +881,7 @@ const TableHeader = forwardRef<
                                             ref={editableRef}
                                             contentEditable
                                             suppressContentEditableWarning
+                                            className="hide-scrollbar"
                                             onBlur={(e) =>
                                                 handleHeaderSave(
                                                     String(column.field),
@@ -902,6 +903,8 @@ const TableHeader = forwardRef<
                                                 whiteSpace: 'nowrap',
                                                 overflowX: 'auto',
                                                 overflowY: 'hidden',
+                                                scrollbarWidth: 'none',
+                                                msOverflowStyle: 'none',
                                             }}
                                         >
                                             {column.header}
