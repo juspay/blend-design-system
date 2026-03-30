@@ -80,13 +80,10 @@ A modern code editor component built on Monaco, with Blend design tokens, light/
             control: 'boolean',
             description: 'Whether to show line numbers',
         },
-        showHeader: {
-            control: 'boolean',
-            description: 'Whether to render the header section',
-        },
         header: {
-            control: 'text',
-            description: 'Header title text',
+            control: 'object',
+            description:
+                'Header config: showHeader, title, leftSlot, rightSlot, showCopyButton',
         },
         readOnly: {
             control: 'boolean',
@@ -148,8 +145,11 @@ export const Default: Story = {
     args: {
         value: SAMPLE_CODE,
         language: 'typescript',
-        showHeader: true,
-        header: 'Sample code',
+        header: {
+            showHeader: true,
+            title: 'Sample code',
+            showCopyButton: true,
+        },
         showLineNumbers: true,
         readOnly: false,
         disabled: false,
@@ -161,7 +161,10 @@ export const ReadOnly: Story = {
     args: {
         ...Default.args,
         readOnly: true,
-        header: 'Read-only code sample',
+        header: {
+            ...Default.args?.header,
+            title: 'Read-only code sample',
+        },
     },
 }
 
@@ -170,8 +173,11 @@ export const DiffSideBySide: Story = {
         value: DIFF_MODIFIED,
         originalValue: DIFF_ORIGINAL,
         language: 'typescript',
-        showHeader: true,
-        header: 'Diff (side by side)',
+        header: {
+            showHeader: true,
+            title: 'Diff (side by side)',
+            showCopyButton: true,
+        },
         diff: true,
         renderSideBySide: true,
         minHeight: '260px',
@@ -183,8 +189,11 @@ export const DiffInline: Story = {
         value: DIFF_MODIFIED,
         originalValue: DIFF_ORIGINAL,
         language: 'typescript',
-        showHeader: true,
-        header: 'Diff (inline)',
+        header: {
+            showHeader: true,
+            title: 'Diff (inline)',
+            showCopyButton: true,
+        },
         diff: true,
         renderSideBySide: false,
         minHeight: '260px',
