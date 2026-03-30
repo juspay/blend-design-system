@@ -181,7 +181,7 @@ export function createStubAnchorClickEvent(
         pageY: 0,
         detail: 1,
         relatedTarget: null,
-        getModifierState: (_key: string) => false,
+        getModifierState: () => false,
     } as unknown as React.MouseEvent<HTMLAnchorElement>
 
     return stub
