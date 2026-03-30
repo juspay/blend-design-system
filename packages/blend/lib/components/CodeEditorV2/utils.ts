@@ -91,6 +91,12 @@ export const shouldShowLineNumbers = (
     )
 }
 
+/** True when Monaco should render the diff editor (either explicit `diff` or `variant="diff"`). */
+export const isDiffEditorMode = (
+    diff: boolean | undefined,
+    variant: CodeEditorV2Variant
+): boolean => Boolean(diff) || variant === CodeEditorV2Variant.DIFF
+
 /**
  * Calculates container styles with min/max height
  */

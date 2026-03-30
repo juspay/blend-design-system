@@ -38,7 +38,6 @@ describe('CodeEditorV2 Accessibility', () => {
                 <CodeEditorV2
                     value="console.log('new')"
                     originalValue="console.log('old')"
-                    diff
                     variant={CodeEditorV2Variant.DIFF}
                     header={{ title: 'Diff editor' }}
                 />

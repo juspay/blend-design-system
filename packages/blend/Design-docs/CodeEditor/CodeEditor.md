@@ -150,13 +150,11 @@ export function DiffExample() {
     return (
         <CodeEditorV2
             variant={CodeEditorV2Variant.DIFF}
-            diff
             originalValue={`console.log('old')`}
             value={`console.log('new')`}
             language="javascript"
             renderSideBySide
-            header="Diff"
-            showHeader
+            header={{ showHeader: true, title: 'Diff' }}
         />
     )
 }
@@ -175,6 +173,12 @@ export function DiffExample() {
 **Decision**: Diff state is primarily communicated via background/gutter/overview colors (`diffEditor.*`), driven by `DiffLineType`.
 
 **Rationale**: Monaco’s theming is global; per-line diff state is best represented via diff decorations rather than trying to vary token colors per diff line.
+
+### 3. Diff mode: `diff` and `variant`
+
+**Decision**: Monaco’s diff editor is shown when **`diff={true}` or `variant={CodeEditorV2Variant.DIFF}`** (either is sufficient; both are allowed).
+
+**Rationale**: A single `variant` choice should not leave the editor in single-file mode by mistake; `isDiffEditorMode` in `utils.ts` combines the two flags before passing to `MonacoEditorWrapper`.
 
 ## Testing
 

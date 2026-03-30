@@ -6,11 +6,13 @@ import { CodeEditorV2Variant } from './codeEditorV2.types'
 import type { CodeEditorV2Props } from './codeEditorV2.types'
 import {
     copyToClipboardWithTemporaryFeedback,
+    isDiffEditorMode,
     shouldShowLineNumbers,
     getContainerStyles,
 } from './utils'
 import { CodeEditorV2Header } from './CodeEditorV2Header'
 import { MonacoEditorWrapper } from './MonacoEditor/MonacoEditorWrapper'
+import { filterBlockedProps } from '../../utils/prop-helpers'
 
 const DEFAULT_HEADER: NonNullable<CodeEditorV2Props['header']> = {
     showHeader: true,
@@ -35,15 +37,20 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             minHeight = '300px',
             maxHeight,
             height,
+            width,
+            maxWidth,
+            minWidth,
             onBlur,
             onFocus,
             autoFocus = false,
             diff = false,
             originalValue,
             renderSideBySide = true,
+            ...rest
         },
         ref
     ) => {
+        const filteredRest = filterBlockedProps(rest)
         const header = { ...DEFAULT_HEADER, ...headerProp }
         const tokens = useResponsiveTokens<CodeEditorV2Tokens>('CODEEDITORV2')
         const [isCopied, setIsCopied] = useState(false)
@@ -64,6 +71,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             showLineNumbers,
             variant
         )
+        const isDiff = isDiffEditorMode(diff, variant)
 
         const copyToClipboard = useCallback(() => {
             copyToClipboardWithTemporaryFeedback(
@@ -76,9 +84,12 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
 
         return (
             <Block
+                {...filteredRest}
                 ref={ref}
                 position="relative"
-                width="100%"
+                width={width ?? '100%'}
+                maxWidth={maxWidth}
+                minWidth={minWidth}
                 borderRadius={tokens.borderRadius}
                 border={tokens.border}
                 overflow="hidden"
@@ -114,7 +125,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                     onFocus={onFocus}
                     onBlur={onBlur}
                     autoFocus={autoFocus}
-                    diff={diff}
+                    diff={isDiff}
                     originalValue={originalValue}
                     renderSideBySide={renderSideBySide}
                 />

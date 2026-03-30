@@ -61,7 +61,7 @@ export function createEditorTheme(
     const syntax = tokens.body.syntax
     const gutter = tokens.body.gutter
     const highlight = tokens.body.highlightedLine.backgroundColor
-    const keyword = syntax.keyword ?? MONACO_COLOR_FALLBACK
+    const keyword = syntax.keyword.color ?? MONACO_COLOR_FALLBACK
     const gutterColor = gutter.color ?? backupColor.body.gutter.color
 
     const rules = SYNTAX_RULE_SPEC.map(({ token, syntaxKey, fontStyle }) => ({

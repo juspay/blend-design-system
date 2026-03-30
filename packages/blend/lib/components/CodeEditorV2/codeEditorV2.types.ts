@@ -47,6 +47,7 @@ export type CodeEditorV2Dimensions = {
 export type CodeEditorV2Props = {
     value: string
     onChange?: (value: string) => void
+    /** Use `DIFF` to enable Monaco’s diff editor (same as `diff={true}`; either is enough). */
     variant?: CodeEditorV2Variant
     showLineNumbers?: boolean
     header?: {
@@ -63,7 +64,10 @@ export type CodeEditorV2Props = {
     onBlur?: () => void
     onFocus?: () => void
     autoFocus?: boolean
-    /** When true, renders a side-by-side diff view instead of a single editor. */
+    /**
+     * When true, renders Monaco’s diff view. Same as `variant={CodeEditorV2Variant.DIFF}`—use
+     * either (or both); diff mode is on if either is set.
+     */
     diff?: boolean
     /** The original (left-side) source for diff mode. */
     originalValue?: string
@@ -72,7 +76,7 @@ export type CodeEditorV2Props = {
 } & CodeEditorV2Dimensions &
     Omit<
         React.HTMLAttributes<HTMLDivElement>,
-        'style' | 'className' | 'onChange'
+        'style' | 'className' | 'onChange' | 'children'
     >
 export type CodeEditorV2HeaderProps = {
     title?: string
