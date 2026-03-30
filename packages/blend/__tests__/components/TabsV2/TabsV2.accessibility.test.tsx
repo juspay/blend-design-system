@@ -165,16 +165,6 @@ describe('TabsV2 Accessibility', () => {
         })
 
         it('close button icon is hidden from screen readers', () => {
-            const { container } = render(
-                <TabsV2 defaultValue="tab1">
-                    <TabsV2List>
-                        <TabsV2Trigger value="tab1" closable>
-                            My Tab
-                        </TabsV2Trigger>
-                    </TabsV2List>
-                </TabsV2>
-            )
-
             const closeButton = screen.queryByLabelText('Close My Tab')
             expect(closeButton).toBeInTheDocument()
         })

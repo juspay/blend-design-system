@@ -12,7 +12,7 @@ import {
     TabsV2Variant,
     TabsV2Size,
 } from '../../../lib/components/TabsV2/tabsV2.types'
-import { Info, X } from 'lucide-react'
+import { Info } from 'lucide-react'
 
 describe('TabsV2', () => {
     beforeEach(() => {
@@ -425,7 +425,6 @@ describe('TabsV2', () => {
         })
 
         it('does not call onClose when disabled', async () => {
-            const user = userEvent.setup()
             const onClose = vi.fn()
             render(
                 <TabsV2 defaultValue="tab1" disabled>
