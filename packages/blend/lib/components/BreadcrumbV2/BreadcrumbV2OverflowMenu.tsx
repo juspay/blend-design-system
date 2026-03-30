@@ -12,6 +12,13 @@ import type { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
 import type { IndexedBreadcrumbChild } from './utils'
 import { getPlainTextFromReactNode } from './utils'
 
+function createStubNativeClickEvent(): MouseEvent {
+    if (typeof globalThis.MouseEvent === 'function') {
+        return new globalThis.MouseEvent('click')
+    }
+    return { type: 'click' } as unknown as MouseEvent
+}
+
 function createStubAnchorClickEvent(
     href: string
 ): React.MouseEvent<HTMLAnchorElement> {
@@ -26,7 +33,7 @@ function createStubAnchorClickEvent(
         stopPropagation: () => {},
         currentTarget: anchor,
         target: anchor,
-        nativeEvent: new MouseEvent('click'),
+        nativeEvent: createStubNativeClickEvent(),
         bubbles: true,
         cancelable: true,
         defaultPrevented: false,

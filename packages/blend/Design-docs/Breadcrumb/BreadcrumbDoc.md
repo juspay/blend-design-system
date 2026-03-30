@@ -19,7 +19,7 @@ Home / … / Category / Subcategory / Current Page
 - **Item (`BreadcrumbV2.Item`)**: wraps content in a link (or current-page text semantics via tokens); accepts **`Page`**, **`Icon`**, and arbitrary composition order.
 - **Page (`BreadcrumbV2.Page`)**: label text styling from tokens.
 - **Icon (`BreadcrumbV2.Icon`)**: decorative icon wrapper (`aria-hidden`, `data-element="breadcrumb-icon"`). Use multiple `Icon` instances before/after `Page` as needed (e.g. home glyph + chevron).
-- **Overflow**: ellipsis `button` with `aria-label` like `Show N more breadcrumb items`, `aria-haspopup="menu"`, `aria-expanded="false"` (menu wiring is app responsibility).
+  **Overflow**: ellipsis `button` that opens a built-in `MenuV2`-backed overflow menu (the component manages `aria-label` such as `Show N more breadcrumb items`, `aria-haspopup="menu"`, and `aria-expanded` state internally).
 - **Separator**: `/` (or custom) between items via **`BreadcrumbV2Separator`** inside the root implementation.
 
 ![Breadcrumb Anatomy](./BreadcrumbAnatomy.png)
@@ -117,11 +117,10 @@ Registered as **`BREADCRUMBV2`** in theme / `useResponsiveTokens`.
 
 ## Design Decisions
 
-### 1. Composable-only surface
+### 1. Composable-first surface
 
-**Decision**: `BreadcrumbV2` accepts **`Item` children** only; no `items[]` prop on the component.
-
-**Rationale**: Clear slotting for icons and labels, flexible order, and alignment with other compound components in the design system.
+**Decision**: The primary API for `BreadcrumbV2` is composable **`Item` children`, but an `items[]` prop is also available for data-driven usage.
+**Rationale\*\*: Composable children provide clear slotting for icons and labels, flexible order, and alignment with other compound components in the design system, while `items[]` supports simple list-based configuration when composition is not needed.
 
 ### 2. Single `Icon` subcomponent
 

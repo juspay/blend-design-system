@@ -54,10 +54,21 @@ export function computeBreadcrumbOverflowLayout(
     rest: IndexedBreadcrumbChild[]
     menuItems: IndexedBreadcrumbChild[]
 } {
-    const shouldShowMenu = indexed.length > maxItems
+    const effectiveMaxItems = Math.max(maxItems, 4)
+    const shouldShowMenu = indexed.length > effectiveMaxItems
     const base = indexed[0]
-    const rest = shouldShowMenu ? indexed.slice(-3) : indexed.slice(1)
-    const menuItems = shouldShowMenu ? indexed.slice(1, indexed.length - 3) : []
+    if (!shouldShowMenu) {
+        return {
+            shouldShowMenu,
+            base,
+            rest: indexed.slice(1),
+            menuItems: [],
+        }
+    }
+    // Number of trailing items to keep visible after the base item.
+    const tailCount = Math.min(indexed.length - 1, effectiveMaxItems - 1)
+    const rest = indexed.slice(-tailCount)
+    const menuItems = indexed.slice(1, indexed.length - tailCount)
 
     return { shouldShowMenu, base, rest, menuItems }
 }

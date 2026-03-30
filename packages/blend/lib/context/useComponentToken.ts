@@ -127,8 +127,8 @@ export const useComponentToken = (
     | ResponsiveStatCardV2Tokens
     | ResponsiveRadioV2Tokens
     | ResponsivePopoverV2Tokens
-    | ResponsiveBreadcrumbV2Tokens
-    | ResponsiveTextInputV2Tokens => {
+    | ResponsiveTextInputV2Tokens
+    | ResponsiveBreadcrumbV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
