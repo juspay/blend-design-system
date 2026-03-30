@@ -1,5 +1,5 @@
 import Block from '../Primitives/Block/Block'
-import { BreadcrumbCompoundIconProps } from './breadcrumbV2.types'
+import type { BreadcrumbCompoundIconProps } from './breadcrumbV2.types'
 
 const BreadcrumbV2Icon = ({ children }: BreadcrumbCompoundIconProps) => {
     return (

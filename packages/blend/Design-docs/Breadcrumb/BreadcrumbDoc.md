@@ -4,7 +4,7 @@
 
 - Display a linear list of navigational links (breadcrumbs) showing the current path.
 - **Composable API**: `Item`, `Page`, optional `Icon` (repeat for multiple icons; **order** defines layout), and `Separator` (used between items by the root; overridable via compound export).
-- **Overflow**: when the number of `Item` children exceeds **`maxItems`** (default `4`), show first crumb, an ellipsis control, then the **last three** segments.
+- **Overflow**: when the number of `Item` children exceeds **`maxItems`** (default `4`), show first crumb, an ellipsis control, then the **last three** segments (or fewer if `maxItems` leaves less room). The prop is honored as given (no hidden minimum of 4); use a finite integer ≥ 1 — values below 1 or non-finite values disable overflow and show all crumbs inline.
 - Fully accessible: `nav` landmark with an accessible name, current page via `aria-current="page"` on the active item.
 - Responsive layout and horizontal scrolling on the nav container when necessary.
 - **Loading**: no built-in skeleton on `BreadcrumbV2`; compose the shared **`Skeleton`** (or placeholders) beside real items in the app if needed.
@@ -29,6 +29,8 @@ Home / … / Category / Subcategory / Current Page
 ```typescript
 export type BreadcrumbV2Props = {
     children?: React.ReactNode
+    /** Optional controlled items array alternative to composable children. */
+    items?: BreadcrumbV2ItemType[]
     /** When `Item` count exceeds this, show ellipsis + last three segments. Default `4`. */
     maxItems?: number
 }
@@ -157,7 +159,8 @@ Registered as **`BREADCRUMBV2`** in theme / `useResponsiveTokens`.
 - Root: `nav` with `aria-label="Breadcrumb navigation"`.
 - Each non-active crumb is navigable as a link; active crumb exposes `aria-current="page"`.
 - `BreadcrumbV2.Icon` sets `aria-hidden="true"` on the wrapper when icons are decorative.
-- Ellipsis: `aria-label` includes the count of hidden items; add keyboard and menu behavior when implementing the overflow panel.
+- Ellipsis: `aria-label` includes the count of hidden items;
+- Ellipsis: opens a `MenuV2`-based overflow panel with full keyboard interaction; `aria-label` includes the count of hidden items.
 - Ensure focus styles on links and the ellipsis control meet WCAG contrast for the active theme.
 
 ## Related

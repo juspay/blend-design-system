@@ -32,6 +32,11 @@ export type BreadcrumbCompoundItemProps = {
 export type BreadcrumbV2Props = {
     children?: React.ReactNode
     items?: BreadcrumbV2ItemType[]
+    /**
+     * When the number of `Item`s (or `items` entries) is **greater than** this value,
+     * the bar collapses to first crumb + ellipsis + trailing segment(s). Use a finite
+     * integer ≥ 1; values below 1 or non-finite values disable overflow (all crumbs inline).
+     */
     maxItems?: number
 }
 

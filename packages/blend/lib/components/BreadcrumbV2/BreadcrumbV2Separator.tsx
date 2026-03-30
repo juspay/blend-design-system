@@ -1,7 +1,7 @@
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Block from '../Primitives/Block/Block'
-import { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
-import { BreadcrumbCompoundSeparatorProps } from './breadcrumbV2.types'
+import type { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
+import type { BreadcrumbCompoundSeparatorProps } from './breadcrumbV2.types'
 
 const BreadcrumbV2Separator = ({
     children,

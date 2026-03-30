@@ -2,7 +2,7 @@ import type { MouseEvent } from 'react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import PrimitiveLink from '../Primitives/PrimitiveLink'
 import { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
-import { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
+import type { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
 import { getPlainTextFromReactNode } from './utils'
 
 const BreadcrumbV2CompoundItem = ({

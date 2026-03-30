@@ -9,40 +9,11 @@ import {
 } from '../MenuV2/menuV2.types'
 import type { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
 import type { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
-import type { IndexedBreadcrumbChild } from './utils'
-import { getPlainTextFromReactNode } from './utils'
-
-function createStubNativeClickEvent(): MouseEvent {
-    if (typeof globalThis.MouseEvent === 'function') {
-        return new globalThis.MouseEvent('click')
-    }
-    return { type: 'click' } as unknown as MouseEvent
-}
-
-function createStubAnchorClickEvent(
-    href: string
-): React.MouseEvent<HTMLAnchorElement> {
-    const anchor =
-        typeof document !== 'undefined'
-            ? document.createElement('a')
-            : ({} as HTMLAnchorElement)
-    anchor.href = href
-
-    return {
-        preventDefault: () => {},
-        stopPropagation: () => {},
-        currentTarget: anchor,
-        target: anchor,
-        nativeEvent: createStubNativeClickEvent(),
-        bubbles: true,
-        cancelable: true,
-        defaultPrevented: false,
-        eventPhase: 0,
-        isTrusted: false,
-        timeStamp: Date.now(),
-        type: 'click',
-    } as unknown as React.MouseEvent<HTMLAnchorElement>
-}
+import {
+    createStubAnchorClickEvent,
+    getPlainTextFromReactNode,
+    type IndexedBreadcrumbChild,
+} from './utils'
 
 export type BreadcrumbV2OverflowMenuProps = {
     menuItems: IndexedBreadcrumbChild[]
@@ -72,7 +43,10 @@ const BreadcrumbV2OverflowMenu = ({
                         label: { text },
                         onClick: () => {
                             if (props.onClick) {
-                                props.onClick(createStubAnchorClickEvent(href))
+                                const event = createStubAnchorClickEvent(href)
+                                // Match BreadcrumbV2Item: preventDefault before invoking onClick
+                                event.preventDefault()
+                                props.onClick(event)
                             } else if (
                                 href !== '#' &&
                                 typeof window !== 'undefined'

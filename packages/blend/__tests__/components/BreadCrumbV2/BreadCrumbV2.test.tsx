@@ -68,6 +68,29 @@ describe('BreadcrumbV2 Component', () => {
         ).toBeInTheDocument()
     })
 
+    it('respects maxItems when set lower than 4', () => {
+        render(
+            <Breadcrumb maxItems={3}>
+                <Breadcrumb.Item href="/0">
+                    <Breadcrumb.Page>L0</Breadcrumb.Page>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href="/1">
+                    <Breadcrumb.Page>L1</Breadcrumb.Page>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href="/2">
+                    <Breadcrumb.Page>L2</Breadcrumb.Page>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item href="/3">
+                    <Breadcrumb.Page>L3</Breadcrumb.Page>
+                </Breadcrumb.Item>
+            </Breadcrumb>
+        )
+
+        expect(
+            screen.getByLabelText('Show 1 more breadcrumb items')
+        ).toBeInTheDocument()
+    })
+
     it('overflow ellipsis opens a keyboard-accessible menu with hidden segments', async () => {
         const manySegments = [
             { label: 'Home', href: '/' },
