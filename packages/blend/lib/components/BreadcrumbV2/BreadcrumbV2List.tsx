@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { Ellipsis } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
-import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import type { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
+import BreadcrumbV2OverflowMenu from './BreadcrumbV2OverflowMenu'
 import BreadcrumbV2Separator from './BreadcrumbV2Separator'
 import type { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
 import type { IndexedBreadcrumbChild } from './utils'
@@ -73,25 +72,10 @@ const BreadcrumbV2List = ({
 
                 {menuItems.length > 0 ? (
                     <li key="breadcrumb-child-overflow" style={listItemStyle}>
-                        <PrimitiveButton
-                            background={'none'}
-                            borderRadius={
-                                breadcrumbTokens.ellipsis.borderRadius
-                            }
-                            contentCentered
-                            color={breadcrumbTokens.ellipsis.color}
-                            size={24}
-                            aria-label={`Show ${menuItems.length} more breadcrumb items`}
-                            aria-expanded={false}
-                            aria-haspopup="menu"
-                            type="button"
-                        >
-                            <Ellipsis
-                                size={breadcrumbTokens.ellipsis.size}
-                                color={breadcrumbTokens.ellipsis.color}
-                                aria-hidden="true"
-                            />
-                        </PrimitiveButton>
+                        <BreadcrumbV2OverflowMenu
+                            menuItems={menuItems}
+                            breadcrumbTokens={breadcrumbTokens}
+                        />
                         <BreadcrumbV2Separator />
                     </li>
                 ) : null}

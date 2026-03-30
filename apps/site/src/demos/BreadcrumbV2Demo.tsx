@@ -17,30 +17,6 @@ import {
 import { useState } from 'react'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
-/** Maps data segments to composable `BreadcrumbV2.Item` children (demo helper). */
-function BreadcrumbV2FromItems({ items }: { items: BreadcrumbV2ItemType[] }) {
-    return (
-        <BreadcrumbV2>
-            {items.map((item, i) => (
-                <BreadcrumbV2.Item
-                    key={item.href}
-                    href={item.href}
-                    onClick={item.onClick}
-                    isActive={i === items.length - 1}
-                >
-                    {item.leftSlot ? (
-                        <BreadcrumbV2.Icon>{item.leftSlot}</BreadcrumbV2.Icon>
-                    ) : null}
-                    <BreadcrumbV2.Page>{item.label}</BreadcrumbV2.Page>
-                    {item.rightSlot ? (
-                        <BreadcrumbV2.Icon>{item.rightSlot}</BreadcrumbV2.Icon>
-                    ) : null}
-                </BreadcrumbV2.Item>
-            ))}
-        </BreadcrumbV2>
-    )
-}
-
 const BreadcrumbV2Demo = () => {
     const { theme } = useTheme()
     const [playgroundItems] = useState<BreadcrumbV2ItemType[]>([
@@ -263,7 +239,7 @@ const BreadcrumbV2Demo = () => {
                                 : 'border bg-gray-50'
                         }`}
                     >
-                        <BreadcrumbV2FromItems
+                        <BreadcrumbV2
                             items={
                                 showSlots
                                     ? breadcrumbWithSlots
@@ -325,26 +301,24 @@ const BreadcrumbV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
-                            Plain labels (helper → Item/Page)
+                            Plain labels (<code>items</code> prop)
                         </h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems items={simpleBreadcrumb} />
+                            <BreadcrumbV2 items={simpleBreadcrumb} />
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">With Icons</h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems items={mediumBreadcrumb} />
+                            <BreadcrumbV2 items={mediumBreadcrumb} />
                         </div>
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">With Slots</h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
-                                items={breadcrumbWithSlots}
-                            />
+                            <BreadcrumbV2 items={breadcrumbWithSlots} />
                         </div>
                     </div>
 
@@ -353,8 +327,9 @@ const BreadcrumbV2Demo = () => {
                             Loading (Skeleton)
                         </h3>
                         <p className="text-sm text-gray-600">
-                            BreadcrumbV2 is composable only—mirror its layout
-                            with <code>Skeleton</code> while route labels load.
+                            There is no built-in skeleton—mirror the{' '}
+                            <code>items</code> or compound layout with{' '}
+                            <code>Skeleton</code> while route labels load.
                         </p>
                         <div className="p-4 border rounded-lg">
                             <div
@@ -412,9 +387,7 @@ const BreadcrumbV2Demo = () => {
                             E-commerce Navigation
                         </h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
-                                items={ecommerceBreadcrumb}
-                            />
+                            <BreadcrumbV2 items={ecommerceBreadcrumb} />
                         </div>
                     </div>
 
@@ -423,9 +396,7 @@ const BreadcrumbV2Demo = () => {
                             File System Navigation
                         </h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
-                                items={fileSystemBreadcrumb}
-                            />
+                            <BreadcrumbV2 items={fileSystemBreadcrumb} />
                         </div>
                     </div>
 
@@ -434,7 +405,7 @@ const BreadcrumbV2Demo = () => {
                             Deep Product Navigation
                         </h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems items={longBreadcrumb} />
+                            <BreadcrumbV2 items={longBreadcrumb} />
                         </div>
                     </div>
                 </div>
@@ -460,9 +431,7 @@ const BreadcrumbV2Demo = () => {
                                 </p>
                             </div>
 
-                            <BreadcrumbV2FromItems
-                                items={customRoutingBreadcrumb}
-                            />
+                            <BreadcrumbV2 items={customRoutingBreadcrumb} />
 
                             {navigationLog.length > 0 && (
                                 <div className="space-y-2">
@@ -515,7 +484,7 @@ const BreadcrumbV2Demo = () => {
                             Clickable Navigation
                         </h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
+                            <BreadcrumbV2
                                 items={mediumBreadcrumb.map((item) => ({
                                     ...item,
                                     href: `#${item.href}`,
@@ -533,9 +502,7 @@ const BreadcrumbV2Demo = () => {
                             With Right Slots
                         </h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
-                                items={breadcrumbWithSlots}
-                            />
+                            <BreadcrumbV2 items={breadcrumbWithSlots} />
                         </div>
                         <p className="text-sm text-gray-600">
                             Breadcrumb items can have both left and right slots
@@ -554,7 +521,7 @@ const BreadcrumbV2Demo = () => {
                             Website Navigation
                         </h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
+                            <BreadcrumbV2
                                 items={[
                                     {
                                         label: 'Home',
@@ -584,7 +551,7 @@ const BreadcrumbV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Admin Panel</h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
+                            <BreadcrumbV2
                                 items={[
                                     {
                                         label: 'Dashboard',
@@ -609,7 +576,7 @@ const BreadcrumbV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Documentation</h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
+                            <BreadcrumbV2
                                 items={[
                                     {
                                         label: 'Docs',
@@ -636,7 +603,7 @@ const BreadcrumbV2Demo = () => {
                             Settings Navigation
                         </h3>
                         <div className="p-4 border rounded-lg">
-                            <BreadcrumbV2FromItems
+                            <BreadcrumbV2
                                 items={[
                                     {
                                         label: 'Settings',
@@ -670,7 +637,7 @@ const BreadcrumbV2Demo = () => {
                         </h3>
                         <div className="grid grid-cols-1 gap-4">
                             <div className="p-4 border rounded-lg">
-                                <BreadcrumbV2FromItems
+                                <BreadcrumbV2
                                     items={[
                                         {
                                             label: 'Home',
@@ -691,7 +658,7 @@ const BreadcrumbV2Demo = () => {
                                 />
                             </div>
                             <div className="p-4 border rounded-lg">
-                                <BreadcrumbV2FromItems
+                                <BreadcrumbV2
                                     items={[
                                         {
                                             label: 'Home',
@@ -715,7 +682,7 @@ const BreadcrumbV2Demo = () => {
                                 />
                             </div>
                             <div className="p-4 border rounded-lg">
-                                <BreadcrumbV2FromItems
+                                <BreadcrumbV2
                                     items={[
                                         {
                                             label: 'Root',

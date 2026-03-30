@@ -68,6 +68,61 @@ describe('BreadcrumbV2 Component', () => {
         ).toBeInTheDocument()
     })
 
+    it('overflow ellipsis opens a keyboard-accessible menu with hidden segments', async () => {
+        const manySegments = [
+            { label: 'Home', href: '/' },
+            { label: 'One', href: '/1' },
+            { label: 'Two', href: '/2' },
+            { label: 'Three', href: '/3' },
+            { label: 'Four', href: '/4' },
+            { label: 'Five', href: '/5' },
+            { label: 'Six', href: '/6' },
+        ]
+
+        const { user } = render(
+            <BreadcrumbFromSegments segments={manySegments} />
+        )
+        const trigger = screen.getByLabelText('Show 3 more breadcrumb items')
+        expect(trigger).toHaveAttribute('aria-expanded', 'false')
+
+        await user.click(trigger)
+
+        expect(trigger).toHaveAttribute('aria-expanded', 'true')
+        expect(screen.getByRole('menu')).toBeInTheDocument()
+        expect(screen.getAllByRole('menuitem')).toHaveLength(3)
+        expect(
+            screen.getByRole('menuitem', { name: 'One' })
+        ).toBeInTheDocument()
+        expect(
+            screen.getByRole('menuitem', { name: 'Two' })
+        ).toBeInTheDocument()
+        expect(
+            screen.getByRole('menuitem', { name: 'Three' })
+        ).toBeInTheDocument()
+    })
+
+    it('applies overflow to items prop the same as compound Item children', () => {
+        const manySegments = [
+            { label: 'Home', href: '/' },
+            { label: 'One', href: '/1' },
+            { label: 'Two', href: '/2' },
+            { label: 'Three', href: '/3' },
+            { label: 'Four', href: '/4' },
+            { label: 'Five', href: '/5' },
+            { label: 'Six', href: '/6' },
+        ]
+
+        render(<Breadcrumb items={manySegments} />)
+
+        expect(
+            screen.getByLabelText('Show 3 more breadcrumb items')
+        ).toBeInTheDocument()
+        expect(screen.getByText('Home')).toBeInTheDocument()
+        expect(screen.getByText('Four')).toBeInTheDocument()
+        expect(screen.getByText('Five')).toBeInTheDocument()
+        expect(screen.getByText('Six')).toBeInTheDocument()
+    })
+
     it('marks single item as current page', () => {
         render(
             <Breadcrumb>

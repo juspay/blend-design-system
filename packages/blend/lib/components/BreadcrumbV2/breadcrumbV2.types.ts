@@ -5,10 +5,13 @@ import BreadcrumbV2Page from './BreadcrumbV2Page'
 import BreadcrumbV2Separator from './BreadcrumbV2Separator'
 
 export type BreadcrumbV2ItemType = {
+    /** Stable unique id for React list keys when `href` may repeat or collide (e.g. dynamic routes). */
+    id?: string | number
     leftSlot?: React.ReactNode
     rightSlot?: React.ReactNode
     label: string
     href: string
+    /** With `href`, prevents default navigation and runs this handler (SPA / client routing). */
     onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
 }
 
@@ -28,7 +31,7 @@ export type BreadcrumbCompoundItemProps = {
 
 export type BreadcrumbV2Props = {
     children?: React.ReactNode
-    /** When the number of `Item` children exceeds this, show ellipsis + last three segments. Default `4`. */
+    items?: BreadcrumbV2ItemType[]
     maxItems?: number
 }
 
