@@ -242,6 +242,7 @@ const SidebarDemo = () => {
         useState<boolean>(false)
     const [isExpanded, setIsExpanded] = useState<boolean>(true)
     const [, setSidebarState] = useState('expanded')
+    // const [sidebarTopMenuOpen, setSidebarTopMenuOpen] = useState<boolean>(false)
 
     const tenants = [
         {
@@ -1710,7 +1711,62 @@ const SidebarDemo = () => {
                             selected={activeMerchant}
                             onSelect={(value) => setActiveMerchant(value)}
                         />
-                        // <div>aryan</div>
+                        // <Menu
+                        //     open={sidebarTopMenuOpen}
+                        //     onOpenChange={setSidebarTopMenuOpen}
+                        //     trigger={
+                        //         <button
+                        //             className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-gray-200"
+                        //             style={{
+                        //                 width: 32,
+                        //                 height: 32,
+                        //                 backgroundColor:
+                        //                     FOUNDATION_THEME.colors.gray[100],
+                        //             }}
+                        //             title="Sidebar Menu"
+                        //             aria-label="Sidebar top menu"
+                        //         >
+                        //             <MenuIcon
+                        //                 size={18}
+                        //                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                 aria-hidden="true"
+                        //             />
+                        //         </button>
+                        //     }
+                        //     items={
+                        //         [
+                        //             {
+                        //                 items: [
+                        //                     {
+                        //                         label: 'Menu Item 1',
+                        //                         slot1: (
+                        //                             <Square
+                        //                                 size={16}
+                        //                                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                             />
+                        //                         ),
+                        //                         onClick: () =>
+                        //                             alert('Menu item 1 clicked'),
+                        //                     },
+                        //                     {
+                        //                         label: 'Menu Item 2',
+                        //                         slot1: (
+                        //                             <Square
+                        //                                 size={16}
+                        //                                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                             />
+                        //                         ),
+                        //                         onClick: () =>
+                        //                             alert('Menu item 2 clicked'),
+                        //                     },
+                        //                 ],
+                        //             },
+                        //         ] as MenuGroupType[]
+                        //     }
+                        //     side={MenuSide.TOP}
+                        //     alignment={MenuAlignment.END}
+                        //     sideOffset={8}
+                        // />
                     }
                     rightActions={
                         <div className="flex items-center gap-1">
