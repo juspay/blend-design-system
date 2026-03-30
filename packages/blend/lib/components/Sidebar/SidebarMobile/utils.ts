@@ -47,8 +47,9 @@ export const getMobileNavigationLayout = (
         primaryReservedSlots?: number
     }
 ) => {
+    const safeItems = items ?? []
     const reservedSlots = Math.max(0, options?.primaryReservedSlots ?? 0)
-    const hasOverflow = items.length > primaryVisibleLimit
+    const hasOverflow = safeItems.length > primaryVisibleLimit
     const primaryCapacity = hasOverflow
         ? Math.max(0, primaryVisibleLimit - 1)
         : primaryVisibleLimit
@@ -57,8 +58,8 @@ export const getMobileNavigationLayout = (
         primaryCapacity - reservedSlots
     )
 
-    const primaryItems = items.slice(0, effectivePrimaryCapacity)
-    const secondaryItems = items.slice(effectivePrimaryCapacity)
+    const primaryItems = safeItems.slice(0, effectivePrimaryCapacity)
+    const secondaryItems = safeItems.slice(effectivePrimaryCapacity)
     const hasSecondaryItems = secondaryItems.length > 0
     const secondaryRowCount = hasSecondaryItems
         ? Math.ceil(secondaryItems.length / primaryVisibleLimit)
@@ -82,7 +83,8 @@ export const getMobileNavigationSecondaryRows = (
     secondaryItems: MobileNavigationItem[],
     primaryVisibleLimit: number
 ): MobileNavigationItem[][] => {
-    if (!secondaryItems.length) {
+    const safeSecondaryItems = secondaryItems ?? []
+    if (!safeSecondaryItems.length) {
         return []
     }
 
