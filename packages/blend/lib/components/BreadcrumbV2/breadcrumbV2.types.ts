@@ -34,8 +34,10 @@ export type BreadcrumbV2Props = {
     items?: BreadcrumbV2ItemType[]
     /**
      * When the number of `Item`s (or `items` entries) is **greater than** this value,
-     * the bar collapses to first crumb + ellipsis + trailing segment(s). Use a finite
-     * integer ≥ 1; values below 1 or non-finite values disable overflow (all crumbs inline).
+     * the bar collapses to first crumb + ellipsis + trailing segment(s). At least one
+     * trailing segment stays visible when overflow is active (so the current page is not
+     * menu-only). Use a finite integer ≥ 1; values below 1 or non-finite values disable
+     * overflow (all crumbs inline).
      */
     maxItems?: number
 }

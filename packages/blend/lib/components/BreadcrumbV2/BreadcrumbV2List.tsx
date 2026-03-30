@@ -76,7 +76,7 @@ const BreadcrumbV2List = ({
                             menuItems={menuItems}
                             breadcrumbTokens={breadcrumbTokens}
                         />
-                        <BreadcrumbV2Separator />
+                        {rest.length > 0 && <BreadcrumbV2Separator />}
                     </li>
                 ) : null}
 

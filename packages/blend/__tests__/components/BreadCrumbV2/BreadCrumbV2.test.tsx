@@ -2,6 +2,10 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, MockIcon } from '../../test-utils'
 import Breadcrumb from '../../../lib/components/BreadcrumbV2/BreadcrumbV2'
+import {
+    computeBreadcrumbOverflowLayout,
+    type IndexedBreadcrumbChild,
+} from '../../../lib/components/BreadcrumbV2/utils'
 
 const SAMPLE_SEGMENTS = [
     { label: 'Home', href: '/' },
@@ -29,6 +33,30 @@ function BreadcrumbFromSegments({
         </Breadcrumb>
     )
 }
+
+function mockIndexedItems(count: number): IndexedBreadcrumbChild[] {
+    return Array.from({ length: count }, (_, idx) => ({
+        idx,
+        el: (
+            <Breadcrumb.Item key={String(idx)} href={`/${idx}`}>
+                <Breadcrumb.Page>{`L${idx}`}</Breadcrumb.Page>
+            </Breadcrumb.Item>
+        ),
+    }))
+}
+
+describe('computeBreadcrumbOverflowLayout', () => {
+    it('keeps at least one tail segment when maxItems is 1', () => {
+        const indexed = mockIndexedItems(3)
+        const layout = computeBreadcrumbOverflowLayout(indexed, 1)
+
+        expect(layout.shouldShowMenu).toBe(true)
+        expect(layout.rest).toHaveLength(1)
+        expect(layout.rest[0]?.idx).toBe(2)
+        expect(layout.menuItems).toHaveLength(1)
+        expect(layout.menuItems[0]?.idx).toBe(1)
+    })
+})
 
 describe('BreadcrumbV2 Component', () => {
     it('renders breadcrumb items and container attributes', () => {
@@ -87,7 +115,7 @@ describe('BreadcrumbV2 Component', () => {
         )
 
         expect(
-            screen.getByLabelText('Show 1 more breadcrumb items')
+            screen.getByLabelText(/Show 1 more breadcrumb items?/i)
         ).toBeInTheDocument()
     })
 
@@ -286,7 +314,7 @@ describe('BreadcrumbV2 Component', () => {
             </Breadcrumb>
         )
         expect(
-            screen.getByLabelText('Show 1 more breadcrumb items')
+            screen.getByLabelText(/Show 1 more breadcrumb items?/i)
         ).toBeInTheDocument()
         expect(
             document.querySelector('[data-status="enabled-selected"]')

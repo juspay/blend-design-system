@@ -4,7 +4,7 @@
 
 - Display a linear list of navigational links (breadcrumbs) showing the current path.
 - **Composable API**: `Item`, `Page`, optional `Icon` (repeat for multiple icons; **order** defines layout), and `Separator` (used between items by the root; overridable via compound export).
-- **Overflow**: when the number of `Item` children exceeds **`maxItems`** (default `4`), show first crumb, an ellipsis control, then the **last three** segments (or fewer if `maxItems` leaves less room). The prop is honored as given (no hidden minimum of 4); use a finite integer ≥ 1 — values below 1 or non-finite values disable overflow and show all crumbs inline.
+- **Overflow**: when the number of `Item` children exceeds **`maxItems`** (default `4`), show first crumb, an ellipsis control, then up to the **last three** segments (or fewer if `maxItems` leaves less room). **At least one** trailing segment stays on the bar when overflow is on (including when `maxItems` is 1), so the current page is never only inside the menu. Use a finite integer ≥ 1 — values below 1 or non-finite values disable overflow and show all crumbs inline.
 - Fully accessible: `nav` landmark with an accessible name, current page via `aria-current="page"` on the active item.
 - Responsive layout and horizontal scrolling on the nav container when necessary.
 - **Loading**: no built-in skeleton on `BreadcrumbV2`; compose the shared **`Skeleton`** (or placeholders) beside real items in the app if needed.
@@ -121,8 +121,8 @@ Registered as **`BREADCRUMBV2`** in theme / `useResponsiveTokens`.
 
 ### 1. Composable-first surface
 
-**Decision**: The primary API for `BreadcrumbV2` is composable **`Item` children`, but an `items[]` prop is also available for data-driven usage.
-**Rationale\*\*: Composable children provide clear slotting for icons and labels, flexible order, and alignment with other compound components in the design system, while `items[]` supports simple list-based configuration when composition is not needed.
+**Decision**: The primary API for `BreadcrumbV2` is composable **`Item` children**, but an `items[]` prop is also available for data-driven usage.
+**Rationale**: Composable children provide clear slotting for icons and labels, flexible order, and alignment with other compound components in the design system, while `items[]` supports simple list-based configuration when composition is not needed.
 
 ### 2. Single `Icon` subcomponent
 

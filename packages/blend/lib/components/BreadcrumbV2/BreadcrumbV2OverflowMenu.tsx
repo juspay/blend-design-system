@@ -91,7 +91,7 @@ const BreadcrumbV2OverflowMenu = ({
                 </PrimitiveButton>
             }
             triggerProps={{
-                'aria-label': `Show ${count} more breadcrumb items`,
+                'aria-label': `Show ${count} more breadcrumb ${count === 1 ? 'item' : 'items'}`,
                 'aria-expanded': open,
                 'aria-haspopup': 'menu',
             }}

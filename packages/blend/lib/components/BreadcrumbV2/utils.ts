@@ -76,7 +76,15 @@ export function computeBreadcrumbOverflowLayout(
         }
     }
     const desiredTailSize = 3
-    const tailCount = Math.min(desiredTailSize, indexed.length - 1, limit - 1)
+    // First crumb + tail share the visible "budget" (limit). `limit - 1` would be 0 when
+    // maxItems is 1; still reserve at least one tail slot so the current/last segment stays
+    // on the trail and is not only reachable via the overflow menu.
+    const maxTailSlots = Math.max(1, limit - 1)
+    const tailCount = Math.min(
+        desiredTailSize,
+        indexed.length - 1,
+        maxTailSlots
+    )
     const rest = indexed.slice(-tailCount)
     const menuItems = indexed.slice(1, indexed.length - tailCount)
 

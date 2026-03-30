@@ -31,6 +31,7 @@ const BreadcrumbV2CompoundItem = ({
 
     return (
         <PrimitiveLink
+            as={isActive ? 'span' : 'a'}
             data-element="breadcrumb-item"
             padding={breadcrumbTokens.item.padding}
             display="flex"
@@ -41,13 +42,16 @@ const BreadcrumbV2CompoundItem = ({
                     isActive ? 'active' : 'default'
                 ]
             }
-            _hover={{
-                color: breadcrumbTokens.item.text.color.hover,
-            }}
-            href={isActive ? undefined : href}
+            {...(!isActive
+                ? {
+                      href,
+                      onClick: onClick ? handleClick : undefined,
+                      _hover: {
+                          color: breadcrumbTokens.item.text.color.hover,
+                      },
+                  }
+                : {})}
             textDecoration="none"
-            onClick={!isActive && onClick ? handleClick : undefined}
-            tabIndex={isActive ? 0 : undefined}
             aria-label={
                 isActive ? `Current page: ${segment}` : `Navigate to ${segment}`
             }
