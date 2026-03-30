@@ -23,7 +23,6 @@ export type ChatInputProps = Omit<
     slot1?: ReactNode
     slot2?: ReactNode
     onChange?: (value: string) => void
-    onSend?: (message: string, files: AttachedFile[]) => void
     onAttachFiles?: (files: File[]) => void
     onVoiceRecord?: () => void
     onFileRemove?: (fileId: string) => void
@@ -43,8 +42,6 @@ export type ChatInputProps = Omit<
 
     // Button customization
     attachButtonIcon?: ReactNode
-    voiceButtonIcon?: ReactNode
-    sendButtonIcon?: ReactNode
 
     // Menu props for overflow files
     overflowMenuProps?: Partial<MenuProps>

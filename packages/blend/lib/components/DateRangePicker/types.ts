@@ -308,9 +308,6 @@ export type DateRangePickerProps = {
     customPresets?: PresetsConfig
     placeholder?: string
     isDisabled?: boolean
-    icon?: ReactNode
-    minDate?: Date
-    maxDate?: Date
     dateFormat?: string
     allowSingleDateSelection?: boolean
     isSingleDatePicker?: boolean

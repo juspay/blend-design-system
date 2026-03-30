@@ -26,11 +26,7 @@ export type ModalProps = {
     primaryAction?: ModalButtonAction
     secondaryAction?: ModalButtonAction
     showCloseButton?: boolean
-    showHeader?: boolean
-    showFooter?: boolean
     closeOnBackdropClick?: boolean
-    customHeader?: ReactNode
-    customFooter?: ReactNode
     headerRightSlot?: ReactNode
     showDivider?: boolean
     minWidth?: string
