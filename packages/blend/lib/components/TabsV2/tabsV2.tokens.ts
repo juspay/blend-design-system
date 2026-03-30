@@ -90,7 +90,6 @@ export type TabsV2TokensType = {
                     [key in TabsV2State]: CSSObject['backgroundColor']
                 }
             }
-            outline: CSSObject['outline']
             transition: CSSObject['transition']
         }
     }

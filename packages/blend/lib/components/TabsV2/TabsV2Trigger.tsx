@@ -88,6 +88,57 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
             [onClose, isDisabled, stopEventPropagation]
         )
 
+        const closeButton = closable && (
+            <TabsV2IconContainer
+                data-element="close-slot"
+                $tabsToken={tabsToken}
+            >
+                <Block
+                    as="span"
+                    role="button"
+                    aria-label={`Close ${children ?? 'tab'}`}
+                    tabIndex={isDisabled ? -1 : 0}
+                    onClick={handleCloseClick}
+                    onMouseDown={stopEventPropagation}
+                    onPointerDown={stopEventPropagation}
+                    onKeyDown={(e: React.KeyboardEvent) => {
+                        if (isDisabled) return
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            stopEventPropagation(e)
+                            onClose?.()
+                        }
+                    }}
+                    width={closeButtonSize}
+                    height={closeButtonSize}
+                    borderRadius={closeButtonTokens.borderRadius}
+                    backgroundColor={closeButtonBackgroundColor}
+                    cursor={isDisabled ? 'not-allowed' : 'pointer'}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    flexShrink={0}
+                    _hover={
+                        !isDisabled
+                            ? {
+                                  backgroundColor:
+                                      closeButtonTokens.backgroundColor.hover,
+                              }
+                            : undefined
+                    }
+                    _active={
+                        !isDisabled
+                            ? {
+                                  backgroundColor:
+                                      closeButtonTokens.backgroundColor.active,
+                              }
+                            : undefined
+                    }
+                >
+                    <X size={closeIconSize} aria-hidden="true" />
+                </Block>
+            </TabsV2IconContainer>
+        )
+
         const triggerContent = (
             <StyledTabsTrigger
                 data-status={isDisabled ? 'disabled' : 'enabled'}
@@ -155,7 +206,11 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     </TabsV2IconContainer>
                 )}
 
-                <Block as="span">{children}</Block>
+                {closable ? (
+                    <span style={{ flexGrow: 1 }}>{children}</span>
+                ) : (
+                    <>{children}</>
+                )}
 
                 {rightSlot && (
                     <TabsV2IconContainer
@@ -175,45 +230,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     </TabsV2IconContainer>
                 )}
 
-                {closable && (
-                    <TabsV2IconContainer
-                        data-element="close-slot"
-                        $tabsToken={tabsToken}
-                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
-                    >
-                        <Block
-                            as="span"
-                            role="button"
-                            aria-label={`Close ${children ?? 'tab'}`}
-                            tabIndex={isDisabled ? -1 : 0}
-                            onClick={handleCloseClick}
-                            onMouseDown={stopEventPropagation}
-                            onPointerDown={stopEventPropagation}
-                            onKeyDown={(e: React.KeyboardEvent) => {
-                                if (isDisabled) return
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    stopEventPropagation(e)
-                                    onClose?.()
-                                }
-                            }}
-                            width={closeButtonSize}
-                            height={closeButtonSize}
-                            borderRadius={closeButtonTokens.borderRadius}
-                            backgroundColor={closeButtonBackgroundColor}
-                            cursor="pointer"
-                            _hover={{
-                                backgroundColor:
-                                    closeButtonTokens.backgroundColor.hover,
-                            }}
-                            _active={{
-                                backgroundColor:
-                                    closeButtonTokens.backgroundColor.active,
-                            }}
-                        >
-                            <X size={closeIconSize} aria-hidden="true" />
-                        </Block>
-                    </TabsV2IconContainer>
-                )}
+                {closable && closeButton}
             </StyledTabsTrigger>
         )
 

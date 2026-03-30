@@ -113,7 +113,6 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
         ? 'none'
         : props.$tabsToken.tabList.trigger.border[props.$variant],
     transition: props.$tabsToken.tabList.trigger.transition,
-    outline: props.$tabsToken.tabList.trigger.outline,
     position: 'relative',
     cursor: 'pointer',
     overflow: 'visible',
@@ -144,10 +143,6 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
             zIndex: 1,
         },
     }),
-
-    '&:focus-visible:not(:disabled)': {
-        outline: 'none',
-    },
 
     '&:disabled': {
         color: props.$tabsToken.tabList.trigger.text.color[props.$variant]

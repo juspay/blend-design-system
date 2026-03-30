@@ -64,6 +64,11 @@ export const calculateTabIndicatorPosition = (
     listElement: HTMLDivElement
 ) => {
     const listWidth = listElement.offsetWidth
+
+    if (listWidth === 0) {
+        return { tabLeft: 0, tabWidth: 0 }
+    }
+
     const tabLeft = tabElement.offsetLeft
     const tabWidth = tabElement.offsetWidth / listWidth
 

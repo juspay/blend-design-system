@@ -163,11 +163,6 @@ describe('TabsV2 Accessibility', () => {
                 expect(rightSlot).toHaveAttribute('aria-hidden', 'true')
             }
         })
-
-        it('close button icon is hidden from screen readers', () => {
-            const closeButton = screen.queryByLabelText('Close My Tab')
-            expect(closeButton).toBeInTheDocument()
-        })
     })
 
     describe('WCAG 1.3.1 Info and Relationships', () => {

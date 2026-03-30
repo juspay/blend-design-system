@@ -35,6 +35,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
             stickyHeader: stickyHeaderProp,
             offsetTop: offsetTopProp,
             children,
+            ...rest
         },
         ref
     ) => {
@@ -318,6 +319,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                                 display: 'flex',
                                 minWidth: 'max-content',
                             }}
+                            {...rest}
                         >
                             {renderChildren()}
                         </StyledTabsList>

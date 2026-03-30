@@ -62,8 +62,8 @@ export type TabsV2TriggerProps = ComponentPropsWithoutRef<
     value: string
     variant?: TabsV2Variant
     size?: TabsV2Size
-    leftSlot?: React.ReactElement
-    rightSlot?: React.ReactElement
+    leftSlot?: ReactNode
+    rightSlot?: ReactNode
     children: string | number
     disabled?: boolean
     /**

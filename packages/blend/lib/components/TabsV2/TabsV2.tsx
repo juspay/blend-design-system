@@ -74,7 +74,6 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
                         ...existingProps,
                         disabled: childDisabled || disabled,
                         ...(isTabsList && {
-                            activeTab,
                             showSkeleton,
                             skeletonVariant,
                             variant,
