@@ -123,6 +123,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             Map<number, boolean>
         >(new Map())
 
+        console.log({ sectionStates })
+
         const setSectionState = useCallback(
             (index: number, isOpen: boolean) => {
                 setSectionStates((prev) => {
