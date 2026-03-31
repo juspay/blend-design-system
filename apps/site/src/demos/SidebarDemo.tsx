@@ -136,6 +136,7 @@ import CheckboxV2Demo from './CheckboxV2Demo'
 import StatCardV2Demo from './StatCardV2Demo'
 import RadioV2Demo from './RadioV2Demo'
 import BreadcrumbV2Demo from './BreadcrumbV2Demo'
+import CodeEditorV2Demo from './CodeEditorV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -227,8 +228,9 @@ const SidebarDemo = () => {
         | 'tooltipV2'
         | 'singleSelectV2'
         | 'popoverV2'
+        | 'codeEditorV2'
         | 'breadcrumbV2'
-    >('breadcrumbV2')
+    >('codeEditorV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -577,6 +579,8 @@ const SidebarDemo = () => {
                 return <TooltipV2Demo />
             case 'breadcrumbV2':
                 return <BreadcrumbV2Demo />
+            case 'codeEditorV2':
+                return <CodeEditorV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -1388,6 +1392,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'codeEditor',
                     onClick: () => setActiveComponent('codeEditor'),
+                },
+                {
+                    label: 'Code Editor V2',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'codeEditorV2',
+                    onClick: () => setActiveComponent('codeEditorV2'),
                 },
                 {
                     label: 'Timeline',

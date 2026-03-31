@@ -174,6 +174,10 @@ import {
     getPopoverV2Tokens,
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
+import {
+    getCodeEditorV2Tokens,
+    ResponsiveCodeEditorV2Tokens,
+} from '../components/CodeEditorV2/codeEditorV2.tokens'
 
 import {
     getBreadcrumbV2Tokens,
@@ -243,6 +247,7 @@ export type ComponentTokenType = {
     RADIOV2?: ResponsiveRadioV2Tokens
     POPOVERV2?: ResponsivePopoverV2Tokens
     BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
+    CODEEDITORV2?: ResponsiveCodeEditorV2Tokens
 }
 
 type ThemeContextType = {
@@ -321,6 +326,7 @@ const ThemeContext = createContext<ThemeContextType>({
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CODEEDITORV2: getCodeEditorV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
