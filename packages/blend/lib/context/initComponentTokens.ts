@@ -63,6 +63,7 @@ import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
+import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -174,6 +175,9 @@ const initTokens = (
         MULTI_SELECT_V2:
             componentTokens.MULTI_SELECT_V2 ??
             getMultiSelectV2Tokens(foundationTokens, theme),
+        BREADCRUMBV2:
+            componentTokens.BREADCRUMBV2 ??
+            getBreadcrumbV2Tokens(foundationTokens, theme),
         AVATARV2:
             componentTokens.AVATARV2 ??
             getAvatarV2Tokens(foundationTokens, theme),

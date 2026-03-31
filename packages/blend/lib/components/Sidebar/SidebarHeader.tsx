@@ -68,7 +68,9 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     }, [iconOnlyMode])
 
     const headerSlot = sidebarTopSlot ? (
-        sidebarTopSlot
+        iconOnlyMode ? null : (
+            sidebarTopSlot
+        )
     ) : (
         <SingleSelect
             helpIconText=""

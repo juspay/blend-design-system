@@ -64,6 +64,22 @@ const StyledElement = styled(Block)<{
     }
 `
 
+const IconWrapper = styled.div<{ $tokens: DirectoryTokenType }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: ${({ $tokens }) => $tokens.section.itemList.item.icon.width};
+    height: ${({ $tokens }) => $tokens.section.itemList.item.icon.width};
+
+    & > svg {
+        width: ${({ $tokens }) =>
+            $tokens.section.itemList.item.icon.width} !important;
+        height: ${({ $tokens }) =>
+            $tokens.section.itemList.item.icon.width} !important;
+    }
+`
+
 const ChevronWrapper = styled(Block)<{
     $isExpanded: boolean
     $tokens: DirectoryTokenType
@@ -74,8 +90,10 @@ const ChevronWrapper = styled(Block)<{
     margin-left: auto;
 
     & > svg {
-        width: ${({ $tokens }) => $tokens.section.itemList.item.chevron.width};
-        height: ${({ $tokens }) => $tokens.section.itemList.item.chevron.width};
+        width: ${({ $tokens }) =>
+            $tokens.section.itemList.item.chevron.width} !important;
+        height: ${({ $tokens }) =>
+            $tokens.section.itemList.item.chevron.width} !important;
         transition: transform 150ms;
         transform: ${({ $isExpanded }) =>
             $isExpanded ? 'rotate(180deg)' : 'rotate(0)'};
@@ -267,17 +285,22 @@ const NavItem = ({
                 )
             }
             if (React.isValidElement(item.leftSlot)) {
-                return React.cloneElement(
-                    item.leftSlot as React.ReactElement<
-                        React.SVGProps<SVGSVGElement>
-                    >,
-                    {
-                        color: isActive
-                            ? tokens.section.itemList.item.color.active
-                            : tokens.section.itemList.item.color.default,
-                        width: 20,
-                        height: 20,
-                    }
+                return (
+                    <IconWrapper $tokens={tokens}>
+                        {React.cloneElement(
+                            item.leftSlot as React.ReactElement<
+                                React.SVGProps<SVGSVGElement> & {
+                                    size?: number
+                                }
+                            >,
+                            {
+                                color: isActive
+                                    ? tokens.section.itemList.item.color.active
+                                    : tokens.section.itemList.item.color
+                                          .default,
+                            }
+                        )}
+                    </IconWrapper>
                 )
             }
             return null
@@ -289,13 +312,15 @@ const NavItem = ({
                     display="flex"
                     alignItems="center"
                     justifyContent="flex-start"
-                    gap="8px"
+                    gap={tokens.section.itemList.item.gap}
                 >
                     {item.leftSlot && React.isValidElement(item.leftSlot) && (
-                        <Block aria-hidden="true">
+                        <IconWrapper aria-hidden="true" $tokens={tokens}>
                             {React.cloneElement(
                                 item.leftSlot as React.ReactElement<
-                                    React.SVGProps<SVGSVGElement>
+                                    React.SVGProps<SVGSVGElement> & {
+                                        size?: number
+                                    }
                                 >,
                                 {
                                     color: isActive
@@ -305,11 +330,13 @@ const NavItem = ({
                                               .default,
                                 }
                             )}
-                        </Block>
+                        </IconWrapper>
                     )}
                     <Text
                         as="span"
                         variant="body.md"
+                        fontWeight={tokens.section.itemList.item.fontWeight}
+                        fontSize={tokens.section.itemList.item.fontSize}
                         color={
                             isActive
                                 ? tokens.section.itemList.item.color.active
