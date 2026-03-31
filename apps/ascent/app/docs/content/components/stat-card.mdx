@@ -207,6 +207,33 @@ function MyComponent() {
         ],
         [
             {
+                content: 'StatCard.minWidth',
+                hintText:
+                    'Optional string for minimum width of the stat card. Defaults to "auto".',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.skeleton',
+                hintText:
+                    'Optional StatCardSkeletonProps for loading state. Contains: variant (required SkeletonVariant), show (required boolean), height (optional), maxWidth (optional), minWidth (optional). Displays a skeleton placeholder while data is loading.',
+            },
+            { content: 'StatCardSkeletonProps', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.dataDisplay',
+                hintText:
+                    'Optional boolean to control whether the data display (charts/progress bar) is shown. When false, hides the chart/progress bar area. Defaults to true.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'StatCard.xAxis',
                 hintText: 'Configuration for the X-axis',
             },
@@ -277,6 +304,15 @@ function MyComponent() {
             },
             { content: 'ReactNode', hintText: 'React node' },
             { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardChange.arrowDirection',
+                hintText:
+                    'Optional StatCardArrowDirection enum that controls the arrow direction displayed next to the change value. UP shows an upward arrow, DOWN shows a downward arrow. If not provided, the direction is automatically determined based on valueType (INCREASE=UP, DECREASE=DOWN).',
+            },
+            { content: 'StatCardArrowDirection', hintText: 'enum' },
+            { content: 'UP, DOWN' },
         ],
         [
             {

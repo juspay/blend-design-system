@@ -430,6 +430,22 @@ function MyComponent() {
         ],
         [
             {
+                content: 'Popover.skeleton',
+                hintText:
+                    'Optional configuration object for showing skeleton loading state. When enabled, displays skeleton placeholders in the header, body, and footer instead of actual content. Useful for showing loading UI while popover data is being fetched.',
+            },
+            {
+                content: 'PopoverSkeletonProps',
+                hintText:
+                    'Object with show, variant, and bodySkeletonProps properties',
+            },
+            {
+                content:
+                    '{ show?: boolean; variant?: SkeletonVariant; bodySkeletonProps?: { show?: boolean; width?: string; height?: string | number } }',
+            },
+        ],
+        [
+            {
                 content: 'PopoverActionType.text',
                 hintText:
                     'Required string representing the text displayed on the button. Should be concise and action-oriented, clearly describing what the button does (e.g., "Save", "Confirm", "Delete", "Cancel"). The text is the primary visual element users see.',

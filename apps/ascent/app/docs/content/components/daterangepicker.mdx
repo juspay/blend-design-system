@@ -156,45 +156,6 @@ function MyComponent() {
         ],
         [
             {
-                content: 'icon',
-                hintText:
-                    'Optional custom React element (typically a calendar icon) to replace the default icon in the trigger button. Allows branding customization or using different icon libraries. If not provided, uses default Calendar icon.',
-            },
-            {
-                content: 'ReactNode',
-                hintText:
-                    'Any React element (icon, image, etc.) for the trigger icon',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'minDate',
-                hintText:
-                    'Optional Date object representing the earliest date that can be selected. Dates before this date are disabled and cannot be chosen. Useful for preventing selection of dates in the past or setting business rules. Takes precedence over disablePastDates.',
-            },
-            {
-                content: 'Date',
-                hintText:
-                    'Date object representing the minimum selectable date',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'maxDate',
-                hintText:
-                    'Optional Date object representing the latest date that can be selected. Dates after this date are disabled and cannot be chosen. Useful for preventing selection of future dates or setting business rules. Takes precedence over disableFutureDates.',
-            },
-            {
-                content: 'Date',
-                hintText:
-                    'Date object representing the maximum selectable date',
-            },
-            { content: '' },
-        ],
-        [
-            {
                 content: 'dateFormat',
                 hintText:
                     'Optional string format for displaying dates in the trigger and inputs. Uses format tokens (e.g., "dd/MM/yyyy" for day/month/year, "MM/dd/yyyy" for US format). The format affects how dates are displayed but not how they\'re stored. Defaults to "dd/MM/yyyy".',
@@ -215,6 +176,19 @@ function MyComponent() {
             {
                 content: 'boolean',
                 hintText: 'true allows single date, false requires date range',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isSingleDatePicker',
+                hintText:
+                    'When true, configures the component to work purely as a single date picker (not a range picker). The trigger displays a single date value and the calendar operates in single-select mode. This is distinct from allowSingleDateSelection which still allows range selection but permits single dates. Use this prop when you only need single date selection without range capability. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true for single date picker mode, false for range picker mode',
             },
             { content: '' },
         ],

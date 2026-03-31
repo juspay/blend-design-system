@@ -74,6 +74,16 @@ function MyComponent() {
 }
 ```
 
+## Overflow Behavior
+
+When there are more than 4 items, the breadcrumb automatically collapses to save space:
+
+- **First item** is always shown (root)
+- **Middle items** collapse into a `...` menu button
+- **Last 3 items** are always visible (including current page)
+
+This ensures users can always see where they are (last 3 items) and navigate back to the root, while keeping the UI clean.
+
 ## API Reference
 
 <DocsTypeTable
@@ -88,6 +98,19 @@ function MyComponent() {
                 content: 'BreadcrumbItemType[]',
                 hintText:
                     'Array of objects with label, href, and optional leftSlot/rightSlot properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Optional configuration for showing skeleton loading state on all breadcrumb items. When show is true, displays skeleton placeholders instead of the actual content. Useful for loading states while breadcrumb data is being fetched.',
+            },
+            {
+                content: '{ show: boolean, variant?: SkeletonVariant }',
+                hintText:
+                    'Object with show (required boolean) and optional variant (pulse, shimmer, etc.)',
             },
             { content: '' },
         ],
@@ -161,6 +184,19 @@ Each item in the `items` array should have the following structure:
                 content: '(event: React.MouseEvent<HTMLAnchorElement>) => void',
                 hintText:
                     'Function called when breadcrumb item is clicked, receives mouse event',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Optional skeleton configuration for this specific breadcrumb item. When provided, overrides the component-level skeleton prop for this item. Useful when individual items need different loading states or variants.',
+            },
+            {
+                content: '{ show: boolean, variant?: SkeletonVariant }',
+                hintText:
+                    'Object with show (required boolean) and optional variant (pulse, shimmer, etc.)',
             },
             { content: '' },
         ],

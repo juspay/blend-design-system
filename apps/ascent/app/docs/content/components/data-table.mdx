@@ -883,6 +883,19 @@ function CompactTable() {
         ],
         [
             {
+                content: 'isHoverable',
+                hintText:
+                    'When true, enables hover effects on table rows, highlighting the row when the user hovers over it with the mouse cursor. This provides better visual feedback and improves the user experience when scanning through data. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables hover effects on rows, false disables hover highlighting',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'headerSlot1',
                 hintText:
                     'Optional React element displayed in the first position of the table header, before the title. Useful for adding icons, badges, or other visual elements that should appear at the start of the header area.',

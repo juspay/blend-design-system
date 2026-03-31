@@ -562,6 +562,43 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'Sidebar.activeItem',
+                hintText:
+                    'Optional string value representing the currently active/selected navigation item ID. When provided, the component works in controlled mode, highlighting the item with this ID in the directory navigation. Use this with onActiveItemChange for controlled state management. If not provided, the component manages active state internally based on defaultActiveItem.',
+            },
+            {
+                content: 'string | null',
+                hintText: 'ID of the currently active directory item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.onActiveItemChange',
+                hintText:
+                    'Optional callback function invoked when the active navigation item changes. Receives the ID of the newly selected item as a parameter. Required when using controlled mode (providing activeItem prop). Use this to update your activeItem state when users click on navigation items.',
+            },
+            {
+                content: '(item: string | null) => void',
+                hintText:
+                    'Function called with new active item ID when selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.defaultActiveItem',
+                hintText:
+                    'Optional string value that sets the initial active navigation item for uncontrolled usage. When provided, the item with this ID is initially highlighted. Only used when activeItem is not provided. If not provided, no item is initially active.',
+            },
+            {
+                content: 'string | null',
+                hintText: 'Initial active item ID for uncontrolled mode',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
