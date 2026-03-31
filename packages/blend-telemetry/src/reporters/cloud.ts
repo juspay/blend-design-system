@@ -189,6 +189,12 @@ export async function uploadToCloud(
         const app =
             getApps().length > 0 ? getApps()[0] : initializeApp(effectiveConfig)
 
+        // Anonymous sign-in: gives every CLI invocation a Firebase uid without
+        // requiring any credentials from the consumer repo. Firestore rules check
+        // request.auth != null, blocking raw HTTP callers who bypass the SDK.
+        const { getAuth, signInAnonymously } = await import('firebase/auth')
+        await signInAnonymously(getAuth(app))
+
         let timeoutHandle: ReturnType<typeof setTimeout> | undefined
 
         const timeoutPromise = new Promise<CloudUploadResult>((resolve) => {
@@ -228,7 +234,8 @@ export async function uploadToCloud(
 async function doUpload(
     app: any,
     payload: TelemetryDocument,
-    identity: RepoIdentity
+    identity: RepoIdentity,
+    attempt = 0
 ): Promise<CloudUploadResult> {
     const {
         getFirestore,
@@ -298,11 +305,11 @@ async function doUpload(
     } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err)
 
-        // Single retry on transient network errors — skip cleanup so the app
-        // remains valid for the retry; the recursive call handles its own cleanup.
-        if (isRetryableError(message)) {
+        // Single retry on transient network errors (attempt 0 only) — skip cleanup
+        // so the app remains valid for the retry; the recursive call handles its own cleanup.
+        if (attempt === 0 && isRetryableError(message)) {
             await sleep(2000)
-            return doUpload(app, payload, identity)
+            return doUpload(app, payload, identity, 1)
         }
 
         await cleanup()

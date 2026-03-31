@@ -23,11 +23,11 @@ export async function buildPackageRegistry(
     packageName: string,
     bindingRegistry: BindingRegistry
 ): Promise<PackageRegistry> {
-    // Read declared version from root package.json or any nested package.json
+    // Read declared version from root package.json or common monorepo layouts
     const declaredVersion = await readDeclaredVersion(projectRoot, packageName)
 
-    // Find the node_modules installation — search root first, then nested subdirs
-    // (handles monorepos / projects where package.json lives in a subdirectory e.g. frontend/)
+    // Find the node_modules installation — search root first, then common monorepo
+    // layouts up to two levels deep (e.g. frontend/, packages/app/, apps/web/)
     const nodeModulesRoot = await findNodeModulesRoot(projectRoot, packageName)
 
     if (nodeModulesRoot) {
@@ -100,7 +100,8 @@ export async function buildPackageRegistry(
 
 /**
  * Find the directory containing node_modules/<packageName>.
- * Checks root first, then one level of subdirectories (e.g. frontend/, packages/*).
+ * Checks root first, then common monorepo layouts up to two levels deep
+ * (e.g. frontend/, packages/app/, apps/web/).
  */
 async function findNodeModulesRoot(
     projectRoot: string,
@@ -117,14 +118,22 @@ async function findNodeModulesRoot(
         /* continue */
     }
 
-    // Check one level of subdirectories — handles frontend/, app/, packages/*/
+    // Check one and two levels deep using explicit patterns for common monorepo
+    // layouts — avoids an unbounded ** glob while covering the vast majority of
+    // real-world structures: frontend/, packages/app/, apps/web/, etc.
     try {
-        const candidates = await fg('*/node_modules', {
-            cwd: projectRoot,
-            onlyDirectories: true,
-            deep: 2,
-            ignore: ['**/node_modules/node_modules'],
-        })
+        const candidates = await fg(
+            [
+                '*/node_modules',
+                'packages/*/node_modules',
+                'apps/*/node_modules',
+            ],
+            {
+                cwd: projectRoot,
+                onlyDirectories: true,
+                ignore: ['**/node_modules/node_modules'],
+            }
+        )
         for (const candidate of candidates) {
             const dir = join(
                 projectRoot,
@@ -151,16 +160,23 @@ async function readDeclaredVersion(
     projectRoot: string,
     packageName: string
 ): Promise<string | null> {
-    // Check root package.json first, then search one level deep for nested package.json files
+    // Check root package.json first, then common monorepo layouts up to two
+    // levels deep — covers frontend/, packages/app/, apps/web/, etc.
     const candidates = [resolve(projectRoot, 'package.json')]
 
     try {
-        const nested = await fg('*/package.json', {
-            cwd: projectRoot,
-            ignore: ['**/node_modules/**'],
-            absolute: true,
-            deep: 1,
-        })
+        const nested = await fg(
+            [
+                '*/package.json',
+                'packages/*/package.json',
+                'apps/*/package.json',
+            ],
+            {
+                cwd: projectRoot,
+                ignore: ['**/node_modules/**'],
+                absolute: true,
+            }
+        )
         candidates.push(...nested)
     } catch {
         /* ignore */
