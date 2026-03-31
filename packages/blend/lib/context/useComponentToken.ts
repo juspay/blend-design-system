@@ -200,6 +200,8 @@ export const useComponentToken = (
             return componentTokens.SKELETON
         case 'TOPBAR':
             return componentTokens.TOPBAR
+        case 'TOPBARV2':
+            return componentTokens.TOPBARV2
         case 'AVATAR':
             return componentTokens.AVATAR
         case 'AVATAR_GROUP':

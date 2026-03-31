@@ -1,19 +1,6 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react'
-
-export type SecondarySidebarItems = {
-    label: string
-    value: string
-    icon: ReactNode
-}
-
-export type SecondarySidebarProps = {
-    items: SecondarySidebarItems[]
-    selected: string
-    onSelect: (value: string) => void
-    buttonProps?: ButtonHTMLAttributes<HTMLButtonElement>
-}
-
-export type SidebarV2Props = {
-    height?: string
-    secondarySidebar?: SecondarySidebarProps
-}
+// Backwards-compatible types file (prefer `./types` going forward)
+export type {
+    SecondarySidebarItem as SecondarySidebarItems,
+    SecondarySidebarInfo as SecondarySidebarProps,
+    SidebarV2Props,
+} from './types'

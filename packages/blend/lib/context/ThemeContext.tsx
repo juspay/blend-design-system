@@ -41,6 +41,10 @@ import {
     getTopbarTokens,
     type ResponsiveTopbarTokens,
 } from '../components/Topbar/topbar.tokens'
+import {
+    getTopbarV2Tokens,
+    type ResponsiveTopbarV2Tokens,
+} from '../components/TopbarV2/topbarV2.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import type { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
@@ -208,6 +212,7 @@ export type ComponentTokenType = {
     CARD?: ResponsiveCardTokens
     SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
+    TOPBARV2?: ResponsiveTopbarV2Tokens
     AVATAR?: ResponsiveAvatarTokens
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
     SIDEBAR?: ResponsiveSidebarTokens
@@ -280,6 +285,7 @@ const ThemeContext = createContext<ThemeContextType>({
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
+        TOPBARV2: getTopbarV2Tokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),

@@ -1,60 +1,452 @@
-import { forwardRef, useId } from 'react'
-import { SidebarV2Props } from './sidebarV2.types'
+import {
+    forwardRef,
+    useCallback,
+    useEffect,
+    useId,
+    useMemo,
+    useState,
+} from 'react'
+import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { SidebarV2TokensType } from './sidebarV2.tokens'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import type { SidebarV2TokensType } from './sidebarV2.tokens'
+import type { SidebarV2Props } from './types'
 import { SecondarySidebar } from './SecondarySidebar'
+import SidebarV2Content from './SidebarV2Content'
+import { TopbarV2 } from '../TopbarV2'
+import { SectionStateContext } from '../Directory/Section'
+import SidebarV2MobileNavigation from './SidebarV2MobileNavigation'
+import { getSidebarV2CollapsedMobilePadding } from './SidebarV2MobileNavigation/utils'
+import { getMobileNavigationV2Tokens } from './SidebarV2MobileNavigation/mobile.tokens'
+import { FOUNDATION_THEME } from '../../tokens'
+import {
+    announceSidebarV2StateChange,
+    getSidebarV2MobileNavigationItems,
+    getSidebarV2Status,
+    getTopbarV2Styles,
+    isControlledSidebarV2,
+    useTopbarV2AutoHide,
+} from './utils'
+
+const MainContentContainer = styled(Block)`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+`
+
+const COLLAPSED_MOBILE_PADDING = getSidebarV2CollapsedMobilePadding(
+    getMobileNavigationV2Tokens(FOUNDATION_THEME).sm
+)
 
 const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
-    ({ secondarySidebar, height }, ref) => {
+    (
+        {
+            height = '100dvh',
+            children,
+            data,
+            topbar,
+            secondarySidebar,
+            sidebarTopSlot,
+            footer,
+            sidebarCollapseKey = '/',
+            merchantInfo,
+            rightActions,
+            enableTopbarAutoHide = false,
+            isTopbarVisible,
+            onTopbarVisibilityChange,
+            defaultIsTopbarVisible = true,
+            isExpanded: controlledIsExpanded,
+            onExpandedChange,
+            defaultIsExpanded = true,
+            showPrimaryActionButton,
+            primaryActionButtonProps,
+            activeItem,
+            onActiveItemChange,
+            defaultActiveItem,
+            onSidebarStateChange,
+        },
+        ref
+    ) => {
         const tokens = useResponsiveTokens<SidebarV2TokensType>('SIDEBARV2')
+        const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+        const isSmallScreen = breakPointLabel === 'sm'
+        const isControlled = isControlledSidebarV2(controlledIsExpanded)
+        const safeDirectory = useMemo(() => data ?? [], [data])
+
+        const [internalExpanded, setInternalExpanded] =
+            useState<boolean>(defaultIsExpanded)
+        const [showToggleButton, setShowToggleButton] = useState<boolean>(true)
+        const [isScrolled, setIsScrolled] = useState<boolean>(false)
+        const [showTopBlur, setShowTopBlur] = useState<boolean>(false)
+        const [showBottomBlur, setShowBottomBlur] = useState<boolean>(false)
+        const [isHovering, setIsHovering] = useState<boolean>(false)
+        const [mobileNavigationHeight, setMobileNavigationHeight] =
+            useState<string>()
+
+        const [sectionStates, setSectionStates] = useState<
+            Map<number, boolean>
+        >(new Map())
+        const setSectionState = useCallback(
+            (index: number, isOpen: boolean) => {
+                setSectionStates((prev) => {
+                    const next = new Map(prev)
+                    next.set(index, isOpen)
+                    return next
+                })
+            },
+            []
+        )
+        const sectionStateValue = useMemo(
+            () => ({ sectionStates, setSectionState }),
+            [sectionStates, setSectionState]
+        )
+
+        const isExpanded = isControlled
+            ? controlledIsExpanded!
+            : internalExpanded
+        const iconOnlyMode = !isExpanded
+        const showTopbar = useTopbarV2AutoHide(enableTopbarAutoHide)
+        const shouldRenderSecondarySidebar = !!secondarySidebar?.items?.length
 
         const baseId = useId()
         const sidebarId = `${baseId}-sidebar`
-        const primarySidebarId = `${baseId}-primary-sidebar`
+        const sidebarNavId = `${baseId}-sidebar-nav`
+        const skipToContentId = `${baseId}-skip-to-content`
+        const skipToNavId = `${baseId}-skip-to-nav`
         const secondarySidebarId = `${baseId}-secondary-sidebar`
-        return (
-            <Block
-                as="nav"
-                id={sidebarId}
-                data-sidebar="sidebar"
-                data-status="default"
-                role="navigation"
-                ref={ref}
-                display={'flex'}
-                backgroundColor={tokens.backgroundColor}
-                height={height || '100dvh'}
-                position="relative"
-                width={'fit-content'}
-            >
-                {/* Secondary Sidebar */}
-                {
-                    <SecondarySidebar
-                        id={secondarySidebarId}
-                        secondarySidebar={secondarySidebar}
-                        tokens={tokens}
-                    />
+
+        const mobileNavigationItems = useMemo(
+            () => getSidebarV2MobileNavigationItems(safeDirectory),
+            [safeDirectory]
+        )
+
+        const sidebarLabel = useMemo(() => {
+            const state = isExpanded ? 'expanded' : 'collapsed'
+            return `Sidebar navigation, ${state}`
+        }, [isExpanded])
+
+        const sidebarStatus = getSidebarV2Status(isExpanded, isHovering)
+
+        const shouldRenderMobileNavigation =
+            isSmallScreen && mobileNavigationItems.length > 0
+
+        const toggleSidebar = useCallback(() => {
+            const next = !isExpanded
+            if (!isControlled) {
+                setInternalExpanded(next)
+            }
+            setIsHovering(false)
+            onExpandedChange?.(next)
+        }, [isExpanded, isControlled, onExpandedChange])
+
+        const handleMobileNavigationHeightChange = useCallback((h: string) => {
+            setMobileNavigationHeight(h)
+        }, [])
+
+        useEffect(() => {
+            onSidebarStateChange?.(sidebarStatus)
+        }, [onSidebarStateChange, sidebarStatus])
+
+        useEffect(() => {
+            const handleKeyPress = (event: KeyboardEvent) => {
+                const target = event.target as HTMLElement
+                const isInputElement =
+                    target.tagName === 'INPUT' ||
+                    target.tagName === 'TEXTAREA' ||
+                    target.isContentEditable
+
+                if (
+                    event.key === sidebarCollapseKey &&
+                    !isSmallScreen &&
+                    !isInputElement
+                ) {
+                    event.preventDefault()
+                    toggleSidebar()
+                    announceSidebarV2StateChange(!isExpanded)
+                }
+            }
+            document.addEventListener('keydown', handleKeyPress)
+            return () => document.removeEventListener('keydown', handleKeyPress)
+        }, [isSmallScreen, sidebarCollapseKey, toggleSidebar, isExpanded])
+
+        useEffect(() => {
+            if (isSmallScreen && isExpanded) {
+                if (isControlled) {
+                    onExpandedChange?.(false)
+                } else {
+                    setInternalExpanded(false)
+                }
+                return
+            }
+
+            if (!isExpanded && !isSmallScreen) {
+                const timer = setTimeout(() => setShowToggleButton(true), 50)
+                return () => clearTimeout(timer)
+            }
+
+            setShowToggleButton(false)
+        }, [isExpanded, isSmallScreen, isControlled, onExpandedChange])
+
+        useEffect(() => {
+            if (!shouldRenderMobileNavigation) {
+                setMobileNavigationHeight(undefined)
+            }
+        }, [shouldRenderMobileNavigation])
+
+        useEffect(() => {
+            const directoryContainer = document.querySelector(
+                '[data-directory-container]'
+            ) as HTMLElement | null
+            if (!directoryContainer) return
+
+            const getScrollingElement = (): HTMLElement | null => {
+                const navElement = directoryContainer.querySelector('nav')
+                const checkElement = (el: HTMLElement): boolean => {
+                    const style = window.getComputedStyle(el)
+                    const hasOverflow =
+                        style.overflow === 'auto' ||
+                        style.overflowY === 'auto' ||
+                        style.overflow === 'scroll' ||
+                        style.overflowY === 'scroll'
+                    return hasOverflow && el.scrollHeight > el.clientHeight
                 }
 
-                {/* Primary Sidebar */}
+                if (navElement && checkElement(navElement as HTMLElement)) {
+                    return navElement as HTMLElement
+                }
+                if (checkElement(directoryContainer)) {
+                    return directoryContainer
+                }
+                return null
+            }
+
+            const scrollingElement = getScrollingElement()
+            if (!scrollingElement) {
+                setShowTopBlur(false)
+                setShowBottomBlur(false)
+                return
+            }
+
+            const updateBlurState = () => {
+                const { scrollTop, scrollHeight, clientHeight } =
+                    scrollingElement
+                const hasScrollableContent = scrollHeight > clientHeight
+                const isAtTop = scrollTop <= 5
+                const isAtBottom =
+                    Math.abs(scrollTop + clientHeight - scrollHeight) <= 5
+
+                setIsScrolled(scrollTop > 0)
+                setShowTopBlur(
+                    hasScrollableContent && !isAtTop && scrollTop > 5
+                )
+                setShowBottomBlur(hasScrollableContent && !isAtBottom)
+            }
+
+            updateBlurState()
+
+            scrollingElement.addEventListener('scroll', updateBlurState, {
+                passive: true,
+            })
+
+            const handleResize = () => setTimeout(updateBlurState, 50)
+            window.addEventListener('resize', handleResize, { passive: true })
+
+            return () => {
+                scrollingElement.removeEventListener('scroll', updateBlurState)
+                window.removeEventListener('resize', handleResize)
+            }
+        }, [isExpanded, safeDirectory])
+
+        return (
+            <SectionStateContext.Provider value={sectionStateValue}>
                 <Block
-                    as="nav"
-                    data-element="primary-sidebar"
-                    height="100%"
+                    ref={ref}
+                    width="100%"
+                    height={height}
                     display="flex"
-                    id={primarySidebarId}
-                    width={tokens.primarySidebar.width}
-                    borderRight={tokens.primarySidebar.borderRight}
-                    paddingTop={tokens.primarySidebar.padding.top}
-                    paddingBottom={tokens.primarySidebar.padding.bottom}
-                    paddingLeft={tokens.primarySidebar.padding.left}
-                    paddingRight={tokens.primarySidebar.padding.right}
+                    backgroundColor={tokens.container.backgroundColor}
+                    position="relative"
+                    zIndex={99}
+                    id={sidebarId}
                 >
-                    test
+                    <Block
+                        as="nav"
+                        id={skipToNavId}
+                        data-sidebar="sidebar"
+                        data-status={sidebarStatus}
+                        role="navigation"
+                        aria-label={sidebarLabel}
+                        aria-expanded={isExpanded}
+                        display={isSmallScreen ? 'none' : 'flex'}
+                        backgroundColor={tokens.container.backgroundColor}
+                        borderRight={tokens.container.borderRight}
+                        height="100%"
+                        position="relative"
+                    >
+                        {/* Secondary Sidebar */}
+                        {shouldRenderSecondarySidebar && (
+                            <SecondarySidebar
+                                id={secondarySidebarId}
+                                secondarySidebar={secondarySidebar}
+                                tokens={tokens}
+                            />
+                        )}
+
+                        <SidebarV2Content
+                            sidebarTopSlot={sidebarTopSlot}
+                            merchantInfo={merchantInfo}
+                            isExpanded={isExpanded}
+                            isScrolled={isScrolled}
+                            sidebarCollapseKey={sidebarCollapseKey}
+                            onToggle={toggleSidebar}
+                            sidebarNavId={sidebarNavId}
+                            showTopBlur={showTopBlur}
+                            showBottomBlur={showBottomBlur}
+                            data={safeDirectory}
+                            idPrefix={`${baseId}-`}
+                            activeItem={activeItem}
+                            onActiveItemChange={onActiveItemChange}
+                            defaultActiveItem={defaultActiveItem}
+                            iconOnlyMode={iconOnlyMode}
+                            footer={footer}
+                            setIsHovering={setIsHovering}
+                            sidebarState={sidebarStatus}
+                            tokens={tokens}
+                        />
+
+                        {!isExpanded && (
+                            <Block
+                                position="absolute"
+                                display="flex"
+                                top={0}
+                                left={
+                                    shouldRenderSecondarySidebar
+                                        ? tokens.secondarySidebar.width
+                                        : 0
+                                }
+                                width={isHovering ? '250px' : 0}
+                                minWidth={0}
+                                height="100%"
+                                overflow="hidden"
+                                zIndex={99}
+                                aria-hidden="true"
+                                backgroundColor={
+                                    tokens.container.backgroundColor
+                                }
+                                borderRight={
+                                    isHovering
+                                        ? tokens.container.borderRight
+                                        : 'none'
+                                }
+                                boxShadow={
+                                    isHovering
+                                        ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
+                                        : 'none'
+                                }
+                                transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
+                                pointerEvents={isHovering ? 'auto' : 'none'}
+                                onMouseLeave={() => setIsHovering(false)}
+                            >
+                                <SidebarV2Content
+                                    sidebarTopSlot={sidebarTopSlot}
+                                    merchantInfo={merchantInfo}
+                                    isExpanded={isExpanded}
+                                    isScrolled={isScrolled}
+                                    sidebarCollapseKey={sidebarCollapseKey}
+                                    onToggle={toggleSidebar}
+                                    sidebarNavId={sidebarNavId}
+                                    showTopBlur={showTopBlur}
+                                    showBottomBlur={showBottomBlur}
+                                    data={safeDirectory}
+                                    idPrefix={`${baseId}-`}
+                                    activeItem={activeItem}
+                                    onActiveItemChange={onActiveItemChange}
+                                    defaultActiveItem={defaultActiveItem}
+                                    iconOnlyMode={false}
+                                    footer={footer}
+                                    sidebarState={sidebarStatus}
+                                    tokens={tokens}
+                                />
+                            </Block>
+                        )}
+                    </Block>
+
+                    <MainContentContainer
+                        as="main"
+                        id={skipToContentId}
+                        role="main"
+                        aria-label="Main content"
+                        paddingBottom={
+                            shouldRenderMobileNavigation
+                                ? (mobileNavigationHeight ??
+                                  COLLAPSED_MOBILE_PADDING)
+                                : undefined
+                        }
+                    >
+                        <Block
+                            position="sticky"
+                            top="0"
+                            zIndex="90"
+                            style={getTopbarV2Styles(
+                                enableTopbarAutoHide,
+                                showTopbar
+                            )}
+                        >
+                            <TopbarV2
+                                isExpanded={isExpanded}
+                                onToggleExpansion={toggleSidebar}
+                                showToggleButton={showToggleButton}
+                                sidebarTopSlot={sidebarTopSlot}
+                                topbar={topbar}
+                                secondarySidebar={secondarySidebar}
+                                merchantInfo={merchantInfo}
+                                rightActions={rightActions}
+                                isVisible={isTopbarVisible}
+                                ariaControls={sidebarNavId}
+                                onVisibilityChange={onTopbarVisibilityChange}
+                                defaultIsVisible={defaultIsTopbarVisible}
+                            />
+                        </Block>
+
+                        <Block
+                            display="flex"
+                            flexDirection="column"
+                            flexGrow={1}
+                            flexShrink={1}
+                            flexBasis="0"
+                            minHeight="0"
+                            overflow="auto"
+                            data-main-content
+                        >
+                            {children}
+                        </Block>
+                    </MainContentContainer>
+
+                    {shouldRenderMobileNavigation && (
+                        <SidebarV2MobileNavigation
+                            items={mobileNavigationItems}
+                            onHeightChange={handleMobileNavigationHeightChange}
+                            showPrimaryActionButton={showPrimaryActionButton}
+                            primaryActionButtonProps={primaryActionButtonProps}
+                        />
+                    )}
                 </Block>
-            </Block>
+            </SectionStateContext.Provider>
         )
     }
 )
+
+SidebarV2.displayName = 'SidebarV2'
 
 export default SidebarV2
