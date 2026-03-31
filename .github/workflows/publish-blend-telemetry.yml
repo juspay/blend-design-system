@@ -1,0 +1,116 @@
+name: Publish blend-telemetry to NPM
+
+# Triggered manually or automatically when a version tag is pushed
+on:
+    workflow_dispatch:
+        inputs:
+            confirm_publish:
+                description: 'Type "PUBLISH" to confirm'
+                required: true
+                type: string
+    push:
+        tags:
+            - 'telemetry-v*'
+
+permissions:
+    contents: read
+
+concurrency:
+    group: publish-blend-telemetry-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    publish:
+        name: Build & Publish blend-telemetry
+        runs-on: ubuntu-latest
+        environment: npm
+        if: >
+            github.event_name == 'push' ||
+            (github.event_name == 'workflow_dispatch' && github.event.inputs.confirm_publish == 'PUBLISH')
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Build blend-telemetry
+              # ── Firebase config is injected here at build time ──────────────
+              # These values are baked as string literals into dist/cli.js.
+              # The Firebase apiKey is NOT a secret — it is a public project
+              # identifier. Security is enforced by Firestore Security Rules.
+              # Store all values as GitHub Actions secrets in the `npm` environment.
+              working-directory: packages/blend-telemetry
+              run: NODE_ENV=production pnpm build
+              env:
+                  BLEND_FIREBASE_API_KEY: ${{ secrets.BLEND_FIREBASE_API_KEY }}
+                  BLEND_FIREBASE_AUTH_DOMAIN: ${{ secrets.BLEND_FIREBASE_AUTH_DOMAIN }}
+                  BLEND_FIREBASE_PROJECT_ID: ${{ secrets.BLEND_FIREBASE_PROJECT_ID }}
+                  BLEND_FIREBASE_STORAGE_BUCKET: ${{ secrets.BLEND_FIREBASE_STORAGE_BUCKET }}
+                  BLEND_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.BLEND_FIREBASE_MESSAGING_SENDER_ID }}
+                  BLEND_FIREBASE_APP_ID: ${{ secrets.BLEND_FIREBASE_APP_ID }}
+
+            - name: Verify build output
+              working-directory: packages/blend-telemetry
+              run: |
+                  ls -lh dist/
+                  node -e "require('./dist/index.js'); console.log('index.js ok')"
+
+            - name: Get version
+              id: version
+              working-directory: packages/blend-telemetry
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
+                  echo "Publishing @juspay/blend-telemetry@$VERSION"
+
+            - name: Check if already published
+              id: check
+              working-directory: packages/blend-telemetry
+              run: |
+                  VERSION="${{ steps.version.outputs.version }}"
+                  if npm view "@juspay/blend-telemetry@$VERSION" version 2>/dev/null; then
+                    echo "already_published=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "already_published=false" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Publish to NPM
+              if: steps.check.outputs.already_published != 'true'
+              working-directory: packages/blend-telemetry
+              run: npm publish --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Deploy Firestore rules & indexes
+              if: steps.check.outputs.already_published != 'true'
+              run: |
+                  npx firebase-tools@latest deploy \
+                    --only firestore:rules,firestore:indexes \
+                    --project ${{ secrets.BLEND_FIREBASE_PROJECT_ID }} \
+                    --token ${{ secrets.FIREBASE_CI_TOKEN }}
+
+            - name: Summary
+              run: |
+                  VERSION="${{ steps.version.outputs.version }}"
+                  echo "## ✅ blend-telemetry v$VERSION published" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "| | |" >> $GITHUB_STEP_SUMMARY
+                  echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Package** | \`@juspay/blend-telemetry\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Version** | \`$VERSION\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Firebase config** | Baked in ✓ |" >> $GITHUB_STEP_SUMMARY
+                  echo "| **Firestore rules** | Deployed ✓ |" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "Consumer repos need **zero changes** — cloud upload is automatic on next CI run." >> $GITHUB_STEP_SUMMARY

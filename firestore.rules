@@ -1,0 +1,82 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── blend-telemetry collection ──────────────────────────────────────────
+    //
+    // Structure:
+    //   /blend-telemetry/{repoId}          ← repo-level latest summary doc
+    //   /blend-telemetry/{repoId}/runs/{runId}  ← individual scan snapshots
+    //
+    // Security model:
+    //   WRITE           → requires Firebase anonymous auth (request.auth != null)
+    //                     The CLI calls signInAnonymously() before every upload —
+    //                     no credentials needed in consumer repos, works in any CI.
+    //                     Raw HTTP callers who bypass the SDK are blocked.
+    //   READ            → denied from all clients
+    //                     Dashboard reads via Firebase Admin SDK (bypasses rules)
+    //
+    // Anonymous auth is the standard pattern for "public write" telemetry tools
+    // (analytics SDKs, crash reporters). It gives every CLI invocation a uid
+    // without requiring any secrets from the consumer repo.
+    // ────────────────────────────────────────────────────────────────────────
+
+    // Repo-level summary document (one per consumer repo)
+    match /blend-telemetry/{repoId} {
+      allow create, update: if
+        // Must be an authenticated caller (CLI uses anonymous auth)
+        request.auth != null &&
+        // Required fields must exist
+        request.resource.data.keys().hasAll(['repoId', 'repoName', 'lastUpdated']) &&
+        // Ensure payload repoId matches the document path to prevent spoofing
+        request.resource.data.repoId == repoId &&
+        // Field types — prevent junk data
+        request.resource.data.repoId is string &&
+        request.resource.data.repoName is string &&
+        request.resource.data.repoId.size() <= 400 &&
+        request.resource.data.repoName.size() <= 400 &&
+        // Bound the number of top-level fields to prevent oversized writes
+        // (size() returns field count, not bytes)
+        request.resource.data.size() <= 20;
+
+      allow read, delete: if false; // Admin SDK only
+    }
+
+    // Individual scan run documents (subcollection under each repo)
+    match /blend-telemetry/{repoId}/runs/{runId} {
+      // create only (not update) — run docs are immutable history.
+      // Doc ID = commitSha (deterministic). If the same commit runs twice,
+      // the second write fails silently — the data is identical anyway.
+      allow create: if
+        // Must be an authenticated caller (CLI uses anonymous auth)
+        request.auth != null &&
+        // Required fields must exist
+        request.resource.data.keys().hasAll([
+          'repoId', 'repoName', 'generatedAt',
+          'adoptionRate', 'totalComponentsUsed'
+        ]) &&
+        // Ensure payload repoId matches the document path to prevent spoofing
+        request.resource.data.repoId == repoId &&
+        // Field types — prevent junk data
+        request.resource.data.repoId is string &&
+        request.resource.data.repoName is string &&
+        request.resource.data.generatedAt is string &&
+        request.resource.data.adoptionRate is number &&
+        request.resource.data.totalComponentsUsed is number &&
+        request.resource.data.repoId.size() <= 400 &&
+        request.resource.data.repoName.size() <= 400 &&
+        // Bound the number of top-level fields to prevent oversized writes
+        // (size() returns field count, not bytes)
+        request.resource.data.size() <= 50;
+
+      // No reads or deletes from unauthenticated clients
+      // Dashboard uses Admin SDK which bypasses these rules entirely
+      allow read, delete: if false;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
