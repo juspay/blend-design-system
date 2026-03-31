@@ -287,15 +287,16 @@ async function doUpload(
         await cleanup()
         return result
     } catch (err: unknown) {
-        await cleanup()
         const message = err instanceof Error ? err.message : String(err)
 
-        // Single retry on transient network errors
+        // Single retry on transient network errors — skip cleanup so the app
+        // remains valid for the retry; the recursive call handles its own cleanup.
         if (isRetryableError(message)) {
             await sleep(2000)
             return doUpload(app, payload, identity)
         }
 
+        await cleanup()
         return { success: false, reason: message }
     }
 }

@@ -212,19 +212,20 @@ async function run(options: Record<string, unknown>): Promise<void> {
         if (!config.quiet) console.log(chalk.dim(`  Wrote: ${path}`))
     }
 
-    // HTML report is always generated
-    const htmlPath = await writeHtmlReport(
-        report,
-        config.outputDir,
-        projectRoot
-    )
+    if (reporters.includes('html')) {
+        const htmlPath = await writeHtmlReport(
+            report,
+            config.outputDir,
+            projectRoot
+        )
 
-    if (!config.quiet) {
-        const fileUrl = `file://${htmlPath}`
-        // OSC 8 hyperlink — clickable in iTerm2, VS Code terminal, Warp, etc.
-        const link = `\x1b]8;;${fileUrl}\x07${chalk.cyan.underline('Open HTML Report')}\x1b]8;;\x07`
-        console.log(`  ${chalk.bold('📊')} ${link}  ${chalk.dim(htmlPath)}`)
-        console.log()
+        if (!config.quiet) {
+            const fileUrl = `file://${htmlPath}`
+            // OSC 8 hyperlink — clickable in iTerm2, VS Code terminal, Warp, etc.
+            const link = `\x1b]8;;${fileUrl}\x07${chalk.cyan.underline('Open HTML Report')}\x1b]8;;\x07`
+            console.log(`  ${chalk.bold('📊')} ${link}  ${chalk.dim(htmlPath)}`)
+            console.log()
+        }
     }
 
     // ── Cloud upload ────────────────────────────────────────────────────────────

@@ -23,13 +23,16 @@ service cloud.firestore {
       allow create, update: if
         // Required fields must exist
         request.resource.data.keys().hasAll(['repoId', 'repoName', 'lastUpdated']) &&
+        // Ensure payload repoId matches the document path to prevent spoofing
+        request.resource.data.repoId == repoId &&
         // Field types — prevent junk data
         request.resource.data.repoId is string &&
         request.resource.data.repoName is string &&
         request.resource.data.repoId.size() <= 400 &&
         request.resource.data.repoName.size() <= 400 &&
-        // Prevent oversized writes
-        request.resource.data.size() < 100000;  // 100KB cap on summary doc
+        // Bound the number of top-level fields to prevent oversized writes
+        // (size() returns field count, not bytes)
+        request.resource.data.size() <= 20;
 
       allow read, delete: if false; // Admin SDK only
     }
@@ -42,6 +45,8 @@ service cloud.firestore {
           'repoId', 'repoName', 'generatedAt',
           'adoptionRate', 'totalComponentsUsed'
         ]) &&
+        // Ensure payload repoId matches the document path to prevent spoofing
+        request.resource.data.repoId == repoId &&
         // Field types — prevent junk data
         request.resource.data.repoId is string &&
         request.resource.data.repoName is string &&
@@ -50,8 +55,9 @@ service cloud.firestore {
         request.resource.data.totalComponentsUsed is number &&
         request.resource.data.repoId.size() <= 400 &&
         request.resource.data.repoName.size() <= 400 &&
-        // Hard cap — prevents abuse and stays well under Firestore's 1MB doc limit
-        request.resource.data.size() < 500000;  // 500KB cap per run doc
+        // Bound the number of top-level fields to prevent oversized writes
+        // (size() returns field count, not bytes)
+        request.resource.data.size() <= 50;
         // Doc ID = commitSha (deterministic) — same commit run twice just overwrites.
 
       // No reads or deletes from unauthenticated clients

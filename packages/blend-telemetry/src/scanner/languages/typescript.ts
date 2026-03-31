@@ -79,7 +79,6 @@ export async function scanTypeScriptFile(
             jsx: true,
             range: false,
             loc: true,
-            tolerant: true, // continue on recoverable errors
             comment: false,
         })
     } catch {
@@ -244,11 +243,12 @@ function resolveJSXName(
     }
 
     if (name.type === 'JSXMemberExpression') {
-        // Blend.Button or NS.Sub.Component
+        // Blend.Button or NS.Sub.Component — build full chain for localName
         const ns = getJSXMemberRoot(name)
         const member = name.property.name
+        const fullChain = getJSXMemberChain(name)
         return {
-            localName: `${ns}.${member}`,
+            localName: fullChain,
             blendName: importMap.resolveNamespace(ns, member),
         }
     }
@@ -261,6 +261,16 @@ function getJSXMemberRoot(expr: TSESTree.JSXMemberExpression): string {
     if (expr.object.type === 'JSXMemberExpression')
         return getJSXMemberRoot(expr.object)
     return ''
+}
+
+function getJSXMemberChain(expr: TSESTree.JSXMemberExpression): string {
+    const objectPart =
+        expr.object.type === 'JSXIdentifier'
+            ? expr.object.name
+            : expr.object.type === 'JSXMemberExpression'
+              ? getJSXMemberChain(expr.object)
+              : ''
+    return `${objectPart}.${expr.property.name}`
 }
 
 // ─── Prop extraction ──────────────────────────────────────────────────────────
