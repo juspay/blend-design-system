@@ -59,16 +59,16 @@ Create a `.blendrc.json` in your project root to customise behaviour:
 {
     "scanDirs": ["src", "app"],
     "outputDir": ".blend-telemetry",
-    "reporter": "console"
+    "reporters": ["console"]
 }
 ```
 
-| Field         | Default                       | Description                                                      | When to use                                                                                                                    |
-| ------------- | ----------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `scanDirs`    | entire project                | Folders to scan for Blend component usage                        | Set to `["src"]` or `["src", "app"]` if your project is large and you want to skip irrelevant directories to make scans faster |
-| `outputDir`   | `.blend-telemetry`            | Folder where the HTML/JSON report is written                     | Change this if you want reports in a different location, e.g. `"reports"`                                                      |
-| `reporter`    | `console`                     | Default output format for results — `console`, `json`, or `html` | Set to `"json"` if you want a machine-readable report, or `"html"` to skip the terminal output and only write the HTML report  |
-| `packageName` | `@juspay/blend-design-system` | The npm package name to scan for                                 | Only change this if your project uses a fork or re-export of Blend under a different package name                              |
+| Field         | Default               | Description                                                             | When to use                                                                                                                    |
+| ------------- | --------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `scanDirs`    | entire project        | Folders to scan for Blend component usage                               | Set to `["src"]` or `["src", "app"]` if your project is large and you want to skip irrelevant directories to make scans faster |
+| `outputDir`   | `.blend-telemetry`    | Folder where the HTML/JSON report is written                            | Change this if you want reports in a different location, e.g. `"reports"`                                                      |
+| `reporters`   | `["console"]`         | Array of output formats — `"console"`, `"json"`, `"html"` (or multiple) | Set to `["json"]` for machine-readable output, or `["console", "json"]` to run multiple reporters                              |
+| `packageName` | `blend-design-system` | The npm package name to scan for                                        | Only change this if your project uses a fork or re-export of Blend under a different package name                              |
 
 ## Requirements
 

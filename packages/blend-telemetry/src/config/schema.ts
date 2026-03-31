@@ -1,4 +1,4 @@
-export type ReporterType = 'console' | 'json' | 'html' | 'csv'
+export type ReporterType = 'console' | 'json' | 'html'
 export type Language = 'rescript' | 'typescript' | 'javascript'
 
 export interface CIConfig {

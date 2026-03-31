@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
 import { readFileSync } from 'fs'
-import { resolve } from 'path'
+import { resolve, basename } from 'path'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -99,7 +99,7 @@ function detectRepoName(projectRoot: string): string {
     }
 
     // 7. Last resort — basename of the project root
-    return resolve(projectRoot).split('/').pop() ?? 'unknown-repo'
+    return basename(resolve(projectRoot)) || 'unknown-repo'
 }
 
 function parseRepoNameFromGitRemote(projectRoot: string): string | null {
@@ -245,7 +245,7 @@ function detectCIPlatform(): CIPlatform {
 export function normalizeToDocId(repoName: string): string {
     const normalized = repoName
         .replace(/\//g, '__')
-        .replace(/[^a-zA-Z0-9_.\\-]/g, '_')
+        .replace(/[^a-zA-Z0-9_.-]/g, '_')
         .slice(0, 400)
 
     return normalized.length > 0 ? normalized : 'unknown_repo'

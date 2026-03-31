@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { resolve } from 'path'
+import { resolve, dirname } from 'path'
 import chalk from 'chalk'
 import { loadConfig } from './config/loader.js'
 import { detectLanguages } from './detect/language-detector.js'
@@ -45,7 +45,7 @@ program
     // Output
     .option(
         '-r, --reporter <types...>',
-        'Reporters to run: console, json, html, csv',
+        'Reporters to run: console, json, html',
         ['console']
     )
     .option(
@@ -250,10 +250,7 @@ async function run(options: Record<string, unknown>): Promise<void> {
             if (!config.quiet) {
                 process.stdout.write('\r' + ' '.repeat(40) + '\r')
                 if (result.success && result.reason !== 'not configured') {
-                    const tag =
-                        result.reason === 'deduplicated'
-                            ? chalk.dim('(already uploaded)')
-                            : chalk.dim(`(${result.docId})`)
+                    const tag = chalk.dim(`(${result.docId})`)
                     console.log(chalk.dim(`  ✓ Telemetry synced ${tag}`))
                 }
             }
@@ -287,7 +284,7 @@ async function buildDetectionFromPrompt(
                 : null
 
             const projectConfigs = configPath
-                ? await findRescriptConfigs(resolve(projectRoot, configPath))
+                ? await findRescriptConfigs(dirname(configPath))
                 : []
 
             languages.push({

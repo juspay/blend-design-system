@@ -184,7 +184,7 @@ export async function uploadToCloud(
     const app =
         getApps().length > 0 ? getApps()[0] : initializeApp(effectiveConfig)
 
-    let timeoutHandle: ReturnType<typeof setTimeout>
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined
 
     const timeoutPromise = new Promise<CloudUploadResult>((resolve) => {
         timeoutHandle = setTimeout(async () => {
@@ -257,7 +257,7 @@ async function doUpload(
     }
 
     try {
-        const { repoId, commitSha, commitShort } = identity
+        const { repoId, commitSha } = identity
 
         // Deterministic doc ID — same commit always maps to same Firestore document.
         // Running the tool twice on the same commit is idempotent (last write wins,
@@ -302,7 +302,7 @@ async function doUpload(
 
 async function writeDocuments(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    db: any,
+    _db: any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     runDocRef: any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
