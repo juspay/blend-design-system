@@ -228,6 +228,8 @@ const SidebarDemo = () => {
         | 'timeline'
         | 'statCardV2'
         | 'tooltipV2'
+        | 'breadcrumbV2'
+        | 'codeEditorV2'
         | 'singleSelectV2'
         | 'popoverV2'
     >('tabsV2')

@@ -74,11 +74,26 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
                         ...existingProps,
                         disabled: childDisabled || disabled,
                         ...(isTabsList && {
-                            showSkeleton,
-                            skeletonVariant,
-                            variant,
-                            size,
-                            stickyHeader,
+                            showSkeleton:
+                                'showSkeleton' in existingProps
+                                    ? existingProps.showSkeleton
+                                    : showSkeleton,
+                            skeletonVariant:
+                                'skeletonVariant' in existingProps
+                                    ? existingProps.skeletonVariant
+                                    : skeletonVariant,
+                            variant:
+                                'variant' in existingProps
+                                    ? existingProps.variant
+                                    : variant,
+                            size:
+                                'size' in existingProps
+                                    ? existingProps.size
+                                    : size,
+                            stickyHeader:
+                                'stickyHeader' in existingProps
+                                    ? existingProps.stickyHeader
+                                    : stickyHeader,
                         }),
                         ...(isTabsTrigger && {
                             showSkeleton:

@@ -130,8 +130,6 @@ export const useComponentToken = (
     | ResponsiveRadioV2Tokens
     | ResponsivePopoverV2Tokens
     | ResponsiveTabsV2Tokens
-    | ResponsiveTextInputV2Tokens
-    | ResponsiveTextInputV2Tokens
     | ResponsiveBreadcrumbV2Tokens
     | ResponsiveCodeEditorV2Tokens => {
     const { componentTokens } = useTheme()

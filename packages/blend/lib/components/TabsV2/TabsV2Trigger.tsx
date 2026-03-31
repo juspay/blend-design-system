@@ -70,7 +70,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     'stopImmediatePropagation' in e.nativeEvent
                 ) {
                     ;(
-                        e.nativeEvent as unknown as {
+                        e.nativeEvent as {
                             stopImmediatePropagation: () => void
                         }
                     ).stopImmediatePropagation()
@@ -142,9 +142,6 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
 
         const triggerContent = (
             <StyledTabsTrigger
-                asChild
-                data-status={isDisabled ? 'disabled' : 'enabled'}
-                data-id={children ?? ''}
                 ref={ref}
                 value={value}
                 $variant={variant}
@@ -153,6 +150,8 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                 $isOverlay={isOverlay}
                 className={className}
                 disabled={isDisabled}
+                data-status={isDisabled ? 'disabled' : 'enabled'}
+                data-id={children ?? ''}
                 style={{
                     ...(shouldShowSkeleton && {
                         color: 'transparent',
@@ -164,7 +163,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                 {...domProps}
             >
                 <Block
-                    as="div"
+                    as="span"
                     data-element="trigger-container"
                     display="inline-flex"
                     alignItems="center"
