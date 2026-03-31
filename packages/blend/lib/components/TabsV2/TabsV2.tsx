@@ -5,44 +5,62 @@ import { StyledTabsRoot } from './StyledTabsV2'
 import { TabsV2Provider } from './tabsV2.context'
 import type { TabsV2ContextValue } from './tabsV2.context'
 import type { TabsV2TokensType } from './tabsV2.tokens'
+import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+
+const toTabValueString = (v: unknown): string => {
+    if (v === undefined || v === null) return ''
+    return String(v)
+}
 
 const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
     (
         {
             className,
-            variant = TabsV2Variant.UNDERLINE,
-            size = TabsV2Size.MD,
-            expanded = false,
-            fitContent = false,
+            variant: variantProp = TabsV2Variant.UNDERLINE,
+            size: sizeProp = TabsV2Size.MD,
+            expanded: expandedProp = false,
+            fitContent: fitContentProp = false,
             value,
             defaultValue,
             onValueChange,
-            disabled = false,
-            showSkeleton = false,
-            skeletonVariant = 'pulse',
-            stickyHeader = false,
-            offsetTop = 0,
+            disabled: disabledProp = false,
+            showSkeleton: showSkeletonProp = false,
+            skeletonVariant: skeletonVariantProp = 'pulse',
+            stickyHeader: stickyHeaderProp = false,
+            offsetTop: offsetTopProp = 0,
             children,
             ...props
         },
         ref
     ) => {
-        const [activeTab, setActiveTab] = useState<string>(
-            value ?? defaultValue ?? ''
+        const variant = variantProp ?? TabsV2Variant.UNDERLINE
+        const size = sizeProp ?? TabsV2Size.MD
+        const expanded = Boolean(expandedProp)
+        const fitContent = Boolean(fitContentProp)
+        const disabled = Boolean(disabledProp)
+        const showSkeleton = Boolean(showSkeletonProp)
+        const skeletonVariant = (skeletonVariantProp ??
+            'pulse') as SkeletonVariant
+        const stickyHeader = Boolean(stickyHeaderProp)
+        const offsetTop = offsetTopProp ?? 0
+
+        const [activeTab, setActiveTab] = useState<string>(() =>
+            toTabValueString(value ?? defaultValue)
         )
         const tabsToken = useResponsiveTokens<TabsV2TokensType>('TABSV2')
 
         useEffect(() => {
-            if (value !== undefined) {
-                setActiveTab(value)
+            if (value !== undefined && value !== null) {
+                setActiveTab(toTabValueString(value))
             }
         }, [value])
 
         const handleValueChange = useCallback(
             (newValue: string) => {
-                setActiveTab(newValue)
-                onValueChange?.(newValue)
+                const next = toTabValueString(newValue)
+                setActiveTab(next)
+                onValueChange?.(next)
             },
             [onValueChange]
         )
@@ -50,10 +68,17 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
         const renderChildren = (
             childrenToRender: React.ReactNode
         ): React.ReactNode => {
+            if (childrenToRender === undefined || childrenToRender === null) {
+                return null
+            }
+
             return React.Children.map(childrenToRender, (child) => {
                 if (!React.isValidElement(child)) return child
 
-                const existingProps = child.props as Record<string, unknown>
+                const existingProps = (child.props ?? {}) as Record<
+                    string,
+                    unknown
+                >
                 const childDisabled =
                     'disabled' in existingProps
                         ? (existingProps.disabled as boolean | undefined)
@@ -150,14 +175,19 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
             ]
         )
 
+        const rootDefaultValue =
+            defaultValue !== undefined && defaultValue !== null
+                ? toTabValueString(defaultValue)
+                : undefined
+
         return (
             <TabsV2Provider value={context}>
                 <StyledTabsRoot
-                    data-tabs={value ?? 'tabs'}
+                    data-tabs={toTabValueString(value) || 'tabs'}
                     ref={ref}
                     className={className}
                     value={activeTab}
-                    defaultValue={defaultValue}
+                    defaultValue={rootDefaultValue}
                     onValueChange={handleValueChange}
                     $tabsToken={tabsToken}
                     {...props}
