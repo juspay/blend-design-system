@@ -24,7 +24,7 @@ blend-telemetry
 # Output as JSON
 blend-telemetry --dir . --reporter json
 
-# Quiet mode (no console output, still writes HTML report)
+# Quiet mode (no console output)
 blend-telemetry --dir . --quiet
 ```
 
@@ -35,11 +35,11 @@ blend-telemetry --dir . --quiet
 - **Never Used** — components available in the installed version but not used at all
 - **File Breakdown** — which files use Blend and which components they import
 - **Migration Status** _(ReScript projects only)_ — tracks adapter pattern files (`isBlendEnabled`), direct usage files, and wrapper files
-- **HTML Report** — automatically generated at `.blend-telemetry/report.html` after every run, opens directly from the terminal link
+- **HTML Report** — opt-in via `--reporter html` or by adding `"html"` to `reporters` in config; written to `.blend-telemetry/report.html`, opens directly from the terminal link
 
 ## HTML Report
 
-After every run a full interactive HTML report is written to `.blend-telemetry/report.html` inside your project. The terminal prints a clickable link to open it directly.
+When `"html"` is included in `reporters` (via `--reporter html` or config), a full interactive HTML report is written to `.blend-telemetry/report.html` inside your project. The terminal prints a clickable link to open it directly.
 
 The report has five tabs:
 

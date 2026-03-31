@@ -230,35 +230,46 @@ async function run(options: Record<string, unknown>): Promise<void> {
 
     // ── Cloud upload ────────────────────────────────────────────────────────────
     // Runs by default in CI (process.env.CI is truthy).
-    // --cloud  forces upload on local runs.
-    // --no-cloud (options.cloud === false) disables it entirely.
-    // Errors are always suppressed — a network blip must never fail the pipeline.
+    // --cloud       forces upload on local (non-CI) runs.
+    // --no-cloud    disables upload entirely for this run.
+    // Errors are always non-fatal — a network blip must never fail the pipeline.
+    //
+    // NOTE: We read flags directly from process.argv instead of relying on
+    // Commander's parsed options.cloud, because defining both --cloud and
+    // --no-cloud causes Commander to set options.cloud = true by default
+    // (the --no-cloud negation implies the feature is on by default), which
+    // would make uploads fire on every local run regardless of the flag.
+    const cloudForcedOn = process.argv.includes('--cloud')
+    const cloudForcedOff = process.argv.includes('--no-cloud')
     const cloudEnabled = process.env.BLEND_TELEMETRY_CLOUD !== 'false'
     const isCI = !!(process.env.CI || process.env.CONTINUOUS_INTEGRATION)
     const shouldUpload =
-        options['cloud'] === true ||
-        (options['cloud'] !== false && cloudEnabled && isCI)
+        cloudForcedOn || (!cloudForcedOff && cloudEnabled && isCI)
 
     if (shouldUpload) {
-        try {
-            if (!config.quiet) {
-                process.stdout.write(chalk.dim('  ↑ Uploading telemetry…'))
-            }
+        if (!config.quiet) {
+            process.stdout.write(chalk.dim('  ↑ Uploading telemetry…'))
+        }
 
-            const identity = await detectRepoIdentity(projectRoot)
-            const result = await uploadToCloud(report, identity)
+        const identity = await detectRepoIdentity(projectRoot)
+        const result = await uploadToCloud(report, identity)
 
-            if (!config.quiet) {
-                process.stdout.write('\r' + ' '.repeat(40) + '\r')
-                if (result.success && result.reason !== 'not configured') {
-                    const tag = chalk.dim(`(${result.docId})`)
-                    console.log(chalk.dim(`  ✓ Telemetry synced ${tag}`))
-                }
-            }
-        } catch {
-            // Completely silent — upload must never interrupt the main flow
-            if (!config.quiet) {
-                process.stdout.write('\r' + ' '.repeat(40) + '\r')
+        if (!config.quiet) {
+            process.stdout.write('\r' + ' '.repeat(40) + '\r')
+            if (result.success) {
+                const tag = chalk.dim(`(${result.docId})`)
+                console.log(chalk.dim(`  ✓ Telemetry synced ${tag}`))
+            } else if (result.reason === 'not configured') {
+                console.log(
+                    chalk.yellow(
+                        '  ⚠ Cloud upload skipped — Firebase config not baked in.\n' +
+                            '    Rebuild with BLEND_FIREBASE_* env vars set, or use the published package.'
+                    )
+                )
+            } else {
+                console.log(
+                    chalk.yellow(`  ⚠ Cloud upload failed: ${result.reason}`)
+                )
             }
         }
     }

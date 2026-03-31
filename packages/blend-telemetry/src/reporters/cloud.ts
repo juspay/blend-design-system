@@ -177,40 +177,49 @@ export async function uploadToCloud(
         }
     }
 
-    // Initialize Firebase here so we can share the app reference between
-    // the upload promise and the timeout, allowing the timeout to call
-    // deleteApp() and force-kill any hanging Firestore connections.
-    const { initializeApp, getApps, deleteApp } = await import('firebase/app')
-    const app =
-        getApps().length > 0 ? getApps()[0] : initializeApp(effectiveConfig)
+    // Wrap everything from Firebase init onwards so that dynamic import failures
+    // or initializeApp() errors are caught and returned as { success: false }
+    // rather than propagating as a rejection — honouring the "NEVER throws" contract.
+    try {
+        // Initialize Firebase here so we can share the app reference between
+        // the upload promise and the timeout, allowing the timeout to call
+        // deleteApp() and force-kill any hanging Firestore connections.
+        const { initializeApp, getApps, deleteApp } =
+            await import('firebase/app')
+        const app =
+            getApps().length > 0 ? getApps()[0] : initializeApp(effectiveConfig)
 
-    let timeoutHandle: ReturnType<typeof setTimeout> | undefined
+        let timeoutHandle: ReturnType<typeof setTimeout> | undefined
 
-    const timeoutPromise = new Promise<CloudUploadResult>((resolve) => {
-        timeoutHandle = setTimeout(async () => {
-            // Force-close Firebase to unblock any pending Firestore operations:
-            // terminate() closes the gRPC connection, deleteApp() releases the handle.
-            try {
-                const { getFirestore, terminate } =
-                    await import('firebase/firestore')
-                await terminate(getFirestore(app))
-            } catch {
-                /* ignore */
-            }
-            try {
-                await deleteApp(app)
-            } catch {
-                /* ignore */
-            }
-            resolve({ success: false, reason: 'timeout' })
-        }, timeout)
-    })
+        const timeoutPromise = new Promise<CloudUploadResult>((resolve) => {
+            timeoutHandle = setTimeout(async () => {
+                // Force-close Firebase to unblock any pending Firestore operations:
+                // terminate() closes the gRPC connection, deleteApp() releases the handle.
+                try {
+                    const { getFirestore, terminate } =
+                        await import('firebase/firestore')
+                    await terminate(getFirestore(app))
+                } catch {
+                    /* ignore */
+                }
+                try {
+                    await deleteApp(app)
+                } catch {
+                    /* ignore */
+                }
+                resolve({ success: false, reason: 'timeout' })
+            }, timeout)
+        })
 
-    const uploadPromise = doUpload(app, payload, identity).finally(() =>
-        clearTimeout(timeoutHandle)
-    )
+        const uploadPromise = doUpload(app, payload, identity).finally(() =>
+            clearTimeout(timeoutHandle)
+        )
 
-    return Promise.race([uploadPromise, timeoutPromise])
+        return Promise.race([uploadPromise, timeoutPromise])
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err)
+        return { success: false, reason: message }
+    }
 }
 
 // ─── Upload implementation ────────────────────────────────────────────────────

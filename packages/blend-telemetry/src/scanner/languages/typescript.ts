@@ -187,7 +187,10 @@ function extractImports(ast: TSESTree.Program, packageName: string): ImportMap {
             if (!isBlend) continue
 
             // Derive component name from sub-path: "@juspay/.../Button" → "Button"
-            const subPathPart = src.includes('/')
+            // Only treat as a subpath when src actually starts with `${pkgBase}/`.
+            // Scoped packages like "@juspay/blend-design-system" always contain "/"
+            // (the scope separator), so src.includes('/') is never a reliable signal.
+            const subPathPart = src.startsWith(`${pkgBase}/`)
                 ? (src.split('/').pop() ?? null)
                 : null
 
