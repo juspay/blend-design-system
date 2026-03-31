@@ -1,0 +1,309 @@
+import Text from '../../Text/Text'
+import StepperLineV2 from '../StepperLineV2'
+import { Check, InfoIcon, Lock } from 'lucide-react'
+import { StepperV2TokensType } from '../stepperV2.tokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { Tooltip } from '../../Tooltip'
+import { StepperV2StepProps, StepperV2StepStatus } from '../stepperV2.types'
+import Block from '../../Primitives/Block/Block'
+import { forwardRef } from 'react'
+import { getStepState } from '../utils'
+
+export const HorizontalStepComponent = forwardRef<
+    HTMLDivElement,
+    StepperV2StepProps & {
+        onKeyDown?: (event: React.KeyboardEvent, stepIndex: number) => void
+        stepperInstanceId: string
+    }
+>(
+    (
+        {
+            step,
+            stepIndex,
+            isCompleted,
+            isCurrent,
+            isFirst,
+            isLast,
+            onClick,
+            clickable,
+            onKeyDown,
+            stepperInstanceId,
+        },
+        ref
+    ) => {
+        const stepperTokens =
+            useResponsiveTokens<StepperV2TokensType>('STEPPERV2')
+
+        const stepState = getStepState(step, isCompleted, isCurrent)
+        const isClickable = clickable && !step.disabled && onClick
+
+        const handleClick = () => {
+            if (isClickable) {
+                onClick!(stepIndex)
+            }
+        }
+
+        const handleKeyDown = (event: React.KeyboardEvent) => {
+            if (!isClickable) return
+
+            switch (event.key) {
+                case 'Enter':
+                case ' ':
+                    event.preventDefault()
+                    onClick!(stepIndex)
+                    break
+                case 'ArrowRight':
+                case 'ArrowLeft':
+                case 'Home':
+                case 'End':
+                    onKeyDown?.(event, stepIndex)
+                    break
+            }
+        }
+
+        const renderStepIcon = () => {
+            if (step.icon) return step.icon
+
+            switch (stepState) {
+                case StepperV2StepStatus.COMPLETED:
+                    return (
+                        <Check
+                            size={14}
+                            color={
+                                stepperTokens.container.step.icon[stepState]
+                                    .default.color
+                            }
+                            aria-hidden="true"
+                        />
+                    )
+                case StepperV2StepStatus.DISABLED:
+                    return (
+                        <Lock
+                            size={14}
+                            color={
+                                stepperTokens.container.step.icon[stepState]
+                                    .default.color
+                            }
+                            aria-hidden="true"
+                        />
+                    )
+                case StepperV2StepStatus.CURRENT:
+                case StepperV2StepStatus.PENDING:
+                case StepperV2StepStatus.SKIPPED:
+                    return (
+                        <Text
+                            fontSize={12}
+                            fontWeight={500}
+                            color={
+                                stepperTokens.container.step.icon[stepState]
+                                    .default.color
+                            }
+                            aria-hidden="true"
+                        >
+                            {stepIndex + 1}
+                        </Text>
+                    )
+                default:
+                    return null
+            }
+        }
+
+        // Generate unique IDs for ARIA relationships
+        // Use stepperInstanceId from parent to ensure uniqueness across multiple steppers
+        const stepId = `stepper-${stepperInstanceId}-step-${step.id}-${stepIndex}`
+        const stepTitleId = `${stepId}-title`
+        const stepDescriptionId = step.description
+            ? `${stepId}-description`
+            : undefined
+
+        const clickableStepLabel = isClickable
+            ? `Step ${stepIndex + 1} of ${step.title}${
+                  stepState === StepperV2StepStatus.COMPLETED
+                      ? ', completed'
+                      : stepState === StepperV2StepStatus.CURRENT
+                        ? ', current'
+                        : stepState === StepperV2StepStatus.DISABLED
+                          ? ', disabled'
+                          : stepState === StepperV2StepStatus.SKIPPED
+                            ? ', skipped'
+                            : ', pending'
+              }`
+            : undefined
+
+        return (
+            <Block
+                data-element="stepper-status"
+                data-id={clickableStepLabel}
+                data-numeric={step.id}
+                ref={ref}
+                width="100%"
+                display="flex"
+                flexDirection="column"
+                gap={stepperTokens.container.gap}
+                role={isClickable ? 'button' : 'group'}
+                tabIndex={isClickable ? 0 : -1}
+                aria-current={isCurrent ? 'step' : undefined}
+                aria-pressed={isClickable && isCurrent ? 'true' : undefined}
+                aria-disabled={step.disabled ? 'true' : undefined}
+                aria-label={clickableStepLabel}
+                aria-labelledby={stepTitleId}
+                aria-describedby={stepDescriptionId}
+                id={stepId}
+                cursor={isClickable ? 'pointer' : 'default'}
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
+            >
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    role="presentation"
+                >
+                    <StepperLineV2
+                        color={
+                            isFirst
+                                ? 'transparent'
+                                : stepperTokens.container.connector.line
+                                      .inactive.default.color
+                        }
+                    />
+                    <Block
+                        width={
+                            stepperTokens.container.step.circle[stepState]
+                                .default.size
+                        }
+                        height={
+                            stepperTokens.container.step.circle[stepState]
+                                .default.size
+                        }
+                        backgroundColor={
+                            stepperTokens.container.step.circle[stepState]
+                                .default.backgroundColor
+                        }
+                        border={`${stepperTokens.container.step.circle[stepState].default.borderWidth} solid ${stepperTokens.container.step.circle[stepState].default.borderColor}`}
+                        borderRadius={
+                            stepperTokens.container.step.circle[stepState]
+                                .default.borderRadius
+                        }
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        flexShrink={0}
+                        transition={
+                            stepperTokens.container.step.circle[stepState]
+                                .default.transition
+                        }
+                        role="presentation"
+                        _hover={
+                            isClickable
+                                ? {
+                                      backgroundColor:
+                                          stepperTokens.container.step.circle[
+                                              stepState
+                                          ].hover.backgroundColor,
+                                  }
+                                : undefined
+                        }
+                        _focus={
+                            isClickable
+                                ? {
+                                      outline:
+                                          stepperTokens.container.step.circle[
+                                              stepState
+                                          ].focus.outline,
+                                      outlineOffset:
+                                          stepperTokens.container.step.circle[
+                                              stepState
+                                          ].focus.outlineOffset,
+                                  }
+                                : undefined
+                        }
+                    >
+                        {renderStepIcon()}
+                    </Block>
+
+                    <StepperLineV2
+                        color={
+                            isLast
+                                ? 'transparent'
+                                : stepperTokens.container.connector.line
+                                      .inactive.default.color
+                        }
+                    />
+                </Block>
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    gap={
+                        stepperTokens.container.title.text[stepState].default
+                            .gap
+                    }
+                    role="presentation"
+                >
+                    <Text
+                        id={stepTitleId}
+                        truncate={true}
+                        fontSize={
+                            stepperTokens.container.title.text[stepState]
+                                .default.fontSize
+                        }
+                        fontWeight={
+                            stepperTokens.container.title.text[stepState]
+                                .default.fontWeight
+                        }
+                        color={
+                            stepperTokens.container.title.text[stepState]
+                                .default.color
+                        }
+                        as="span"
+                        style={{
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '100%',
+                            paddingInline: '8px',
+                            textAlign: 'center',
+                        }}
+                    >
+                        {step.title}
+                    </Text>
+                    {step?.description && (
+                        <>
+                            <span
+                                id={stepDescriptionId}
+                                className="sr-only"
+                                style={{
+                                    position: 'absolute',
+                                    width: '1px',
+                                    height: '1px',
+                                    padding: 0,
+                                    margin: '-1px',
+                                    overflow: 'hidden',
+                                    clip: 'rect(0, 0, 0, 0)',
+                                    whiteSpace: 'nowrap',
+                                    borderWidth: 0,
+                                }}
+                            >
+                                {step.description}
+                            </span>
+                            <Tooltip content={step.description}>
+                                <InfoIcon
+                                    style={{ flexShrink: 0, cursor: 'pointer' }}
+                                    size={12}
+                                    color={
+                                        stepperTokens.container.title.text[
+                                            stepState
+                                        ].default.color
+                                    }
+                                    aria-label={`Additional information: ${step.description}`}
+                                    aria-describedby={stepDescriptionId}
+                                />
+                            </Tooltip>
+                        </>
+                    )}
+                </Block>
+            </Block>
+        )
+    }
+)

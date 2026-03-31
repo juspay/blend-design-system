@@ -1,454 +1,79 @@
-import React, {
-    forwardRef,
-    useCallback,
-    useRef,
-    useState,
-    useEffect,
-    useId,
-} from 'react'
+import React, { forwardRef, useRef, useState, useEffect, useId } from 'react'
 import Block from '../../Primitives/Block/Block'
-import Text from '../../Text/Text'
-import StepperLineV2 from '../StepperLineV2'
-import { Check, InfoIcon, Lock } from 'lucide-react'
-import {
-    StepperV2Props,
-    StepperV2StepProps,
-    StepperV2StepStatus,
-} from '../stepperV2.types'
-import { StepperV2TokensType } from '../stepperV2.tokens'
-import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { Tooltip } from '../../Tooltip'
 
-const StepComponent = forwardRef<
-    HTMLDivElement,
-    StepperV2StepProps & {
-        onKeyDown?: (event: React.KeyboardEvent, stepIndex: number) => void
-        stepperInstanceId: string
-    }
->(
-    (
-        {
-            step,
-            stepIndex,
-            isCompleted,
-            isCurrent,
-            isFirst,
-            isLast,
-            onClick,
-            clickable,
-            onKeyDown,
-            stepperInstanceId,
-        },
-        ref
-    ) => {
-        const stepperTokens =
-            useResponsiveTokens<StepperV2TokensType>('STEPPERV2')
-
-        const getStepState = (): StepperV2StepStatus => {
-            if (step.disabled) return StepperV2StepStatus.DISABLED
-            if (step.status) return step.status
-            if (isCompleted) return StepperV2StepStatus.COMPLETED
-            if (isCurrent) return StepperV2StepStatus.CURRENT
-            return StepperV2StepStatus.PENDING
-        }
-
-        const stepState = getStepState()
-        const isClickable = clickable && !step.disabled && onClick
-
-        const handleClick = useCallback(() => {
-            if (isClickable) {
-                onClick!(stepIndex)
-            }
-        }, [isClickable, onClick, stepIndex])
-
-        const handleKeyDown = useCallback(
-            (event: React.KeyboardEvent) => {
-                if (!isClickable) return
-
-                switch (event.key) {
-                    case 'Enter':
-                    case ' ':
-                        event.preventDefault()
-                        onClick!(stepIndex)
-                        break
-                    case 'ArrowRight':
-                    case 'ArrowLeft':
-                    case 'Home':
-                    case 'End':
-                        // Navigation handled by parent component
-                        if (onKeyDown) {
-                            onKeyDown(event, stepIndex)
-                        }
-                        break
-                }
-            },
-            [isClickable, onClick, stepIndex, onKeyDown]
-        )
-
-        const renderStepIcon = () => {
-            if (step.icon) return step.icon
-
-            switch (stepState) {
-                case StepperV2StepStatus.COMPLETED:
-                    return (
-                        <Check
-                            size={14}
-                            color={
-                                stepperTokens.container.step.icon[stepState]
-                                    .default.color
-                            }
-                            aria-hidden="true"
-                        />
-                    )
-                case StepperV2StepStatus.DISABLED:
-                    return (
-                        <Lock
-                            size={14}
-                            color={
-                                stepperTokens.container.step.icon[stepState]
-                                    .default.color
-                            }
-                            aria-hidden="true"
-                        />
-                    )
-                case StepperV2StepStatus.CURRENT:
-                case StepperV2StepStatus.PENDING:
-                case StepperV2StepStatus.SKIPPED:
-                    return (
-                        <Text
-                            fontSize={12}
-                            fontWeight={500}
-                            color={
-                                stepperTokens.container.step.icon[stepState]
-                                    .default.color
-                            }
-                            aria-hidden="true"
-                        >
-                            {stepIndex + 1}
-                        </Text>
-                    )
-                default:
-                    return null
-            }
-        }
-
-        // Generate unique IDs for ARIA relationships
-        // Use stepperInstanceId from parent to ensure uniqueness across multiple steppers
-        const stepId = `stepper-${stepperInstanceId}-step-${step.id}-${stepIndex}`
-        const stepTitleId = `${stepId}-title`
-        const stepDescriptionId = step.description
-            ? `${stepId}-description`
-            : undefined
-        const stepStatus = isClickable
-            ? `Step ${stepIndex + 1} of ${step.title}${
-                  stepState === StepperV2StepStatus.COMPLETED
-                      ? ', completed'
-                      : stepState === StepperV2StepStatus.CURRENT
-                        ? ', current'
-                        : stepState === StepperV2StepStatus.DISABLED
-                          ? ', disabled'
-                          : stepState === StepperV2StepStatus.SKIPPED
-                            ? ', skipped'
-                            : ', pending'
-              }`
-            : undefined
-
-        return (
-            <Block
-                data-element="stepper-status"
-                data-id={stepStatus}
-                data-numeric={step.id}
-                ref={ref}
-                width="100%"
-                display="flex"
-                flexDirection="column"
-                gap={stepperTokens.container.gap}
-                role={isClickable ? 'button' : 'group'}
-                tabIndex={isClickable ? 0 : -1}
-                aria-current={isCurrent ? 'step' : undefined}
-                aria-pressed={isClickable && isCurrent ? 'true' : undefined}
-                aria-disabled={step.disabled ? 'true' : undefined}
-                aria-label={
-                    isClickable
-                        ? `Step ${stepIndex + 1} of ${step.title}${
-                              stepState === StepperV2StepStatus.COMPLETED
-                                  ? ', completed'
-                                  : stepState === StepperV2StepStatus.CURRENT
-                                    ? ', current'
-                                    : stepState === StepperV2StepStatus.DISABLED
-                                      ? ', disabled'
-                                      : stepState ===
-                                          StepperV2StepStatus.SKIPPED
-                                        ? ', skipped'
-                                        : ', pending'
-                          }`
-                        : undefined
-                }
-                aria-labelledby={stepTitleId}
-                aria-describedby={stepDescriptionId}
-                id={stepId}
-                cursor={isClickable ? 'pointer' : 'default'}
-                onClick={handleClick}
-                onKeyDown={handleKeyDown}
-            >
-                <Block
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    role="presentation"
-                >
-                    <StepperLineV2
-                        color={
-                            isFirst
-                                ? 'transparent'
-                                : stepperTokens.container.connector.line
-                                      .inactive.default.color
-                        }
-                    />
-                    <Block
-                        width={
-                            stepperTokens.container.step.circle[stepState]
-                                .default.size
-                        }
-                        height={
-                            stepperTokens.container.step.circle[stepState]
-                                .default.size
-                        }
-                        backgroundColor={
-                            stepperTokens.container.step.circle[stepState]
-                                .default.backgroundColor
-                        }
-                        border={`${stepperTokens.container.step.circle[stepState].default.borderWidth} solid ${stepperTokens.container.step.circle[stepState].default.borderColor}`}
-                        borderRadius={
-                            stepperTokens.container.step.circle[stepState]
-                                .default.borderRadius
-                        }
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        flexShrink={0}
-                        transition={
-                            stepperTokens.container.step.circle[stepState]
-                                .default.transition
-                        }
-                        role="presentation"
-                        _hover={
-                            isClickable
-                                ? {
-                                      backgroundColor:
-                                          stepperTokens.container.step.circle[
-                                              stepState
-                                          ].hover.backgroundColor,
-                                  }
-                                : undefined
-                        }
-                        _focus={
-                            isClickable
-                                ? {
-                                      outline:
-                                          stepperTokens.container.step.circle[
-                                              stepState
-                                          ].focus.outline,
-                                      outlineOffset:
-                                          stepperTokens.container.step.circle[
-                                              stepState
-                                          ].focus.outlineOffset,
-                                  }
-                                : undefined
-                        }
-                    >
-                        {renderStepIcon()}
-                    </Block>
-
-                    <StepperLineV2
-                        color={
-                            isLast
-                                ? 'transparent'
-                                : stepperTokens.container.connector.line
-                                      .inactive.default.color
-                        }
-                    />
-                </Block>
-                <Block
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    gap={
-                        stepperTokens.container.title.text[stepState].default
-                            .gap
-                    }
-                    role="presentation"
-                >
-                    <Text
-                        id={stepTitleId}
-                        truncate={true}
-                        fontSize={
-                            stepperTokens.container.title.text[stepState]
-                                .default.fontSize
-                        }
-                        fontWeight={
-                            stepperTokens.container.title.text[stepState]
-                                .default.fontWeight
-                        }
-                        color={
-                            stepperTokens.container.title.text[stepState]
-                                .default.color
-                        }
-                        as="span"
-                        style={{
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            maxWidth: '100%',
-                            paddingInline: '8px',
-                            textAlign: 'center',
-                        }}
-                    >
-                        {step.title}
-                    </Text>
-                    {step?.description && (
-                        <>
-                            <span
-                                id={stepDescriptionId}
-                                className="sr-only"
-                                style={{
-                                    position: 'absolute',
-                                    width: '1px',
-                                    height: '1px',
-                                    padding: 0,
-                                    margin: '-1px',
-                                    overflow: 'hidden',
-                                    clip: 'rect(0, 0, 0, 0)',
-                                    whiteSpace: 'nowrap',
-                                    borderWidth: 0,
-                                }}
-                            >
-                                {step.description}
-                            </span>
-                            <Tooltip content={step.description}>
-                                <InfoIcon
-                                    style={{ flexShrink: 0, cursor: 'pointer' }}
-                                    size={12}
-                                    color={
-                                        stepperTokens.container.title.text[
-                                            stepState
-                                        ].default.color
-                                    }
-                                    aria-label={`Additional information: ${step.description}`}
-                                    aria-describedby={stepDescriptionId}
-                                />
-                            </Tooltip>
-                        </>
-                    )}
-                </Block>
-            </Block>
-        )
-    }
-)
+import { StepperV2Props, StepperV2StepStatus } from '../stepperV2.types'
+import { scheduleLiveRegionAnnouncement } from '../utils'
+import { HorizontalStepComponent } from './HorizontalStepComponent'
 
 const HorizontalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
     ({ steps, onStepClick, clickable, ...htmlProps }, ref) => {
-        // Generate unique ID for this stepper instance to avoid duplicate IDs across multiple steppers
         const stepperInstanceId = useId().replace(/:/g, '-')
 
-        const derivedIndex = (() => {
-            const explicit = steps.findIndex(
-                (s) => s.status === StepperV2StepStatus.CURRENT
-            )
-            if (explicit >= 0) return explicit
-            return 0
-        })()
+        const currentExplicitIndex = steps.findIndex(
+            (s) => s.status === StepperV2StepStatus.CURRENT
+        )
+        const derivedIndex =
+            currentExplicitIndex >= 0 ? currentExplicitIndex : 0
 
         const [focusedStepIndex, setFocusedStepIndex] = useState<number | null>(
             null
         )
         const stepRefs = useRef<(HTMLDivElement | null)[]>([])
 
-        const handleStepClick = useCallback(
-            (stepIndex: number) => {
-                if (onStepClick) {
-                    onStepClick(stepIndex)
-                }
-            },
-            [onStepClick]
-        )
+        const handleStepClick = (stepIndex: number) => {
+            onStepClick?.(stepIndex)
+        }
 
-        // Handle arrow key navigation
-        const handleKeyDown = useCallback(
-            (event: React.KeyboardEvent, currentIndex: number) => {
-                if (!clickable) return
+        const handleKeyDown = (
+            event: React.KeyboardEvent,
+            currentIndex: number
+        ) => {
+            if (!clickable) return
 
-                let targetIndex: number | null = null
+            let targetIndex: number | null = null
+            const lastIndex = steps.length - 1
 
-                switch (event.key) {
-                    case 'ArrowRight':
-                        event.preventDefault()
-                        targetIndex = Math.min(
-                            currentIndex + 1,
-                            steps.length - 1
-                        )
-                        break
-                    case 'ArrowLeft':
-                        event.preventDefault()
-                        targetIndex = Math.max(currentIndex - 1, 0)
-                        break
-                    case 'Home':
-                        event.preventDefault()
-                        targetIndex = 0
-                        break
-                    case 'End':
-                        event.preventDefault()
-                        targetIndex = steps.length - 1
-                        break
-                }
-
-                if (targetIndex !== null) {
-                    const targetStep = steps[targetIndex]
-                    if (!targetStep.disabled && stepRefs.current[targetIndex]) {
-                        setFocusedStepIndex(targetIndex)
-                        stepRefs.current[targetIndex]?.focus()
-                    }
-                }
-            },
-            [clickable, steps]
-        )
-
-        // Screen reader announcement for step changes
-        useEffect(() => {
-            if (focusedStepIndex !== null) {
-                const currentStep = steps[focusedStepIndex]
-                if (currentStep && !currentStep.disabled) {
-                    const announcement = document.createElement('div')
-                    announcement.setAttribute('role', 'status')
-                    announcement.setAttribute('aria-live', 'polite')
-                    announcement.setAttribute('aria-atomic', 'true')
-                    announcement.style.position = 'absolute'
-                    announcement.style.left = '-10000px'
-                    announcement.style.width = '1px'
-                    announcement.style.height = '1px'
-                    announcement.style.overflow = 'hidden'
-                    announcement.textContent = `Step ${focusedStepIndex + 1}: ${currentStep.title}`
-                    document.body.appendChild(announcement)
-
-                    const timer = setTimeout(() => {
-                        if (document.body.contains(announcement)) {
-                            document.body.removeChild(announcement)
-                        }
-                    }, 1000)
-
-                    return () => {
-                        clearTimeout(timer)
-                        if (document.body.contains(announcement)) {
-                            document.body.removeChild(announcement)
-                        }
-                    }
-                }
+            switch (event.key) {
+                case 'ArrowRight':
+                    event.preventDefault()
+                    targetIndex = Math.min(currentIndex + 1, lastIndex)
+                    break
+                case 'ArrowLeft':
+                    event.preventDefault()
+                    targetIndex = Math.max(currentIndex - 1, 0)
+                    break
+                case 'Home':
+                    event.preventDefault()
+                    targetIndex = 0
+                    break
+                case 'End':
+                    event.preventDefault()
+                    targetIndex = lastIndex
+                    break
             }
+
+            if (targetIndex === null) return
+
+            const targetStep = steps[targetIndex]
+            const targetEl = stepRefs.current[targetIndex]
+            if (!targetStep.disabled && targetEl) {
+                setFocusedStepIndex(targetIndex)
+                targetEl.focus()
+            }
+        }
+
+        useEffect(() => {
+            if (focusedStepIndex === null) return
+            const currentStep = steps[focusedStepIndex]
+            if (!currentStep || currentStep.disabled) return
+            return scheduleLiveRegionAnnouncement(
+                `Step ${focusedStepIndex + 1}: ${currentStep.title}`
+            )
         }, [focusedStepIndex, steps])
 
-        // Filter out aria-orientation as it's not valid for role="group"
-        const filteredHtmlProps = { ...htmlProps } as Record<string, unknown>
-        delete filteredHtmlProps['aria-orientation']
+        // aria-orientation is not valid on role="group" (callers may still pass div/ARIA props via spread)
+        const blockHtmlProps = { ...(htmlProps as Record<string, unknown>) }
+        delete blockHtmlProps['aria-orientation']
 
         return (
             <Block
@@ -459,10 +84,10 @@ const HorizontalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
                 role="group"
                 aria-label={`Progress indicator: step ${derivedIndex + 1} of ${steps.length}`}
                 aria-roledescription="stepper"
-                {...filteredHtmlProps}
+                {...blockHtmlProps}
             >
                 {steps.map((step, index) => (
-                    <StepComponent
+                    <HorizontalStepComponent
                         key={step.id}
                         ref={(el) => {
                             stepRefs.current[index] = el

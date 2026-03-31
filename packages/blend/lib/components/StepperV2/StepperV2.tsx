@@ -3,6 +3,7 @@ import type { StepperV2Props } from './stepperV2.types'
 import { StepperV2Type } from './stepperV2.types'
 import HorizontalStepperV2 from './HorizontalStepper/HorizontalStepperV2'
 import VerticalStepperV2 from './VerticalStepper/VerticalStepperV2'
+import { filterBlockedProps } from '../../utils/prop-helpers'
 
 const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
     (
@@ -16,6 +17,7 @@ const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
         },
         ref
     ) => {
+        const filteredRest = filterBlockedProps(rest)
         const handleStepClick = useCallback(
             (stepIndex: number) => {
                 if (onStepClick) {
@@ -33,7 +35,7 @@ const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
                     onStepClick={handleStepClick}
                     onSubstepClick={onSubstepClick}
                     clickable={clickable}
-                    {...rest}
+                    {...filteredRest}
                 />
             )
         }
@@ -45,7 +47,7 @@ const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
                 onStepClick={handleStepClick}
                 onSubstepClick={onSubstepClick}
                 clickable={clickable}
-                {...rest}
+                {...filteredRest}
             />
         )
     }

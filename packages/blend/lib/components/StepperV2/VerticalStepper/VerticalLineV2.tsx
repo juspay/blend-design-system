@@ -2,6 +2,8 @@ import { forwardRef } from 'react'
 import Block from '../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../tokens'
 
+const lineFlexStyle = { flex: 1 as const }
+
 const VerticalLineV2 = forwardRef<
     HTMLDivElement,
     {
@@ -16,7 +18,7 @@ const VerticalLineV2 = forwardRef<
             height={height}
             backgroundColor={color}
             minHeight={32}
-            style={{ flex: 1 }}
+            style={lineFlexStyle}
         />
     )
 })

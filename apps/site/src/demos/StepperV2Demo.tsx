@@ -5,8 +5,16 @@ import {
     StepperV2Type,
 } from '../../../../packages/blend/lib/components/StepperV2/stepperV2.types'
 import { StepperV2 } from '../../../../packages/blend/lib/components/StepperV2'
+import {
+    ButtonV2,
+    ButtonV2Size,
+    ButtonV2Type,
+} from '../../../../packages/blend/lib/components/ButtonV2'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 
 const StepperV2Demo = () => {
+    const { theme } = useTheme()
     const [horizontalSteps, setHorizontalSteps] = useState<StepperV2Step[]>([
         { id: 1, title: 'Step 1', status: StepperV2StepStatus.CURRENT },
         { id: 2, title: 'Step 2', status: StepperV2StepStatus.PENDING },
@@ -101,14 +109,118 @@ const StepperV2Demo = () => {
 
     console.log({ horizontalSteps })
 
+    const substepsAllPending = (step: StepperV2Step) =>
+        step.substeps?.map((ss) => ({
+            ...ss,
+            status: StepperV2StepStatus.PENDING,
+        }))
+
     const handleVerticalStepClick = (stepIndex: number) => {
-        console.log('vertical step clicked', stepIndex)
+        setVerticalSteps((prev) =>
+            prev.map((step, i) => {
+                if (i < stepIndex) {
+                    const nextStatus =
+                        step.status === StepperV2StepStatus.COMPLETED
+                            ? StepperV2StepStatus.COMPLETED
+                            : StepperV2StepStatus.SKIPPED
+                    return {
+                        ...step,
+                        status: nextStatus,
+                        substeps:
+                            nextStatus === StepperV2StepStatus.COMPLETED
+                                ? step.substeps
+                                : substepsAllPending(step),
+                    }
+                }
+                if (i > stepIndex) {
+                    const nextStatus =
+                        step.status === StepperV2StepStatus.COMPLETED
+                            ? StepperV2StepStatus.COMPLETED
+                            : StepperV2StepStatus.PENDING
+                    return {
+                        ...step,
+                        status: nextStatus,
+                        substeps:
+                            nextStatus === StepperV2StepStatus.COMPLETED
+                                ? step.substeps
+                                : substepsAllPending(step),
+                    }
+                }
+                return {
+                    ...step,
+                    status: StepperV2StepStatus.CURRENT,
+                    substeps: substepsAllPending(step),
+                }
+            })
+        )
     }
+    /**
+     * StepperV2 vertical API: (stepId, substepOrdinal) where substepOrdinal is 1-based
+     * (matches VerticalStepperV2 passing subIdx + 1).
+     */
     const handleVerticalSubstepClick = (
-        stepIndex: number,
-        substepIndex: number
+        stepId: number,
+        substepOrdinal1Based: number
     ) => {
-        console.log('vertical substep clicked', stepIndex, substepIndex)
+        const subArrayIndex = substepOrdinal1Based - 1
+
+        setVerticalSteps((prev) => {
+            const stepArrayIndex = prev.findIndex((s) => s.id === stepId)
+            if (stepArrayIndex < 0) return prev
+
+            const target = prev[stepArrayIndex]
+            if (
+                !target.substeps ||
+                subArrayIndex < 0 ||
+                subArrayIndex >= target.substeps.length
+            ) {
+                return prev
+            }
+
+            return prev.map((step, i) => {
+                if (i < stepArrayIndex) {
+                    const nextStatus =
+                        step.status === StepperV2StepStatus.COMPLETED
+                            ? StepperV2StepStatus.COMPLETED
+                            : StepperV2StepStatus.SKIPPED
+                    return {
+                        ...step,
+                        status: nextStatus,
+                        substeps:
+                            nextStatus === StepperV2StepStatus.COMPLETED
+                                ? step.substeps
+                                : substepsAllPending(step),
+                    }
+                }
+                if (i > stepArrayIndex) {
+                    const nextStatus =
+                        step.status === StepperV2StepStatus.COMPLETED
+                            ? StepperV2StepStatus.COMPLETED
+                            : StepperV2StepStatus.PENDING
+                    return {
+                        ...step,
+                        status: nextStatus,
+                        substeps:
+                            nextStatus === StepperV2StepStatus.COMPLETED
+                                ? step.substeps
+                                : substepsAllPending(step),
+                    }
+                }
+                return {
+                    ...step,
+                    status: StepperV2StepStatus.CURRENT,
+                    substeps: step.substeps!.map((ss, j) => ({
+                        ...ss,
+                        status:
+                            j < subArrayIndex
+                                ? StepperV2StepStatus.COMPLETED
+                                : j === subArrayIndex
+                                  ? StepperV2StepStatus.CURRENT
+                                  : StepperV2StepStatus.PENDING,
+                    })),
+                }
+            })
+        })
     }
 
     const getCurrentIndex = () => {
@@ -429,8 +541,12 @@ const StepperV2Demo = () => {
     return (
         <div className="p-8">
             <div className="flex gap-8 flex-col">
-                <div className="space-y-6 border border-gray-300 p-6 rounded-2xl">
-                    <h2 className="text-xl font-semibold">
+                <div
+                    className={`space-y-6 border border-gray-300 p-6 rounded-2xl ${theme === Theme.DARK ? 'border-gray-700 bg-gray-900' : 'border-gray-300 bg-gray-50'}`}
+                >
+                    <h2
+                        className={`text-xl font-semibold ${theme === Theme.DARK ? 'text-gray-100' : 'text-gray-900'}`}
+                    >
                         Horizontal Stepper
                     </h2>
                     <StepperV2
@@ -438,7 +554,9 @@ const StepperV2Demo = () => {
                         clickable={true}
                         onStepClick={handleHorizontalStepClick}
                     />
-                    <div className="rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
+                    <div
+                        className={`rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8 ${theme === Theme.DARK ? 'text-gray-100' : 'text-gray-900'}`}
+                    >
                         {horizontalSteps.map(
                             (step) =>
                                 step.status === StepperV2StepStatus.CURRENT && (
@@ -447,23 +565,29 @@ const StepperV2Demo = () => {
                         )}
                     </div>
                     <div className="mt-4 flex gap-3">
-                        <button
+                        <ButtonV2
+                            text="Previous"
+                            buttonType={ButtonV2Type.SECONDARY}
+                            size={ButtonV2Size.MEDIUM}
                             onClick={handleHorizontalPrev}
-                            className="px-3 py-2 bg-gray-200 rounded"
-                        >
-                            Previous
-                        </button>
-                        <button
+                        />
+                        <ButtonV2
+                            text="Next"
+                            buttonType={ButtonV2Type.PRIMARY}
+                            size={ButtonV2Size.MEDIUM}
                             onClick={handleHorizontalNext}
-                            className="px-3 py-2 bg-blue-600 text-white rounded"
-                        >
-                            Next
-                        </button>
+                        />
                     </div>
                 </div>
 
-                <div className="space-y-6 border border-gray-300 p-6 rounded-2xl">
-                    <h2 className="text-xl font-semibold">Vertical Stepper</h2>
+                <div
+                    className={`space-y-6 border border-gray-300 p-6 rounded-2xl ${theme === Theme.DARK ? 'border-gray-700 bg-gray-900' : 'border-gray-300 bg-gray-50'}`}
+                >
+                    <h2
+                        className={`text-xl font-semibold ${theme === Theme.DARK ? 'text-gray-100' : 'text-gray-900'}`}
+                    >
+                        Vertical Stepper
+                    </h2>
                     <div className="w-full flex items-stretch gap-8">
                         <StepperV2
                             steps={verticalSteps}
@@ -472,7 +596,9 @@ const StepperV2Demo = () => {
                             onSubstepClick={handleVerticalSubstepClick}
                             stepperType={StepperV2Type.VERTICAL}
                         />
-                        <div className="rounded-2xl w-full flex-1 self-stretch flex justify-center items-center outline-1 outline-gray-200 p-8">
+                        <div
+                            className={`rounded-2xl w-full flex-1 self-stretch flex justify-center items-center outline-1 outline-gray-200 p-8 ${theme === Theme.DARK ? 'text-gray-100' : 'text-gray-900'}`}
+                        >
                             {currentVerticalSubstep ? (
                                 <h1>
                                     Step {currentVerticalStep?.id} - Substep{' '}
@@ -485,18 +611,18 @@ const StepperV2Demo = () => {
                         </div>
                     </div>
                     <div className="mt-4 flex gap-3">
-                        <button
+                        <ButtonV2
+                            text="Previous"
+                            buttonType={ButtonV2Type.SECONDARY}
+                            size={ButtonV2Size.MEDIUM}
                             onClick={handleVerticalPrev}
-                            className="px-3 py-2 bg-gray-200 rounded"
-                        >
-                            Previous
-                        </button>
-                        <button
+                        />
+                        <ButtonV2
+                            text="Next"
+                            buttonType={ButtonV2Type.PRIMARY}
+                            size={ButtonV2Size.MEDIUM}
                             onClick={handleVerticalNext}
-                            className="px-3 py-2 bg-blue-600 text-white rounded"
-                        >
-                            Next
-                        </button>
+                        />
                     </div>
                 </div>
             </div>

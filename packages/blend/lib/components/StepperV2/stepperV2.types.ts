@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 
 export enum StepperV2StepStatus {
     COMPLETED = 'completed',
@@ -44,7 +44,7 @@ export type StepperV2Step = {
     substeps?: SubStep[]
     isExpandable?: boolean
     isExpanded?: boolean
-}
+} & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'id'>
 
 export type StepperV2StepProps = {
     step: StepperV2Step
