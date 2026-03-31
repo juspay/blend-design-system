@@ -51,7 +51,6 @@ export type CodeEditorV2Props = {
     placeholder?: string
     readOnly?: boolean
     disabled?: boolean
-    className?: string
     onBlur?: () => void
     onFocus?: () => void
     autoFocus?: boolean
