@@ -9,6 +9,7 @@ import {
     isDiffEditorMode,
     shouldShowLineNumbers,
     getContainerStyles,
+    toCssValue,
 } from './utils'
 import { CodeEditorV2Header } from './CodeEditorV2Header'
 import { MonacoEditorWrapper } from './MonacoEditor/MonacoEditorWrapper'
@@ -80,7 +81,17 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                 copyFeedbackTimeoutRef
             )
         }, [value])
-        const containerStyles = getContainerStyles(minHeight, maxHeight)
+
+        // Fixed editor height applies to the Monaco region only; omit outer minHeight
+        // when `height` is set so the default minHeight (e.g. 300px) cannot force the
+        // whole shell taller than header + editor.
+        const resolvedEditorHeight = toCssValue(height)
+        const hasFixedEditorHeight = Boolean(resolvedEditorHeight)
+        const editorMinHeight = hasFixedEditorHeight ? height! : minHeight
+        const containerStyles = getContainerStyles(
+            hasFixedEditorHeight ? undefined : minHeight,
+            maxHeight
+        )
 
         return (
             <Block
@@ -118,7 +129,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                     disabled={disabled}
                     placeholder={placeholder}
                     showLineNumbers={shouldShowLineNumbersValue}
-                    minHeight={minHeight}
+                    minHeight={editorMinHeight}
                     maxHeight={maxHeight}
                     height={height}
                     tokens={tokens}

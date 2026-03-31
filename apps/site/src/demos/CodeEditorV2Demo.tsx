@@ -732,7 +732,7 @@ def process_transactions(transactions):
                         </h3>
                         <p className="text-sm text-gray-600">
                             Remove the default FileCode icon by setting{' '}
-                            <code>showLeftIcon=false</code>
+                            <code>header.leftSlot=null</code>
                         </p>
                         <CodeEditorV2
                             value={codeExamples.typescript}

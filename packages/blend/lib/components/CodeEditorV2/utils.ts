@@ -23,8 +23,6 @@ const SCROLLBAR_SIZE_RATIO = 0.8
 /** Multiplier for placeholder `top` offset vs vertical padding. */
 const PLACEHOLDER_VERTICAL_OFFSET_MULTIPLIER = 2
 
-export const BLEND_EDITOR_THEME_NAME = 'light'
-
 // --- Editor metrics fallbacks (when tokens omit values) ---
 
 const DEFAULT_EDITOR_FONT_SIZE_PX = 12
@@ -301,6 +299,7 @@ export function getMountEditorOptions(
     return {
         lineNumbers: showLineNumbers ? 'on' : 'off',
         readOnly: readOnly || disabled,
+        domReadOnly: disabled,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
         fontSize: metrics.fontSize,
@@ -341,6 +340,7 @@ export function getUpdateEditorOptions(
     return {
         lineNumbers: showLineNumbers ? 'on' : 'off',
         readOnly: readOnly || disabled,
+        domReadOnly: disabled,
         lineDecorationsWidth: metrics.lineDecorationsWidth,
         lineNumbersMinChars: metrics.lineNumbersMinChars,
         fontSize: metrics.fontSize,
