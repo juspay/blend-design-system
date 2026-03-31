@@ -113,8 +113,7 @@ export function Example() {
         <CodeEditorV2
             value={`console.log('hello')`}
             language="javascript"
-            header="Example"
-            showHeader
+            header={{ showHeader: true, title: 'Example' }}
             showLineNumbers
         />
     )

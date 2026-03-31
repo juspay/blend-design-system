@@ -740,7 +740,7 @@ def process_transactions(transactions):
                             header={{
                                 showHeader: true,
                                 title: 'types.ts',
-                                leftSlot: <FileCode size={16} />,
+                                leftSlot: null,
                                 rightSlot: null,
                                 showCopyButton: true,
                             }}
