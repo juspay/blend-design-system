@@ -287,9 +287,10 @@ async function doUpload(
         const runDocRef = doc(db, COLLECTION, repoId, 'runs', docId)
 
         // ── Write ─────────────────────────────────────────────────────────────
-        // docId is deterministic (commitSha or local_YYYY-MM-DD), so setDoc is
-        // idempotent — running the same commit twice just overwrites with the
-        // same data. No client-side dedup query needed.
+        // docId is deterministic (commitSha or local_YYYY-MM-DD).
+        // Firestore rules allow `create` only on run docs — if this commit was
+        // already uploaded the write will be rejected with PERMISSION_DENIED,
+        // which the catch block below treats as a silent success (already-exists).
         const result = await writeDocuments(
             db,
             runDocRef,
@@ -310,6 +311,16 @@ async function doUpload(
         if (attempt === 0 && isRetryableError(message)) {
             await sleep(2000)
             return doUpload(app, payload, identity, 1)
+        }
+
+        // PERMISSION_DENIED on the run doc means the document already exists —
+        // Firestore rules allow `create` only, so a second run on the same commit
+        // is rejected. The data is already in Firestore, so treat this as success.
+        if (isAlreadyExistsError(message)) {
+            const today = new Date().toISOString().slice(0, 10)
+            const docId = identity.commitSha ?? `local_${today}`
+            await cleanup()
+            return { success: true, docId, reason: 'already-exists' }
         }
 
         await cleanup()
@@ -493,6 +504,14 @@ function topN(obj: Record<string, number>, n: number): Record<string, number> {
 
 function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function isAlreadyExistsError(message: string): boolean {
+    return (
+        message.includes('PERMISSION_DENIED') ||
+        message.includes('permission-denied') ||
+        message.includes('Missing or insufficient permissions')
+    )
 }
 
 function isRetryableError(message: string): boolean {

@@ -256,7 +256,14 @@ async function run(options: Record<string, unknown>): Promise<void> {
 
         if (!config.quiet) {
             process.stdout.write('\r' + ' '.repeat(40) + '\r')
-            if (result.success) {
+            if (result.success && result.reason === 'already-exists') {
+                const tag = chalk.dim(`(${result.docId})`)
+                console.log(
+                    chalk.dim(
+                        `  ✓ Telemetry already synced for this commit ${tag}`
+                    )
+                )
+            } else if (result.success) {
                 const tag = chalk.dim(`(${result.docId})`)
                 console.log(chalk.dim(`  ✓ Telemetry synced ${tag}`))
             } else if (result.reason === 'not configured') {
