@@ -70,11 +70,28 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
         const hasAnySkeleton = useMemo(() => {
             if (showSkeleton) return true
 
-            return React.Children.toArray(children).some((child) => {
-                if (!React.isValidElement(child)) return false
-                const props = child.props as Record<string, unknown>
-                return props.showSkeleton === true
-            })
+            const hasSkeletonInTree = (nodes: React.ReactNode): boolean => {
+                return React.Children.toArray(nodes).some((child) => {
+                    if (!React.isValidElement(child)) return false
+
+                    const props = child.props as {
+                        showSkeleton?: boolean
+                        children?: React.ReactNode
+                    }
+
+                    if (props.showSkeleton === true) {
+                        return true
+                    }
+
+                    if (props.children) {
+                        return hasSkeletonInTree(props.children)
+                    }
+
+                    return false
+                })
+            }
+
+            return hasSkeletonInTree(children)
         }, [children, showSkeleton])
 
         const updateIndicator = useCallback(() => {

@@ -56,8 +56,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
         const skeletonBorderRadius =
             tabsToken.tabList.trigger.borderRadius[size][variant]
 
-        const { isActive: _isActive, style, ...domProps } = props
-        void _isActive
+        const { isActive: isActiveProp, style, ...domProps } = props
 
         const stopEventPropagation = useCallback(
             (
@@ -142,7 +141,8 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
 
         const triggerContent = (
             <StyledTabsTrigger
-                ref={ref}
+                asChild
+                ref={ref as unknown as React.Ref<HTMLButtonElement>}
                 value={value}
                 $variant={variant}
                 $size={size}
@@ -163,7 +163,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                 {...domProps}
             >
                 <Block
-                    as="span"
+                    as="div"
                     data-element="trigger-container"
                     display="inline-flex"
                     alignItems="center"
@@ -171,7 +171,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     style={{ position: 'relative', zIndex: 0 }}
                 >
                     {!isOverlay &&
-                        props.isActive &&
+                        isActiveProp &&
                         variant !== TabsV2Variant.UNDERLINE &&
                         !shouldShowSkeleton && (
                             <motion.span
