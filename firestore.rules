@@ -9,18 +9,23 @@ service cloud.firestore {
     //   /blend-telemetry/{repoId}/runs/{runId}  ← individual scan snapshots
     //
     // Security model:
-    //   WRITE (create)  → open to any caller (the CLI tool, no auth needed)
-    //   READ            → denied from unauthenticated clients
+    //   WRITE           → requires Firebase anonymous auth (request.auth != null)
+    //                     The CLI calls signInAnonymously() before every upload —
+    //                     no credentials needed in consumer repos, works in any CI.
+    //                     Raw HTTP callers who bypass the SDK are blocked.
+    //   READ            → denied from all clients
     //                     Dashboard reads via Firebase Admin SDK (bypasses rules)
     //
-    // The Firebase apiKey is public — security is enforced here, not by hiding
-    // the config. The write-only model means the worst an attacker can do is
-    // submit junk telemetry, which the dashboard can filter out.
+    // Anonymous auth is the standard pattern for "public write" telemetry tools
+    // (analytics SDKs, crash reporters). It gives every CLI invocation a uid
+    // without requiring any secrets from the consumer repo.
     // ────────────────────────────────────────────────────────────────────────
 
     // Repo-level summary document (one per consumer repo)
     match /blend-telemetry/{repoId} {
       allow create, update: if
+        // Must be an authenticated caller (CLI uses anonymous auth)
+        request.auth != null &&
         // Required fields must exist
         request.resource.data.keys().hasAll(['repoId', 'repoName', 'lastUpdated']) &&
         // Ensure payload repoId matches the document path to prevent spoofing
@@ -39,7 +44,12 @@ service cloud.firestore {
 
     // Individual scan run documents (subcollection under each repo)
     match /blend-telemetry/{repoId}/runs/{runId} {
-      allow create, update: if
+      // create only (not update) — run docs are immutable history.
+      // Doc ID = commitSha (deterministic). If the same commit runs twice,
+      // the second write fails silently — the data is identical anyway.
+      allow create: if
+        // Must be an authenticated caller (CLI uses anonymous auth)
+        request.auth != null &&
         // Required fields must exist
         request.resource.data.keys().hasAll([
           'repoId', 'repoName', 'generatedAt',
@@ -58,7 +68,6 @@ service cloud.firestore {
         // Bound the number of top-level fields to prevent oversized writes
         // (size() returns field count, not bytes)
         request.resource.data.size() <= 50;
-        // Doc ID = commitSha (deterministic) — same commit run twice just overwrites.
 
       // No reads or deletes from unauthenticated clients
       // Dashboard uses Admin SDK which bypasses these rules entirely
