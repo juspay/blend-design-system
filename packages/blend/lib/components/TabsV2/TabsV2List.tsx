@@ -239,6 +239,17 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
         const renderChildren = (
             childrenToRender: React.ReactNode
         ): React.ReactNode => {
+            const setRef = <T,>(ref: React.Ref<T> | undefined, value: T) => {
+                if (!ref) return
+                if (typeof ref === 'function') {
+                    ref(value)
+                    return
+                }
+                if (typeof ref === 'object' && 'current' in ref) {
+                    ;(ref as React.RefObject<T | null>).current = value
+                }
+            }
+
             return React.Children.map(childrenToRender, (child) => {
                 if (!React.isValidElement(child)) return child
 
@@ -264,6 +275,12 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                               ? (existingProps.disabled as boolean | undefined)
                               : undefined
 
+                    const existingRef = (
+                        child as React.ReactElement & {
+                            ref?: React.Ref<unknown>
+                        }
+                    ).ref
+
                     return React.cloneElement(
                         child as React.ReactElement<TabsV2TriggerProps>,
                         {
@@ -272,7 +289,9 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                             variant,
                             size,
                             isActive: childValue === activeTab,
-                            tabsGroupId,
+                            tabsGroupId:
+                                (existingProps as { tabsGroupId?: unknown })
+                                    .tabsGroupId ?? tabsGroupId,
                             showSkeleton:
                                 'showSkeleton' in existingProps
                                     ? (existingProps.showSkeleton as boolean)
@@ -283,8 +302,13 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                                           | TabsV2TriggerProps['skeletonVariant']
                                           | undefined)
                                     : skeletonVariant,
-                            ref: (node: HTMLElement | null) =>
-                                registerTabRef(node, childValue),
+                            ref: (node: HTMLElement | null) => {
+                                registerTabRef(node, childValue)
+                                setRef(
+                                    existingRef as React.Ref<HTMLElement>,
+                                    node
+                                )
+                            },
                         } as TabsV2TriggerProps & {
                             ref: (node: HTMLElement | null) => void
                         }

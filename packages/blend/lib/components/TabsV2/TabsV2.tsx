@@ -29,7 +29,7 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
         ref
     ) => {
         const [activeTab, setActiveTab] = useState<string>(
-            value || defaultValue || ''
+            value ?? defaultValue ?? ''
         )
         const tabsToken = useResponsiveTokens<TabsV2TokensType>('TABSV2')
 
