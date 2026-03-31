@@ -243,6 +243,19 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'Radio.maxLength',
+                hintText:
+                    'Optional object with label and subtext number properties to limit text length. When text exceeds the limit, it is truncated with an ellipsis and a tooltip shows the full text on hover. Useful for keeping radio options compact.',
+            },
+            {
+                content: '{ label?: number; subtext?: number }',
+                hintText:
+                    'Object defining max character lengths for label and subtext',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
@@ -350,6 +363,32 @@ function MyComponent() {
                 content: 'boolean',
                 hintText:
                     'true disables all radios in group, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'RadioGroup.required',
+                hintText:
+                    'When true, marks the radio group as required and displays an asterisk (*) next to the group label. At least one radio option must be selected for form validation. Useful for ensuring users make a selection. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks group as required, false allows optional selection',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'RadioGroup.error',
+                hintText:
+                    'When true, displays all radio buttons in the group in an error state with red border and error styling. Useful for form validation feedback when the selection is invalid or missing. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows error state for all radios, false shows normal state',
             },
             { content: '' },
         ],

@@ -1,0 +1,23 @@
+{
+    "packageName": "@juspay/blend-design-system",
+    "scanDirs": ["src", "packages"],
+    "bindingsDir": "packages/common/bindings",
+    "exclude": ["**/*.test.*", "**/*.stories.*", "**/*.spec.*"],
+    "excludeGeneratedFiles": true,
+    "languages": {
+        "rescript": true,
+        "typescript": true,
+        "javascript": false
+    },
+    "reporters": ["console", "json"],
+    "outputDir": ".blend-telemetry",
+    "ci": {
+        "enabled": false,
+        "failIfAdoptionBelow": 50,
+        "failIfComponentUnused": ["Button", "Alert"],
+        "warnIfPropCoverageBelow": 30
+    },
+    "incrementalCache": true,
+    "verbose": false,
+    "quiet": false
+}

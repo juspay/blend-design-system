@@ -62,7 +62,7 @@ try {
 
 console.error(`[INFO] Blend MCP Server v${SERVER_VERSION}`)
 console.error(
-    `[INFO] Manifest: ${manifest.generatedAt || 'unknown'} | Components: ${Object.keys(manifest.components || {}).length}`
+    `[INFO] Manifest components: ${Object.keys(manifest.components || {}).length}`
 )
 console.error(`[INFO] Package: ${BLEND_LIBRARY_PACKAGE_NAME}`)
 
@@ -1810,7 +1810,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     mcpPackage: 'blend-ui-mcp',
                     blendPackage: BLEND_LIBRARY_PACKAGE_NAME,
                     blendPackageVersion: manifest.blendPackageVersion || null,
-                    manifestGeneratedAt: manifest.generatedAt || null,
+                    manifestGeneratedAt: null,
                     componentCount: components.length,
                     toolCount: 11,
                     categories: categoryCounts,

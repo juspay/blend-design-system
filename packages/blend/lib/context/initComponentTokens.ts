@@ -64,6 +64,8 @@ import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.token
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 import { getTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
+import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
+import { getCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -175,6 +177,9 @@ const initTokens = (
         MULTI_SELECT_V2:
             componentTokens.MULTI_SELECT_V2 ??
             getMultiSelectV2Tokens(foundationTokens, theme),
+        BREADCRUMBV2:
+            componentTokens.BREADCRUMBV2 ??
+            getBreadcrumbV2Tokens(foundationTokens, theme),
         AVATARV2:
             componentTokens.AVATARV2 ??
             getAvatarV2Tokens(foundationTokens, theme),
@@ -207,6 +212,9 @@ const initTokens = (
             getPopoverV2Tokens(foundationTokens, theme),
         TABSV2:
             componentTokens.TABSV2 ?? getTabsV2Tokens(foundationTokens, theme),
+        CODEEDITORV2:
+            componentTokens.CODEEDITORV2 ??
+            getCodeEditorV2Tokens(foundationTokens, theme),
     }
 }
 
