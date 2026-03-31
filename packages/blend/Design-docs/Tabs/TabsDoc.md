@@ -148,37 +148,10 @@ type TabsV2ContextValue = {
 
 ```typescript
 type TabsV2TokensType = {
-    gap: CSSObject['gap']
     width: CSSObject['width']
-    backgroundColor: {
-        [key in TabsV2Variant]: {
-            [key in TabsV2State]: CSSObject['backgroundColor']
-        }
-    }
-    borderRadius: {
-        [key in TabsV2Size]: {
-            [key in TabsV2Variant]: CSSObject['borderRadius']
-        }
-    }
-    padding: {
-        [key in TabsV2Size]: {
-            [key in TabsV2Variant]: {
-                top: CSSObject['paddingTop']
-                right: CSSObject['paddingRight']
-                bottom: CSSObject['paddingBottom']
-                left: CSSObject['paddingLeft']
-            }
-        }
-    }
-    border: {
-        [key in TabsV2Variant]: CSSObject['border']
-    }
-    borderBottom: {
-        [key in TabsV2Variant]: CSSObject['borderBottom']
-    }
     outline: CSSObject['outline']
-    transition: CSSObject['transition']
     tabList: {
+        gap: CSSObject['gap']
         backgroundColor: {
             [key in TabsV2Variant]: CSSObject['backgroundColor']
         }
@@ -208,32 +181,58 @@ type TabsV2TokensType = {
         }
         stickyHeader: {
             boxShadow: CSSObject['boxShadow']
+            zIndex: CSSObject['zIndex']
         }
-    }
-    trigger: {
-        gap: CSSObject['gap']
-        text: {
-            color: {
+        trigger: {
+            gap: CSSObject['gap']
+            icon: {
+                maxWidth: CSSObject['maxWidth']
+            }
+            backgroundColor: {
                 [key in TabsV2Variant]: {
-                    [key in TabsV2State]: CSSObject['color']
+                    [key in TabsV2State]: CSSObject['backgroundColor']
                 }
             }
-            fontSize: {
-                [key in TabsV2Size]: CSSObject['fontSize']
+            borderRadius: {
+                [key in TabsV2Size]: {
+                    [key in TabsV2Variant]: CSSObject['borderRadius']
+                }
             }
-            fontWeight: {
-                [key in TabsV2Size]: CSSObject['fontWeight']
+            border: {
+                [key in TabsV2Variant]: CSSObject['border']
             }
+            padding: {
+                [key in TabsV2Size]: {
+                    [key in TabsV2Variant]: {
+                        top: CSSObject['paddingTop']
+                        right: CSSObject['paddingRight']
+                        bottom: CSSObject['paddingBottom']
+                        left: CSSObject['paddingLeft']
+                    }
+                }
+            }
+            text: {
+                color: {
+                    [key in TabsV2Variant]: {
+                        [key in TabsV2State]: CSSObject['color']
+                    }
+                }
+                fontSize: {
+                    [key in TabsV2Size]: CSSObject['fontSize']
+                }
+                fontWeight: {
+                    [key in TabsV2Size]: CSSObject['fontWeight']
+                }
+            }
+            closeButton: {
+                width: CSSObject['width']
+                borderRadius: CSSObject['borderRadius']
+                backgroundColor: {
+                    [key in TabsV2State]: CSSObject['backgroundColor']
+                }
+            }
+            transition: CSSObject['transition']
         }
-        closeButton: {
-            width: CSSObject['width']
-            borderRadius: CSSObject['borderRadius']
-            backgroundColor: {
-                [key in TabsV2State]: CSSObject['backgroundColor']
-            }
-        }
-        outline: CSSObject['outline']
-        transition: CSSObject['transition']
     }
 }
 
@@ -242,7 +241,7 @@ type ResponsiveTabsV2Tokens = {
 }
 ```
 
-**Token Pattern**: `component.tabList.element.CSSProp.[size].[variant].[state]`
+**Token Pattern**: `component.tabList.element.CSSProp.[size].[variant].[state]` (shape matches `packages/blend/lib/components/TabsV2/tabsV2.tokens.ts`)
 
 ## Design Decisions
 

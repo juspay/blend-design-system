@@ -63,7 +63,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
 
         const scrollContainerRef = useRef<HTMLDivElement>(null)
         const tabsListRef = useRef<HTMLDivElement>(null)
-        const tabRefsMap = useRef<Map<string, HTMLButtonElement>>(new Map())
+        const tabRefsMap = useRef<Map<string, HTMLElement>>(new Map())
         const isScrollingRef = useRef(false)
         const hasMountedRef = useRef(false)
 
@@ -197,7 +197,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
         }, [activeTab, updateIndicator])
 
         const registerTabRef = useCallback(
-            (node: HTMLButtonElement | null, value: string) => {
+            (node: HTMLElement | null, value: string) => {
                 if (node && value) {
                     tabRefsMap.current.set(value, node)
                 } else if (value) {
@@ -219,11 +219,16 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
             [ref]
         )
 
-        const renderChildren = () => {
-            return React.Children.map(children, (child) => {
+        const renderChildren = (
+            childrenToRender: React.ReactNode
+        ): React.ReactNode => {
+            return React.Children.map(childrenToRender, (child) => {
                 if (!React.isValidElement(child)) return child
 
                 const existingProps = child.props as Record<string, unknown>
+                const childChildren =
+                    (existingProps.children as React.ReactNode) || null
+
                 const childValue =
                     'value' in existingProps
                         ? (existingProps.value as string)
@@ -233,40 +238,54 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                     child.type &&
                     (child.type as { displayName?: string }).displayName ===
                         'TabsV2Trigger'
-                if (!isTabsTrigger) return child
 
-                const childDisable =
-                    'disable' in existingProps
-                        ? (existingProps.disable as boolean | undefined)
-                        : 'disabled' in existingProps
-                          ? (existingProps.disabled as boolean | undefined)
-                          : undefined
+                if (isTabsTrigger) {
+                    const childDisable =
+                        'disable' in existingProps
+                            ? (existingProps.disable as boolean | undefined)
+                            : 'disabled' in existingProps
+                              ? (existingProps.disabled as boolean | undefined)
+                              : undefined
 
-                return React.cloneElement(
-                    child as React.ReactElement<TabsV2TriggerProps>,
-                    {
-                        ...existingProps,
-                        disabled: childDisable || disabled,
-                        variant,
-                        size,
-                        isActive: childValue === activeTab,
-                        tabsGroupId,
-                        showSkeleton:
-                            'showSkeleton' in existingProps
-                                ? (existingProps.showSkeleton as boolean)
-                                : showSkeleton,
-                        skeletonVariant:
-                            'skeletonVariant' in existingProps
-                                ? (existingProps.skeletonVariant as
-                                      | TabsV2TriggerProps['skeletonVariant']
-                                      | undefined)
-                                : skeletonVariant,
-                        ref: (node: HTMLButtonElement | null) =>
-                            registerTabRef(node, childValue),
-                    } as TabsV2TriggerProps & {
-                        ref: (node: HTMLButtonElement | null) => void
-                    }
-                )
+                    return React.cloneElement(
+                        child as React.ReactElement<TabsV2TriggerProps>,
+                        {
+                            ...existingProps,
+                            disabled: childDisable || disabled,
+                            variant,
+                            size,
+                            isActive: childValue === activeTab,
+                            tabsGroupId,
+                            showSkeleton:
+                                'showSkeleton' in existingProps
+                                    ? (existingProps.showSkeleton as boolean)
+                                    : showSkeleton,
+                            skeletonVariant:
+                                'skeletonVariant' in existingProps
+                                    ? (existingProps.skeletonVariant as
+                                          | TabsV2TriggerProps['skeletonVariant']
+                                          | undefined)
+                                    : skeletonVariant,
+                            ref: (node: HTMLElement | null) =>
+                                registerTabRef(node, childValue),
+                        } as TabsV2TriggerProps & {
+                            ref: (node: HTMLElement | null) => void
+                        }
+                    )
+                }
+
+                if (childChildren) {
+                    const childElement = child as React.ReactElement<{
+                        children?: React.ReactNode
+                    }>
+
+                    return React.cloneElement(childElement, {
+                        ...childElement.props,
+                        children: renderChildren(childChildren),
+                    })
+                }
+
+                return child
             })
         }
 
@@ -321,7 +340,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                             }}
                             {...rest}
                         >
-                            {renderChildren()}
+                            {renderChildren(children)}
                         </StyledTabsList>
                     </Block>
                 </Block>

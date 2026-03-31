@@ -60,7 +60,7 @@ export const prepareDropdownItems = (
 }
 
 export const calculateTabIndicatorPosition = (
-    tabElement: HTMLButtonElement,
+    tabElement: HTMLElement,
     listElement: HTMLDivElement
 ) => {
     const listWidth = listElement.offsetWidth

@@ -9,6 +9,7 @@ import Skeleton from '../Skeleton/Skeleton'
 import { getSkeletonState } from '../Skeleton/utils'
 import { useTabsV2Context } from './tabsV2.context'
 import Block from '../Primitives/Block/Block'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 
 const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
     (
@@ -93,10 +94,9 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                 data-element="close-slot"
                 $tabsToken={tabsToken}
             >
-                <Block
-                    as="span"
-                    role="button"
+                <PrimitiveButton
                     aria-label={`Close ${children ?? 'tab'}`}
+                    disabled={isDisabled}
                     tabIndex={isDisabled ? -1 : 0}
                     onClick={handleCloseClick}
                     onMouseDown={stopEventPropagation}
@@ -117,6 +117,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     alignItems="center"
                     justifyContent="center"
                     flexShrink={0}
+                    padding={0}
                     _hover={
                         !isDisabled
                             ? {
@@ -135,12 +136,13 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     }
                 >
                     <X size={closeIconSize} aria-hidden="true" />
-                </Block>
+                </PrimitiveButton>
             </TabsV2IconContainer>
         )
 
         const triggerContent = (
             <StyledTabsTrigger
+                asChild
                 data-status={isDisabled ? 'disabled' : 'enabled'}
                 data-id={children ?? ''}
                 ref={ref}
@@ -161,76 +163,80 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                 }}
                 {...domProps}
             >
-                {!isOverlay &&
-                    props.isActive &&
-                    variant !== TabsV2Variant.UNDERLINE &&
-                    !shouldShowSkeleton && (
-                        <motion.span
-                            layoutId={`tabs-background-indicator-${tabsGroupId}`}
-                            style={{
-                                position: 'absolute',
-                                inset: 0,
-                                backgroundColor:
-                                    tabsToken.tabList.trigger.backgroundColor[
-                                        variant
-                                    ].active,
-                                borderRadius:
-                                    tabsToken.tabList.trigger.borderRadius[
-                                        size
-                                    ][variant],
-                                zIndex: -1,
-                            }}
-                            transition={{
-                                type: 'spring',
-                                bounce: 0.2,
-                                duration: 0.6,
-                            }}
-                        />
+                <Block
+                    as="div"
+                    data-element="trigger-container"
+                    display="inline-flex"
+                    alignItems="center"
+                    gap={tabsToken.tabList.trigger.gap}
+                    style={{ position: 'relative', zIndex: 0 }}
+                >
+                    {!isOverlay &&
+                        props.isActive &&
+                        variant !== TabsV2Variant.UNDERLINE &&
+                        !shouldShowSkeleton && (
+                            <motion.span
+                                layoutId={`tabs-background-indicator-${tabsGroupId}`}
+                                style={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    backgroundColor:
+                                        tabsToken.tabList.trigger
+                                            .backgroundColor[variant].active,
+                                    borderRadius:
+                                        tabsToken.tabList.trigger.borderRadius[
+                                            size
+                                        ][variant],
+                                    zIndex: -1,
+                                }}
+                                transition={{
+                                    type: 'spring',
+                                    bounce: 0.2,
+                                    duration: 0.6,
+                                }}
+                            />
+                        )}
+
+                    {leftSlot && (
+                        <TabsV2IconContainer
+                            data-element="left-slot"
+                            $tabsToken={tabsToken}
+                            style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                            aria-hidden={
+                                React.isValidElement(leftSlot) &&
+                                leftSlot.props &&
+                                typeof leftSlot.props === 'object' &&
+                                'aria-label' in leftSlot.props
+                                    ? undefined
+                                    : 'true'
+                            }
+                        >
+                            {leftSlot}
+                        </TabsV2IconContainer>
                     )}
 
-                {leftSlot && (
-                    <TabsV2IconContainer
-                        data-element="left-slot"
-                        $tabsToken={tabsToken}
-                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
-                        aria-hidden={
-                            React.isValidElement(leftSlot) &&
-                            leftSlot.props &&
-                            typeof leftSlot.props === 'object' &&
-                            'aria-label' in leftSlot.props
-                                ? undefined
-                                : 'true'
-                        }
-                    >
-                        {leftSlot}
-                    </TabsV2IconContainer>
-                )}
-
-                {closable ? (
                     <span style={{ flexGrow: 1 }}>{children}</span>
-                ) : (
-                    <>{children}</>
-                )}
 
-                {rightSlot && (
-                    <TabsV2IconContainer
-                        data-element="right-slot"
-                        $tabsToken={tabsToken}
-                        style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
-                        aria-hidden={
-                            React.isValidElement(rightSlot) &&
-                            rightSlot.props &&
-                            typeof rightSlot.props === 'object' &&
-                            'aria-label' in rightSlot.props
-                                ? undefined
-                                : 'true'
-                        }
-                    >
-                        {rightSlot}
-                    </TabsV2IconContainer>
-                )}
+                    {rightSlot && (
+                        <TabsV2IconContainer
+                            data-element="right-slot"
+                            $tabsToken={tabsToken}
+                            style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
+                            aria-hidden={
+                                React.isValidElement(rightSlot) &&
+                                rightSlot.props &&
+                                typeof rightSlot.props === 'object' &&
+                                'aria-label' in rightSlot.props
+                                    ? undefined
+                                    : 'true'
+                            }
+                        >
+                            {rightSlot}
+                        </TabsV2IconContainer>
+                    )}
 
-                {closable && closeButton}
+                    {closable && closeButton}
+                </Block>
             </StyledTabsTrigger>
         )
 
