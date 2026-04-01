@@ -33,7 +33,7 @@ Create a composable, accessible Tabs component that supports multiple visual var
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-![Tabs Anatomy](./TabsAnatomy.png)
+![Tabs Anatomy](./TabAnatomy.png)
 
 - **TabsV2 Root**: Main container providing context and state management
 - **TabsV2List**: Horizontal scrollable container with optional sticky positioning
@@ -327,8 +327,9 @@ const renderChildren = (childrenToRender: React.ReactNode): React.ReactNode => {
     style={{
         position: 'absolute',
         inset: 0,
-        backgroundColor: tabsToken.backgroundColor[variant].active,
-        borderRadius: tabsToken.borderRadius[size][variant],
+        backgroundColor:
+            tabsToken.tabList.trigger.backgroundColor[variant].active,
+        borderRadius: tabsToken.tabList.trigger.borderRadius[size][variant],
         zIndex: -1,
     }}
     transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}

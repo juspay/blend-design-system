@@ -56,13 +56,17 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
             }
         }, [value])
 
+        const isControlled = value !== undefined && value !== null
+
         const handleValueChange = useCallback(
             (newValue: string) => {
                 const next = toTabValueString(newValue)
-                setActiveTab(next)
+                if (!isControlled) {
+                    setActiveTab(next)
+                }
                 onValueChange?.(next)
             },
-            [onValueChange]
+            [onValueChange, isControlled]
         )
 
         const renderChildren = (

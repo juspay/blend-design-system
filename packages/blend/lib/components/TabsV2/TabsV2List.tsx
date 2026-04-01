@@ -278,12 +278,10 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                         'TabsV2Trigger'
 
                 if (isTabsTrigger) {
-                    const childDisable =
-                        'disable' in existingProps
-                            ? (existingProps.disable as boolean | undefined)
-                            : 'disabled' in existingProps
-                              ? (existingProps.disabled as boolean | undefined)
-                              : undefined
+                    const childDisabled =
+                        'disabled' in existingProps
+                            ? (existingProps.disabled as boolean | undefined)
+                            : undefined
 
                     const existingRef = (
                         child as React.ReactElement & {
@@ -295,7 +293,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                         child as React.ReactElement<TabsV2TriggerProps>,
                         {
                             ...existingProps,
-                            disabled: childDisable || disabled,
+                            disabled: childDisabled || disabled,
                             variant,
                             size,
                             isActive: childValue === activeTab,
