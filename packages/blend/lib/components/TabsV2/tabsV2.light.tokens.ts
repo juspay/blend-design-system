@@ -107,32 +107,6 @@ export const getTabsV2LightTokens = (
                     gap: foundationToken.unit[8],
                     icon: {
                         maxWidth: foundationToken.unit[20],
-                        color: {
-                            [TabsV2Variant.UNDERLINE]: {
-                                default: foundationToken.colors.gray[500],
-                                hover: foundationToken.colors.gray[500],
-                                active: foundationToken.colors.gray[700],
-                                disabled: foundationToken.colors.gray[400],
-                            },
-                            [TabsV2Variant.BOXED]: {
-                                default: foundationToken.colors.gray[500],
-                                hover: foundationToken.colors.gray[500],
-                                active: foundationToken.colors.gray[700],
-                                disabled: foundationToken.colors.gray[400],
-                            },
-                            [TabsV2Variant.FLOATING]: {
-                                default: foundationToken.colors.gray[500],
-                                hover: foundationToken.colors.gray[700],
-                                active: foundationToken.colors.gray[700],
-                                disabled: foundationToken.colors.gray[400],
-                            },
-                            [TabsV2Variant.PILLS]: {
-                                default: foundationToken.colors.gray[500],
-                                hover: foundationToken.colors.gray[700],
-                                active: foundationToken.colors.gray[700],
-                                disabled: foundationToken.colors.gray[400],
-                            },
-                        },
                     },
                     backgroundColor: {
                         [TabsV2Variant.UNDERLINE]: {
@@ -395,32 +369,6 @@ export const getTabsV2LightTokens = (
                     gap: foundationToken.unit[8],
                     icon: {
                         maxWidth: foundationToken.unit[20],
-                        color: {
-                            [TabsV2Variant.UNDERLINE]: {
-                                default: foundationToken.colors.gray[500],
-                                hover: foundationToken.colors.gray[500],
-                                active: foundationToken.colors.gray[700],
-                                disabled: foundationToken.colors.gray[400],
-                            },
-                            [TabsV2Variant.BOXED]: {
-                                default: foundationToken.colors.gray[500],
-                                hover: foundationToken.colors.gray[500],
-                                active: foundationToken.colors.gray[700],
-                                disabled: foundationToken.colors.gray[400],
-                            },
-                            [TabsV2Variant.FLOATING]: {
-                                default: foundationToken.colors.gray[500],
-                                hover: foundationToken.colors.gray[700],
-                                active: foundationToken.colors.gray[700],
-                                disabled: foundationToken.colors.gray[400],
-                            },
-                            [TabsV2Variant.PILLS]: {
-                                default: foundationToken.colors.gray[500],
-                                hover: foundationToken.colors.gray[700],
-                                active: foundationToken.colors.gray[700],
-                                disabled: foundationToken.colors.gray[400],
-                            },
-                        },
                     },
                     backgroundColor: {
                         [TabsV2Variant.UNDERLINE]: {

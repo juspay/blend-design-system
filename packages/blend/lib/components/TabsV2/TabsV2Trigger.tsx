@@ -91,8 +91,6 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
             <TabsV2IconContainer
                 data-element="close-slot"
                 $tabsToken={tabsToken}
-                $variant={variant}
-                $isDisabled={isDisabled}
             >
                 <PrimitiveButton
                     aria-label={`Close ${children ?? 'tab'}`}
@@ -193,8 +191,6 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     <TabsV2IconContainer
                         data-element="left-slot"
                         $tabsToken={tabsToken}
-                        $variant={variant}
-                        $isDisabled={isDisabled}
                         style={{
                             pointerEvents: isDisabled ? 'none' : 'auto',
                         }}
@@ -217,8 +213,6 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                     <TabsV2IconContainer
                         data-element="right-slot"
                         $tabsToken={tabsToken}
-                        $variant={variant}
-                        $isDisabled={isDisabled}
                         style={{
                             pointerEvents: isDisabled ? 'none' : 'auto',
                         }}
