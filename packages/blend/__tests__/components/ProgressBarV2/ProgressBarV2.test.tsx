@@ -141,11 +141,16 @@ describe('ProgressBarV2', () => {
     })
 
     describe('ref', () => {
-        it('forwards ref to progressbar root element', () => {
+        it('forwards ref to root wrapper (contains progressbar)', () => {
             const ref = React.createRef<HTMLDivElement>()
             render(<ProgressBarV2 ref={ref} value={20} />)
             expect(ref.current).toBeInstanceOf(HTMLDivElement)
-            expect(ref.current?.getAttribute('role')).toBe('progressbar')
+            expect(ref.current?.getAttribute('data-progressbar')).toBe(
+                'progressbar'
+            )
+            expect(
+                ref.current?.querySelector('[role="progressbar"]')
+            ).toBeInstanceOf(HTMLElement)
         })
     })
 })

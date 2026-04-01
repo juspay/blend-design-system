@@ -39,5 +39,4 @@ export type ProgressBarV2InternalProps = {
     ariaLabelledby?: string
     showLabel: boolean
     tokens: ProgressBarV2TokenType
-    ref?: React.Ref<HTMLDivElement>
 }
