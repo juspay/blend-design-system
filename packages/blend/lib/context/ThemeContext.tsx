@@ -195,6 +195,9 @@ import {
     ResponsiveMultiValueInputV2Tokens,
     getMultiValueInputV2Tokens,
 } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import {getNumberInputV2Tokens,
+    ResponsiveNumberInputV2Tokens,
+} from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -263,6 +266,7 @@ export type ComponentTokenType = {
     CODEEDITORV2?: ResponsiveCodeEditorV2Tokens
     PROGRESS_BARV2?: ResponsiveProgressBarV2Tokens
     MULTI_VALUE_INPUT_V2?: ResponsiveMultiValueInputV2Tokens
+    NUMBER_INPUT_V2?: ResponsiveNumberInputV2Tokens
 }
 
 type ThemeContextType = {
@@ -348,6 +352,7 @@ const ThemeContext = createContext<ThemeContextType>({
             FOUNDATION_THEME,
             Theme.LIGHT
         ),
+        NUMBER_INPUT_V2: getNumberInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
