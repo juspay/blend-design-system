@@ -119,7 +119,9 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 '--tabs-indicator-width',
                 `${tabWidth}`
             )
-        }, [activeTab, variant, hasAnySkeleton])
+        }, [activeTab, variant, hasAnySkeleton, expanded, fitContent])
+
+        const childrenCount = React.Children.count(children)
 
         useEffect(() => {
             if (
@@ -161,7 +163,15 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 window.removeEventListener('resize', updateIndicator)
                 resizeObserver.disconnect()
             }
-        }, [activeTab, variant, hasAnySkeleton, updateIndicator])
+        }, [
+            activeTab,
+            variant,
+            hasAnySkeleton,
+            updateIndicator,
+            childrenCount,
+            expanded,
+            fitContent,
+        ])
 
         useEffect(() => {
             if (!activeTab || isScrollingRef.current) {

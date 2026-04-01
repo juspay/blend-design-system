@@ -155,6 +155,8 @@ export const StyledTabsTrigger = styled(TabsPrimitive.Trigger)<{
 
 export const TabsV2IconContainer = styled.span<{
     $tabsToken: TabsV2TokensType
+    $variant: TabsV2Variant
+    $isDisabled?: boolean
 }>((props) => ({
     display: 'inline-flex',
     alignItems: 'center',
@@ -162,4 +164,7 @@ export const TabsV2IconContainer = styled.span<{
     gap: props.$tabsToken.tabList.trigger.gap,
     maxWidth: props.$tabsToken.tabList.trigger.icon.maxWidth,
     maxHeight: props.$tabsToken.tabList.trigger.icon.maxWidth,
+    color: props.$tabsToken.tabList.trigger.icon.color[props.$variant][
+        props.$isDisabled ? 'disabled' : 'default'
+    ],
 }))

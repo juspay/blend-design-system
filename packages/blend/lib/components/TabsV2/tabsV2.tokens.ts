@@ -46,6 +46,11 @@ export type TabsV2TokensType = {
             gap: CSSObject['gap']
             icon: {
                 maxWidth: CSSObject['maxWidth']
+                color: {
+                    [key in TabsV2Variant]: {
+                        [key in TabsV2State]: CSSObject['color']
+                    }
+                }
             }
             backgroundColor: {
                 [key in TabsV2Variant]: {

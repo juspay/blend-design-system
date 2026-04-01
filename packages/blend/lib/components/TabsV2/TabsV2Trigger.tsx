@@ -8,7 +8,6 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Skeleton from '../Skeleton/Skeleton'
 import { getSkeletonState } from '../Skeleton/utils'
 import { useTabsV2Context } from './tabsV2.context'
-import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 
 const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
@@ -92,6 +91,8 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
             <TabsV2IconContainer
                 data-element="close-slot"
                 $tabsToken={tabsToken}
+                $variant={variant}
+                $isDisabled={isDisabled}
             >
                 <PrimitiveButton
                     aria-label={`Close ${children ?? 'tab'}`}
@@ -141,7 +142,6 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
 
         const triggerContent = (
             <StyledTabsTrigger
-                asChild
                 ref={ref as unknown as React.Ref<HTMLButtonElement>}
                 value={value}
                 $variant={variant}
@@ -162,80 +162,80 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                 }}
                 {...domProps}
             >
-                <Block
-                    as="div"
-                    data-element="trigger-container"
-                    display="inline-flex"
-                    alignItems="center"
-                    gap={tabsToken.tabList.trigger.gap}
-                    style={{ position: 'relative', zIndex: 0 }}
-                >
-                    {!isOverlay &&
-                        isActiveProp &&
-                        variant !== TabsV2Variant.UNDERLINE &&
-                        !shouldShowSkeleton && (
-                            <motion.span
-                                layoutId={`tabs-background-indicator-${tabsGroupId}`}
-                                style={{
-                                    position: 'absolute',
-                                    inset: 0,
-                                    backgroundColor:
-                                        tabsToken.tabList.trigger
-                                            .backgroundColor[variant].active,
-                                    borderRadius:
-                                        tabsToken.tabList.trigger.borderRadius[
-                                            size
-                                        ][variant],
-                                    zIndex: -1,
-                                }}
-                                transition={{
-                                    type: 'spring',
-                                    bounce: 0.2,
-                                    duration: 0.6,
-                                }}
-                            />
-                        )}
-
-                    {leftSlot && (
-                        <TabsV2IconContainer
-                            data-element="left-slot"
-                            $tabsToken={tabsToken}
-                            style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
-                            aria-hidden={
-                                React.isValidElement(leftSlot) &&
-                                leftSlot.props &&
-                                typeof leftSlot.props === 'object' &&
-                                'aria-label' in leftSlot.props
-                                    ? undefined
-                                    : 'true'
-                            }
-                        >
-                            {leftSlot}
-                        </TabsV2IconContainer>
+                {!isOverlay &&
+                    isActiveProp &&
+                    variant !== TabsV2Variant.UNDERLINE &&
+                    !shouldShowSkeleton && (
+                        <motion.span
+                            layoutId={`tabs-background-indicator-${tabsGroupId}`}
+                            style={{
+                                position: 'absolute',
+                                inset: 0,
+                                backgroundColor:
+                                    tabsToken.tabList.trigger.backgroundColor[
+                                        variant
+                                    ].active,
+                                borderRadius:
+                                    tabsToken.tabList.trigger.borderRadius[
+                                        size
+                                    ][variant],
+                                zIndex: -1,
+                            }}
+                            transition={{
+                                type: 'spring',
+                                bounce: 0.2,
+                                duration: 0.6,
+                            }}
+                        />
                     )}
 
-                    <span style={{ flexGrow: 1 }}>{children}</span>
+                {leftSlot && (
+                    <TabsV2IconContainer
+                        data-element="left-slot"
+                        $tabsToken={tabsToken}
+                        $variant={variant}
+                        $isDisabled={isDisabled}
+                        style={{
+                            pointerEvents: isDisabled ? 'none' : 'auto',
+                        }}
+                        aria-hidden={
+                            React.isValidElement(leftSlot) &&
+                            leftSlot.props &&
+                            typeof leftSlot.props === 'object' &&
+                            'aria-label' in leftSlot.props
+                                ? undefined
+                                : 'true'
+                        }
+                    >
+                        {leftSlot}
+                    </TabsV2IconContainer>
+                )}
 
-                    {rightSlot && (
-                        <TabsV2IconContainer
-                            data-element="right-slot"
-                            $tabsToken={tabsToken}
-                            style={{ opacity: shouldShowSkeleton ? 0 : 1 }}
-                            aria-hidden={
-                                React.isValidElement(rightSlot) &&
-                                rightSlot.props &&
-                                typeof rightSlot.props === 'object' &&
-                                'aria-label' in rightSlot.props
-                                    ? undefined
-                                    : 'true'
-                            }
-                        >
-                            {rightSlot}
-                        </TabsV2IconContainer>
-                    )}
+                <span style={{ flexGrow: 1 }}>{children}</span>
 
-                    {closable && closeButton}
-                </Block>
+                {rightSlot && (
+                    <TabsV2IconContainer
+                        data-element="right-slot"
+                        $tabsToken={tabsToken}
+                        $variant={variant}
+                        $isDisabled={isDisabled}
+                        style={{
+                            pointerEvents: isDisabled ? 'none' : 'auto',
+                        }}
+                        aria-hidden={
+                            React.isValidElement(rightSlot) &&
+                            rightSlot.props &&
+                            typeof rightSlot.props === 'object' &&
+                            'aria-label' in rightSlot.props
+                                ? undefined
+                                : 'true'
+                        }
+                    >
+                        {rightSlot}
+                    </TabsV2IconContainer>
+                )}
+
+                {closable && closeButton}
             </StyledTabsTrigger>
         )
 
