@@ -11,6 +11,8 @@ import {
     calculatePercentage,
     clampValue,
     calculateCircularProgressStroke,
+    getProgressBarValueState,
+    normalizeRange,
     parseCircularDashToken,
 } from '../../../lib/components/ProgressBarV2/utils'
 
@@ -89,6 +91,14 @@ describe('ProgressBarV2', () => {
                 '0'
             )
         })
+
+        it('normalizes range for ARIA and matches valuenow to rendered percentage when min and max are swapped', () => {
+            render(<ProgressBarV2 value={50} min={100} max={0} />)
+            const bar = screen.getByRole('progressbar')
+            expect(bar).toHaveAttribute('aria-valuenow', '50')
+            expect(bar).toHaveAttribute('aria-valuemin', '0')
+            expect(bar).toHaveAttribute('aria-valuemax', '100')
+        })
     })
 
     describe('Label', () => {
@@ -156,16 +166,42 @@ describe('ProgressBarV2', () => {
 })
 
 describe('ProgressBarV2 utils', () => {
+    it('normalizeRange orders swapped bounds', () => {
+        expect(normalizeRange(0, 100)).toEqual({ min: 0, max: 100 })
+        expect(normalizeRange(100, 0)).toEqual({ min: 0, max: 100 })
+    })
+
     it('clampValue bounds value', () => {
         expect(clampValue(5, 0, 10)).toBe(5)
         expect(clampValue(-1, 0, 10)).toBe(0)
         expect(clampValue(99, 0, 10)).toBe(10)
     })
 
+    it('clampValue treats swapped min/max like ordered range', () => {
+        expect(clampValue(50, 100, 0)).toBe(50)
+        expect(clampValue(-5, 100, 0)).toBe(0)
+        expect(clampValue(150, 100, 0)).toBe(100)
+    })
+
     it('calculatePercentage respects range', () => {
         expect(calculatePercentage(50, 0, 100)).toBe(50)
         expect(calculatePercentage(25, 0, 200)).toBe(12.5)
         expect(calculatePercentage(150, 0, 100)).toBe(100)
+    })
+
+    it('calculatePercentage matches ordered range when min and max are swapped', () => {
+        expect(calculatePercentage(50, 100, 0)).toBe(50)
+        expect(calculatePercentage(0, 100, 0)).toBe(0)
+        expect(calculatePercentage(100, 100, 0)).toBe(100)
+    })
+
+    it('getProgressBarValueState ties percentage to clampedValue for swapped ranges', () => {
+        const s = getProgressBarValueState(50, 100, 0)
+        expect(s.rangeMin).toBe(0)
+        expect(s.rangeMax).toBe(100)
+        expect(s.clampedValue).toBe(50)
+        expect(s.percentage).toBe(50)
+        expect(s.percentage).toBe(calculatePercentage(50, 100, 0))
     })
 
     it('parseCircularDashToken parses token string', () => {

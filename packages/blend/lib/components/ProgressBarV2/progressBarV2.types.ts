@@ -40,3 +40,11 @@ export type ProgressBarV2InternalProps = {
     showLabel: boolean
     tokens: ProgressBarV2TokenType
 }
+export type CircularProgressBarV2Props = ProgressBarV2InternalProps & {
+    size: ProgressBarV2Size
+    appearance: ProgressBarV2Appearance
+}
+export type LinearProgressBarV2Props = ProgressBarV2InternalProps & {
+    size: ProgressBarV2Size
+    appearance: ProgressBarV2Appearance
+}

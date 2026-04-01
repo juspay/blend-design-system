@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
     ProgressBarV2,
     ProgressBarV2Appearance,
@@ -989,17 +989,35 @@ const ProgressBarV2Demo = () => {
 const AnimatedProgressExample = () => {
     const [progress, setProgress] = useState(0)
     const [isAnimating, setIsAnimating] = useState(false)
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+    const clearAnimationInterval = () => {
+        if (intervalRef.current !== null) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+        }
+    }
+
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current !== null) {
+                clearInterval(intervalRef.current)
+                intervalRef.current = null
+            }
+        }
+    }, [])
 
     const startAnimation = () => {
         if (isAnimating) return
 
+        clearAnimationInterval()
         setIsAnimating(true)
         setProgress(0)
 
-        const interval = setInterval(() => {
+        intervalRef.current = setInterval(() => {
             setProgress((prev) => {
                 if (prev >= 100) {
-                    clearInterval(interval)
+                    clearAnimationInterval()
                     setIsAnimating(false)
                     addSnackbar({
                         header: 'Progress Complete!',
@@ -1013,6 +1031,7 @@ const AnimatedProgressExample = () => {
     }
 
     const resetProgress = () => {
+        clearAnimationInterval()
         setProgress(0)
         setIsAnimating(false)
     }

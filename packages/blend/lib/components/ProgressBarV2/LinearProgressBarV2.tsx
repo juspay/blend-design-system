@@ -1,19 +1,11 @@
 import { useMemo } from 'react'
-import {
-    ProgressBarV2Appearance,
-    ProgressBarV2Size,
-} from './progressBarV2.types'
-import { ProgressBarV2InternalProps } from './progressBarV2.types'
-import { calculatePercentage, clampValue } from './utils'
+import { ProgressBarV2Appearance } from './progressBarV2.types'
+import { LinearProgressBarV2Props } from './progressBarV2.types'
+import { getProgressBarValueState } from './utils'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 
-export const LinearProgressBarV2: React.FC<
-    ProgressBarV2InternalProps & {
-        size: ProgressBarV2Size
-        appearance: ProgressBarV2Appearance
-    }
-> = ({
+export const LinearProgressBarV2 = ({
     value,
     size,
     appearance,
@@ -23,13 +15,9 @@ export const LinearProgressBarV2: React.FC<
     ariaLabelledby,
     min,
     max,
-}) => {
-    const clampedValue = useMemo(
-        () => clampValue(value, min, max),
-        [value, min, max]
-    )
-    const percentage = useMemo(
-        () => calculatePercentage(value, min, max),
+}: LinearProgressBarV2Props) => {
+    const { rangeMin, rangeMax, clampedValue, percentage } = useMemo(
+        () => getProgressBarValueState(value, min, max),
         [value, min, max]
     )
 
@@ -47,8 +35,8 @@ export const LinearProgressBarV2: React.FC<
             width="100%"
             role="progressbar"
             aria-valuenow={clampedValue}
-            aria-valuemin={min}
-            aria-valuemax={max}
+            aria-valuemin={rangeMin}
+            aria-valuemax={rangeMax}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledby}
         >

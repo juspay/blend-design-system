@@ -1,30 +1,48 @@
 import type { ProgressBarV2TokenType } from './progressBarV2.tokens'
 import { ProgressBarV2Size } from './progressBarV2.types'
 
+/**
+ * Returns ordered bounds so `min` ≤ `max` (swaps when the caller passes a reversed range).
+ * Use this for progressbar ARIA (`aria-valuemin` must be ≤ `aria-valuemax`) and for math.
+ */
+export const normalizeRange = (
+    min: number,
+    max: number
+): { min: number; max: number } => {
+    if (max < min) {
+        return { min: max, max: min }
+    }
+    return { min, max }
+}
+
 export const clampValue = (value: number, min: number, max: number): number => {
-    return Math.min(max, Math.max(min, value))
+    const { min: lo, max: hi } = normalizeRange(min, max)
+    return Math.min(hi, Math.max(lo, value))
+}
+export const getProgressBarValueState = (
+    value: number,
+    min: number,
+    max: number
+): {
+    rangeMin: number
+    rangeMax: number
+    clampedValue: number
+    percentage: number
+} => {
+    const { min: rangeMin, max: rangeMax } = normalizeRange(min, max)
+    const clampedValue = clampValue(value, rangeMin, rangeMax)
+    const percentage =
+        rangeMax === rangeMin
+            ? 0
+            : ((clampedValue - rangeMin) / (rangeMax - rangeMin)) * 100
+    return { rangeMin, rangeMax, clampedValue, percentage }
 }
 
 export const calculatePercentage = (
     value: number,
     min: number,
     max: number
-): number => {
-    let normalizedMin = min
-    let normalizedMax = max
-    // Normalize swapped ranges so calculations stay consistent.
-    if (normalizedMax < normalizedMin) {
-        const tmp = normalizedMin
-        normalizedMin = normalizedMax
-        normalizedMax = tmp
-    }
-    // Avoid division by zero when the range has no length.
-    if (normalizedMax === normalizedMin) {
-        return 0
-    }
-    const clamped = clampValue(value, normalizedMin, normalizedMax)
-    return ((clamped - normalizedMin) / (normalizedMax - normalizedMin)) * 100
-}
+): number => getProgressBarValueState(value, min, max).percentage
 
 export const parseTokenValue = (
     tokenValue: string | number | undefined,

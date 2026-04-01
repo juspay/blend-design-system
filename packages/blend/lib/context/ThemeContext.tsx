@@ -182,7 +182,8 @@ import {
     getCodeEditorV2Tokens,
     ResponsiveCodeEditorV2Tokens,
 } from '../components/CodeEditorV2/codeEditorV2.tokens'
-import {getProgressBarV2Tokens,
+import {
+    getProgressBarV2Tokens,
     ResponsiveProgressBarV2Tokens,
 } from '../components/ProgressBarV2/progressBarV2.tokens'
 
