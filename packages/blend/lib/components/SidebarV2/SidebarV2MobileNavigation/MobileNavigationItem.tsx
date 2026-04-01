@@ -62,8 +62,8 @@ const MobileNavigationItem = ({
                             ? tokens.item.color.active
                             : tokens.item.color.default
                     ),
-                    lineHeight: String(tokens.itemLabelLineHeight),
-                    marginTop: String(tokens.itemLabelMarginTop),
+                    lineHeight: String(tokens.layout.itemLabelLineHeight),
+                    marginTop: String(tokens.layout.itemLabelMarginTop),
                 }}
             >
                 {item.label}

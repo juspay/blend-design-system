@@ -38,7 +38,7 @@ const StyledElement = styled(Block)<{
         $iconOnlyMode ? '0' : $tokens.section.itemList.item.gap};
     padding: ${({ $tokens, $iconOnlyMode }) =>
         $iconOnlyMode
-            ? `${$tokens.section.itemList.item.iconOnlyPadding.y} ${$tokens.section.itemList.item.iconOnlyPadding.x}`
+            ? `${$tokens.section.itemList.item.iconOnlyPadding.paddingTop} ${$tokens.section.itemList.item.iconOnlyPadding.paddingRight} ${$tokens.section.itemList.item.iconOnlyPadding.paddingBottom} ${$tokens.section.itemList.item.iconOnlyPadding.paddingLeft}`
             : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
     color: ${({ $isActive, $tokens }) =>
         $isActive

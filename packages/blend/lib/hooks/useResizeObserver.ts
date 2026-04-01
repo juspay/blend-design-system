@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-export function useResizeObserver(
-    targetRef: React.RefObject<HTMLElement>,
+export function useResizeObserver<T extends HTMLElement = HTMLElement>(
+    targetRef: React.RefObject<T | null>,
     callback: (rect: DOMRectReadOnly) => void
 ) {
     useEffect(() => {

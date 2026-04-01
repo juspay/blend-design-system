@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Snackbar } from '../../../packages/blend/lib/main'
 import SidebarDemo from './demos/SidebarDemo'
 import SidebarV2Demo from './demos/SidebarV2Demo'
 
