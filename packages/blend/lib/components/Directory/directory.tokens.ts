@@ -204,7 +204,7 @@ export const getDirectoryTokens = (
                     label: {
                         fontSize: foundationToken.font.size.body.sm.fontSize,
                         color: foundationToken.colors.gray[400],
-                        fontWeight: 500,
+                        fontWeight: 600,
                     },
                     chevron: {
                         width: foundationToken.unit[16],
@@ -220,7 +220,7 @@ export const getDirectoryTokens = (
                             x: foundationToken.unit[12],
                             y: foundationToken.unit[6],
                         },
-                        gap: foundationToken.unit[12],
+                        gap: foundationToken.unit[10],
                         borderRadius: foundationToken.border.radius[4],
                         fontWeight: 500,
                         fontSize: foundationToken.font.size.body.md.fontSize,
@@ -239,7 +239,7 @@ export const getDirectoryTokens = (
                         },
 
                         icon: {
-                            width: foundationToken.unit[20],
+                            width: foundationToken.unit[14],
                         },
 
                         chevron: {

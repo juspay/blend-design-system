@@ -1,0 +1,41 @@
+{
+    "componentDescription": "Stepper visualizes progress through a multi-step process with named, ordered steps. Use for multi-step forms (checkout, onboarding, setup wizards), where each step has a meaningful label and users benefit from knowing how far they've progressed.",
+    "features": [
+        "Horizontal and vertical orientations",
+        "Active, completed, and upcoming step states",
+        "Optional step click navigation for non-linear flows",
+        "Step descriptions/subtitles",
+        "Configurable step indicators (numbers or check icons)"
+    ],
+    "compositionPattern": "Pass a steps array with each step's label and optional description. Track the current step with activeStep (0-indexed). Update activeStep when the user completes a step.",
+    "usageExamples": [
+        {
+            "title": "Horizontal checkout stepper",
+            "description": "Stepper at the top of a checkout flow showing current step.",
+            "code": "<Stepper\n  orientation=\"HORIZONTAL\"\n  activeStep={currentStep}\n  steps={[\n    { label: 'Cart', description: 'Review items' },\n    { label: 'Shipping', description: 'Enter address' },\n    { label: 'Payment', description: 'Add payment method' },\n    { label: 'Review', description: 'Confirm order' },\n  ]}\n/>"
+        },
+        {
+            "title": "Vertical setup wizard",
+            "description": "Vertical stepper for a product setup wizard with clickable steps.",
+            "code": "<Stepper\n  orientation=\"VERTICAL\"\n  activeStep={activeStep}\n  onStepClick={(index) => {\n    if (index < activeStep) setActiveStep(index); // allow going back\n  }}\n  steps={[\n    { label: 'Connect repository' },\n    { label: 'Configure environment' },\n    { label: 'Set up deployment' },\n    { label: 'Review & deploy' },\n  ]}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "steps": {
+            "llmContext": "Required. Array of step definition objects. Each step should have a label (displayed text) and optionally a description (subtitle below the label). Keep labels short (2-4 words) — they need to fit in the stepper layout.",
+            "propDescription": "Required. Array of step definition objects with labels and descriptions"
+        },
+        "activeStep": {
+            "llmContext": "The 0-based index of the currently active step. Steps before this index are shown as completed. Update this when the user advances to the next step. For multi-step forms, increment on successful step validation.",
+            "propDescription": "0-based index of the current active step"
+        },
+        "orientation": {
+            "llmContext": "HORIZONTAL is standard for top-of-page progress indicators in checkout and onboarding flows. VERTICAL works better for sidebar-style wizards or when step labels are long.",
+            "propDescription": "Layout direction of the stepper"
+        },
+        "onStepClick": {
+            "llmContext": "Callback receiving the clicked step index. Use to allow navigation to previous steps (for editing). Typically only allow clicking steps that have already been completed, not future steps. Set to null/undefined for linear-only flows.",
+            "propDescription": "Called with step index when user clicks a step"
+        }
+    }
+}

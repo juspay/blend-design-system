@@ -1,0 +1,82 @@
+{
+    "componentDescription": "TextInput is the standard single-line text input for forms. It supports labels, hints, error messages, icon slots, password toggling, and size variants. Use TextInput for names, emails, URLs, passwords, and any short free-text input. For multi-line input use TextArea; for numeric input use NumberInput.",
+    "features": [
+        "Three sizes: SMALL, MEDIUM, LARGE",
+        "Left and right slots for icons, buttons, or custom content",
+        "Error state with inline error message",
+        "Hint text and help icon with hover tooltip",
+        "Password visibility toggle via passwordToggle prop",
+        "Sublabel for secondary label text",
+        "cursor prop for custom cursor styles",
+        "textInputGroupPosition for joining multiple inputs visually",
+        "disabled and placeholder support"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Email and password login form",
+            "description": "Two inputs with validation error and password toggle.",
+            "code": "<div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>\n  <TextInput\n    label=\"Email\"\n    placeholder=\"you@example.com\"\n    value={email}\n    onChange={setEmail}\n    size={TextInputSize.MEDIUM}\n    error={!!emailError}\n    errorMessage={emailError}\n    leftSlot={<MailIcon />}\n  />\n  <TextInput\n    label=\"Password\"\n    placeholder=\"Enter your password\"\n    value={password}\n    onChange={setPassword}\n    size={TextInputSize.MEDIUM}\n    passwordToggle\n    error={!!passwordError}\n    errorMessage={passwordError}\n  />\n</div>"
+        },
+        {
+            "title": "Input with hint text and help tooltip",
+            "description": "TextInput with sublabel, hint, and a help icon tooltip for extra guidance.",
+            "code": "<TextInput\n  label=\"API Key\"\n  sublabel=\"Required\"\n  hintText=\"Used for authenticating API requests\"\n  helpIconHintText=\"You can find your API key in Account Settings > Developer\"\n  placeholder=\"sk-...\"\n  value={apiKey}\n  onChange={setApiKey}\n  size={TextInputSize.MEDIUM}\n/>"
+        },
+        {
+            "title": "Input with left and right slots",
+            "description": "URL input with a protocol prefix and copy button.",
+            "code": "<TextInput\n  label=\"Website URL\"\n  placeholder=\"yoursite.com\"\n  value={url}\n  onChange={setUrl}\n  size={TextInputSize.MEDIUM}\n  leftSlot={<span style={{ color: '#666', padding: '0 8px' }}>https://</span>}\n  rightSlot={<Button buttonType={ButtonType.SECONDARY} size={ButtonSize.SMALL} subType={ButtonSubType.ICON_ONLY} leadingIcon={<CopyIcon />} onClick={() => copyToClipboard(url)} />}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. The controlled value of the input. Always manage this with useState. For forms, initialize with empty string '' or the pre-populated field value.",
+            "propDescription": "Required. Controlled input value"
+        },
+        "onChange": {
+            "llmContext": "Required. Callback fired with the new string value on every keystroke. Update your state variable here.",
+            "propDescription": "Required. Called with new string value on input change"
+        },
+        "label": {
+            "llmContext": "The field label displayed above the input. Always provide a label for accessibility. Use concise nouns or short phrases (e.g., 'Full name', 'Email address', 'Company').",
+            "propDescription": "Label text displayed above the input"
+        },
+        "sublabel": {
+            "llmContext": "Secondary label text rendered alongside the main label, typically for optional/required indicators or field type hints (e.g., 'Optional', 'Required').",
+            "propDescription": "Secondary text displayed next to the label"
+        },
+        "hintText": {
+            "llmContext": "Instructional text displayed below the input. Use for format hints (e.g., 'Must be 8+ characters'), constraints, or context. This is always visible, unlike helpIconHintText which is hover-only.",
+            "propDescription": "Always-visible hint text below the input"
+        },
+        "helpIconHintText": {
+            "llmContext": "Text shown in a tooltip when the user hovers the help icon (?) next to the label. Use for longer explanations, examples, or context that would clutter the form if always visible.",
+            "propDescription": "Tooltip text shown when hovering the help icon"
+        },
+        "error": {
+            "llmContext": "Set to true to apply error styling (red border, error icon). Pair with errorMessage to show the specific error text. Set based on your validation logic — typically after form submit or on field blur.",
+            "propDescription": "Applies error styling to the input"
+        },
+        "errorMessage": {
+            "llmContext": "The error text displayed below the input when error=true. Be specific and actionable (e.g., 'Email must include @' not 'Invalid email'). Only shown when error=true.",
+            "propDescription": "Error message displayed below the input when in error state"
+        },
+        "leftSlot": {
+            "llmContext": "React node rendered inside the input on the left side. Common uses: search icon, currency symbol, country flag, protocol prefix (http://). Keep it compact — a small icon or short text.",
+            "propDescription": "React node rendered inside the left side of the input"
+        },
+        "rightSlot": {
+            "llmContext": "React node rendered inside the input on the right side. Common uses: clear button, copy button, unit label, character count. Use for action affordances or supplementary info.",
+            "propDescription": "React node rendered inside the right side of the input"
+        },
+        "passwordToggle": {
+            "llmContext": "Set to true for password fields. Adds an eye icon button to toggle between masked and unmasked text. Always use this for password inputs instead of building custom toggle logic.",
+            "propDescription": "Adds show/hide password toggle button"
+        },
+        "size": {
+            "llmContext": "Use SMALL in dense forms, filter bars, or table-inline editing. Use MEDIUM for standard forms. Use LARGE for hero/prominent search fields or onboarding flows.",
+            "propDescription": "Controls input height and font size"
+        }
+    }
+}

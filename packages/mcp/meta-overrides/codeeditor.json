@@ -1,0 +1,55 @@
+{
+    "componentDescription": "CodeEditor provides a full-featured code editing area with syntax highlighting, line numbers, and editor features like auto-indent. Use it for in-app code editing scenarios — configuration editors, query builders, script editors, and developer-facing settings.",
+    "features": [
+        "Syntax highlighting for multiple languages",
+        "Line numbers",
+        "Read-only mode",
+        "Configurable theme (light/dark)",
+        "Configurable height",
+        "Controlled value"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "JSON configuration editor",
+            "description": "Editable JSON config with syntax highlighting.",
+            "code": "<CodeEditor\n  value={configJson}\n  onChange={setConfigJson}\n  language=\"json\"\n  height={400}\n/>"
+        },
+        {
+            "title": "Read-only SQL query display",
+            "description": "Non-editable display of a generated SQL query.",
+            "code": "<CodeEditor\n  value={generatedSql}\n  onChange={() => {}}\n  language=\"sql\"\n  readOnly\n  height={200}\n/>"
+        },
+        {
+            "title": "JavaScript script editor",
+            "description": "Full editor for user-defined JavaScript automation scripts.",
+            "code": "<CodeEditor\n  value={script}\n  onChange={setScript}\n  language=\"javascript\"\n  theme=\"dark\"\n  height={500}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. Controlled code string. Manage with useState. Initialize with default code or empty string. For large initial values loaded from an API, show a Skeleton until loaded.",
+            "propDescription": "Required. Controlled code content string"
+        },
+        "onChange": {
+            "llmContext": "Required. Called with the updated code string on every edit. This fires on every keystroke — debounce any API calls or parsing operations in your handler.",
+            "propDescription": "Required. Called with updated code string on edit"
+        },
+        "language": {
+            "llmContext": "Syntax highlighting language. Common values: 'javascript', 'typescript', 'json', 'python', 'sql', 'yaml', 'html', 'css', 'markdown'. Match to the actual content type for correct highlighting.",
+            "propDescription": "Programming language for syntax highlighting"
+        },
+        "readOnly": {
+            "llmContext": "Set to true to display code without allowing edits. Use for showing generated code, API responses, or example snippets. For read-only code display with a copy button, consider CodeBlock instead.",
+            "propDescription": "Prevents editing — display-only mode"
+        },
+        "theme": {
+            "llmContext": "'light' (default) for standard UIs. Use 'dark' for dedicated developer tool contexts or when the surrounding UI is dark-themed.",
+            "propDescription": "Editor color theme"
+        },
+        "height": {
+            "llmContext": "Fixed pixel height of the editor area. Set based on expected content length. For short configs, 200-300px. For scripts, 400-600px. For full-page editors, use a CSS height instead.",
+            "propDescription": "Height of the editor area in pixels"
+        }
+    }
+}

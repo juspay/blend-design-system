@@ -24,7 +24,11 @@ import {
 } from '../Select/selectUtils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll, useScrollLock } from '../../hooks'
+import {
+    usePreventParentScroll,
+    useScrollLock,
+    useShadowRoot,
+} from '../../hooks'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
@@ -170,6 +174,7 @@ const MultiSelectMenu = ({
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
+    const { target: portalContainer } = useShadowRoot()
 
     const [searchText, setSearchText] = useState('')
     const searchInputRef = useRef<HTMLInputElement>(null)
@@ -371,7 +376,7 @@ const MultiSelectMenu = ({
                     {trigger}
                 </RadixMenu.Trigger>
             )}
-            <RadixMenu.Portal>
+            <RadixMenu.Portal container={portalContainer ?? undefined}>
                 <Content
                     id={menuId}
                     data-dropdown="dropdown"

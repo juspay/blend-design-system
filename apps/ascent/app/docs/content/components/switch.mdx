@@ -200,6 +200,19 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'Switch.maxLength',
+                hintText:
+                    'Optional object with label and subtext number properties to limit text length. When text exceeds the limit, it is truncated with an ellipsis and a tooltip shows the full text on hover. Useful for keeping switch labels compact.',
+            },
+            {
+                content: '{ label?: number; subtext?: number }',
+                hintText:
+                    'Object defining max character lengths for label and subtext',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"

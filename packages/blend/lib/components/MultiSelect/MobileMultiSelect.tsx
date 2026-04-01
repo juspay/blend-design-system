@@ -306,8 +306,6 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     selectAllText = 'Select All',
     maxSelections,
     customTrigger,
-    onBlur,
-    onFocus,
     error,
     errorMessage,
     showActionButtons = true,
@@ -336,7 +334,9 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     onOpenChange,
+    ...rest
 }) => {
+    const { onFocus, onBlur, ...triggerRest } = rest
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const multiSelectTokens =
@@ -414,9 +414,17 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                 onOpenChange={(isOpen) => {
                     setDrawerOpen(isOpen)
                     if (isOpen) {
-                        onFocus?.()
+                        if (typeof onFocus === 'function') {
+                            onFocus(
+                                undefined as unknown as React.FocusEvent<HTMLButtonElement>
+                            )
+                        }
                     } else {
-                        onBlur?.()
+                        if (typeof onBlur === 'function') {
+                            onBlur(
+                                undefined as unknown as React.FocusEvent<HTMLButtonElement>
+                            )
+                        }
                         if (enableSearch) {
                             setSearchText('')
                         }
@@ -446,6 +454,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                             multiSelectTokens={multiSelectTokens}
                             error={error}
                             disabled={disabled}
+                            {...triggerRest}
                         />
                     )}
                 </DrawerTrigger>

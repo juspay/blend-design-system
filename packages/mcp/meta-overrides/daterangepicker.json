@@ -1,0 +1,55 @@
+{
+    "componentDescription": "DateRangePicker provides a calendar UI for selecting a start and end date range. Use for reporting date ranges, booking windows, filter periods, and scheduling. For single date selection, use a standard date picker.",
+    "features": [
+        "Calendar UI for selecting start and end dates",
+        "Min and max date constraints",
+        "Disabled state",
+        "Error state",
+        "Label support",
+        "Placeholder text"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Report date range filter",
+            "description": "Date range picker for filtering analytics data.",
+            "code": "<DateRangePicker\n  label=\"Date range\"\n  value={dateRange}\n  onChange={setDateRange}\n  placeholder=\"Select date range\"\n  maxDate={new Date()}\n/>"
+        },
+        {
+            "title": "Booking window selection",
+            "description": "Date range for hotel or rental booking with min/max constraints.",
+            "code": "<DateRangePicker\n  label=\"Stay dates\"\n  value={bookingDates}\n  onChange={setBookingDates}\n  placeholder=\"Check-in → Check-out\"\n  minDate={new Date()}\n  maxDate={addDays(new Date(), 365)}\n  disabled={isSubmitting}\n/>"
+        },
+        {
+            "title": "Date range with error state",
+            "description": "Required date range with validation error.",
+            "code": "<DateRangePicker\n  label=\"Project timeline\"\n  value={timeline}\n  onChange={setTimeline}\n  placeholder=\"Start date → End date\"\n  error={!timeline && submitted}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. Object with from (start Date) and to (end Date) properties. Both can be null/undefined for no selection. Manage with useState({ from: null, to: null }). Check that from <= to before submitting.",
+            "propDescription": "Required. Current date range { from: Date, to: Date }"
+        },
+        "onChange": {
+            "llmContext": "Required. Called with the new { from, to } date range object when the user selects dates. The range is built interactively — from is set on first click, to on second click.",
+            "propDescription": "Required. Called with new date range on selection"
+        },
+        "minDate": {
+            "llmContext": "The earliest selectable date. Dates before this are shown as disabled in the calendar. Use new Date() to prevent selecting past dates (e.g., for future bookings).",
+            "propDescription": "Earliest selectable date"
+        },
+        "maxDate": {
+            "llmContext": "The latest selectable date. Dates after this are disabled. Use new Date() to prevent selecting future dates for reporting date ranges where data doesn't exist yet.",
+            "propDescription": "Latest selectable date"
+        },
+        "error": {
+            "llmContext": "Set to true for validation errors — e.g., required field not filled, range too long, or end date before start date.",
+            "propDescription": "Shows error styling on the date picker"
+        },
+        "disabled": {
+            "llmContext": "Set to true to prevent date selection — use during form submission or when the date range is determined by external factors.",
+            "propDescription": "Prevents date selection"
+        }
+    }
+}

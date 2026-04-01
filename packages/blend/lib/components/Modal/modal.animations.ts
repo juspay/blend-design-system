@@ -5,7 +5,6 @@ const easingOut = 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
 const duration = 300
 
 export const modalBackdropAnimations = (isAnimatingIn: boolean) => css`
-    opacity: ${isAnimatingIn ? 0.5 : 0};
     transition: opacity ${duration}ms ${isAnimatingIn ? easingIn : easingOut};
 `
 
