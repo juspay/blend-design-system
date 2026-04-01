@@ -175,6 +175,10 @@ import {
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
 import {
+    getTabsV2Tokens,
+    ResponsiveTabsV2Tokens,
+} from '../components/TabsV2/tabsV2.tokens'
+import {
     getCodeEditorV2Tokens,
     ResponsiveCodeEditorV2Tokens,
 } from '../components/CodeEditorV2/codeEditorV2.tokens'
@@ -246,6 +250,7 @@ export type ComponentTokenType = {
     TOOLTIPV2?: ResponsiveTooltipV2Tokens
     RADIOV2?: ResponsiveRadioV2Tokens
     POPOVERV2?: ResponsivePopoverV2Tokens
+    TABSV2?: ResponsiveTabsV2Tokens
     BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
     CODEEDITORV2?: ResponsiveCodeEditorV2Tokens
 }
@@ -325,6 +330,7 @@ const ThemeContext = createContext<ThemeContextType>({
         TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TABSV2: getTabsV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CODEEDITORV2: getCodeEditorV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },

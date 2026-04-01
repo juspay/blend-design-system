@@ -135,6 +135,7 @@ import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import StatCardV2Demo from './StatCardV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import TabsV2Demo from './TabsV2Demo'
 import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 import CodeEditorV2Demo from './CodeEditorV2Demo'
 
@@ -149,6 +150,7 @@ const SidebarDemo = () => {
         | 'tagGroupV2'
         | 'breadcrumb'
         | 'tabs'
+        | 'tabsV2'
         | 'checkbox'
         | 'checkboxV2'
         | 'radio'
@@ -226,11 +228,11 @@ const SidebarDemo = () => {
         | 'timeline'
         | 'statCardV2'
         | 'tooltipV2'
+        | 'breadcrumbV2'
+        | 'codeEditorV2'
         | 'singleSelectV2'
         | 'popoverV2'
-        | 'codeEditorV2'
-        | 'breadcrumbV2'
-    >('codeEditorV2')
+    >('tabsV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -471,6 +473,8 @@ const SidebarDemo = () => {
                 return <SnackbarV2Demo />
             case 'tabs':
                 return <TabsDemo />
+            case 'tabsV2':
+                return <TabsV2Demo />
             case 'accordion':
                 return <AccordionDemo />
             case 'statCard':
@@ -1142,6 +1146,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tabs',
                     onClick: () => setActiveComponent('tabs'),
+                },
+                {
+                    label: 'Tabs V2',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tabsV2',
+                    onClick: () => setActiveComponent('tabsV2'),
                 },
                 {
                     label: 'Accordion',
