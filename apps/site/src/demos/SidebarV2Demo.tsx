@@ -301,98 +301,6 @@ const SidebarV2Demo = () => {
                 value: 'adyen',
                 showInPanel: true,
             },
-            {
-                label: 'Braintree',
-                icon: (
-                    <UserIcon
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'braintree',
-                showInPanel: false,
-            },
-            {
-                label: 'Worldpay',
-                icon: (
-                    <IndianRupee
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'worldpay',
-                showInPanel: false,
-            },
-            {
-                label: 'Klarna',
-                icon: (
-                    <UserIcon
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'klarna',
-            },
-            {
-                label: 'Affirm',
-                icon: (
-                    <IndianRupee
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'affirm',
-            },
-            {
-                label: 'Afterpay',
-                icon: (
-                    <UserIcon
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'afterpay',
-            },
-            {
-                label: 'Sezzle',
-                icon: (
-                    <IndianRupee
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'sezzle',
-            },
-            {
-                label: 'Zip',
-                icon: (
-                    <UserIcon
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'zip',
-            },
-            {
-                label: 'Paymi',
-                icon: (
-                    <IndianRupee
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'paymi',
-            },
-            {
-                label: 'Mollie',
-                icon: (
-                    <UserIcon
-                        style={{ width: '16px', height: '16px' }}
-                        color={FOUNDATION_THEME.colors.gray[600]}
-                    />
-                ),
-                value: 'mollie',
-            },
         ],
         []
     )
@@ -1566,7 +1474,9 @@ const SidebarV2Demo = () => {
                     secondarySidebar={{
                         items: tenants,
                         selected: activeTenant,
-                        onSelect: (value) => setActiveTenant(value),
+                        onSelect: (value) => {
+                            setActiveTenant(value)
+                        },
                         footerSlot: (
                             <div className="flex flex-col items-center gap-4">
                                 <button
@@ -1626,6 +1536,13 @@ const SidebarV2Demo = () => {
                                                 size={20}
                                             />
                                         </button>
+                                    }
+                                    // asModal
+                                    onOpenChange={(open) =>
+                                        console.log(
+                                            '[SecondarySidebar] settings modal open',
+                                            open
+                                        )
                                     }
                                     items={[
                                         {
@@ -1816,6 +1733,12 @@ const SidebarV2Demo = () => {
                                         size={20}
                                     />
                                 </button>
+                            }
+                            onOpenChange={(open) =>
+                                console.log(
+                                    '[PrimarySidebar] footer settings menu open',
+                                    open
+                                )
                             }
                             items={
                                 [

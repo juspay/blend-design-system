@@ -85,7 +85,7 @@ const Menu = ({
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
 
     const menuIsOpen = open ?? isOpen
-    useDropdownInteractionLock(menuIsOpen)
+    useDropdownInteractionLock(asModal && menuIsOpen)
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value)

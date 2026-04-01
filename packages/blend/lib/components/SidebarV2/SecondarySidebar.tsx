@@ -36,45 +36,59 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
             paddingLeft={tokens.secondarySidebar.paddingLeft}
             paddingRight={tokens.secondarySidebar.paddingRight}
         >
-            {items?.map((item) => (
-                <TooltipV2
-                    key={item.value}
-                    content={item.label}
-                    side={TooltipV2Side.RIGHT}
-                    delayDuration={500}
-                    size={TooltipV2Size.SM}
-                >
-                    <PrimitiveButton
-                        {...buttonProps}
-                        cursor="pointer"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        width={tokens.secondarySidebar.item.width}
-                        height={tokens.secondarySidebar.item.height}
-                        borderRadius={tokens.secondarySidebar.item.borderRadius}
-                        border={
-                            isSelected(item.value)
-                                ? tokens.secondarySidebar.item.border.active
-                                : tokens.secondarySidebar.item.border.default
-                        }
-                        _hover={{
-                            backgroundColor:
-                                tokens.secondarySidebar.item.backgroundColor
-                                    .hover,
-                            outline: isSelected(item.value)
-                                ? tokens.secondarySidebar.item.border.active
-                                : tokens.secondarySidebar.item.border.hover,
-                        }}
-                        onClick={(e) => {
-                            onSelect?.(item.value)
-                            buttonProps?.onClick?.(e)
-                        }}
+            <Block
+                data-element="secondary-sidebar-items"
+                display="flex"
+                flexDirection="column"
+                gap={tokens.secondarySidebar.gap}
+                alignItems="center"
+                flexGrow={1}
+                overflowY="auto"
+                style={{ minHeight: 0 }}
+            >
+                {items?.map((item) => (
+                    <TooltipV2
+                        key={item.value}
+                        content={item.label}
+                        side={TooltipV2Side.RIGHT}
+                        delayDuration={500}
+                        size={TooltipV2Size.SM}
                     >
-                        <span aria-hidden="true">{item.icon}</span>
-                    </PrimitiveButton>
-                </TooltipV2>
-            ))}
+                        <PrimitiveButton
+                            {...buttonProps}
+                            cursor="pointer"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            width={tokens.secondarySidebar.item.width}
+                            height={tokens.secondarySidebar.item.height}
+                            borderRadius={
+                                tokens.secondarySidebar.item.borderRadius
+                            }
+                            border={
+                                isSelected(item.value)
+                                    ? tokens.secondarySidebar.item.border.active
+                                    : tokens.secondarySidebar.item.border
+                                          .default
+                            }
+                            _hover={{
+                                backgroundColor:
+                                    tokens.secondarySidebar.item.backgroundColor
+                                        .hover,
+                                outline: isSelected(item.value)
+                                    ? tokens.secondarySidebar.item.border.active
+                                    : tokens.secondarySidebar.item.border.hover,
+                            }}
+                            onClick={(e) => {
+                                onSelect?.(item.value)
+                                buttonProps?.onClick?.(e)
+                            }}
+                        >
+                            <span aria-hidden="true">{item.icon}</span>
+                        </PrimitiveButton>
+                    </TooltipV2>
+                ))}
+            </Block>
 
             {footerSlot && (
                 <Block
@@ -83,6 +97,7 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
                     flexDirection="column"
                     gap={tokens.secondarySidebar.gap}
                     alignItems="center"
+                    flexShrink={0}
                 >
                     {footerSlot}
                 </Block>

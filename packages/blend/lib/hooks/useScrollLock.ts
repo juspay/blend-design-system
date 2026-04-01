@@ -113,20 +113,13 @@ const useScrollLock = (shouldLock?: boolean) => {
             }
         }
 
-        // Save current scroll position
-        const scrollY = window.scrollY
-        const scrollX = window.scrollX
-
-        // Apply styles to prevent scrolling
+        // Apply styles to prevent scrolling without shifting layout.
+        // Using `body { position: fixed }` can cause layout jumps for 100%-height
+        // flex layouts (e.g. sidebars with sticky/footer regions).
         document.documentElement.style.overflow = 'hidden'
         document.documentElement.style.touchAction = 'none'
         document.documentElement.style.overscrollBehavior = 'none'
         document.body.style.overflow = 'hidden'
-        document.body.style.position = 'fixed'
-        document.body.style.top = `-${scrollY}px`
-        document.body.style.left = `-${scrollX}px`
-        document.body.style.width = '100%'
-        document.body.style.height = '100%'
 
         // Add event listeners to prevent scroll attempts
         document.addEventListener('wheel', preventScroll, { passive: false })
@@ -148,14 +141,6 @@ const useScrollLock = (shouldLock?: boolean) => {
             document.documentElement.style.touchAction = ''
             document.documentElement.style.overscrollBehavior = ''
             document.body.style.overflow = ''
-            document.body.style.position = ''
-            document.body.style.top = ''
-            document.body.style.left = ''
-            document.body.style.width = ''
-            document.body.style.height = ''
-
-            // Restore scroll position
-            window.scrollTo(scrollX, scrollY)
         }
     }, [shouldLock])
 }
