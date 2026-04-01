@@ -179,11 +179,6 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
             ]
         )
 
-        const rootDefaultValue =
-            defaultValue !== undefined && defaultValue !== null
-                ? toTabValueString(defaultValue)
-                : undefined
-
         return (
             <TabsV2Provider value={context}>
                 <StyledTabsRoot
@@ -191,7 +186,6 @@ const TabsV2 = forwardRef<HTMLDivElement, TabsV2Props>(
                     ref={ref}
                     className={className}
                     value={activeTab}
-                    defaultValue={rootDefaultValue}
                     onValueChange={handleValueChange}
                     $tabsToken={tabsToken}
                     {...props}
