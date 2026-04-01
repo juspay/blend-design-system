@@ -29,7 +29,6 @@ export const CircularProgressBarV2: React.FC<
     ariaLabelledby,
     min,
     max,
-    ref,
 }) => {
     const clampedValue = useMemo(
         () => clampValue(value, min, max),
@@ -63,7 +62,6 @@ export const CircularProgressBarV2: React.FC<
 
     return (
         <Block
-            ref={ref}
             position="relative"
             display="inline-flex"
             alignItems="center"

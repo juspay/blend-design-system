@@ -10,8 +10,20 @@ export const calculatePercentage = (
     min: number,
     max: number
 ): number => {
-    const clamped = clampValue(value, min, max)
-    return ((clamped - min) / (max - min)) * 100
+    let normalizedMin = min
+    let normalizedMax = max
+    // Normalize swapped ranges so calculations stay consistent.
+    if (normalizedMax < normalizedMin) {
+        const tmp = normalizedMin
+        normalizedMin = normalizedMax
+        normalizedMax = tmp
+    }
+    // Avoid division by zero when the range has no length.
+    if (normalizedMax === normalizedMin) {
+        return 0
+    }
+    const clamped = clampValue(value, normalizedMin, normalizedMax)
+    return ((clamped - normalizedMin) / (normalizedMax - normalizedMin)) * 100
 }
 
 export const parseTokenValue = (

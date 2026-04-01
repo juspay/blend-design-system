@@ -3,7 +3,7 @@ import { Theme } from '../../context/theme.enum'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { getProgressBarV2DarkTokens } from './progressBarV2.dark.tokens'
 import { getProgressBarV2LightTokens } from './progressBarV2.light.tokens'
-import {
+import type {
     ProgressBarV2Appearance,
     ProgressBarV2Size,
 } from './progressBarV2.types'
@@ -27,10 +27,10 @@ export type ProgressBarV2TokenType = {
                 [key in ProgressBarV2Appearance]: CSSObject['backgroundColor']
             }
             backgroundImage: {
-                segmented: CSSObject['backgroundImage']
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundImage']
             }
             backgroundSize: {
-                segmented: CSSObject['backgroundSize']
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundSize']
             }
         }
         borderRadius: {

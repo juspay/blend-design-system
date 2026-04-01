@@ -42,7 +42,8 @@ export const getProgressBarV2LightTokens = (
                         [ProgressBarV2Appearance.SEGMENTED]: 'transparent',
                     },
                     backgroundImage: {
-                        segmented: `repeating-linear-gradient(
+                        [ProgressBarV2Appearance.SOLID]: undefined,
+                        [ProgressBarV2Appearance.SEGMENTED]: `repeating-linear-gradient(
                     to right,
                     ${String(foundationToken.colors.gray[100])},
                     ${String(foundationToken.colors.gray[100])} ${foundationToken.unit[2]},
@@ -51,7 +52,8 @@ export const getProgressBarV2LightTokens = (
                 )`,
                     },
                     backgroundSize: {
-                        segmented: `${foundationToken.unit[10]} 100%`,
+                        [ProgressBarV2Appearance.SOLID]: undefined,
+                        [ProgressBarV2Appearance.SEGMENTED]: `${foundationToken.unit[10]} 100%`,
                     },
                 },
                 borderRadius: {
@@ -138,7 +140,8 @@ export const getProgressBarV2LightTokens = (
                         [ProgressBarV2Appearance.SEGMENTED]: 'transparent',
                     },
                     backgroundImage: {
-                        segmented: `repeating-linear-gradient(
+                        [ProgressBarV2Appearance.SOLID]: undefined,
+                        [ProgressBarV2Appearance.SEGMENTED]: `repeating-linear-gradient(
                     to right,
                     ${String(foundationToken.colors.gray[100])},
                     ${String(foundationToken.colors.gray[100])} ${foundationToken.unit[2]},
@@ -147,7 +150,8 @@ export const getProgressBarV2LightTokens = (
                 )`,
                     },
                     backgroundSize: {
-                        segmented: `${foundationToken.unit[10]} 100%`,
+                        [ProgressBarV2Appearance.SOLID]: undefined,
+                        [ProgressBarV2Appearance.SEGMENTED]: `${foundationToken.unit[10]} 100%`,
                     },
                 },
                 borderRadius: {

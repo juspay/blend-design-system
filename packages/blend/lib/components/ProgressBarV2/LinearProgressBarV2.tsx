@@ -23,7 +23,6 @@ export const LinearProgressBarV2: React.FC<
     ariaLabelledby,
     min,
     max,
-    ref,
 }) => {
     const clampedValue = useMemo(
         () => clampValue(value, min, max),
@@ -42,7 +41,6 @@ export const LinearProgressBarV2: React.FC<
 
     return (
         <Block
-            ref={ref}
             display="flex"
             alignItems="center"
             gap={tokens.linear.gap}
@@ -84,10 +82,10 @@ export const LinearProgressBarV2: React.FC<
                         data-id={emptyBackgroundColor}
                         backgroundColor={emptyBackgroundColor}
                         backgroundImage={
-                            tokens.linear.empty.backgroundImage.segmented
+                            tokens.linear.empty.backgroundImage[appearance]
                         }
                         backgroundSize={
-                            tokens.linear.empty.backgroundSize.segmented
+                            tokens.linear.empty.backgroundSize[appearance]
                         }
                         style={{
                             width: `${100 - percentage}%`,

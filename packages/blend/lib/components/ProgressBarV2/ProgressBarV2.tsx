@@ -54,24 +54,26 @@ const ProgressBarV2 = forwardRef<HTMLDivElement, ProgressBarV2Props>(
 
         if (variant === ProgressBarV2Variant.CIRCULAR) {
             return (
-                <Block {...filteredRest} data-progressbar="progressbar">
+                <Block
+                    {...filteredRest}
+                    data-progressbar="progressbar"
+                    ref={ref}
+                >
                     <CircularProgressBarV2
                         {...sharedProps}
                         size={size}
                         appearance={appearance}
-                        ref={ref}
                     />
                 </Block>
             )
         }
 
         return (
-            <Block {...filteredRest} data-progressbar="progressbar">
+            <Block {...filteredRest} data-progressbar="progressbar" ref={ref}>
                 <LinearProgressBarV2
                     {...sharedProps}
                     size={size}
                     appearance={appearance}
-                    ref={ref}
                 />
             </Block>
         )
