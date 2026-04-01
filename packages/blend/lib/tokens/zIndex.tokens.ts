@@ -12,6 +12,8 @@ export type ZIndexTokensType = Readonly<{
 
 const zIndexTokens: ZIndexTokensType = {
     0: 0,
+    99: 99,
+    100: 100,
     101: 101,
     9999: 9999,
     1000: 1000,

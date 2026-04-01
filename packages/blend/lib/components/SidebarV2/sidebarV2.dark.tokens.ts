@@ -7,6 +7,7 @@ export const getSidebarV2DarkTokens = (
     return {
         sm: {
             container: {
+                zIndex: foundationToken.zIndex[99],
                 backgroundColor: foundationToken.colors.gray[25],
                 borderRight: `1px solid ${foundationToken.colors.gray[200]}`,
                 maxWidth: {
@@ -40,6 +41,7 @@ export const getSidebarV2DarkTokens = (
                 },
             },
             header: {
+                zIndex: foundationToken.zIndex[10],
                 backgroundColor: foundationToken.colors.gray[25],
                 paddingTop: foundationToken.unit[12.5],
                 paddingBottom: foundationToken.unit[12.5],
@@ -68,6 +70,7 @@ export const getSidebarV2DarkTokens = (
                 paddingRight: foundationToken.unit[12],
             },
             footer: {
+                zIndex: foundationToken.zIndex[10],
                 backgroundColor: foundationToken.colors.gray[25],
                 gap: foundationToken.unit[12],
                 paddingTop: foundationToken.unit[12],
@@ -107,6 +110,7 @@ export const getSidebarV2DarkTokens = (
         },
         lg: {
             container: {
+                zIndex: foundationToken.zIndex[99],
                 backgroundColor: foundationToken.colors.gray[25],
                 borderRight: `1px solid ${foundationToken.colors.gray[200]}`,
                 maxWidth: {
@@ -140,6 +144,7 @@ export const getSidebarV2DarkTokens = (
                 },
             },
             header: {
+                zIndex: foundationToken.zIndex[10],
                 backgroundColor: foundationToken.colors.gray[25],
                 paddingTop: foundationToken.unit[6],
                 paddingBottom: foundationToken.unit[6],
@@ -168,6 +173,7 @@ export const getSidebarV2DarkTokens = (
                 paddingRight: foundationToken.unit[12],
             },
             footer: {
+                zIndex: foundationToken.zIndex[10],
                 backgroundColor: foundationToken.colors.gray[25],
                 gap: foundationToken.unit[12],
                 paddingTop: foundationToken.unit[16],

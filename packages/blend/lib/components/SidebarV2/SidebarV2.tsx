@@ -339,7 +339,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 minWidth={0}
                                 height="100%"
                                 overflow="hidden"
-                                zIndex={99}
+                                zIndex={tokens.container.zIndex}
                                 aria-hidden="true"
                                 backgroundColor={
                                     tokens.container.backgroundColor
@@ -397,7 +397,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                         <Block
                             position="sticky"
                             top="0"
-                            zIndex="90"
+                            zIndex={tokens.header.zIndex}
                             style={getTopbarV2Styles(
                                 enableTopbarAutoHide,
                                 showTopbar

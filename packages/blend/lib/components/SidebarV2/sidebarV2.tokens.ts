@@ -9,6 +9,7 @@ export type SidebarV2ItemInteractionStates = 'default' | 'hover' | 'active'
 
 export type SidebarV2TokensType = {
     container: {
+        zIndex: CSSObject['zIndex']
         backgroundColor: CSSObject['backgroundColor']
         borderRight: CSSObject['borderRight']
         maxWidth: {
@@ -38,6 +39,7 @@ export type SidebarV2TokensType = {
         }
     }
     header: {
+        zIndex: CSSObject['zIndex']
         backgroundColor: CSSObject['backgroundColor']
         paddingTop: CSSObject['paddingTop']
         paddingBottom: CSSObject['paddingBottom']
@@ -64,6 +66,7 @@ export type SidebarV2TokensType = {
         paddingRight: CSSObject['paddingRight']
     }
     footer: {
+        zIndex: CSSObject['zIndex']
         backgroundColor: CSSObject['backgroundColor']
         gap: CSSObject['gap']
         paddingTop: CSSObject['paddingTop']

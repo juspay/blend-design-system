@@ -75,6 +75,7 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
                                 backgroundColor:
                                     tokens.secondarySidebar.item.backgroundColor
                                         .hover,
+                                outline: 'none',
                                 border: isSelected(item.value)
                                     ? tokens.secondarySidebar.item.border.active
                                     : tokens.secondarySidebar.item.border.hover,

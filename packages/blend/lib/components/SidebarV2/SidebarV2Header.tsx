@@ -98,7 +98,7 @@ const SidebarV2Header = ({
     return (
         <Block
             width="100%"
-            zIndex="10"
+            zIndex={tokens.header.zIndex}
             backgroundColor={tokens.header.backgroundColor}
             display="flex"
             alignItems="center"
