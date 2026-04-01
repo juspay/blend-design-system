@@ -5,7 +5,9 @@ import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { SingleSelect } from '../SingleSelect'
 import { SelectMenuSize } from '../SingleSelect'
 import { SelectMenuVariant } from '../Select/types'
-import { Tooltip } from '../Tooltip'
+import { TooltipV2 } from '../TooltipV2/TooltipV2'
+import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
+import { VisuallyHidden } from '../../utils/accessibility'
 import type { SidebarV2TokensType } from './sidebarV2.tokens'
 
 export type SidebarV2HeaderProps = {
@@ -49,8 +51,8 @@ const SidebarV2Header = ({
                 icon: (
                     <UserIcon
                         style={{
-                            width: '16px',
-                            height: '16px',
+                            width: String(tokens.header.toggleButton.width),
+                            height: String(tokens.header.toggleButton.width),
                         }}
                     />
                 ),
@@ -113,7 +115,7 @@ const SidebarV2Header = ({
                     bottom="0"
                     left="0"
                     right="0"
-                    height="1px"
+                    height={tokens.header.borderBottomWidth}
                     style={{
                         backgroundColor: String(
                             tokens.header.scrolledBorderColor
@@ -137,8 +139,9 @@ const SidebarV2Header = ({
             </Block>
 
             {!hideToggleButton && (
-                <Tooltip
+                <TooltipV2
                     content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
+                    side={TooltipV2Side.RIGHT}
                 >
                     <PrimitiveButton
                         type="button"
@@ -176,23 +179,11 @@ const SidebarV2Header = ({
                             }
                             aria-hidden="true"
                         />
-                        <span
-                            style={{
-                                position: 'absolute',
-                                width: '1px',
-                                height: '1px',
-                                padding: 0,
-                                margin: '-1px',
-                                overflow: 'hidden',
-                                clip: 'rect(0, 0, 0, 0)',
-                                whiteSpace: 'nowrap',
-                                borderWidth: 0,
-                            }}
-                        >
+                        <VisuallyHidden>
                             {isExpanded ? 'Collapse' : 'Expand'} sidebar
-                        </span>
+                        </VisuallyHidden>
                     </PrimitiveButton>
-                </Tooltip>
+                </TooltipV2>
             )}
         </Block>
     )

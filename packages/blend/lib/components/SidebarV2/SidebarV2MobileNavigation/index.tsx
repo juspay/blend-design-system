@@ -8,9 +8,9 @@ import {
 } from 'react'
 import styled from 'styled-components'
 import Block from '../../Primitives/Block/Block'
-import { FOUNDATION_THEME } from '../../../tokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import type { SidebarV2MobileNavigationProps } from '../types'
-import { getMobileNavigationV2Tokens } from './mobile.tokens'
+import type { MobileNavigationV2TokenType } from './mobile.tokens'
 import {
     getMobileNavigationFillerCount,
     getMobileNavigationLayout,
@@ -27,37 +27,27 @@ import MoreButton from './MoreButton'
 const PRIMARY_VISIBLE_LIMIT = 5
 const VIEWPORT_HEIGHT_MULTIPLIER = 0.85
 
-const FloatingNavContainer = styled(Block)`
+const FloatingNavContainer = styled(Block)<{
+    $tokens: MobileNavigationV2TokenType
+    $backgroundColor: string
+}>`
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1050;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 24px;
-    transition:
-        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-        max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: ${({ $tokens }) => String($tokens.container.zIndex)};
+    backdrop-filter: ${({ $tokens }) =>
+        String($tokens.container.backdropFilter)};
+    -webkit-backdrop-filter: ${({ $tokens }) =>
+        String($tokens.container.backdropFilter)};
+    background-color: ${({ $backgroundColor }) => $backgroundColor};
+    border: ${({ $tokens }) => String($tokens.container.border)};
+    border-radius: ${({ $tokens }) => String($tokens.container.borderRadius)};
+    transition: ${({ $tokens }) => String($tokens.container.transition)};
     overflow: hidden;
     will-change: transform, max-height;
     display: flex;
     flex-direction: column;
-
-    @supports (backdrop-filter: blur(20px)) {
-        background-color: rgba(255, 255, 255, 0.7);
-    }
-
-    @media (prefers-color-scheme: dark) {
-        background-color: rgba(0, 0, 0, 0.72);
-        border-top-color: rgba(255, 255, 255, 0.1);
-
-        @supports (backdrop-filter: blur(20px)) {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-    }
 `
 
 const ScrollableContent = styled(Block)`
@@ -87,10 +77,26 @@ const SidebarV2MobileNavigation = forwardRef<
         },
         ref
     ) => {
-        const tokens = useMemo(
-            () => getMobileNavigationV2Tokens(FOUNDATION_THEME).sm,
-            []
+        const tokens = useResponsiveTokens<MobileNavigationV2TokenType>(
+            'MOBILE_NAVIGATION_V2'
         )
+
+        const backgroundColor = useMemo(() => {
+            const base = String(tokens.container.backgroundColor ?? '')
+            const opacity =
+                typeof tokens.container.opacity === 'number'
+                    ? tokens.container.opacity
+                    : 1
+
+            if (!base.startsWith('#')) return base
+            const hex = base.replace('#', '')
+            if (hex.length !== 6) return base
+
+            const r = Number.parseInt(hex.slice(0, 2), 16)
+            const g = Number.parseInt(hex.slice(2, 4), 16)
+            const b = Number.parseInt(hex.slice(4, 6), 16)
+            return `rgba(${r}, ${g}, ${b}, ${opacity})`
+        }, [tokens.container.backgroundColor, tokens.container.opacity])
 
         const [viewportHeight, setViewportHeight] = useState<
             number | undefined
@@ -124,8 +130,8 @@ const SidebarV2MobileNavigation = forwardRef<
         const toggleExpansion = useCallback(() => setIsExpanded((c) => !c), [])
         const collapse = useCallback(() => setIsExpanded(false), [])
 
-        const floatingPadding = tokens.floatingPadding
-        const safeAreaOffset = parseUnitValue(tokens.safeAreaOffset)
+        const floatingPadding = tokens.layout.floatingPadding
+        const safeAreaOffset = parseUnitValue(tokens.layout.safeAreaOffset)
         const floatingMarginValue = parseUnitValue(floatingPadding)
 
         const collapsedHeight = useMemo(
@@ -137,9 +143,9 @@ const SidebarV2MobileNavigation = forwardRef<
             if (!layout.hasSecondaryItems || !viewportHeight)
                 return collapsedHeight
 
-            const containerGap = parseUnitValue(tokens.gap)
-            const containerPaddingY = parseUnitValue(tokens.paddingTop)
-            const rowPaddingY = parseUnitValue(tokens.rowPaddingTop)
+            const containerGap = parseUnitValue(tokens.layout.gap)
+            const containerPaddingY = parseUnitValue(tokens.layout.paddingTop)
+            const rowPaddingY = parseUnitValue(tokens.layout.rowPaddingTop)
             const itemHeight = parseUnitValue(tokens.item.height)
             const rowHeight = rowPaddingY * 2 + itemHeight
             const secondaryRowCount = Math.ceil(
@@ -204,7 +210,7 @@ const SidebarV2MobileNavigation = forwardRef<
             [layout.secondaryItems]
         )
 
-        const primaryActionMargin = String(tokens.primaryActionMarginX)
+        const primaryActionMargin = String(tokens.layout.primaryActionMarginX)
 
         const primaryRowElements = useMemo(() => {
             const elements: ReactNode[] = []
@@ -276,33 +282,35 @@ const SidebarV2MobileNavigation = forwardRef<
         return (
             <FloatingNavContainer
                 ref={ref}
+                $tokens={tokens}
+                $backgroundColor={backgroundColor}
                 maxHeight={navigationHeight}
                 style={{
                     marginBottom: `calc(${safeAreaOffset}px + ${floatingPadding})`,
                     marginLeft: floatingPadding,
                     marginRight: floatingPadding,
                     marginTop: floatingPadding,
-                    paddingTop: tokens.paddingTop,
-                    paddingRight: tokens.paddingRight,
-                    paddingBottom: tokens.paddingBottom,
-                    paddingLeft: tokens.paddingLeft,
+                    paddingTop: tokens.layout.paddingTop,
+                    paddingRight: tokens.layout.paddingRight,
+                    paddingBottom: tokens.layout.paddingBottom,
+                    paddingLeft: tokens.layout.paddingLeft,
                 }}
             >
                 <ScrollableContent
                     display="flex"
                     flexDirection="column"
                     width="100%"
-                    gap={tokens.gap}
+                    gap={tokens.layout.gap}
                 >
                     <Block
                         display="flex"
                         alignItems="center"
                         justifyContent="space-between"
                         width="100%"
-                        paddingTop={tokens.rowPaddingTop}
-                        paddingRight={tokens.rowPaddingRight}
-                        paddingBottom={tokens.rowPaddingBottom}
-                        paddingLeft={tokens.rowPaddingLeft}
+                        paddingTop={tokens.layout.rowPaddingTop}
+                        paddingRight={tokens.layout.rowPaddingRight}
+                        paddingBottom={tokens.layout.rowPaddingBottom}
+                        paddingLeft={tokens.layout.rowPaddingLeft}
                         flexShrink={0}
                     >
                         {primaryRowElements}
@@ -347,10 +355,12 @@ const SidebarV2MobileNavigation = forwardRef<
                                     alignItems="center"
                                     justifyContent="space-between"
                                     width="100%"
-                                    paddingTop={tokens.rowPaddingTop}
-                                    paddingRight={tokens.rowPaddingRight}
-                                    paddingBottom={tokens.rowPaddingBottom}
-                                    paddingLeft={tokens.rowPaddingLeft}
+                                    paddingTop={tokens.layout.rowPaddingTop}
+                                    paddingRight={tokens.layout.rowPaddingRight}
+                                    paddingBottom={
+                                        tokens.layout.rowPaddingBottom
+                                    }
+                                    paddingLeft={tokens.layout.rowPaddingLeft}
                                     flexShrink={0}
                                 >
                                     {rowElements}

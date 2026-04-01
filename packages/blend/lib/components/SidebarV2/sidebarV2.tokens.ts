@@ -12,6 +12,9 @@ export type SidebarV2TokensType = {
         zIndex: CSSObject['zIndex']
         backgroundColor: CSSObject['backgroundColor']
         borderRight: CSSObject['borderRight']
+        hoverPreview: {
+            boxShadow: CSSObject['boxShadow']
+        }
         maxWidth: {
             withLeftPanel: CSSObject['maxWidth']
             withoutLeftPanel: CSSObject['maxWidth']
@@ -47,6 +50,7 @@ export type SidebarV2TokensType = {
         paddingRight: CSSObject['paddingRight']
         gap: CSSObject['gap']
         borderBottom: CSSObject['borderBottom']
+        borderBottomWidth: CSSObject['borderWidth']
         scrolledBorderColor: CSSObject['color']
         toggleButton: {
             borderRadius: CSSObject['borderRadius']

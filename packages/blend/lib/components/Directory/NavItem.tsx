@@ -13,7 +13,9 @@ import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import { handleKeyDown } from './utils'
-import { Tooltip, TooltipSide } from '../Tooltip'
+import { TooltipV2 } from '../TooltipV2/TooltipV2'
+import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
+import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
@@ -36,7 +38,7 @@ const StyledElement = styled(Block)<{
         $iconOnlyMode ? '0' : $tokens.section.itemList.item.gap};
     padding: ${({ $tokens, $iconOnlyMode }) =>
         $iconOnlyMode
-            ? '8px 10px'
+            ? `${$tokens.section.itemList.item.iconOnlyPadding.y} ${$tokens.section.itemList.item.iconOnlyPadding.x}`
             : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
     color: ${({ $isActive, $tokens }) =>
         $isActive
@@ -262,14 +264,10 @@ const NavItem = ({
     const renderContent = () => {
         if (iconOnlyMode) {
             if (!item.leftSlot) {
-                // Icon is mandatory in icon-only mode
-                console.warn(
-                    `NavItem "${item.label}" is missing required leftSlot icon in icon-only mode`
-                )
                 return (
                     <Block
-                        width="20px"
-                        height="20px"
+                        width={tokens.section.itemList.item.icon.width}
+                        height={tokens.section.itemList.item.icon.width}
                         backgroundColor={
                             isActive
                                 ? tokens.section.itemList.item.backgroundColor
@@ -343,7 +341,10 @@ const NavItem = ({
                                 : tokens.section.itemList.item.color.default
                         }
                     >
-                        {item.label}
+                        <TruncatedTextWithTooltipV2
+                            text={item.label}
+                            side={TooltipV2Side.RIGHT}
+                        />
                     </Text>
                     {item.rightSlot && React.isValidElement(item.rightSlot) && (
                         <Block aria-hidden="true">{item.rightSlot}</Block>
@@ -416,13 +417,9 @@ const NavItem = ({
             }}
         >
             {iconOnlyMode && item.leftSlot ? (
-                <Tooltip
-                    content={item.label}
-                    side={TooltipSide.RIGHT}
-                    offset={12}
-                >
+                <TooltipV2 content={item.label} side={TooltipV2Side.RIGHT}>
                     {itemElement}
-                </Tooltip>
+                </TooltipV2>
             ) : (
                 itemElement
             )}

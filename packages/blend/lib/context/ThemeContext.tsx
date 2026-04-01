@@ -99,6 +99,10 @@ import {
     getMobileNavigationTokens,
     type ResponsiveMobileNavigationTokens,
 } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import {
+    getMobileNavigationV2Tokens,
+    type ResponsiveMobileNavigationV2Tokens,
+} from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import {
     getStepperTokens,
@@ -234,6 +238,7 @@ export type ComponentTokenType = {
     SIDEBAR?: ResponsiveSidebarTokens
     DIRECTORY?: ResponsiveDirectoryTokens
     MOBILE_NAVIGATION?: ResponsiveMobileNavigationTokens
+    MOBILE_NAVIGATION_V2?: ResponsiveMobileNavigationV2Tokens
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
@@ -312,6 +317,10 @@ const ThemeContext = createContext<ThemeContextType>({
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
         DIRECTORY: getDirectoryTokens(FOUNDATION_THEME),
         MOBILE_NAVIGATION: getMobileNavigationTokens(FOUNDATION_THEME),
+        MOBILE_NAVIGATION_V2: getMobileNavigationV2Tokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),

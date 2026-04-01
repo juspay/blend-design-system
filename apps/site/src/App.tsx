@@ -10,7 +10,7 @@ function App() {
 
     return (
         <main className="w-screen min-h-screen bg-gray-100">
-            <Snackbar />
+            <SidebarV2Demo />
             <Demo />
         </main>
     )

@@ -82,7 +82,7 @@ const SidebarV2Content = ({
             data-element="sidebar-content"
             width={
                 iconOnlyMode
-                    ? String(tokens.container.maxWidth.iconOnly ?? '58px')
+                    ? String(tokens.container.maxWidth.iconOnly)
                     : String(tokens.primarySidebar.width)
             }
             height="100%"

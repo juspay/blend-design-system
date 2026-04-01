@@ -19,8 +19,7 @@ import { TopbarV2 } from '../TopbarV2'
 import { SectionStateContext } from '../Directory/Section'
 import SidebarV2MobileNavigation from './SidebarV2MobileNavigation'
 import { getSidebarV2CollapsedMobilePadding } from './SidebarV2MobileNavigation/utils'
-import { getMobileNavigationV2Tokens } from './SidebarV2MobileNavigation/mobile.tokens'
-import { FOUNDATION_THEME } from '../../tokens'
+import type { MobileNavigationV2TokenType } from './SidebarV2MobileNavigation/mobile.tokens'
 import {
     announceSidebarV2StateChange,
     getSidebarV2MobileNavigationItems,
@@ -44,10 +43,6 @@ const MainContentContainer = styled(Block)`
     -ms-overflow-style: none;
     scrollbar-width: none;
 `
-
-const COLLAPSED_MOBILE_PADDING = getSidebarV2CollapsedMobilePadding(
-    getMobileNavigationV2Tokens(FOUNDATION_THEME).sm
-)
 
 const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
     (
@@ -79,10 +74,18 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
         ref
     ) => {
         const tokens = useResponsiveTokens<SidebarV2TokensType>('SIDEBARV2')
+        const mobileNavigationTokens =
+            useResponsiveTokens<MobileNavigationV2TokenType>(
+                'MOBILE_NAVIGATION_V2'
+            )
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
         const isControlled = isControlledSidebarV2(controlledIsExpanded)
         const safeDirectory = useMemo(() => data ?? [], [data])
+        const collapsedMobilePadding = useMemo(
+            () => getSidebarV2CollapsedMobilePadding(mobileNavigationTokens),
+            [mobileNavigationTokens]
+        )
 
         const [internalExpanded, setInternalExpanded] =
             useState<boolean>(defaultIsExpanded)
@@ -335,12 +338,15 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                         ? tokens.secondarySidebar.width
                                         : 0
                                 }
-                                width={isHovering ? '250px' : 0}
+                                width={
+                                    isHovering ? tokens.primarySidebar.width : 0
+                                }
                                 minWidth={0}
                                 height="100%"
                                 overflow="hidden"
                                 zIndex={tokens.container.zIndex}
                                 aria-hidden="true"
+                                style={{ willChange: 'width, box-shadow' }}
                                 backgroundColor={
                                     tokens.container.backgroundColor
                                 }
@@ -351,7 +357,8 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 }
                                 boxShadow={
                                     isHovering
-                                        ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
+                                        ? tokens.container.hoverPreview
+                                              .boxShadow
                                         : 'none'
                                 }
                                 transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
@@ -390,7 +397,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                         paddingBottom={
                             shouldRenderMobileNavigation
                                 ? (mobileNavigationHeight ??
-                                  COLLAPSED_MOBILE_PADDING)
+                                  collapsedMobilePadding)
                                 : undefined
                         }
                     >

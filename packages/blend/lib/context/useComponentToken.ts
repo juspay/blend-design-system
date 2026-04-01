@@ -42,6 +42,7 @@ import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import { ResponsiveMobileNavigationV2Tokens } from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
 import { ResponsiveChatInputTokensType } from '../components/ChatInput/chatInput.tokens'
 import { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
@@ -108,6 +109,7 @@ export const useComponentToken = (
     | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens
     | ResponsiveMobileNavigationTokens
+    | ResponsiveMobileNavigationV2Tokens
     | ResponsiveDirectoryTokens
     | ResponsiveChatInputTokensType
     | ResponsiveButtonTokens
@@ -223,6 +225,8 @@ export const useComponentToken = (
             return componentTokens.CODE_BLOCK
         case 'MOBILE_NAVIGATION':
             return componentTokens.MOBILE_NAVIGATION
+        case 'MOBILE_NAVIGATION_V2':
+            return componentTokens.MOBILE_NAVIGATION_V2
         case 'DIRECTORY':
             return componentTokens.DIRECTORY
         case 'CHAT_INPUT':

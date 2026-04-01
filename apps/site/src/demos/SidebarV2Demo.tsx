@@ -1538,12 +1538,6 @@ const SidebarV2Demo = () => {
                                         </button>
                                     }
                                     // asModal
-                                    onOpenChange={(open) =>
-                                        console.log(
-                                            '[SecondarySidebar] settings modal open',
-                                            open
-                                        )
-                                    }
                                     items={[
                                         {
                                             items: [
@@ -1563,6 +1557,29 @@ const SidebarV2Demo = () => {
                                                     onClick: () =>
                                                         alert(
                                                             'User management clicked!'
+                                                        ),
+                                                },
+                                                {
+                                                    label: 'Security',
+                                                    slot1: <Shield size={16} />,
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Security clicked!'
+                                                        ),
+                                                },
+                                            ],
+                                            showSeparator: true,
+                                        },
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Preferences',
+                                                    slot1: (
+                                                        <Settings size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Preferences clicked!'
                                                         ),
                                                 },
                                             ],

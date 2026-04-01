@@ -41,6 +41,7 @@ import { getProgressBarTokens } from '../components/ProgressBar/progressbar.toke
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { getDirectoryTokens } from '../components/Directory/directory.tokens'
 import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import { getMobileNavigationV2Tokens } from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
@@ -153,6 +154,9 @@ const initTokens = (
         MOBILE_NAVIGATION:
             componentTokens.MOBILE_NAVIGATION ??
             getMobileNavigationTokens(foundationTokens),
+        MOBILE_NAVIGATION_V2:
+            componentTokens.MOBILE_NAVIGATION_V2 ??
+            getMobileNavigationV2Tokens(foundationTokens, theme),
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),

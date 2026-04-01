@@ -11,13 +11,13 @@ export const parseUnitValue = (value: string | number | undefined): number => {
 export const getSidebarV2CollapsedMobilePadding = (
     tokens: MobileNavigationV2TokenType
 ): string => {
-    const safeAreaOffset = parseUnitValue(tokens.safeAreaOffset)
-    const floatingPadding = parseUnitValue(tokens.floatingPadding)
-    const rowPaddingY = parseUnitValue(tokens.rowPaddingTop)
+    const safeAreaOffset = parseUnitValue(tokens.layout.safeAreaOffset)
+    const floatingPadding = parseUnitValue(tokens.layout.floatingPadding)
+    const rowPaddingY = parseUnitValue(tokens.layout.rowPaddingTop)
     const itemHeight = parseUnitValue(tokens.item.height)
     const rowHeight = rowPaddingY * 2 + itemHeight
-    const containerPaddingY = parseUnitValue(tokens.paddingTop)
-    const border = parseUnitValue('1px')
+    const containerPaddingY = parseUnitValue(tokens.layout.paddingTop)
+    const border = parseUnitValue(tokens.container.borderWidth)
 
     const collapsedHeight =
         rowHeight +
@@ -35,11 +35,11 @@ export const calculateMobileNavigationSnapPoints = (
     tokens: MobileNavigationV2TokenType,
     viewportHeightMultiplier: number
 ): Array<string | number> => {
-    const containerPaddingY = parseUnitValue(tokens.paddingTop)
-    const containerGap = parseUnitValue(tokens.gap)
-    const rowPaddingY = parseUnitValue(tokens.rowPaddingTop)
+    const containerPaddingY = parseUnitValue(tokens.layout.paddingTop)
+    const containerGap = parseUnitValue(tokens.layout.gap)
+    const rowPaddingY = parseUnitValue(tokens.layout.rowPaddingTop)
     const itemHeight = parseUnitValue(tokens.item.height)
-    const containerBorder = parseUnitValue('1px')
+    const containerBorder = parseUnitValue(tokens.container.borderWidth)
 
     const rowHeight = rowPaddingY * 2 + itemHeight
     const collapsedHeight = containerPaddingY * 2 + rowHeight + containerBorder

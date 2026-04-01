@@ -62,6 +62,10 @@ export type DirectoryTokenType = {
                     x: CSSObject['padding']
                     y: CSSObject['padding']
                 }
+                iconOnlyPadding: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
                 gap: CSSObject['gap'] // Gap between icon and text within item
                 borderRadius: CSSObject['borderRadius'] // Item border radius
                 fontWeight: CSSObject['fontWeight'] // Item text weight
@@ -146,6 +150,10 @@ export const getDirectoryTokens = (
                             x: foundationToken.unit[12],
                             y: foundationToken.unit[6],
                         },
+                        iconOnlyPadding: {
+                            x: foundationToken.unit[10],
+                            y: foundationToken.unit[8],
+                        },
                         gap: foundationToken.unit[12],
                         borderRadius: foundationToken.border.radius[4],
                         fontWeight: 500,
@@ -219,6 +227,10 @@ export const getDirectoryTokens = (
                         padding: {
                             x: foundationToken.unit[12],
                             y: foundationToken.unit[6],
+                        },
+                        iconOnlyPadding: {
+                            x: foundationToken.unit[10],
+                            y: foundationToken.unit[8],
                         },
                         gap: foundationToken.unit[10],
                         borderRadius: foundationToken.border.radius[4],

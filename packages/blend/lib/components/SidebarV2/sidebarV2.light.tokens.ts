@@ -10,6 +10,9 @@ export const getSidebarV2LightTokens = (
                 zIndex: foundationToken.zIndex[99],
                 backgroundColor: foundationToken.colors.gray[25],
                 borderRight: `1px solid ${foundationToken.colors.gray[200]}`,
+                hoverPreview: {
+                    boxShadow: foundationToken.shadows['lg'],
+                },
                 maxWidth: {
                     withLeftPanel: '300px',
                     withoutLeftPanel: '250px',
@@ -49,6 +52,7 @@ export const getSidebarV2LightTokens = (
                 paddingRight: foundationToken.unit[8],
                 gap: foundationToken.unit[12],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderBottomWidth: foundationToken.border.width[1],
                 scrolledBorderColor: foundationToken.colors.gray[200],
                 toggleButton: {
                     borderRadius: foundationToken.border.radius[10],
@@ -113,6 +117,9 @@ export const getSidebarV2LightTokens = (
                 zIndex: foundationToken.zIndex[99],
                 backgroundColor: foundationToken.colors.gray[25],
                 borderRight: `1px solid ${foundationToken.colors.gray[200]}`,
+                hoverPreview: {
+                    boxShadow: foundationToken.shadows['lg'],
+                },
                 maxWidth: {
                     withLeftPanel: '320px',
                     withoutLeftPanel: '270px',
@@ -152,6 +159,7 @@ export const getSidebarV2LightTokens = (
                 paddingRight: foundationToken.unit[12],
                 gap: foundationToken.unit[16],
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+                borderBottomWidth: foundationToken.border.width[1],
                 scrolledBorderColor: foundationToken.colors.gray[200],
                 toggleButton: {
                     borderRadius: foundationToken.border.radius[10],
