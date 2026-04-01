@@ -95,10 +95,6 @@ export const getProgressBarV2LightTokens = (
                     [ProgressBarV2Appearance.SOLID]: '',
                     [ProgressBarV2Appearance.SEGMENTED]: '4 2',
                 },
-                dashOffset: {
-                    [ProgressBarV2Appearance.SOLID]: '0',
-                    [ProgressBarV2Appearance.SEGMENTED]: '0',
-                },
             },
             label: {
                 fontSize: foundationToken.font.size.body.md.fontSize,
@@ -192,10 +188,6 @@ export const getProgressBarV2LightTokens = (
                 dashArray: {
                     [ProgressBarV2Appearance.SOLID]: '',
                     [ProgressBarV2Appearance.SEGMENTED]: '4 2',
-                },
-                dashOffset: {
-                    [ProgressBarV2Appearance.SOLID]: '0',
-                    [ProgressBarV2Appearance.SEGMENTED]: '0',
                 },
             },
             label: {

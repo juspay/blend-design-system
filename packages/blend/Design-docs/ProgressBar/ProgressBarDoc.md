@@ -94,8 +94,12 @@ export type ProgressBarV2TokenType = {
             backgroundColor: {
                 [key in ProgressBarV2Appearance]: CSSObject['backgroundColor']
             }
-            backgroundImage: { segmented: CSSObject['backgroundImage'] }
-            backgroundSize: { segmented: CSSObject['backgroundSize'] }
+            backgroundImage: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundImage']
+            }
+            backgroundSize: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundSize']
+            }
         }
         borderRadius: {
             [key in ProgressBarV2Appearance]: CSSObject['borderRadius']
