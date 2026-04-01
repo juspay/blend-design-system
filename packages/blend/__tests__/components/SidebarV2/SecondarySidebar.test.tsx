@@ -2,13 +2,13 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import userEvent from '@testing-library/user-event'
-import SidebarV2 from '../../../lib/components/SidebarV2/SidebarV2'
 import { SecondarySidebar } from '../../../lib/components/SidebarV2/SecondarySidebar'
 import type { SecondarySidebarInfo } from '../../../lib/components/SidebarV2/types'
 import type { SidebarV2TokensType } from '../../../lib/components/SidebarV2/sidebarV2.tokens'
 
 const mockTokens: SidebarV2TokensType = {
     container: {
+        zIndex: 10,
         backgroundColor: '#ffffff',
         borderRight: '1px solid #e0e0e0',
         maxWidth: {
@@ -42,6 +42,7 @@ const mockTokens: SidebarV2TokensType = {
         },
     },
     header: {
+        zIndex: 10,
         backgroundColor: '#ffffff',
         paddingTop: '16px',
         paddingBottom: '16px',
@@ -70,6 +71,7 @@ const mockTokens: SidebarV2TokensType = {
         paddingRight: '8px',
     },
     footer: {
+        zIndex: 10,
         backgroundColor: '#ffffff',
         gap: '8px',
         paddingTop: '12px',

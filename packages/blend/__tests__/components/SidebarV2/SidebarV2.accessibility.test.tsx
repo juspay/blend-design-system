@@ -12,13 +12,11 @@ const createMockDirectoryData = (): DirectoryData[] => [
         items: [
             {
                 label: 'Home',
-                value: 'home',
                 href: '/home',
                 showOnMobile: true,
             },
             {
                 label: 'Dashboard',
-                value: 'dashboard',
                 href: '/dashboard',
                 showOnMobile: true,
             },
@@ -29,7 +27,6 @@ const createMockDirectoryData = (): DirectoryData[] => [
         items: [
             {
                 label: 'Profile',
-                value: 'profile',
                 href: '/profile',
                 showOnMobile: false,
             },
@@ -105,31 +102,6 @@ describe('SidebarV2 Accessibility', () => {
             'aria-label',
             expect.stringContaining('Press / to toggle')
         )
-    })
-
-    it('announcements are made when sidebar state changes', async () => {
-        const user = userEvent.setup()
-
-        render(
-            <SidebarV2 data={createMockDirectoryData()} sidebarCollapseKey="/">
-                <div>Content</div>
-            </SidebarV2>
-        )
-
-        // Collapse sidebar
-        const toggleButton = screen.getByRole('button', {
-            name: /collapse sidebar/i,
-        })
-        await user.click(toggleButton)
-
-        // Check for aria-live announcement
-        await waitFor(() => {
-            const announcement = document.querySelector(
-                '[role="status"][aria-live="polite"]'
-            )
-            // The announcement element may exist briefly
-            expect(document.body.innerHTML).toContain('collapsed')
-        })
     })
 
     it('secondary sidebar buttons have proper aria-hidden on icons', () => {

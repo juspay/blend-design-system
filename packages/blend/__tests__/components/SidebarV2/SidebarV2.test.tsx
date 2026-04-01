@@ -469,7 +469,7 @@ describe('SidebarV2 Scroll Behavior', () => {
             })
         )
 
-        const { container } = render(
+        render(
             <SidebarV2 data={largeData}>
                 <div>Content</div>
             </SidebarV2>
