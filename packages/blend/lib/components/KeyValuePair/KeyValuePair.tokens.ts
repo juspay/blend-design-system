@@ -74,7 +74,7 @@ export const getKeyValuePairTokens = (
                         foundationToken.font.size.body.lg.fontSize, // 16px
                     [KeyValuePairSize.LARGE]: 18, // 18px
                 },
-                fontWeight: foundationToken.font.weight[600], // 600
+                fontWeight: foundationToken.font.weight[500],
                 gap: foundationToken.unit[8], // 8px
             },
         },
@@ -103,7 +103,7 @@ export const getKeyValuePairTokens = (
                     [KeyValuePairSize.LARGE]:
                         foundationToken.font.size.heading.sm.fontSize, // 18px
                 },
-                fontWeight: foundationToken.font.weight[600], // 600
+                fontWeight: foundationToken.font.weight[500],
                 gap: foundationToken.unit[8], // 8px
             },
         },

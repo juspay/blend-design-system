@@ -26,7 +26,7 @@ export const getKeyValuePairV2LightTokens = (
                         foundationToken.font.size.body.lg.fontSize, // 16px
                     [KeyValuePairV2Size.LG]: 18, // 18px
                 },
-                fontWeight: foundationToken.font.weight[600], // 600
+                fontWeight: foundationToken.font.weight[500], // 600
                 gap: foundationToken.unit[8], // 8px
             },
         },
@@ -51,7 +51,7 @@ export const getKeyValuePairV2LightTokens = (
                     [KeyValuePairV2Size.LG]:
                         foundationToken.font.size.heading.sm.fontSize, // 18px
                 },
-                fontWeight: foundationToken.font.weight[600], // 600
+                fontWeight: foundationToken.font.weight[500], // 600
                 gap: foundationToken.unit[8], // 8px
             },
         },
