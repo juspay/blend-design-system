@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react'
 import { useRef } from 'react'
-import CursorIcon from '../icons/CursorIcon'
+import CursorIcon from '../../../../icons/CursorIcon'
 
 export interface CollaborativeCursorProps {
     name: string

@@ -1,16 +1,12 @@
 import React, { memo } from 'react'
-import './blog.css'
+import { SharedDocLayout } from '@/components'
 
 type BlogLayoutProps = {
     children: React.ReactNode
 }
 
 const BlogLayout: React.FC<BlogLayoutProps> = ({ children }) => {
-    return (
-        <div className="blog-root min-h-screen w-full bg-white text-blog-ink">
-            {children}
-        </div>
-    )
+    return <div>{children}</div>
 }
 
 BlogLayout.displayName = 'BlogLayout'

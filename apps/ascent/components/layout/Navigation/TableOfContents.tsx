@@ -1,7 +1,5 @@
 'use client'
-
-import { AlignLeft } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 
 export interface TOCItem {
@@ -12,13 +10,16 @@ export interface TOCItem {
 
 interface TableOfContentsProps {
     items: TOCItem[]
-    isMobile?: boolean
 }
 
 export default function TableOfContents({ items }: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>('')
     const router = useRouter()
     const pathname = usePathname()
+    const isScrollingRef = useRef(false)
+    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+    const filteredItems = items
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -37,72 +38,82 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
             }
         }
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setActiveId(entry.target.id)
-                    }
-                })
-            },
-            {
-                rootMargin: '-20% 0% -35% 0%',
-                threshold: 0,
-            }
-        )
+        const updateActiveHeading = () => {
+            if (typeof window === 'undefined') return
+            if (isScrollingRef.current) return
 
-        items.forEach((item) => {
-            const element = document.getElementById(item.id)
-            if (element) {
-                observer.observe(element)
+            const scrollPos = window.scrollY + 100
+
+            const isAtBottom =
+                window.innerHeight + window.scrollY >=
+                document.body.offsetHeight - 2
+
+            if (isAtBottom && filteredItems.length > 0) {
+                setActiveId(filteredItems[filteredItems.length - 1].id)
+                return
             }
+
+            let currentActive = filteredItems[0]?.id || ''
+            for (const item of filteredItems) {
+                const el = document.getElementById(item.id)
+                if (el) {
+                    const top = el.offsetTop
+                    if (top <= scrollPos) {
+                        currentActive = item.id
+                    } else {
+                        break
+                    }
+                }
+            }
+
+            setActiveId(currentActive)
+        }
+
+        updateActiveHeading()
+        window.addEventListener('scroll', updateActiveHeading, {
+            passive: true,
         })
 
-        return () => observer.disconnect()
-    }, [items])
+        return () => window.removeEventListener('scroll', updateActiveHeading)
+    }, [filteredItems])
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id)
         if (element) {
-            element.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-            })
-
-            // Use Next.js router to update the URL with hash
+            isScrollingRef.current = true
+            setActiveId(id)
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
             router.push(`${pathname}#${id}`, { scroll: false })
+
+            clearTimeout(scrollTimeoutRef.current)
+            scrollTimeoutRef.current = setTimeout(() => {
+                isScrollingRef.current = false
+            }, 800)
         }
     }
 
-    if (items.length === 0) {
-        return null
-    }
-
     return (
-        <nav className="w-full h-full pt-5">
-            <div className="flex items-center gap-2 mb-4 px-2">
-                <AlignLeft size={16} /> <p className="text-sm">On this page</p>
-            </div>
-            <ul className="space-y-1">
-                {items.map((item) => (
-                    <li key={item.id}>
-                        <button
-                            onClick={() => scrollToSection(item.id)}
-                            className={`text-left w-full px-2 py-1.5 rounded text-sm transition-colors cursor-pointer ${
-                                activeId === item.id
-                                    ? 'text-primary'
-                                    : 'text-[var(--muted-foreground)]'
-                            }`}
-                            style={{
-                                paddingLeft: `${(item.level - 1) * 16 + 8}px`,
-                            }}
-                            data-nav-content
-                        >
-                            <p>{item.text}</p>
-                        </button>
-                    </li>
-                ))}
-            </ul>
-        </nav>
+        <ul className="space-y-4 py-4 relative">
+            <div className="absolute left-[20.5px] top-6 bottom-0 w-0.5 bg-border" />
+
+            {filteredItems.map((item) => (
+                <li key={item.id} className="px-4 relative">
+                    <button
+                        onClick={() => scrollToSection(item.id)}
+                        className={`text-left w-full px-4 text-sm transition-colors font-mono line-clamp-1 cursor-pointer relative ${
+                            activeId === item.id
+                                ? 'text-primary'
+                                : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                        data-nav-content
+                    >
+                        {activeId === item.id && (
+                            <span className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-7 rounded-full bg-foreground z-10" />
+                        )}
+                        <span className="pl-3">{item.text}</span>
+                    </button>
+                </li>
+            ))}
+        </ul>
     )
 }

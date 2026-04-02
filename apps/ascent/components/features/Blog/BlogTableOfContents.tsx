@@ -1,177 +1,115 @@
 'use client'
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { BlogTableOfContentsProps } from './types'
-import {
-    scrollToElement,
-    calculateTOCPadding,
-    cssVar,
-    createIntersectionObserver,
-    isBrowser,
-    safeGetElementById,
-} from './utils'
+import { TOCItem } from './types'
 
-// Simple constants for this component
-const BLOG_CONSTANTS = {
-    TOC: {
-        SCROLL_DELAY: 100,
-    },
-    CSS_VARS: {
-        FOREGROUND: '--foreground',
-        MUTED_FOREGROUND: '--muted-foreground',
-    },
-} as const
+interface Props {
+    items: TOCItem[]
+    className?: string
+}
 
-const ARIA_LABELS = {
-    TOC_NAVIGATION: 'Table of contents',
-    TOC_TITLE: 'On this page',
-} as const
-
-const ICON_PATHS = {
-    HOME: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z',
-    HOME_INTERIOR: '9,22 9,12 15,12 15,22',
-} as const
-
-/**
- * BlogTableOfContents component with improved accessibility and performance
- */
-export const BlogTableOfContents: React.FC<BlogTableOfContentsProps> = ({
-    items,
-    activeId: externalActiveId,
-    onItemClick,
-    className = '',
-}) => {
-    const [internalActiveId, setInternalActiveId] = useState<string>('')
+export default function BlogTableOfContents({ items, className = '' }: Props) {
+    const [activeId, setActiveId] = useState<string>('')
     const router = useRouter()
     const pathname = usePathname()
+    const isScrollingRef = useRef(false)
+    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-    // Use external activeId if provided, otherwise use internal state
-    const activeId = externalActiveId ?? internalActiveId
-
-    // Memoize the intersection observer callback to prevent unnecessary re-renders
-    const intersectionCallback = useCallback(
-        (entries: IntersectionObserverEntry[]) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    setInternalActiveId(entry.target.id)
-                }
-            })
-        },
-        []
+    const filteredItems = useMemo(
+        () => items.filter((item) => item.level <= 2),
+        [items]
     )
 
-    // Handle initial hash navigation and set up intersection observer
     useEffect(() => {
-        if (!isBrowser()) return
-
-        // Handle initial hash in URL
         const hash = window.location.hash.slice(1)
         if (hash) {
-            const element = safeGetElementById(hash)
+            const element = document.getElementById(hash)
             if (element) {
                 setTimeout(() => {
-                    scrollToElement(hash)
-                    setInternalActiveId(hash)
-                }, BLOG_CONSTANTS.TOC.SCROLL_DELAY)
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                    })
+                    setActiveId(hash)
+                }, 100)
             }
         }
 
-        // Create intersection observer
-        const observer = createIntersectionObserver(intersectionCallback)
-        if (!observer) return
+        const updateActiveHeading = () => {
+            if (isScrollingRef.current) return
 
-        // Observe all heading elements
-        items.forEach((item) => {
-            const element = safeGetElementById(item.id)
-            if (element) {
-                observer.observe(element)
+            const isAtBottom =
+                window.innerHeight + window.scrollY >=
+                document.body.offsetHeight - 2
+
+            if (isAtBottom && filteredItems.length > 0) {
+                setActiveId(filteredItems[filteredItems.length - 1].id)
+                return
             }
+
+            const scrollPos = window.scrollY + 100
+            let currentActive = filteredItems[0]?.id || ''
+            for (const item of filteredItems) {
+                const el = document.getElementById(item.id)
+                if (el) {
+                    if (el.offsetTop <= scrollPos) {
+                        currentActive = item.id
+                    } else {
+                        break
+                    }
+                }
+            }
+
+            setActiveId(currentActive)
+        }
+
+        updateActiveHeading()
+        window.addEventListener('scroll', updateActiveHeading, {
+            passive: true,
         })
+        return () => window.removeEventListener('scroll', updateActiveHeading)
+    }, [filteredItems])
 
-        return () => observer.disconnect()
-    }, [items, intersectionCallback])
+    const scrollToSection = (id: string) => {
+        const element = document.getElementById(id)
+        if (!element) return
 
-    // Handle scroll to section with URL update
-    const handleScrollToSection = useCallback(
-        (id: string) => {
-            scrollToElement(id)
+        isScrollingRef.current = true
+        setActiveId(id)
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        router.push(`${pathname}#${id}`, { scroll: false })
 
-            // Update URL with hash
-            router.push(`${pathname}#${id}`, { scroll: false })
-
-            // Call external handler if provided
-            onItemClick?.(id)
-        },
-        [router, pathname, onItemClick]
-    )
-
-    // Memoize the TOC items to prevent unnecessary re-renders
-    const tocItems = useMemo(
-        () =>
-            items.map((item) => ({
-                ...item,
-                paddingLeft: calculateTOCPadding(item.level),
-                isActive: activeId === item.id,
-            })),
-        [items, activeId]
-    )
-
-    // Early return if no items
-    if (items.length === 0) {
-        return null
+        clearTimeout(scrollTimeoutRef.current)
+        scrollTimeoutRef.current = setTimeout(() => {
+            isScrollingRef.current = false
+        }, 800)
     }
 
-    return (
-        <nav
-            className={`${className}`}
-            aria-label={ARIA_LABELS.TOC_NAVIGATION}
-            role="navigation"
-        >
-            {/* Header */}
-            <div className="flex items-center gap-2 mb-4 px-2">
-                <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                >
-                    <path d={ICON_PATHS.HOME} />
-                    <polyline points={ICON_PATHS.HOME_INTERIOR} />
-                </svg>
-                <p
-                    className={`text-sm font-medium text-[${cssVar(BLOG_CONSTANTS.CSS_VARS.FOREGROUND)}]`}
-                >
-                    {ARIA_LABELS.TOC_TITLE}
-                </p>
-            </div>
+    if (filteredItems.length === 0) return null
 
-            {/* TOC List */}
-            <ul className="space-y-1" role="list">
-                {tocItems.map((item) => (
-                    <li key={item.id} role="listitem">
+    return (
+        <nav className={className} aria-label="Table of contents">
+            <ul className="space-y-3 relative">
+                <div className="absolute left-[20.5px] top-0.5 bottom-0 w-0.5 bg-border h-full" />
+                {filteredItems.map((item) => (
+                    <li key={item.id} className="px-4 relative">
                         <button
-                            onClick={() => handleScrollToSection(item.id)}
-                            className={`text-left w-full px-2 py-1.5 rounded text-sm transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 ${
-                                item.isActive
-                                    ? `text-[${cssVar(BLOG_CONSTANTS.CSS_VARS.FOREGROUND)}] font-medium`
-                                    : `text-[${cssVar(BLOG_CONSTANTS.CSS_VARS.MUTED_FOREGROUND)}] hover:text-[${cssVar(BLOG_CONSTANTS.CSS_VARS.FOREGROUND)}]`
-                            }`}
-                            style={{
-                                paddingLeft: `${item.paddingLeft}px`,
-                            }}
-                            aria-current={
-                                item.isActive ? 'location' : undefined
-                            }
-                            data-nav-content
                             type="button"
+                            onClick={() => scrollToSection(item.id)}
+                            aria-current={
+                                activeId === item.id ? 'location' : undefined
+                            }
+                            className={`text-left w-full px-4 text-sm transition-colors font-mono line-clamp-1 cursor-pointer relative ${
+                                activeId === item.id
+                                    ? 'text-primary'
+                                    : 'text-muted-foreground hover:text-foreground'
+                            }`}
                         >
-                            {item.text}
+                            {activeId === item.id && (
+                                <span className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-7 rounded-full bg-foreground z-10" />
+                            )}
+                            <span className="pl-3">{item.text}</span>
                         </button>
                     </li>
                 ))}
@@ -179,6 +117,3 @@ export const BlogTableOfContents: React.FC<BlogTableOfContentsProps> = ({
         </nav>
     )
 }
-
-// Export as default for backward compatibility
-export default BlogTableOfContents

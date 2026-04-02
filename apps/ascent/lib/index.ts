@@ -20,3 +20,6 @@ export * from './hooks'
 
 // Constants exports
 export * from './constants'
+
+// Cn utility export
+export { cn } from './utils/cn'

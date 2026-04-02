@@ -1,4 +1,4 @@
-import { JuspayLogo } from '../icons/JuspayLogo'
+import { JuspayLogo } from '../../../../icons/JuspayLogo'
 
 export default function BrandingDivider() {
     return (

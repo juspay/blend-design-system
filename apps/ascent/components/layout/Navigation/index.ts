@@ -5,3 +5,5 @@ export {
     useNavigable,
 } from './GlobalKeyboardNavigation'
 export { default as TableOfContents } from './TableOfContents'
+export { PageBreadcrumb } from './PageBreadCrumb'
+export { default as Navbar } from './Navbar'

@@ -1,7 +1,6 @@
 'use client'
-
 import Link from 'next/link'
-import { JuspayLogo, GitHubIcon, FigmaIcon } from './icons'
+import { JuspayLogo, GitHubIcon, FigmaIcon } from '../../../icons'
 import { EXTERNAL_LINKS, ROUTES } from './constants/links'
 
 export default function Header() {

@@ -26,6 +26,7 @@
         "@react-three/fiber": "^9.5.0",
         "@react-three/postprocessing": "^3.0.4",
         "@types/mdx": "^2.0.13",
+        "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
         "gray-matter": "^4.0.3",
         "gsap": "^3.14.2",
@@ -41,6 +42,7 @@
         "remark-gfm": "^4.0.1",
         "sonner": "^2.0.6",
         "sugar-high": "^0.9.3",
+        "tailwind-merge": "^3.5.0",
         "three": "^0.182.0",
         "vaul": "^1.1.2"
     },

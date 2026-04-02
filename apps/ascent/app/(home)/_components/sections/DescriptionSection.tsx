@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Ellipse } from '../icons/ellipse'
+import { Ellipse } from '../../../../icons/ellipse'
 import { ROUTES } from '../constants/links'
 
 /** Small blue dot at border intersections for editorial grid aesthetic */

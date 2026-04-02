@@ -1,19 +1,13 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useTableOfContents } from '../context/TableOfContentsContext'
 import { TOCItem } from '../../../components/layout/Navigation/TableOfContents'
 
 type PageClientProps = {
     headings: TOCItem[]
 }
 
-export const PageClient: React.FC<PageClientProps> = ({ headings }) => {
-    const { setHeadings } = useTableOfContents()
-
-    useEffect(() => {
-        setHeadings(headings)
-    }, [headings, setHeadings])
-
+// PageClient is kept for potential future client-side logic
+// Headings are now passed directly to SharedDocLayout to avoid hydration layout shift
+export const PageClient: React.FC<PageClientProps> = () => {
     return null
 }

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { ExternalLink, Copy, Check, X, FileCode } from 'lucide-react'
 import DitherCanvas from '../effects/DitherCanvas'
 import CollaborativeCursor from '../effects/CollaborativeCursor'
-import { FigmaIconSmall, DesignerIcon, ArrowRightIcon } from '../icons'
+import { FigmaIconSmall, DesignerIcon, ArrowRightIcon } from '../../../../icons'
 import { EXTERNAL_LINKS } from '../constants/links'
 
 export default function DeveloperDesignerSections() {

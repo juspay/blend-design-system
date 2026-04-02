@@ -5,12 +5,12 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Link from 'next/link'
 
-import { CardHolderFront } from '../icons/CardHolderFront'
-import { CardHolderBack } from '../icons/CardHolderBack'
-import { DocumentationCard } from '../icons/DocumentationCard'
-import { StorybookCard } from '../icons/StorybookCard'
-import { CodeCard } from '../icons/CodeCard'
-import { FigmaCard } from '../icons/FigmaCard'
+import { CardHolderFront } from '../../../../icons/CardHolderFront'
+import { CardHolderBack } from '../../../../icons/CardHolderBack'
+import { DocumentationCard } from '../../../../icons/DocumentationCard'
+import { StorybookCard } from '../../../../icons/StorybookCard'
+import { CodeCard } from '../../../../icons/CodeCard'
+import { FigmaCard } from '../../../../icons/FigmaCard'
 import { EXTERNAL_LINKS } from '../constants/links'
 
 gsap.registerPlugin(ScrollTrigger)

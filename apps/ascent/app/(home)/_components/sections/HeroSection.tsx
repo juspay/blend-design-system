@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Check } from 'lucide-react'
 import Image from 'next/image'
-import { CopyIcon } from '../icons'
+import { CopyIcon } from '../../../../icons'
 
 const PACKAGE_MANAGERS = {
     npm: 'npm i',

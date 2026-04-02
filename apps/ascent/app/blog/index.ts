@@ -43,7 +43,5 @@ export {
     BlogPostCard,
     BlogPostGrid,
     FeaturedPosts,
-    BlogSidebar,
-    BlogTableOfContents,
     BlogPostWithTOC,
 } from '@/components/features/Blog'

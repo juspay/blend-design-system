@@ -21,7 +21,7 @@ const TableHeader = () => {
     const columns = ['Prop Name', 'Type', 'Enum']
 
     return (
-        <thead className="bg-[var(--muted)] dark:bg-[var(--code-background)] border-b border-[var(--code-border)]">
+        <thead className="bg-surface dark:bg-[var(--code-background)] border-b border-[var(--code-border)]">
             <tr>
                 {columns.map((column, index) => (
                     <th
@@ -38,11 +38,11 @@ const TableHeader = () => {
 
 const TableBody = ({ data }: { data: TableCell[][] }) => {
     return (
-        <tbody className="bg-[var(--background)] dark:bg-[var(--code-background)] divide-y divide-[var(--code-border)]">
+        <tbody className="bg-background divide-y divide-code-border">
             {data.map((row, rowIndex) => (
                 <tr
                     key={rowIndex}
-                    className="hover:bg-[var(--muted)] dark:hover:bg-[var(--code-highlight)]"
+                    className="hover:bg-muted"
                 >
                     {row.map((cell, cellIndex) => {
                         const hasTooltip = cell.hintText !== undefined
@@ -112,7 +112,7 @@ const DocsTypeTable = ({
 
     return (
         <div
-            className={`w-full border border-[var(--code-border)] rounded-lg my-8 overflow-hidden ${className}`}
+            className={`w-full border border-[var(--code-border)] rounded-t-xl my-8 overflow-hidden ${className}`}
         >
             <div className="overflow-x-auto w-full">
                 <table className="w-full min-w-full">

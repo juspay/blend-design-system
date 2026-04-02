@@ -1,5 +1,6 @@
 import { BlogPost } from '@/blog/utils/getBlogPosts'
 import { BlogPostCard } from '@/components/features/Blog/BlogPostCard'
+import { cn } from '@/lib/utils/cn'
 
 interface BlogPostGridProps {
     posts: BlogPost[]
@@ -10,8 +11,8 @@ const COLS = 4
 export function BlogPostGrid({ posts }: BlogPostGridProps) {
     if (posts.length === 0) {
         return (
-            <div className="border-b border-l border-r border-blog-border py-12 text-center">
-                <p className="text-[16px] text-blog-tertiary">
+            <div className="py-12 text-center">
+                <p className="text-[16px] text-foreground">
                     No posts published yet. Check back soon!
                 </p>
             </div>
@@ -25,18 +26,15 @@ export function BlogPostGrid({ posts }: BlogPostGridProps) {
     return (
         <section
             aria-label="Blog posts"
-            className={[
+            className={cn(
                 'flex flex-1 flex-col',
-                'border-b border-l border-r border-blog-border bg-white',
-                isMultiRow ? 'overflow-y-auto' : 'overflow-hidden',
-            ].join(' ')}
+                isMultiRow && 'overflow-y-auto',
+                !isMultiRow && 'overflow-hidden'
+            )}
         >
             <ul
                 role="list"
-                className={[
-                    'grid grid-cols-4',
-                    isMultiRow ? '' : 'h-full',
-                ].join(' ')}
+                className={cn('grid grid-cols-4', !isMultiRow && 'h-full')}
             >
                 {posts.map((post) => (
                     <li key={post.slug} className="contents">
