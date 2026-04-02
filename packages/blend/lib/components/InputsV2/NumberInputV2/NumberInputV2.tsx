@@ -64,9 +64,6 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
 
         const [isFocused, setIsFocused] = useState(false)
         const [internalValue, setInternalValue] = useState('')
-        const [internalError, setInternalError] = useState(false)
-        const [internalErrorMessage, setInternalErrorMessage] =
-            useState<string>()
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
 
@@ -78,18 +75,6 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         const paddingY =
             toPixels(inputContainerTokens.padding.y[size]) +
             (isSmallScreenWithLargeSize ? 0.5 : 1)
-
-        const hasError = internalError || Boolean(error?.show && error?.message)
-        const displayErrorMessage =
-            (error?.show && error?.message) || internalErrorMessage
-
-        const ariaDescribedBy =
-            [
-                hintText && !hasError ? hintId : null,
-                displayErrorMessage ? errorId : null,
-            ]
-                .filter(Boolean)
-                .join(' ') || undefined
 
         const numericMin = min !== undefined ? Number(min) : undefined
         const numericMax = max !== undefined ? Number(max) : undefined
@@ -109,18 +94,38 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             [rawNumericValue, preventNegative, numericMin, numericMax]
         )
 
+        const rangeErrorMessage = useMemo(() => {
+            if (rawNumericValue === null || isNaN(rawNumericValue)) {
+                return undefined
+            }
+            if (isValueOutsideRange(rawNumericValue, numericMin, numericMax)) {
+                return getRangeErrorMessage(numericMin, numericMax)
+            }
+            return undefined
+        }, [rawNumericValue, numericMin, numericMax])
+
+        const hasError =
+            Boolean(error?.show && error?.message) || Boolean(rangeErrorMessage)
+
+        const displayErrorMessage =
+            (error?.show && error?.message) || rangeErrorMessage
+
+        const ariaDescribedBy =
+            [
+                hintText && !hasError ? hintId : null,
+                displayErrorMessage ? errorId : null,
+            ]
+                .filter(Boolean)
+                .join(' ') || undefined
+
         const labelState: InputStateV2 = disabled
             ? InputStateV2.DISABLED
             : hasError
               ? InputStateV2.ERROR
               : InputStateV2.DEFAULT
 
-        const updateValue = (newValue: number, clearError = true): void => {
+        const updateValue = (newValue: number): void => {
             if (rawNumericValue === newValue) return
-            if (clearError) {
-                setInternalError(false)
-                setInternalErrorMessage(undefined)
-            }
             const newValueString = String(newValue)
             setInternalValue(newValueString)
             onChange({
@@ -183,25 +188,6 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
 
         const borderState = hasError ? 'error' : 'default'
 
-        const syncRangeErrorFromParsedNumber = (
-            numValue: number | null
-        ): void => {
-            if (numValue === null || isNaN(numValue)) {
-                setInternalError(false)
-                setInternalErrorMessage(undefined)
-                return
-            }
-            if (isValueOutsideRange(numValue, numericMin, numericMax)) {
-                setInternalError(true)
-                setInternalErrorMessage(
-                    getRangeErrorMessage(numericMin, numericMax)
-                )
-            } else {
-                setInternalError(false)
-                setInternalErrorMessage(undefined)
-            }
-        }
-
         const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
             const sanitized = sanitizeNumberInput(
                 e.target.value,
@@ -218,8 +204,6 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                     ? String(rawNumericValue)
                     : ''
             if (valueString === currentValueString) return
-
-            syncRangeErrorFromParsedNumber(numValue)
 
             onChange({
                 ...e,
@@ -238,8 +222,6 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                 numericMax
             )
             setInternalValue(clamped)
-            setInternalError(false)
-            setInternalErrorMessage(undefined)
 
             const clampedNumValue = clamped === '' ? null : Number(clamped)
             if (
@@ -428,7 +410,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                     />
                 </Block>
                 <InputFooterV2
-                    error={Boolean(error?.show)}
+                    error={Boolean(displayErrorMessage)}
                     errorMessage={displayErrorMessage}
                     hintText={hintText}
                     errorId={errorId}

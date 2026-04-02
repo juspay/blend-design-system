@@ -412,4 +412,35 @@ describe('NumberInputV2 Component', () => {
             expect(screen.getByRole('spinbutton')).toHaveValue('0')
         })
     })
+
+    describe('min / max (same copy as NumberInput getRangeErrorMessage)', () => {
+        it('shows between message when both bounds are set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={150}
+                    onChange={noop}
+                    min={0}
+                    max={100}
+                />
+            )
+            expect(
+                screen.getByText(/Value must be between 0 and 100/i)
+            ).toBeInTheDocument()
+        })
+
+        it('shows at-most message when only max is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={150}
+                    onChange={noop}
+                    max={100}
+                />
+            )
+            expect(
+                screen.getByText(/Value must be at most 100/i)
+            ).toBeInTheDocument()
+        })
+    })
 })
