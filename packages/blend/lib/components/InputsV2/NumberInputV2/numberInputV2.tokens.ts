@@ -50,6 +50,9 @@ export type NumberInputV2TokensType = {
         border: {
             [key in InputStateV2]: CSSObject['border']
         }
+        lineHeight: {
+            [key in InputSizeV2]: CSSObject['lineHeight']
+        }
 
         backgroundColor: {
             [key in InputStateV2]: CSSObject['backgroundColor']

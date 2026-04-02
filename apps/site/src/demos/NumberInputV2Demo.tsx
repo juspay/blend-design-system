@@ -4,8 +4,11 @@ import { InputSizeV2 } from '../../../../packages/blend/lib/components/InputsV2/
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 
 const NumberInputV2Demo = () => {
+    const { theme } = useTheme()
     const [playgroundValue, setPlaygroundValue] = useState<number | null>(null)
     const [playgroundSize, setPlaygroundSize] = useState<InputSizeV2>(
         InputSizeV2.MD
@@ -19,6 +22,7 @@ const NumberInputV2Demo = () => {
     )
     const [isDisabled, setIsDisabled] = useState(false)
     const [hasError, setHasError] = useState(false)
+    const [isRequired, setIsRequired] = useState(false)
     const [showMin, setShowMin] = useState(false)
     const [showMax, setShowMax] = useState(false)
     const [preventNegative, setPreventNegative] = useState(false)
@@ -64,7 +68,7 @@ const NumberInputV2Demo = () => {
                             data-id={'Enter value'}
                             data-input-name={playgroundValue?.toString() || ''}
                             name={playgroundValue?.toString() || ''}
-                            label="Value"
+                            label={{ text: 'Value', subtext: '' }}
                             value={playgroundValue}
                             onChange={(e) =>
                                 setPlaygroundValue(
@@ -139,13 +143,26 @@ const NumberInputV2Demo = () => {
                             checked={hasError}
                             onChange={() => setHasError(!hasError)}
                         />
+                        <Switch
+                            label="Required"
+                            checked={isRequired}
+                            onChange={() => setIsRequired(!isRequired)}
+                        />
                     </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
+                    <div
+                        className={`min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8 ${
+                            theme === Theme.DARK
+                                ? 'border-gray-700 bg-gray-900'
+                                : 'border-gray-300 bg-gray-50'
+                        }`}
+                    >
                         <div className="w-full max-w-md">
                             <NumberInputV2
-                                label="Your Label"
-                                sublabel="This is a sublabel"
+                                label={{
+                                    text: 'Your Label',
+                                    subtext: 'This is a sublabel',
+                                }}
                                 value={playgroundValue}
                                 onChange={(e) =>
                                     setPlaygroundValue(
@@ -165,15 +182,13 @@ const NumberInputV2Demo = () => {
                                 }
                                 preventNegative={preventNegative}
                                 disabled={isDisabled}
-                                error={hasError}
-                                errorMessage={
-                                    hasError
-                                        ? 'This field has an error'
-                                        : undefined
-                                }
+                                error={{
+                                    show: hasError,
+                                    message: 'This field has an error',
+                                }}
                                 hintText="This is a hint text"
-                                helpIconHintText="This is help text for the number input"
-                                required={false}
+                                helpIconText="This is help text for the number input"
+                                required={isRequired}
                             />
                         </div>
                     </div>
@@ -189,21 +204,21 @@ const NumberInputV2Demo = () => {
                             Default Number Input
                         </h3>
                         <NumberInputV2
-                            label="Default"
+                            label={{ text: 'Default', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Enter number..."
-                            error={hasError}
-                            errorMessage={
-                                hasError ? 'This field has an error' : undefined
-                            }
+                            error={{
+                                show: hasError,
+                                message: 'This field has an error',
+                            }}
                         />
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">With Step</h3>
                         <NumberInputV2
-                            label="Step by 5"
+                            label={{ text: 'Step by 5', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Enter number..."
@@ -216,7 +231,7 @@ const NumberInputV2Demo = () => {
                             Required Field
                         </h3>
                         <NumberInputV2
-                            label="Required Number"
+                            label={{ text: 'Required Number', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Enter number..."
@@ -229,7 +244,7 @@ const NumberInputV2Demo = () => {
                             With Hint Text
                         </h3>
                         <NumberInputV2
-                            label="Age"
+                            label={{ text: 'Age', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Enter age"
@@ -246,7 +261,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Medium</h3>
                         <NumberInputV2
-                            label="Medium Number Input"
+                            label={{ text: 'Medium Number Input', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Medium size"
@@ -257,7 +272,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Large</h3>
                         <NumberInputV2
-                            label="Large Number Input"
+                            label={{ text: 'Large Number Input', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Large size"
@@ -274,7 +289,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Default</h3>
                         <NumberInputV2
-                            label="Default State"
+                            label={{ text: 'Default State', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Default input"
@@ -284,7 +299,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Disabled</h3>
                         <NumberInputV2
-                            label="Disabled Input"
+                            label={{ text: 'Disabled Input', subtext: '' }}
                             value={42}
                             onChange={() => {}}
                             placeholder="Disabled input"
@@ -295,12 +310,14 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Error</h3>
                         <NumberInputV2
-                            label="Error Input"
+                            label={{ text: 'Error Input', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Error input"
-                            error
-                            errorMessage="This field is required"
+                            error={{
+                                show: true,
+                                message: 'This field is required',
+                            }}
                         />
                     </div>
 
@@ -309,21 +326,23 @@ const NumberInputV2Demo = () => {
                             With Help Text
                         </h3>
                         <NumberInputV2
-                            label="Help Input"
+                            label={{ text: 'Help Input', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="With help text"
-                            helpIconHintText="This is additional help information"
+                            helpIconText="This is additional help information"
                         />
                     </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">With Sublabel</h3>
                         <NumberInputV2
-                            label="Sublabel Input"
+                            label={{
+                                text: 'Sublabel Input',
+                                subtext: 'This is a sublabel',
+                            }}
                             value={0}
                             onChange={() => {}}
-                            sublabel="This is a sublabel"
                             placeholder="With sublabel"
                         />
                     </div>
@@ -331,7 +350,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Required</h3>
                         <NumberInputV2
-                            label="Required Input"
+                            label={{ text: 'Required Input', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Required field"
@@ -348,7 +367,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Step 0.1</h3>
                         <NumberInputV2
-                            label="Decimal Step"
+                            label={{ text: 'Decimal Step', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="0.1 increments"
@@ -359,7 +378,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Step 0.5</h3>
                         <NumberInputV2
-                            label="Half Step"
+                            label={{ text: 'Half Step', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="0.5 increments"
@@ -370,7 +389,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Step 1</h3>
                         <NumberInputV2
-                            label="Whole Numbers"
+                            label={{ text: 'Whole Numbers', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="1 increments"
@@ -381,7 +400,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Step 5</h3>
                         <NumberInputV2
-                            label="Step by 5"
+                            label={{ text: 'Step by 5', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="5 increments"
@@ -392,7 +411,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Step 10</h3>
                         <NumberInputV2
-                            label="Step by 10"
+                            label={{ text: 'Step by 10', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="10 increments"
@@ -403,7 +422,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Step 100</h3>
                         <NumberInputV2
-                            label="Step by 100"
+                            label={{ text: 'Step by 100', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="100 increments"
@@ -430,7 +449,10 @@ const NumberInputV2Demo = () => {
                     </p>
                     <div className="max-w-md">
                         <NumberInputV2
-                            label="Value (Min: 5, Max: 10)"
+                            label={{
+                                text: 'Value (Min: 5, Max: 10)',
+                                subtext: '',
+                            }}
                             value={playgroundValue}
                             onChange={(e) => {
                                 const newValue =
@@ -466,7 +488,10 @@ const NumberInputV2Demo = () => {
                             Prevent Negative (preventNegative)
                         </h3>
                         <NumberInputV2
-                            label="Positive Numbers Only"
+                            label={{
+                                text: 'Positive Numbers Only',
+                                subtext: '',
+                            }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Cannot type negative"
@@ -480,7 +505,10 @@ const NumberInputV2Demo = () => {
                             Min 0 (min prop)
                         </h3>
                         <NumberInputV2
-                            label="Min 0 with validation"
+                            label={{
+                                text: 'Min 0 with validation',
+                                subtext: '',
+                            }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Min 0"
@@ -492,7 +520,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Max Only</h3>
                         <NumberInputV2
-                            label="Max 100"
+                            label={{ text: 'Max 100', subtext: '' }}
                             value={50}
                             onChange={() => {}}
                             placeholder="Max 100"
@@ -504,7 +532,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Min & Max</h3>
                         <NumberInputV2
-                            label="0 to 100"
+                            label={{ text: '0 to 100', subtext: '' }}
                             value={50}
                             onChange={() => {}}
                             placeholder="0 to 100"
@@ -517,7 +545,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Age Range</h3>
                         <NumberInputV2
-                            label="Age (0-120)"
+                            label={{ text: 'Age (0-120)', subtext: '' }}
                             value={25}
                             onChange={() => {}}
                             placeholder="Enter age"
@@ -531,7 +559,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Percentage</h3>
                         <NumberInputV2
-                            label="Percentage (0-100)"
+                            label={{ text: 'Percentage (0-100)', subtext: '' }}
                             value={50}
                             onChange={() => {}}
                             placeholder="0-100%"
@@ -545,7 +573,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Temperature</h3>
                         <NumberInputV2
-                            label="Temperature (°C)"
+                            label={{ text: 'Temperature (°C)', subtext: '' }}
                             value={20}
                             onChange={() => {}}
                             placeholder="-50 to 50°C"
@@ -561,7 +589,7 @@ const NumberInputV2Demo = () => {
                             Strict Range (5-10)
                         </h3>
                         <NumberInputV2
-                            label="Strict Range"
+                            label={{ text: 'Strict Range', subtext: '' }}
                             value={7}
                             onChange={() => {}}
                             placeholder="5 to 10"
@@ -577,7 +605,7 @@ const NumberInputV2Demo = () => {
                             Small Range (10-20)
                         </h3>
                         <NumberInputV2
-                            label="Small Range"
+                            label={{ text: 'Small Range', subtext: '' }}
                             value={15}
                             onChange={() => {}}
                             placeholder="10 to 20"
@@ -599,7 +627,7 @@ const NumberInputV2Demo = () => {
                             Controlled Input
                         </h3>
                         <NumberInputV2
-                            label="Controlled"
+                            label={{ text: 'Controlled', subtext: '' }}
                             value={playgroundValue}
                             onChange={(e) =>
                                 setPlaygroundValue(
@@ -625,7 +653,10 @@ const NumberInputV2Demo = () => {
                             }}
                         >
                             <NumberInputV2
-                                label="Click the container"
+                                label={{
+                                    text: 'Click the container',
+                                    subtext: '',
+                                }}
                                 value={0}
                                 onChange={() => {}}
                                 placeholder="Click outside the input"
@@ -647,14 +678,14 @@ const NumberInputV2Demo = () => {
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <NumberInputV2
-                                    label="Default"
+                                    label={{ text: 'Default', subtext: '' }}
                                     value={0}
                                     onChange={() => {}}
                                     placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} default`}
                                     size={size}
                                 />
                                 <NumberInputV2
-                                    label="With Step"
+                                    label={{ text: 'With Step', subtext: '' }}
                                     value={0}
                                     onChange={() => {}}
                                     placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} with step`}
@@ -662,16 +693,18 @@ const NumberInputV2Demo = () => {
                                     step={5}
                                 />
                                 <NumberInputV2
-                                    label="Error"
+                                    label={{ text: 'Error', subtext: '' }}
                                     value={0}
                                     onChange={() => {}}
                                     placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} error`}
                                     size={size}
-                                    error
-                                    errorMessage="Error message"
+                                    error={{
+                                        show: true,
+                                        message: 'Error message',
+                                    }}
                                 />
                                 <NumberInputV2
-                                    label="Disabled"
+                                    label={{ text: 'Disabled', subtext: '' }}
                                     value={42}
                                     onChange={() => {}}
                                     placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} disabled`}
@@ -679,7 +712,7 @@ const NumberInputV2Demo = () => {
                                     disabled
                                 />
                                 <NumberInputV2
-                                    label="Required"
+                                    label={{ text: 'Required', subtext: '' }}
                                     value={0}
                                     onChange={() => {}}
                                     placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} required`}
@@ -687,7 +720,7 @@ const NumberInputV2Demo = () => {
                                     required
                                 />
                                 <NumberInputV2
-                                    label="With Hint"
+                                    label={{ text: 'With Hint', subtext: '' }}
                                     value={0}
                                     onChange={() => {}}
                                     placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} with hint`}
@@ -707,7 +740,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Quantity</h3>
                         <NumberInputV2
-                            label="Quantity"
+                            label={{ text: 'Quantity', subtext: '' }}
                             value={1}
                             onChange={() => {}}
                             placeholder="Enter quantity"
@@ -720,7 +753,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Price</h3>
                         <NumberInputV2
-                            label="Price ($)"
+                            label={{ text: 'Price ($)', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="0.00"
@@ -732,7 +765,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Rating</h3>
                         <NumberInputV2
-                            label="Rating"
+                            label={{ text: 'Rating', subtext: '' }}
                             value={5}
                             onChange={() => {}}
                             placeholder="1-5 stars"
@@ -745,7 +778,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Weight</h3>
                         <NumberInputV2
-                            label="Weight (kg)"
+                            label={{ text: 'Weight (kg)', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Enter weight"
@@ -757,7 +790,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Distance</h3>
                         <NumberInputV2
-                            label="Distance (km)"
+                            label={{ text: 'Distance (km)', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="Enter distance"
@@ -769,7 +802,7 @@ const NumberInputV2Demo = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Score</h3>
                         <NumberInputV2
-                            label="Score"
+                            label={{ text: 'Score', subtext: '' }}
                             value={0}
                             onChange={() => {}}
                             placeholder="0-100"

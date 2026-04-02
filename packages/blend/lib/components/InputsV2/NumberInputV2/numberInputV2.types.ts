@@ -3,14 +3,21 @@ import { InputSizeV2 } from '../inputV2.types'
 export type NumberInputV2Props = {
     value: number | null
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    min?: number
+    max?: number
     step?: number
-    error?: boolean
-    errorMessage?: string
+    error?: {
+        show: boolean
+        message?: string
+    }
     size?: InputSizeV2
-    label?: string
-    sublabel?: string
-    helpIconHintText?: string
+    label?: {
+        text: string
+        subtext?: string
+    }
+    helpIconText?: string
     hintText?: string
+    name?: string
     preventNegative?: boolean
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
@@ -18,3 +25,12 @@ export type NumberInputV2Props = {
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className' | 'value' | 'onBlur' | 'onFocus'
 >
+
+export type StepperArrowProps = {
+    disabled?: boolean
+    dimmed: boolean
+    flip?: boolean
+    size: number | string
+    colorDefault: React.CSSProperties['color']
+    colorDisabled: React.CSSProperties['color']
+}

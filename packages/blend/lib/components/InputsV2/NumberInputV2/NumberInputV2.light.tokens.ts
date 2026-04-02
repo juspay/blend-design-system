@@ -170,6 +170,11 @@ export const getNumberInputV2LightTokens = (
                     error: foundationToken.colors.red[800],
                     disabled: foundationToken.colors.gray[300],
                 },
+                lineHeight: {
+                    sm: foundationToken.unit[20],
+                    md: foundationToken.unit[20],
+                    lg: foundationToken.unit[20],
+                },
                 padding: {
                     x: {
                         sm: foundationToken.unit[10],
@@ -233,6 +238,11 @@ export const getNumberInputV2LightTokens = (
             topContainer: labelTopContainer(foundationToken),
             inputContainer: {
                 placeholder: inputPlaceholder(foundationToken),
+                lineHeight: {
+                    sm: foundationToken.unit[20],
+                    md: foundationToken.unit[20],
+                    lg: foundationToken.unit[20],
+                },
                 borderRadius: {
                     sm: foundationToken.unit[10],
                     md: foundationToken.unit[10],

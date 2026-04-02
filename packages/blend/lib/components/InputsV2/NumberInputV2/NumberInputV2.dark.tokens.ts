@@ -19,7 +19,7 @@ const labelTopContainer = (foundationToken: FoundationTokenType) => ({
             lg: foundationToken.font.lineHeight[20],
         },
         color: {
-            default: foundationToken.colors.gray[700],
+            default: foundationToken.colors.gray[100],
             hover: foundationToken.colors.gray[700],
             focus: foundationToken.colors.gray[700],
             disabled: foundationToken.colors.gray[400],
@@ -163,6 +163,11 @@ export const getNumberInputV2DarkTokens = (
                     md: foundationToken.font.weight[500],
                     lg: foundationToken.font.weight[500],
                 },
+                lineHeight: {
+                    sm: foundationToken.unit[20],
+                    md: foundationToken.unit[20],
+                    lg: foundationToken.unit[20],
+                },
                 color: {
                     default: foundationToken.colors.gray[700],
                     hover: foundationToken.colors.gray[700],
@@ -247,6 +252,11 @@ export const getNumberInputV2DarkTokens = (
                     sm: foundationToken.font.weight[500],
                     md: foundationToken.font.weight[500],
                     lg: foundationToken.font.weight[500],
+                },
+                lineHeight: {
+                    sm: foundationToken.unit[20],
+                    md: foundationToken.unit[20],
+                    lg: foundationToken.unit[20],
                 },
                 color: {
                     default: foundationToken.colors.gray[700],
