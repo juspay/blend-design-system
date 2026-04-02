@@ -120,7 +120,9 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             : internalExpanded
         const iconOnlyMode = !isExpanded
         const showTopbar = useTopbarV2AutoHide(enableTopbarAutoHide)
-        const shouldRenderSecondarySidebar = !!secondarySidebar?.items?.length
+        const hasSecondarySidebarItems = !!secondarySidebar?.items?.length
+        const shouldRenderSecondarySidebar =
+            hasSecondarySidebarItems && isExpanded
 
         const baseId = useId()
         const sidebarId = `${baseId}-sidebar`
@@ -334,7 +336,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 display="flex"
                                 top={0}
                                 left={
-                                    shouldRenderSecondarySidebar
+                                    hasSecondarySidebarItems
                                         ? tokens.secondarySidebar.width
                                         : 0
                                 }
@@ -406,8 +408,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                             zIndex={tokens.header.zIndex}
                             style={getTopbarV2Styles(
                                 enableTopbarAutoHide,
-                                showTopbar,
-                                tokens
+                                showTopbar
                             )}
                         >
                             <TopbarV2
