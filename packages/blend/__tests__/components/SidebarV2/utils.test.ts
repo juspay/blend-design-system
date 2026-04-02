@@ -126,7 +126,13 @@ describe('SidebarV2 Utils', () => {
         })
 
         it('returns hidden styles when auto-hide is enabled and should hide', () => {
-            const styles = getTopbarV2Styles(true, false)
+            const styles = getTopbarV2Styles(true, false, {
+                header: {
+                    paddingTop: '16px',
+                    paddingBottom: '16px',
+                    gap: '8px',
+                },
+            } as Parameters<typeof getTopbarV2Styles>[2])
             expect(styles).toHaveProperty('transform', 'translateY(-100%)')
             expect(styles).toHaveProperty(
                 'transition',

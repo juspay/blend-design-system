@@ -113,6 +113,17 @@ const useScrollLock = (shouldLock?: boolean) => {
             }
         }
 
+        // Measure the scrollbar width before hiding overflow so we can
+        // compensate with equivalent padding-right. This prevents the
+        // ~15-17px layout shift that occurs when the scrollbar disappears.
+        const scrollbarWidth =
+            window.innerWidth - document.documentElement.clientWidth
+        const originalPaddingRight = document.body.style.paddingRight
+
+        if (scrollbarWidth > 0) {
+            document.body.style.paddingRight = `${scrollbarWidth}px`
+        }
+
         // Apply styles to prevent scrolling without shifting layout.
         // Using `body { position: fixed }` can cause layout jumps for 100%-height
         // flex layouts (e.g. sidebars with sticky/footer regions).
@@ -137,6 +148,7 @@ const useScrollLock = (shouldLock?: boolean) => {
             document.removeEventListener('keydown', preventKeyboardScroll)
 
             // Restore styles
+            document.body.style.paddingRight = originalPaddingRight
             document.documentElement.style.overflow = ''
             document.documentElement.style.touchAction = ''
             document.documentElement.style.overscrollBehavior = ''

@@ -3,6 +3,18 @@ import type { SecondarySidebarInfo } from './types'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { TooltipV2, TooltipV2Side, TooltipV2Size } from '../TooltipV2'
+import styled from 'styled-components'
+
+const ScrollableContainer = styled(Block)`
+    &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+`
 
 type Props = {
     id: string
@@ -36,7 +48,7 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
             paddingLeft={tokens.secondarySidebar.paddingLeft}
             paddingRight={tokens.secondarySidebar.paddingRight}
         >
-            <Block
+            <ScrollableContainer
                 data-element="secondary-sidebar-items"
                 display="flex"
                 flexDirection="column"
@@ -89,7 +101,7 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
                         </PrimitiveButton>
                     </TooltipV2>
                 ))}
-            </Block>
+            </ScrollableContainer>
 
             {footerSlot && (
                 <Block

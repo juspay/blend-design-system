@@ -171,7 +171,7 @@ const Menu = ({
     const shouldUseVirtualScrolling =
         enableVirtualScrolling && totalItemCount >= virtualScrollThreshold
 
-    useScrollLock(menuIsOpen)
+    useScrollLock(asModal && menuIsOpen)
 
     const renderVirtualItem = useCallback(
         ({ item }: { item: VirtualListItem; index: number }) => {

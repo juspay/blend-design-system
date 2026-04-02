@@ -280,7 +280,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                     display="flex"
                     backgroundColor={tokens.container.backgroundColor}
                     position="relative"
-                    zIndex={99}
+                    zIndex={tokens.container.zIndex}
                     id={sidebarId}
                 >
                     <Block
@@ -346,7 +346,6 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 overflow="hidden"
                                 zIndex={tokens.container.zIndex}
                                 aria-hidden="true"
-                                style={{ willChange: 'width, box-shadow' }}
                                 backgroundColor={
                                     tokens.container.backgroundColor
                                 }
@@ -407,7 +406,8 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                             zIndex={tokens.header.zIndex}
                             style={getTopbarV2Styles(
                                 enableTopbarAutoHide,
-                                showTopbar
+                                showTopbar,
+                                tokens
                             )}
                         >
                             <TopbarV2

@@ -15,9 +15,20 @@ export type TopbarV2Props = {
     children?: ReactNode
     /** Sidebar expansion state */
     isExpanded?: boolean
+    /**
+     * @reserved Toggle expansion callback. Accepted for future implementation
+     * of an in-topbar toggle button. Currently a no-op.
+     */
     onToggleExpansion?: () => void
+    /**
+     * @reserved Controls toggle button visibility. Accepted for future
+     * implementation. Currently a no-op.
+     */
     showToggleButton?: boolean
-    /** When true, hides toggle button (used in panel only mode) */
+    /**
+     * @reserved When true, hides toggle button (used in panel-only mode).
+     * Accepted for future implementation. Currently a no-op.
+     */
     panelOnlyMode?: boolean
     /** Controlled mode: Show/hide topbar */
     isVisible?: boolean
@@ -33,6 +44,9 @@ export type TopbarV2Props = {
     onBackClick?: () => void
     secondarySidebar?: SecondarySidebarInfo
     merchantInfo?: MerchantInfoV2
-    /** ARIA controls ID for the sidebar navigation */
+    /**
+     * @reserved ARIA controls ID for the sidebar navigation. Accepted for
+     * future implementation. Currently a no-op.
+     */
     ariaControls?: string
 }

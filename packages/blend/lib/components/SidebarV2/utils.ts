@@ -5,6 +5,7 @@ import type {
     SidebarV2StateChangeType,
 } from './types'
 import { SidebarV2StateChange } from './types'
+import type { SidebarV2TokensType } from './sidebarV2.tokens'
 
 export const isControlledSidebarV2 = (
     isExpanded: boolean | undefined
@@ -38,18 +39,34 @@ export const announceSidebarV2StateChange = (isExpanded: boolean) => {
     }, 1000)
 }
 
-const TOPBAR_AUTO_HIDE_HEIGHT = 48
+/**
+ * Parses a CSS dimension string (e.g. "48px") to a number.
+ * Returns 0 if parsing fails.
+ */
+const parseTopbarHeight = (value: string | number | undefined): number => {
+    if (typeof value === 'number') return value
+    if (!value) return 0
+    const parsed = Number.parseFloat(String(value))
+    return Number.isNaN(parsed) ? 0 : parsed
+}
 
 export const getTopbarV2Styles = (
     enableAutoHide: boolean,
-    showTopbar: boolean
+    showTopbar: boolean,
+    tokens?: SidebarV2TokensType
 ) => {
     if (!enableAutoHide) return {}
+
+    const topbarHeight = tokens
+        ? parseTopbarHeight(tokens.header.paddingTop) +
+          parseTopbarHeight(tokens.header.paddingBottom) +
+          parseTopbarHeight(tokens.header.gap)
+        : 0
 
     return {
         transform: showTopbar ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.3s ease-in-out',
-        ...(!showTopbar && { marginTop: -TOPBAR_AUTO_HIDE_HEIGHT }),
+        ...(!showTopbar && topbarHeight > 0 && { marginTop: -topbarHeight }),
     }
 }
 

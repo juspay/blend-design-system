@@ -1,6 +1,7 @@
 import { ChevronUp } from 'lucide-react'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import type { MobileNavigationV2TokenType } from './mobile.tokens'
+import { parseUnitValue } from './utils'
 
 const MoreButton = ({
     tokens,
@@ -27,8 +28,8 @@ const MoreButton = ({
         >
             <ChevronUp
                 aria-hidden="true"
-                width={tokens.item.icon.width as unknown as number}
-                height={tokens.item.icon.height as unknown as number}
+                width={parseUnitValue(tokens.item.icon.width)}
+                height={parseUnitValue(tokens.item.icon.height)}
             />
         </PrimitiveButton>
     )

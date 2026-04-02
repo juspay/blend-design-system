@@ -1,5 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react'
-import { PanelsTopLeft, UserIcon } from 'lucide-react'
+import { type ReactNode } from 'react'
+import { PanelsTopLeft } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { SingleSelect } from '../SingleSelect'
@@ -9,6 +9,7 @@ import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { VisuallyHidden } from '../../utils/accessibility'
 import type { SidebarV2TokensType } from './sidebarV2.tokens'
+import { parseUnitValue } from '../SidebarV2/SidebarV2MobileNavigation/utils'
 
 export type SidebarV2HeaderProps = {
     sidebarTopSlot?: ReactNode
@@ -43,47 +44,16 @@ const SidebarV2Header = ({
     iconOnlyMode = false,
     tokens,
 }: SidebarV2HeaderProps) => {
-    const defaultMerchantInfo = {
-        items: [
-            {
-                label: 'juspay',
-                value: 'juspay',
-                icon: (
-                    <UserIcon
-                        style={{
-                            width: String(tokens.header.toggleButton.width),
-                            height: String(tokens.header.toggleButton.width),
-                        }}
-                    />
-                ),
-            },
-        ],
-        selected: 'juspay',
-        onSelect: () => {},
-    }
-
-    const merchantData = merchantInfo ?? defaultMerchantInfo
-
-    const [selectVisible, setSelectVisible] = useState(!iconOnlyMode)
-    useEffect(() => {
-        if (iconOnlyMode) {
-            setSelectVisible(false)
-            return
-        }
-        const timer = setTimeout(() => setSelectVisible(true), 180)
-        return () => clearTimeout(timer)
-    }, [iconOnlyMode])
-
     const headerSlot = sidebarTopSlot ? (
         sidebarTopSlot
-    ) : (
+    ) : merchantInfo ? (
         <SingleSelect
             helpIconText=""
             required={false}
             placeholder="Select Merchant"
             variant={SelectMenuVariant.NO_CONTAINER}
             size={SelectMenuSize.SMALL}
-            items={merchantData.items.map((item) => ({
+            items={merchantInfo.items.map((item) => ({
                 items: [
                     {
                         label: item.label,
@@ -92,10 +62,10 @@ const SidebarV2Header = ({
                     },
                 ],
             }))}
-            selected={merchantData.selected}
-            onSelect={merchantData.onSelect}
+            selected={merchantInfo.selected}
+            onSelect={merchantInfo.onSelect}
         />
-    )
+    ) : null
 
     return (
         <Block
@@ -130,7 +100,7 @@ const SidebarV2Header = ({
                 width={iconOnlyMode ? 0 : undefined}
                 minWidth={0}
                 overflow="hidden"
-                opacity={iconOnlyMode ? 0 : selectVisible ? 1 : 0}
+                opacity={iconOnlyMode ? 0 : 1}
                 pointerEvents={iconOnlyMode ? 'none' : 'auto'}
                 transition="opacity 0.15s ease-out, flex-grow 0.2s ease-out, width 0.2s ease-out"
                 display={iconOnlyMode ? 'none' : 'block'}
@@ -173,10 +143,9 @@ const SidebarV2Header = ({
                     >
                         <PanelsTopLeft
                             color={String(tokens.header.toggleButton.iconColor)}
-                            size={
-                                tokens.header.toggleButton
-                                    .width as unknown as number
-                            }
+                            size={parseUnitValue(
+                                tokens.header.toggleButton.width
+                            )}
                             aria-hidden="true"
                         />
                         <VisuallyHidden>

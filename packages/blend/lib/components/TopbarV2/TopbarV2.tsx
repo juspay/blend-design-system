@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState } from 'react'
+import { forwardRef, useState } from 'react'
 import { ArrowLeft, ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
@@ -22,6 +22,10 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
             isExpanded,
             isVisible: controlledIsVisible,
             onVisibilityChange,
+            onToggleExpansion,
+            showToggleButton,
+            panelOnlyMode,
+            ariaControls,
             defaultIsVisible = true,
             sidebarTopSlot,
             topbar,
@@ -38,9 +42,13 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
         const [internalVisible] = useState<boolean>(defaultIsVisible)
         const isVisible = isControlled ? controlledIsVisible! : internalVisible
 
-        // Keep signature parity: if parent passes controlled props, they can also
-        // respond to changes triggered by consumer UI in future.
-        useMemo(() => onVisibilityChange, [onVisibilityChange])
+        // Preserve signature parity: these props are accepted for future
+        // controlled-visibility UI but not yet wired to any internal trigger.
+        void onVisibilityChange
+        void onToggleExpansion
+        void showToggleButton
+        void panelOnlyMode
+        void ariaControls
 
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < BREAKPOINTS.lg

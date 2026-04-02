@@ -230,7 +230,7 @@ const SidebarDemo = () => {
         | 'popoverV2'
         | 'codeEditorV2'
         | 'breadcrumbV2'
-    >('codeEditorV2')
+    >('buttons')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -1552,7 +1552,7 @@ const SidebarDemo = () => {
               }
 
     return (
-        <div className="w-screen h-screen">
+        <div className="w-full h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     onSidebarStateChange={(state) => setSidebarState(state)}

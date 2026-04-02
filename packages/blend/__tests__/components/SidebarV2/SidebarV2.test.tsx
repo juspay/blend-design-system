@@ -480,11 +480,15 @@ describe('SidebarV2 Scroll Behavior', () => {
         )
         expect(directoryContainer).toBeInTheDocument()
 
-        // Wait for scroll effect to be set up
+        // Verify the scroll listener is set up by checking the container exists
+        // and is in the document after the effect runs
         await waitFor(
             () => {
-                // The scroll effect should be set up
-                expect(true).toBe(true)
+                expect(directoryContainer).toBeInTheDocument()
+                // The directory container should exist and be ready for scroll events
+                expect(
+                    directoryContainer?.getAttribute('data-directory-container')
+                ).toBeDefined()
             },
             { timeout: 100 }
         )
@@ -500,10 +504,14 @@ describe('SidebarV2 Scroll Behavior', () => {
         // Trigger resize event
         window.dispatchEvent(new Event('resize'))
 
-        // Wait for the resize handler
+        // Wait for the resize handler and verify component is still rendered
         await waitFor(
             () => {
-                expect(true).toBe(true)
+                const sidebar = document.querySelector(
+                    '[data-sidebar="sidebar"]'
+                )
+                expect(sidebar).toBeInTheDocument()
+                expect(screen.getByRole('main')).toBeInTheDocument()
             },
             { timeout: 100 }
         )
@@ -536,7 +544,7 @@ describe('SidebarV2 Controlled Mode on Mobile', () => {
         })
     })
 
-    it('collapses sidebar when switching to mobile in controlled mode', () => {
+    it('collapses sidebar when switching to mobile in controlled mode', async () => {
         const onExpandedChange = vi.fn()
 
         render(
@@ -550,6 +558,8 @@ describe('SidebarV2 Controlled Mode on Mobile', () => {
         )
 
         // In controlled mode on mobile, should call onExpandedChange with false
-        expect(true).toBe(true)
+        await waitFor(() => {
+            expect(onExpandedChange).toHaveBeenCalledWith(false)
+        })
     })
 })

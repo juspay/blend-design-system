@@ -132,6 +132,10 @@ import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import {
+    SingleSelectV2,
+    SingleSelectV2Variant,
+} from '../../../../packages/blend/lib/components/SingleSelectV2'
 
 const SidebarV2Demo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -1457,7 +1461,7 @@ const SidebarV2Demo = () => {
               }
 
     return (
-        <div className="w-screen h-screen">
+        <div className="w-full h-screen">
             <ThemeProvider {...themeProps}>
                 <SidebarV2
                     enableTopbarAutoHide={true}
@@ -1599,9 +1603,9 @@ const SidebarV2Demo = () => {
                         onSelect: (value) => setActiveMerchant(value),
                     }}
                     sidebarTopSlot={
-                        <SingleSelect
+                        <SingleSelectV2
                             placeholder="Select Merchant"
-                            variant={SelectMenuVariant.NO_CONTAINER}
+                            variant={SingleSelectV2Variant.NO_CONTAINER}
                             items={[
                                 {
                                     items: merchants,

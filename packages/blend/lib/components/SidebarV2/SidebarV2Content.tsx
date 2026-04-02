@@ -93,7 +93,6 @@ const SidebarV2Content = ({
             flexShrink={0}
             overflow="hidden"
             transition="width 0.25s ease-in-out"
-            style={{ willChange: 'width' }}
         >
             <SidebarV2Header
                 sidebarTopSlot={sidebarTopSlot}

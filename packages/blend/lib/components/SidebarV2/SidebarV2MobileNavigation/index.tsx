@@ -328,7 +328,11 @@ const SidebarV2MobileNavigation = forwardRef<
                                     <MobileNavigationItem
                                         key={`${item.label}-secondary-${rowIndex}-${index}`}
                                         item={item}
-                                        index={index + rowIndex * row.length}
+                                        index={
+                                            PRIMARY_VISIBLE_LIMIT +
+                                            rowIndex * PRIMARY_VISIBLE_LIMIT +
+                                            index
+                                        }
                                         tokens={tokens}
                                         onSelect={(selectedItem) =>
                                             handleItemSelect(selectedItem, true)
