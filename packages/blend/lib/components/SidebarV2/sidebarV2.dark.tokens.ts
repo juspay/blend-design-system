@@ -191,7 +191,7 @@ export const getSidebarV2DarkTokens = (
                 borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
             },
             primarySidebar: {
-                width: '270px',
+                width: '250px',
             },
             secondarySidebar: {
                 width: '52px',
