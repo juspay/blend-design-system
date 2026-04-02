@@ -40,10 +40,7 @@ const TableBody = ({ data }: { data: TableCell[][] }) => {
     return (
         <tbody className="bg-background divide-y divide-code-border">
             {data.map((row, rowIndex) => (
-                <tr
-                    key={rowIndex}
-                    className="hover:bg-muted"
-                >
+                <tr key={rowIndex} className="hover:bg-muted">
                     {row.map((cell, cellIndex) => {
                         const hasTooltip = cell.hintText !== undefined
                         const isEmpty =

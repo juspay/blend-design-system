@@ -49,55 +49,55 @@ export default function BlogPostWithTOC({
         <div className="mx-auto flex min-h-screen items-start">
             {/* Main content */}
             <div>
-                <PageBreadcrumb items={breadcrumbItems} className='px-8' />
+                <PageBreadcrumb items={breadcrumbItems} className="px-8" />
                 <article className="flex flex-1 flex-col px-8 pb-20 pt-8">
-                {/* Cover */}
-                <div className="relative mb-8 h-52 w-full overflow-hidden">
-                    {post.coverImage ? (
-                        <Image
-                            src={post.coverImage}
-                            alt={post.title}
-                            fill
-                            className="object-cover"
-                            priority
-                        />
-                    ) : (
-                        <div
-                            className="absolute inset-0"
-                            style={{ background: coverGradient }}
-                        />
-                    )}
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-col gap-8">
-                    <div className="w-full min-w-0">{children}</div>
-
-                    {/* Back link */}
-                    <div className="flex items-center justify-center py-6">
-                        <Link
-                            href="/blog"
-                            className="flex items-center gap-2 text-base text-muted-foreground transition-colors hover:text-foreground"
-                        >
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                            >
-                                <path
-                                    d="M10 13L5 8l5-5"
-                                    stroke="currentColor"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                            Done, go back
-                        </Link>
+                    {/* Cover */}
+                    <div className="relative mb-8 h-52 w-full overflow-hidden">
+                        {post.coverImage ? (
+                            <Image
+                                src={post.coverImage}
+                                alt={post.title}
+                                fill
+                                className="object-cover"
+                                priority
+                            />
+                        ) : (
+                            <div
+                                className="absolute inset-0"
+                                style={{ background: coverGradient }}
+                            />
+                        )}
                     </div>
-                </div>
-            </article>
+
+                    {/* Content */}
+                    <div className="flex flex-col gap-8">
+                        <div className="w-full min-w-0">{children}</div>
+
+                        {/* Back link */}
+                        <div className="flex items-center justify-center py-6">
+                            <Link
+                                href="/blog"
+                                className="flex items-center gap-2 text-base text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                >
+                                    <path
+                                        d="M10 13L5 8l5-5"
+                                        stroke="currentColor"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                                Done, go back
+                            </Link>
+                        </div>
+                    </div>
+                </article>
             </div>
 
             {/* Sidebar */}

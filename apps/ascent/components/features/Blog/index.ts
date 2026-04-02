@@ -3,9 +3,7 @@ export { BlogHeader } from './BlogHeader'
 export { BlogPostCard } from './BlogPostCard'
 export { BlogPostGrid } from './BlogPostGrid'
 export { FeaturedPosts } from './FeaturedPosts'
-export {
-    default as BlogTableOfContentsDefault,
-} from './BlogTableOfContents'
+export { default as BlogTableOfContentsDefault } from './BlogTableOfContents'
 export { default as BlogPostWithTOC } from './BlogPostWithTOC'
 
 // Type exports

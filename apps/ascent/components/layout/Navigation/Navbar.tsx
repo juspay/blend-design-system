@@ -98,7 +98,11 @@ export default function Navbar() {
                     <button
                         onClick={toggleTheme}
                         className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                        aria-label={
+                            isDark
+                                ? 'Switch to light mode'
+                                : 'Switch to dark mode'
+                        }
                     >
                         {isDark ? (
                             <SunIcon className="w-4 h-4" />

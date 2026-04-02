@@ -1,4 +1,4 @@
-import { cn } from '@/lib';
+import { cn } from '@/lib'
 import { Undo2 } from 'lucide-react'
 
 export const PageBreadcrumb = ({

@@ -17,7 +17,7 @@ export default function BlogPage() {
                     className="mx-auto flex w-full flex-col"
                     style={{ height: 'calc(100vh - 131px)' }}
                 >
-                    <div className='relative'>
+                    <div className="relative">
                         <BlogHeader />
                         <div className="pointer-events-none absolute bottom-0 left-1/2 w-screen -translate-x-1/2 border-b border-border" />
                     </div>
