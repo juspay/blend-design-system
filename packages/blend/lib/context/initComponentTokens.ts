@@ -65,6 +65,7 @@ import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 import { getSidebarV2Tokens } from '../components/SidebarV2/sidebarV2.tokens'
+import { getTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
 import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 import { getCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
@@ -220,6 +221,8 @@ const initTokens = (
         SIDEBARV2:
             componentTokens.SIDEBARV2 ??
             getSidebarV2Tokens(foundationTokens, theme),
+        TABSV2:
+            componentTokens.TABSV2 ?? getTabsV2Tokens(foundationTokens, theme),
         CODEEDITORV2:
             componentTokens.CODEEDITORV2 ??
             getCodeEditorV2Tokens(foundationTokens, theme),

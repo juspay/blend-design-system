@@ -62,6 +62,7 @@ import { ResponsiveStatCardV2Tokens } from '../components/StatCardV2/statcardV2.
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 import { ResponsiveSidebarV2Tokens } from '../components/SidebarV2/sidebarV2.tokens'
+import { ResponsiveTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
 
@@ -131,7 +132,7 @@ export const useComponentToken = (
     | ResponsiveStatCardV2Tokens
     | ResponsiveRadioV2Tokens
     | ResponsivePopoverV2Tokens
-    | ResponsiveTextInputV2Tokens
+    | ResponsiveTabsV2Tokens
     | ResponsiveSidebarV2Tokens
     | ResponsiveBreadcrumbV2Tokens
     | ResponsiveCodeEditorV2Tokens => {
@@ -267,6 +268,8 @@ export const useComponentToken = (
             return componentTokens.RADIOV2
         case 'SIDEBARV2':
             return componentTokens.SIDEBARV2
+        case 'TABSV2':
+            return componentTokens.TABSV2
         case 'BREADCRUMBV2':
             return componentTokens.BREADCRUMBV2
         case 'CODEEDITORV2':
