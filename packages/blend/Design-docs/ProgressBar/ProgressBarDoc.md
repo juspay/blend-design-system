@@ -112,7 +112,6 @@ export type ProgressBarV2TokenType = {
         stroke: { [key in ProgressBarV2Appearance]: CSSObject['stroke'] }
         background: { [key in ProgressBarV2Appearance]: CSSObject['stroke'] }
         dashArray: { [key in ProgressBarV2Appearance]: string }
-        dashOffset: { [key in ProgressBarV2Appearance]: string }
     }
     label: {
         fontSize: CSSObject['fontSize']

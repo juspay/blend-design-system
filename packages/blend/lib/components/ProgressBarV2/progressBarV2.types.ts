@@ -1,5 +1,5 @@
-import { HTMLAttributes } from 'react'
-import { ProgressBarV2TokenType } from './progressBarV2.tokens'
+import type { HTMLAttributes } from 'react'
+import type { ProgressBarV2TokenType } from './progressBarV2.tokens'
 
 export enum ProgressBarV2Size {
     SM = 'sm',
