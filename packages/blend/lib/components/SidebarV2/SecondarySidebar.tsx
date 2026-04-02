@@ -68,6 +68,7 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
                     >
                         <PrimitiveButton
                             {...buttonProps}
+                            type="button"
                             cursor="pointer"
                             display="flex"
                             alignItems="center"

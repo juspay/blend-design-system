@@ -144,7 +144,8 @@ const initTokens = (
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
         TOPBARV2:
-            componentTokens.TOPBARV2 ?? getTopbarV2Tokens(foundationTokens),
+            componentTokens.TOPBARV2 ??
+            getTopbarV2Tokens(foundationTokens, theme),
         AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
         AVATAR_GROUP:
             componentTokens.AVATAR_GROUP ??
