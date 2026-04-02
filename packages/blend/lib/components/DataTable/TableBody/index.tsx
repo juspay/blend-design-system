@@ -34,11 +34,19 @@ const TableRow = styled.tr<{
     $isClickable?: boolean
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
+    $isSticky?: boolean
+    $headerHeight?: string
 }>`
     border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
     background-color: ${FOUNDATION_THEME.colors.gray[0]};
 
-    ${({ $customBackgroundColor, $isClickable, $hasCustomBackground }) => css`
+    ${({
+        $customBackgroundColor,
+        $isClickable,
+        $hasCustomBackground,
+        $isSticky,
+        $headerHeight,
+    }) => css`
         ${$customBackgroundColor &&
         css`
             background-color: ${$customBackgroundColor} !important;
@@ -47,6 +55,13 @@ const TableRow = styled.tr<{
         ${$isClickable &&
         css`
             cursor: pointer;
+        `}
+
+        ${$isSticky &&
+        css`
+            position: sticky;
+            top: ${$headerHeight || '46px'};
+            z-index: 15;
         `}
     
     ${!$hasCustomBackground &&
@@ -108,6 +123,14 @@ const StyledTableCell = styled.td<{
 const ExpandedCell = styled.td`
     padding: ${FOUNDATION_THEME.unit[16]};
     background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
+`
+
+const ExpandedRow = styled(TableRow)`
+    background-color: ${FOUNDATION_THEME.colors.gray[50]};
+
+    td {
+        background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
+    }
 `
 
 const ExpandButton = styled.button`
@@ -665,6 +688,8 @@ const TableBody = forwardRef<
                                           rowStyling.backgroundColor
                                       }
                                       $hasCustomBackground={hasCustomBackground}
+                                      $isSticky={isExpanded}
+                                      $headerHeight="55px"
                                       role="row"
                                       aria-rowindex={index + 1}
                                       aria-selected={
@@ -1440,7 +1465,7 @@ const TableBody = forwardRef<
                                       isExpanded &&
                                       renderExpandedRow &&
                                       canExpand && (
-                                          <TableRow
+                                          <ExpandedRow
                                               key={`${rowKey}-expanded`}
                                               $isClickable={false}
                                           >
@@ -1455,7 +1480,7 @@ const TableBody = forwardRef<
                                                           ),
                                                   })}
                                               </ExpandedCell>
-                                          </TableRow>
+                                          </ExpandedRow>
                                       )}
                               </React.Fragment>
                           )

@@ -1078,10 +1078,14 @@ const DataTable = forwardRef(
 
         const handleRowExpand = (rowId: unknown) => {
             const rowIdStr = String(rowId)
-            const newExpandedRows = {
-                ...expandedRows,
-                [rowIdStr]: !expandedRows[rowIdStr],
+            const isCurrentlyExpanded = expandedRows[rowIdStr]
+
+            const newExpandedRows: Record<string, boolean> = {}
+
+            if (!isCurrentlyExpanded) {
+                newExpandedRows[rowIdStr] = true
             }
+
             setExpandedRows(newExpandedRows)
 
             if (onRowExpansionChange) {
@@ -1089,11 +1093,7 @@ const DataTable = forwardRef(
                     (row) => row[idField] === rowId
                 )
                 if (rowData) {
-                    onRowExpansionChange(
-                        rowId,
-                        !expandedRows[rowIdStr],
-                        rowData
-                    )
+                    onRowExpansionChange(rowId, !isCurrentlyExpanded, rowData)
                 }
             }
         }
