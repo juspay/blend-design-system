@@ -123,6 +123,7 @@ export const useComponentToken = (
     | ResponsiveMultiSelectV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
+    | ResponsiveTextInputV2Tokens
     | ResponsiveTimelineTokens
     | ResponsiveCheckboxV2Tokens
     | ResponsiveKeyValuePairV2Tokens
