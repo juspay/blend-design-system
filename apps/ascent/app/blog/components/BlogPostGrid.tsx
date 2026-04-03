@@ -1,10 +1,6 @@
-import { BlogPost } from '@/blog/utils/getBlogPosts'
-import { BlogPostCard } from '@/components/features/Blog/BlogPostCard'
+import { BlogPostCard } from './BlogPostCard'
 import { cn } from '@/lib/utils/cn'
-
-interface BlogPostGridProps {
-    posts: BlogPost[]
-}
+import { BlogPostGridProps } from '../types'
 
 const COLS = 4
 

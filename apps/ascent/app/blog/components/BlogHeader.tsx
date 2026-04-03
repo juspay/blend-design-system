@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export function BlogHeader() {
     return (
-        <div className="flex h-67 items-stretch relative">
+        <div className="flex h-70 items-stretch relative">
             {/* Left: Title panel */}
             <div className="flex flex-1 flex-col justify-center gap-4 border-r border-border px-12">
                 <h1 className="font-manrope text-[86px] font-medium leading-[1.1] tracking-[-3.44px] text-blog-ink text-primary">

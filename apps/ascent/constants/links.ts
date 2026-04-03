@@ -32,6 +32,12 @@ export const ROUTES = {
 export const HEADER_NAV_LINKS = [
     { label: 'Docs', href: ROUTES.docs, external: false },
     { label: 'Blogs', href: ROUTES.blog, external: false, active: true },
+    {
+        label: 'Changelog',
+        href: ROUTES.changelog,
+        external: false,
+        active: true,
+    },
     { label: 'Storybook', href: EXTERNAL_LINKS.storybook, external: true },
 ] as const
 

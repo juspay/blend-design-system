@@ -2,14 +2,11 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
-import {
-    getBlogPost,
-    getAllBlogPosts,
-    BlogPost,
-} from '@/blog/utils/getBlogPosts'
-import { extractHeadings } from '@/docs/utils'
-import { BlogPostWithTOC } from '@/components/features/Blog'
+import { BlogPost } from '../types/types'
 import { useMDXComponents } from '@/mdx-components'
+import { extractHeadings } from '@/app/docs/utils'
+import { BlogPage } from '../components'
+import { getAllBlogPosts, getBlogPost } from '../utils/getBlogPosts'
 
 interface PageProps {
     params: Promise<{
@@ -83,8 +80,8 @@ export default async function BlogPostPage({ params }: PageProps) {
     const headings = extractHeadings(post.content).filter((h) => h.level <= 2)
 
     return (
-        <BlogPostWithTOC post={post} headings={headings}>
+        <BlogPage post={post} headings={headings}>
             {content}
-        </BlogPostWithTOC>
+        </BlogPage>
     )
 }

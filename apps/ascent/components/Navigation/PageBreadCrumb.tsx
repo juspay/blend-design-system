@@ -4,17 +4,20 @@ import { Undo2 } from 'lucide-react'
 export const PageBreadcrumb = ({
     items,
     className,
+    style,
 }: {
     items: Array<{ label: string; href: string }>
     className?: string
+    style?: React.CSSProperties
 }) => {
     return (
         <nav
             className={cn(
-                'px-5 py-2.5 border-b border-border bg-surface w-full',
+                'px-5 py-2.5 border-b border-border bg-surface w-full max-h-10 z-99',
                 className
             )}
             aria-label="Breadcrumb"
+            style={style}
         >
             <ol className="flex items-center text-sm">
                 {items.map((item, index) => (

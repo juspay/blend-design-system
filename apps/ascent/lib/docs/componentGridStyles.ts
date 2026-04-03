@@ -5,7 +5,6 @@
 
 import {
     SHARED_ROUTES,
-    SHARED_METADATA_DEFAULTS,
     SHARED_CONTENT_PATHS,
     SHARED_CONFIG_PATTERNS,
 } from '@/lib/config'
@@ -28,14 +27,6 @@ export const DOCS_CONFIG = {
         'Here you can find all the components available in the library. We are working on adding more components.',
 } as const
 
-// SEO metadata using shared defaults
-export const DOCS_METADATA = {
-    title: 'Blend Design System Documentation',
-    description:
-        'Complete documentation for the Blend Design System components and utilities',
-    ...SHARED_METADATA_DEFAULTS,
-} as const
-
 // Component card styling
 export const COMPONENT_CARD_STYLES = {
     container:
@@ -43,7 +34,7 @@ export const COMPONENT_CARD_STYLES = {
     content: 'flex items-start gap-4',
     iconContainer:
         'flex-shrink-0 w-10 h-10 rounded-lg bg-[var(--muted)] flex items-center justify-center',
-    iconColor: 'text-[var(--muted-foreground)]',
+    iconColor: 'text-[var(--foreground)]',
     textContainer: 'flex-1 min-w-0',
     title: 'text-lg font-medium text-[var(--foreground)] mb-2',
     description: 'text-[var(--muted-foreground)] text-sm leading-relaxed',
@@ -53,21 +44,8 @@ export const COMPONENT_CARD_STYLES = {
 
 // Page layout classes
 export const PAGE_LAYOUT = {
-    wrapper: 'w-full flex-1 flex',
-    content: 'flex-1 gap-2',
-    article: 'prose py-10 max-w-[80ch] mx-auto overflow-x-hidden px-4 md:px-2',
-    title: 'scroll-m-20 text-4xl font-semibold tracking-tight sm:text-3xl xl:text-4xl text-[var(--primary)] mb-2',
-    subtitle: 'mt-2 text-[var(--muted-foreground)] mb-8',
     grid: 'grid grid-cols-1 lg:grid-cols-2 gap-4 not-prose',
-    toc: ' max-w-[240px] w-full',
-    tocSticky: 'sticky top-4',
 } as const
 
 // Arrow icon SVG path
 export const ARROW_ICON_PATH = 'm9 18 6-6-6-6'
-
-// Routes
-export const DOCS_ROUTES = {
-    HOME: '/docs',
-    COMPONENTS: '/docs/components',
-} as const

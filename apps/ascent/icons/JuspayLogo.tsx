@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface JuspayLogoProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const JuspayLogo: React.FC<JuspayLogoProps> = ({
+export const JuspayLogo: React.FC<IconProps> = ({
     width = 24,
     height = 25,
     className = '',

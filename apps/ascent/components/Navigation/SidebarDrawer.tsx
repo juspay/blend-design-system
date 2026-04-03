@@ -1,7 +1,7 @@
 'use client'
 import { Drawer } from 'vaul'
 import { DocItem } from '@/docs/utils'
-import Sidebar from './Sidebar'
+import Sidebar from '../../app/docs/components/Sidebar'
 
 interface SidebarDrawerProps {
     items: DocItem[]
@@ -33,7 +33,7 @@ const SidebarDrawer = ({ items, baseRoute = '/docs' }: SidebarDrawerProps) => {
             <Drawer.Portal>
                 <Drawer.Overlay className="fixed inset-0 bg-black/40" />
                 <Drawer.Content
-                    className="left-2 top-2 bottom-2 fixed z-10 outline-none w-[310px] flex"
+                    className="left-2 top-2 bottom-2 fixed z-10 outline-none w-77 flex"
                     // The gap between the edge of the screen and the drawer is 8px in this case.
                     style={
                         {
@@ -41,7 +41,7 @@ const SidebarDrawer = ({ items, baseRoute = '/docs' }: SidebarDrawerProps) => {
                         } as React.CSSProperties
                     }
                 >
-                    <div className="h-full w-full grow pt-5 flex flex-col rounded-2xl bg-[var(--code-background)]">
+                    <div className="h-full w-full grow pt-5 flex flex-col rounded-2xl bg-code-background">
                         <Drawer.Title className="hidden">
                             <p className="text-2xl font-bold">Blend</p>
                         </Drawer.Title>

@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface StorybookCardProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const StorybookCard: React.FC<StorybookCardProps> = ({
+export const StorybookCard: React.FC<IconProps> = ({
     width = 157,
     height = 176,
     className = '',

@@ -1,9 +1,5 @@
-import { BlogPost } from '@/blog/utils/getBlogPosts'
-import { BlogPostCard } from '@/components/features/Blog/BlogPostCard'
-
-interface FeaturedPostsProps {
-    posts: BlogPost[]
-}
+import { BlogPostCard } from './BlogPostCard'
+import { FeaturedPostsProps } from '../types'
 
 export function FeaturedPosts({ posts }: FeaturedPostsProps) {
     if (posts.length === 0) {
@@ -23,11 +19,11 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="text-[var(--accent)]"
+                        className="text-accent"
                     >
                         <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
                     </svg>
-                    <h2 className="text-2xl font-semibold text-[var(--foreground)]">
+                    <h2 className="text-2xl font-semibold text-foreground">
                         Featured Posts
                     </h2>
                 </div>

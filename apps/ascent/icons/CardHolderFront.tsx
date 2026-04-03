@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface CardHolderFrontProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const CardHolderFront: React.FC<CardHolderFrontProps> = ({
+export const CardHolderFront: React.FC<IconProps> = ({
     width = 438,
     height = 228,
     className = '',

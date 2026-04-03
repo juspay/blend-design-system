@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface DesignerIconProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const DesignerIcon: React.FC<DesignerIconProps> = ({
+export const DesignerIcon: React.FC<IconProps> = ({
     width = 12,
     height = 12,
     className = '',

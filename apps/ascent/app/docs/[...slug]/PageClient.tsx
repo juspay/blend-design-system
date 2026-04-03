@@ -1,6 +1,6 @@
 'use client'
 
-import { TOCItem } from '../../../components/layout/Navigation/TableOfContents'
+import { TOCItem } from '../../../components/Navigation/TableOfContents'
 
 type PageClientProps = {
     headings: TOCItem[]

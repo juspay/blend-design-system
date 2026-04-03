@@ -1,10 +1,6 @@
 import Link from 'next/link'
-import { BlogPost } from '@/blog/utils/getBlogPosts'
-import { sanitizeSlug } from '@/blog/utils'
-
-interface BlogPostCardProps {
-    post: BlogPost
-}
+import { sanitizeSlug } from '@/app/blog/utils/utils'
+import { BlogPostCardProps } from '../types'
 
 export function BlogPostCard({ post }: BlogPostCardProps) {
     const formatDate = (dateString: string) => {

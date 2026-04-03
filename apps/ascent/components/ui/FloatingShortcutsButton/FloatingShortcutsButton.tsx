@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Keyboard, X } from 'lucide-react'
-import { useNavigation } from '../../layout/Navigation/GlobalKeyboardNavigation'
+import { useNavigation } from '../../Navigation/GlobalKeyboardNavigation'
 
 interface ShortcutItem {
     key: string

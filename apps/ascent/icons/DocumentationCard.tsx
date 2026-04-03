@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface DocumentationCardProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const DocumentationCard: React.FC<DocumentationCardProps> = ({
+export const DocumentationCard: React.FC<IconProps> = ({
     width = 146,
     height = 167,
     className = '',

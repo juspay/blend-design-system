@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface FigmaCardProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const FigmaCard: React.FC<FigmaCardProps> = ({
+export const FigmaCard: React.FC<IconProps> = ({
     width = 146,
     height = 167,
     className = '',

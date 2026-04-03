@@ -1,7 +1,7 @@
 import React from 'react'
 import { getAllBlogPosts } from '@/blog/utils/getBlogPosts'
-import { BlogHeader, BlogPostGrid } from '@/components/features/Blog'
-import SharedDocLayout from '@/components/layout/SharedDocLayout'
+import SharedDocLayout from '@/components/layout/SharedLayout'
+import { BlogHeader, BlogPostGrid } from '@/app/blog/components'
 
 export default function BlogPage() {
     const posts = getAllBlogPosts()

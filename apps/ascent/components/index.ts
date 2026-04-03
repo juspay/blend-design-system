@@ -16,14 +16,18 @@ export { default as CodeBlock } from './ui/CodeBlock'
 export { default as Tooltip } from './ui/Tooltip'
 export { default as ThemeToggle } from './ui/ThemeToggle'
 export { default as FloatingShortcutsButton } from './ui/FloatingShortcutsButton'
-export { Sidebar, SidebarDrawer } from './layout/Sidebar'
 export {
     GlobalKeyboardNavigationProvider,
     NavigationZone,
     useNavigation,
     useNavigable,
     TableOfContents,
-} from './layout/Navigation'
+    Sidebar,
+    SidebarDrawer,
+    PageBreadcrumb,
+    Navbar,
+} from './Navigation'
+
 export {
     DocArticle,
     DocsTypeTable,

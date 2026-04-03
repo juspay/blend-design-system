@@ -1,4 +1,4 @@
-import { TOCItem } from '../../../components/layout/Navigation/TableOfContents'
+import { TOCItem } from '@/components/Navigation/TableOfContents'
 
 // Function to generate a slug from text
 function generateSlug(text: string): string {

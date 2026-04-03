@@ -1,6 +1,7 @@
 'use client'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils/cn'
 
 export interface TOCItem {
     id: string
@@ -10,16 +11,26 @@ export interface TOCItem {
 
 interface TableOfContentsProps {
     items: TOCItem[]
+    className?: string
+    maxLevel?: number
 }
 
-export default function TableOfContents({ items }: TableOfContentsProps) {
+export default function TableOfContents({
+    items,
+    className,
+    maxLevel,
+}: TableOfContentsProps) {
     const [activeId, setActiveId] = useState<string>('')
     const router = useRouter()
     const pathname = usePathname()
     const isScrollingRef = useRef(false)
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-    const filteredItems = items
+    const filteredItems = useMemo(
+        () =>
+            maxLevel ? items.filter((item) => item.level <= maxLevel) : items,
+        [items, maxLevel]
+    )
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -92,23 +103,30 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
         }
     }
 
+    if (filteredItems.length === 0) return null
+
     return (
-        <ul className="space-y-4 py-4 relative">
-            <div className="absolute left-[20.5px] top-6 bottom-0 w-0.5 bg-border" />
+        <ul className={cn('space-y-4 relative', className)}>
+            <div className="absolute left-[20.5px] top-5 bottom-0 w-0.5 bg-border" />
 
             {filteredItems.map((item) => (
                 <li key={item.id} className="px-4 relative">
                     <button
+                        type="button"
                         onClick={() => scrollToSection(item.id)}
-                        className={`text-left w-full px-4 text-sm transition-colors font-mono line-clamp-1 cursor-pointer relative ${
+                        aria-current={
+                            activeId === item.id ? 'location' : undefined
+                        }
+                        className={cn(
+                            'text-left w-full px-4 text-sm transition-colors font-mono line-clamp-1 cursor-pointer relative',
                             activeId === item.id
                                 ? 'text-primary'
                                 : 'text-muted-foreground hover:text-foreground'
-                        }`}
+                        )}
                         data-nav-content
                     >
                         {activeId === item.id && (
-                            <span className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-7 rounded-full bg-foreground z-10" />
+                            <span className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-7.5 rounded-full bg-foreground z-10" />
                         )}
                         <span className="pl-3">{item.text}</span>
                     </button>

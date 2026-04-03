@@ -1,5 +1,3 @@
-'use client'
-
 interface CursorIconProps {
     color: string
     filterId: string

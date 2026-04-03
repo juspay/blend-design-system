@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface CodeCardProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const CodeCard: React.FC<CodeCardProps> = ({
+export const CodeCard: React.FC<IconProps> = ({
     width = 146,
     height = 167,
     className = '',

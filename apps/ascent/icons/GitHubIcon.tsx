@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface GitHubIconProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const GitHubIcon: React.FC<GitHubIconProps> = ({
+export const GitHubIcon: React.FC<IconProps> = ({
     width = 20,
     height = 20,
     className = '',

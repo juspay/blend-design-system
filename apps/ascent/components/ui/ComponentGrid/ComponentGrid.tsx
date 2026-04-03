@@ -2,12 +2,12 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { COMPONENT_REGISTRY } from '@/docs/components'
+import { COMPONENT_REGISTRY } from '@/lib/docs/componentRegistry'
 import {
     COMPONENT_CARD_STYLES,
     PAGE_LAYOUT,
     ARROW_ICON_PATH,
-} from '@/docs/config'
+} from '@/lib/docs/componentGridStyles'
 
 const ComponentGrid = () => {
     return (

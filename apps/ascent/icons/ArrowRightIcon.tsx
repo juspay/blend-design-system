@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface ArrowRightIconProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const ArrowRightIcon: React.FC<ArrowRightIconProps> = ({
+export const ArrowRightIcon: React.FC<IconProps> = ({
     width = 14,
     height = 14,
     className = '',

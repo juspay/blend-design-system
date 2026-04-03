@@ -1,4 +1,1 @@
-// Layout Components - Layout-specific components
-export * from './Sidebar'
-export * from './Navigation'
-export { default as SharedDocLayout } from './SharedDocLayout'
+export { default as SharedLayout } from './SharedLayout'

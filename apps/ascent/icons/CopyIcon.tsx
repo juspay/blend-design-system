@@ -1,12 +1,7 @@
 import React from 'react'
+import type { IconProps } from './types'
 
-interface CopyIconProps {
-    width?: number
-    height?: number
-    className?: string
-}
-
-export const CopyIcon: React.FC<CopyIconProps> = ({
+export const CopyIcon: React.FC<IconProps> = ({
     width = 16,
     height = 16,
     className = '',
