@@ -5,3 +5,8 @@ export type {
     BlogPostCardProps,
     BlogPostGridProps,
 } from './blog'
+export type {
+    VersionHeaderProps,
+    ChangelogCardProps,
+    ChangelogEntryProps,
+} from './changelog'

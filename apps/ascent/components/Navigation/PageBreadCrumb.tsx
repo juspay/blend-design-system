@@ -28,20 +28,28 @@ export const PageBreadcrumb = ({
                             </span>
                         )}
 
-                        <a
-                            href={item.href}
-                            className={cn(
-                                'flex items-center gap-x-1.5 hover:text-foreground transition-colors',
-                                index === items.length - 1
-                                    ? 'text-nav-section-text'
-                                    : 'text-nav-section-text-foreground hover:text-foreground'
-                            )}
-                            data-nav-content
-                        >
-                            {index === 0 && <Undo2 className="w-3.5 h-3.5" />}
-
-                            <span>{item.label}</span>
-                        </a>
+                        {index === items.length - 1 ? (
+                            <span
+                                className="flex items-center gap-x-1.5 text-nav-section-text"
+                                data-nav-content
+                            >
+                                {index === 0 && (
+                                    <Undo2 className="w-3.5 h-3.5" />
+                                )}
+                                <span>{item.label}</span>
+                            </span>
+                        ) : (
+                            <a
+                                href={item.href}
+                                className="flex items-center gap-x-1.5 text-nav-section-text-foreground hover:text-foreground transition-colors"
+                                data-nav-content
+                            >
+                                {index === 0 && (
+                                    <Undo2 className="w-3.5 h-3.5" />
+                                )}
+                                <span>{item.label}</span>
+                            </a>
+                        )}
                     </li>
                 ))}
             </ol>

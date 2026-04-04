@@ -618,3 +618,18 @@ code {
         'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Monaco, Consolas,
         monospace;
 }
+
+.changelog-cards > div:first-child {
+    border-top: 1px solid var(--border);
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+article > div.pb-6 + div {
+    border-top: 1px solid var(--border);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+article > div:last-child {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}

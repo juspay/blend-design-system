@@ -6,6 +6,7 @@ import { PageBreadcrumb } from '@/components/Navigation'
 import { formatDate, getCoverGradient } from '@/app/blog/utils'
 import { Undo2 } from 'lucide-react'
 import SidebarTocHeader from './SidebarTocHeader'
+import { AsideStyle } from '../layout'
 
 interface BlogPageProps {
     post: BlogPost
@@ -57,14 +58,6 @@ export default function BlogPostWithTOC({
 
     const { first, second } = splitTitleIntoTwoLines(post.title)
 
-    const asideStyle: CSSProperties = {
-        position: 'sticky',
-        top: 0,
-        alignSelf: 'flex-start',
-        height: '100vh',
-        overflowY: 'auto',
-    }
-
     return (
         <div className="mx-auto flex min-h-screen items-start">
             {/* Main content */}
@@ -72,7 +65,7 @@ export default function BlogPostWithTOC({
                 <PageBreadcrumb
                     items={breadcrumbItems}
                     className="px-8"
-                    style={asideStyle}
+                    style={AsideStyle}
                 />
 
                 <article className="flex flex-1 flex-col pb-8 overflow-x-hidden">

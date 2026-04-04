@@ -10,7 +10,8 @@ import { SharedLayout } from '@/components'
 export default function HomePage() {
     return (
         <SharedLayout baseRoute="/">
-            <main className="w-full lg:border-x border-border relative max-w-5xl mx-auto">
+            <main className="w-full relative">
+                {/* max-w-5xl mx-auto lg:border-x border-border */}
                 <HeroSection />
                 <DescriptionSection />
                 <BrandingDivider />

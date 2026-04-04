@@ -1,11 +1,6 @@
 import DocsTypeTable from '@/components/features/Documentation/DocsTypeTable'
 import Preview from '@/components/features/Documentation/Preview'
-import {
-    VersionHeader,
-    ChangelogCard,
-    ChangelogEntry,
-} from '@/components/changelog/ChangelogComponents'
-import { CommitLink } from '@/components/changelog/CommitLink'
+import { ChangelogEntry } from '@/components/changelog/ChangelogEntry'
 import {
     MDXComponents,
     PreviewComponents,
@@ -24,6 +19,7 @@ import {
 import { Search } from 'lucide-react'
 import HomeDataList from './app/changelog/components/ui/HomeDataList'
 import { ComponentGrid } from '@/components/ui/ComponentGrid'
+import { ChangelogCard, VersionHeader } from './components/changelog'
 
 const components = {
     // Core MDX components (headings, paragraphs, links, etc.)
@@ -39,12 +35,10 @@ const components = {
     DocsTypeTable,
     Preview,
     ComponentGrid,
-
     // Changelog components
     VersionHeader,
     ChangelogCard,
     ChangelogEntry,
-    CommitLink,
     GradientBorderWrapper,
     GradientBorderComponent: GradientBorderWrapper, // Alias for backward compatibility
     DateBadge,

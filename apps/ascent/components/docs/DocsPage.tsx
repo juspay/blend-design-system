@@ -3,18 +3,12 @@ import { PageBreadcrumb } from '@/components/Navigation/index'
 import { OctagonAlert } from 'lucide-react'
 import { DocsPageProps } from '@/lib/types'
 import { GithubRoundedIcon, StoryBookIcon } from '@/icons'
+import { AsideStyle } from '../layout'
 
 function DocsPage({ metadata, content, breadcrumbItems }: DocsPageProps) {
-    const asideStyle: CSSProperties = {
-        position: 'sticky',
-        top: 0,
-        alignSelf: 'flex-start',
-        height: '100vh',
-        overflowY: 'auto',
-    }
     return (
         <div className="flex flex-col mx-auto border-x border-border">
-            <PageBreadcrumb items={breadcrumbItems} style={asideStyle} />
+            <PageBreadcrumb items={breadcrumbItems} style={AsideStyle} />
             <div className="flex-1 gap-2">
                 <article className="prose overflow-x-hidden">
                     <div className="py-11 px-6 border-b border-border">
