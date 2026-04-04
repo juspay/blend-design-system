@@ -3,6 +3,7 @@
 import { motion } from 'motion/react'
 import { useRef } from 'react'
 import CursorIcon from '../../../icons/CursorIcon'
+import { cn } from '@/lib'
 
 export interface CollaborativeCursorProps {
     name: string
@@ -114,7 +115,11 @@ export default function CollaborativeCursor({
                     />
                     {name && (
                         <div
-                            className={`absolute top-4 left-8 -translate-x-1/2 ${colors.bg} ${colors.text} px-2 py-1 rounded text-xs font-medium whitespace-nowrap shadow-sm border border-gray-50`}
+                            className={cn(
+                                'absolute top-4 left-8 -translate-x-1/2 px-2 py-1 rounded text-xs font-medium whitespace-nowrap shadow-sm border border-gray-50',
+                                colors.bg,
+                                colors.text
+                            )}
                         >
                             {name}
                         </div>
@@ -160,17 +165,24 @@ export default function CollaborativeCursor({
                 />
                 {comment ? (
                     <div
-                        className={`absolute -right-4 top-0 ${colors.bg} ${colors.text} px-4 py-2 rounded-b-2xl rounded-tr-2xl text-xs font-medium whitespace-nowrap shadow-md relative`}
+                        className={cn(
+                            'absolute top-4 left-8 -translate-x-1/2 px-2 py-1 rounded text-xs font-medium whitespace-nowrap shadow-sm border border-gray-50',
+                            colors.bg,
+                            colors.text
+                        )}
                     >
                         {comment}
                     </div>
                 ) : name ? (
                     <div
-                        className={`absolute top-4 ${
+                        className={cn(
+                            'absolute top-4 px-2 py-1 rounded text-xs font-medium whitespace-nowrap shadow-sm border border-gray-50',
                             name === 'Vimal'
                                 ? '-left-11'
-                                : 'left-8 -translate-x-1/2'
-                        } ${colors.bg} ${colors.text} px-2 py-1 rounded text-xs font-medium whitespace-nowrap shadow-sm border border-gray-50`}
+                                : 'left-8 -translate-x-1/2',
+                            colors.bg,
+                            colors.text
+                        )}
                     >
                         {name}
                     </div>

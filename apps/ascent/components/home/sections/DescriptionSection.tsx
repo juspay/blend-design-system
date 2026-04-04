@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { Ellipse } from '../../../icons/ellipse'
 import { ROUTES } from '@/lib/constants'
 import { cn } from '@/lib'
 import Circles from './Circles'
@@ -23,10 +22,10 @@ export default function DescriptionSection() {
                 </div>
 
                 <div className="relative p-6 lg:p-10 lg:border-l border-border">
-                    <BlueDot className="-top-[3px] -left-[3px] hidden lg:block" />
-                    <BlueDot className="-top-[3px] -right-[3px] hidden lg:block" />
-                    <BlueDot className="-bottom-[3px] -left-[3px] hidden lg:block" />
-                    <BlueDot className="-bottom-[3px] -right-[3px] hidden lg:block" />
+                    <BlueDot className="-top-0.75 -left-0.75 hidden lg:block" />
+                    <BlueDot className="-top-0.75 -right-0.75 hidden lg:block" />
+                    <BlueDot className="-bottom-0.75 -left-0.75 hidden lg:block" />
+                    <BlueDot className="-bottom-0.75 -right-0.75 hidden lg:block" />
                     <div className="space-y-8">
                         <p className="text-[15px] text-foreground leading-relaxed">
                             Some products are consumer-facing. Some are merchant

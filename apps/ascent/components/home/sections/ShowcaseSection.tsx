@@ -115,10 +115,7 @@ export default function ShowcaseSection() {
             <div className="h-87.5 sm:h-105 lg:h-111.25 relative overflow-hidden">
                 <div className="absolute bottom-0 left-0 right-0 flex justify-center">
                     <div className="origin-bottom scale-[0.65] sm:scale-[0.6] md:scale-[0.8] lg:scale-100 transition-transform">
-                        <div
-                            className="relative"
-                            style={{ height: 420, width: 600 }}
-                        >
+                        <div className="relative h-105 w-150">
                             <div
                                 ref={holderBackRef}
                                 className="absolute -bottom-22.5 left-1/2 -translate-x-1/2 z-0 pointer-events-none"
@@ -152,7 +149,7 @@ export default function ShowcaseSection() {
                                                 />
                                             </Link>
                                         ) : (
-                                            <a
+                                            <Link
                                                 href={card.href}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
@@ -162,7 +159,7 @@ export default function ShowcaseSection() {
                                                     width={CARD_W}
                                                     height={CARD_H}
                                                 />
-                                            </a>
+                                            </Link>
                                         )}
                                     </div>
                                 )

@@ -15,7 +15,7 @@ export default function CopyButton({ text }: { text: string }) {
     return (
         <button
             onClick={handleCopy}
-            className="p-1.5 hover:bg-gray-100 rounded transition-colors text-gray-400 hover:text-gray-600"
+            className="p-1.5 hover:bg-secondary rounded transition-colors text-muted-foreground"
         >
             {copied ? (
                 <Check size={14} className="text-red-600" />
