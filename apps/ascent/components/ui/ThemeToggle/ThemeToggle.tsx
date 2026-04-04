@@ -4,7 +4,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 export default function ThemeToggle() {
-    const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+    const [theme, setTheme] = useState<'light' | 'dark'>('light')
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export default function ThemeToggle() {
 
     if (!mounted) {
         return (
-            <button className="p-2 rounded-md border border-[var(--border)] bg-[var(--background)] opacity-50">
+            <button className="p-2 border border-border text-muted-foreground">
                 <Sun size={16} />
             </button>
         )
@@ -62,14 +62,10 @@ export default function ThemeToggle() {
         <button
             onClick={toggleTheme}
             onKeyDown={handleKeyDown}
-            className="p-2 rounded-md border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--sidebar-item-hover)] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2"
+            className="p-2 border border-border text-muted-foreground hover:text-foreground transition-colors"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
-            {theme === 'light' ? (
-                <Sun size={16} className="text-[var(--muted-foreground)]" />
-            ) : (
-                <Moon size={16} className="text-[var(--muted-foreground)]" />
-            )}
+            {theme === 'light' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
     )
 }

@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react'
 import { PageBreadcrumb } from '@/components/Navigation/index'
 import { OctagonAlert } from 'lucide-react'
-import { DocsPageProps } from '@/app/docs/types'
+import { DocsPageProps } from '@/lib/types'
 import { GithubRoundedIcon, StoryBookIcon } from '@/icons'
 
 function DocsPage({ metadata, content, breadcrumbItems }: DocsPageProps) {

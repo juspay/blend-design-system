@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
-import { BlogPost, BlogPostWithContent } from '../types'
+import { BlogPost, BlogPostWithContent } from '@/lib/types'
 
 const BLOG_CONTENT_DIR = path.join(process.cwd(), 'app/blog/content')
 const BLOG_CONFIG_PATH = path.join(BLOG_CONTENT_DIR, 'config.json')

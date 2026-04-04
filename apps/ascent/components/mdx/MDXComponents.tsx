@@ -94,7 +94,7 @@ export const MDXComponents = {
     },
     p: (props: ParagraphProps) => (
         <p
-            className="pt-2 leading-9 tracking-[-0.32px] text-justify  text-foreground"
+            className="pt-2 leading-9 tracking-[-0.32px] text-justify text-foreground"
             {...props}
         />
     ),
@@ -187,5 +187,9 @@ export const MDXComponents = {
             className="ml-[0.075em] text-secondary-foreground"
             {...props}
         />
+    ),
+
+    hr: (props: ComponentPropsWithoutRef<'hr'>) => (
+        <hr className="my-6 border-t border-code-border" {...props} />
     ),
 }

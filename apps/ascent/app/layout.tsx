@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Manrope } from 'next/font/google'
 import { METADATA_CONFIG } from '@/lib/config'
 import { GoogleAnalytics } from '@/components/googleAnalytics/GoogleAnalytics'
 import './globals.css'
+import { ThemeScript } from '@/components/ui/ThemeToggle/ThemeScript'
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 
@@ -48,6 +49,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
+                <ThemeScript />
                 <meta
                     name="viewport"
                     content="width=device-width, initial-scale=1"

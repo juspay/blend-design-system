@@ -6,9 +6,6 @@
 // Configuration exports
 export * from './config'
 
-// Style exports
-export * from './styles'
-
 // Type exports
 export * from './types'
 

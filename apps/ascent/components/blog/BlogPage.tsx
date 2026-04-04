@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { CSSProperties, ReactNode } from 'react'
-import { BlogPost } from '@/app/blog/types'
+import { BlogPost } from '@/lib/types'
 import { PageBreadcrumb } from '@/components/Navigation'
 import { formatDate, getCoverGradient } from '@/app/blog/utils'
 import { Undo2 } from 'lucide-react'
@@ -75,7 +75,7 @@ export default function BlogPostWithTOC({
                     style={asideStyle}
                 />
 
-                <article className="flex flex-1 flex-col pb-8">
+                <article className="flex flex-1 flex-col pb-8 overflow-x-hidden">
                     <div
                         id="sidebar-meta"
                         className="pt-3 pb-6.25 border-b border-border"

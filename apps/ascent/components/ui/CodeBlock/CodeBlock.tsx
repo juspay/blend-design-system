@@ -91,7 +91,7 @@ const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {
                 <code
                     dangerouslySetInnerHTML={{ __html: codeHTML }}
                     {...props}
-                    className="block whitespace-pre-wrap break-words flex-1 leading-6"
+                    className="block whitespace-pre-wrap wrap-break-words flex-1 leading-6"
                 />
             </div>
         </div>

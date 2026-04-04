@@ -3,6 +3,7 @@
 import { Info } from 'lucide-react'
 import React from 'react'
 import Tooltip from '@/components/ui/Tooltip/Tooltip'
+import { cn } from '@/lib'
 
 type TableCell = {
     content: string | React.ReactNode
@@ -21,12 +22,12 @@ const TableHeader = () => {
     const columns = ['Prop Name', 'Type', 'Enum']
 
     return (
-        <thead className="bg-surface dark:bg-[var(--code-background)] border-b border-[var(--code-border)]">
+        <thead className="bg-surface border-b border-code-border">
             <tr>
                 {columns.map((column, index) => (
                     <th
                         key={index}
-                        className="px-6 py-3 text-left text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider"
+                        className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                     >
                         <span>{column}</span>
                     </th>
@@ -51,18 +52,17 @@ const TableBody = ({ data }: { data: TableCell[][] }) => {
                         return (
                             <td
                                 key={`${rowIndex}-${cellIndex}`}
-                                className="py-4 text-sm text-[var(--foreground)]"
+                                className="py-4 text-sm text-foreground"
                             >
                                 <div className="flex items-start gap-2 px-6">
-                                    <span className="block break-words">
+                                    <span className="block wrap-break-words">
                                         {isEmpty ? '-' : cell.content}
                                     </span>
                                     {hasTooltip && (
                                         <Tooltip content={cell.hintText!}>
                                             <Info
                                                 size={12}
-                                                color="var(--muted-foreground)"
-                                                className="flex-shrink-0 mt-0.5"
+                                                className="shrink-0 mt-0.5 text-muted-foreground cursor-help"
                                             />
                                         </Tooltip>
                                     )}
@@ -86,9 +86,12 @@ const DocsTypeTable = ({
     if (isLoading) {
         return (
             <div
-                className={`w-full overflow-hidden border border-[var(--code-border)] rounded-lg bg-[var(--background)] ${className}`}
+                className={cn(
+                    'w-full overflow-hidden border border-code-border rounded-lg bg-background',
+                    className
+                )}
             >
-                <div className="p-6 text-center text-[var(--muted-foreground)]">
+                <div className="p-6 text-center text-muted-foreground">
                     {loadingMessage}
                 </div>
             </div>
@@ -98,9 +101,12 @@ const DocsTypeTable = ({
     if (data.length === 0) {
         return (
             <div
-                className={`w-full overflow-hidden border border-[var(--code-border)] rounded-lg bg-[var(--background)] ${className}`}
+                className={cn(
+                    'w-full overflow-hidden border border-code-border rounded-lg bg-background',
+                    className
+                )}
             >
-                <div className="p-6 text-center text-[var(--muted-foreground)]">
+                <div className="p-6 text-center text-muted-foreground">
                     {emptyMessage}
                 </div>
             </div>
@@ -109,7 +115,10 @@ const DocsTypeTable = ({
 
     return (
         <div
-            className={`w-full border border-[var(--code-border)] rounded-t-xl my-8 overflow-hidden ${className}`}
+            className={cn(
+                'w-full border border-code-border rounded-t-xl my-8 overflow-hidden',
+                className
+            )}
         >
             <div className="overflow-x-auto w-full">
                 <table className="w-full min-w-full">

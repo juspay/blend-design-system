@@ -51,13 +51,3 @@ export interface BlogPostGridProps {
     limit?: number
     className?: string
 }
-
-/**
- * Featured posts props
- */
-export interface FeaturedPostsProps {
-    posts: BlogPost[]
-    title?: string
-    limit?: number
-    className?: string
-}

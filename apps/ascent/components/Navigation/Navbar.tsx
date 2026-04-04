@@ -1,31 +1,18 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { GitHubIcon, FigmaIcon } from '../../icons'
-import { EXTERNAL_LINKS, ROUTES, HEADER_NAV_LINKS } from '../../constants/links'
+import {
+    EXTERNAL_LINKS,
+    ROUTES,
+    HEADER_NAV_LINKS,
+} from '../../lib/constants/links'
 import { cn } from '@/lib/utils/cn'
-import { MoonIcon, SunIcon } from 'lucide-react'
+import ThemeToggle from '../ui/ThemeToggle/ThemeToggle'
 
 export default function Navbar() {
     const pathname = usePathname()
-    const [isDark, setIsDark] = useState(false)
-
-    useEffect(() => {
-        const root = document.documentElement
-        setIsDark(root.classList.contains('dark'))
-    }, [])
-
-    const toggleTheme = () => {
-        const root = document.documentElement
-        const newIsDark = !isDark
-        setIsDark(newIsDark)
-        if (newIsDark) {
-            root.classList.add('dark')
-        } else {
-            root.classList.remove('dark')
-        }
-    }
 
     return (
         <header className="max-w-360 mx-auto">
@@ -92,21 +79,7 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 text-muted-foreground hover:text-foreground transition-colors border border-border"
-                        aria-label={
-                            isDark
-                                ? 'Switch to light mode'
-                                : 'Switch to dark mode'
-                        }
-                    >
-                        {isDark ? (
-                            <SunIcon className="w-4 h-4" />
-                        ) : (
-                            <MoonIcon className="w-4 h-4" />
-                        )}
-                    </button>
+                    <ThemeToggle />
                 </div>
             </div>
         </header>
