@@ -10,7 +10,7 @@ import { Metadata } from 'next'
 import { SharedLayout } from '@/components/layout'
 import { scanDirectory } from '../utils'
 import TableOfContents from '@/components/Navigation/TableOfContents'
-import { DocsPage, Sidebar } from '@/app/docs/components/index'
+import { DocsPage, Sidebar } from '@/components/docs'
 
 // Generate static params for all MDX files
 export async function generateStaticParams() {

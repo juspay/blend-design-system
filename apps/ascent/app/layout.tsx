@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Script from 'next/script'
 import { Geist, Geist_Mono, Manrope } from 'next/font/google'
 import { METADATA_CONFIG } from '@/lib/config'
-import { GoogleAnalytics } from '@/app/components/GoogleAnalytics'
+import { GoogleAnalytics } from '@/components/googleAnalytics/GoogleAnalytics'
 import './globals.css'
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID

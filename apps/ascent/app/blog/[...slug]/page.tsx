@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm'
 import { BlogPost } from '../types/types'
 import { useMDXComponents } from '@/mdx-components'
 import { extractHeadings } from '@/app/docs/utils'
-import { BlogPage } from '../components'
+import { BlogPage } from '@/components/blog'
 import { getAllBlogPosts, getBlogPost } from '../utils/getBlogPosts'
 
 interface PageProps {

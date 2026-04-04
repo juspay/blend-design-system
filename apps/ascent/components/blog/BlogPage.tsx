@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { CSSProperties, ReactNode } from 'react'
-import { BlogPost } from '../types'
+import { BlogPost } from '@/app/blog/types'
 import { PageBreadcrumb } from '@/components/Navigation'
-import { formatDate, getCoverGradient } from '../utils/utils'
+import { formatDate, getCoverGradient } from '@/app/blog/utils'
 import { Undo2 } from 'lucide-react'
 import SidebarTocHeader from './SidebarTocHeader'
 

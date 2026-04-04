@@ -9,6 +9,12 @@ export * from './layout'
 // Feature Components - Feature-specific components
 export * from './features'
 
+// Docs Components
+export * from './docs'
+
+// Blog Components
+export * from './blog'
+
 // Legacy exports for backward compatibility (can be removed after migration)
 // These will help during the transition period
 export { SearchBar, SearchProvider } from './ui/SearchBar'
@@ -22,8 +28,6 @@ export {
     useNavigation,
     useNavigable,
     TableOfContents,
-    Sidebar,
-    SidebarDrawer,
     PageBreadcrumb,
     Navbar,
 } from './Navigation'
@@ -34,3 +38,6 @@ export {
     Preview,
     PreviewWrapper,
 } from './features/Documentation'
+
+export { GoogleAnalytics } from './googleAnalytics/GoogleAnalytics'
+

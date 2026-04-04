@@ -1,6 +1,6 @@
 import { BlogPostCard } from './BlogPostCard'
 import { cn } from '@/lib/utils/cn'
-import { BlogPostGridProps } from '../types'
+import { BlogPostGridProps } from '@/app/blog/types'
 
 const COLS = 4
 

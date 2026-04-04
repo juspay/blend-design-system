@@ -1,5 +1,5 @@
 import { BlogPostCard } from './BlogPostCard'
-import { FeaturedPostsProps } from '../types'
+import { FeaturedPostsProps } from '@/app/blog/types'
 
 export function FeaturedPosts({ posts }: FeaturedPostsProps) {
     if (posts.length === 0) {
