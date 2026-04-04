@@ -5,13 +5,13 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Link from 'next/link'
 
-import { CardHolderFront } from '../../../../icons/CardHolderFront'
-import { CardHolderBack } from '../../../../icons/CardHolderBack'
-import { DocumentationCard } from '../../../../icons/DocumentationCard'
-import { StorybookCard } from '../../../../icons/StorybookCard'
-import { CodeCard } from '../../../../icons/CodeCard'
-import { FigmaCard } from '../../../../icons/FigmaCard'
-import { EXTERNAL_LINKS } from '../constants/links'
+import { CardHolderFront } from '../../../icons/CardHolderFront'
+import { CardHolderBack } from '../../../icons/CardHolderBack'
+import { DocumentationCard } from '../../../icons/DocumentationCard'
+import { StorybookCard } from '../../../icons/StorybookCard'
+import { CodeCard } from '../../../icons/CodeCard'
+import { FigmaCard } from '../../../icons/FigmaCard'
+import { EXTERNAL_LINKS } from '@/lib/constants'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -111,26 +111,17 @@ export default function ShowcaseSection() {
     }, [])
 
     return (
-        <section ref={sectionRef} className="max-w-[1152px] mx-auto">
-            <div className="lg:border-l lg:border-r border-gray-200 h-[350px] sm:h-[420px] lg:h-[445px] relative overflow-hidden">
+        <section ref={sectionRef} className="mx-auto">
+            <div className="h-87.5 sm:h-105 lg:h-111.25 relative overflow-hidden">
                 <div className="absolute bottom-0 left-0 right-0 flex justify-center">
-                    <div
-                        className="
-              origin-bottom
-              scale-[0.65]
-              sm:scale-[0.6]
-              md:scale-[0.8]
-              lg:scale-100
-              transition-transform
-            "
-                    >
+                    <div className="origin-bottom scale-[0.65] sm:scale-[0.6] md:scale-[0.8] lg:scale-100 transition-transform">
                         <div
                             className="relative"
                             style={{ height: 420, width: 600 }}
                         >
                             <div
                                 ref={holderBackRef}
-                                className="absolute -bottom-[90px] left-1/2 -translate-x-1/2 z-0 pointer-events-none"
+                                className="absolute -bottom-22.5 left-1/2 -translate-x-1/2 z-0 pointer-events-none"
                             >
                                 <CardHolderBack width={480} height={280} />
                             </div>
@@ -179,7 +170,7 @@ export default function ShowcaseSection() {
 
                             <div
                                 ref={holderFrontRef}
-                                className="absolute -bottom-[65px] left-1/2 -translate-x-1/2 z-30 pointer-events-none"
+                                className="absolute -bottom-16.25 left-1/2 -translate-x-1/2 z-30 pointer-events-none"
                             >
                                 <CardHolderFront width={480} height={250} />
                             </div>

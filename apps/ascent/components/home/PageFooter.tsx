@@ -1,11 +1,11 @@
 import Link from 'next/link'
-import { EXTERNAL_LINKS } from './constants/links'
+import { EXTERNAL_LINKS } from '@/lib/constants'
 
 export default function PageFooter() {
     return (
-        <footer className="w-full border-x border-t border-gray-200">
+        <footer className="w-full border-t border-border">
             <div className="lg:px-78 px-3 py-5">
-                <div className="flex flex-col-reverse lg:flex-row justify-between items-center gap-[20px] lg:gap-4 text-sm text-gray-500">
+                <div className="flex flex-col-reverse lg:flex-row justify-between items-center gap-5 lg:gap-4 text-sm text-muted-foreground">
                     <p className="text-center lg:text-left leading-relaxed">
                         <span>Copyright &copy; 2024. Juspay Technologies.</span>
                         <br className="lg:hidden" />

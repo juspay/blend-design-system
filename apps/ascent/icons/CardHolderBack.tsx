@@ -28,8 +28,11 @@ export const CardHolderBack: React.FC<IconProps> = ({
                     y2="303.66"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#737477" />
-                    <stop offset="0.490425" stopColor="#D2D2D2" />
+                    <stop stopColor="var(--card-back-gradient-start)" />
+                    <stop
+                        offset="0.490425"
+                        stopColor="var(--card-back-gradient-end)"
+                    />
                 </linearGradient>
             </defs>
         </svg>

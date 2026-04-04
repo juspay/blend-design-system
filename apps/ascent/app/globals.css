@@ -64,6 +64,10 @@
     --sh-identifier: #c125e0;
     --code-background: #fcfcfd;
     --code-border: #e0e0e0;
+    --card-stroke: #99a0ae;
+    --card-back-gradient-start: #737477;
+    --card-back-gradient-end: #d2d2d2;
+    --card-front-gradient-start: #e5e5e5;
 }
 
 .dark {
@@ -268,6 +272,10 @@
 
     --search-bar-from: #161616;
     --search-bar-to: #191919;
+    --card-stroke: #85888b;
+    --card-back-gradient-start: #000;
+    --card-back-gradient-end: #444444;
+    --card-front-gradient-start: #1a1a1a;
 }
 
 @theme inline {

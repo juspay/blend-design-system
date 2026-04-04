@@ -93,7 +93,7 @@ export default function BlogPostWithTOC({
 
                     <div className="py-8">
                         {/* Cover */}
-                        <div className="relative px-8 mb-8 h-52 w-full overflow-hidden">
+                        <div className="relative px-8 mb-8 h-60 w-full overflow-hidden">
                             {post.coverImage ? (
                                 <Image
                                     src={post.coverImage}

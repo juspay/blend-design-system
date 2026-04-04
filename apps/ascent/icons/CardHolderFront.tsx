@@ -112,7 +112,7 @@ export const CardHolderFront: React.FC<IconProps> = ({
                     y2="265.424"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#E5E5E5" />
+                    <stop stopColor="var(--card-front-gradient-start)" />
                     <stop offset="1" stopColor="#525866" />
                 </linearGradient>
                 <image
