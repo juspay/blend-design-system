@@ -37,7 +37,7 @@ export const MDXComponents = {
         return (
             <h2
                 id={id}
-                className="font-heading scroll-m-28 text-2xl font-medium tracking-tight text-primary *:[code]:text-2xl mt-10"
+                className="font-heading scroll-m-28 text-2xl font-medium tracking-tight text-primary *:[code]:text-2xl mt-10 mb-2"
                 {...props}
             >
                 {children}
@@ -94,26 +94,26 @@ export const MDXComponents = {
     },
     p: (props: ParagraphProps) => (
         <p
-            className="pt-2 leading-9 tracking-[-0.32px] text-justify text-foreground"
+            className="pt-2 md:leading-9 tracking-[-0.32px] md:text-justify text-foreground"
             {...props}
         />
     ),
 
     ol: (props: ListProps) => (
         <ol
-            className="list-decimal pl-5 space-y-2 leading-9 tracking-[-0.32px] text-foreground"
+            className="list-decimal pl-5 space-y-2 md:leading-9 tracking-[-0.32px] text-foreground mt-3"
             {...props}
         />
     ),
     ul: (props: ListProps) => (
         <ul
-            className="list-disc pl-5 space-y-1 leading-9 tracking-[-0.32px] text-foreground"
+            className="list-disc pl-5 space-y-1 md:leading-9 tracking-[-0.32px] text-foreground mt-3"
             {...props}
         />
     ),
     li: (props: ListItemProps) => (
         <li
-            className="pl-1 leading-9 tracking-[-0.32px] text-foreground"
+            className="pl-1 md:leading-9 tracking-[-0.32px] text-foreground"
             {...props}
         />
     ),
@@ -162,6 +162,11 @@ export const MDXComponents = {
             </a>
         )
     },
+    pre: (props: ComponentPropsWithoutRef<'pre'>) => (
+        <div className="overflow-x-auto w-full my-4">
+            <pre className="min-w-full" {...props} />
+        </div>
+    ),
     code: ({ children, ...props }: ComponentPropsWithoutRef<'code'>) => {
         const codeHTML = highlight(children as string)
 

@@ -1,24 +1,37 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { PageBreadcrumb } from '@/components/Navigation/index'
 import { OctagonAlert } from 'lucide-react'
 import { DocsPageProps } from '@/lib/types'
 import { GithubRoundedIcon, StoryBookIcon } from '@/icons'
 import { AsideStyle } from '../layout'
 
-function DocsPage({ metadata, content, breadcrumbItems }: DocsPageProps) {
+interface ExtendedDocsPageProps extends DocsPageProps {
+    mobileTrigger?: React.ReactNode
+}
+
+function DocsPage({
+    metadata,
+    content,
+    breadcrumbItems,
+    mobileTrigger,
+}: ExtendedDocsPageProps) {
     return (
         <div className="flex flex-col mx-auto border-x border-border">
-            <PageBreadcrumb items={breadcrumbItems} style={AsideStyle} />
+            <PageBreadcrumb
+                items={breadcrumbItems}
+                style={AsideStyle}
+                mobileTrigger={mobileTrigger}
+            />
             <div className="flex-1 gap-2">
                 <article className="prose overflow-x-hidden">
-                    <div className="py-11 px-6 border-b border-border">
-                        <h1 className="scroll-m-20 text-4xl tracking-tight sm:text-3xl xl:text-[86px] font-manrope font-medium text-primary">
+                    <div className="py-11 px-6 md:px-10 border-b border-border">
+                        <h1 className="scroll-m-20 text-4xl md:text-5xl tracking-tight lg:text-7xl xl:text-[86px] font-manrope font-medium text-primary">
                             {metadata.title}
                         </h1>
                     </div>
-                    <div className="py-8 px-10">
+                    <div className="py-8 px-6 md:px-10">
                         <div className="flex flex-col gap-2">
-                            <p className="text-foreground text-base text-justify leading-9 tracking-[-0.32px]">
+                            <p className="text-foreground text-base md:text-justify md:leading-9 tracking-[-0.32px]">
                                 {metadata.description}
                             </p>
 
@@ -32,7 +45,7 @@ function DocsPage({ metadata, content, breadcrumbItems }: DocsPageProps) {
                                     }
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-1.5 text-sm text-primary bg-secondary border border-border rounded-lg px-3 py-1 transition-colors hover:bg-muted"
+                                    className="w-full xs:w-auto flex items-center gap-1.5 text-sm text-primary bg-secondary border border-border rounded-lg px-3 py-1 transition-colors hover:bg-muted"
                                     data-nav-content
                                 >
                                     <GithubRoundedIcon
@@ -48,7 +61,7 @@ function DocsPage({ metadata, content, breadcrumbItems }: DocsPageProps) {
                                     href="https://github.com/juspay/blend-design-system/issues"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-1.5 text-sm text-primary bg-secondary border border-border rounded-lg px-3 py-1 transition-colors hover:bg-muted"
+                                    className="w-full xs:w-auto flex items-center gap-1.5 text-sm text-primary bg-secondary border border-border rounded-lg px-3 py-1 transition-colors hover:bg-muted"
                                     data-nav-content
                                 >
                                     <OctagonAlert className="w-3.5 h-3.5 text-primary stroke-3" />
@@ -65,7 +78,7 @@ function DocsPage({ metadata, content, breadcrumbItems }: DocsPageProps) {
                                     }
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-1.5 text-sm text-primary bg-secondary border border-border rounded-lg px-3 py-1 transition-colors hover:bg-muted"
+                                    className="w-full xs:w-auto flex items-center gap-1.5 text-sm text-primary bg-secondary border border-border rounded-lg px-3 py-1 transition-colors hover:bg-muted"
                                     data-nav-content
                                 >
                                     <StoryBookIcon width={13} height={13} />

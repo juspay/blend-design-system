@@ -1,5 +1,5 @@
 import React from 'react'
-import { CHANGELOG_CONFIG } from './config'
+import { CHANGELOG_CONFIG } from './utils/config'
 import SharedDocLayout from '@/components/layout/SharedLayout'
 
 const layout = ({ children }: { children: React.ReactNode }) => {

@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils/cn'
 interface SidebarProps {
     items: DocItem[]
     baseRoute: string
+    onLinkClick?: () => void
 }
 
 const encodePath = (path: string) =>
@@ -22,9 +23,11 @@ const normalize = (path: string) =>
 const SidebarItem = ({
     item,
     baseRoute,
+    onLinkClick,
 }: {
     item: DocItem
     baseRoute: string
+    onLinkClick?: () => void
 }) => {
     const pathname = usePathname()
     const href = `${baseRoute}/${encodePath(item.path)}`
@@ -34,6 +37,7 @@ const SidebarItem = ({
     return (
         <Link
             href={href}
+            onClick={onLinkClick}
             className={cn(
                 'flex shrink-0 items-center rounded-lg py-2 px-3 text-base transition-all duration-120 tracking-[-0.32px] capitalize',
                 isActive
@@ -49,9 +53,11 @@ const SidebarItem = ({
 const SidebarSection = ({
     item,
     baseRoute,
+    onLinkClick,
 }: {
     item: DocItem
     baseRoute: string
+    onLinkClick?: () => void
 }) => (
     <div>
         <div className="flex items-center px-3 text-xs uppercase text-nav-section-text-foreground select-none tracking-wider my-6 font-medium">
@@ -64,12 +70,14 @@ const SidebarSection = ({
                         key={child.slug}
                         item={child}
                         baseRoute={baseRoute}
+                        onLinkClick={onLinkClick}
                     />
                 ) : (
                     <SidebarItem
                         key={child.slug}
                         item={child}
                         baseRoute={baseRoute}
+                        onLinkClick={onLinkClick}
                     />
                 )
             )}
@@ -77,7 +85,7 @@ const SidebarSection = ({
     </div>
 )
 
-const Sidebar = ({ items, baseRoute }: SidebarProps) => (
+const Sidebar = ({ items, baseRoute, onLinkClick }: SidebarProps) => (
     <nav className="flex flex-col py-3 px-2 gap-2">
         {items.map((item) =>
             item.children?.length ? (
@@ -85,12 +93,14 @@ const Sidebar = ({ items, baseRoute }: SidebarProps) => (
                     key={item.slug}
                     item={item}
                     baseRoute={baseRoute}
+                    onLinkClick={onLinkClick}
                 />
             ) : (
                 <SidebarItem
                     key={item.slug}
                     item={item}
                     baseRoute={baseRoute}
+                    onLinkClick={onLinkClick}
                 />
             )
         )}

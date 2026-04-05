@@ -1,4 +1,5 @@
 import type { ChangelogEntryProps } from '@/lib/types'
+import { cn } from '@/lib'
 
 export const ChangelogEntry = ({
     type,
@@ -77,16 +78,14 @@ export const ChangelogEntry = ({
     }
 
     return (
-        <div className="flex items-start gap-x-4">
-            {/* Dot - positioned to align with the vertical line in parent */}
-            <div className="w-5 shrink-0 flex justify-center pt-1.5">
-                <div className="w-1.5 h-1.5 bg-green-600 rounded-full relative z-10" />
-            </div>
-
+        <div className="flex items-start gap-x-4 py-3 group">
             <div className="flex flex-col items-start flex-1">
                 <div className="flex items-center gap-4">
                     <span
-                        className={`px-2 py-0.5 text-xs font-medium rounded-md ${config.className}`}
+                        className={cn(
+                            'px-2 py-0.5 text-xs font-medium rounded-md',
+                            config.className
+                        )}
                     >
                         {config.label}
                     </span>
@@ -146,7 +145,7 @@ export const ChangelogEntry = ({
                 </div>
 
                 <div className="flex-1 min-w-0">
-                    <div className="text-sm text-muted-foreground leading-relaxed">
+                    <div className="text-muted-foreground! text-base!">
                         {children}
                     </div>
                 </div>

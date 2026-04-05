@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { CSSProperties, ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { BlogPost } from '@/lib/types'
 import { PageBreadcrumb } from '@/components/Navigation'
 import { formatDate, getCoverGradient } from '@/app/blog/utils'
 import { Undo2 } from 'lucide-react'
 import SidebarTocHeader from './SidebarTocHeader'
 import { AsideStyle } from '../layout'
+import { MobileBlogSidebarTrigger } from './MobileBlogSidebar'
 
 interface BlogPageProps {
     post: BlogPost
@@ -58,54 +59,96 @@ export default function BlogPostWithTOC({
 
     const { first, second } = splitTitleIntoTwoLines(post.title)
 
+    // Mobile meta info component
+    const MobileMetaInfo = () => (
+        <div className="lg:hidden border-b border-border mb-6">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-4 sm:px-8 py-4">
+                <div className="flex items-center gap-2">
+                    <span className="text-xs uppercase tracking-tight text-nav-section-text">
+                        By
+                    </span>
+                    <span className="text-sm text-foreground">
+                        {post.author}
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs uppercase tracking-tight text-muted-foreground">
+                        Date
+                    </span>
+                    <span className="text-sm text-foreground">
+                        {formatDate(post.publishDate)}
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs uppercase tracking-tight text-muted-foreground">
+                        Category
+                    </span>
+                    <span className="text-sm text-foreground">
+                        {post.category}
+                    </span>
+                </div>
+            </div>
+        </div>
+    )
+
     return (
         <div className="mx-auto flex min-h-screen items-start">
             {/* Main content */}
             <div className="flex-1 min-w-0">
                 <PageBreadcrumb
                     items={breadcrumbItems}
-                    className="px-8"
+                    className="px-4 sm:px-8"
                     style={AsideStyle}
+                    mobileTrigger={
+                        <div className="lg:hidden">
+                            <MobileBlogSidebarTrigger
+                                post={post}
+                                headings={headings}
+                            />
+                        </div>
+                    }
                 />
-
                 <article className="flex flex-1 flex-col pb-8 overflow-x-hidden">
                     <div
                         id="sidebar-meta"
-                        className="pt-3 pb-6.25 border-b border-border"
+                        className="pt-3 pb-6 border-b border-border"
                     >
-                        <h1 className="text-primary font-manrope text-[86px] font-medium leading-[110%] tracking-[-3.44px] px-8 text-balance">
+                        <h1 className="text-primary font-manrope text-4xl sm:text-5xl md:text-6xl lg:text-[86px] font-medium leading-[110%] tracking-[-0.04em] lg:tracking-[-3.44px] px-4 sm:px-8 text-balance">
                             {first}
                             {second && (
                                 <>
-                                    <br />
+                                    <br className="hidden sm:block" />
+                                    <span className="sm:hidden"> </span>
                                     {second}
                                 </>
                             )}
                         </h1>
                     </div>
 
-                    <div className="py-8">
+                    <div className="py-6 sm:py-8">
                         {/* Cover */}
-                        <div className="relative px-8 mb-8 h-60 w-full overflow-hidden">
+                        <div className="relative px-4 sm:px-8 mb-6 sm:mb-8 h-48 sm:h-60 w-full overflow-hidden">
                             {post.coverImage ? (
                                 <Image
                                     src={post.coverImage}
                                     alt={post.title}
                                     fill
-                                    className="object-cover px-8"
+                                    className="object-cover"
                                     priority
                                 />
                             ) : (
                                 <div
-                                    className="h-52 w-full"
+                                    className="h-full w-full"
                                     style={{ background: coverGradient }}
                                 />
                             )}
                         </div>
 
                         {/* Content */}
-                        <div className="flex flex-col gap-8 px-8">
-                            <div className="w-full min-w-0">{children}</div>
+                        <div className="flex flex-col gap-8 px-4 sm:px-8">
+                            <div className="w-full min-w-0 prose prose-sm sm:prose-base max-w-none">
+                                {children}
+                            </div>
 
                             {/* Back link */}
                             <div className="flex items-center justify-center py-4">
@@ -122,9 +165,9 @@ export default function BlogPostWithTOC({
                 </article>
             </div>
 
-            {/* Sidebar */}
-            <aside className="border-l border-border w-52 shrink-0 self-stretch flex flex-col">
-                {/* Meta info — no id needed here anymore */}
+            {/* Sidebar - Desktop only */}
+            <aside className="hidden lg:flex border-l border-border w-52 shrink-0 self-stretch flex-col">
+                {/* Meta info */}
                 <div className="py-6 border-b border-border">
                     <div className="flex flex-col gap-6 px-8 py-4">
                         <div className="flex flex-col gap-1.5">

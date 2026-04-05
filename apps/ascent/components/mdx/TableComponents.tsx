@@ -3,10 +3,12 @@ import React, { ComponentPropsWithoutRef } from 'react'
 // Table components for MDX content
 export const TableComponents = {
     table: (props: ComponentPropsWithoutRef<'table'>) => (
-        <table
-            className="w-full min-w-full border border-border rounded-t-xl"
-            {...props}
-        />
+        <div className="overflow-x-auto w-full my-4">
+            <table
+                className="w-full min-w-full border border-border rounded-t-xl"
+                {...props}
+            />
+        </div>
     ),
     thead: (props: ComponentPropsWithoutRef<'thead'>) => (
         <thead className="bg-surface border-b border-code-border" {...props} />

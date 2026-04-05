@@ -6,18 +6,7 @@ import {
     PreviewComponents,
     TableComponents,
 } from '@/components/mdx'
-import {
-    GradientBorderWrapper,
-    DateBadge,
-    ChangeLogCard,
-    ImageBlock,
-    VideoBlock,
-    HeadingBlock,
-    SubHeadingBlock,
-    ParagraphBlock,
-} from './app/changelog/components/ui/ChangelogBlocks'
 import { Search } from 'lucide-react'
-import HomeDataList from './app/changelog/components/ui/HomeDataList'
 import { ComponentGrid } from '@/components/ui/ComponentGrid'
 import { ChangelogCard, VersionHeader } from './components/changelog'
 
@@ -39,17 +28,7 @@ const components = {
     VersionHeader,
     ChangelogCard,
     ChangelogEntry,
-    GradientBorderWrapper,
-    GradientBorderComponent: GradientBorderWrapper, // Alias for backward compatibility
-    DateBadge,
     Search,
-    ChangeLogCard,
-    HomeDataList,
-    ImageBlock,
-    VideoBlock,
-    HeadingBlock,
-    SubHeadingBlock,
-    ParagraphBlock,
 }
 
 declare global {

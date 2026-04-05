@@ -3,30 +3,6 @@
  * Uses shared configuration with docs-specific overrides
  */
 
-import {
-    SHARED_ROUTES,
-    SHARED_CONTENT_PATHS,
-    SHARED_CONFIG_PATTERNS,
-} from '@/lib/config'
-
-// Core docs configuration
-export const DOCS_CONFIG = {
-    // Layout settings
-    title: 'Blend Docs',
-    baseRoute: SHARED_ROUTES.DOCS,
-    contentPath: SHARED_CONTENT_PATHS.DOCS_CONTENT,
-    maxWidth: SHARED_CONFIG_PATTERNS.CONTAINER_WIDTHS.WIDE,
-    containerPadding: SHARED_CONFIG_PATTERNS.CONTAINER_PADDING.COMPACT,
-
-    // Grid settings
-    gridCols: SHARED_CONFIG_PATTERNS.GRID_LAYOUTS.TWO_COLUMN,
-    gridGap: 'gap-4',
-
-    // Content settings
-    defaultDescription:
-        'Here you can find all the components available in the library. We are working on adding more components.',
-} as const
-
 // Component card styling
 export const COMPONENT_CARD_STYLES = {
     container:

@@ -8,7 +8,7 @@ export const VersionHeader = ({
 }: VersionHeaderProps) => {
     return (
         <div className="pb-6">
-            <div className="w-full flex items-center justify-between">
+            <div className="w-full flex flex-col md:flex-row gap-4 md:items-center justify-between">
                 <div className="flex items-center gap-4">
                     <h1 className="text-[32px] font-medium text-primary font-manrope leading-[110%] tracking-[-1.28px]">
                         {version}
@@ -26,7 +26,7 @@ export const VersionHeader = ({
                 </p>
             </div>
             {children && (
-                <div className="text-foreground py-8 text-justify tracking-[-0.32px] text-base">
+                <div className="text-foreground py-8 md:text-justify tracking-[-0.32px] text-base">
                     {children}
                 </div>
             )}

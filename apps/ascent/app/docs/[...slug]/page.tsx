@@ -11,6 +11,7 @@ import { SharedLayout } from '@/components/layout'
 import { scanDirectory } from '../utils'
 import TableOfContents from '@/components/Navigation/TableOfContents'
 import { DocsPage, Sidebar } from '@/components/docs'
+import { MobileSidebarTrigger } from './PageClient'
 
 // Generate static params for all MDX files
 export async function generateStaticParams() {
@@ -158,7 +159,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
         >
             <div className="flex w-full">
                 <aside
-                    className="w-52 max-w-52 shrink-0 transition-none"
+                    className="hidden lg:block w-52 max-w-52 shrink-0 transition-none"
                     style={asideStyle}
                 >
                     <Sidebar items={sidebarItems} baseRoute="/docs" />
@@ -168,10 +169,13 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
                         metadata={metadata}
                         content={content}
                         breadcrumbItems={breadcrumbItems}
+                        mobileTrigger={
+                            <MobileSidebarTrigger sidebarItems={sidebarItems} />
+                        }
                     />
                 </div>
                 <aside
-                    className="w-52 max-w-52 shrink-0 hidden lg:block transition-none"
+                    className="w-52 max-w-52 shrink-0 hidden xl:block transition-none"
                     style={asideStyle}
                 >
                     <div className="px-5 py-3">

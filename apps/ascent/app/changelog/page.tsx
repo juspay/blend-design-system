@@ -1,7 +1,7 @@
 import React from 'react'
 import { Metadata } from 'next'
 import { compileMDXFromSlug, getAllMDXSlugs } from '@/lib/utils/mdx'
-import { CHANGELOG_CONFIG } from './config'
+import { CHANGELOG_CONFIG } from './utils/config'
 import { ChangelogHeader, VersionHeader } from '@/components/changelog'
 
 export const metadata: Metadata = {
@@ -75,7 +75,7 @@ const ChangelogPage = async () => {
                         return (
                             <article
                                 key={slug}
-                                className="px-10 pt-10 pb-16 border-b border-border"
+                                className="px-6 md:px-10 pt-10 pb-16 border-b border-border"
                             >
                                 <VersionHeader
                                     version={frontmatter.version || slug}

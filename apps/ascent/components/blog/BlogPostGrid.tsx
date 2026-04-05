@@ -30,7 +30,10 @@ export function BlogPostGrid({ posts }: BlogPostGridProps) {
         >
             <ul
                 role="list"
-                className={cn('grid grid-cols-4', !isMultiRow && 'h-full')}
+                className={cn(
+                    'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 pb-16 lg:pb-0',
+                    !isMultiRow && 'h-full'
+                )}
             >
                 {posts.map((post) => (
                     <li key={post.slug} className="contents">
