@@ -79,7 +79,7 @@ export default function BlogPostWithTOC({
                 <article className="flex flex-1 flex-col pb-8 overflow-x-hidden">
                     <div
                         id="sidebar-meta"
-                        className="pt-3 pb-6 border-b border-border"
+                        className="border-b border-border pt-4 pb-5.25"
                     >
                         <h1 className="text-primary font-manrope text-4xl sm:text-5xl md:text-6xl lg:text-[86px] font-medium leading-[110%] tracking-[-0.04em] lg:tracking-[-3.44px] px-4 sm:px-8 text-balance">
                             {first}
@@ -94,26 +94,25 @@ export default function BlogPostWithTOC({
                     </div>
 
                     <div className="py-6 sm:py-8">
-                        {/* Cover */}
-                        <div className="relative px-4 sm:px-8 mb-6 sm:mb-8 h-48 sm:h-60 w-full overflow-hidden">
-                            {post.coverImage ? (
-                                <Image
-                                    src={post.coverImage}
-                                    alt={post.title}
-                                    fill
-                                    className="object-cover"
-                                    priority
-                                />
-                            ) : (
-                                <div
-                                    className="h-full w-full"
-                                    style={{ background: coverGradient }}
-                                />
-                            )}
-                        </div>
-
                         {/* Content */}
                         <div className="flex flex-col gap-8 px-4 sm:px-8">
+                            {/* Cover */}
+                            <div className="relative h-48 sm:h-60 w-full overflow-hidden">
+                                {post.coverImage ? (
+                                    <Image
+                                        src={post.coverImage}
+                                        alt={post.title}
+                                        fill
+                                        className="object-cover"
+                                        priority
+                                    />
+                                ) : (
+                                    <div
+                                        className="h-full w-full"
+                                        style={{ background: coverGradient }}
+                                    />
+                                )}
+                            </div>
                             <div className="w-full min-w-0 prose prose-sm sm:prose-base max-w-none">
                                 {children}
                             </div>

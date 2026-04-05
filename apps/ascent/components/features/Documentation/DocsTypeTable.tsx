@@ -1,5 +1,3 @@
-'use client'
-
 import { Info } from 'lucide-react'
 import React from 'react'
 import Tooltip from '@/components/ui/Tooltip/Tooltip'
