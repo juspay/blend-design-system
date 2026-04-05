@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import { BlogPost } from '@/lib/types'
-import { useMDXComponents } from '@/mdx-components'
+import { components as mdxComponents } from '@/mdx-components'
 import { extractHeadings } from '@/app/docs/utils'
 import { BlogPage } from '@/components/blog'
 import { getAllBlogPosts, getBlogPost } from '../utils/getBlogPosts'
@@ -68,7 +68,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
     const { content } = await compileMDX({
         source: post.content,
-        components: useMDXComponents(),
+        components: mdxComponents,
         options: {
             parseFrontmatter: false,
             mdxOptions: {

@@ -6,7 +6,6 @@ import {
 } from '@/lib/docs/componentRegistry'
 import {
     COMPONENT_CARD_STYLES,
-    PAGE_LAYOUT,
     ARROW_ICON_PATH,
 } from '@/lib/docs/componentGridStyles'
 

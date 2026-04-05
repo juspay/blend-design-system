@@ -59,38 +59,6 @@ export default function BlogPostWithTOC({
 
     const { first, second } = splitTitleIntoTwoLines(post.title)
 
-    // Mobile meta info component
-    const MobileMetaInfo = () => (
-        <div className="lg:hidden border-b border-border mb-6">
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-4 sm:px-8 py-4">
-                <div className="flex items-center gap-2">
-                    <span className="text-xs uppercase tracking-tight text-nav-section-text">
-                        By
-                    </span>
-                    <span className="text-sm text-foreground">
-                        {post.author}
-                    </span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs uppercase tracking-tight text-muted-foreground">
-                        Date
-                    </span>
-                    <span className="text-sm text-foreground">
-                        {formatDate(post.publishDate)}
-                    </span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs uppercase tracking-tight text-muted-foreground">
-                        Category
-                    </span>
-                    <span className="text-sm text-foreground">
-                        {post.category}
-                    </span>
-                </div>
-            </div>
-        </div>
-    )
-
     return (
         <div className="mx-auto flex min-h-screen items-start">
             {/* Main content */}

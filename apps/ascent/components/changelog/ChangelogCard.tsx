@@ -1,5 +1,5 @@
 'use client'
-import { useState, Children } from 'react'
+import { useState } from 'react'
 import type { ChangelogCardProps } from '@/lib/types'
 import Link from 'next/link'
 import { cn } from '@/lib'
@@ -29,8 +29,6 @@ export const ChangelogCard = ({
         : commitUrl
           ? [commitUrl]
           : []
-
-    const count = Children.count(children)
 
     return (
         <div className="border-x border-b border-border overflow-hidden">

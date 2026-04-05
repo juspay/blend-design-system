@@ -9,21 +9,6 @@ function generateSlug(text: string): string {
         .replace(/^-+|-+$/g, '')
 }
 
-// Function to normalize heading levels based on actual hierarchy
-function normalizeHeadingLevels(
-    headings: Array<{ level: number; text: string; id: string }>
-): TOCItem[] {
-    if (headings.length === 0) return []
-
-    // Find the minimum heading level to normalize from
-    const minLevel = Math.min(...headings.map((h) => h.level))
-
-    return headings.map((heading) => ({
-        ...heading,
-        level: heading.level - minLevel + 1, // Normalize so the lowest level becomes 1
-    }))
-}
-
 // Function to extract headings from MDX content
 export function extractHeadings(content: string): TOCItem[] {
     const headings: Array<{ level: number; text: string; id: string }> = []
