@@ -5,13 +5,38 @@
 
 import React from 'react'
 
+export type ComponentCategory =
+    | 'Form Input'
+    | 'Selection'
+    | 'Actions'
+    | 'Navigation'
+    | 'Feedback'
+    | 'Layout'
+    | 'Data'
+    | 'Display'
+    | 'Others'
+
 export interface ComponentMetadata {
     slug: string
     title: string
     description: string
     icon: React.ReactElement
     color: string
+    category: ComponentCategory
 }
+
+// Category display order
+export const CATEGORY_ORDER: ComponentCategory[] = [
+    'Form Input',
+    'Selection',
+    'Actions',
+    'Navigation',
+    'Feedback',
+    'Layout',
+    'Data',
+    'Display',
+    'Others',
+]
 
 // Component icons using React.createElement for consistency
 const createIcon = (
@@ -61,6 +86,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             ]
         ),
         color: 'from-blue-500 to-blue-600',
+        category: 'Actions',
     },
     {
         slug: 'button-group',
@@ -97,6 +123,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             ]
         ),
         color: 'from-purple-500 to-purple-600',
+        category: 'Actions',
     },
     {
         slug: 'alert',
@@ -109,6 +136,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             'm12 17 .01 0',
         ]),
         color: 'from-orange-500 to-red-500',
+        category: 'Feedback',
     },
     {
         slug: 'tag',
@@ -120,6 +148,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             'M7 7h.01',
         ]),
         color: 'from-green-500 to-emerald-600',
+        category: 'Display',
     },
     {
         slug: 'split-tag',
@@ -132,6 +161,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             'M12 2v19',
         ]),
         color: 'from-teal-500 to-cyan-600',
+        category: 'Display',
     },
     {
         slug: 'tabs',
@@ -152,6 +182,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             ]
         ),
         color: 'from-indigo-500 to-blue-600',
+        category: 'Layout',
     },
     {
         slug: 'breadcrumb',
@@ -168,6 +199,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             ]
         ),
         color: 'from-amber-500 to-orange-600',
+        category: 'Navigation',
     },
     {
         slug: 'accordion',
@@ -188,6 +220,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             ]
         ),
         color: 'from-pink-500 to-rose-600',
+        category: 'Layout',
     },
     {
         slug: 'avatar',
@@ -210,6 +243,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             ]
         ),
         color: 'from-violet-500 to-purple-600',
+        category: 'Display',
     },
     {
         slug: 'avatar-group',
@@ -238,6 +272,7 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             ]
         ),
         color: 'from-indigo-500 to-blue-600',
+        category: 'Display',
     },
     {
         slug: 'data-table',
@@ -278,5 +313,6 @@ export const COMPONENT_REGISTRY: ComponentMetadata[] = [
             ]
         ),
         color: 'from-emerald-500 to-teal-600',
+        category: 'Data',
     },
 ]

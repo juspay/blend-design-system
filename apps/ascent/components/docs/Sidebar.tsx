@@ -54,16 +54,23 @@ const SidebarSection = ({
     item,
     baseRoute,
     onLinkClick,
+    isNested = false,
 }: {
     item: DocItem
     baseRoute: string
     onLinkClick?: () => void
+    isNested?: boolean
 }) => (
-    <div>
-        <div className="flex items-center px-3 text-xs uppercase text-nav-section-text-foreground select-none tracking-wider my-6 font-medium">
+    <div className={isNested ? 'mb-4 mt-6' : ''}>
+        <div
+            className={cn(
+                'flex items-center px-3 text-xs uppercase text-nav-section-text-foreground select-none tracking-wider font-medium',
+                isNested ? 'my-3' : 'my-6'
+            )}
+        >
             {item.name}
         </div>
-        <div className="space-y-2">
+        <div className={cn('space-y-1', isNested && 'ml-0')}>
             {item.children!.map((child) =>
                 child.children?.length ? (
                     <SidebarSection
@@ -71,6 +78,7 @@ const SidebarSection = ({
                         item={child}
                         baseRoute={baseRoute}
                         onLinkClick={onLinkClick}
+                        isNested={true}
                     />
                 ) : (
                     <SidebarItem

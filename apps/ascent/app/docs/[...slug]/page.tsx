@@ -8,10 +8,15 @@ import { extractHeadings } from '../utils/toc'
 import { generateBreadcrumbItems } from '../utils/generateBreadcrumbs'
 import { Metadata } from 'next'
 import { SharedLayout } from '@/components/layout'
-import { scanDirectory } from '../utils'
+import { scanDirectory, DocItem } from '../utils'
 import TableOfContents from '@/components/Navigation/TableOfContents'
 import { DocsPage, Sidebar } from '@/components/docs'
 import { MobileSidebarTrigger } from './PageClient'
+import {
+    COMPONENT_REGISTRY,
+    CATEGORY_ORDER,
+    ComponentCategory,
+} from '@/lib/docs/componentRegistry'
 
 // Generate static params for all MDX files
 export async function generateStaticParams() {
@@ -92,6 +97,71 @@ export async function generateMetadata({
     }
 }
 
+// Build sidebar items with component categories
+function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
+    return fileBasedItems.map((item) => {
+        // If this is the components folder, organize by category
+        if (item.slug === 'components' && item.children) {
+            // Group component files by category from registry
+            const componentsByCategory: Record<ComponentCategory, DocItem[]> = {
+                'Form Input': [],
+                Selection: [],
+                Actions: [],
+                Navigation: [],
+                Feedback: [],
+                Layout: [],
+                Data: [],
+                Display: [],
+                Others: [],
+            }
+
+            // Map each component file to its category
+            item.children.forEach((child) => {
+                const registryEntry = COMPONENT_REGISTRY.find(
+                    (c) => c.slug === child.slug
+                )
+                if (registryEntry) {
+                    const category = registryEntry.category
+                    componentsByCategory[category].push({
+                        ...child,
+                        name: registryEntry.title, // Use title from registry
+                    })
+                } else {
+                    // Component not in registry goes to Others
+                    componentsByCategory['Others'].push(child)
+                }
+            })
+
+            // Build category sections
+            const categoryChildren: DocItem[] = CATEGORY_ORDER.filter(
+                (cat) => componentsByCategory[cat].length > 0
+            ).map((category) => ({
+                slug: category.toLowerCase().replace(/\s+/g, '-'),
+                name: category,
+                path: `${item.path}/category/${category.toLowerCase().replace(/\s+/g, '-')}`,
+                children: componentsByCategory[category].sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                ),
+            }))
+
+            return {
+                ...item,
+                children: categoryChildren,
+            }
+        }
+
+        // Recursively process children
+        if (item.children) {
+            return {
+                ...item,
+                children: buildSidebarItemsWithCategories(item.children),
+            }
+        }
+
+        return item
+    })
+}
+
 const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
     const resolvedParams = await params
     const slugArray = resolvedParams.slug || []
@@ -124,9 +194,10 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
     })
 
     const headings = extractHeadings(fileContent)
-    const sidebarItems = scanDirectory(
+    const fileBasedItems = scanDirectory(
         path.join(process.cwd(), 'app', 'docs', 'content')
     )
+    const sidebarItems = buildSidebarItemsWithCategories(fileBasedItems)
 
     const metadata: PageMetadata = {
         title: (frontmatter as PageMetadata)?.title || 'Untitled',
