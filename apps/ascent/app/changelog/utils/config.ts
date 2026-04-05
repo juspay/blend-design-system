@@ -4,7 +4,6 @@
  */
 
 import {
-    SHARED_EXTERNAL_URLS,
     SHARED_ROUTES,
     SHARED_LAYOUT_CONFIG,
     SHARED_NAVIGATION_LABELS,
@@ -30,28 +29,11 @@ export const CHANGELOG_CONFIG = {
         'Welcome to the Blend Design System changelog - track all updates and improvements',
 } as const
 
-// SEO metadata using shared defaults
-export const CHANGELOG_METADATA = {
-    title: 'Blend Design System Changelog',
-    description:
-        'Track all updates, improvements, and changes to the Blend Design System',
-    ...SHARED_METADATA_DEFAULTS,
-} as const
-
-// Use shared external URLs
-export const EXTERNAL_URLS = SHARED_EXTERNAL_URLS
-
 // Use shared navigation labels with changelog-specific additions
 export const NAVIGATION_LABELS = {
     CHANGELOG_TITLE: 'Blend Changelog',
     ...SHARED_NAVIGATION_LABELS,
 } as const
-
-// Use shared routes
-export const ROUTES = SHARED_ROUTES
-
-// Use shared layout configuration
-export const LAYOUT_CONFIG = SHARED_LAYOUT_CONFIG
 
 // Content paths using shared configuration
 export const CONTENT_PATHS = {

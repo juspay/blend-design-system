@@ -18,10 +18,5 @@ export const COMPONENT_CARD_STYLES = {
     arrowIcon: 'text-[var(--muted-foreground)]',
 } as const
 
-// Page layout classes
-export const PAGE_LAYOUT = {
-    grid: 'grid grid-cols-1 lg:grid-cols-2 gap-4 not-prose',
-} as const
-
 // Arrow icon SVG path
 export const ARROW_ICON_PATH = 'm9 18 6-6-6-6'

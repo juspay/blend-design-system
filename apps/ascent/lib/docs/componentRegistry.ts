@@ -16,7 +16,7 @@ export type ComponentCategory =
     | 'Display'
     | 'Others'
 
-export interface ComponentMetadata {
+interface ComponentMetadata {
     slug: string
     title: string
     description: string
