@@ -14,14 +14,14 @@ export function BlogHeader() {
             </div>
 
             {/* Right: Decorative image panel */}
-            <div className="flex w-full md:w-1/2 shrink-0 items-center justify-center overflow-hidden bg-surface px-[14%] py-8 md:py-2 min-h-50 md:min-h-0">
+            <div className="flex w-full md:w-1/2 shrink-0 items-center justify-center overflow-hidden bg-surface dark:bg-background px-[14%] py-8 md:py-2 min-h-50 md:min-h-0">
                 <div className="relative aspect-square w-full max-w-50 md:max-w-none">
                     <Image
                         src="/images/blog-header-graphic.png"
                         alt="Blog's hero image"
                         fill
                         priority
-                        className="object-contain opacity-40"
+                        className="object-contain opacity-40 dark:invert"
                         aria-hidden
                         draggable={false}
                     />
