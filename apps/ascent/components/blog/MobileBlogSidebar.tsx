@@ -45,8 +45,7 @@ export function MobileBlogSidebarTrigger({
                     className="flex items-center gap-1.5 text-sm text-nav-section-text-foreground hover:text-foreground transition-colors"
                     aria-label="Open article info"
                 >
-                    <PanelLeft size={14} />
-                    <span>Info</span>
+                    <PanelLeft size={12} />
                 </button>
             </Drawer.Trigger>
             <Drawer.Portal>
