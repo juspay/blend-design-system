@@ -76,7 +76,7 @@ export default function BlogPostWithTOC({
                         </div>
                     }
                 />
-                <article className="flex flex-1 flex-col pb-8 overflow-x-hidden">
+                <article className="flex flex-1 flex-col overflow-x-hidden">
                     <div
                         id="sidebar-meta"
                         className="border-b border-border pt-4 pb-5.25"
