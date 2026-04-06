@@ -294,6 +294,7 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
                     width="100%"
                     position="sticky"
                     top="0"
+                    zIndex={topBarToken.zIndex}
                     borderBottom={topBarToken.borderBottom}
                     display="flex"
                     alignItems="center"

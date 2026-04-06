@@ -58,7 +58,7 @@ const FloatingNavContainer = styled(Block)<FloatingNavBoxProps>`
         (-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))
     ) {
         ${({ $background }) =>
-            $background ? `background-color: ${$background};` : ''}
+            $background ? `background: ${$background};` : ''}
     }
 `
 

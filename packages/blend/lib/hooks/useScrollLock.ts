@@ -126,9 +126,7 @@ const applyScrollLock = () => {
 
     if (scrollbarWidth > 0) {
         const currentPaddingRight =
-            parseFloat(
-                window.getComputedStyle(document.body).paddingRight
-            ) || 0
+            parseFloat(window.getComputedStyle(document.body).paddingRight) || 0
         document.body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`
     }
 
