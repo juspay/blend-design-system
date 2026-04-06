@@ -38,13 +38,13 @@ export interface DottedMapProps<
 }
 
 export function DottedMap<M extends Marker = Marker>({
-    width = 172,
-    height = 80,
+    width = 280,
+    height = 100,
     mapSamples = 5000,
     markers = [],
     dotColor = 'currentColor',
     markerColor = '#FF6900',
-    dotRadius = 0.25,
+    dotRadius = 0.30,
     stagger = true,
     pulse = false,
     renderMarkerOverlay,
