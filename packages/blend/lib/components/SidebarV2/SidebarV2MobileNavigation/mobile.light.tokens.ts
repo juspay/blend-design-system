@@ -10,8 +10,8 @@ export const getMobileNavigationV2LightTokens = (
     const baseTokens: MobileNavigationV2TokenType = {
         container: {
             zIndex: foundationToken.zIndex[1100],
-            backgroundColor: foundationToken.colors.gray[0],
-            opacity: 0.72,
+            backgroundColor: `${foundationToken.colors.gray[0]}B8`,
+            background: `${foundationToken.colors.gray[0]}B3`,
             border: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             borderWidth: foundationToken.border.width[1],
             borderRadius: foundationToken.border.radius[24],
@@ -55,6 +55,7 @@ export const getMobileNavigationV2LightTokens = (
                 height: foundationToken.unit[20],
                 borderRadius: foundationToken.border.radius[12],
                 transition: 'color 0.2s ease',
+                strokeWidth: 1.5,
             },
             text: {
                 fontSize: foundationToken.font.size.body.sm.fontSize,
@@ -62,7 +63,7 @@ export const getMobileNavigationV2LightTokens = (
                 textAlign: 'center',
             },
         },
-        rowPrimaryAction: {
+        primaryAction: {
             width: foundationToken.unit[48],
             height: foundationToken.unit[48],
             borderRadius: foundationToken.border.radius[28],
@@ -72,6 +73,7 @@ export const getMobileNavigationV2LightTokens = (
             icon: {
                 width: foundationToken.unit[24],
                 height: foundationToken.unit[24],
+                strokeWidth: 1.83222,
             },
         },
     }

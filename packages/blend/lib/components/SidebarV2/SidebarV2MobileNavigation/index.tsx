@@ -2,6 +2,7 @@ import {
     forwardRef,
     useCallback,
     useEffect,
+    useId,
     useMemo,
     useState,
     type ReactNode,
@@ -9,7 +10,7 @@ import {
 import styled from 'styled-components'
 import Block from '../../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import type { SidebarV2MobileNavigationProps } from '../types'
+import type { SidebarV2MobileNavigationProps } from './types'
 import type { MobileNavigationV2TokenType } from './mobile.tokens'
 import {
     getMobileNavigationFillerCount,
@@ -19,18 +20,22 @@ import {
     splitPrimaryItems,
     getSidebarV2CollapsedMobilePadding,
 } from './utils'
-import { useItemSelection, useOrderedItems } from './hooks'
+import {
+    useItemSelection,
+    useMobileNavigationViewportHeight,
+    useOrderedItems,
+} from './hooks'
 import MobileNavigationItem from './MobileNavigationItem'
 import PrimaryActionButton from './PrimaryActionButton'
 import MoreButton from './MoreButton'
 
-const PRIMARY_VISIBLE_LIMIT = 5
-const VIEWPORT_HEIGHT_MULTIPLIER = 0.85
-
-const FloatingNavContainer = styled(Block)<{
+type FloatingNavBoxProps = {
     $tokens: MobileNavigationV2TokenType
     $backgroundColor: string
-}>`
+    $background?: string
+}
+
+const FloatingNavContainer = styled(Block)<FloatingNavBoxProps>`
     position: fixed;
     bottom: 0;
     left: 0;
@@ -48,6 +53,13 @@ const FloatingNavContainer = styled(Block)<{
     will-change: transform, max-height;
     display: flex;
     flex-direction: column;
+
+    @supports (
+        (-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))
+    ) {
+        ${({ $background }) =>
+            $background ? `background-color: ${$background};` : ''}
+    }
 `
 
 const ScrollableContent = styled(Block)`
@@ -64,6 +76,9 @@ const ScrollableContent = styled(Block)`
     scrollbar-width: none;
 `
 
+const PRIMARY_VISIBLE_LIMIT = 5
+const VIEWPORT_HEIGHT_MULTIPLIER = 0.85
+
 const SidebarV2MobileNavigation = forwardRef<
     HTMLDivElement,
     SidebarV2MobileNavigationProps
@@ -77,39 +92,14 @@ const SidebarV2MobileNavigation = forwardRef<
         },
         ref
     ) => {
+        const baseId = useId()
+        const secondaryNavigationRegionId = `${baseId}-secondary-mobile-nav`
+
         const tokens = useResponsiveTokens<MobileNavigationV2TokenType>(
             'MOBILE_NAVIGATION_V2'
         )
 
-        const backgroundColor = useMemo(() => {
-            const base = String(tokens.container.backgroundColor ?? '')
-            const opacity =
-                typeof tokens.container.opacity === 'number'
-                    ? tokens.container.opacity
-                    : 1
-
-            if (!base.startsWith('#')) return base
-            const hex = base.replace('#', '')
-            if (hex.length !== 6) return base
-
-            const r = Number.parseInt(hex.slice(0, 2), 16)
-            const g = Number.parseInt(hex.slice(2, 4), 16)
-            const b = Number.parseInt(hex.slice(4, 6), 16)
-            return `rgba(${r}, ${g}, ${b}, ${opacity})`
-        }, [tokens.container.backgroundColor, tokens.container.opacity])
-
-        const [viewportHeight, setViewportHeight] = useState<
-            number | undefined
-        >(() =>
-            typeof window === 'undefined' ? undefined : window.innerHeight
-        )
-
-        useEffect(() => {
-            if (typeof window === 'undefined') return
-            const handleResize = () => setViewportHeight(window.innerHeight)
-            window.addEventListener('resize', handleResize)
-            return () => window.removeEventListener('resize', handleResize)
-        }, [])
+        const viewportHeight = useMobileNavigationViewportHeight()
 
         const [orderedItems, setOrderedItems] = useOrderedItems(items)
 
@@ -133,6 +123,7 @@ const SidebarV2MobileNavigation = forwardRef<
         const floatingPadding = tokens.layout.floatingPadding
         const safeAreaOffset = parseUnitValue(tokens.layout.safeAreaOffset)
         const floatingMarginValue = parseUnitValue(floatingPadding)
+        const containerBorder = parseUnitValue(tokens.container.borderWidth)
 
         const collapsedHeight = useMemo(
             () => parseUnitValue(getSidebarV2CollapsedMobilePadding(tokens)),
@@ -159,6 +150,7 @@ const SidebarV2MobileNavigation = forwardRef<
             const totalExpandedHeight =
                 totalContentHeight +
                 containerPaddingY * 2 +
+                containerBorder +
                 floatingMarginValue +
                 safeAreaOffset
 
@@ -174,6 +166,7 @@ const SidebarV2MobileNavigation = forwardRef<
             collapsedHeight,
             floatingMarginValue,
             safeAreaOffset,
+            containerBorder,
         ])
 
         const navigationHeight = useMemo(
@@ -261,6 +254,10 @@ const SidebarV2MobileNavigation = forwardRef<
                     <MoreButton
                         key="sidebar-v2-mobile-more"
                         tokens={tokens}
+                        isExpanded={isExpanded}
+                        secondaryNavigationRegionId={
+                            secondaryNavigationRegionId
+                        }
                         onClick={toggleExpansion}
                     />
                 )
@@ -277,14 +274,23 @@ const SidebarV2MobileNavigation = forwardRef<
             primaryActionButtonProps,
             handleItemSelect,
             toggleExpansion,
+            isExpanded,
+            secondaryNavigationRegionId,
         ])
 
         return (
             <FloatingNavContainer
                 ref={ref}
+                as="nav"
                 $tokens={tokens}
-                $backgroundColor={backgroundColor}
+                $backgroundColor={String(tokens.container.backgroundColor)}
+                $background={
+                    tokens.container.background
+                        ? String(tokens.container.background)
+                        : undefined
+                }
                 maxHeight={navigationHeight}
+                aria-label="App navigation"
                 style={{
                     marginBottom: `calc(${safeAreaOffset}px + ${floatingPadding})`,
                     marginLeft: floatingPadding,
@@ -316,61 +322,83 @@ const SidebarV2MobileNavigation = forwardRef<
                         {primaryRowElements}
                     </Block>
 
-                    {isExpanded &&
-                        secondaryRows.map((row, rowIndex) => {
-                            const fillerCount = getMobileNavigationFillerCount(
-                                row.length,
-                                PRIMARY_VISIBLE_LIMIT
-                            )
+                    {layout.hasSecondaryItems && (
+                        <Block
+                            id={secondaryNavigationRegionId}
+                            role="region"
+                            aria-label="More navigation options"
+                            aria-hidden={!isExpanded}
+                            display={isExpanded ? 'flex' : 'none'}
+                            flexDirection="column"
+                            width="100%"
+                            gap={tokens.layout.gap}
+                        >
+                            {isExpanded &&
+                                secondaryRows.map((row, rowIndex) => {
+                                    const fillerCount =
+                                        getMobileNavigationFillerCount(
+                                            row.length,
+                                            PRIMARY_VISIBLE_LIMIT
+                                        )
 
-                            const rowElements: ReactNode[] = [
-                                ...row.map((item, index) => (
-                                    <MobileNavigationItem
-                                        key={`${item.label}-secondary-${rowIndex}-${index}`}
-                                        item={item}
-                                        index={
-                                            PRIMARY_VISIBLE_LIMIT +
-                                            rowIndex * PRIMARY_VISIBLE_LIMIT +
-                                            index
-                                        }
-                                        tokens={tokens}
-                                        onSelect={(selectedItem) =>
-                                            handleItemSelect(selectedItem, true)
-                                        }
-                                    />
-                                )),
-                                ...Array.from({ length: fillerCount }).map(
-                                    (_, fillerIndex) => (
+                                    const rowElements: ReactNode[] = [
+                                        ...row.map((item, index) => (
+                                            <MobileNavigationItem
+                                                key={`${item.label}-secondary-${rowIndex}-${index}`}
+                                                item={item}
+                                                index={
+                                                    index +
+                                                    rowIndex * row.length
+                                                }
+                                                tokens={tokens}
+                                                onSelect={(selectedItem) =>
+                                                    handleItemSelect(
+                                                        selectedItem,
+                                                        true
+                                                    )
+                                                }
+                                            />
+                                        )),
+                                        ...Array.from({
+                                            length: fillerCount,
+                                        }).map((_, fillerIndex) => (
+                                            <Block
+                                                key={`secondary-row-${rowIndex}-filler-${fillerIndex}`}
+                                                width={tokens.item.width}
+                                                height={tokens.item.height}
+                                                flexShrink={0}
+                                                aria-hidden="true"
+                                            />
+                                        )),
+                                    ]
+
+                                    return (
                                         <Block
-                                            key={`secondary-row-${rowIndex}-filler-${fillerIndex}`}
-                                            width={tokens.item.width}
-                                            height={tokens.item.height}
+                                            key={`secondary-row-${rowIndex}`}
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            width="100%"
+                                            paddingTop={
+                                                tokens.layout.rowPaddingTop
+                                            }
+                                            paddingRight={
+                                                tokens.layout.rowPaddingRight
+                                            }
+                                            paddingBottom={
+                                                tokens.layout.rowPaddingBottom
+                                            }
+                                            paddingLeft={
+                                                tokens.layout.rowPaddingLeft
+                                            }
                                             flexShrink={0}
-                                            aria-hidden="true"
-                                        />
+                                        >
+                                            {rowElements}
+                                        </Block>
                                     )
-                                ),
-                            ]
-
-                            return (
-                                <Block
-                                    key={`secondary-row-${rowIndex}`}
-                                    display="flex"
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    width="100%"
-                                    paddingTop={tokens.layout.rowPaddingTop}
-                                    paddingRight={tokens.layout.rowPaddingRight}
-                                    paddingBottom={
-                                        tokens.layout.rowPaddingBottom
-                                    }
-                                    paddingLeft={tokens.layout.rowPaddingLeft}
-                                    flexShrink={0}
-                                >
-                                    {rowElements}
-                                </Block>
-                            )
-                        })}
+                                })}
+                        </Block>
+                    )}
                 </ScrollableContent>
             </FloatingNavContainer>
         )

@@ -1,6 +1,35 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { SidebarV2MobileNavigationItem } from '../types'
+import type { SidebarV2MobileNavigationItem } from './types'
 import { swapItemsByLabel, updateItemProperties } from './utils'
+
+const readViewportHeight = (): number =>
+    window.visualViewport?.height ?? window.innerHeight
+
+export const useMobileNavigationViewportHeight = () => {
+    const [viewportHeight, setViewportHeight] = useState<number | undefined>(
+        () => (typeof window === 'undefined' ? undefined : readViewportHeight())
+    )
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+
+        const update = () => setViewportHeight(readViewportHeight())
+        update()
+
+        window.addEventListener('resize', update, { passive: true })
+        const vv = window.visualViewport
+        vv?.addEventListener('resize', update, { passive: true })
+        vv?.addEventListener('scroll', update, { passive: true })
+
+        return () => {
+            window.removeEventListener('resize', update)
+            vv?.removeEventListener('resize', update)
+            vv?.removeEventListener('scroll', update)
+        }
+    }, [])
+
+    return viewportHeight
+}
 
 export const useOrderedItems = <T extends { label: string }>(items: T[]) => {
     const [orderedItems, setOrderedItems] = useState<T[]>(() => items)

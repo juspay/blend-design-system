@@ -18,8 +18,10 @@ export type MobileNavigationV2TokenType = {
      */
     container: {
         zIndex: CSSObject['zIndex']
+        /** Base/fallback dock fill; use a color that already includes alpha (e.g. `#RRGGBBAA`). */
         backgroundColor: CSSObject['backgroundColor']
-        opacity: CSSObject['opacity']
+        /** Optional fill when `backdrop-filter` is supported (typically slightly lower alpha). */
+        background?: CSSObject['background']
         border: CSSObject['border']
         borderWidth: CSSObject['borderWidth']
         borderRadius: CSSObject['borderRadius']
@@ -58,6 +60,8 @@ export type MobileNavigationV2TokenType = {
             height: CSSObject['height']
             borderRadius: CSSObject['borderRadius']
             transition: CSSObject['transition']
+            /** SVG stroke width for Lucide-style icons. */
+            strokeWidth: number
         }
         text: {
             fontSize: CSSObject['fontSize']
@@ -65,14 +69,18 @@ export type MobileNavigationV2TokenType = {
             textAlign: CSSObject['textAlign']
         }
     }
-    rowPrimaryAction: {
+    primaryAction: {
         width: CSSObject['width']
         height: CSSObject['height']
         borderRadius: CSSObject['borderRadius']
         background: CSSObject['background']
         boxShadow: CSSObject['boxShadow']
         color: CSSObject['color']
-        icon: { width: CSSObject['width']; height: CSSObject['height'] }
+        icon: {
+            width: CSSObject['width']
+            height: CSSObject['height']
+            strokeWidth: number
+        }
     }
 }
 

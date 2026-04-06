@@ -16,6 +16,7 @@ import type { SidebarV2Props } from './types'
 import { SecondarySidebar } from './SecondarySidebar'
 import SidebarV2Content from './SidebarV2Content'
 import { TopbarV2 } from '../TopbarV2'
+import type { ResponsiveTopbarV2Tokens } from '../TopbarV2/topbarV2.tokens'
 import { SectionStateContext } from '../Directory/Section'
 import SidebarV2MobileNavigation from './SidebarV2MobileNavigation'
 import { getSidebarV2CollapsedMobilePadding } from './SidebarV2MobileNavigation/utils'
@@ -78,6 +79,8 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             useResponsiveTokens<MobileNavigationV2TokenType>(
                 'MOBILE_NAVIGATION_V2'
             )
+        const topbarTokens =
+            useResponsiveTokens<ResponsiveTopbarV2Tokens>('TOPBARV2')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
         const isControlled = isControlledSidebarV2(controlledIsExpanded)
@@ -408,7 +411,9 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                             zIndex={tokens.header.zIndex}
                             style={getTopbarV2Styles(
                                 enableTopbarAutoHide,
-                                showTopbar
+                                showTopbar,
+                                topbarTokens?.[isSmallScreen ? 'sm' : 'lg']
+                                    ?.height
                             )}
                         >
                             <TopbarV2

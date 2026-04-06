@@ -1,4 +1,4 @@
-import type { SidebarV2MobileNavigationItem } from '../types'
+import type { SidebarV2MobileNavigationItem } from './types'
 import type { MobileNavigationV2TokenType } from './mobile.tokens'
 
 export const parseUnitValue = (value: string | number | undefined): number => {

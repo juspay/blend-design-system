@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import type { DirectoryData, NavbarItem } from '../Directory/types'
+import type { DirectoryData } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
 
 export enum SidebarV2StateChange {
@@ -57,16 +57,7 @@ export type SidebarV2Props = {
     defaultActiveItem?: string | null
 }
 
-export type SidebarV2MobileNavigationItem = NavbarItem & {
-    sectionLabel?: string
-}
-
-export type SidebarV2MobileNavigationProps = {
-    items: SidebarV2MobileNavigationItem[]
-    onHeightChange?: (height: string) => void
-    showPrimaryActionButton?: boolean
-    primaryActionButtonProps?: Omit<
-        ButtonHTMLAttributes<HTMLButtonElement>,
-        'type'
-    >
-}
+export type {
+    SidebarV2MobileNavigationItem,
+    SidebarV2MobileNavigationProps,
+} from './SidebarV2MobileNavigation/types'
