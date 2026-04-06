@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import type { DirectoryData, NavbarItem } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
 
@@ -20,7 +20,7 @@ export type SecondarySidebarInfo = {
     items: SecondarySidebarItem[]
     selected: string
     onSelect: (value: string) => void
-    buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>
+    buttonProps?: ButtonHTMLAttributes<HTMLButtonElement>
     /**
      * Optional bottom slot for actions like settings/help/profile.
      * Renders pinned at the bottom of the rail.
@@ -49,7 +49,7 @@ export type SidebarV2Props = {
     defaultIsExpanded?: boolean
     showPrimaryActionButton?: boolean
     primaryActionButtonProps?: Omit<
-        React.ButtonHTMLAttributes<HTMLButtonElement>,
+        ButtonHTMLAttributes<HTMLButtonElement>,
         'type'
     >
     activeItem?: string | null
@@ -66,7 +66,7 @@ export type SidebarV2MobileNavigationProps = {
     onHeightChange?: (height: string) => void
     showPrimaryActionButton?: boolean
     primaryActionButtonProps?: Omit<
-        React.ButtonHTMLAttributes<HTMLButtonElement>,
+        ButtonHTMLAttributes<HTMLButtonElement>,
         'type'
     >
 }

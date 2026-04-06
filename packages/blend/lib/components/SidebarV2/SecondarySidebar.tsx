@@ -97,6 +97,8 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
                                 onSelect?.(item.value)
                                 buttonProps?.onClick?.(e)
                             }}
+                            aria-label={`Select tenant: ${item.label}`}
+                            aria-pressed={isSelected(item.value)}
                         >
                             <span aria-hidden="true">{item.icon}</span>
                         </PrimitiveButton>

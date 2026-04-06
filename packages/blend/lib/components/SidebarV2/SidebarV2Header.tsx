@@ -2,9 +2,8 @@ import { type ReactNode } from 'react'
 import { PanelsTopLeft } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { SingleSelect } from '../SingleSelect'
-import { SelectMenuSize } from '../SingleSelect'
-import { SelectMenuVariant } from '../Select/types'
+import { SingleSelectV2 } from '../SingleSelectV2'
+import { SingleSelectV2Size, SingleSelectV2Variant } from '../SingleSelectV2'
 import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { VisuallyHidden } from '../../utils/accessibility'
@@ -47,21 +46,21 @@ const SidebarV2Header = ({
     const headerSlot = sidebarTopSlot ? (
         sidebarTopSlot
     ) : merchantInfo ? (
-        <SingleSelect
+        <SingleSelectV2
             helpIconText=""
             required={false}
             placeholder="Select Merchant"
-            variant={SelectMenuVariant.NO_CONTAINER}
-            size={SelectMenuSize.SMALL}
-            items={merchantInfo.items.map((item) => ({
-                items: [
-                    {
+            variant={SingleSelectV2Variant.NO_CONTAINER}
+            size={SingleSelectV2Size.SM}
+            items={[
+                {
+                    items: merchantInfo.items.map((item) => ({
                         label: item.label,
                         value: item.value,
                         slot1: item.icon,
-                    },
-                ],
-            }))}
+                    })),
+                },
+            ]}
             selected={merchantInfo.selected}
             onSelect={merchantInfo.onSelect}
         />

@@ -1,3 +1,4 @@
+import type { ButtonHTMLAttributes } from 'react'
 import { Plus } from 'lucide-react'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import type { MobileNavigationV2TokenType } from './mobile.tokens'
@@ -8,7 +9,7 @@ const PrimaryActionButton = ({
     buttonProps,
 }: {
     tokens: MobileNavigationV2TokenType
-    buttonProps?: Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'>
+    buttonProps?: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>
 }) => {
     return (
         <PrimitiveButton
