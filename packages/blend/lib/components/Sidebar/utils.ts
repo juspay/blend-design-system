@@ -146,6 +146,10 @@ export const isControlledSidebar = (
 export const getMobileNavigationItems = (
     directory: DirectoryData[]
 ): MobileNavigationItem[] => {
+    if (!directory || !Array.isArray(directory)) {
+        return []
+    }
+
     return directory.flatMap((section) => {
         if (!section.items?.length) return []
 
