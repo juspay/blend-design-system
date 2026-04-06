@@ -28,7 +28,7 @@ const SharedLayout = ({
                 <div className="w-full">
                     <Navbar />
                     <div className="border-t border-border w-full">
-                        <div className="flex justify-center items-start max-w-360 mx-auto w-full">
+                        <div className="flex justify-center items-start lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto w-full">
                             <main className="flex-1 min-w-0 border-x border-border">
                                 {children}
                             </main>

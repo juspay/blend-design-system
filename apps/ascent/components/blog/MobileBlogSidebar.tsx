@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { PanelLeft, X } from 'lucide-react'
+import { Info, X } from 'lucide-react'
 import { Drawer } from 'vaul'
 import { BlogPost } from '@/lib/types'
 import { formatDate } from '@/app/blog/utils/utils'
@@ -45,7 +45,7 @@ export function MobileBlogSidebarTrigger({
                     className="flex items-center gap-1.5 text-sm text-nav-section-text-foreground hover:text-foreground transition-colors"
                     aria-label="Open article info"
                 >
-                    <PanelLeft size={12} />
+                    <Info size={12} />
                 </button>
             </Drawer.Trigger>
             <Drawer.Portal>
@@ -66,8 +66,28 @@ export function MobileBlogSidebarTrigger({
                             </Drawer.Close>
                         </div>
                         <div className="flex-1 overflow-y-auto">
+                            {/* Custom TOC with proper click handling */}
+                            <ul className="space-y-4 relative py-6">
+                                {filteredItems.map((item) => (
+                                    <li key={item.id} className="relative">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                scrollToSection(item.id)
+                                            }
+                                            className={cn(
+                                                'text-left w-full px-4 text-sm transition-colors font-mono line-clamp-1 cursor-pointer relative text-muted-foreground hover:text-foreground'
+                                            )}
+                                        >
+                                            <span className="pl-3">
+                                                {item.text}
+                                            </span>
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
                             {/* Meta info */}
-                            <div className="py-6 border-b border-border">
+                            <div className="py-6 border-t border-border">
                                 <div className="flex flex-col gap-6 px-6 py-4">
                                     <div className="flex flex-col gap-1.5">
                                         <p className="font-mono text-sm uppercase tracking-tight text-nav-section-text">
@@ -97,26 +117,6 @@ export function MobileBlogSidebarTrigger({
                                     </div>
                                 </div>
                             </div>
-                            {/* Custom TOC with proper click handling */}
-                            <ul className="space-y-4 relative py-6">
-                                {filteredItems.map((item) => (
-                                    <li key={item.id} className="relative">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                scrollToSection(item.id)
-                                            }
-                                            className={cn(
-                                                'text-left w-full px-4 text-sm transition-colors font-mono line-clamp-1 cursor-pointer relative text-muted-foreground hover:text-foreground'
-                                            )}
-                                        >
-                                            <span className="pl-3">
-                                                {item.text}
-                                            </span>
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
                     </div>
                 </Drawer.Content>

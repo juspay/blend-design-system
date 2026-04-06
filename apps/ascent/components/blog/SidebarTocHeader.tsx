@@ -31,7 +31,9 @@ export default function SidebarTocHeader({ title, headings }: Props) {
         <div className="sticky top-0 px-2">
             {showTitle && (
                 <div className="pt-4 px-5">
-                    <h2 className="font-manrope line-clamp-2">{title}</h2>
+                    <h2 className="font-manrope line-clamp-2 text-2xl font-medium">
+                        {title}
+                    </h2>
                 </div>
             )}
             <TableOfContents

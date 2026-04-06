@@ -26,7 +26,7 @@ export default function Navbar() {
     )
 
     return (
-        <header className="max-w-360 mx-auto relative z-100">
+        <header className="lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto relative z-100">
             <div className="mx-auto px-4 sm:px-6.25 py-5 h-15 flex items-center justify-between border-x border-border">
                 <Link
                     href={ROUTES.home}
