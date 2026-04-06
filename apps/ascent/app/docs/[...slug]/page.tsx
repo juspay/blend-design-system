@@ -230,7 +230,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
         >
             <div className="flex w-full">
                 <aside
-                    className="hidden lg:block w-52 max-w-52 shrink-0 transition-none"
+                    className="hidden lg:block w-56 max-w-56 shrink-0 transition-none"
                     style={asideStyle}
                 >
                     <Sidebar items={sidebarItems} baseRoute="/docs" />
@@ -246,7 +246,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
                     />
                 </div>
                 <aside
-                    className="w-52 max-w-52 shrink-0 hidden xl:block transition-none"
+                    className="w-56 max-w-56 shrink-0 hidden xl:block transition-none"
                     style={asideStyle}
                 >
                     <div className="px-5 py-3">

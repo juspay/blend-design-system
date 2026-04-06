@@ -133,7 +133,7 @@ export default function BlogPostWithTOC({
             </div>
 
             {/* Sidebar - Desktop only */}
-            <aside className="hidden lg:flex border-l border-border w-52 shrink-0 self-stretch flex-col">
+            <aside className="hidden lg:flex border-l border-border w-56 shrink-0 self-stretch flex-col">
                 {/* Meta info */}
                 <div className="py-6 border-b border-border">
                     <div className="flex flex-col gap-6 px-8 py-4">
