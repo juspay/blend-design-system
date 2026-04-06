@@ -1,7 +1,6 @@
 'use client'
-
 import { useState, useEffect, useRef } from 'react'
-import { X } from 'lucide-react'
+import { XIcon } from '@phosphor-icons/react/dist/ssr'
 import DitherCanvas from '../effects/DitherCanvas'
 import CollaborativeCursor from '../effects/CollaborativeCursor'
 import { FigmaIconSmall, DesignerIcon, ArrowRightIcon } from '../../../icons'
@@ -76,7 +75,7 @@ export default function DesignerSection() {
                     <span className="text-sm text-muted-foreground">
                         Designers
                     </span>
-                    <X size={14} className="text-muted-foreground" />
+                    <XIcon size={14} className="text-muted-foreground" />
                 </div>
             </div>
 
@@ -121,7 +120,10 @@ export default function DesignerSection() {
                             <span className="text-sm font-semibold text-foreground">
                                 Blend Design System
                             </span>
-                            <X size={14} className="text-muted-foreground" />
+                            <XIcon
+                                size={14}
+                                className="text-muted-foreground"
+                            />
                         </div>
                         <div className="space-y-2 mb-6">
                             <div className="h-2.5 bg-secondary rounded w-4/5" />

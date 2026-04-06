@@ -1,6 +1,6 @@
 import React from 'react'
 import { PageBreadcrumb } from '@/components/Navigation/index'
-import { OctagonAlert } from 'lucide-react'
+import { WarningOctagonIcon } from '@phosphor-icons/react/dist/ssr'
 import { DocsPageProps } from '@/lib/types'
 import { GithubRoundedIcon, StoryBookIcon } from '@/icons'
 import { AsideStyle } from '../layout'
@@ -64,7 +64,7 @@ function DocsPage({
                                     className="w-full xs:w-auto flex items-center gap-1.5 text-sm text-primary bg-secondary border border-border rounded-lg px-3 py-1 transition-colors hover:bg-muted"
                                     data-nav-content
                                 >
-                                    <OctagonAlert className="w-3.5 h-3.5 text-primary stroke-3" />
+                                    <WarningOctagonIcon className="w-3.5 h-3.5 text-primary stroke-3" />
                                     <span className="font-medium text-primary">
                                         Report an issue
                                     </span>

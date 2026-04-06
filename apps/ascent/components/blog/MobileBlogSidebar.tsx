@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Info, X } from 'lucide-react'
+import { InfoIcon, XIcon } from '@phosphor-icons/react/dist/ssr'
 import { Drawer } from 'vaul'
 import { BlogPost } from '@/lib/types'
 import { formatDate } from '@/app/blog/utils/utils'
@@ -45,7 +45,7 @@ export function MobileBlogSidebarTrigger({
                     className="flex items-center gap-1.5 text-sm text-nav-section-text-foreground hover:text-foreground transition-colors"
                     aria-label="Open article info"
                 >
-                    <Info size={12} />
+                    <InfoIcon size={15} />
                 </button>
             </Drawer.Trigger>
             <Drawer.Portal>
@@ -61,7 +61,7 @@ export function MobileBlogSidebarTrigger({
                                     className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                                     aria-label="Close menu"
                                 >
-                                    <X size={18} />
+                                    <XIcon size={18} />
                                 </button>
                             </Drawer.Close>
                         </div>

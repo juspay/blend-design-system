@@ -3,7 +3,7 @@ import { useState } from 'react'
 import type { ChangelogCardProps } from '@/lib/types'
 import Link from 'next/link'
 import { cn } from '@/lib'
-import { ArrowUpRight, ChevronDown } from 'lucide-react'
+import { CaretRightIcon, CaretDownIcon } from '@phosphor-icons/react/dist/ssr'
 import { Timeline } from './Timeline'
 
 export const ChangelogCard = ({
@@ -41,7 +41,7 @@ export const ChangelogCard = ({
             >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
                     <div className="flex items-center gap-2">
-                        <ChevronDown
+                        <CaretDownIcon
                             className={cn(
                                 'w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0',
                                 isExpanded ? 'rotate-0' : '-rotate-90'
@@ -67,7 +67,7 @@ export const ChangelogCard = ({
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     PR
-                                    <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                                    <CaretRightIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                                 </Link>
                             )
                         })}
@@ -85,7 +85,7 @@ export const ChangelogCard = ({
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     Commit
-                                    <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                                    <CaretRightIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                                 </Link>
                             )
                         })}

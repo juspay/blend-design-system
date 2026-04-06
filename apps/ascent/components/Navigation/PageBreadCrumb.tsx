@@ -1,5 +1,5 @@
 import { cn } from '@/lib'
-import { Undo2 } from 'lucide-react'
+import { ArrowUUpLeftIcon } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 
 export const PageBreadcrumb = ({
@@ -41,7 +41,7 @@ export const PageBreadcrumb = ({
                                     data-nav-content
                                 >
                                     {index === 0 && (
-                                        <Undo2 className="w-3.5 h-3.5 shrink-0" />
+                                        <ArrowUUpLeftIcon className="w-3.5 h-3.5 shrink-0" />
                                     )}
                                     <span className="truncate">
                                         {item.label}
@@ -54,7 +54,7 @@ export const PageBreadcrumb = ({
                                     data-nav-content
                                 >
                                     {index === 0 && (
-                                        <Undo2 className="w-3.5 h-3.5" />
+                                        <ArrowUUpLeftIcon className="w-3.5 h-3.5" />
                                     )}
                                     <span>{item.label}</span>
                                 </Link>

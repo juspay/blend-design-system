@@ -122,7 +122,7 @@ export const Snippet = (code: string) => {
             <div className="overflow-x-auto">
                 <pre
                     data-code-snippet
-                    className="p-2 block whitespace-pre-wrap break-words"
+                    className="p-2 block whitespace-pre-wrap wrap-break-words"
                 >
                     {code || ''}
                 </pre>
@@ -136,7 +136,7 @@ export const Snippet = (code: string) => {
             <pre
                 data-code-snippet
                 dangerouslySetInnerHTML={{ __html: highlighted || code || '' }}
-                className="p-2 block whitespace-pre-wrap break-words"
+                className="p-2 block whitespace-pre-wrap wrap-break-words"
             ></pre>
         </div>
     )

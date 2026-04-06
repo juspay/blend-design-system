@@ -44,7 +44,7 @@ export function DottedMap<M extends Marker = Marker>({
     markers = [],
     dotColor = 'currentColor',
     markerColor = '#FF6900',
-    dotRadius = 0.30,
+    dotRadius = 0.3,
     stagger = true,
     pulse = false,
     renderMarkerOverlay,

@@ -1,6 +1,5 @@
 'use client'
-
-import { Moon, Sun } from 'lucide-react'
+import { SunIcon, MoonIcon } from '@phosphor-icons/react/dist/ssr'
 import { useEffect, useState } from 'react'
 
 export default function ThemeToggle() {
@@ -53,7 +52,7 @@ export default function ThemeToggle() {
     if (!mounted) {
         return (
             <button className="p-2 border border-border text-muted-foreground">
-                <Sun size={16} />
+                <SunIcon size={16} />
             </button>
         )
     }
@@ -65,7 +64,7 @@ export default function ThemeToggle() {
             className="p-2 border border-border text-muted-foreground hover:text-foreground transition-colors"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
-            {theme === 'light' ? <Sun size={16} /> : <Moon size={16} />}
+            {theme === 'light' ? <SunIcon size={16} /> : <MoonIcon size={16} />}
         </button>
     )
 }

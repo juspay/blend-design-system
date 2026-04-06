@@ -63,15 +63,15 @@ const BreadcrumbPreview = () => {
 
     return (
         <ComponentPreview ts={tsCode}>
-            <div className="space-y-6">
+            <div className="space-y-8">
                 <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">
+                    <h4 className="text-sm font-medium text-foreground mb-2 font-manrope">
                         Basic Breadcrumb with Icons
                     </h4>
                     <Breadcrumb items={breadcrumbItems} />
                 </div>
                 <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">
+                    <h4 className="text-sm font-medium text-foreground mb-2 font-manrope">
                         Long Path (Overflow Handling)
                     </h4>
                     <Breadcrumb items={longPathItems} />

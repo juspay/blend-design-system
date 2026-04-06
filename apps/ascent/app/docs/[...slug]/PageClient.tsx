@@ -1,7 +1,6 @@
 'use client'
-
 import { useState } from 'react'
-import { PanelLeft, X } from 'lucide-react'
+import { XIcon, SidebarSimpleIcon } from '@phosphor-icons/react/dist/ssr'
 import { Drawer } from 'vaul'
 import { TOCItem } from '../../../components/Navigation/TableOfContents'
 import { DocItem } from '../utils'
@@ -34,7 +33,7 @@ export const MobileSidebarTrigger: React.FC<MobileSidebarTriggerProps> = ({
                     className="flex items-center gap-1.5 text-sm text-nav-section-text-foreground hover:text-foreground transition-colors"
                     aria-label="Open navigation menu"
                 >
-                    <PanelLeft size={14} />
+                    <SidebarSimpleIcon size={14} />
                 </button>
             </Drawer.Trigger>
             <Drawer.Portal>
@@ -50,7 +49,7 @@ export const MobileSidebarTrigger: React.FC<MobileSidebarTriggerProps> = ({
                                     className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                                     aria-label="Close menu"
                                 >
-                                    <X size={18} />
+                                    <XIcon size={18} />
                                 </button>
                             </Drawer.Close>
                         </div>

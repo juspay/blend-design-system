@@ -1,8 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, ChevronDown } from 'lucide-react'
-import { CopyIcon } from '../../../icons'
+import {
+    CopyIcon,
+    CheckIcon,
+    CaretDownIcon,
+} from '@phosphor-icons/react/dist/ssr'
 
 const PACKAGE_MANAGERS = {
     npm: 'npm i',
@@ -49,7 +52,7 @@ export default function InstallCommand() {
                     </select>
 
                     <div className="pointer-events-none absolute inset-y-0 right-1.5 flex items-center mr-1">
-                        <ChevronDown size={12} className="text-foreground" />
+                        <CaretDownIcon size={12} className="text-foreground" />
                     </div>
                 </div>
             </div>
@@ -64,7 +67,7 @@ export default function InstallCommand() {
                     aria-label="Copy install command"
                 >
                     {copied ? (
-                        <Check size={14} className="text-gray-600" />
+                        <CheckIcon size={14} className="text-gray-600" />
                     ) : (
                         <CopyIcon />
                     )}

@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react'
+import { InfoIcon } from '@phosphor-icons/react/dist/ssr'
 import React from 'react'
 import Tooltip from '@/components/ui/Tooltip/Tooltip'
 import { cn } from '@/lib'
@@ -58,7 +58,7 @@ const TableBody = ({ data }: { data: TableCell[][] }) => {
                                     </span>
                                     {hasTooltip && (
                                         <Tooltip content={cell.hintText!}>
-                                            <Info
+                                            <InfoIcon
                                                 size={12}
                                                 className="shrink-0 mt-0.5 text-muted-foreground cursor-help"
                                             />

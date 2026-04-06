@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { BlogPost } from '@/lib/types'
 import { PageBreadcrumb } from '@/components/Navigation'
 import { formatDate, getCoverGradient } from '@/app/blog/utils'
-import { Undo2 } from 'lucide-react'
+import { ArrowUUpLeftIcon } from '@phosphor-icons/react/dist/ssr'
 import SidebarTocHeader from './SidebarTocHeader'
 import { AsideStyle } from '../layout'
 import { MobileBlogSidebarTrigger } from './MobileBlogSidebar'
@@ -123,7 +123,7 @@ export default function BlogPostWithTOC({
                                     href="/blog"
                                     className="flex items-center gap-2 text-base text-muted-foreground transition-colors hover:text-foreground"
                                 >
-                                    <Undo2 className="w-4 h-4" />
+                                    <ArrowUUpLeftIcon className="w-4 h-4 stroke-3" />
                                     <span>Done, go back</span>
                                 </Link>
                             </div>

@@ -1,4 +1,8 @@
-import { ExternalLink, X, FileCode } from 'lucide-react'
+import {
+    XIcon,
+    FileCodeIcon,
+    ArrowSquareOutIcon,
+} from '@phosphor-icons/react/dist/ssr'
 import CopyButton from './CopyButton'
 import Link from 'next/link'
 
@@ -7,11 +11,11 @@ export default function DeveloperSection() {
         <div className="border-r border-border px-6 lg:px-0">
             <div className="border-b border-border">
                 <div className="border-r border-border py-2 flex items-center gap-2.5 w-fit px-3">
-                    <FileCode className="text-muted-foreground" size={14} />
+                    <FileCodeIcon className="text-muted-foreground" size={14} />
                     <span className="font-mono text-sm text-muted-foreground">
                         developers.txt
                     </span>
-                    <X size={14} className="text-muted-foreground" />
+                    <XIcon size={14} className="text-muted-foreground" />
                 </div>
             </div>
 
@@ -49,7 +53,7 @@ export default function DeveloperSection() {
                                     <span className="underline">
                                         Developer Docs
                                     </span>
-                                    <ExternalLink size={12} />
+                                    <ArrowSquareOutIcon size={12} />
                                 </Link>
                             </div>
                         </div>

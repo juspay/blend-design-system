@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { XIcon, ListIcon } from '@phosphor-icons/react/dist/ssr'
 import { Drawer } from 'vaul'
 import { GitHubIcon, FigmaIcon } from '../../icons'
 import {
@@ -128,7 +128,7 @@ export default function Navbar() {
                                 className="p-2 border border-border text-muted-foreground hover:text-foreground transition-colors"
                                 aria-label="Open menu"
                             >
-                                <Menu size={18} />
+                                <ListIcon size={18} />
                             </button>
                         </Drawer.Trigger>
                         <Drawer.Portal>
@@ -144,7 +144,7 @@ export default function Navbar() {
                                                 className="p-2 text-muted-foreground hover:text-foreground transition-colors"
                                                 aria-label="Close menu"
                                             >
-                                                <X size={18} />
+                                                <XIcon size={18} />
                                             </button>
                                         </Drawer.Close>
                                     </div>

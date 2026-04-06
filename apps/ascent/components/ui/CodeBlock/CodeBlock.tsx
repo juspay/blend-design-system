@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Check } from 'lucide-react'
+import { CheckIcon } from '@phosphor-icons/react/dist/ssr'
 import { highlight } from 'sugar-high'
 
 const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {
@@ -38,7 +38,7 @@ const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {
                     }
                 >
                     {isCopied ? (
-                        <Check
+                        <CheckIcon
                             size={14}
                             className="dark:text-green-500 text-green-600"
                         />

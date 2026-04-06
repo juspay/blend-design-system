@@ -1,7 +1,6 @@
 'use client'
-
 import { useState } from 'react'
-import { Copy, Check } from 'lucide-react'
+import { CopyIcon, CheckIcon } from '@phosphor-icons/react/dist/ssr'
 
 export default function CopyButton({ text }: { text: string }) {
     const [copied, setCopied] = useState(false)
@@ -18,9 +17,9 @@ export default function CopyButton({ text }: { text: string }) {
             className="p-1.5 hover:bg-secondary rounded transition-colors text-muted-foreground"
         >
             {copied ? (
-                <Check size={14} className="text-red-600" />
+                <CheckIcon size={14} className="text-red-600" />
             ) : (
-                <Copy size={14} />
+                <CopyIcon size={14} />
             )}
         </button>
     )
