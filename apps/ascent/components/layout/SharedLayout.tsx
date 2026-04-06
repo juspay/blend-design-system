@@ -3,6 +3,7 @@ import { GlobalKeyboardNavigationProvider } from '../index'
 import type { DocItem } from '@/docs/utils'
 import { TOCItem } from '../Navigation/TableOfContents'
 import { DynamicSnackbar } from '../ui/DynamicSnackBar'
+import { CommandSearch } from '../ui/CommandSearch'
 import { Navbar } from '../Navigation'
 
 export interface SharedLayoutProps {
@@ -42,6 +43,7 @@ const SharedLayout = ({
                 )}
             </div>
             <DynamicSnackbar />
+            <CommandSearch />
         </GlobalKeyboardNavigationProvider>
     )
 }
