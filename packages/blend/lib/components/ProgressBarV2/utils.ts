@@ -1,3 +1,4 @@
+import type { CSSObject } from 'styled-components'
 import type { ProgressBarV2TokenType } from './progressBarV2.tokens'
 import { ProgressBarV2Size } from './progressBarV2.types'
 
@@ -96,7 +97,11 @@ export const getCircularDimensions = (
     tokens: ProgressBarV2TokenType
 ) => {
     const circularSizeValue = tokens.circular.size[size]
-    const circularSize = String(circularSizeValue ?? 48)
+    // Preserve token type for width/height: numeric tokens stay numbers; avoid String(n) → unitless "n" in CSS.
+    const circularSize: CSSObject['width'] =
+        circularSizeValue === undefined || circularSizeValue === null
+            ? 48
+            : circularSizeValue
     const sizeNum = parseTokenValue(circularSizeValue, 48)
     const strokeWidth = parseTokenValue(tokens.circular.strokeWidth[size], 4)
     const radius = (sizeNum - strokeWidth) / 2
