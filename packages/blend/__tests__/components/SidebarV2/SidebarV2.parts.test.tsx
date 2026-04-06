@@ -3,11 +3,16 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '../../test-utils'
 import SidebarV2Content from '../../../lib/components/SidebarV2/SidebarV2Content'
 import type { SidebarV2TokensType } from '../../../lib/components/SidebarV2/sidebarV2.tokens'
+import type { DirectoryData } from '../../../lib/components/Directory/types'
 
 const mockTokens: SidebarV2TokensType = {
     container: {
+        zIndex: 10,
         backgroundColor: '#ffffff',
         borderRight: '1px solid #e0e0e0',
+        hoverPreview: {
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        },
         maxWidth: {
             withLeftPanel: '280px',
             withoutLeftPanel: '240px',
@@ -39,6 +44,7 @@ const mockTokens: SidebarV2TokensType = {
         },
     },
     header: {
+        zIndex: 10,
         backgroundColor: '#ffffff',
         paddingTop: '16px',
         paddingBottom: '16px',
@@ -46,6 +52,7 @@ const mockTokens: SidebarV2TokensType = {
         paddingRight: '16px',
         gap: '8px',
         borderBottom: '1px solid #e0e0e0',
+        borderBottomWidth: '1px',
         scrolledBorderColor: '#d0d0d0',
         toggleButton: {
             borderRadius: '8px',
@@ -67,6 +74,7 @@ const mockTokens: SidebarV2TokensType = {
         paddingRight: '8px',
     },
     footer: {
+        zIndex: 10,
         backgroundColor: '#ffffff',
         gap: '8px',
         paddingTop: '12px',
@@ -223,6 +231,58 @@ describe('SidebarV2 Parts', () => {
             )
 
             expect(screen.getByTestId('custom-top')).toBeInTheDocument()
+        })
+
+        it('renders directory sections when data is provided', () => {
+            const data: DirectoryData[] = [
+                {
+                    label: 'Main',
+                    items: [
+                        {
+                            label: 'Alpha',
+                            href: '/alpha',
+                        },
+                    ],
+                },
+            ]
+
+            render(
+                <SidebarV2Content
+                    isExpanded={true}
+                    isScrolled={false}
+                    sidebarCollapseKey="/"
+                    onToggle={() => {}}
+                    showTopBlur={false}
+                    showBottomBlur={false}
+                    data={data}
+                    idPrefix="test-"
+                    tokens={mockTokens}
+                />
+            )
+
+            expect(screen.getByText('Alpha')).toBeInTheDocument()
+        })
+
+        it('exposes the directory container as a labeled region for assistive tech', () => {
+            const { container } = render(
+                <SidebarV2Content
+                    isExpanded={true}
+                    isScrolled={false}
+                    sidebarCollapseKey="/"
+                    onToggle={() => {}}
+                    showTopBlur={false}
+                    showBottomBlur={false}
+                    data={[]}
+                    idPrefix="test-"
+                    tokens={mockTokens}
+                />
+            )
+
+            const region = container.querySelector(
+                '[data-directory-container][role="region"]'
+            )
+            expect(region).toBeInTheDocument()
+            expect(region).toHaveAttribute('aria-label', 'Navigation menu')
         })
     })
 })

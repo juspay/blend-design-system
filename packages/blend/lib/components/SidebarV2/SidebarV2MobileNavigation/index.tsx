@@ -289,9 +289,9 @@ const SidebarV2MobileNavigation = forwardRef<
                         ? String(tokens.container.background)
                         : undefined
                 }
-                maxHeight={navigationHeight}
                 aria-label="App navigation"
                 style={{
+                    maxHeight: navigationHeight,
                     marginBottom: `calc(${safeAreaOffset}px + ${floatingPadding})`,
                     marginLeft: floatingPadding,
                     marginRight: floatingPadding,

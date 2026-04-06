@@ -11,6 +11,9 @@ const mockTokens: SidebarV2TokensType = {
         zIndex: 10,
         backgroundColor: '#ffffff',
         borderRight: '1px solid #e0e0e0',
+        hoverPreview: {
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        },
         maxWidth: {
             withLeftPanel: '280px',
             withoutLeftPanel: '240px',
@@ -50,6 +53,7 @@ const mockTokens: SidebarV2TokensType = {
         paddingRight: '16px',
         gap: '8px',
         borderBottom: '1px solid #e0e0e0',
+        borderBottomWidth: '1px',
         scrolledBorderColor: '#d0d0d0',
         toggleButton: {
             borderRadius: '8px',
@@ -288,5 +292,36 @@ describe('SecondarySidebar', () => {
         )
 
         expect(container.querySelector('#custom-id')).toBeInTheDocument()
+    })
+
+    it('merges secondarySidebar.buttonProps onto item buttons and calls both handlers', async () => {
+        const user = userEvent.setup()
+        const onSelect = vi.fn()
+        const buttonOnClick = vi.fn()
+        const secondarySidebar: SecondarySidebarInfo = {
+            items: [{ label: 'App 1', value: 'app1', icon: <span>A1</span> }],
+            selected: '',
+            onSelect,
+            buttonProps: {
+                'data-testid': 'secondary-item-btn',
+                onClick: buttonOnClick,
+            },
+        }
+
+        render(
+            <SecondarySidebar
+                id="test-secondary"
+                secondarySidebar={secondarySidebar}
+                tokens={mockTokens}
+            />
+        )
+
+        const button = screen.getByTestId('secondary-item-btn')
+        await user.click(button)
+
+        await waitFor(() => {
+            expect(onSelect).toHaveBeenCalledWith('app1')
+            expect(buttonOnClick).toHaveBeenCalledTimes(1)
+        })
     })
 })

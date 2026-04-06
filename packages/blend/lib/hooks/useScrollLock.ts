@@ -18,7 +18,9 @@ let scrollX = 0
 let scrollY = 0
 let isLocked = false
 
-// stable handler refs (IMPORTANT)
+let activeLockOptions: UseScrollLockOptions | null = null
+
+// stable handler refs
 let wheelHandler: ((e: WheelEvent) => void) | null = null
 let touchHandler: ((e: TouchEvent) => void) | null = null
 let keydownHandler: ((e: KeyboardEvent) => void) | null = null
@@ -71,7 +73,6 @@ const createKeydownHandler = (options: UseScrollLockOptions) => {
             'PageDown',
             'Home',
             'End',
-            ' ',
         ]
 
         const target = e.target as HTMLElement
@@ -80,6 +81,16 @@ const createKeydownHandler = (options: UseScrollLockOptions) => {
             target.closest('input') ||
             target.closest('textarea') ||
             target.isContentEditable
+        ) {
+            return
+        }
+
+        const active = document.activeElement as HTMLElement | null
+        if (
+            active &&
+            (active.closest('input') ||
+                active.closest('textarea') ||
+                active.isContentEditable)
         ) {
             return
         }
@@ -93,9 +104,10 @@ const createKeydownHandler = (options: UseScrollLockOptions) => {
 const applyScrollLock = (options: UseScrollLockOptions) => {
     if (!isBrowser || isLocked) return
 
+    activeLockOptions = options
+
     const { strategy = 'overflow' } = options
 
-    // capture scroll ONLY once
     scrollX = window.scrollX
     scrollY = window.scrollY
 
@@ -130,7 +142,6 @@ const applyScrollLock = (options: UseScrollLockOptions) => {
         document.body.style.height = '100%'
     }
 
-    // create stable handlers
     wheelHandler = createWheelHandler(options)
     touchHandler = createTouchHandler(options)
     keydownHandler = createKeydownHandler(options)
@@ -142,10 +153,10 @@ const applyScrollLock = (options: UseScrollLockOptions) => {
     isLocked = true
 }
 
-const releaseScrollLock = (options: UseScrollLockOptions) => {
-    if (!isBrowser || !isLocked) return
+const releaseScrollLock = () => {
+    if (!isBrowser || !isLocked || !activeLockOptions) return
 
-    const { strategy = 'overflow', restoreScroll = true } = options
+    const { strategy = 'overflow', restoreScroll = true } = activeLockOptions
 
     if (wheelHandler) {
         document.removeEventListener('wheel', wheelHandler)
@@ -183,6 +194,7 @@ const releaseScrollLock = (options: UseScrollLockOptions) => {
     }
 
     isLocked = false
+    activeLockOptions = null
 }
 
 const useScrollLock = (
@@ -215,12 +227,7 @@ const useScrollLock = (
             lockCount = Math.max(0, lockCount - 1)
 
             if (lockCount === 0) {
-                releaseScrollLock({
-                    strategy,
-                    restoreScroll,
-                    disableKeyboardLock,
-                    allowScrollSelectors,
-                })
+                releaseScrollLock()
             }
         }
     }, [

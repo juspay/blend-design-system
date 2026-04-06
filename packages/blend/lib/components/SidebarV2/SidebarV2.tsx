@@ -398,10 +398,13 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                         id={skipToContentId}
                         role="main"
                         aria-label="Main content"
-                        paddingBottom={
+                        style={
                             shouldRenderMobileNavigation
-                                ? (mobileNavigationHeight ??
-                                  collapsedMobilePadding)
+                                ? {
+                                      paddingBottom:
+                                          mobileNavigationHeight ??
+                                          collapsedMobilePadding,
+                                  }
                                 : undefined
                         }
                     >

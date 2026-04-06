@@ -361,6 +361,22 @@ describe('SidebarV2 Mobile Navigation', () => {
         // Component should render without errors
         expect(screen.getByRole('main')).toBeInTheDocument()
     })
+
+    it('renders bottom mobile navigation when items are marked showOnMobile', () => {
+        render(
+            <SidebarV2 data={createMockDirectoryData()}>
+                <div>Content</div>
+            </SidebarV2>
+        )
+
+        expect(
+            screen.getByRole('navigation', { name: /app navigation/i })
+        ).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Home' })).toBeInTheDocument()
+        expect(
+            screen.getByRole('button', { name: 'Preferences' })
+        ).toBeInTheDocument()
+    })
 })
 
 describe('SidebarV2 Keyboard Navigation', () => {
