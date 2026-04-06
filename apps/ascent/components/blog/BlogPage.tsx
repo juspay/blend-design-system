@@ -81,7 +81,7 @@ export default function BlogPostWithTOC({
                         id="sidebar-meta"
                         className="border-b border-border pt-4 pb-5.25"
                     >
-                        <h1 className="text-primary font-manrope text-4xl sm:text-5xl md:text-6xl lg:text-[86px] font-medium leading-[110%] tracking-[-0.04em] lg:tracking-[-3.44px] px-4 sm:px-8 text-balance">
+                        <h1 className="text-primary font-manrope text-4xl sm:text-5xl md:text-6xl lg:text-[86px] font-medium leading-[110%] tracking-[-0.04em] lg:tracking-[-3.44px] px-4 sm:px-8 text-balance lg:line-clamp-2">
                             {first}
                             {second && (
                                 <>
