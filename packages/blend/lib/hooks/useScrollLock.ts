@@ -1,183 +1,235 @@
 import { useEffect } from 'react'
 
-// Module-level reference count shared across all hook instances.
-// Styles are applied on the first lock and restored only when the last lock is released.
-let lockCount = 0
-let savedOriginalPaddingRight = ''
+type ScrollLockStrategy = 'overflow' | 'fixed'
 
-// Prevent scrolling on wheel events (mouse wheel, trackpad)
-const preventScroll = (e: WheelEvent | TouchEvent) => {
-    const target = e.target as HTMLElement
-
-    // Priority 1: Allow scrolling within dropdown menus (highest priority)
-    const isInsideDropdown =
-        target.closest('[data-radix-popper-content-wrapper]') ||
-        target.closest('[data-radix-dropdown-menu-content]') ||
-        target.closest('[role="menu"]')
-
-    if (isInsideDropdown) {
-        return // Allow scroll in dropdown
-    }
-
-    // Priority 2: Check if dropdown is open
-    const hasOpenDropdown = document.querySelector(
-        '[data-radix-popper-content-wrapper]'
-    )
-
-    // Priority 3: If dropdown is open, block ALL modal scrolling
-    if (hasOpenDropdown) {
-        const isInsideModalBody =
-            target.closest('[data-element="body"]') ||
-            target.closest('[role="dialog"]')
-
-        if (isInsideModalBody) {
-            e.preventDefault() // Block modal scroll when dropdown is open
-            return
-        }
-    }
-
-    // Priority 4: Allow scrolling in modal body when no dropdown is open
-    const isInsideModal =
-        target.closest('[role="dialog"]') ||
-        target.closest('[data-modal]') ||
-        target.closest('[data-element="body"]')
-
-    if (isInsideModal && !hasOpenDropdown) {
-        return // Allow scroll in modal when no dropdown
-    }
-
-    // Block all other scrolling
-    e.preventDefault()
+type UseScrollLockOptions = {
+    strategy?: ScrollLockStrategy
+    restoreScroll?: boolean
+    disableKeyboardLock?: boolean
+    allowScrollSelectors?: string[]
 }
 
-// Prevent keyboard scrolling (arrow keys, space, page up/down)
-const preventKeyboardScroll = (e: KeyboardEvent) => {
-    const scrollKeys = [
-        'ArrowUp',
-        'ArrowDown',
-        'ArrowLeft',
-        'ArrowRight',
-        'PageUp',
-        'PageDown',
-        'Home',
-        'End',
-        ' ', // spacebar
-    ]
+// -----------------------------
+// GLOBAL STATE
+// -----------------------------
+let lockCount = 0
+let savedOriginalPaddingRight = ''
+let scrollX = 0
+let scrollY = 0
+let isLocked = false
 
-    const target = e.target as HTMLElement
+// stable handler refs (IMPORTANT)
+let wheelHandler: ((e: WheelEvent) => void) | null = null
+let touchHandler: ((e: TouchEvent) => void) | null = null
+let keydownHandler: ((e: KeyboardEvent) => void) | null = null
 
-    // Priority 1: Allow keyboard navigation in dropdowns
-    const isInsideDropdown =
-        target.closest('[data-radix-popper-content-wrapper]') ||
-        target.closest('[data-radix-dropdown-menu-content]') ||
-        target.closest('[role="menu"]')
+// -----------------------------
+// UTILS
+// -----------------------------
+const isBrowser = typeof window !== 'undefined'
 
-    if (isInsideDropdown) {
-        return // Allow keyboard navigation in dropdown
-    }
+const matchesAllowedSelector = (
+    target: HTMLElement,
+    selectors: string[] = []
+) => {
+    return selectors.some((selector) => target.closest(selector))
+}
 
-    // Priority 2: Allow in inputs/textareas always
-    if (target.closest('input') || target.closest('textarea')) {
-        return
-    }
+// -----------------------------
+// SCROLL PREVENTION
+// -----------------------------
+const createWheelHandler = (options: UseScrollLockOptions) => {
+    return (e: WheelEvent) => {
+        const target = e.target as HTMLElement
 
-    // Priority 3: Check if dropdown is open
-    const hasOpenDropdown = document.querySelector(
-        '[data-radix-dropdown-menu-content]'
-    )
+        if (matchesAllowedSelector(target, options.allowScrollSelectors)) return
 
-    // Priority 4: If dropdown is open, block modal keyboard scrolling
-    if (hasOpenDropdown && scrollKeys.includes(e.key)) {
-        const isInsideModalBody =
-            target.closest('[data-element="body"]') ||
-            target.closest('[role="dialog"]')
-
-        if (isInsideModalBody) {
-            e.preventDefault() // Block modal keyboard scroll when dropdown is open
-            return
-        }
-    }
-
-    // Priority 5: Allow keyboard navigation in modal when no dropdown
-    const isInsideModal =
-        target.closest('[role="dialog"]') ||
-        target.closest('[data-modal]') ||
-        target.closest('[data-element="body"]')
-
-    if (isInsideModal && !hasOpenDropdown) {
-        return
-    }
-
-    // Block all other keyboard scrolling
-    if (scrollKeys.includes(e.key)) {
         e.preventDefault()
     }
 }
 
-const applyScrollLock = () => {
-    // Measure the scrollbar width before hiding overflow so we can
-    // compensate with equivalent padding-right. This prevents the
-    // ~15-17px layout shift that occurs when the scrollbar disappears.
-    const scrollbarWidth =
-        window.innerWidth - document.documentElement.clientWidth
+const createTouchHandler = (options: UseScrollLockOptions) => {
+    return (e: TouchEvent) => {
+        const target = e.target as HTMLElement
 
-    // Preserve the current computed inline padding-right so it can be restored exactly.
-    savedOriginalPaddingRight = document.body.style.paddingRight
+        if (matchesAllowedSelector(target, options.allowScrollSelectors)) return
 
-    if (scrollbarWidth > 0) {
-        const currentPaddingRight =
-            parseFloat(window.getComputedStyle(document.body).paddingRight) || 0
-        document.body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`
+        e.preventDefault()
+    }
+}
+
+const createKeydownHandler = (options: UseScrollLockOptions) => {
+    return (e: KeyboardEvent) => {
+        if (options.disableKeyboardLock) return
+
+        const scrollKeys = [
+            'ArrowUp',
+            'ArrowDown',
+            'ArrowLeft',
+            'ArrowRight',
+            'PageUp',
+            'PageDown',
+            'Home',
+            'End',
+            ' ',
+        ]
+
+        const target = e.target as HTMLElement
+
+        if (
+            target.closest('input') ||
+            target.closest('textarea') ||
+            target.isContentEditable
+        ) {
+            return
+        }
+
+        if (scrollKeys.includes(e.key)) {
+            e.preventDefault()
+        }
+    }
+}
+
+const applyScrollLock = (options: UseScrollLockOptions) => {
+    if (!isBrowser || isLocked) return
+
+    const { strategy = 'overflow' } = options
+
+    // capture scroll ONLY once
+    scrollX = window.scrollX
+    scrollY = window.scrollY
+
+    if (strategy === 'overflow') {
+        const scrollbarWidth =
+            window.innerWidth - document.documentElement.clientWidth
+
+        savedOriginalPaddingRight = document.body.style.paddingRight
+
+        if (scrollbarWidth > 0) {
+            const currentPaddingRight =
+                parseFloat(
+                    window.getComputedStyle(document.body).paddingRight
+                ) || 0
+
+            document.body.style.paddingRight = `${
+                currentPaddingRight + scrollbarWidth
+            }px`
+        }
+
+        document.documentElement.style.overflow = 'hidden'
+        document.documentElement.style.touchAction = 'none'
+        document.documentElement.style.overscrollBehavior = 'none'
+        document.body.style.overflow = 'hidden'
     }
 
-    // Apply styles to prevent scrolling without shifting layout.
-    // Using `body { position: fixed }` can cause layout jumps for 100%-height
-    // flex layouts (e.g. sidebars with sticky/footer regions).
-    document.documentElement.style.overflow = 'hidden'
-    document.documentElement.style.touchAction = 'none'
-    document.documentElement.style.overscrollBehavior = 'none'
-    document.body.style.overflow = 'hidden'
+    if (strategy === 'fixed') {
+        document.body.style.position = 'fixed'
+        document.body.style.top = `-${scrollY}px`
+        document.body.style.left = `-${scrollX}px`
+        document.body.style.width = '100%'
+        document.body.style.height = '100%'
+    }
 
-    // Add event listeners to prevent scroll attempts
-    document.addEventListener('wheel', preventScroll, { passive: false })
-    document.addEventListener('touchmove', preventScroll, { passive: false })
-    document.addEventListener('keydown', preventKeyboardScroll, {
-        passive: false,
-    })
+    // create stable handlers
+    wheelHandler = createWheelHandler(options)
+    touchHandler = createTouchHandler(options)
+    keydownHandler = createKeydownHandler(options)
+
+    document.addEventListener('wheel', wheelHandler, { passive: false })
+    document.addEventListener('touchmove', touchHandler, { passive: false })
+    document.addEventListener('keydown', keydownHandler)
+
+    isLocked = true
 }
 
-const releaseScrollLock = () => {
-    // Remove event listeners
-    document.removeEventListener('wheel', preventScroll)
-    document.removeEventListener('touchmove', preventScroll)
-    document.removeEventListener('keydown', preventKeyboardScroll)
+const releaseScrollLock = (options: UseScrollLockOptions) => {
+    if (!isBrowser || !isLocked) return
 
-    // Restore styles to the values saved when the first lock was acquired
-    document.body.style.paddingRight = savedOriginalPaddingRight
-    document.documentElement.style.overflow = ''
-    document.documentElement.style.touchAction = ''
-    document.documentElement.style.overscrollBehavior = ''
-    document.body.style.overflow = ''
+    const { strategy = 'overflow', restoreScroll = true } = options
+
+    if (wheelHandler) {
+        document.removeEventListener('wheel', wheelHandler)
+        wheelHandler = null
+    }
+
+    if (touchHandler) {
+        document.removeEventListener('touchmove', touchHandler)
+        touchHandler = null
+    }
+
+    if (keydownHandler) {
+        document.removeEventListener('keydown', keydownHandler)
+        keydownHandler = null
+    }
+
+    if (strategy === 'overflow') {
+        document.body.style.paddingRight = savedOriginalPaddingRight
+        document.documentElement.style.overflow = ''
+        document.documentElement.style.touchAction = ''
+        document.documentElement.style.overscrollBehavior = ''
+        document.body.style.overflow = ''
+    }
+
+    if (strategy === 'fixed') {
+        document.body.style.position = ''
+        document.body.style.top = ''
+        document.body.style.left = ''
+        document.body.style.width = ''
+        document.body.style.height = ''
+    }
+
+    if (restoreScroll) {
+        window.scrollTo(scrollX, scrollY)
+    }
+
+    isLocked = false
 }
 
-const useScrollLock = (shouldLock?: boolean) => {
+const useScrollLock = (
+    shouldLock?: boolean,
+    options: UseScrollLockOptions = {}
+) => {
+    const {
+        strategy = 'overflow',
+        restoreScroll = true,
+        disableKeyboardLock,
+        allowScrollSelectors,
+    } = options
+
     useEffect(() => {
+        if (!isBrowser) return
         if (!shouldLock) return
 
         lockCount++
+
         if (lockCount === 1) {
-            // First lock acquired – apply styles and listeners
-            applyScrollLock()
+            applyScrollLock({
+                strategy,
+                restoreScroll,
+                disableKeyboardLock,
+                allowScrollSelectors,
+            })
         }
 
         return () => {
             lockCount = Math.max(0, lockCount - 1)
+
             if (lockCount === 0) {
-                // Last lock released – restore styles and remove listeners
-                releaseScrollLock()
+                releaseScrollLock({
+                    strategy,
+                    restoreScroll,
+                    disableKeyboardLock,
+                    allowScrollSelectors,
+                })
             }
         }
-    }, [shouldLock])
+    }, [
+        shouldLock,
+        strategy,
+        restoreScroll,
+        disableKeyboardLock,
+        allowScrollSelectors,
+    ])
 }
 
 export default useScrollLock
