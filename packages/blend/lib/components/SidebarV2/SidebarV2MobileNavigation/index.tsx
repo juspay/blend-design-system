@@ -40,15 +40,17 @@ const FloatingNavContainer = styled(Block)<FloatingNavBoxProps>`
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: ${({ $tokens }) => String($tokens.container.zIndex)};
+    z-index: ${({ $tokens }) => String($tokens?.container?.zIndex ?? 1100)};
     backdrop-filter: ${({ $tokens }) =>
-        String($tokens.container.backdropFilter)};
+        String($tokens?.container?.backdropFilter ?? 'blur(20px)')};
     -webkit-backdrop-filter: ${({ $tokens }) =>
-        String($tokens.container.backdropFilter)};
+        String($tokens?.container?.backdropFilter ?? 'blur(20px)')};
     background-color: ${({ $backgroundColor }) => $backgroundColor};
-    border: ${({ $tokens }) => String($tokens.container.border)};
-    border-radius: ${({ $tokens }) => String($tokens.container.borderRadius)};
-    transition: ${({ $tokens }) => String($tokens.container.transition)};
+    border: ${({ $tokens }) => String($tokens?.container?.border ?? 'none')};
+    border-radius: ${({ $tokens }) =>
+        String($tokens?.container?.borderRadius ?? '24px')};
+    transition: ${({ $tokens }) =>
+        String($tokens?.container?.transition ?? 'all 0.3s ease')};
     overflow: hidden;
     will-change: transform, max-height;
     display: flex;

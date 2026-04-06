@@ -20,21 +20,43 @@ let isLocked = false
 
 let activeLockOptions: UseScrollLockOptions | null = null
 
-// stable handler refs
 let wheelHandler: ((e: WheelEvent) => void) | null = null
 let touchHandler: ((e: TouchEvent) => void) | null = null
 let keydownHandler: ((e: KeyboardEvent) => void) | null = null
 
+const isBrowser = typeof window !== 'undefined'
+
 // -----------------------------
 // UTILS
 // -----------------------------
-const isBrowser = typeof window !== 'undefined'
-
 const matchesAllowedSelector = (
     target: HTMLElement,
     selectors: string[] = []
 ) => {
-    return selectors.some((selector) => target.closest(selector))
+    return selectors?.some((selector) => target.closest(selector))
+}
+
+const isScrollable = (el: HTMLElement | null): boolean => {
+    if (!el) return false
+
+    const style = window.getComputedStyle(el)
+    const overflowY = style.overflowY
+
+    const isScrollAllowed =
+        overflowY === 'auto' || overflowY === 'scroll'
+
+    return isScrollAllowed && el.scrollHeight > el.clientHeight
+}
+
+const canScroll = (target: HTMLElement | null): boolean => {
+    let el = target
+
+    while (el && el !== document.body) {
+        if (isScrollable(el)) return true
+        el = el.parentElement
+    }
+
+    return false
 }
 
 // -----------------------------
@@ -46,6 +68,8 @@ const createWheelHandler = (options: UseScrollLockOptions) => {
 
         if (matchesAllowedSelector(target, options.allowScrollSelectors)) return
 
+        if (canScroll(target)) return
+
         e.preventDefault()
     }
 }
@@ -55,6 +79,8 @@ const createTouchHandler = (options: UseScrollLockOptions) => {
         const target = e.target as HTMLElement
 
         if (matchesAllowedSelector(target, options.allowScrollSelectors)) return
+
+        if (canScroll(target)) return
 
         e.preventDefault()
     }
@@ -73,10 +99,11 @@ const createKeydownHandler = (options: UseScrollLockOptions) => {
             'PageDown',
             'Home',
             'End',
+            ' ',          
+            'Spacebar',   
         ]
 
         const target = e.target as HTMLElement
-
         if (
             target.closest('input') ||
             target.closest('textarea') ||
