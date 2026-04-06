@@ -42,8 +42,7 @@ const isScrollable = (el: HTMLElement | null): boolean => {
     const style = window.getComputedStyle(el)
     const overflowY = style.overflowY
 
-    const isScrollAllowed =
-        overflowY === 'auto' || overflowY === 'scroll'
+    const isScrollAllowed = overflowY === 'auto' || overflowY === 'scroll'
 
     return isScrollAllowed && el.scrollHeight > el.clientHeight
 }
@@ -99,8 +98,8 @@ const createKeydownHandler = (options: UseScrollLockOptions) => {
             'PageDown',
             'Home',
             'End',
-            ' ',          
-            'Spacebar',   
+            ' ',
+            'Spacebar',
         ]
 
         const target = e.target as HTMLElement

@@ -8,10 +8,7 @@ import SidebarV2Footer from './SidebarV2Footer'
 import type { SidebarV2StateChangeType } from './types'
 import type { SidebarV2TokensType } from './sidebarV2.tokens'
 
-const DirectoryContainer = styled(Block)<{
-    $showTopBlur?: boolean
-    $showBottomBlur?: boolean
-}>`
+const DirectoryContainer = styled(Block)`
     flex: 1;
     overflow-y: auto;
     position: relative;
@@ -42,8 +39,6 @@ export type SidebarV2ContentProps = {
     sidebarCollapseKey: string
     onToggle: () => void
     sidebarNavId?: string
-    showTopBlur: boolean
-    showBottomBlur: boolean
     data: DirectoryData[]
     idPrefix: string
     activeItem?: string | null
@@ -64,8 +59,6 @@ const SidebarV2Content = ({
     sidebarCollapseKey,
     onToggle,
     sidebarNavId,
-    showTopBlur,
-    showBottomBlur,
     data,
     idPrefix,
     activeItem,
@@ -111,8 +104,6 @@ const SidebarV2Content = ({
                 id={sidebarNavId}
                 role="region"
                 aria-label="Navigation menu"
-                $showTopBlur={showTopBlur}
-                $showBottomBlur={showBottomBlur}
                 onMouseEnter={() => setIsHovering?.(true)}
             >
                 <Directory

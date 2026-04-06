@@ -130,8 +130,6 @@ describe('SidebarV2 Parts', () => {
                     isScrolled={false}
                     sidebarCollapseKey="/"
                     onToggle={() => {}}
-                    showTopBlur={false}
-                    showBottomBlur={false}
                     data={[]}
                     idPrefix="test-"
                     tokens={mockTokens}
@@ -151,8 +149,6 @@ describe('SidebarV2 Parts', () => {
                     isScrolled={false}
                     sidebarCollapseKey="/"
                     onToggle={() => {}}
-                    showTopBlur={false}
-                    showBottomBlur={false}
                     data={[]}
                     idPrefix="test-"
                     iconOnlyMode={true}
@@ -173,8 +169,6 @@ describe('SidebarV2 Parts', () => {
                     isScrolled={false}
                     sidebarCollapseKey="/"
                     onToggle={() => {}}
-                    showTopBlur={false}
-                    showBottomBlur={false}
                     data={[]}
                     idPrefix="test-"
                     footer={<div data-testid="footer-slot">Footer</div>}
@@ -192,8 +186,6 @@ describe('SidebarV2 Parts', () => {
                     isScrolled={false}
                     sidebarCollapseKey="/"
                     onToggle={() => {}}
-                    showTopBlur={false}
-                    showBottomBlur={false}
                     data={[]}
                     idPrefix="test-"
                     merchantInfo={{
@@ -221,8 +213,6 @@ describe('SidebarV2 Parts', () => {
                     isScrolled={false}
                     sidebarCollapseKey="/"
                     onToggle={() => {}}
-                    showTopBlur={false}
-                    showBottomBlur={false}
                     data={[]}
                     idPrefix="test-"
                     sidebarTopSlot={<div data-testid="custom-top">Custom</div>}
@@ -252,8 +242,6 @@ describe('SidebarV2 Parts', () => {
                     isScrolled={false}
                     sidebarCollapseKey="/"
                     onToggle={() => {}}
-                    showTopBlur={false}
-                    showBottomBlur={false}
                     data={data}
                     idPrefix="test-"
                     tokens={mockTokens}
@@ -270,8 +258,6 @@ describe('SidebarV2 Parts', () => {
                     isScrolled={false}
                     sidebarCollapseKey="/"
                     onToggle={() => {}}
-                    showTopBlur={false}
-                    showBottomBlur={false}
                     data={[]}
                     idPrefix="test-"
                     tokens={mockTokens}

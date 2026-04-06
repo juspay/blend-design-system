@@ -94,8 +94,6 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             useState<boolean>(defaultIsExpanded)
         const [showToggleButton, setShowToggleButton] = useState<boolean>(true)
         const [isScrolled, setIsScrolled] = useState<boolean>(false)
-        const [showTopBlur, setShowTopBlur] = useState<boolean>(false)
-        const [showBottomBlur, setShowBottomBlur] = useState<boolean>(false)
         const [isHovering, setIsHovering] = useState<boolean>(false)
         const [mobileNavigationHeight, setMobileNavigationHeight] =
             useState<string>()
@@ -241,37 +239,28 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
 
             const scrollingElement = getScrollingElement()
             if (!scrollingElement) {
-                setShowTopBlur(false)
-                setShowBottomBlur(false)
+                setIsScrolled(false)
                 return
             }
 
-            const updateBlurState = () => {
-                const { scrollTop, scrollHeight, clientHeight } =
-                    scrollingElement
-                const hasScrollableContent = scrollHeight > clientHeight
-                const isAtTop = scrollTop <= 5
-                const isAtBottom =
-                    Math.abs(scrollTop + clientHeight - scrollHeight) <= 5
-
-                setIsScrolled(scrollTop > 0)
-                setShowTopBlur(
-                    hasScrollableContent && !isAtTop && scrollTop > 5
-                )
-                setShowBottomBlur(hasScrollableContent && !isAtBottom)
+            const updateScrollState = () => {
+                setIsScrolled(scrollingElement.scrollTop > 0)
             }
 
-            updateBlurState()
+            updateScrollState()
 
-            scrollingElement.addEventListener('scroll', updateBlurState, {
+            scrollingElement.addEventListener('scroll', updateScrollState, {
                 passive: true,
             })
 
-            const handleResize = () => setTimeout(updateBlurState, 50)
+            const handleResize = () => setTimeout(updateScrollState, 50)
             window.addEventListener('resize', handleResize, { passive: true })
 
             return () => {
-                scrollingElement.removeEventListener('scroll', updateBlurState)
+                scrollingElement.removeEventListener(
+                    'scroll',
+                    updateScrollState
+                )
                 window.removeEventListener('resize', handleResize)
             }
         }, [isExpanded, safeDirectory])
@@ -319,8 +308,6 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                             sidebarCollapseKey={sidebarCollapseKey}
                             onToggle={toggleSidebar}
                             sidebarNavId={sidebarNavId}
-                            showTopBlur={showTopBlur}
-                            showBottomBlur={showBottomBlur}
                             data={safeDirectory}
                             idPrefix={`${baseId}-`}
                             activeItem={activeItem}
@@ -377,8 +364,6 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                     sidebarCollapseKey={sidebarCollapseKey}
                                     onToggle={toggleSidebar}
                                     sidebarNavId={sidebarNavId}
-                                    showTopBlur={showTopBlur}
-                                    showBottomBlur={showBottomBlur}
                                     data={safeDirectory}
                                     idPrefix={`${baseId}-`}
                                     activeItem={activeItem}
