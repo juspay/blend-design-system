@@ -3,7 +3,7 @@ import Block from '../../Primitives/Block/Block'
 import { Tag, TagShape, TagSize } from '../../Tags'
 import InputFooterV2 from '../utils/InputFooter/InputFooterV2'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
-import { InputSizeV2 } from '../inputV2.types'
+import { InputSizeV2, InputStateV2 } from '../inputV2.types'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import type { MultiValueInputV2Props } from './MultiValueV2.types'
 import type { MultiValueInputV2TokensType } from './MultiValueInputV2.tokens'
@@ -92,10 +92,7 @@ const MultiValueInputV2 = ({
             e.preventDefault()
             addTag(value)
         } else if (e.key === 'Backspace' && value === '' && tags.length > 0) {
-            const lastTag = tags[tags.length - 1]
-            if (lastTag) {
-                removeTag(lastTag)
-            }
+            removeTag(tags[tags.length - 1]!)
         }
     }
 
@@ -105,6 +102,27 @@ const MultiValueInputV2 = ({
 
     const paddingX = multiValueInputTokens.inputContainer.padding.x[size]
     const paddingY = multiValueInputTokens.inputContainer.padding.y[size]
+    const ic = multiValueInputTokens.inputContainer
+
+    const borderToken = disabled
+        ? ic.border[InputStateV2.DISABLED]
+        : error
+          ? ic.border[InputStateV2.ERROR]
+          : isFocused
+            ? ic.border[InputStateV2.FOCUS]
+            : ic.border[InputStateV2.DEFAULT]
+
+    const boxShadowToken = disabled
+        ? ic.boxShadow[InputStateV2.DISABLED]
+        : error && isFocused
+          ? ic.boxShadow[InputStateV2.ERROR]
+          : !error && isFocused
+            ? ic.boxShadow[InputStateV2.FOCUS]
+            : 'none'
+
+    const backgroundToken = disabled
+        ? ic.backgroundColor[InputStateV2.DISABLED]
+        : ic.backgroundColor[InputStateV2.DEFAULT]
 
     const slotTop =
         tags.length > 0 ? FOUNDATION_THEME.unit[7] : FOUNDATION_THEME.unit[3]
@@ -131,34 +149,28 @@ const MultiValueInputV2 = ({
                 paddingX={paddingX}
                 paddingY={paddingY}
                 onClick={handleContainerClick}
-                backgroundColor={
-                    multiValueInputTokens.inputContainer.backgroundColor.default
-                }
-                border={
-                    error
-                        ? multiValueInputTokens.inputContainer.border.error
-                        : isFocused
-                          ? multiValueInputTokens.inputContainer.border.focus
-                          : multiValueInputTokens.inputContainer.border.default
-                }
-                onFocus={onFocus}
-                onBlur={onBlur}
+                backgroundColor={backgroundToken}
+                border={borderToken}
                 style={{
                     transition:
                         'border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out',
-                    boxShadow: isFocused
-                        ? '0 0 0 3px #EFF6FF'
-                        : '0 0 0 0 transparent',
+                    boxShadow: boxShadowToken,
                 }}
                 _focus={{
-                    border: multiValueInputTokens.inputContainer.border[
-                        error ? 'error' : 'focus'
-                    ],
+                    border: disabled
+                        ? ic.border[InputStateV2.DISABLED]
+                        : error
+                          ? ic.border[InputStateV2.ERROR]
+                          : ic.border[InputStateV2.FOCUS],
                 }}
                 _hover={{
-                    border: multiValueInputTokens.inputContainer.border[
-                        error ? 'error' : isFocused ? 'focus' : 'hover'
-                    ],
+                    border: disabled
+                        ? ic.border[InputStateV2.DISABLED]
+                        : error
+                          ? ic.border[InputStateV2.ERROR]
+                          : isFocused
+                            ? ic.border[InputStateV2.FOCUS]
+                            : ic.border[InputStateV2.HOVER],
                 }}
             >
                 {leftSlot && (
@@ -185,7 +197,7 @@ const MultiValueInputV2 = ({
                     slotOffset={multiValueInputTokens.inputContainer.offSet}
                     gap={multiValueInputTokens.inputContainer.gap}
                 >
-                    {tags?.map((tag) => (
+                    {tags.map((tag) => (
                         <Tag
                             key={tag}
                             text={tag}
@@ -275,15 +287,20 @@ const MultiValueInputV2 = ({
                             onChange?.(newValue)
                         }}
                         onKeyDown={handleKeyDown}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
+                        onFocus={(e) => {
+                            setIsFocused(true)
+                            onFocus?.(e)
+                        }}
+                        onBlur={(e) => {
+                            setIsFocused(false)
+                            onBlur?.(e)
+                        }}
                         {...rest}
                     />
                 </ContentContainer>
                 {rightSlot && (
                     <Block
                         data-element="right-slot"
-                        top={slotTop}
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
