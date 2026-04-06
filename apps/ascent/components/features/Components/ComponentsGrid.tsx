@@ -96,7 +96,7 @@ const ComponentsGrid = () => {
                                 border-r border-b border-border
                                 ${isLastInRowSm ? 'sm:border-r-0' : 'sm:border-r'}
                                 ${isLastInRowLg ? 'lg:border-r-0' : 'lg:border-r'}
-                                ${isInLastRow ? 'border-b-0' : ''}
+                                ${isInLastRow ? 'border-b' : ''}
                             `}
                         />
                     )
