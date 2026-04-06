@@ -1,28 +1,8 @@
 import Text from '../../../Text/Text'
 import Block from '../../../Primitives/Block/Block'
 import { InputSizeV2, InputStateV2 } from '../../inputV2.types'
-import { CSSObject } from 'styled-components'
 import { addPxToValue } from '../../../../global-utils/GlobalUtils'
-
-export type FloatingLabelsV2Tokens = {
-    placeholder: {
-        color: {
-            [key in InputStateV2]: CSSObject['color']
-        }
-        fontSize: {
-            [key in InputSizeV2]: CSSObject['fontSize']
-        }
-        fontWeight: {
-            [key in InputSizeV2]: CSSObject['fontWeight']
-        }
-        lineHeight: {
-            [key in InputSizeV2]: CSSObject['lineHeight']
-        }
-    }
-    required: {
-        color: CSSObject['color']
-    }
-}
+import { FloatingLabelsV2Tokens } from '../../inputV2.tokens'
 
 const FloatingLabelsV2 = ({
     label,

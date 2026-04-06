@@ -1,37 +1,8 @@
-import { CSSObject } from 'styled-components'
 import Block from '../../../Primitives/Block/Block'
 import Text from '../../../Text/Text'
-import { InputSizeV2, InputStateV2 } from '../../inputV2.types'
+import { InputSizeV2 } from '../../inputV2.types'
 import { addPxToValue } from '../../../../global-utils/GlobalUtils'
-
-type InputFooterV2Tokens = {
-    hintText: {
-        fontSize: {
-            [key in InputSizeV2]: CSSObject['fontSize']
-        }
-        fontWeight: {
-            [key in InputSizeV2]: CSSObject['fontWeight']
-        }
-        lineHeight: {
-            [key in InputSizeV2]: CSSObject['lineHeight']
-        }
-        color: {
-            [key in InputStateV2]: CSSObject['color']
-        }
-    }
-    errorMessage: {
-        fontSize: {
-            [key in InputSizeV2]: CSSObject['fontSize']
-        }
-        fontWeight: {
-            [key in InputSizeV2]: CSSObject['fontWeight']
-        }
-        lineHeight: {
-            [key in InputSizeV2]: CSSObject['lineHeight']
-        }
-        color: CSSObject['color']
-    }
-}
+import { InputFooterV2Tokens } from '../../inputV2.tokens'
 
 type InputFooterV2Props = {
     error?: boolean

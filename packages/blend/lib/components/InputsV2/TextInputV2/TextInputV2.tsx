@@ -2,12 +2,11 @@ import { forwardRef, useId, useMemo, useRef, useState } from 'react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useInputSlotPadding } from '../../../hooks/useInputSlotPadding'
 import Block from '../../Primitives/Block/Block'
-import InputLabelsV2, {
-    InputLabelsV2Tokens,
-} from '../utils/InputLabels/InputLabelsV2'
+import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import { AnyRef, InputSizeV2, InputStateV2 } from '../inputV2.types'
 import { TextInputV2TokensType } from './TextInputV2.tokens'
 import { TextInputV2Props } from './TextInputV2.types'
+import { InputLabelsV2Tokens } from '../inputV2.tokens'
 import {
     FOCUS_RING_STYLES,
     getInputState,

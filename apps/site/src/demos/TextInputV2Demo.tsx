@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { TextInputV2 } from '../../../../packages/blend/lib/components/InputsV2/TextInputV2'
 import { TextInput } from '../../../../packages/blend/lib/main'
-import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { InputSizeV2 } from '../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 import Switch from '../../../../packages/blend/lib/components/Switch/Switch'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
@@ -185,15 +184,7 @@ const TextInputV2Demo = () => {
                                     : { show: false, message: '' }
                             }
                             helpIconText={
-                                showHelpIcon
-                                    ? {
-                                          text: helpIconText,
-                                          onClick: () =>
-                                              addSnackbar({
-                                                  header: 'Help icon clicked!',
-                                              }),
-                                      }
-                                    : undefined
+                                showHelpIcon ? helpIconText : undefined
                             }
                             leftSlot={
                                 showLeftSlot
