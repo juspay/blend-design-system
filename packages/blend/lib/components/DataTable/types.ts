@@ -358,6 +358,8 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onFilterChange?: (filters: ColumnFilter[]) => void
     onAdvancedFiltersChange?: (filters: unknown[]) => void
     columnFreeze?: number
+    /** Freeze last N columns on the right side (sticky right). */
+    columnFreezeRight?: number
     enableColumnManager?: boolean
     enableColumnReordering?: boolean
     onColumnReorder?: (columns: ColumnDefinition<T>[]) => void
@@ -424,6 +426,11 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     bulkActions?: BulkActionsConfig
 
     rowActions?: RowActionsConfig<T>
+
+    onOperations?: (field: keyof T) => void
+    onInsertLeft?: (field: keyof T) => void
+    onInsertRight?: (field: keyof T) => void
+    onDeleteColumn?: (field: keyof T) => void
 
     getRowStyle?: (row: T, index: number) => React.CSSProperties
 

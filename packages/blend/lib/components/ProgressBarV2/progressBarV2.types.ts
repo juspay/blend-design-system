@@ -1,0 +1,50 @@
+import type { HTMLAttributes } from 'react'
+import type { ProgressBarV2TokenType } from './progressBarV2.tokens'
+
+export enum ProgressBarV2Size {
+    SM = 'sm',
+    MD = 'md',
+    LG = 'lg',
+}
+
+/** Bar geometry: horizontal track vs circular ring. */
+export enum ProgressBarV2Variant {
+    LINEAR = 'linear',
+    CIRCULAR = 'circular',
+}
+
+/**
+ * Fill / stroke style shared by linear and circular progress (continuous vs segmented).
+ */
+export enum ProgressBarV2Appearance {
+    SOLID = 'solid',
+    SEGMENTED = 'segmented',
+}
+
+export type ProgressBarV2Props = {
+    value: number
+    size?: ProgressBarV2Size
+    variant?: ProgressBarV2Variant
+    appearance?: ProgressBarV2Appearance
+    showLabel?: boolean
+    min?: number
+    max?: number
+} & Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'className' | 'style'>
+
+export type ProgressBarV2InternalProps = {
+    value: number
+    min: number
+    max: number
+    ariaLabel?: string
+    ariaLabelledby?: string
+    showLabel: boolean
+    tokens: ProgressBarV2TokenType
+}
+export type CircularProgressBarV2Props = ProgressBarV2InternalProps & {
+    size: ProgressBarV2Size
+    appearance: ProgressBarV2Appearance
+}
+export type LinearProgressBarV2Props = ProgressBarV2InternalProps & {
+    size: ProgressBarV2Size
+    appearance: ProgressBarV2Appearance
+}

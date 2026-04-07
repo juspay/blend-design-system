@@ -17,6 +17,8 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     enableRowSelection?: boolean
     rowActions?: RowActionsConfig<T>
     columnFreeze?: number
+    /** Freeze last N columns on the right side (sticky right). */
+    columnFreezeRight?: number
     /** Measured pixel widths of frozen columns (from header ResizeObserver). Used for sticky left offset. */
     measuredFrozenWidths?: number[]
     mobileConfig?: MobileDataTableConfig

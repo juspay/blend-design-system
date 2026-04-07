@@ -84,7 +84,9 @@ const TruncatedTextWithTooltip = ({
     tooltipProps,
     ...textProps
 }: {
-    children: React.ReactNode
+    // This component is only used for the `description` prop in this file.
+    // `description` is a string, so we keep the typing narrow to avoid ReactNode/bigint mismatches.
+    children: string
     tooltipProps?: {
         side?: TooltipSide
         align?: TooltipAlign
@@ -566,6 +568,7 @@ const DataTableHeader = forwardRef<
                             flexShrink: 1,
                             minHeight: FOUNDATION_THEME.unit[40],
                         }}
+                        justifyContent="center"
                     >
                         {title && (
                             <PrimitiveText
