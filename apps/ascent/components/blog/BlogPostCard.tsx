@@ -42,7 +42,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
             </div>
 
             {/* Gradient fade overlay */}
-            <div className="pointer-events-none absolute bottom-10.5 left-0 right-0 h-55 bg-linear-to-b from-transparent to-white dark:from-transparent dark:to-black" />
+            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-55 bg-linear-to-b from-transparent to-white dark:from-transparent dark:to-black" />
 
             {/* Date */}
             <div className="absolute bottom-7.5 left-0 right-0 flex justify-center">
