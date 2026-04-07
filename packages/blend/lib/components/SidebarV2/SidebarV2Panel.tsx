@@ -23,8 +23,10 @@ const DirectoryContainer = styled(Block)`
     scrollbar-color: transparent transparent;
 `
 
-export type SidebarV2ContentProps = {
+export type SidebarV2PanelProps = {
+    /** Slot content rendered at the top of the sidebar */
     sidebarTopSlot?: ReactNode
+    /** Merchant switcher configuration */
     merchantInfo?: {
         items: Array<{
             label: string
@@ -34,24 +36,46 @@ export type SidebarV2ContentProps = {
         selected: string
         onSelect: (value: string) => void
     }
+    /** Whether the sidebar is in expanded state */
     isExpanded: boolean
+    /** Whether the directory has been scrolled */
     isScrolled: boolean
+    /** Keyboard shortcut key to toggle sidebar */
     sidebarCollapseKey: string
+    /** Callback when toggle button is clicked */
     onToggle: () => void
+    /** ID for the navigation region */
     sidebarNavId?: string
+    /** Navigation directory data */
     data: DirectoryData[]
+    /** Prefix for generating unique IDs */
     idPrefix: string
+    /** Currently active navigation item */
     activeItem?: string | null
+    /** Callback when active item changes */
     onActiveItemChange?: (item: string | null) => void
+    /** Default active item on initial render */
     defaultActiveItem?: string | null
+    /** Whether to show icon-only mode (collapsed state) */
     iconOnlyMode?: boolean
+    /** Footer content rendered at the bottom */
     footer?: ReactNode
+    /** Callback to set hover state (for intermediate expand on hover) */
     setIsHovering?: (isHovering: boolean) => void
+    /** Current sidebar state for styling */
     sidebarState?: SidebarV2StateChangeType
+    /** Design tokens for styling */
     tokens: SidebarV2TokensType
 }
 
-const SidebarV2Content = ({
+/**
+ * SidebarV2Panel renders the main sidebar panel including header,
+ * scrollable navigation directory, and footer.
+ *
+ * Used both for the primary sidebar and the hover-preview overlay
+ * when the sidebar is collapsed.
+ */
+const SidebarV2Panel = ({
     sidebarTopSlot,
     merchantInfo,
     isExpanded,
@@ -69,10 +93,10 @@ const SidebarV2Content = ({
     setIsHovering,
     sidebarState = 'expanded',
     tokens,
-}: SidebarV2ContentProps) => {
+}: SidebarV2PanelProps) => {
     return (
         <Block
-            data-element="sidebar-content"
+            data-element="sidebar-panel"
             width={
                 iconOnlyMode
                     ? String(tokens.container.maxWidth.iconOnly)
@@ -125,4 +149,4 @@ const SidebarV2Content = ({
     )
 }
 
-export default SidebarV2Content
+export default SidebarV2Panel

@@ -1,4 +1,4 @@
-import { isValidElement, useCallback, useId, useMemo, useState } from 'react'
+import { useCallback, useId, useMemo, useState } from 'react'
 import type { AriaAttributes } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
@@ -16,6 +16,7 @@ import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import MobileSingleSelectV2 from './MobileSingleSelectV2'
 import { getBorderRadius, getValueLabelMap, setupAccessibility } from './utils'
+import { useDropdownInteractionLock } from '../../hooks'
 
 const SingleSelectV2 = ({
     label,
@@ -138,11 +139,7 @@ const SingleSelectV2 = ({
     const shouldEnableVirtualization =
         enableVirtualization ?? safeItems.length > 20
 
-    if (customTrigger && !isValidElement(customTrigger)) {
-        throw new Error(
-            'SingleSelectV2: customTrigger must be a valid React element.'
-        )
-    }
+    useDropdownInteractionLock(!isSmallScreen && open)
 
     if (isSmallScreen && usePanelOnMobile) {
         return (

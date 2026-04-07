@@ -14,7 +14,7 @@ import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import type { SidebarV2TokensType } from './sidebarV2.tokens'
 import type { SidebarV2Props } from './types'
 import { SecondarySidebar } from './SecondarySidebar'
-import SidebarV2Content from './SidebarV2Content'
+import SidebarV2Panel from './SidebarV2Panel'
 import { TopbarV2 } from '../TopbarV2'
 import type { ResponsiveTopbarV2Tokens } from '../TopbarV2/topbarV2.tokens'
 import { SectionStateContext } from '../Directory/Section'
@@ -300,7 +300,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                             />
                         )}
 
-                        <SidebarV2Content
+                        <SidebarV2Panel
                             sidebarTopSlot={sidebarTopSlot}
                             merchantInfo={merchantInfo}
                             isExpanded={isExpanded}
@@ -354,9 +354,8 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 }
                                 transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
                                 pointerEvents={isHovering ? 'auto' : 'none'}
-                                onMouseLeave={() => setIsHovering(false)}
                             >
-                                <SidebarV2Content
+                                <SidebarV2Panel
                                     sidebarTopSlot={sidebarTopSlot}
                                     merchantInfo={merchantInfo}
                                     isExpanded={isExpanded}
@@ -371,6 +370,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                     defaultActiveItem={defaultActiveItem}
                                     iconOnlyMode={false}
                                     footer={footer}
+                                    setIsHovering={setIsHovering}
                                     sidebarState={sidebarStatus}
                                     tokens={tokens}
                                 />

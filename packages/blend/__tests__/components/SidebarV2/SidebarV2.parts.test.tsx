@@ -1,7 +1,7 @@
 import React from 'react'
 import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '../../test-utils'
-import SidebarV2Content from '../../../lib/components/SidebarV2/SidebarV2Content'
+import SidebarV2Panel from '../../../lib/components/SidebarV2/SidebarV2Panel'
 import type { SidebarV2TokensType } from '../../../lib/components/SidebarV2/sidebarV2.tokens'
 import type { DirectoryData } from '../../../lib/components/Directory/types'
 
@@ -122,10 +122,10 @@ describe('SidebarV2 Parts', () => {
         } as unknown as typeof ResizeObserver
     })
 
-    describe('SidebarV2Content', () => {
+    describe('SidebarV2Panel', () => {
         it('renders with proper data-element attribute', () => {
             const { container } = render(
-                <SidebarV2Content
+                <SidebarV2Panel
                     isExpanded={true}
                     isScrolled={false}
                     sidebarCollapseKey="/"
@@ -137,14 +137,14 @@ describe('SidebarV2 Parts', () => {
             )
 
             const content = container.querySelector(
-                '[data-element="sidebar-content"]'
+                '[data-element="sidebar-panel"]'
             )
             expect(content).toBeInTheDocument()
         })
 
         it('renders in icon only mode', () => {
             const { container } = render(
-                <SidebarV2Content
+                <SidebarV2Panel
                     isExpanded={false}
                     isScrolled={false}
                     sidebarCollapseKey="/"
@@ -157,14 +157,14 @@ describe('SidebarV2 Parts', () => {
             )
 
             const content = container.querySelector(
-                '[data-element="sidebar-content"]'
+                '[data-element="sidebar-panel"]'
             )
             expect(content).toBeInTheDocument()
         })
 
         it('renders footer when provided', () => {
             render(
-                <SidebarV2Content
+                <SidebarV2Panel
                     isExpanded={true}
                     isScrolled={false}
                     sidebarCollapseKey="/"
@@ -181,7 +181,7 @@ describe('SidebarV2 Parts', () => {
 
         it('renders with merchant info', () => {
             render(
-                <SidebarV2Content
+                <SidebarV2Panel
                     isExpanded={true}
                     isScrolled={false}
                     sidebarCollapseKey="/"
@@ -208,7 +208,7 @@ describe('SidebarV2 Parts', () => {
 
         it('renders custom sidebar top slot', () => {
             render(
-                <SidebarV2Content
+                <SidebarV2Panel
                     isExpanded={true}
                     isScrolled={false}
                     sidebarCollapseKey="/"
@@ -237,7 +237,7 @@ describe('SidebarV2 Parts', () => {
             ]
 
             render(
-                <SidebarV2Content
+                <SidebarV2Panel
                     isExpanded={true}
                     isScrolled={false}
                     sidebarCollapseKey="/"
@@ -253,7 +253,7 @@ describe('SidebarV2 Parts', () => {
 
         it('exposes the directory container as a labeled region for assistive tech', () => {
             const { container } = render(
-                <SidebarV2Content
+                <SidebarV2Panel
                     isExpanded={true}
                     isScrolled={false}
                     sidebarCollapseKey="/"

@@ -65,6 +65,7 @@ import { ResponsiveSidebarV2Tokens } from '../components/SidebarV2/sidebarV2.tok
 import { ResponsiveTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import type { ResponsiveTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -135,7 +136,8 @@ export const useComponentToken = (
     | ResponsiveTabsV2Tokens
     | ResponsiveSidebarV2Tokens
     | ResponsiveBreadcrumbV2Tokens
-    | ResponsiveCodeEditorV2Tokens => {
+    | ResponsiveCodeEditorV2Tokens
+    | ResponsiveTopbarV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':

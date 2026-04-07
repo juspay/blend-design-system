@@ -66,8 +66,6 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
     setIsHovering,
     sidebarState = 'expanded',
 }) => {
-    console.log({ activeItem })
-
     return (
         <Block
             data-element="sidebar-content"
