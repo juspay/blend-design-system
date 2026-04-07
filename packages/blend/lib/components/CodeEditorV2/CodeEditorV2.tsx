@@ -47,6 +47,9 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
             diff = false,
             originalValue,
             renderSideBySide = true,
+            isDiffUnchangedCollapsed = true,
+            diffContextLines = 3,
+            diffExpandChunk = 20,
             ...rest
         },
         ref
@@ -139,6 +142,9 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                     diff={isDiff}
                     originalValue={originalValue}
                     renderSideBySide={renderSideBySide}
+                    isDiffUnchangedCollapsed={isDiffUnchangedCollapsed}
+                    diffContextLines={diffContextLines}
+                    diffExpandChunk={diffExpandChunk}
                 />
             </Block>
         )

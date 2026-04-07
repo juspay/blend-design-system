@@ -106,6 +106,9 @@ export function MonacoEditorWrapper({
     diff = false,
     originalValue = '',
     renderSideBySide = true,
+    isDiffUnchangedCollapsed = true,
+    diffContextLines = 3,
+    diffExpandChunk = 20,
 }: MonacoEditorWrapperProps) {
     const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
     const monacoRef = useRef<typeof import('monaco-editor') | null>(null)
@@ -279,9 +282,22 @@ export function MonacoEditorWrapper({
                 showLineNumbers,
                 renderSideBySide,
                 readOnly,
-                disabled
+                disabled,
+                isDiffUnchangedCollapsed,
+                diffContextLines,
+                diffExpandChunk
             ),
-        [metrics, tokens, showLineNumbers, renderSideBySide, readOnly, disabled]
+        [
+            metrics,
+            tokens,
+            showLineNumbers,
+            renderSideBySide,
+            readOnly,
+            disabled,
+            isDiffUnchangedCollapsed,
+            diffContextLines,
+            diffExpandChunk,
+        ]
     )
 
     return (

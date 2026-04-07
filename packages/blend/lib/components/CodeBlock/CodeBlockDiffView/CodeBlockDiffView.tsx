@@ -7,7 +7,7 @@ import {
     type ReactNode,
 } from 'react'
 import styled from 'styled-components'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, MoreHorizontal } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import {
     renderDiffUnifiedRowPair,
@@ -379,20 +379,13 @@ const CodeBlockDiffView = ({
                                         opacity: 0.8,
                                     }}
                                 >
-                                    <span
+                                    <MoreHorizontal
+                                        size={
+                                            tokens.body.expandContext.button
+                                                .iconSize
+                                        }
                                         aria-hidden="true"
-                                        style={{
-                                            fontSize:
-                                                tokens.body.expandContext
-                                                    .fontSize,
-                                            letterSpacing:
-                                                tokens.body.expandContext
-                                                    .letterSpacing,
-                                            lineHeight: 1,
-                                        }}
-                                    >
-                                        ···
-                                    </span>
+                                    />
                                 </ExpandButton>
                             </Block>
                             <ExpandButton
