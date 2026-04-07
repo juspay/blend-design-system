@@ -1,4 +1,5 @@
-import { InputSizeV2 } from '../inputV2.types'
+import { TagShape, TagSize, TagVariant } from '../../Tags/types'
+import type { InputSizeV2 } from '../inputV2.types'
 
 export type MultiValueInputV2Props = {
     value?: string
@@ -9,9 +10,14 @@ export type MultiValueInputV2Props = {
     errorMessage?: string
     hintText?: string
     disabled?: boolean
-    tags?: string[]
-    onTagAdd?: (tag: string) => void
-    onTagRemove?: (tag: string) => void
+    tags?: {
+        value: string[]
+        size: TagSize
+        shape: TagShape
+        variant: TagVariant
+        onTagAdd?: (tag: string) => void
+        onTagRemove?: (tag: string) => void
+    }
     onChange?: (value: string) => void
     size?: InputSizeV2
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void

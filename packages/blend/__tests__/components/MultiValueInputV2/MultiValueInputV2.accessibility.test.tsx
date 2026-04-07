@@ -5,6 +5,23 @@ import { axe } from 'jest-axe'
 import { Mail } from 'lucide-react'
 import MultiValueInputV2 from '../../../lib/components/InputsV2/MultiValueInputV2/MultiValueInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
+import { TagShape, TagSize, TagVariant } from '../../../lib/components/Tags'
+
+function tagsConfig(
+    value: string[] = [],
+    handlers?: {
+        onTagAdd?: (tag: string) => void
+        onTagRemove?: (tag: string) => void
+    }
+) {
+    return {
+        value,
+        size: TagSize.XS,
+        shape: TagShape.ROUNDED,
+        variant: TagVariant.SUBTLE,
+        ...handlers,
+    }
+}
 
 describe('MultiValueInputV2 Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA)', () => {
@@ -13,7 +30,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     placeholder="Add a tag and press Enter"
                 />
@@ -30,7 +46,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     <MultiValueInputV2
                         label={`${size} input`}
                         value=""
-                        tags={[]}
                         onChange={() => {}}
                         size={size}
                     />
@@ -46,7 +61,7 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Disabled"
                     value=""
-                    tags={['a']}
+                    tags={tagsConfig(['a'])}
                     onChange={() => {}}
                     disabled
                 />
@@ -60,7 +75,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Emails"
                     value="bad"
-                    tags={[]}
                     onChange={() => {}}
                     error
                     errorMessage="Please enter valid values"
@@ -75,9 +89,10 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Keywords"
                     value=""
-                    tags={['alpha', 'beta']}
+                    tags={tagsConfig(['alpha', 'beta'], {
+                        onTagRemove: () => {},
+                    })}
                     onChange={() => {}}
-                    onTagRemove={() => {}}
                 />
             )
             const results = await axe(container)
@@ -92,7 +107,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     label="Full Name"
                     name="fullName"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -107,7 +121,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     sublabel="Press Enter after each"
                     name="skills"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -123,7 +136,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     hintText="Press Enter to add each tag"
                     name="keywords"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -139,7 +151,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Recipients"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     error
                     errorMessage="At least one valid entry is required"
@@ -156,7 +167,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     label="Field"
                     name="field"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     error
                     errorMessage="Invalid format"
@@ -175,7 +185,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     label="Emails"
                     name="emails"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     autoComplete="email"
                 />
@@ -192,7 +201,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     label="Labels"
                     name="labels"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -207,7 +215,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     name="q"
                     type="search"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -222,7 +229,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Focusable"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -239,7 +245,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Type Here"
                     value=""
-                    tags={[]}
                     onChange={handleChange}
                 />
             )
@@ -253,7 +258,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Disabled"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     disabled
                 />
@@ -268,13 +272,11 @@ describe('MultiValueInputV2 Accessibility', () => {
                     <MultiValueInputV2
                         label="First"
                         value=""
-                        tags={[]}
                         onChange={() => {}}
                     />
                     <MultiValueInputV2
                         label="Second"
                         value=""
-                        tags={[]}
                         onChange={() => {}}
                     />
                 </>
@@ -293,7 +295,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Focus Me"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -309,7 +310,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Blur Test"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -332,13 +332,11 @@ describe('MultiValueInputV2 Accessibility', () => {
                     <MultiValueInputV2
                         label="Email"
                         value=""
-                        tags={[]}
                         onChange={() => {}}
                     />
                     <MultiValueInputV2
                         label="Aliases"
                         value=""
-                        tags={[]}
                         onChange={() => {}}
                     />
                     <button type="submit">Submit</button>
@@ -365,7 +363,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Input Role"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -377,7 +374,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Screen Reader Label"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -389,7 +385,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Required Field"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     required
                 />
@@ -404,7 +399,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Disabled Input"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     disabled
                 />
@@ -418,7 +412,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Error Field"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     error
                     errorMessage="Error"
@@ -435,9 +428,8 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value=""
-                    tags={['one', 'two']}
+                    tags={tagsConfig(['one', 'two'], { onTagRemove: () => {} })}
                     onChange={() => {}}
-                    onTagRemove={() => {}}
                 />
             )
             expect(
@@ -455,7 +447,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Search tags"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     leftSlot={<Mail size={16} aria-hidden="true" />}
                 />
@@ -472,7 +463,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Focus Event"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     onFocus={handleFocus}
                 />
@@ -490,7 +480,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Blur Event"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     onBlur={handleBlur}
                 />
@@ -513,7 +502,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     label="Tags"
                     placeholder="type and press Enter"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -527,7 +515,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     label="Email addresses"
                     placeholder="Add email"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -549,7 +536,6 @@ describe('MultiValueInputV2 Accessibility', () => {
                     helpIconHintText="Tooltip information"
                     placeholder="Enter value"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     required
                     leftSlot={<Mail size={16} aria-hidden="true" />}
@@ -564,7 +550,7 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Error Test"
                     value=""
-                    tags={['x']}
+                    tags={tagsConfig(['x'])}
                     onChange={() => {}}
                     error
                     errorMessage="Please correct this field"
@@ -580,7 +566,7 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Disabled"
                     value=""
-                    tags={['Cannot', 'edit']}
+                    tags={tagsConfig(['Cannot', 'edit'])}
                     onChange={() => {}}
                     disabled
                 />

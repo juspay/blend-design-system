@@ -1,5 +1,5 @@
-import { CSSObject } from 'styled-components'
-import { InputSizeV2, InputStateV2 } from './inputV2.types'
+import type { CSSObject } from 'styled-components'
+import type { InputSizeV2, InputStateV2 } from './inputV2.types'
 
 export type FloatingLabelsV2Tokens = {
     placeholder: {

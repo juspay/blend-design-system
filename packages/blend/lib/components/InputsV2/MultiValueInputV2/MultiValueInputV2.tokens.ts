@@ -55,6 +55,11 @@ export type MultiValueInputV2TokensType = {
             width: CSSObject['width']
             height: CSSObject['height']
         }
+        /** Vertical alignment for slot row vs tags (`top` / `marginTop` in layout) */
+        slotAlignTop: {
+            withTags: CSSObject['top']
+            withoutTags: CSSObject['top']
+        }
     }
     bottomContainer: InputFooterV2Tokens
 }

@@ -141,6 +141,10 @@ export const getMultiValueInputV2DarkTokens = (
                     width: foundationTokens.unit[16],
                     height: foundationTokens.unit[16],
                 },
+                slotAlignTop: {
+                    withTags: foundationTokens.unit[7],
+                    withoutTags: foundationTokens.unit[3],
+                },
             },
             bottomContainer: {
                 hintText: {
@@ -303,10 +307,10 @@ export const getMultiValueInputV2DarkTokens = (
                 },
                 backgroundColor: {
                     default: foundationTokens.colors.gray[900],
-                    disabled: foundationTokens.colors.gray[50],
-                    hover: foundationTokens.colors.gray[0],
-                    focus: foundationTokens.colors.gray[0],
-                    error: foundationTokens.colors.gray[0],
+                    disabled: foundationTokens.colors.gray[800],
+                    hover: foundationTokens.colors.gray[900],
+                    focus: foundationTokens.colors.gray[900],
+                    error: foundationTokens.colors.gray[900],
                 },
                 boxShadow: {
                     default: foundationTokens.shadows.sm,
@@ -322,6 +326,10 @@ export const getMultiValueInputV2DarkTokens = (
                 rightSlot: {
                     width: foundationTokens.unit[16],
                     height: foundationTokens.unit[16],
+                },
+                slotAlignTop: {
+                    withTags: foundationTokens.unit[7],
+                    withoutTags: foundationTokens.unit[3],
                 },
             },
             bottomContainer: {

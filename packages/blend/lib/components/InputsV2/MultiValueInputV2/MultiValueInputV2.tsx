@@ -1,6 +1,6 @@
-import { type KeyboardEvent, useRef, useState, useId } from 'react'
+import { type KeyboardEvent, useId, useMemo, useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
-import { Tag, TagShape, TagSize } from '../../Tags'
+import { Tag, TagShape, TagSize, TagVariant } from '../../Tags'
 import InputFooterV2 from '../utils/InputFooter/InputFooterV2'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import { InputSizeV2, InputStateV2 } from '../inputV2.types'
@@ -9,14 +9,13 @@ import type { MultiValueInputV2Props } from './MultiValueV2.types'
 import type { MultiValueInputV2TokensType } from './MultiValueInputV2.tokens'
 import { X } from 'lucide-react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { FOUNDATION_THEME } from '../../../tokens'
 import styled, { CSSObject } from 'styled-components'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 
 const ContentContainer = styled(Block)<{
-    hasLeftSlot: boolean
-    hasRightSlot: boolean
-    slotOffset: number
+    $hasLeftSlot: boolean
+    $hasRightSlot: boolean
+    $slotOffset: number
     gap: CSSObject['gap']
 }>`
     position: relative;
@@ -26,11 +25,11 @@ const ContentContainer = styled(Block)<{
     gap: ${({ gap }) => gap};
     width: 100%;
 
-    ${({ hasLeftSlot, slotOffset }) =>
-        hasLeftSlot && `padding-left: ${slotOffset}px;`}
+    ${({ $hasLeftSlot, $slotOffset }) =>
+        $hasLeftSlot && `padding-left: ${$slotOffset}px;`}
 
-    ${({ hasRightSlot, slotOffset }) =>
-        hasRightSlot && `padding-right: ${slotOffset}px;`}
+    ${({ $hasRightSlot, $slotOffset }) =>
+        $hasRightSlot && `padding-right: ${$slotOffset}px;`}
 `
 
 const MultiValueInputV2 = ({
@@ -43,9 +42,14 @@ const MultiValueInputV2 = ({
     error,
     errorMessage,
     hintText,
-    tags = [],
-    onTagAdd,
-    onTagRemove,
+    tags = {
+        value: [],
+        size: TagSize.XS,
+        shape: TagShape.ROUNDED,
+        variant: TagVariant.SUBTLE,
+        onTagAdd: () => {},
+        onTagRemove: () => {},
+    },
     onChange,
     size = InputSizeV2.MD,
     onFocus,
@@ -59,7 +63,16 @@ const MultiValueInputV2 = ({
     const multiValueInputTokens =
         useResponsiveTokens<MultiValueInputV2TokensType>('MULTI_VALUE_INPUT_V2')
     const [isFocused, setIsFocused] = useState(false)
+    const [isHovered, setIsHovered] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
+
+    const labelState = useMemo((): InputStateV2 => {
+        if (disabled) return InputStateV2.DISABLED
+        if (error) return InputStateV2.ERROR
+        if (isFocused) return InputStateV2.FOCUS
+        if (isHovered) return InputStateV2.HOVER
+        return InputStateV2.DEFAULT
+    }, [disabled, error, isFocused, isHovered])
 
     // Generate unique IDs for accessibility (WCAG 4.1.2, 3.3.1, 3.3.2)
     const generatedId = useId()
@@ -76,27 +89,42 @@ const MultiValueInputV2 = ({
             .join(' ') || undefined
 
     const addTag = (value: string) => {
+        if (disabled) return
         const trimmedValue = value.trim()
-        if (trimmedValue && !tags.includes(trimmedValue)) {
-            onTagAdd?.(trimmedValue)
+        if (trimmedValue && !tags.value.includes(trimmedValue)) {
+            tags.onTagAdd?.(trimmedValue)
         }
     }
 
     const removeTag = (tagToRemove: string) => {
-        onTagRemove?.(tagToRemove)
+        if (disabled) return
+        tags.onTagRemove?.(tagToRemove)
         inputRef.current?.focus()
     }
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (disabled) return
         if (e.key === 'Enter') {
-            e.preventDefault()
-            addTag(value)
-        } else if (e.key === 'Backspace' && value === '' && tags.length > 0) {
-            removeTag(tags[tags.length - 1]!)
+            const trimmedValue = value.trim()
+            const isAddable =
+                !!tags.onTagAdd &&
+                !!trimmedValue &&
+                !tags.value.includes(trimmedValue)
+            if (isAddable) {
+                e.preventDefault()
+                addTag(value)
+            }
+        } else if (
+            e.key === 'Backspace' &&
+            value === '' &&
+            tags.value.length > 0
+        ) {
+            removeTag(tags.value[tags.value.length - 1]!)
         }
     }
 
     const handleContainerClick = () => {
+        if (disabled) return
         inputRef.current?.focus()
     }
 
@@ -113,7 +141,7 @@ const MultiValueInputV2 = ({
             : ic.border[InputStateV2.DEFAULT]
 
     const boxShadowToken = disabled
-        ? ic.boxShadow[InputStateV2.DISABLED]
+        ? 'none'
         : error && isFocused
           ? ic.boxShadow[InputStateV2.ERROR]
           : !error && isFocused
@@ -125,14 +153,18 @@ const MultiValueInputV2 = ({
         : ic.backgroundColor[InputStateV2.DEFAULT]
 
     const slotTop =
-        tags.length > 0 ? FOUNDATION_THEME.unit[7] : FOUNDATION_THEME.unit[3]
+        tags.value.length > 0
+            ? ic.slotAlignTop.withTags
+            : ic.slotAlignTop.withoutTags
     return (
         <Block
             data-multi-value-input={label || 'multi-value-input'}
             data-status={disabled ? 'disabled' : 'enabled'}
             display="flex"
             flexDirection="column"
-            gap={multiValueInputTokens.inputContainer.gap}
+            gap={multiValueInputTokens.gap}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <InputLabelsV2
                 label={label}
@@ -141,6 +173,8 @@ const MultiValueInputV2 = ({
                 required={required}
                 inputId={inputId}
                 name={name}
+                size={size}
+                state={labelState}
                 tokens={multiValueInputTokens.topContainer}
             />
             <Block
@@ -173,39 +207,45 @@ const MultiValueInputV2 = ({
                             : ic.border[InputStateV2.HOVER],
                 }}
             >
-                {leftSlot && (
-                    <Block
-                        data-element="left-slot"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        width={
-                            multiValueInputTokens.inputContainer.leftSlot.width
-                        }
-                        height={
-                            multiValueInputTokens.inputContainer.leftSlot.height
-                        }
-                        flexShrink={0}
-                        marginTop={slotTop}
-                    >
-                        {leftSlot}
-                    </Block>
-                )}
                 <ContentContainer
-                    hasLeftSlot={!!leftSlot}
-                    hasRightSlot={!!rightSlot}
-                    slotOffset={multiValueInputTokens.inputContainer.offSet}
+                    $hasLeftSlot={!!leftSlot}
+                    $hasRightSlot={!!rightSlot}
+                    $slotOffset={multiValueInputTokens.inputContainer.offSet}
                     gap={multiValueInputTokens.inputContainer.gap}
                 >
-                    {tags.map((tag) => (
+                    {leftSlot && (
+                        <Block
+                            data-element="left-slot"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            width={
+                                multiValueInputTokens.inputContainer.leftSlot
+                                    .width
+                            }
+                            height={
+                                multiValueInputTokens.inputContainer.leftSlot
+                                    .height
+                            }
+                            flexShrink={0}
+                            style={{
+                                marginLeft: -ic.offSet,
+                            }}
+                        >
+                            {leftSlot}
+                        </Block>
+                    )}
+                    {tags.value.map((tag) => (
                         <Tag
                             key={tag}
                             text={tag}
-                            size={TagSize.XS}
-                            shape={TagShape.ROUNDED}
+                            size={tags.size}
+                            shape={tags.shape}
+                            variant={tags.variant}
                             rightSlot={
                                 <PrimitiveButton
                                     type="button"
+                                    disabled={disabled}
                                     aria-label={`Remove ${tag}`}
                                     onClick={(e) => {
                                         e.stopPropagation()
@@ -224,7 +264,9 @@ const MultiValueInputV2 = ({
                                     style={{
                                         background: 'none',
                                         border: 'none',
-                                        cursor: 'pointer',
+                                        cursor: disabled
+                                            ? 'not-allowed'
+                                            : 'pointer',
                                         padding: 0,
                                         display: 'flex',
                                         alignItems: 'center',
@@ -232,7 +274,6 @@ const MultiValueInputV2 = ({
                                         minWidth: '24px',
                                         minHeight: '24px',
                                     }}
-                                    tabIndex={0}
                                 >
                                     <X
                                         size={
@@ -297,26 +338,29 @@ const MultiValueInputV2 = ({
                         }}
                         {...rest}
                     />
+                    {rightSlot && (
+                        <Block
+                            data-element="right-slot"
+                            position="absolute"
+                            top={slotTop}
+                            right={0}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            width={
+                                multiValueInputTokens.inputContainer.rightSlot
+                                    .width
+                            }
+                            height={
+                                multiValueInputTokens.inputContainer.rightSlot
+                                    .height
+                            }
+                            pointerEvents="auto"
+                        >
+                            {rightSlot}
+                        </Block>
+                    )}
                 </ContentContainer>
-                {rightSlot && (
-                    <Block
-                        data-element="right-slot"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        width={
-                            multiValueInputTokens.inputContainer.rightSlot.width
-                        }
-                        height={
-                            multiValueInputTokens.inputContainer.rightSlot
-                                .height
-                        }
-                        pointerEvents="auto"
-                        marginTop={slotTop}
-                    >
-                        {rightSlot}
-                    </Block>
-                )}
             </Block>
 
             <InputFooterV2
@@ -326,6 +370,7 @@ const MultiValueInputV2 = ({
                 errorId={errorId}
                 hintId={hintId}
                 tokens={multiValueInputTokens.bottomContainer}
+                size={size}
             />
         </Block>
     )

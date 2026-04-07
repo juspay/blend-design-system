@@ -3,12 +3,29 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, act, MockIcon } from '../../test-utils'
 import MultiValueInputV2 from '../../../lib/components/InputsV2/MultiValueInputV2/MultiValueInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
+import { TagShape, TagSize, TagVariant } from '../../../lib/components/Tags'
+
+function tagsConfig(
+    value: string[] = [],
+    handlers?: {
+        onTagAdd?: (tag: string) => void
+        onTagRemove?: (tag: string) => void
+    }
+) {
+    return {
+        value,
+        size: TagSize.XS,
+        shape: TagShape.ROUNDED,
+        variant: TagVariant.SUBTLE,
+        ...handlers,
+    }
+}
 
 /** Controlled harness for interaction tests */
 function ControlledMultiValueInput(
     props: Omit<
         React.ComponentProps<typeof MultiValueInputV2>,
-        'value' | 'tags' | 'onChange' | 'onTagAdd' | 'onTagRemove'
+        'value' | 'tags' | 'onChange'
     > & {
         initialValue?: string
         initialTags?: string[]
@@ -16,18 +33,20 @@ function ControlledMultiValueInput(
 ) {
     const { initialValue = '', initialTags = [], ...rest } = props
     const [value, setValue] = useState(initialValue)
-    const [tags, setTags] = useState(initialTags)
+    const [tagValues, setTagValues] = useState(initialTags)
     return (
         <MultiValueInputV2
             {...rest}
             value={value}
-            tags={tags}
             onChange={setValue}
-            onTagAdd={(tag) => {
-                setTags((t) => [...t, tag])
-                setValue('')
-            }}
-            onTagRemove={(tag) => setTags((t) => t.filter((x) => x !== tag))}
+            tags={tagsConfig(tagValues, {
+                onTagAdd: (tag) => {
+                    setTagValues((t) => [...t, tag])
+                    setValue('')
+                },
+                onTagRemove: (tag) =>
+                    setTagValues((t) => t.filter((x) => x !== tag)),
+            })}
         />
     )
 }
@@ -36,12 +55,7 @@ describe('MultiValueInputV2 Component', () => {
     describe('Rendering', () => {
         it('renders with label and textbox', () => {
             render(
-                <MultiValueInputV2
-                    label="Tags"
-                    value=""
-                    tags={[]}
-                    onChange={() => {}}
-                />
+                <MultiValueInputV2 label="Tags" value="" onChange={() => {}} />
             )
             expect(screen.getByText('Tags')).toBeInTheDocument()
             expect(screen.getByRole('textbox')).toBeInTheDocument()
@@ -53,7 +67,6 @@ describe('MultiValueInputV2 Component', () => {
                     label="Skills"
                     sublabel="Comma-separated via Enter"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -64,7 +77,7 @@ describe('MultiValueInputV2 Component', () => {
         })
 
         it('renders without label', () => {
-            render(<MultiValueInputV2 value="" tags={[]} onChange={() => {}} />)
+            render(<MultiValueInputV2 value="" onChange={() => {}} />)
             expect(screen.getByRole('textbox')).toBeInTheDocument()
         })
 
@@ -74,7 +87,6 @@ describe('MultiValueInputV2 Component', () => {
                     label="Tags"
                     placeholder="Add a tag"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -89,7 +101,7 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value=""
-                    tags={['Alpha', 'Beta']}
+                    tags={tagsConfig(['Alpha', 'Beta'])}
                     onChange={() => {}}
                 />
             )
@@ -102,7 +114,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Required"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     required
                 />
@@ -119,7 +130,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Field"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     hintText="Press Enter to add"
                 />
@@ -132,7 +142,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="With slots"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     leftSlot={<MockIcon />}
                     rightSlot={<MockIcon />}
@@ -154,7 +163,7 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Disabled"
                     value=""
-                    tags={['x']}
+                    tags={tagsConfig(['x'])}
                     onChange={() => {}}
                     disabled
                 />
@@ -162,12 +171,44 @@ describe('MultiValueInputV2 Component', () => {
             expect(screen.getByRole('textbox')).toBeDisabled()
         })
 
+        it('disables tag remove buttons when disabled', () => {
+            const onTagRemove = vi.fn()
+            render(
+                <MultiValueInputV2
+                    label="Disabled"
+                    value=""
+                    tags={tagsConfig(['alpha'], { onTagRemove })}
+                    onChange={() => {}}
+                    disabled
+                />
+            )
+            expect(
+                screen.getByRole('button', { name: 'Remove alpha' })
+            ).toBeDisabled()
+        })
+
+        it('does not call onTagRemove when clicking disabled remove control', async () => {
+            const onTagRemove = vi.fn()
+            const { user } = render(
+                <MultiValueInputV2
+                    label="Disabled"
+                    value=""
+                    tags={tagsConfig(['alpha'], { onTagRemove })}
+                    onChange={() => {}}
+                    disabled
+                />
+            )
+            await user.click(
+                screen.getByRole('button', { name: 'Remove alpha' })
+            )
+            expect(onTagRemove).not.toHaveBeenCalled()
+        })
+
         it('renders error message and aria-invalid', () => {
             render(
                 <MultiValueInputV2
                     label="Emails"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     error
                     errorMessage="Invalid value"
@@ -182,12 +223,7 @@ describe('MultiValueInputV2 Component', () => {
 
         it('renders aria-invalid false when no error', () => {
             render(
-                <MultiValueInputV2
-                    label="Ok"
-                    value=""
-                    tags={[]}
-                    onChange={() => {}}
-                />
+                <MultiValueInputV2 label="Ok" value="" onChange={() => {}} />
             )
             expect(screen.getByRole('textbox')).toHaveAttribute(
                 'aria-invalid',
@@ -204,7 +240,6 @@ describe('MultiValueInputV2 Component', () => {
                     <MultiValueInputV2
                         label={size}
                         value=""
-                        tags={[]}
                         onChange={() => {}}
                         size={size}
                     />
@@ -221,7 +256,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Controlled"
                     value="typing"
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -234,7 +268,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Type"
                     value=""
-                    tags={[]}
                     onChange={handleChange}
                 />
             )
@@ -248,7 +281,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Rerender"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -256,7 +288,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Rerender"
                     value="next"
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -271,9 +302,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value="new-tag"
-                    tags={[]}
+                    tags={tagsConfig([], { onTagAdd })}
                     onChange={() => {}}
-                    onTagAdd={onTagAdd}
                 />
             )
             const input = screen.getByRole('textbox')
@@ -289,9 +319,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value="dup"
-                    tags={['dup']}
+                    tags={tagsConfig(['dup'], { onTagAdd })}
                     onChange={() => {}}
-                    onTagAdd={onTagAdd}
                 />
             )
             await user.keyboard('{Enter}')
@@ -304,9 +333,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value="  trimmed  "
-                    tags={[]}
+                    tags={tagsConfig([], { onTagAdd })}
                     onChange={() => {}}
-                    onTagAdd={onTagAdd}
                 />
             )
             const input = screen.getByRole('textbox')
@@ -321,9 +349,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value=""
-                    tags={['a', 'b']}
+                    tags={tagsConfig(['a', 'b'], { onTagRemove })}
                     onChange={() => {}}
-                    onTagRemove={onTagRemove}
                 />
             )
             const input = screen.getByRole('textbox')
@@ -341,9 +368,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value=""
-                    tags={['remove-me']}
+                    tags={tagsConfig(['remove-me'], { onTagRemove })}
                     onChange={() => {}}
-                    onTagRemove={onTagRemove}
                 />
             )
             await user.click(
@@ -377,7 +403,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Focus"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     onFocus={onFocus}
                     onBlur={onBlur}
@@ -403,7 +428,6 @@ describe('MultiValueInputV2 Component', () => {
                     name="mv-name"
                     label="MV"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -419,7 +443,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="My field"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                 />
             )
@@ -430,12 +453,7 @@ describe('MultiValueInputV2 Component', () => {
 
         it('sets data-status for enabled and disabled', () => {
             const { rerender } = render(
-                <MultiValueInputV2
-                    label="S"
-                    value=""
-                    tags={[]}
-                    onChange={() => {}}
-                />
+                <MultiValueInputV2 label="S" value="" onChange={() => {}} />
             )
             expect(
                 document.querySelector('[data-status="enabled"]')
@@ -445,7 +463,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="S"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     disabled
                 />
@@ -462,7 +479,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="L"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     hintText="Hint here"
                 />
@@ -480,7 +496,6 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="L"
                     value=""
-                    tags={[]}
                     onChange={() => {}}
                     error
                     errorMessage="Bad"

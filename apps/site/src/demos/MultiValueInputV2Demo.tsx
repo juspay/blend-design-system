@@ -5,6 +5,19 @@ import Block from '../../../../packages/blend/lib/components/Primitives/Block/Bl
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Search, Mail, Hash } from 'lucide-react'
+import {
+    Switch,
+    TagShape,
+    TagSize,
+    TagVariant,
+} from '@juspay/blend-design-system'
+import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
+
+const sizeOptions = [
+    { value: InputSizeV2.SM, label: 'Small' },
+    { value: InputSizeV2.MD, label: 'Medium' },
+    { value: InputSizeV2.LG, label: 'Large' },
+]
 
 const MultiValueInputV2Demo = () => {
     // State for different examples
@@ -35,6 +48,8 @@ const MultiValueInputV2Demo = () => {
     const [largeTags, setLargeTags] = useState<string[]>(['Large'])
 
     const [inputValue, setInputValue] = useState<string>('')
+    const [disabled, setDisabled] = useState(false)
+    const [size, setSize] = useState<InputSizeV2>(InputSizeV2.MD)
 
     // Handlers for different examples
     const handleBasicTagAdd = (tag: string) => {
@@ -132,6 +147,29 @@ const MultiValueInputV2Demo = () => {
                     Interactive playground for MultiValueInput component
                     variations
                 </Text>
+
+                <Block
+                    marginTop="16px"
+                    display="flex"
+                    flexWrap="wrap"
+                    gap="24px"
+                    alignItems="flex-end"
+                >
+                    <Switch
+                        label="Disabled"
+                        checked={disabled}
+                        onChange={() => setDisabled(!disabled)}
+                    />
+                    <Block minWidth="220px" maxWidth="280px">
+                        <SingleSelect
+                            label="Size"
+                            placeholder="Select size"
+                            items={[{ items: sizeOptions }]}
+                            selected={size}
+                            onSelect={(value) => setSize(value as InputSizeV2)}
+                        />
+                    </Block>
+                </Block>
             </Block>
 
             {/* Basic Example */}
@@ -147,6 +185,8 @@ const MultiValueInputV2Demo = () => {
                 </Block>
                 <Block maxWidth="500px">
                     <MultiValueInputV2
+                        size={size}
+                        disabled={disabled}
                         onFocus={() => console.log('focused')}
                         onBlur={() => console.log('blurred')}
                         value={inputValue}
@@ -154,9 +194,14 @@ const MultiValueInputV2Demo = () => {
                         label="Technologies"
                         sublabel="Add programming languages or frameworks"
                         placeholder="Type and press Enter to add"
-                        tags={basicTags}
-                        onTagAdd={handleBasicTagAdd}
-                        onTagRemove={handleBasicTagRemove}
+                        tags={{
+                            value: basicTags,
+                            size: TagSize.XS,
+                            shape: TagShape.ROUNDED,
+                            variant: TagVariant.SUBTLE,
+                            onTagAdd: handleBasicTagAdd,
+                            onTagRemove: handleBasicTagRemove,
+                        }}
                         hintText="Press Enter to add a tag, Backspace to remove the last one"
                         helpIconHintText="Help"
                     />
@@ -182,9 +227,14 @@ const MultiValueInputV2Demo = () => {
                         label="Email Recipients"
                         sublabel="Add email addresses"
                         placeholder="Enter email address"
-                        tags={emailTags}
-                        onTagAdd={handleEmailTagAdd}
-                        onTagRemove={handleEmailTagRemove}
+                        tags={{
+                            value: emailTags,
+                            size: TagSize.XS,
+                            shape: TagShape.ROUNDED,
+                            variant: TagVariant.SUBTLE,
+                            onTagAdd: handleEmailTagAdd,
+                            onTagRemove: handleEmailTagRemove,
+                        }}
                         hintText="Only valid email addresses will be added"
                     />
                 </Block>
@@ -206,9 +256,14 @@ const MultiValueInputV2Demo = () => {
                         <MultiValueInputV2
                             label="Small Size"
                             placeholder="Small input"
-                            tags={smallTags}
-                            onTagAdd={handleSmallTagAdd}
-                            onTagRemove={handleSmallTagRemove}
+                            tags={{
+                                value: smallTags,
+                                size: TagSize.XS,
+                                shape: TagShape.ROUNDED,
+                                variant: TagVariant.SUBTLE,
+                                onTagAdd: handleSmallTagAdd,
+                                onTagRemove: handleSmallTagRemove,
+                            }}
                             size={InputSizeV2.SM}
                         />
                     </Block>
@@ -216,9 +271,14 @@ const MultiValueInputV2Demo = () => {
                         <MultiValueInputV2
                             label="Medium Size (Default)"
                             placeholder="Medium input"
-                            tags={mediumTags}
-                            onTagAdd={handleMediumTagAdd}
-                            onTagRemove={handleMediumTagRemove}
+                            tags={{
+                                value: mediumTags,
+                                size: TagSize.XS,
+                                shape: TagShape.ROUNDED,
+                                variant: TagVariant.SUBTLE,
+                                onTagAdd: handleMediumTagAdd,
+                                onTagRemove: handleMediumTagRemove,
+                            }}
                             size={InputSizeV2.MD}
                         />
                     </Block>
@@ -226,9 +286,14 @@ const MultiValueInputV2Demo = () => {
                         <MultiValueInputV2
                             label="Large Size"
                             placeholder="Large input"
-                            tags={largeTags}
-                            onTagAdd={handleLargeTagAdd}
-                            onTagRemove={handleLargeTagRemove}
+                            tags={{
+                                value: largeTags,
+                                size: TagSize.XS,
+                                shape: TagShape.ROUNDED,
+                                variant: TagVariant.SUBTLE,
+                                onTagAdd: handleLargeTagAdd,
+                                onTagRemove: handleLargeTagRemove,
+                            }}
                             size={InputSizeV2.LG}
                         />
                     </Block>
@@ -251,9 +316,14 @@ const MultiValueInputV2Demo = () => {
                         label="Skills"
                         sublabel="List your technical skills"
                         placeholder="Add skills"
-                        tags={skillsTags}
-                        onTagAdd={handleSkillsTagAdd}
-                        onTagRemove={handleSkillsTagRemove}
+                        tags={{
+                            value: skillsTags,
+                            size: TagSize.XS,
+                            shape: TagShape.ROUNDED,
+                            variant: TagVariant.SUBTLE,
+                            onTagAdd: handleSkillsTagAdd,
+                            onTagRemove: handleSkillsTagRemove,
+                        }}
                         required
                         hintText="At least one skill is required"
                     />
@@ -276,9 +346,14 @@ const MultiValueInputV2Demo = () => {
                         label="Tags with Error"
                         sublabel="This field has validation errors"
                         placeholder="Add tags"
-                        tags={errorTags}
-                        onTagAdd={handleErrorTagAdd}
-                        onTagRemove={handleErrorTagRemove}
+                        tags={{
+                            value: errorTags,
+                            size: TagSize.XS,
+                            shape: TagShape.ROUNDED,
+                            variant: TagVariant.SUBTLE,
+                            onTagAdd: handleErrorTagAdd,
+                            onTagRemove: handleErrorTagRemove,
+                        }}
                         error
                         errorMessage="Please remove invalid tags and ensure all entries are valid"
                     />
@@ -301,7 +376,14 @@ const MultiValueInputV2Demo = () => {
                         label="Read-only Tags"
                         sublabel="This field cannot be modified"
                         placeholder="Cannot add tags"
-                        tags={disabledTags}
+                        tags={{
+                            value: disabledTags,
+                            size: TagSize.XS,
+                            shape: TagShape.ROUNDED,
+                            variant: TagVariant.SUBTLE,
+                            onTagAdd: () => {},
+                            onTagRemove: () => {},
+                        }}
                         disabled
                         hintText="This field is read-only"
                     />
@@ -324,9 +406,14 @@ const MultiValueInputV2Demo = () => {
                         label="Categories"
                         sublabel="Add product categories"
                         placeholder="Start typing to add categories"
-                        tags={categoryTags}
-                        onTagAdd={handleCategoryTagAdd}
-                        onTagRemove={handleCategoryTagRemove}
+                        tags={{
+                            value: categoryTags,
+                            size: TagSize.XS,
+                            shape: TagShape.ROUNDED,
+                            variant: TagVariant.SUBTLE,
+                            onTagAdd: handleCategoryTagAdd,
+                            onTagRemove: handleCategoryTagRemove,
+                        }}
                         hintText="No categories added yet"
                     />
                 </Block>
@@ -348,15 +435,13 @@ const MultiValueInputV2Demo = () => {
                         label="Restricted Input"
                         sublabel="Maximum 3 characters per tag"
                         placeholder="Short tags only"
-                        tags={[]}
-                        onTagAdd={(tag) => {
-                            if (tag.length <= 3) {
-                                // Handle add logic here
-                                console.log('Adding tag:', tag)
-                            }
-                        }}
-                        onTagRemove={(tag) => {
-                            console.log('Removing tag:', tag)
+                        tags={{
+                            value: [],
+                            size: TagSize.XS,
+                            shape: TagShape.ROUNDED,
+                            variant: TagVariant.SUBTLE,
+                            onTagAdd: () => {},
+                            onTagRemove: () => {},
                         }}
                         maxLength={3}
                         autoComplete="off"
@@ -382,9 +467,14 @@ const MultiValueInputV2Demo = () => {
                             label="Search Tags"
                             sublabel="Add search tags with search icon"
                             placeholder="Type and press Enter to add"
-                            tags={basicTags}
-                            onTagAdd={handleBasicTagAdd}
-                            onTagRemove={handleBasicTagRemove}
+                            tags={{
+                                value: basicTags,
+                                size: TagSize.XS,
+                                shape: TagShape.ROUNDED,
+                                variant: TagVariant.SUBTLE,
+                                onTagAdd: handleBasicTagAdd,
+                                onTagRemove: handleBasicTagRemove,
+                            }}
                             leftSlot={<Search size={16} />}
                             hintText="Left slot with search icon"
                         />
@@ -394,9 +484,14 @@ const MultiValueInputV2Demo = () => {
                             label="Email Tags"
                             sublabel="Add email addresses with mail icon"
                             placeholder="Enter email address"
-                            tags={emailTags}
-                            onTagAdd={handleEmailTagAdd}
-                            onTagRemove={handleEmailTagRemove}
+                            tags={{
+                                value: emailTags,
+                                size: TagSize.XS,
+                                shape: TagShape.ROUNDED,
+                                variant: TagVariant.SUBTLE,
+                                onTagAdd: handleEmailTagAdd,
+                                onTagRemove: handleEmailTagRemove,
+                            }}
                             leftSlot={<Mail size={16} />}
                             hintText="Left slot with mail icon"
                         />
@@ -406,9 +501,14 @@ const MultiValueInputV2Demo = () => {
                             label="Hashtags"
                             sublabel="Add hashtags with hash icon on right"
                             placeholder="Type hashtag"
-                            tags={categoryTags}
-                            onTagAdd={handleCategoryTagAdd}
-                            onTagRemove={handleCategoryTagRemove}
+                            tags={{
+                                value: categoryTags,
+                                size: TagSize.XS,
+                                shape: TagShape.ROUNDED,
+                                variant: TagVariant.SUBTLE,
+                                onTagAdd: handleCategoryTagAdd,
+                                onTagRemove: handleCategoryTagRemove,
+                            }}
                             rightSlot={<Hash size={16} />}
                             hintText="Right slot with hash icon"
                         />
@@ -418,9 +518,14 @@ const MultiValueInputV2Demo = () => {
                             label="Tags with Both Slots"
                             sublabel="Left and right slots together"
                             placeholder="Add tags"
-                            tags={skillsTags}
-                            onTagAdd={handleSkillsTagAdd}
-                            onTagRemove={handleSkillsTagRemove}
+                            tags={{
+                                value: skillsTags,
+                                size: TagSize.XS,
+                                shape: TagShape.ROUNDED,
+                                variant: TagVariant.SUBTLE,
+                                onTagAdd: handleSkillsTagAdd,
+                                onTagRemove: handleSkillsTagRemove,
+                            }}
                             leftSlot={<Search size={16} />}
                             rightSlot={<Hash size={16} />}
                             hintText="Both left and right slots"

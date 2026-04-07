@@ -8,6 +8,17 @@ import {
 import { ThemeProvider } from '@juspay/blend-design-system'
 import { MultiValueInputV2 } from '../../../../../packages/blend/lib/components/InputsV2/MultiValueInputV2'
 import { InputSizeV2 } from '../../../../../packages/blend/lib/components/InputsV2/inputV2.types'
+import {
+    TagSize,
+    TagShape,
+    TagVariant,
+} from '../../../../../packages/blend/lib/components/Tags'
+
+const defaultTagConfig = {
+    size: TagSize.XS,
+    shape: TagShape.ROUNDED,
+    variant: TagVariant.SUBTLE,
+} as const
 
 const meta: Meta<typeof MultiValueInputV2> = {
     title: 'Components/Inputs/MultiValueInputV2',
@@ -34,6 +45,7 @@ A multi-value input (V2) for entering tags: type and press **Enter** to add, **B
 - Error state with \`error\` and \`errorMessage\`
 - Optional left/right slot content (plain \`ReactNode\`)
 - Disabled state
+- Tags configured via \`tags\`: \`value\` (strings), \`size\` / \`shape\` / \`variant\`, and \`onTagAdd\` / \`onTagRemove\`
 
 ## Accessibility
 - Native \`<input>\` with label association via \`id\`
@@ -44,18 +56,24 @@ A multi-value input (V2) for entering tags: type and press **Enter** to add, **B
 
 \`\`\`tsx
 import { MultiValueInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
+import { TagSize, TagShape, TagVariant } from '...';
 
 const [value, setValue] = useState('');
-const [tags, setTags] = useState<string[]>([]);
+const [tagValues, setTagValues] = useState<string[]>([]);
 
 <MultiValueInputV2
   label="Tags"
   placeholder="Add a tag and press Enter"
   value={value}
   onChange={setValue}
-  tags={tags}
-  onTagAdd={(tag) => { setTags((t) => [...t, tag]); setValue(''); }}
-  onTagRemove={(tag) => setTags((t) => t.filter((x) => x !== tag))}
+  tags={{
+    value: tagValues,
+    size: TagSize.XS,
+    shape: TagShape.ROUNDED,
+    variant: TagVariant.SUBTLE,
+    onTagAdd: (tag) => { setTagValues((t) => [...t, tag]); setValue(''); },
+    onTagRemove: (tag) => setTagValues((t) => t.filter((x) => x !== tag)),
+  }}
   size={InputSizeV2.MD}
 />
 \`\`\`
@@ -70,9 +88,10 @@ const [tags, setTags] = useState<string[]>([]);
             table: { type: { summary: 'string' }, category: 'Core' },
         },
         tags: {
-            control: { type: 'object' },
-            description: 'Committed tag values',
-            table: { type: { summary: 'string[]' }, category: 'Core' },
+            control: false,
+            description:
+                'Tag config: `{ value: string[], size, shape, variant, onTagAdd?, onTagRemove? }`',
+            table: { type: { summary: 'object' }, category: 'Core' },
         },
         label: {
             control: { type: 'text' },
@@ -148,20 +167,6 @@ const [tags, setTags] = useState<string[]>([]);
                 category: 'Events',
             },
         },
-        onTagAdd: {
-            action: 'tagAdd',
-            table: {
-                type: { summary: '(tag: string) => void' },
-                category: 'Events',
-            },
-        },
-        onTagRemove: {
-            action: 'tagRemove',
-            table: {
-                type: { summary: '(tag: string) => void' },
-                category: 'Events',
-            },
-        },
         onFocus: {
             action: 'focused',
             table: {
@@ -190,24 +195,28 @@ type Story = StoryObj<typeof MultiValueInputV2>
 export const Default: Story = {
     render: function DefaultMultiValueInputV2(args) {
         const [value, setValue] = useState('')
-        const [tags, setTags] = useState<string[]>(['React', 'TypeScript'])
+        const [tagValues, setTagValues] = useState<string[]>([
+            'React',
+            'TypeScript',
+        ])
         return (
             <MultiValueInputV2
                 {...args}
                 value={value}
-                tags={tags}
                 onChange={(v) => {
                     setValue(v)
                     args.onChange?.(v)
                 }}
-                onTagAdd={(tag) => {
-                    setTags((t) => [...t, tag])
-                    setValue('')
-                    args.onTagAdd?.(tag)
-                }}
-                onTagRemove={(tag) => {
-                    setTags((t) => t.filter((x) => x !== tag))
-                    args.onTagRemove?.(tag)
+                tags={{
+                    ...defaultTagConfig,
+                    value: tagValues,
+                    onTagAdd: (tag: string) => {
+                        setTagValues((t) => [...t, tag])
+                        setValue('')
+                    },
+                    onTagRemove: (tag: string) => {
+                        setTagValues((t) => t.filter((x) => x !== tag))
+                    },
                 }}
             />
         )
@@ -226,36 +235,49 @@ export const Default: Story = {
 
 export const Sizes: Story = {
     render: function SizesStory() {
-        const [sm, setSm] = useState({ value: '', tags: ['Small'] as string[] })
+        const [sm, setSm] = useState({
+            value: '',
+            tagValues: ['Small'] as string[],
+        })
         const [md, setMd] = useState({
             value: '',
-            tags: ['Medium'] as string[],
+            tagValues: ['Medium'] as string[],
         })
-        const [lg, setLg] = useState({ value: '', tags: ['Large'] as string[] })
+        const [lg, setLg] = useState({
+            value: '',
+            tagValues: ['Large'] as string[],
+        })
 
         const bind = (
-            state: { value: string; tags: string[] },
+            state: { value: string; tagValues: string[] },
             set: React.Dispatch<
-                React.SetStateAction<{ value: string; tags: string[] }>
+                React.SetStateAction<{
+                    value: string
+                    tagValues: string[]
+                }>
             >,
-            size: InputSizeV2
+            inputSize: InputSizeV2
         ) => (
             <MultiValueInputV2
-                label={`Size: ${size}`}
+                label={`Size: ${inputSize}`}
                 placeholder="Add tag"
-                size={size}
+                size={inputSize}
                 value={state.value}
-                tags={state.tags}
                 onChange={(v) => set((s) => ({ ...s, value: v }))}
-                onTagAdd={(tag) =>
-                    set((s) => ({ tags: [...s.tags, tag], value: '' }))
-                }
-                onTagRemove={(tag) =>
-                    set((s) => ({
-                        ...s,
-                        tags: s.tags.filter((t) => t !== tag),
-                    }))
-                }
+                tags={{
+                    ...defaultTagConfig,
+                    value: state.tagValues,
+                    onTagAdd: (tag) =>
+                        set((s) => ({
+                            tagValues: [...s.tagValues, tag],
+                            value: '',
+                        })),
+                    onTagRemove: (tag) =>
+                        set((s) => ({
+                            ...s,
+                            tagValues: s.tagValues.filter((t) => t !== tag),
+                        })),
+                }}
             />
         )
 
@@ -286,16 +308,19 @@ export const Sizes: Story = {
 export const WithError: Story = {
     render: function WithErrorStory() {
         const [value, setValue] = useState('')
-        const [tags] = useState<string[]>(['invalid@'])
+        const [tagValues] = useState<string[]>(['invalid@'])
         return (
             <MultiValueInputV2
                 label="Email tags"
                 placeholder="name@example.com"
                 value={value}
-                tags={tags}
                 onChange={setValue}
-                onTagAdd={() => {}}
-                onTagRemove={() => {}}
+                tags={{
+                    ...defaultTagConfig,
+                    value: tagValues,
+                    onTagAdd: () => {},
+                    onTagRemove: () => {},
+                }}
                 error
                 errorMessage="One or more values are not valid email addresses."
                 hintText="Use Enter to add each email."
@@ -319,10 +344,13 @@ export const Disabled: Story = {
                 label="Disabled"
                 placeholder="Cannot edit"
                 value={value}
-                tags={['Read-only', 'Tag']}
                 onChange={setValue}
-                onTagAdd={() => {}}
-                onTagRemove={() => {}}
+                tags={{
+                    ...defaultTagConfig,
+                    value: ['Read-only', 'Tag'],
+                    onTagAdd: () => {},
+                    onTagRemove: () => {},
+                }}
                 disabled
             />
         )
@@ -338,8 +366,14 @@ export const Disabled: Story = {
 
 export const WithSlots: Story = {
     render: function WithSlotsStory() {
-        const [a, setA] = useState({ value: '', tags: ['frontend', 'design'] })
-        const [b, setB] = useState({ value: '', tags: ['updates'] })
+        const [a, setA] = useState({
+            value: '',
+            tagValues: ['frontend', 'design'] as string[],
+        })
+        const [b, setB] = useState({
+            value: '',
+            tagValues: ['updates'] as string[],
+        })
         return (
             <div
                 style={{
@@ -353,34 +387,42 @@ export const WithSlots: Story = {
                     label="With left slot"
                     placeholder="Keywords"
                     value={a.value}
-                    tags={a.tags}
                     onChange={(v) => setA((s) => ({ ...s, value: v }))}
-                    onTagAdd={(tag) =>
-                        setA((s) => ({ tags: [...s.tags, tag], value: '' }))
-                    }
-                    onTagRemove={(tag) =>
-                        setA((s) => ({
-                            ...s,
-                            tags: s.tags.filter((x) => x !== tag),
-                        }))
-                    }
+                    tags={{
+                        ...defaultTagConfig,
+                        value: a.tagValues,
+                        onTagAdd: (tag) =>
+                            setA((s) => ({
+                                tagValues: [...s.tagValues, tag],
+                                value: '',
+                            })),
+                        onTagRemove: (tag) =>
+                            setA((s) => ({
+                                ...s,
+                                tagValues: s.tagValues.filter((x) => x !== tag),
+                            })),
+                    }}
                     leftSlot={<Search size={16} aria-hidden />}
                 />
                 <MultiValueInputV2
                     label="With left and right slots"
                     placeholder="Add channel"
                     value={b.value}
-                    tags={b.tags}
                     onChange={(v) => setB((s) => ({ ...s, value: v }))}
-                    onTagAdd={(tag) =>
-                        setB((s) => ({ tags: [...s.tags, tag], value: '' }))
-                    }
-                    onTagRemove={(tag) =>
-                        setB((s) => ({
-                            ...s,
-                            tags: s.tags.filter((x) => x !== tag),
-                        }))
-                    }
+                    tags={{
+                        ...defaultTagConfig,
+                        value: b.tagValues,
+                        onTagAdd: (tag) =>
+                            setB((s) => ({
+                                tagValues: [...s.tagValues, tag],
+                                value: '',
+                            })),
+                        onTagRemove: (tag) =>
+                            setB((s) => ({
+                                ...s,
+                                tagValues: b.tagValues.filter((x) => x !== tag),
+                            })),
+                    }}
                     leftSlot={<Mail size={16} aria-hidden />}
                     rightSlot={<Hash size={16} aria-hidden />}
                 />

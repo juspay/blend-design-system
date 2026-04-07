@@ -141,6 +141,10 @@ export const getMultiValueInputV2LightTokens = (
                     width: foundationTokens.unit[16],
                     height: foundationTokens.unit[16],
                 },
+                slotAlignTop: {
+                    withTags: foundationTokens.unit[7],
+                    withoutTags: foundationTokens.unit[3],
+                },
             },
             bottomContainer: {
                 hintText: {
@@ -322,6 +326,10 @@ export const getMultiValueInputV2LightTokens = (
                 rightSlot: {
                     width: foundationTokens.unit[16],
                     height: foundationTokens.unit[16],
+                },
+                slotAlignTop: {
+                    withTags: foundationTokens.unit[7],
+                    withoutTags: foundationTokens.unit[3],
                 },
             },
             bottomContainer: {
