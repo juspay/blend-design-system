@@ -69,6 +69,7 @@ export function CommandSearch() {
 
     return (
         <div
+            data-cmd-open
             className="fixed inset-0 z-150"
             onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
         >

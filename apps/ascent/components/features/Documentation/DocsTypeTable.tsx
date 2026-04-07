@@ -114,7 +114,7 @@ const DocsTypeTable = ({
     return (
         <div
             className={cn(
-                'w-full border border-code-border rounded-t-xl my-8 overflow-hidden',
+                'w-full border border-code-border rounded-xl my-8 overflow-hidden',
                 className
             )}
         >

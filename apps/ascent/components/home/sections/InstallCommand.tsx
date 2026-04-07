@@ -6,6 +6,7 @@ import {
     CheckIcon,
     CaretDownIcon,
 } from '@phosphor-icons/react/dist/ssr'
+import { useClipboard } from '@/hooks/useClipboard'
 
 const PACKAGE_MANAGERS = {
     npm: 'npm i',
@@ -18,16 +19,12 @@ type PackageManager = keyof typeof PACKAGE_MANAGERS
 const PACKAGE_NAME = '@juspay/blend-design-system'
 
 export default function InstallCommand() {
-    const [copied, setCopied] = useState(false)
+    const { copied, copy } = useClipboard()
     const [packageManager, setPackageManager] = useState<PackageManager>('npm')
 
     const installCommand = `${PACKAGE_MANAGERS[packageManager]} ${PACKAGE_NAME}`
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(installCommand)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-    }
+    const handleCopy = () => copy(installCommand)
 
     return (
         <div className="max-w-sm">

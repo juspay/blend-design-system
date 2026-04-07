@@ -3,15 +3,10 @@ import { cn } from '@/lib'
 
 export const ChangelogEntry = ({
     type,
-    component,
     children,
-    prId,
-    prUrl,
     commitHash,
     commitUrl,
 }: ChangelogEntryProps) => {
-    const prIds = Array.isArray(prId) ? prId : prId ? [prId] : []
-    const prUrls = Array.isArray(prUrl) ? prUrl : prUrl ? [prUrl] : []
     const commitHashes = Array.isArray(commitHash)
         ? commitHash
         : commitHash
@@ -91,54 +86,28 @@ export const ChangelogEntry = ({
                     </span>
 
                     <div>
-                        {(component ||
-                            prIds.length > 0 ||
-                            commitHashes.length > 0) && (
+                        {commitHashes.length > 0 && (
                             <div className="flex items-center gap-2 mb-1">
-                                {(prIds.length > 0 ||
-                                    commitHashes.length > 0) && (
-                                    <span className="text-xs text-muted-foreground">
-                                        {prIds.map((id, index) => {
-                                            const url =
-                                                prUrls[index] ||
-                                                `https://github.com/juspay/blend-design-system/pull/${id}`
-                                            return (
-                                                <span key={`pr-${id}`}>
-                                                    {index > 0 && ', '}
-                                                    <a
-                                                        href={url}
-                                                        className="commit-link"
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        #{id}
-                                                    </a>
-                                                </span>
-                                            )
-                                        })}
-                                        {prIds.length > 0 &&
-                                            commitHashes.length > 0 &&
-                                            ' • '}
-                                        {commitHashes.map((hash, index) => {
-                                            const url =
-                                                commitUrls[index] ||
-                                                `https://github.com/juspay/blend-design-system/commit/${hash}`
-                                            return (
-                                                <span key={`commit-${hash}`}>
-                                                    {index > 0 && ', '}
-                                                    <a
-                                                        href={url}
-                                                        className="commit-link"
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        {hash.substring(0, 7)}
-                                                    </a>
-                                                </span>
-                                            )
-                                        })}
-                                    </span>
-                                )}
+                                <span className="text-xs text-muted-foreground">
+                                    {commitHashes.map((hash, index) => {
+                                        const url =
+                                            commitUrls[index] ||
+                                            `https://github.com/juspay/blend-design-system/commit/${hash}`
+                                        return (
+                                            <span key={`commit-${hash}`}>
+                                                {index > 0 && ', '}
+                                                <a
+                                                    href={url}
+                                                    className="commit-link"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {hash.substring(0, 7)}
+                                                </a>
+                                            </span>
+                                        )
+                                    })}
+                                </span>
                             </div>
                         )}
                     </div>

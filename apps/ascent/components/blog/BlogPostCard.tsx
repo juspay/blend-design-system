@@ -14,7 +14,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
     return (
         <Link
             href={`/blog/${sanitizeSlug(post.slug)}`}
-            className="relative flex h-full min-h-95 sm:min-h-105 flex-col overflow-hidden border-b border-r border-border px-5 pt-8"
+            className="relative flex h-full min-h-95 sm:min-h-138 flex-col overflow-hidden border-b border-r border-border px-5 pt-8"
         >
             {/* Content */}
             <div className="flex flex-1 flex-col items-start gap-3.5">

@@ -37,7 +37,7 @@ const SharedLayout = ({
                     </div>
                 </div>
                 {showFooter && (
-                    <div className="fixed bottom-0 left-0 right-0 z-10 w-full border-t border-border h-17.75 bg-background">
+                    <div className="fixed bottom-0 left-0 right-0 z-10 w-full border-t border-border h-17.75 bg-background hidden md:block">
                         <div className="border-x border-border max-w-360 mx-auto h-17.75" />
                     </div>
                 )}

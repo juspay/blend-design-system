@@ -1,31 +1,26 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { CheckIcon } from '@phosphor-icons/react/dist/ssr'
 import { highlight } from 'sugar-high'
+import { useClipboard } from '@/hooks/useClipboard'
 
 const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {
     const codeHTML = highlight(code as string)
-    const [isCopied, setIsCopied] = useState(false)
+    const { copied, copy } = useClipboard()
 
     const lineCount = (code as string).split('\n').length
 
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(code as string)
-        setIsCopied(true)
-        setTimeout(() => {
-            setIsCopied(false)
-        }, 2000)
-    }
+    const copyToClipboard = () => copy(code as string)
 
     return (
         <div
             data-code-block
-            className="relative w-full rounded-xl border border-code-border py-3 px-2 overflow-auto bg-code-background"
+            className="relative w-full rounded-xl border border-code-border py-3 px-2 overflow-auto bg-code-background max-h-180"
         >
             <AnimatePresence initial={false} mode="wait">
                 <motion.button
-                    key={isCopied ? 'check' : 'copy'}
+                    key={copied ? 'check' : 'copy'}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -34,10 +29,10 @@ const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {
                     onClick={copyToClipboard}
                     data-nav-content
                     aria-label={
-                        isCopied ? 'Code copied' : 'Copy code to clipboard'
+                        copied ? 'Code copied' : 'Copy code to clipboard'
                     }
                 >
-                    {isCopied ? (
+                    {copied ? (
                         <CheckIcon
                             size={14}
                             className="dark:text-green-500 text-green-600"

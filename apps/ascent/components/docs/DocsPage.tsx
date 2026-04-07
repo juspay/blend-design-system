@@ -4,9 +4,11 @@ import { WarningOctagonIcon } from '@phosphor-icons/react/dist/ssr'
 import { DocsPageProps } from '@/lib/types'
 import { GithubRoundedIcon, StoryBookIcon } from '@/icons'
 import { AsideStyle } from '../layout'
+import { CopyMarkdownButton } from './CopyMarkdownButton'
 
 interface ExtendedDocsPageProps extends DocsPageProps {
     mobileTrigger?: React.ReactNode
+    rawMarkdown?: string
 }
 
 function DocsPage({
@@ -14,6 +16,7 @@ function DocsPage({
     content,
     breadcrumbItems,
     mobileTrigger,
+    rawMarkdown,
 }: ExtendedDocsPageProps) {
     return (
         <div className="flex flex-col mx-auto border-x border-border">
@@ -71,8 +74,8 @@ function DocsPage({
                                 </a>
                                 <a
                                     href={
-                                        metadata.storybookLink &&
-                                        metadata.storybookLink !== ''
+                                        metadata.StorybookLink &&
+                                        metadata.StorybookLink !== ''
                                             ? `https://blend.juspay.design/storybook/?path=/docs/${metadata.StorybookLink}`
                                             : 'https://blend.juspay.design/storybook/?path=/docs/components-accordion--docs'
                                     }
@@ -86,6 +89,11 @@ function DocsPage({
                                         View Storybook
                                     </span>
                                 </a>
+                                {rawMarkdown && (
+                                    <CopyMarkdownButton
+                                        rawMarkdown={rawMarkdown}
+                                    />
+                                )}
                             </div>
                         </div>
                         <div>{content}</div>

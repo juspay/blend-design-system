@@ -19,7 +19,7 @@ const SidebarSection = ({
     onLinkClick?: () => void
     isNested?: boolean
 }) => (
-    <div className={isNested ? 'mb-4 mt-6' : ''}>
+    <div className={isNested ? 'mt-6' : ''}>
         <div
             className={cn(
                 'flex items-center px-3 text-xs uppercase text-nav-section-text-foreground select-none tracking-wider font-medium',

@@ -240,6 +240,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
                         metadata={metadata}
                         content={content}
                         breadcrumbItems={breadcrumbItems}
+                        rawMarkdown={fileContent}
                         mobileTrigger={
                             <MobileSidebarTrigger sidebarItems={sidebarItems} />
                         }

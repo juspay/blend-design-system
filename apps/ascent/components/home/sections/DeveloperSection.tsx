@@ -70,8 +70,8 @@ export default function DeveloperSection() {
                         TERMINAL
                     </button>
                 </div>
-                <div className="px-3 py-2 flex items-center gap-2">
-                    <code className="text-sm font-mono text-red-500 px-2">
+                <div className="px-3 py-2 flex items-center">
+                    <code className="text-sm font-mono text-red-500 dark:text-blue-500 px-2">
                         npm install{' '}
                         <span className="text-muted-foreground">@</span>
                         juspay<span className="text-muted-foreground">/</span>

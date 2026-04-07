@@ -633,3 +633,8 @@ article > div:last-child {
     border-bottom-left-radius: 0.75rem;
     border-bottom-right-radius: 0.75rem;
 }
+
+/* Lock body scroll when CMD modal is open */
+html:has([data-cmd-open]) {
+    overflow: hidden;
+}

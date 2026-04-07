@@ -1,15 +1,11 @@
 'use client'
-import { useState } from 'react'
 import { CopyIcon, CheckIcon } from '@phosphor-icons/react/dist/ssr'
+import { useClipboard } from '@/hooks/useClipboard'
 
 export default function CopyButton({ text }: { text: string }) {
-    const [copied, setCopied] = useState(false)
+    const { copied, copy } = useClipboard()
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(text)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-    }
+    const handleCopy = () => copy(text)
 
     return (
         <button
