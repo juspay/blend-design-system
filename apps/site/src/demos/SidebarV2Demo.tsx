@@ -663,7 +663,7 @@ const SidebarV2Demo = () => {
                         showOnMobile: true,
                     },
                     {
-                        label: 'Tag',
+                        label: 'Tag ejdojdojodjoejdoejdoejdojdojedojeodjeodjedd ejodjoejdoehdohedoh',
                         leftSlot: (
                             <TagIcon
                                 style={{ width: '16px', height: '16px' }}

@@ -24,14 +24,11 @@ const DirectoryContainer = styled(Block)`
 `
 
 const shouldTrackHover = (
-    iconOnlyMode: boolean,
     setIsHovering: ((isHovering: boolean) => void) | undefined
-): boolean => iconOnlyMode && !!setIsHovering
+): boolean => !!setIsHovering
 
 export type SidebarV2PanelProps = {
-    /** Slot content rendered at the top of the sidebar */
     sidebarTopSlot?: ReactNode
-    /** Merchant switcher configuration */
     merchantInfo?: {
         items: Array<{
             label: string
@@ -41,45 +38,23 @@ export type SidebarV2PanelProps = {
         selected: string
         onSelect: (value: string) => void
     }
-    /** Whether the sidebar is in expanded state */
     isExpanded: boolean
-    /** Whether the directory has been scrolled */
     isScrolled: boolean
-    /** Keyboard shortcut key to toggle sidebar */
     sidebarCollapseKey: string
-    /** Callback when toggle button is clicked */
     onToggle: () => void
-    /** ID for the navigation region */
     sidebarNavId?: string
-    /** Navigation directory data */
     data: DirectoryData[]
-    /** Prefix for generating unique IDs */
     idPrefix: string
-    /** Currently active navigation item */
     activeItem?: string | null
-    /** Callback when active item changes */
     onActiveItemChange?: (item: string | null) => void
-    /** Default active item on initial render */
     defaultActiveItem?: string | null
-    /** Whether to show icon-only mode (collapsed state) */
     iconOnlyMode?: boolean
-    /** Footer content rendered at the bottom */
     footer?: ReactNode
-    /** Callback to set hover state (for intermediate expand on hover) */
     setIsHovering?: (isHovering: boolean) => void
-    /** Current sidebar state for styling */
     sidebarState?: SidebarV2StateChangeType
-    /** Design tokens for styling */
     tokens: SidebarV2TokensType
 }
 
-/**
- * SidebarV2Panel renders the main sidebar panel including header,
- * scrollable navigation directory, and footer.
- *
- * Used both for the primary sidebar and the hover-preview overlay
- * when the sidebar is collapsed.
- */
 const SidebarV2Panel = ({
     sidebarTopSlot,
     merchantInfo,
@@ -99,7 +74,7 @@ const SidebarV2Panel = ({
     sidebarState = 'expanded',
     tokens,
 }: SidebarV2PanelProps) => {
-    const trackHover = shouldTrackHover(iconOnlyMode, setIsHovering)
+    const trackHover = shouldTrackHover(setIsHovering)
 
     return (
         <Block

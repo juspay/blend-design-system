@@ -57,6 +57,8 @@ export const TruncatedTextWithTooltipV2 = forwardRef<
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
+                    width: '100%',
+                    maxWidth: '100%',
                     ...style,
                 }}
             >

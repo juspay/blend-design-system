@@ -8,7 +8,6 @@ import React, {
 import type { NavItemProps } from './types'
 import { ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
-import Text from '../Text/Text'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
@@ -16,6 +15,7 @@ import { handleKeyDown } from './utils'
 import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
@@ -29,6 +29,7 @@ const StyledElement = styled(Block)<{
             : $tokens.section.itemList.item.backgroundColor.default};
     border: none;
     width: 100%;
+    min-width: 0;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -45,11 +46,14 @@ const StyledElement = styled(Block)<{
             ? $tokens.section.itemList.item.color.active
             : $tokens.section.itemList.item.color.default};
     font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
+    font-size: ${({ $tokens }) =>
+        addPxToValue($tokens.section.itemList.item.fontSize)};
     border-radius: ${({ $tokens }) =>
         $tokens.section.itemList.item.borderRadius};
     transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
     user-select: none;
     cursor: pointer;
+    overflow: hidden;
 
     &:hover,
     &:focus-visible {
@@ -311,6 +315,8 @@ const NavItem = ({
                     alignItems="center"
                     justifyContent="flex-start"
                     gap={tokens.section.itemList.item.gap}
+                    minWidth={0}
+                    overflow="hidden"
                 >
                     {item.leftSlot && React.isValidElement(item.leftSlot) && (
                         <IconWrapper aria-hidden="true" $tokens={tokens}>
@@ -330,22 +336,20 @@ const NavItem = ({
                             )}
                         </IconWrapper>
                     )}
-                    <Text
-                        as="span"
-                        variant="body.md"
-                        fontWeight={tokens.section.itemList.item.fontWeight}
-                        fontSize={tokens.section.itemList.item.fontSize}
-                        color={
-                            isActive
-                                ? tokens.section.itemList.item.color.active
-                                : tokens.section.itemList.item.color.default
-                        }
+                    <Block
+                        flexGrow={1}
+                        minWidth={0}
+                        overflow="hidden"
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
                     >
                         <TruncatedTextWithTooltipV2
                             text={item.label}
                             side={TooltipV2Side.RIGHT}
                         />
-                    </Text>
+                    </Block>
                     {item.rightSlot && React.isValidElement(item.rightSlot) && (
                         <Block aria-hidden="true">{item.rightSlot}</Block>
                     )}
