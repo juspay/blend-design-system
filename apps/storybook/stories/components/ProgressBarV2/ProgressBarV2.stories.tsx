@@ -41,12 +41,12 @@ Progress indicator with linear or circular geometry and solid or segmented **app
 ## Usage
 
 \`\`\`tsx
+import { ProgressBarV2 } from '../../../../../packages/blend/lib/components/ProgressBarV2';
 import {
-  ProgressBarV2,
   ProgressBarV2Variant,
   ProgressBarV2Appearance,
   ProgressBarV2Size,
-} from '@juspay/blend-design-system';
+} from '../../../../../packages/blend/lib/components/ProgressBarV2/progressBarV2.types';
 
 <ProgressBarV2
   value={40}

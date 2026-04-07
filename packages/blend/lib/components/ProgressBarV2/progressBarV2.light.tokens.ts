@@ -95,6 +95,7 @@ export const getProgressBarV2LightTokens = (
                     [ProgressBarV2Appearance.SOLID]: '',
                     [ProgressBarV2Appearance.SEGMENTED]: '4 2',
                 },
+                motion: 'stroke-dashoffset 0.3s ease-in-out',
             },
             label: {
                 fontSize: foundationToken.font.size.body.md.fontSize,
@@ -189,6 +190,7 @@ export const getProgressBarV2LightTokens = (
                     [ProgressBarV2Appearance.SOLID]: '',
                     [ProgressBarV2Appearance.SEGMENTED]: '4 2',
                 },
+                motion: 'stroke-dashoffset 0.3s ease-in-out',
             },
             label: {
                 fontSize: foundationToken.font.size.body.md.fontSize,

@@ -64,7 +64,10 @@ const ProgressBarV2Demo = () => {
                             onChange={(e) => {
                                 const value = Math.max(
                                     0,
-                                    Math.min(100, parseInt(e.target.value) || 0)
+                                    Math.min(
+                                        100,
+                                        parseInt(e.target.value, 10) || 0
+                                    )
                                 )
                                 setPlaygroundValue(value)
                             }}

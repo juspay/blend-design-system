@@ -54,6 +54,7 @@ export type ProgressBarV2TokenType = {
         dashArray: {
             [key in ProgressBarV2Appearance]: string
         }
+        motion: string
     }
     label: {
         fontSize: CSSObject['fontSize']

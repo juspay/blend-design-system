@@ -29,7 +29,7 @@ export type ProgressBarV2Props = {
     showLabel?: boolean
     min?: number
     max?: number
-} & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'>
+} & Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'className' | 'style'>
 
 export type ProgressBarV2InternalProps = {
     value: number

@@ -89,7 +89,7 @@ export const CircularProgressBarV2 = ({
                     strokeDashoffset={strokeDashoffset}
                     strokeLinecap="round"
                     style={{
-                        transition: 'stroke-dashoffset 0.3s ease-in-out',
+                        transition: tokens.circular.motion,
                     }}
                 />
             </svg>
