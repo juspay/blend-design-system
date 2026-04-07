@@ -360,7 +360,10 @@ export function getDiffEditorOptions(
     showLineNumbers: boolean,
     renderSideBySide: boolean,
     readOnly: boolean,
-    disabled: boolean
+    disabled: boolean,
+    isDiffUnchangedCollapsed: boolean,
+    diffContextLines: number,
+    diffExpandChunk: number
 ): Monaco.editor.IDiffEditorConstructionOptions {
     const isViewOnly = readOnly || disabled
     return {
@@ -369,6 +372,8 @@ export function getDiffEditorOptions(
         renderSideBySide,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
+        wordWrap: 'on',
+        wrappingIndent: 'indent',
         fontSize: metrics.fontSize,
         fontFamily: tokens.body.code.fontFamily,
         lineHeight: metrics.lineHeight,
@@ -384,6 +389,11 @@ export function getDiffEditorOptions(
         smoothScrolling: true,
         cursorBlinking: 'smooth',
         cursorSmoothCaretAnimation: 'on',
+        hideUnchangedRegions: {
+            enabled: isDiffUnchangedCollapsed,
+            contextLineCount: diffContextLines,
+            revealLineCount: diffExpandChunk,
+        },
     }
 }
 

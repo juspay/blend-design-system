@@ -6,6 +6,7 @@ import {
     CodeBlock,
     CodeBlockVariant,
     DiffLineType,
+    type DiffLine,
 } from '../../../../packages/blend/lib/components/CodeBlock'
 import {
     Tag,
@@ -211,6 +212,46 @@ fibonacci :: Int -> Int
 fibonacci n
   | n <= 1    = n
   | otherwise = fibonacci (n - 1) + fibonacci (n - 2)`,
+    }
+
+    /** Long unified diff: two change hunks with lots of unchanged lines (GitHub-style expand bars). */
+    const buildGithubStyleDiffDemo = (): DiffLine[] => {
+        const lines: DiffLine[] = []
+        for (let i = 0; i < 8; i++) {
+            lines.push({
+                content: `import { module${i} } from './mod-${i}';`,
+                type: DiffLineType.UNCHANGED,
+            })
+        }
+        lines.push({
+            content: 'const legacy = fetchLegacy();',
+            type: DiffLineType.REMOVED,
+        })
+        lines.push({
+            content: 'const modern = fetchModern();',
+            type: DiffLineType.ADDED,
+        })
+        for (let i = 0; i < 28; i++) {
+            lines.push({
+                content: `  processStep(${i});`,
+                type: DiffLineType.UNCHANGED,
+            })
+        }
+        lines.push({
+            content: 'export const VERSION = 1;',
+            type: DiffLineType.REMOVED,
+        })
+        lines.push({
+            content: 'export const VERSION = 2;',
+            type: DiffLineType.ADDED,
+        })
+        for (let i = 0; i < 8; i++) {
+            lines.push({
+                content: `// footer ${i}`,
+                type: DiffLineType.UNCHANGED,
+            })
+        }
+        return lines
     }
 
     const [customCode, setCustomCode] = useState(codeExamples.payment)
@@ -605,6 +646,30 @@ fibonacci n
                                 },
                                 { content: '}', type: DiffLineType.UNCHANGED },
                             ]}
+                        />
+                    </div>
+
+                    {/* GitHub-style diff: expand above / below hunks */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Diff — GitHub-style expand (above &amp; below hunks)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Long files collapse unchanged regions. The bar uses
+                            compact controls: load context from above or below,
+                            or expand the whole section from the center (similar
+                            to GitHub). Expanded sections stay open without an
+                            extra collapse row.
+                        </p>
+                        <CodeBlock
+                            code=""
+                            variant={CodeBlockVariant.DIFF}
+                            language="typescript"
+                            header="large-file.ts"
+                            diffLines={buildGithubStyleDiffDemo()}
+                            diffContextLines={3}
+                            diffExpandChunk={15}
+                            isDiffUnchangedCollapsed={true}
                         />
                     </div>
                 </div>
