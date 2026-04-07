@@ -156,6 +156,30 @@ function MyComponent() {
         ],
         [
             {
+                content: 'showSkeleton',
+                hintText:
+                    'When true, displays a skeleton loading state instead of the button content. Useful for showing placeholder UI while button data is loading. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows skeleton, false shows normal button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeletonVariant',
+                hintText:
+                    'Controls the animation style of the skeleton loading state. PULSE creates a pulsing fade effect, SHIMMER creates a sliding shimmer effect. Defaults to pulse.',
+            },
+            {
+                content: 'SkeletonVariant',
+                hintText: 'Enum that determines the skeleton animation style',
+            },
+            { content: 'PULSE, SHIMMER' },
+        ],
+        [
+            {
                 content: 'fullWidth',
                 hintText:
                     "When true, the button expands to fill 100% of its container's width. Useful for full-width buttons in forms, modals, or narrow containers. Defaults to false (button only takes width needed for content).",
@@ -164,6 +188,19 @@ function MyComponent() {
                 content: 'boolean',
                 hintText:
                     'true makes button full-width, false uses content-based width',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText:
+                    'Optional fixed width value for the button. Accepts CSS width values (e.g., "120px", "100%", "10rem") or a number (converted to pixels). Overrides the default content-based width. Use fullWidth for 100% container width.',
+            },
+            {
+                content: 'string | number',
+                hintText:
+                    'CSS width value (e.g., "120px", "100%") or number (converted to pixels)',
             },
             { content: '' },
         ],

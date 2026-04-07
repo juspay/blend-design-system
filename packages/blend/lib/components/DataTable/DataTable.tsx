@@ -97,6 +97,7 @@ const DataTable = forwardRef(
             advancedFilterComponent,
             advancedFilters = [],
             columnFreeze = 0,
+            columnFreezeRight = 0,
             serverSideSearch = false,
             serverSideFiltering = false,
             serverSidePagination = false,
@@ -144,6 +145,10 @@ const DataTable = forwardRef(
             headerSlot2,
             bulkActions,
             rowActions,
+            onOperations,
+            onInsertLeft,
+            onInsertRight,
+            onDeleteColumn,
             getRowStyle,
             tableBodyHeight,
             mobileColumnsToShow,
@@ -198,6 +203,10 @@ const DataTable = forwardRef(
             return allVisibleColumns
         })
         useEffect(() => {
+            const existingVisibleKeys = new Set(
+                visibleColumns.map((c) => c.field)
+            )
+
             const updatedVisibleColumns: ColumnDefinition<T>[] = []
 
             visibleColumns.forEach((col) => {
@@ -206,20 +215,39 @@ const DataTable = forwardRef(
                 )
 
                 if (matchingColumn) {
-                    const updatedColumn = {
-                        ...col,
-                        ...matchingColumn,
-                    } as ColumnDefinition<T>
-                    updatedVisibleColumns.push(updatedColumn)
-                } else {
-                    updatedVisibleColumns.push(col)
+                    if (matchingColumn.isVisible !== false) {
+                        const updatedColumn = {
+                            ...col,
+                            ...matchingColumn,
+                        } as ColumnDefinition<T>
+                        updatedVisibleColumns.push(updatedColumn)
+                    }
                 }
             })
 
-            const hasChanges = updatedVisibleColumns.some(
-                (updatedCol, index) => {
+            const newColumns = initialColumns.filter(
+                (col) =>
+                    !existingVisibleKeys.has(col.field) &&
+                    col.isVisible !== false
+            )
+
+            newColumns.forEach((newCol) => {
+                const initialIndex = initialColumns.findIndex(
+                    (c) => c.field === newCol.field
+                )
+                const insertIndex = Math.min(
+                    initialIndex,
+                    updatedVisibleColumns.length
+                )
+                updatedVisibleColumns.splice(insertIndex, 0, newCol)
+            })
+
+            const hasChanges =
+                visibleColumns.length !== updatedVisibleColumns.length ||
+                updatedVisibleColumns.some((updatedCol, index) => {
                     const originalCol = visibleColumns[index]
                     if (!originalCol) return true
+                    if (updatedCol.field !== originalCol.field) return true
 
                     return (
                         updatedCol.headerSubtext !==
@@ -228,8 +256,7 @@ const DataTable = forwardRef(
                         (updatedCol.type === ColumnType.CUSTOM &&
                             updatedCol.renderCell !== originalCol.renderCell)
                     )
-                }
-            )
+                })
 
             if (hasChanges) {
                 setVisibleColumns(updatedVisibleColumns)
@@ -648,19 +675,27 @@ const DataTable = forwardRef(
             updateSelectAllState(selectedRows)
         }, [currentData, selectedRows])
 
+        const hasMountedScrollRef = useRef(false)
         useEffect(() => {
             const currentColumnCount = visibleColumns.length
 
-            if (
-                currentColumnCount > previousColumnCount &&
-                scrollContainerRef.current
-            ) {
-                setTimeout(() => {
-                    if (scrollContainerRef.current) {
-                        scrollContainerRef.current.scrollLeft =
-                            scrollContainerRef.current.scrollWidth
-                    }
-                }, 100)
+            if (hasMountedScrollRef.current) {
+                const el = scrollContainerRef.current
+                const shouldScrollToEnd =
+                    currentColumnCount > previousColumnCount &&
+                    !!el &&
+                    el.scrollWidth - (el.scrollLeft + el.clientWidth) < 16
+
+                if (shouldScrollToEnd) {
+                    setTimeout(() => {
+                        if (scrollContainerRef.current) {
+                            scrollContainerRef.current.scrollLeft =
+                                scrollContainerRef.current.scrollWidth
+                        }
+                    }, 100)
+                }
+            } else {
+                hasMountedScrollRef.current = true
             }
 
             setPreviousColumnCount(currentColumnCount)
@@ -1078,10 +1113,14 @@ const DataTable = forwardRef(
 
         const handleRowExpand = (rowId: unknown) => {
             const rowIdStr = String(rowId)
-            const newExpandedRows = {
-                ...expandedRows,
-                [rowIdStr]: !expandedRows[rowIdStr],
+            const isCurrentlyExpanded = expandedRows[rowIdStr]
+
+            const newExpandedRows: Record<string, boolean> = {}
+
+            if (!isCurrentlyExpanded) {
+                newExpandedRows[rowIdStr] = true
             }
+
             setExpandedRows(newExpandedRows)
 
             if (onRowExpansionChange) {
@@ -1089,11 +1128,7 @@ const DataTable = forwardRef(
                     (row) => row[idField] === rowId
                 )
                 if (rowData) {
-                    onRowExpansionChange(
-                        rowId,
-                        !expandedRows[rowIdStr],
-                        rowData
-                    )
+                    onRowExpansionChange(rowId, !isCurrentlyExpanded, rowData)
                 }
             }
         }
@@ -1565,6 +1600,10 @@ const DataTable = forwardRef(
                                             onSortDescending={
                                                 handleSortDescending
                                             }
+                                            onOperations={onOperations}
+                                            onInsertLeft={onInsertLeft}
+                                            onInsertRight={onInsertRight}
+                                            onDeleteColumn={onDeleteColumn}
                                             onSelectAll={handleSelectAll}
                                             onColumnChange={(columns) =>
                                                 setVisibleColumns(
@@ -1582,6 +1621,9 @@ const DataTable = forwardRef(
                                                 ) => React.CSSProperties
                                             }
                                             columnFreeze={effectiveColumnFreeze}
+                                            columnFreezeRight={
+                                                columnFreezeRight
+                                            }
                                             measuredFrozenWidths={
                                                 measuredFrozenWidths
                                             }
@@ -1628,6 +1670,9 @@ const DataTable = forwardRef(
                                                 }
                                                 columnFreeze={
                                                     effectiveColumnFreeze
+                                                }
+                                                columnFreezeRight={
+                                                    columnFreezeRight
                                                 }
                                                 measuredFrozenWidths={
                                                     measuredFrozenWidths

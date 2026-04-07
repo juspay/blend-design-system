@@ -44,23 +44,23 @@ echo "🌐 URL: $DEPLOY_URL"
 # Clean previous builds
 echo "🧹 Cleaning previous builds..."
 rm -rf dist
+# Next.js can leave a corrupted .next manifest after interrupted builds; that
+# surfaces as PageNotFoundError/ENOENT during "Collecting page data" (e.g. /changelog).
+rm -rf apps/ascent/.next
+
+# Install monorepo deps if needed (this repo is pnpm-first; workspace:* breaks under npm-only install)
+if [ ! -d "node_modules" ]; then
+    echo "📦 Installing workspace dependencies with pnpm..."
+    pnpm install
+fi
 
 # Build Ascent app
 echo "📚 Building Ascent documentation..."
-cd apps/ascent
-# Install dependencies if needed
-if [ ! -d "node_modules" ]; then
-    echo "📦 Installing Ascent dependencies..."
-    npm install
-fi
-npm run build
-cd $ROOT_DIR
+pnpm --filter ascent run build
 
 # Build Storybook
 echo "📖 Building Storybook..."
-cd apps/storybook
-pnpm build-storybook
-cd $ROOT_DIR
+pnpm --filter storybook run build-storybook
 
 # Create dist directory
 echo "📦 Preparing deployment package..."

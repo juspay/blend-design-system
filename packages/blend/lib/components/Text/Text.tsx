@@ -131,7 +131,7 @@ const Text = ({
     return (
         <PrimitiveText
             as={Tag}
-            fontSize={fontGroup?.fontSize}
+            fontSize={fontSize ?? fontGroup?.fontSize}
             lineHeight={formatLineHeight(fontGroup?.lineHeight)}
             fontWeight={fontWeight}
             color={color ?? 'inherit'}

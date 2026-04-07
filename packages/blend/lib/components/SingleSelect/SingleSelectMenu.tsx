@@ -305,7 +305,7 @@ const Item = ({
 }
 
 const Label = styled(RadixMenu.Label)(() => ({
-    margin: '0px 8px',
+    margin: '0',
     padding: '8px 6px',
     userSelect: 'none',
     textTransform: 'uppercase',

@@ -179,3 +179,4 @@ packages/blend/dist/*
 **/dist
 
 .claude/
+.blend-telemetry/

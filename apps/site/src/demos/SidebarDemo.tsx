@@ -86,6 +86,7 @@ import MultiSelectGroupDemo from './MultiSelectGroupDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
+import DrawerV2Demo from './DrawerV2Demo'
 import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
@@ -124,6 +125,7 @@ import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
 import SingleSelectDemoV2 from './SingleSelectDemoV2'
 import MultiSelectDemoV2 from './MultiSelectDemoV2'
+import MenuV2Demo from './MenuV2Demo'
 import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
@@ -131,7 +133,12 @@ import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
 import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
+import StatCardV2Demo from './StatCardV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import TabsV2Demo from './TabsV2Demo'
+import BreadcrumbV2Demo from './BreadcrumbV2Demo'
+import CodeEditorV2Demo from './CodeEditorV2Demo'
+import ProgressBarV2Demo from './ProgressBarV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -144,6 +151,7 @@ const SidebarDemo = () => {
         | 'tagGroupV2'
         | 'breadcrumb'
         | 'tabs'
+        | 'tabsV2'
         | 'checkbox'
         | 'checkboxV2'
         | 'radio'
@@ -163,6 +171,7 @@ const SidebarDemo = () => {
         | 'avatars'
         | 'avatarV2'
         | 'menu'
+        | 'menuV2'
         | 'dropdown'
         | 'accordion'
         | 'statCard'
@@ -176,6 +185,7 @@ const SidebarDemo = () => {
         | 'snackbar'
         | 'dataTable'
         | 'drawer'
+        | 'drawerV2'
         | 'colorPalette'
         | 'popover'
         | 'progressBar'
@@ -217,10 +227,16 @@ const SidebarDemo = () => {
         | 'textInputGroup'
         | 'singleSelectV2'
         | 'timeline'
+        | 'statCardV2'
         | 'tooltipV2'
+        | 'breadcrumbV2'
+        | 'codeEditorV2'
         | 'singleSelectV2'
         | 'popoverV2'
-    >('popoverV2')
+        | 'codeEditorV2'
+        | 'breadcrumbV2'
+        | 'progressBarV2'
+    >('progressBarV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -236,6 +252,7 @@ const SidebarDemo = () => {
         useState<boolean>(false)
     const [isExpanded, setIsExpanded] = useState<boolean>(true)
     const [, setSidebarState] = useState('expanded')
+    // const [sidebarTopMenuOpen, setSidebarTopMenuOpen] = useState<boolean>(false)
 
     const tenants = [
         {
@@ -460,6 +477,8 @@ const SidebarDemo = () => {
                 return <SnackbarV2Demo />
             case 'tabs':
                 return <TabsDemo />
+            case 'tabsV2':
+                return <TabsV2Demo />
             case 'accordion':
                 return <AccordionDemo />
             case 'statCard':
@@ -488,6 +507,8 @@ const SidebarDemo = () => {
                 return <CheckboxV2Demo />
             case 'menu':
                 return <MenuDemo />
+            case 'menuV2':
+                return <MenuV2Demo />
             case 'singleSelect':
                 return <SingleSelectDemo />
             case 'singleSelectGroup':
@@ -504,6 +525,8 @@ const SidebarDemo = () => {
                 return <ProgressBarDemo />
             case 'drawer':
                 return <DrawerDemo />
+            case 'drawerV2':
+                return <DrawerV2Demo />
             case 'dropdownInput':
                 return <DropdownInputDemo />
             case 'dataRangePicker':
@@ -558,8 +581,16 @@ const SidebarDemo = () => {
                 return <TimelineDemo />
             case 'keyValuePairV2':
                 return <KeyValuePairV2Demo />
+            case 'statCardV2':
+                return <StatCardV2Demo />
             case 'tooltipV2':
                 return <TooltipV2Demo />
+            case 'breadcrumbV2':
+                return <BreadcrumbV2Demo />
+            case 'codeEditorV2':
+                return <CodeEditorV2Demo />
+            case 'progressBarV2':
+                return <ProgressBarV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -824,6 +855,15 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Breadcrumb V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'breadcrumbV2',
+                    onClick: () => setActiveComponent('breadcrumbV2'),
+                    showOnMobile: true,
+                },
+                {
                     label: 'Virtual List',
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
@@ -1066,6 +1106,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('singleSelectV2'),
                 },
                 {
+                    label: 'Menu V2',
+                    leftSlot: (
+                        <MenuIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'menuV2',
+                    onClick: () => setActiveComponent('menuV2'),
+                },
+                {
                     label: 'Single Select Group',
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
@@ -1104,6 +1152,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tabs',
                     onClick: () => setActiveComponent('tabs'),
+                },
+                {
+                    label: 'Tabs V2',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tabsV2',
+                    onClick: () => setActiveComponent('tabsV2'),
                 },
                 {
                     label: 'Accordion',
@@ -1219,6 +1275,13 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('drawer'),
                     showOnMobile: true,
                 },
+                {
+                    label: 'Drawer V2',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'drawerV2',
+                    onClick: () => setActiveComponent('drawerV2'),
+                    showOnMobile: true,
+                },
             ],
         },
         {
@@ -1282,6 +1345,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('statCard'),
                 },
                 {
+                    label: 'Stat Card V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'statCardV2',
+                    onClick: () => setActiveComponent('statCardV2'),
+                },
+                {
                     label: 'Skeleton',
                     leftSlot: (
                         <Square style={{ width: '16px', height: '16px' }} />
@@ -1304,6 +1375,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'progressBar',
                     onClick: () => setActiveComponent('progressBar'),
+                },
+                {
+                    label: 'Progress Bar V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'progressBarV2',
+                    onClick: () => setActiveComponent('progressBarV2'),
                 },
                 {
                     label: 'Data Table',
@@ -1339,6 +1418,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'codeEditor',
                     onClick: () => setActiveComponent('codeEditor'),
+                },
+                {
+                    label: 'Code Editor V2',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'codeEditorV2',
+                    onClick: () => setActiveComponent('codeEditorV2'),
                 },
                 {
                     label: 'Timeline',
@@ -1675,7 +1762,62 @@ const SidebarDemo = () => {
                             selected={activeMerchant}
                             onSelect={(value) => setActiveMerchant(value)}
                         />
-                        // <div>aryan</div>
+                        // <Menu
+                        //     open={sidebarTopMenuOpen}
+                        //     onOpenChange={setSidebarTopMenuOpen}
+                        //     trigger={
+                        //         <button
+                        //             className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-gray-200"
+                        //             style={{
+                        //                 width: 32,
+                        //                 height: 32,
+                        //                 backgroundColor:
+                        //                     FOUNDATION_THEME.colors.gray[100],
+                        //             }}
+                        //             title="Sidebar Menu"
+                        //             aria-label="Sidebar top menu"
+                        //         >
+                        //             <MenuIcon
+                        //                 size={18}
+                        //                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                 aria-hidden="true"
+                        //             />
+                        //         </button>
+                        //     }
+                        //     items={
+                        //         [
+                        //             {
+                        //                 items: [
+                        //                     {
+                        //                         label: 'Menu Item 1',
+                        //                         slot1: (
+                        //                             <Square
+                        //                                 size={16}
+                        //                                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                             />
+                        //                         ),
+                        //                         onClick: () =>
+                        //                             alert('Menu item 1 clicked'),
+                        //                     },
+                        //                     {
+                        //                         label: 'Menu Item 2',
+                        //                         slot1: (
+                        //                             <Square
+                        //                                 size={16}
+                        //                                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                             />
+                        //                         ),
+                        //                         onClick: () =>
+                        //                             alert('Menu item 2 clicked'),
+                        //                     },
+                        //                 ],
+                        //             },
+                        //         ] as MenuGroupType[]
+                        //     }
+                        //     side={MenuSide.TOP}
+                        //     alignment={MenuAlignment.END}
+                        //     sideOffset={8}
+                        // />
                     }
                     rightActions={
                         <div className="flex items-center gap-1">

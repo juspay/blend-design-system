@@ -1010,7 +1010,6 @@ async function generateManifest() {
 
     const manifest = {
         version: '2.0.0',
-        generatedAt: new Date().toISOString(),
         packageName: '@juspay/blend-design-system',
         blendPackageVersion,
         components,

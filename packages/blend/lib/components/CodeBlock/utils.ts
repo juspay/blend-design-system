@@ -1,5 +1,10 @@
 import type { CodeBlockTokenType } from './codeBlock.token'
-import { DiffLineType, type DiffLine, type SupportedLanguage } from './types'
+import {
+    DiffLineType,
+    type DiffLine,
+    type DiffViewSegment,
+    type SupportedLanguage,
+} from './types'
 
 /**
  * Token interface for syntax highlighting
@@ -614,4 +619,94 @@ export const processLines = (
     code: string
 ) => {
     return isDiffMode ? diffLines?.map((d) => d.content) : code.split('\n')
+}
+
+/**
+ * Stable key for a collapsed line range in diff view (inclusive indices).
+ */
+export const getDiffCollapsedRangeKey = (start: number, end: number): string =>
+    `${start}-${end}`
+
+/**
+ * Merges per-change visibility intervals (change line ± context) into
+ * non-overlapping ranges of line indices that stay visible when collapsed.
+ */
+export const mergeDiffVisibleIntervals = (
+    diffLines: DiffLine[],
+    contextLines: number
+): [number, number][] => {
+    const n = diffLines.length
+    const changeIndices: number[] = []
+    for (let i = 0; i < n; i++) {
+        const t = diffLines[i].type
+        if (t === DiffLineType.ADDED || t === DiffLineType.REMOVED) {
+            changeIndices.push(i)
+        }
+    }
+    if (changeIndices.length === 0) {
+        return n > 0 ? [[0, n - 1]] : []
+    }
+    const intervals: [number, number][] = []
+    for (const c of changeIndices) {
+        intervals.push([
+            Math.max(0, c - contextLines),
+            Math.min(n - 1, c + contextLines),
+        ])
+    }
+    intervals.sort((a, b) => a[0] - b[0])
+    const merged: [number, number][] = []
+    for (const [s, e] of intervals) {
+        const last = merged[merged.length - 1]
+        if (!last || s > last[1] + 1) {
+            merged.push([s, e])
+        } else {
+            last[1] = Math.max(last[1], e)
+        }
+    }
+    return merged
+}
+
+/**
+ * Builds ordered segments: visible line ranges and collapsed gaps. Expanded
+ * gaps are still emitted as `collapsed`; the UI decides whether to show the
+ * expand affordance or the full line range.
+ */
+export const buildDiffViewSegments = (
+    diffLines: DiffLine[],
+    contextLines: number,
+    isCollapsedMode: boolean
+): DiffViewSegment[] => {
+    const n = diffLines.length
+    if (n === 0) {
+        return []
+    }
+    if (!isCollapsedMode) {
+        return [{ type: 'lines', start: 0, end: n - 1 }]
+    }
+
+    const merged = mergeDiffVisibleIntervals(diffLines, contextLines)
+    if (merged.length === 1 && merged[0][0] === 0 && merged[0][1] === n - 1) {
+        return [{ type: 'lines', start: 0, end: n - 1 }]
+    }
+
+    const segments: DiffViewSegment[] = []
+    let cursor = 0
+
+    for (const [visStart, visEnd] of merged) {
+        if (cursor < visStart) {
+            segments.push({
+                type: 'collapsed',
+                start: cursor,
+                end: visStart - 1,
+            })
+        }
+        segments.push({ type: 'lines', start: visStart, end: visEnd })
+        cursor = visEnd + 1
+    }
+
+    if (cursor < n) {
+        segments.push({ type: 'collapsed', start: cursor, end: n - 1 })
+    }
+
+    return segments
 }

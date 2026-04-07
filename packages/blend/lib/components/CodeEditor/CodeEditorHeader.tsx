@@ -80,9 +80,6 @@ export const CodeEditorHeader = ({
                     fontWeight={tokens.header.text.fontWeight}
                     lineHeight={tokens.header.text.lineHeight}
                     color={tokens.header.text.color}
-                    style={{
-                        letterSpacing: '-0.01em',
-                    }}
                 >
                     {header}
                 </Block>

@@ -279,6 +279,7 @@ function App() {
                     'AVATAR',
                     'SIDEBAR',
                     'TOOLTIPV2',
+                    'PROGRESS_BARV2',
                 ].map((component) => (
                     <code
                         key={component}

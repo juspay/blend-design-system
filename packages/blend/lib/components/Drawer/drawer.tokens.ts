@@ -82,7 +82,7 @@ export const getDrawerComponentTokens = (
             // border: `1px solid ${foundationToken.colors.gray[200]}`,
 
             overlay: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
             },
             offset: {
                 top: '74px',
@@ -115,7 +115,7 @@ export const getDrawerComponentTokens = (
             // border: `1px solid ${foundationToken.colors.gray[200]}`,
 
             overlay: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
             },
             offset: {
                 top: '74px',

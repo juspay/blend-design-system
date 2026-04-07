@@ -10,7 +10,7 @@ import {
 import { styled, css } from 'styled-components'
 import { motion } from 'framer-motion'
 import { TableBodyProps } from './types'
-import { getFrozenLeftOffset } from '../TableHeader/utils'
+import { getFrozenLeftOffset, getFrozenRightOffset } from '../TableHeader/utils'
 import TableCell from '../TableCell'
 import Block from '../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -34,11 +34,19 @@ const TableRow = styled.tr<{
     $isClickable?: boolean
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
+    $isSticky?: boolean
+    $headerHeight?: string
 }>`
     border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
     background-color: ${FOUNDATION_THEME.colors.gray[0]};
 
-    ${({ $customBackgroundColor, $isClickable, $hasCustomBackground }) => css`
+    ${({
+        $customBackgroundColor,
+        $isClickable,
+        $hasCustomBackground,
+        $isSticky,
+        $headerHeight,
+    }) => css`
         ${$customBackgroundColor &&
         css`
             background-color: ${$customBackgroundColor} !important;
@@ -47,6 +55,13 @@ const TableRow = styled.tr<{
         ${$isClickable &&
         css`
             cursor: pointer;
+        `}
+
+        ${$isSticky &&
+        css`
+            position: sticky;
+            top: ${$headerHeight || '46px'};
+            z-index: 15;
         `}
     
     ${!$hasCustomBackground &&
@@ -108,6 +123,14 @@ const StyledTableCell = styled.td<{
 const ExpandedCell = styled.td`
     padding: ${FOUNDATION_THEME.unit[16]};
     background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
+`
+
+const ExpandedRow = styled(TableRow)`
+    background-color: ${FOUNDATION_THEME.colors.gray[50]};
+
+    td {
+        background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
+    }
 `
 
 const ExpandButton = styled.button`
@@ -522,6 +545,7 @@ const TableBody = forwardRef<
             enableRowSelection = true,
             rowActions,
             columnFreeze = 0,
+            columnFreezeRight = 0,
             measuredFrozenWidths,
             mobileConfig,
             mobileOverflowColumns = [],
@@ -665,6 +689,8 @@ const TableBody = forwardRef<
                                           rowStyling.backgroundColor
                                       }
                                       $hasCustomBackground={hasCustomBackground}
+                                      $isSticky={isExpanded}
+                                      $headerHeight="55px"
                                       role="row"
                                       aria-rowindex={index + 1}
                                       aria-selected={
@@ -915,6 +941,55 @@ const TableBody = forwardRef<
 
                                               const getFrozenBodyStyles =
                                                   (): React.CSSProperties => {
+                                                      const rightStickyOffsetPx =
+                                                          enableColumnManager
+                                                              ? parseInt(
+                                                                    String(
+                                                                        FOUNDATION_THEME
+                                                                            .unit[48]
+                                                                    ).replace(
+                                                                        'px',
+                                                                        ''
+                                                                    ) || '48',
+                                                                    10
+                                                                )
+                                                              : 0
+                                                      const rightFreezeStartIndex =
+                                                          Math.max(
+                                                              visibleColumns.length -
+                                                                  columnFreezeRight,
+                                                              0
+                                                          )
+
+                                                      if (
+                                                          columnFreezeRight >
+                                                              0 &&
+                                                          colIndex >=
+                                                              rightFreezeStartIndex
+                                                      ) {
+                                                          return {
+                                                              position:
+                                                                  'sticky' as const,
+                                                              right: `${getFrozenRightOffset(
+                                                                  colIndex,
+                                                                  columnFreezeRight,
+                                                                  visibleColumns,
+                                                                  getColumnWidth,
+                                                                  rightStickyOffsetPx
+                                                              )}px`,
+                                                              zIndex: 8,
+                                                              backgroundColor:
+                                                                  rowStyling.backgroundColor ||
+                                                                  FOUNDATION_THEME
+                                                                      .colors
+                                                                      .gray[0],
+                                                              ...(colIndex ===
+                                                                  rightFreezeStartIndex && {
+                                                                  borderLeft: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                                                              }),
+                                                          }
+                                                      }
+
                                                       if (
                                                           colIndex >=
                                                           columnFreeze
@@ -1440,7 +1515,7 @@ const TableBody = forwardRef<
                                       isExpanded &&
                                       renderExpandedRow &&
                                       canExpand && (
-                                          <TableRow
+                                          <ExpandedRow
                                               key={`${rowKey}-expanded`}
                                               $isClickable={false}
                                           >
@@ -1455,7 +1530,7 @@ const TableBody = forwardRef<
                                                           ),
                                                   })}
                                               </ExpandedCell>
-                                          </TableRow>
+                                          </ExpandedRow>
                                       )}
                               </React.Fragment>
                           )
