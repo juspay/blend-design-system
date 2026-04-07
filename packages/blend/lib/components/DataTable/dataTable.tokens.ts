@@ -417,7 +417,7 @@ export const getTableToken = (
                                 borderRadius: foundationToken.border.radius[4],
                                 hoverBackground:
                                     foundationToken.colors.gray[50],
-                                iconColor: foundationToken.colors.gray[900],
+                                iconColor: foundationToken.colors.gray[400],
                                 textColor: foundationToken.colors.gray[600],
                                 fontSize:
                                     foundationToken.font.size.body.md.fontSize,
@@ -682,7 +682,7 @@ export const getTableToken = (
                                 borderRadius: foundationToken.border.radius[4],
                                 hoverBackground:
                                     foundationToken.colors.gray[50],
-                                iconColor: foundationToken.colors.gray[900],
+                                iconColor: foundationToken.colors.gray[400],
                                 textColor: foundationToken.colors.gray[600],
                                 fontSize:
                                     foundationToken.font.size.body.md.fontSize,

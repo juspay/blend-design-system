@@ -13,18 +13,20 @@ import { swapItemsByLabel, updateItemProperties } from './utils'
  * 3. It keeps the component clean and focused on rendering
  */
 export const useOrderedItems = <T extends { label: string }>(items: T[]) => {
-    const [orderedItems, setOrderedItems] = useState<T[]>(() => items)
-    const itemsCountRef = useRef(items.length)
+    const safeItems = items ?? []
+    const [orderedItems, setOrderedItems] = useState<T[]>(() => safeItems)
+    const itemsCountRef = useRef(safeItems.length)
 
     useEffect(() => {
-        if (items.length !== itemsCountRef.current) {
+        const currentItems = items ?? []
+        if (currentItems.length !== itemsCountRef.current) {
             // Items were added or removed, reset the order
-            setOrderedItems(items)
-            itemsCountRef.current = items.length
+            setOrderedItems(currentItems)
+            itemsCountRef.current = currentItems.length
         } else {
             // Just update the properties (like isSelected) without changing order
             setOrderedItems((currentOrdered) =>
-                updateItemProperties(currentOrdered, items)
+                updateItemProperties(currentOrdered, currentItems)
             )
         }
     }, [items])
