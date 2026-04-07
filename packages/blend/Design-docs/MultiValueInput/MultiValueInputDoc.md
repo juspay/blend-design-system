@@ -5,8 +5,8 @@
 Create a multi-value (tag) input that supports:
 
 - **Controlled draft value**: Current text in the field via `value` and `onChange` (string, not an event)
-- **Controlled tags**: Committed values as `tags: string[]` with `onTagAdd` and `onTagRemove`
-- **Commit interaction**: **Enter** adds the trimmed draft as a tag (if non-empty and not duplicate); **Backspace** with an empty draft removes the last tag
+- **Controlled tags**: Committed chip strings and chip styling via **`tags`**: `{ value: string[]; size: TagSize; shape: TagShape; variant: TagVariant }`. **`onTagAdd`** and **`onTagRemove`** are **top-level** optional callbacks; the parent updates `tags.value` when they run.
+- **Commit interaction**: **Enter** adds the trimmed draft when it is non-empty, not a duplicate of `tags.value`, and **`onTagAdd` is provided** (otherwise native Enter behavior, e.g. form submit, is not blocked). **Backspace** with an empty draft removes the last tag via **`onTagRemove`** when `tags.value.length > 0`.
 - **Labels**: Primary label, optional `sublabel` (shown in parentheses next to the label)
 - **Sizes**: Small (`sm`), Medium (`md`), Large (`lg`)
 - **States**: Default, hover, focus, error, disabled — borders, background, and focus ring driven by tokens (`InputStateV2`)
@@ -37,12 +37,13 @@ _(Optional: add `MultiValueInputAnatomy.png` beside this doc when a diagram is a
 ## Props & Types
 
 ```typescript
-// Shared enums (inputV2.types)
+// Shared enums (inputV2.types, Tags/types)
 enum InputSizeV2 {
     SM = 'sm',
     MD = 'md',
     LG = 'lg',
 }
+// TagSize, TagShape, TagVariant — see `../../Tags/types` (e.g. TagSize.XS, TagShape.ROUNDED, TagVariant.SUBTLE)
 
 type MultiValueInputV2Props = {
     value?: string
@@ -53,10 +54,15 @@ type MultiValueInputV2Props = {
     errorMessage?: string
     hintText?: string
     disabled?: boolean
-    tags?: string[]
+    tags?: {
+        value: string[]
+        size: TagSize
+        shape: TagShape
+        variant: TagVariant
+    }
+    onChange?: (value: string) => void
     onTagAdd?: (tag: string) => void
     onTagRemove?: (tag: string) => void
-    onChange?: (value: string) => void
     size?: InputSizeV2
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
@@ -68,6 +74,7 @@ type MultiValueInputV2Props = {
 >
 ```
 
+- **`tags`**: Holds **committed** chip strings in `value` plus **`Tag`** presentation (`size`, `shape`, `variant`). It does **not** include callbacks; those live on **`onTagAdd`** / **`onTagRemove`**.
 - **`onChange`**: Emits the **string** value of the draft input (not `ChangeEvent`), so parents update `value` without reading `event.target`.
 - **Omit `size`**: Component uses `InputSizeV2`, not the HTML `size` attribute.
 - **Omit `style` | `className`**: Styling is token-driven; types exclude these on the public contract.
@@ -100,6 +107,10 @@ type MultiValueInputV2TokensType = {
         closeButton: { size: CSSObject['width'] }
         leftSlot: { width: CSSObject['width']; height: CSSObject['height'] }
         rightSlot: { width: CSSObject['width']; height: CSSObject['height'] }
+        slotAlignTop: {
+            withTags: CSSObject['top']
+            withoutTags: CSSObject['top']
+        }
     }
     bottomContainer: InputFooterV2Tokens
 }
@@ -119,21 +130,21 @@ type ResponsiveMultiValueInputV2Tokens = {
 
 **Rationale**: Keeps the multi-value API small and explicit; `InputFooterV2` still receives `error` and `errorMessage` separately. Aligns with boolean props elsewhere for simple forms.
 
-### 2. Two layers of state: `value` (draft) and `tags` (committed)
+### 2. Two layers of state: `value` (draft) and `tags.value` (committed)
 
-**Decision**: The native input shows the **draft** string; **tags** are the committed list. Parents must update both when adding/removing (typically clear `value` after a successful `onTagAdd`).
+**Decision**: The native input shows the **draft** string; committed strings live in **`tags.value`**; chip look-and-feel uses **`tags.size` / `tags.shape` / `tags.variant`**. **`onTagAdd`** and **`onTagRemove`** are top-level props so parents can update `tags` (and clear `value` after add) without nesting callbacks inside `tags`.
 
-**Rationale**: Matches common “chip input” mental model: type → Enter → chip appears and field clears. Decoupling draft from tags avoids inferring tags from a delimiter-separated string.
+**Rationale**: Matches common “chip input” mental model: type → Enter → chip appears and field clears. Decoupling draft from committed values avoids inferring tags from a delimiter-separated string.
 
 ### 3. Enter commits; duplicates and empty strings ignored
 
-**Decision**: `addTag` trims the draft, skips empty strings, and skips values already in `tags` (`!tags.includes(trimmedValue)`).
+**Decision**: `addTag` trims the draft, skips empty strings, and skips values already in **`tags.value`** (`!tags.value.includes(trimmedValue)`). **`preventDefault` on Enter** runs only when a tag would actually be added (**`onTagAdd` present** and addable after trim/duplicate checks).
 
-**Rationale**: Prevents duplicate chips and accidental empty commits; trimming avoids `"  a  "` vs `"a"` duplicates.
+**Rationale**: Prevents duplicate chips and accidental empty commits; trimming avoids `"  a  "` vs `"a"` duplicates; avoids blocking form submit when nothing is committed.
 
 ### 4. Backspace removes last tag only when draft is empty
 
-**Decision**: If `value === ''` and `tags.length > 0`, Backspace calls `onTagRemove` for the last tag.
+**Decision**: If `value === ''` and **`tags.value.length > 0`**, Backspace calls **`onTagRemove`** for the last tag in `tags.value`.
 
 **Rationale**: Matches common email/tag UX: delete chips from the end without placing the caret inside a chip.
 

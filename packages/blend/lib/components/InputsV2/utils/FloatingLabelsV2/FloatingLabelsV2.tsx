@@ -1,8 +1,8 @@
 import Text from '../../../Text/Text'
 import Block from '../../../Primitives/Block/Block'
-import { InputSizeV2, InputStateV2 } from '../../inputV2.types'
+import type { InputSizeV2, InputStateV2 } from '../../inputV2.types'
 import { addPxToValue } from '../../../../global-utils/GlobalUtils'
-import { FloatingLabelsV2Tokens } from '../../inputV2.tokens'
+import type { FloatingLabelsV2Tokens } from '../../inputV2.tokens'
 
 const FloatingLabelsV2 = ({
     label,

@@ -15,10 +15,10 @@ export type MultiValueInputV2Props = {
         size: TagSize
         shape: TagShape
         variant: TagVariant
-        onTagAdd?: (tag: string) => void
-        onTagRemove?: (tag: string) => void
     }
     onChange?: (value: string) => void
+    onTagAdd?: (tag: string) => void
+    onTagRemove?: (tag: string) => void
     size?: InputSizeV2
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void

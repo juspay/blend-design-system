@@ -7,19 +7,12 @@ import MultiValueInputV2 from '../../../lib/components/InputsV2/MultiValueInputV
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { TagShape, TagSize, TagVariant } from '../../../lib/components/Tags'
 
-function tagsConfig(
-    value: string[] = [],
-    handlers?: {
-        onTagAdd?: (tag: string) => void
-        onTagRemove?: (tag: string) => void
-    }
-) {
+function tagsConfig(value: string[] = []) {
     return {
         value,
         size: TagSize.XS,
         shape: TagShape.ROUNDED,
         variant: TagVariant.SUBTLE,
-        ...handlers,
     }
 }
 
@@ -89,9 +82,8 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Keywords"
                     value=""
-                    tags={tagsConfig(['alpha', 'beta'], {
-                        onTagRemove: () => {},
-                    })}
+                    tags={tagsConfig(['alpha', 'beta'])}
+                    onTagRemove={() => {}}
                     onChange={() => {}}
                 />
             )
@@ -428,7 +420,8 @@ describe('MultiValueInputV2 Accessibility', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value=""
-                    tags={tagsConfig(['one', 'two'], { onTagRemove: () => {} })}
+                    tags={tagsConfig(['one', 'two'])}
+                    onTagRemove={() => {}}
                     onChange={() => {}}
                 />
             )

@@ -199,9 +199,9 @@ const MultiValueInputV2Demo = () => {
                             size: TagSize.XS,
                             shape: TagShape.ROUNDED,
                             variant: TagVariant.SUBTLE,
-                            onTagAdd: handleBasicTagAdd,
-                            onTagRemove: handleBasicTagRemove,
                         }}
+                        onTagAdd={handleBasicTagAdd}
+                        onTagRemove={handleBasicTagRemove}
                         hintText="Press Enter to add a tag, Backspace to remove the last one"
                         helpIconHintText="Help"
                     />
@@ -232,9 +232,9 @@ const MultiValueInputV2Demo = () => {
                             size: TagSize.XS,
                             shape: TagShape.ROUNDED,
                             variant: TagVariant.SUBTLE,
-                            onTagAdd: handleEmailTagAdd,
-                            onTagRemove: handleEmailTagRemove,
                         }}
+                        onTagAdd={handleEmailTagAdd}
+                        onTagRemove={handleEmailTagRemove}
                         hintText="Only valid email addresses will be added"
                     />
                 </Block>
@@ -261,9 +261,9 @@ const MultiValueInputV2Demo = () => {
                                 size: TagSize.XS,
                                 shape: TagShape.ROUNDED,
                                 variant: TagVariant.SUBTLE,
-                                onTagAdd: handleSmallTagAdd,
-                                onTagRemove: handleSmallTagRemove,
                             }}
+                            onTagAdd={handleSmallTagAdd}
+                            onTagRemove={handleSmallTagRemove}
                             size={InputSizeV2.SM}
                         />
                     </Block>
@@ -276,9 +276,9 @@ const MultiValueInputV2Demo = () => {
                                 size: TagSize.XS,
                                 shape: TagShape.ROUNDED,
                                 variant: TagVariant.SUBTLE,
-                                onTagAdd: handleMediumTagAdd,
-                                onTagRemove: handleMediumTagRemove,
                             }}
+                            onTagAdd={handleMediumTagAdd}
+                            onTagRemove={handleMediumTagRemove}
                             size={InputSizeV2.MD}
                         />
                     </Block>
@@ -291,9 +291,9 @@ const MultiValueInputV2Demo = () => {
                                 size: TagSize.XS,
                                 shape: TagShape.ROUNDED,
                                 variant: TagVariant.SUBTLE,
-                                onTagAdd: handleLargeTagAdd,
-                                onTagRemove: handleLargeTagRemove,
                             }}
+                            onTagAdd={handleLargeTagAdd}
+                            onTagRemove={handleLargeTagRemove}
                             size={InputSizeV2.LG}
                         />
                     </Block>
@@ -321,9 +321,9 @@ const MultiValueInputV2Demo = () => {
                             size: TagSize.XS,
                             shape: TagShape.ROUNDED,
                             variant: TagVariant.SUBTLE,
-                            onTagAdd: handleSkillsTagAdd,
-                            onTagRemove: handleSkillsTagRemove,
                         }}
+                        onTagAdd={handleSkillsTagAdd}
+                        onTagRemove={handleSkillsTagRemove}
                         required
                         hintText="At least one skill is required"
                     />
@@ -351,9 +351,9 @@ const MultiValueInputV2Demo = () => {
                             size: TagSize.XS,
                             shape: TagShape.ROUNDED,
                             variant: TagVariant.SUBTLE,
-                            onTagAdd: handleErrorTagAdd,
-                            onTagRemove: handleErrorTagRemove,
                         }}
+                        onTagAdd={handleErrorTagAdd}
+                        onTagRemove={handleErrorTagRemove}
                         error
                         errorMessage="Please remove invalid tags and ensure all entries are valid"
                     />
@@ -381,8 +381,6 @@ const MultiValueInputV2Demo = () => {
                             size: TagSize.XS,
                             shape: TagShape.ROUNDED,
                             variant: TagVariant.SUBTLE,
-                            onTagAdd: () => {},
-                            onTagRemove: () => {},
                         }}
                         disabled
                         hintText="This field is read-only"
@@ -411,9 +409,9 @@ const MultiValueInputV2Demo = () => {
                             size: TagSize.XS,
                             shape: TagShape.ROUNDED,
                             variant: TagVariant.SUBTLE,
-                            onTagAdd: handleCategoryTagAdd,
-                            onTagRemove: handleCategoryTagRemove,
                         }}
+                        onTagAdd={handleCategoryTagAdd}
+                        onTagRemove={handleCategoryTagRemove}
                         hintText="No categories added yet"
                     />
                 </Block>
@@ -440,8 +438,6 @@ const MultiValueInputV2Demo = () => {
                             size: TagSize.XS,
                             shape: TagShape.ROUNDED,
                             variant: TagVariant.SUBTLE,
-                            onTagAdd: () => {},
-                            onTagRemove: () => {},
                         }}
                         maxLength={3}
                         autoComplete="off"
@@ -472,9 +468,9 @@ const MultiValueInputV2Demo = () => {
                                 size: TagSize.XS,
                                 shape: TagShape.ROUNDED,
                                 variant: TagVariant.SUBTLE,
-                                onTagAdd: handleBasicTagAdd,
-                                onTagRemove: handleBasicTagRemove,
                             }}
+                            onTagAdd={handleBasicTagAdd}
+                            onTagRemove={handleBasicTagRemove}
                             leftSlot={<Search size={16} />}
                             hintText="Left slot with search icon"
                         />
@@ -489,9 +485,9 @@ const MultiValueInputV2Demo = () => {
                                 size: TagSize.XS,
                                 shape: TagShape.ROUNDED,
                                 variant: TagVariant.SUBTLE,
-                                onTagAdd: handleEmailTagAdd,
-                                onTagRemove: handleEmailTagRemove,
                             }}
+                            onTagAdd={handleEmailTagAdd}
+                            onTagRemove={handleEmailTagRemove}
                             leftSlot={<Mail size={16} />}
                             hintText="Left slot with mail icon"
                         />
@@ -506,9 +502,9 @@ const MultiValueInputV2Demo = () => {
                                 size: TagSize.XS,
                                 shape: TagShape.ROUNDED,
                                 variant: TagVariant.SUBTLE,
-                                onTagAdd: handleCategoryTagAdd,
-                                onTagRemove: handleCategoryTagRemove,
                             }}
+                            onTagAdd={handleCategoryTagAdd}
+                            onTagRemove={handleCategoryTagRemove}
                             rightSlot={<Hash size={16} />}
                             hintText="Right slot with hash icon"
                         />
@@ -523,9 +519,9 @@ const MultiValueInputV2Demo = () => {
                                 size: TagSize.XS,
                                 shape: TagShape.ROUNDED,
                                 variant: TagVariant.SUBTLE,
-                                onTagAdd: handleSkillsTagAdd,
-                                onTagRemove: handleSkillsTagRemove,
                             }}
+                            onTagAdd={handleSkillsTagAdd}
+                            onTagRemove={handleSkillsTagRemove}
                             leftSlot={<Search size={16} />}
                             rightSlot={<Hash size={16} />}
                             hintText="Both left and right slots"

@@ -45,7 +45,7 @@ A multi-value input (V2) for entering tags: type and press **Enter** to add, **B
 - Error state with \`error\` and \`errorMessage\`
 - Optional left/right slot content (plain \`ReactNode\`)
 - Disabled state
-- Tags configured via \`tags\`: \`value\` (strings), \`size\` / \`shape\` / \`variant\`, and \`onTagAdd\` / \`onTagRemove\`
+- Tags configured via \`tags\`: \`value\` (strings), \`size\` / \`shape\` / \`variant\`; use top-level \`onTagAdd\` / \`onTagRemove\` for changes
 
 ## Accessibility
 - Native \`<input>\` with label association via \`id\`
@@ -71,9 +71,9 @@ const [tagValues, setTagValues] = useState<string[]>([]);
     size: TagSize.XS,
     shape: TagShape.ROUNDED,
     variant: TagVariant.SUBTLE,
-    onTagAdd: (tag) => { setTagValues((t) => [...t, tag]); setValue(''); },
-    onTagRemove: (tag) => setTagValues((t) => t.filter((x) => x !== tag)),
   }}
+  onTagAdd={(tag) => { setTagValues((t) => [...t, tag]); setValue(''); }}
+  onTagRemove={(tag) => setTagValues((t) => t.filter((x) => x !== tag))}
   size={InputSizeV2.MD}
 />
 \`\`\`
@@ -90,7 +90,7 @@ const [tagValues, setTagValues] = useState<string[]>([]);
         tags: {
             control: false,
             description:
-                'Tag config: `{ value: string[], size, shape, variant, onTagAdd?, onTagRemove? }`',
+                'Tag config: `{ value, size, shape, variant }`; `onTagAdd` / `onTagRemove` are separate props',
             table: { type: { summary: 'object' }, category: 'Core' },
         },
         label: {
@@ -185,6 +185,20 @@ const [tagValues, setTagValues] = useState<string[]>([]);
                 category: 'Events',
             },
         },
+        onTagAdd: {
+            action: 'tagAdd',
+            table: {
+                type: { summary: '(tag: string) => void' },
+                category: 'Events',
+            },
+        },
+        onTagRemove: {
+            action: 'tagRemove',
+            table: {
+                type: { summary: '(tag: string) => void' },
+                category: 'Events',
+            },
+        },
     },
     tags: ['autodocs'],
 }
@@ -210,13 +224,13 @@ export const Default: Story = {
                 tags={{
                     ...defaultTagConfig,
                     value: tagValues,
-                    onTagAdd: (tag: string) => {
-                        setTagValues((t) => [...t, tag])
-                        setValue('')
-                    },
-                    onTagRemove: (tag: string) => {
-                        setTagValues((t) => t.filter((x) => x !== tag))
-                    },
+                }}
+                onTagAdd={(tag: string) => {
+                    setTagValues((t) => [...t, tag])
+                    setValue('')
+                }}
+                onTagRemove={(tag: string) => {
+                    setTagValues((t) => t.filter((x) => x !== tag))
                 }}
             />
         )
@@ -267,17 +281,19 @@ export const Sizes: Story = {
                 tags={{
                     ...defaultTagConfig,
                     value: state.tagValues,
-                    onTagAdd: (tag) =>
-                        set((s) => ({
-                            tagValues: [...s.tagValues, tag],
-                            value: '',
-                        })),
-                    onTagRemove: (tag) =>
-                        set((s) => ({
-                            ...s,
-                            tagValues: s.tagValues.filter((t) => t !== tag),
-                        })),
                 }}
+                onTagAdd={(tag) =>
+                    set((s) => ({
+                        tagValues: [...s.tagValues, tag],
+                        value: '',
+                    }))
+                }
+                onTagRemove={(tag) =>
+                    set((s) => ({
+                        ...s,
+                        tagValues: s.tagValues.filter((t) => t !== tag),
+                    }))
+                }
             />
         )
 
@@ -318,8 +334,6 @@ export const WithError: Story = {
                 tags={{
                     ...defaultTagConfig,
                     value: tagValues,
-                    onTagAdd: () => {},
-                    onTagRemove: () => {},
                 }}
                 error
                 errorMessage="One or more values are not valid email addresses."
@@ -348,8 +362,6 @@ export const Disabled: Story = {
                 tags={{
                     ...defaultTagConfig,
                     value: ['Read-only', 'Tag'],
-                    onTagAdd: () => {},
-                    onTagRemove: () => {},
                 }}
                 disabled
             />
@@ -391,17 +403,19 @@ export const WithSlots: Story = {
                     tags={{
                         ...defaultTagConfig,
                         value: a.tagValues,
-                        onTagAdd: (tag) =>
-                            setA((s) => ({
-                                tagValues: [...s.tagValues, tag],
-                                value: '',
-                            })),
-                        onTagRemove: (tag) =>
-                            setA((s) => ({
-                                ...s,
-                                tagValues: s.tagValues.filter((x) => x !== tag),
-                            })),
                     }}
+                    onTagAdd={(tag) =>
+                        setA((s) => ({
+                            tagValues: [...s.tagValues, tag],
+                            value: '',
+                        }))
+                    }
+                    onTagRemove={(tag) =>
+                        setA((s) => ({
+                            ...s,
+                            tagValues: s.tagValues.filter((x) => x !== tag),
+                        }))
+                    }
                     leftSlot={<Search size={16} aria-hidden />}
                 />
                 <MultiValueInputV2
@@ -412,17 +426,19 @@ export const WithSlots: Story = {
                     tags={{
                         ...defaultTagConfig,
                         value: b.tagValues,
-                        onTagAdd: (tag) =>
-                            setB((s) => ({
-                                tagValues: [...s.tagValues, tag],
-                                value: '',
-                            })),
-                        onTagRemove: (tag) =>
-                            setB((s) => ({
-                                ...s,
-                                tagValues: b.tagValues.filter((x) => x !== tag),
-                            })),
                     }}
+                    onTagAdd={(tag) =>
+                        setB((s) => ({
+                            tagValues: [...s.tagValues, tag],
+                            value: '',
+                        }))
+                    }
+                    onTagRemove={(tag) =>
+                        setB((s) => ({
+                            ...s,
+                            tagValues: b.tagValues.filter((x) => x !== tag),
+                        }))
+                    }
                     leftSlot={<Mail size={16} aria-hidden />}
                     rightSlot={<Hash size={16} aria-hidden />}
                 />

@@ -9,7 +9,7 @@ import type { MultiValueInputV2Props } from './MultiValueV2.types'
 import type { MultiValueInputV2TokensType } from './MultiValueInputV2.tokens'
 import { X } from 'lucide-react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import styled, { CSSObject } from 'styled-components'
+import styled, { type CSSObject } from 'styled-components'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 
 const ContentContainer = styled(Block)<{
@@ -47,10 +47,10 @@ const MultiValueInputV2 = ({
         size: TagSize.XS,
         shape: TagShape.ROUNDED,
         variant: TagVariant.SUBTLE,
-        onTagAdd: () => {},
-        onTagRemove: () => {},
     },
     onChange,
+    onTagAdd,
+    onTagRemove,
     size = InputSizeV2.MD,
     onFocus,
     onBlur,
@@ -92,13 +92,13 @@ const MultiValueInputV2 = ({
         if (disabled) return
         const trimmedValue = value.trim()
         if (trimmedValue && !tags.value.includes(trimmedValue)) {
-            tags.onTagAdd?.(trimmedValue)
+            onTagAdd?.(trimmedValue)
         }
     }
 
     const removeTag = (tagToRemove: string) => {
         if (disabled) return
-        tags.onTagRemove?.(tagToRemove)
+        onTagRemove?.(tagToRemove)
         inputRef.current?.focus()
     }
 
@@ -107,7 +107,7 @@ const MultiValueInputV2 = ({
         if (e.key === 'Enter') {
             const trimmedValue = value.trim()
             const isAddable =
-                !!tags.onTagAdd &&
+                !!onTagAdd &&
                 !!trimmedValue &&
                 !tags.value.includes(trimmedValue)
             if (isAddable) {
@@ -292,6 +292,7 @@ const MultiValueInputV2 = ({
                         name={name}
                         flexGrow={1}
                         minWidth="120px"
+                        color={ic.color[labelState]}
                         placeholderColor={
                             multiValueInputTokens.inputContainer
                                 .placeholderColor

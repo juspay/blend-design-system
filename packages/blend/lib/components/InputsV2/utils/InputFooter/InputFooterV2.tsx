@@ -2,7 +2,7 @@ import Block from '../../../Primitives/Block/Block'
 import Text from '../../../Text/Text'
 import { InputSizeV2 } from '../../inputV2.types'
 import { addPxToValue } from '../../../../global-utils/GlobalUtils'
-import { InputFooterV2Tokens } from '../../inputV2.tokens'
+import type { InputFooterV2Tokens } from '../../inputV2.tokens'
 
 type InputFooterV2Props = {
     error?: boolean

@@ -4,7 +4,7 @@ import Text from '../../../Text/Text'
 import { Tooltip, TooltipSize } from '../../../Tooltip'
 import { InputSizeV2, InputStateV2 } from '../../inputV2.types'
 import { addPxToValue } from '../../../../global-utils/GlobalUtils'
-import { InputLabelsV2Tokens } from '../../inputV2.tokens'
+import type { InputLabelsV2Tokens } from '../../inputV2.tokens'
 
 export type InputLabelsV2Props = {
     label?: string

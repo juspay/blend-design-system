@@ -5,19 +5,12 @@ import MultiValueInputV2 from '../../../lib/components/InputsV2/MultiValueInputV
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { TagShape, TagSize, TagVariant } from '../../../lib/components/Tags'
 
-function tagsConfig(
-    value: string[] = [],
-    handlers?: {
-        onTagAdd?: (tag: string) => void
-        onTagRemove?: (tag: string) => void
-    }
-) {
+function tagsConfig(value: string[] = []) {
     return {
         value,
         size: TagSize.XS,
         shape: TagShape.ROUNDED,
         variant: TagVariant.SUBTLE,
-        ...handlers,
     }
 }
 
@@ -25,7 +18,7 @@ function tagsConfig(
 function ControlledMultiValueInput(
     props: Omit<
         React.ComponentProps<typeof MultiValueInputV2>,
-        'value' | 'tags' | 'onChange'
+        'value' | 'tags' | 'onChange' | 'onTagAdd' | 'onTagRemove'
     > & {
         initialValue?: string
         initialTags?: string[]
@@ -39,14 +32,14 @@ function ControlledMultiValueInput(
             {...rest}
             value={value}
             onChange={setValue}
-            tags={tagsConfig(tagValues, {
-                onTagAdd: (tag) => {
-                    setTagValues((t) => [...t, tag])
-                    setValue('')
-                },
-                onTagRemove: (tag) =>
-                    setTagValues((t) => t.filter((x) => x !== tag)),
-            })}
+            tags={tagsConfig(tagValues)}
+            onTagAdd={(tag) => {
+                setTagValues((t) => [...t, tag])
+                setValue('')
+            }}
+            onTagRemove={(tag) =>
+                setTagValues((t) => t.filter((x) => x !== tag))
+            }
         />
     )
 }
@@ -177,7 +170,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Disabled"
                     value=""
-                    tags={tagsConfig(['alpha'], { onTagRemove })}
+                    tags={tagsConfig(['alpha'])}
+                    onTagRemove={onTagRemove}
                     onChange={() => {}}
                     disabled
                 />
@@ -193,7 +187,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Disabled"
                     value=""
-                    tags={tagsConfig(['alpha'], { onTagRemove })}
+                    tags={tagsConfig(['alpha'])}
+                    onTagRemove={onTagRemove}
                     onChange={() => {}}
                     disabled
                 />
@@ -302,7 +297,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value="new-tag"
-                    tags={tagsConfig([], { onTagAdd })}
+                    tags={tagsConfig()}
+                    onTagAdd={onTagAdd}
                     onChange={() => {}}
                 />
             )
@@ -319,7 +315,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value="dup"
-                    tags={tagsConfig(['dup'], { onTagAdd })}
+                    tags={tagsConfig(['dup'])}
+                    onTagAdd={onTagAdd}
                     onChange={() => {}}
                 />
             )
@@ -333,7 +330,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value="  trimmed  "
-                    tags={tagsConfig([], { onTagAdd })}
+                    tags={tagsConfig()}
+                    onTagAdd={onTagAdd}
                     onChange={() => {}}
                 />
             )
@@ -349,7 +347,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value=""
-                    tags={tagsConfig(['a', 'b'], { onTagRemove })}
+                    tags={tagsConfig(['a', 'b'])}
+                    onTagRemove={onTagRemove}
                     onChange={() => {}}
                 />
             )
@@ -368,7 +367,8 @@ describe('MultiValueInputV2 Component', () => {
                 <MultiValueInputV2
                     label="Tags"
                     value=""
-                    tags={tagsConfig(['remove-me'], { onTagRemove })}
+                    tags={tagsConfig(['remove-me'])}
+                    onTagRemove={onTagRemove}
                     onChange={() => {}}
                 />
             )

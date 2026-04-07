@@ -1,12 +1,14 @@
 import type { CSSObject } from 'styled-components'
-import { InputSizeV2, InputStateV2 } from '../inputV2.types'
-import { BreakpointType } from '../../../breakpoints/breakPoints'
+import type { InputSizeV2, InputStateV2 } from '../inputV2.types'
+import type { BreakpointType } from '../../../breakpoints/breakPoints'
 import { Theme } from '../../../context/theme.enum'
-import { FoundationTokenType } from '../../../tokens/theme.token'
+import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { getMultiValueInputV2DarkTokens } from './MultiValueInputV2.dark.tokens'
 import { getMultiValueInputV2LightTokens } from './MultiValueInputV2.light.tokens'
-import { InputLabelsV2Tokens } from '../inputV2.tokens'
-import { InputFooterV2Tokens } from '../inputV2.tokens'
+import type {
+    InputFooterV2Tokens,
+    InputLabelsV2Tokens,
+} from '../inputV2.tokens'
 
 export type MultiValueInputV2TokensType = {
     gap: CSSObject['gap']
