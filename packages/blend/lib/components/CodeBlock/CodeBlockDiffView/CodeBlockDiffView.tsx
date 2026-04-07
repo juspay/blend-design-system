@@ -214,8 +214,6 @@ const CodeBlockDiffView = ({
                     style={lineBlockMotion}
                     padding={`0 ${tokens.body.padding.x}`}
                     backgroundColor={tokens.backgroundColor}
-                    role="group"
-                    aria-label="Side-by-side diff: removed code on the left, added on the right"
                 >
                     <pre
                         id={`${codeContentId}-diff-${segmentKey}`}

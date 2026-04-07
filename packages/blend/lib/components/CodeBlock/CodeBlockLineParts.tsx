@@ -220,6 +220,8 @@ export const renderDiffUnifiedRowPair = (
                 display="flex"
                 alignItems="flex-start"
                 borderRight={tokens.border}
+                role="group"
+                aria-label="Removed code"
                 style={{
                     flex: '1 1 0%',
                     minWidth: 0,
@@ -257,6 +259,8 @@ export const renderDiffUnifiedRowPair = (
             <Block
                 display="flex"
                 alignItems="flex-start"
+                role="group"
+                aria-label="Added code"
                 style={{
                     flex: '1 1 0%',
                     minWidth: 0,
