@@ -18,7 +18,6 @@ import {
     getMobileNavigationSecondaryRows,
     parseUnitValue,
     splitPrimaryItems,
-    getSidebarV2CollapsedMobilePadding,
 } from './utils'
 import {
     useItemSelection,
@@ -124,52 +123,14 @@ const SidebarV2MobileNavigation = forwardRef<
 
         const floatingPadding = tokens.layout.floatingPadding
         const safeAreaOffset = parseUnitValue(tokens.layout.safeAreaOffset)
-        const floatingMarginValue = parseUnitValue(floatingPadding)
-        const containerBorder = parseUnitValue(tokens.container.borderWidth)
 
-        const collapsedHeight = useMemo(
-            () => parseUnitValue(getSidebarV2CollapsedMobilePadding(tokens)),
-            [tokens]
-        )
-
-        const expandedHeight = useMemo(() => {
-            if (!layout.hasSecondaryItems || !viewportHeight)
-                return collapsedHeight
-
-            const containerGap = parseUnitValue(tokens.layout.gap)
-            const containerPaddingY = parseUnitValue(tokens.layout.paddingTop)
-            const rowPaddingY = parseUnitValue(tokens.layout.rowPaddingTop)
-            const itemHeight = parseUnitValue(tokens.item.height)
-            const rowHeight = rowPaddingY * 2 + itemHeight
-            const secondaryRowCount = Math.ceil(
-                layout.secondaryItems.length / PRIMARY_VISIBLE_LIMIT
-            )
-            const totalRows = 1 + secondaryRowCount
-            const totalRowHeights = totalRows * rowHeight
-            const totalRowGaps = secondaryRowCount * containerGap
-            const totalContentHeight = totalRowHeights + totalRowGaps
-
-            const totalExpandedHeight =
-                totalContentHeight +
-                containerPaddingY * 2 +
-                containerBorder +
-                floatingMarginValue +
-                safeAreaOffset
-
-            return Math.min(
-                totalExpandedHeight,
-                viewportHeight * VIEWPORT_HEIGHT_MULTIPLIER
-            )
-        }, [
-            layout.hasSecondaryItems,
-            layout.secondaryItems.length,
-            viewportHeight,
-            tokens,
-            collapsedHeight,
-            floatingMarginValue,
-            safeAreaOffset,
-            containerBorder,
-        ])
+        const { collapsedHeight, expandedHeight } = useMemo(() => {
+            const collapsed = parseUnitValue(layout.snapPoints[0] as string)
+            const expanded = layout.snapPoints[1]
+                ? parseUnitValue(layout.snapPoints[1] as string)
+                : collapsed
+            return { collapsedHeight: collapsed, expandedHeight: expanded }
+        }, [layout.snapPoints])
 
         const navigationHeight = useMemo(
             () => `${isExpanded ? expandedHeight : collapsedHeight}px`,

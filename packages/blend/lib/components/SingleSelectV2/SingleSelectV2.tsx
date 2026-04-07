@@ -1,4 +1,4 @@
-import { useCallback, useId, useMemo, useState } from 'react'
+import { isValidElement, useCallback, useId, useMemo, useState } from 'react'
 import type { AriaAttributes } from 'react'
 import InputFooter from '../Inputs/utils/InputFooter/InputFooter'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
@@ -74,6 +74,12 @@ const SingleSelectV2 = ({
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
+
+    if (customTrigger !== undefined && !isValidElement(customTrigger)) {
+        throw new Error(
+            'SingleSelectV2: customTrigger must be a valid React element.'
+        )
+    }
 
     const [internalOpen, setInternalOpen] = useState(false)
     const open =

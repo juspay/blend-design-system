@@ -23,6 +23,11 @@ const DirectoryContainer = styled(Block)`
     scrollbar-color: transparent transparent;
 `
 
+const shouldTrackHover = (
+    iconOnlyMode: boolean,
+    setIsHovering: ((isHovering: boolean) => void) | undefined
+): boolean => iconOnlyMode && !!setIsHovering
+
 export type SidebarV2PanelProps = {
     /** Slot content rendered at the top of the sidebar */
     sidebarTopSlot?: ReactNode
@@ -94,6 +99,8 @@ const SidebarV2Panel = ({
     sidebarState = 'expanded',
     tokens,
 }: SidebarV2PanelProps) => {
+    const trackHover = shouldTrackHover(iconOnlyMode, setIsHovering)
+
     return (
         <Block
             data-element="sidebar-panel"
@@ -128,7 +135,12 @@ const SidebarV2Panel = ({
                 id={sidebarNavId}
                 role="region"
                 aria-label="Navigation menu"
-                onMouseEnter={() => setIsHovering?.(true)}
+                onMouseEnter={
+                    trackHover ? () => setIsHovering?.(true) : undefined
+                }
+                onMouseLeave={
+                    trackHover ? () => setIsHovering?.(false) : undefined
+                }
             >
                 <Directory
                     directoryData={data}

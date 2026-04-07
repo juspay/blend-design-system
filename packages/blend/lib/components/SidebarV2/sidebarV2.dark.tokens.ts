@@ -46,8 +46,8 @@ export const getSidebarV2DarkTokens = (
             header: {
                 zIndex: foundationToken.zIndex[10],
                 backgroundColor: foundationToken.colors.gray[900],
-                paddingTop: foundationToken.unit[12.5],
-                paddingBottom: foundationToken.unit[12.5],
+                paddingTop: foundationToken.unit[12],
+                paddingBottom: foundationToken.unit[12],
                 paddingLeft: foundationToken.unit[8],
                 paddingRight: foundationToken.unit[8],
                 gap: foundationToken.unit[12],
