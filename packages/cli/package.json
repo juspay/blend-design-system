@@ -1,0 +1,38 @@
+{
+    "name": "blend-token-studio",
+    "version": "0.1.0",
+    "description": "CLI for Blend Token Studio — scaffold, brand, and sync design tokens",
+    "type": "module",
+    "bin": {
+        "blend-token-studio": "./dist/index.js"
+    },
+    "main": "./dist/index.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm --target node18 --clean --shims",
+        "dev": "tsup src/index.ts --format esm --target node18 --watch",
+        "typecheck": "tsc --noEmit",
+        "start": "node dist/index.js"
+    },
+    "dependencies": {
+        "@blend-design/token-engine": "workspace:*",
+        "@juspay/blend-design-system": "workspace:*",
+        "commander": "^12.0.0",
+        "ora": "^8.0.0",
+        "prompts": "^2.4.2",
+        "picocolors": "^1.1.0"
+    },
+    "devDependencies": {
+        "@types/prompts": "^2.4.9",
+        "typescript": "~5.8.3",
+        "tsup": "^8.0.0"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public"
+    }
+}

@@ -1,5 +1,5 @@
 {
-    "name": "blend-monitor",
+    "name": "blend-studio",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -12,6 +12,7 @@
         "populate-data": "node scripts/populate-all-deployment-data.js"
     },
     "dependencies": {
+        "@blend-design/token-engine": "workspace:*",
         "@types/pg": "^8.15.4",
         "@juspay/blend-design-system": "workspace:*",
         "dotenv": "^17.2.1",

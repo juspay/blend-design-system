@@ -17,7 +17,8 @@
             "import": "./dist/main.js",
             "types": "./dist/main.d.ts"
         },
-        "./style.css": "./dist/style.css"
+        "./style.css": "./dist/style.css",
+        "./lib/*": "./lib/*"
     },
     "scripts": {
         "lint": "eslint .",

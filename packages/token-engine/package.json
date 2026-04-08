@@ -1,0 +1,29 @@
+{
+    "name": "@blend-design/token-engine",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Token resolution engine for Blend Token Studio — transforms brand configs into component tokens",
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": {
+            "import": "./src/index.ts",
+            "types": "./src/index.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsup src/index.ts --format esm --dts",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest"
+    },
+    "dependencies": {
+        "@juspay/blend-design-system": "workspace:*"
+    },
+    "devDependencies": {
+        "typescript": "~5.8.3",
+        "tsup": "^8.0.0",
+        "vitest": "^3.2.4"
+    }
+}
