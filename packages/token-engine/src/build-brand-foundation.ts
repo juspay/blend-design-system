@@ -8,27 +8,18 @@
  * already accepts foundationToken as input. By passing a modified foundation,
  * every color/radius/shadow reference inside those functions automatically
  * picks up the brand values — zero component code changes.
- *
- * Flow:
- *   BrandConfig → buildBrandFoundation() → modifiedFoundation
- *   modifiedFoundation → getButtonV2Tokens() → branded ButtonV2 tokens
- *   modifiedFoundation → getMultiSelectV2Tokens() → branded MultiSelect tokens
- *   ... (all 23 V2 components)
  */
 
-import FOUNDATION_THEME from '@juspay/blend-design-system/lib/tokens/theme.token'
-import type { FoundationTokenType } from '@juspay/blend-design-system/lib/tokens/theme.token'
+import {
+    FOUNDATION_THEME,
+    type FoundationTokenType,
+} from '@juspay/blend-design-system'
 import type { BrandConfig } from './types'
 
-/**
- * Deep-clone FOUNDATION_THEME and apply brand overrides.
- *
- * Only the values specified in the brand config are changed.
- * Everything else stays at Blend defaults.
- */
 export function buildBrandFoundation(brand: BrandConfig): FoundationTokenType {
-    // Deep clone so we never mutate the original
-    const foundation = structuredClone(FOUNDATION_THEME) as FoundationTokenType
+    const foundation = JSON.parse(
+        JSON.stringify(FOUNDATION_THEME)
+    ) as FoundationTokenType
 
     applyColorOverrides(foundation, brand)
     applyRadiusOverrides(foundation, brand)
@@ -37,10 +28,6 @@ export function buildBrandFoundation(brand: BrandConfig): FoundationTokenType {
 
     return foundation
 }
-
-// ---------------------------------------------------------------------------
-// Override helpers — each mutates the cloned foundation in-place
-// ---------------------------------------------------------------------------
 
 function applyColorOverrides(
     foundation: FoundationTokenType,
@@ -61,7 +48,9 @@ function applyColorOverrides(
         if (!targetGroup) continue
 
         for (const [shade, value] of Object.entries(overrides)) {
-            targetGroup[shade] = value
+            if (value !== undefined) {
+                targetGroup[shade] = value
+            }
         }
     }
 }
@@ -75,7 +64,7 @@ function applyRadiusOverrides(
     const radiusMap = foundation.border.radius as Record<string, string>
 
     for (const [key, value] of Object.entries(brand.radius)) {
-        if (key in radiusMap) {
+        if (value !== undefined && key in radiusMap) {
             radiusMap[key] = value
         }
     }
@@ -90,7 +79,7 @@ function applyShadowOverrides(
     const shadowMap = foundation.shadows as Record<string, string>
 
     for (const [key, value] of Object.entries(brand.shadows)) {
-        if (key in shadowMap) {
+        if (value !== undefined && key in shadowMap) {
             shadowMap[key] = value
         }
     }
@@ -112,7 +101,7 @@ function applyFontOverrides(
     if (brand.font.weight) {
         const weightMap = foundation.font.weight as Record<string, number>
         for (const [key, value] of Object.entries(brand.font.weight)) {
-            if (key in weightMap) {
+            if (value !== undefined && key in weightMap) {
                 weightMap[key] = value
             }
         }

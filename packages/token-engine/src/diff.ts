@@ -5,7 +5,12 @@
  * Used by the CLI `diff` command and the dashboard diff view.
  */
 
-import type { BrandConfig, TokenDiff } from './types'
+import type {
+    BrandConfig,
+    TokenDiff,
+    RadiusOverrides,
+    ShadowOverrides,
+} from './types'
 
 /**
  * Diff two brand configs and return a list of changes.
@@ -20,8 +25,18 @@ export function diffBrandConfigs(
     const diffs: TokenDiff[] = []
 
     diffColors(configA, configB, diffs)
-    diffSimpleObject('radius', configA.radius, configB.radius, diffs)
-    diffSimpleObject('shadows', configA.shadows, configB.shadows, diffs)
+    diffSimpleObject(
+        'radius',
+        configA.radius as Record<string, string> | undefined,
+        configB.radius as Record<string, string> | undefined,
+        diffs
+    )
+    diffSimpleObject(
+        'shadows',
+        configA.shadows as Record<string, string> | undefined,
+        configB.shadows as Record<string, string> | undefined,
+        diffs
+    )
     diffFont(configA, configB, diffs)
 
     return diffs

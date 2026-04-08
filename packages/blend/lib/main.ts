@@ -88,4 +88,6 @@ export { getTimelineTokens } from './components/Timeline/timeline.token'
 export { getTooltipV2Tokens } from './components/TooltipV2/tooltipV2.tokens'
 
 // Foundation token type export (for token engine)
+export { default as FOUNDATION_THEME } from './tokens/theme.token'
 export type { FoundationTokenType } from './tokens/theme.token'
+export { Theme } from './context/theme.enum'

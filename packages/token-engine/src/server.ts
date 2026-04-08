@@ -1,0 +1,64 @@
+/**
+ * Server-safe exports from token-engine
+ *
+ * Only types and validation - no React dependencies.
+ * Safe to import in Next.js API routes.
+ */
+
+export { validateBrandConfig } from './validate'
+export { diffBrandConfigs } from './diff'
+export { generateColorScale, isValidHexColor } from './color-scale'
+export { getPreset, listPresets, PRESETS } from './presets'
+export {
+    PRESET_BLEND_DEFAULT,
+    PRESET_HDFC,
+    PRESET_NEOBANK,
+    PRESET_FINTECH,
+} from './presets'
+
+export type {
+    BrandConfig,
+    BrandColors,
+    ColorOverrides,
+    RadiusOverrides,
+    ShadowOverrides,
+    FontOverrides,
+    RadiusPreset,
+    ValidationResult,
+    ValidationError,
+    ValidationWarning,
+    TokenDiff,
+} from './types'
+
+export { RADIUS_PRESETS } from './types'
+
+export type {
+    BranchStatus,
+    BranchVisibility,
+    BranchPermissions,
+    BranchOwner,
+    BranchMeta,
+    BranchReference,
+    Branch,
+    CreateBranchInput,
+    UpdateBranchInput,
+    Version,
+    CreateVersionInput,
+    Snapshot,
+    CreateSnapshotInput,
+    BranchListFilters,
+    BranchListOptions,
+    BranchListResult,
+    BranchDiff,
+    ResolvedTokensResponse,
+} from './studio-types'
+
+export {
+    BRANCH_ID_PATTERN,
+    VERSION_PATTERN,
+    generateBranchId,
+    parseBranchId,
+    validateBranchId,
+    validateVersion,
+    incrementVersion,
+} from './studio-types'

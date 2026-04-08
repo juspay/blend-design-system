@@ -11,6 +11,9 @@
  *   npx blend-token-studio init                    # scaffold project
  *   npx blend-token-studio brand                   # interactive branding
  *   npx blend-token-studio brand --preset hdfc     # use a preset
+ *   npx blend-token-studio pull hdfc/retail        # pull from studio
+ *   npx blend-token-studio push                    # push to studio
+ *   npx blend-token-studio list                    # list branches
  *   npx blend-token-studio diff                    # see overrides
  *   npx blend-token-studio validate                # validate brand.json
  *   npx blend-token-studio generate ./brand.json   # offline generation
@@ -22,6 +25,10 @@ import { brandCommand } from './commands/brand'
 import { diffCommand } from './commands/diff'
 import { validateCommand } from './commands/validate'
 import { generateCommand } from './commands/generate'
+import { pullCommand } from './commands/pull'
+import { pushCommand } from './commands/push'
+import { listCommand } from './commands/list'
+import { loginCommand, logoutCommand, whoamiCommand } from './commands/login'
 
 const program = new Command()
 
@@ -29,10 +36,6 @@ program
     .name('blend-token-studio')
     .description('Blend Token Studio — scaffold, brand, and sync design tokens')
     .version('0.1.0')
-
-// ---------------------------------------------------------------------------
-// init — scaffold a new project
-// ---------------------------------------------------------------------------
 
 program
     .command('init')
@@ -42,10 +45,6 @@ program
     .action(async (options) => {
         await initCommand(options)
     })
-
-// ---------------------------------------------------------------------------
-// brand — apply a brand
-// ---------------------------------------------------------------------------
 
 program
     .command('brand')
@@ -63,9 +62,72 @@ program
         await brandCommand(options)
     })
 
-// ---------------------------------------------------------------------------
-// diff — compare overrides vs defaults
-// ---------------------------------------------------------------------------
+program
+    .command('pull <branchId>')
+    .description('Pull a brand config from Blend Token Studio')
+    .option('-v, --version <version>', 'Specific version to pull')
+    .option('-t, --theme <theme>', 'Theme to resolve (light or dark)', 'light')
+    .option('-o, --output <dir>', 'Output directory')
+    .action(async (branchId, options) => {
+        await pullCommand(branchId, options)
+    })
+
+program
+    .command('push [branchId]')
+    .description('Push local brand.json to Blend Token Studio')
+    .option('-n, --new', 'Create branch if it does not exist')
+    .option('-p, --publish', 'Publish a new version after pushing')
+    .option('--major', 'Bump major version')
+    .option('--minor', 'Bump minor version')
+    .option('--patch', 'Bump patch version')
+    .option('-c, --changelog <text>', 'Changelog for the version')
+    .action(async (branchId, options) => {
+        await pushCommand(branchId, options)
+    })
+
+program
+    .command('list')
+    .alias('ls')
+    .description('List available branches from Blend Token Studio')
+    .option(
+        '--status <status>',
+        'Filter by status (draft, published, archived)'
+    )
+    .option(
+        '--visibility <visibility>',
+        'Filter by visibility (private, team, public)'
+    )
+    .option('-s, --search <query>', 'Search by name')
+    .option('--json', 'Output as JSON')
+    .option('-l, --limit <number>', 'Limit number of results', '50')
+    .action(async (options) => {
+        await listCommand({
+            ...options,
+            limit: options.limit ? parseInt(options.limit, 10) : 50,
+        })
+    })
+
+program
+    .command('login')
+    .description('Authenticate with Blend Token Studio')
+    .option('-t, --token <token>', 'Firebase ID token')
+    .action(async (options) => {
+        await loginCommand(options)
+    })
+
+program
+    .command('logout')
+    .description('Clear authentication')
+    .action(async () => {
+        await logoutCommand()
+    })
+
+program
+    .command('whoami')
+    .description('Show current authenticated user')
+    .action(async () => {
+        await whoamiCommand()
+    })
 
 program
     .command('diff')
@@ -74,20 +136,12 @@ program
         await diffCommand()
     })
 
-// ---------------------------------------------------------------------------
-// validate — check brand.json
-// ---------------------------------------------------------------------------
-
 program
     .command('validate')
     .description('Validate your brand.json configuration')
     .action(async () => {
         await validateCommand()
     })
-
-// ---------------------------------------------------------------------------
-// generate — offline token generation
-// ---------------------------------------------------------------------------
 
 program
     .command('generate <input>')
@@ -96,9 +150,5 @@ program
     .action(async (input, options) => {
         await generateCommand(input, options)
     })
-
-// ---------------------------------------------------------------------------
-// Run
-// ---------------------------------------------------------------------------
 
 program.parse()

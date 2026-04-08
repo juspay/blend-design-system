@@ -4,16 +4,17 @@
  * Scaffolds a Blend Token Studio project:
  * 1. Detects project type (Next.js / Vite / CRA)
  * 2. Checks & installs missing dependencies
- * 3. Creates blend.config.json
+ * 3. Creates blend.config.json with schema reference
  * 4. Creates src/blend/provider.tsx
  * 5. Creates src/blend/tokens.ts
  *
  * Inspired by `npx shadcn@latest init` — one command, zero config.
  */
 
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
+import prompts from 'prompts'
 import { logger } from '../utils/logger'
 import { detectProject, getInstallCommand } from '../utils/detect-project'
 import { generateProviderCode } from '../generators/provider-generator'
@@ -21,11 +22,14 @@ import { generateDefaultTokensCode } from '../generators/tokens-generator'
 import {
     generateConfig,
     generateConfigCode,
+    type BlendConfig,
 } from '../generators/config-generator'
 
 interface InitOptions {
     defaults?: boolean
     force?: boolean
+    output?: string
+    theme?: 'light' | 'dark'
 }
 
 export async function initCommand(options: InitOptions = {}): Promise<void> {
@@ -41,7 +45,7 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         logger.detail('TypeScript enabled')
     }
 
-    // 2. Check for blend.config.json
+    // 2. Check for existing config
     const configPath = join(cwd, 'blend.config.json')
     if (existsSync(configPath) && !options.force) {
         logger.warn(
@@ -50,7 +54,50 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         return
     }
 
-    // 3. Check & install dependencies
+    // 3. Interactive config (unless --defaults)
+    let configOptions: Partial<BlendConfig> = {
+        output: options.output,
+        theme: options.theme,
+    }
+
+    if (!options.defaults) {
+        const answers = await prompts([
+            {
+                type: 'text',
+                name: 'output',
+                message: 'Output directory:',
+                initial: 'src/blend',
+            },
+            {
+                type: 'select',
+                name: 'theme',
+                message: 'Default theme:',
+                choices: [
+                    { title: 'Light', value: 'light' },
+                    { title: 'Dark', value: 'dark' },
+                ],
+                initial: 0,
+            },
+            {
+                type: 'confirm',
+                name: 'cssVariables',
+                message: 'Generate CSS variables file?',
+                initial: false,
+            },
+        ])
+
+        if (answers.output) configOptions.output = answers.output
+        if (answers.theme) configOptions.theme = answers.theme
+        if (answers.cssVariables) {
+            configOptions.generate = {
+                typescript: true,
+                cssVariables: true,
+                reactNative: false,
+            }
+        }
+    }
+
+    // 4. Check & install dependencies
     const missingDeps: string[] = []
     if (!project.hasBlend) missingDeps.push('@juspay/blend-design-system')
     if (!project.hasStyledComponents) missingDeps.push('styled-components')
@@ -76,16 +123,16 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         logger.success('Dependencies already installed')
     }
 
-    // 4. Create blend.config.json
-    const config = generateConfig()
+    // 5. Create blend.config.json
+    const config = generateConfig(configOptions)
     writeFileSync(configPath, generateConfigCode(config))
     logger.fileWritten('blend.config.json')
 
-    // 5. Create output directory
+    // 6. Create output directory
     const outputDir = join(cwd, config.output)
     mkdirSync(outputDir, { recursive: true })
 
-    // 6. Generate provider.tsx
+    // 7. Generate provider.tsx
     const providerPath = join(outputDir, 'provider.tsx')
     if (!existsSync(providerPath) || options.force) {
         const isNextJs = project.type === 'nextjs'
@@ -95,12 +142,30 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         logger.fileSkipped(`${config.output}/provider.tsx`)
     }
 
-    // 7. Generate tokens.ts (default — empty, Blend defaults)
+    // 8. Generate tokens.ts (default — empty, Blend defaults)
     const tokensPath = join(outputDir, 'tokens.ts')
     writeFileSync(tokensPath, generateDefaultTokensCode())
     logger.fileWritten(`${config.output}/tokens.ts`)
 
-    // 8. Print next steps
+    // 9. Generate CSS variables if requested
+    if (config.generate?.cssVariables) {
+        const cssPath = join(outputDir, 'tokens.css')
+        writeFileSync(cssPath, generateDefaultCssVariables())
+        logger.fileWritten(`${config.output}/tokens.css`)
+    }
+
+    // 10. Create .gitignore entry suggestion
+    const gitignorePath = join(cwd, '.gitignore')
+    if (existsSync(gitignorePath)) {
+        const gitignore = readFileSync(gitignorePath, 'utf-8')
+        if (!gitignore.includes('.blend-token-studio')) {
+            logger.newline()
+            logger.info('Consider adding to .gitignore:')
+            logger.detail('.blend-token-studio/')
+        }
+    }
+
+    // 11. Print next steps
     logger.newline()
     logger.header('Next steps')
     logger.newline()
@@ -118,4 +183,54 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
     logger.newline()
     console.log('     npx blend-token-studio brand')
     logger.newline()
+    console.log('     Or use a preset:')
+    logger.newline()
+    console.log('     npx blend-token-studio brand --preset hdfc')
+    logger.newline()
+
+    if (config.studio?.apiUrl) {
+        console.log('  3. Connect to Blend Token Studio:')
+        logger.newline()
+        console.log('     npx blend-token-studio login')
+        console.log('     npx blend-token-studio pull hdfc/retail')
+        logger.newline()
+    }
+}
+
+function generateDefaultCssVariables(): string {
+    return `/**
+ * Blend Design System CSS Variables
+ * Auto-generated by Blend Token Studio
+ *
+ * Usage: Import this file in your global CSS or JS entry point.
+ * The tokens.ts file is the primary source — this is for non-JS contexts.
+ */
+
+:root {
+  /* Colors - Primary */
+  --color-primary-50: #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-200: #BFDBFE;
+  --color-primary-300: #93C5FD;
+  --color-primary-400: #60A5FA;
+  --color-primary-500: #2B7FFF;
+  --color-primary-600: #0561E2;
+  --color-primary-700: #004DB8;
+  --color-primary-800: #003D94;
+  --color-primary-900: #00327A;
+  --color-primary-950: #001F52;
+
+  /* Border Radius */
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-10: 10px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-20: 20px;
+}
+
+[data-theme="dark"] {
+  /* Dark theme overrides go here */
+}
+`
 }
