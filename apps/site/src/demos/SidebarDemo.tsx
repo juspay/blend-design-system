@@ -141,6 +141,7 @@ import CodeEditorV2Demo from './CodeEditorV2Demo'
 import ProgressBarV2Demo from './ProgressBarV2Demo'
 import MultiValueInputV2Demo from './MultiValueInputV2Demo'
 import NumberInputV2Demo from './NumberInputV2Demo'
+import OTPInputV2Demo from './OTPInputV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -237,7 +238,8 @@ const SidebarDemo = () => {
         | 'progressBarV2'
         | 'multiValueInputV2'
         | 'numberInputV2'
-    >('numberInputV2')
+        | 'otpInputV2'
+    >('otpInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -596,6 +598,8 @@ const SidebarDemo = () => {
                 return <CodeEditorV2Demo />
             case 'progressBarV2':
                 return <ProgressBarV2Demo />
+            case 'otpInputV2':
+                return <OTPInputV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -952,6 +956,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'otpInput',
                     onClick: () => setActiveComponent('otpInput'),
+                },
+                {
+                    label: 'OTP Input V2',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'otpInputV2',
+                    onClick: () => setActiveComponent('otpInputV2'),
                 },
                 {
                     label: 'Unit Input',
