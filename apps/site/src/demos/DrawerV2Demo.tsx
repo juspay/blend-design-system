@@ -96,6 +96,10 @@ const DrawerV2Demo = () => {
     const [showOverlay, setShowOverlay] = useState(true)
     const [overlayOpacity, setOverlayOpacity] = useState<number>(60)
     const [contentOffset, setContentOffset] = useState<number>(16)
+    const [isContentPersistent, setIsContentPersistent] = useState(false)
+
+    const [mountProbeCount, setMountProbeCount] = useState(0)
+    const [mountProbeText, setMountProbeText] = useState('')
 
     const [statusAction, setStatusAction] = useState<'confirm' | 'delete'>(
         'confirm'
@@ -195,25 +199,6 @@ const DrawerV2Demo = () => {
             prev.includes(value)
                 ? prev.filter((v) => v !== value)
                 : [...prev, value]
-        )
-    }
-
-    const renderBasicBody = () => {
-        return (
-            <div className={getBodyClassName()}>
-                <div className="text-sm text-gray-700">
-                    Try changing direction, modal, dismissible, and variant from
-                    the playground.
-                </div>
-                <div className="mt-4 space-y-3">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                        <div
-                            key={i}
-                            className="h-10 rounded-lg bg-gray-50 border border-gray-100"
-                        />
-                    ))}
-                </div>
-            </div>
         )
     }
 
@@ -450,6 +435,19 @@ const DrawerV2Demo = () => {
                         </span>
                     </label>
 
+                    <label className="flex items-center gap-2 h-10 px-3 border border-gray-200 rounded-lg bg-gray-50">
+                        <input
+                            type="checkbox"
+                            checked={isContentPersistent}
+                            onChange={(e) =>
+                                setIsContentPersistent(e.target.checked)
+                            }
+                        />
+                        <span className="text-sm text-gray-700">
+                            keep content mounted
+                        </span>
+                    </label>
+
                     <div className="flex flex-col gap-1">
                         <div className="text-xs font-medium text-gray-700">
                             Overlay opacity
@@ -525,6 +523,7 @@ const DrawerV2Demo = () => {
                                 className={getContentClassName(direction)}
                                 style={contentStyle}
                                 tabIndex={-1}
+                                isContentPersistent={isContentPersistent}
                             >
                                 <div className={getHeaderClassName()}>
                                     <DrawerV2Title className="text-base font-semibold text-gray-900">
@@ -537,7 +536,56 @@ const DrawerV2Demo = () => {
                                     )}
                                 </div>
 
-                                {variant === 'basic' && renderBasicBody()}
+                                {variant === 'basic' && (
+                                    <div className={getBodyClassName()}>
+                                        <div className="text-sm text-gray-700">
+                                            Toggle “keep content mounted”, then
+                                            close and reopen the drawer to see
+                                            whether this state persists.
+                                        </div>
+                                        <div className="mt-4 space-y-3">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    className="h-9 px-3 rounded-lg border border-gray-300 bg-white text-sm"
+                                                    onClick={() =>
+                                                        setMountProbeCount(
+                                                            (c) => c + 1
+                                                        )
+                                                    }
+                                                >
+                                                    Increment
+                                                </button>
+                                                <div className="text-sm text-gray-700">
+                                                    Count:{' '}
+                                                    <span className="font-semibold text-gray-900">
+                                                        {mountProbeCount}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <input
+                                                className="w-full h-10 px-3 border border-gray-300 rounded-lg"
+                                                placeholder="Type here, close drawer, reopen…"
+                                                value={mountProbeText}
+                                                onChange={(e) =>
+                                                    setMountProbeText(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <div className="space-y-3">
+                                                {Array.from({ length: 10 }).map(
+                                                    (_, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className="h-10 rounded-lg bg-gray-50 border border-gray-100"
+                                                        />
+                                                    )
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                                 {variant === 'status' && renderStatusBody()}
                                 {variant === 'singleSelect' &&
                                     renderSingleSelectBody(

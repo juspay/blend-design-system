@@ -481,6 +481,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'DrawerContent.isContentPersistent',
+                hintText:
+                    'When true, keeps the drawer content mounted in the DOM even when closed. Useful for preserving in-flight UI state such as chat widgets, form inputs, or API-driven panels. When false, content is unmounted when drawer closes. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true keeps content mounted when closed, false unmounts content on close',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'DrawerContent.offSet',
                 hintText:
                     'Optional custom margin value that creates space around the drawer content. Accepts CSS values like "20px", "1rem" or numeric values (converted to pixels). When provided with direction=bottom, the drawer respects this margin at the bottom. Useful for positioning drawers with spacing from screen edges.',

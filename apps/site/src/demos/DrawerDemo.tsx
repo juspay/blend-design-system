@@ -385,6 +385,7 @@ export const SideDrawerExample = () => {
                 <DrawerContent
                     direction="right"
                     width="500px"
+                    isContentPersistent
                     // offSet="20px"
                 >
                     <DrawerHeader>
@@ -1810,6 +1811,186 @@ export const NonDismissibleExample = () => {
                         >
                             Close Drawer
                         </button>
+                    </DrawerFooter>
+                </DrawerContent>
+            </DrawerPortal>
+        </Drawer>
+    )
+}
+
+// Persistent Drawer Example - Content stays mounted when closed
+export const PersistentDrawerExample = () => {
+    const [apiStatus, setApiStatus] = useState<'idle' | 'loading' | 'success'>(
+        'idle'
+    )
+    const [message, setMessage] = useState('')
+
+    const simulateApiCall = () => {
+        setApiStatus('loading')
+        setMessage('API call started...')
+
+        // Simulate a long-running API call (5 seconds)
+        setTimeout(() => {
+            setApiStatus('success')
+            setMessage('API call completed successfully!')
+        }, 5000)
+    }
+
+    return (
+        <Drawer direction="right">
+            <DrawerTrigger>
+                <button
+                    style={{
+                        display: 'flex',
+                        height: '40px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        overflow: 'hidden',
+                        borderRadius: '20px',
+                        backgroundColor: 'white',
+                        padding: '0 16px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Persistent Drawer
+                </button>
+            </DrawerTrigger>
+            <DrawerPortal>
+                <DrawerOverlay />
+                <DrawerContent
+                    direction="right"
+                    width="400px"
+                    isContentPersistent
+                >
+                    <DrawerHeader>
+                        <DrawerTitle>API Call Preservation Demo</DrawerTitle>
+                        <DrawerDescription>
+                            Close this drawer during an API call - the call
+                            continues in the background!
+                        </DrawerDescription>
+                    </DrawerHeader>
+                    <DrawerBody>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '16px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    padding: '16px',
+                                    backgroundColor: '#f3f4f6',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e5e7eb',
+                                }}
+                            >
+                                <h4
+                                    style={{
+                                        margin: '0 0 12px 0',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Status: {apiStatus === 'idle' && '⏸️ Idle'}
+                                    {apiStatus === 'loading' && '🔄 Loading...'}
+                                    {apiStatus === 'success' && '✅ Success!'}
+                                </h4>
+                                <p
+                                    style={{
+                                        margin: 0,
+                                        color: '#6b7280',
+                                        fontSize: '14px',
+                                    }}
+                                >
+                                    {message ||
+                                        'Click the button below to start an API call.'}
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={simulateApiCall}
+                                disabled={apiStatus === 'loading'}
+                                style={{
+                                    padding: '12px 24px',
+                                    backgroundColor:
+                                        apiStatus === 'loading'
+                                            ? '#9ca3af'
+                                            : '#3b82f6',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    cursor:
+                                        apiStatus === 'loading'
+                                            ? 'not-allowed'
+                                            : 'pointer',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                }}
+                            >
+                                {apiStatus === 'loading'
+                                    ? 'Loading...'
+                                    : 'Start API Call'}
+                            </button>
+
+                            <div
+                                style={{
+                                    padding: '12px',
+                                    backgroundColor: '#fef3c7',
+                                    borderRadius: '6px',
+                                    border: '1px solid #fbbf24',
+                                    fontSize: '13px',
+                                }}
+                            >
+                                <strong>💡 Try this:</strong> Click "Start API
+                                Call", then close the drawer. Wait 5 seconds and
+                                reopen - you'll see the API completed!
+                            </div>
+
+                            <div style={{ marginTop: '8px' }}>
+                                <h4
+                                    style={{
+                                        margin: '0 0 8px 0',
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Common Use Cases:
+                                </h4>
+                                <ul
+                                    style={{
+                                        margin: 0,
+                                        paddingLeft: '20px',
+                                        color: '#4b5563',
+                                    }}
+                                >
+                                    <li>
+                                        Chat widgets (keep receiving messages)
+                                    </li>
+                                    <li>Long file uploads</li>
+                                    <li>Background data sync</li>
+                                    <li>Form drafts (preserve input state)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </DrawerBody>
+                    <DrawerFooter direction="right">
+                        <DrawerClose>
+                            <button
+                                style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#f3f4f6',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Close (Drawer stays mounted)
+                            </button>
+                        </DrawerClose>
                     </DrawerFooter>
                 </DrawerContent>
             </DrawerPortal>
@@ -4652,6 +4833,22 @@ export const DrawerDemo = () => {
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     <MobileMultiSelectNoDrawerExample />
+                </div>
+            </div>
+
+            <div>
+                <h2 style={{ marginBottom: '8px' }}>
+                    Persistent Drawer (API Call Preservation)
+                </h2>
+                <p style={{ marginBottom: '16px', color: '#6b7280' }}>
+                    Use <code>isContentPersistent</code> to keep drawer content
+                    mounted even when closed. Perfect for chat widgets, API
+                    calls, or any UI state that should survive drawer closure.
+                    The API call continues in the background while the UI state
+                    is preserved.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    <PersistentDrawerExample />
                 </div>
             </div>
         </div>

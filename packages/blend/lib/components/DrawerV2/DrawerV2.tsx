@@ -74,8 +74,14 @@ DrawerV2Overlay.displayName = 'DrawerV2Overlay'
 export const DrawerV2Content = forwardRef<
     DrawerV2ContentRef,
     DrawerV2ContentProps
->(({ ...props }, ref) => {
-    return <VaulDrawer.Content ref={ref} {...props} />
+>(({ isContentPersistent = false, forceMount, ...props }, ref) => {
+    return (
+        <VaulDrawer.Content
+            ref={ref}
+            forceMount={isContentPersistent ? true : forceMount}
+            {...props}
+        />
+    )
 })
 DrawerV2Content.displayName = 'DrawerV2Content'
 

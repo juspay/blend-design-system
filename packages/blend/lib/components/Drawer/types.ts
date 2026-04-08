@@ -128,6 +128,12 @@ export type DrawerContentProps = {
      * @default false
      */
     fullScreen?: boolean
+    /**
+     * Keep the drawer content mounted in the DOM even when closed.
+     * Useful for preserving in-flight UI state (e.g. chat widgets, API-driven panels).
+     * @default false
+     */
+    isContentPersistent?: boolean
 }
 
 export type DrawerHeaderProps = {
