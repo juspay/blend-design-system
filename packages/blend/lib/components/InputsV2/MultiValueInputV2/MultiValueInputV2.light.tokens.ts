@@ -77,7 +77,7 @@ export const getMultiValueInputV2LightTokens = (
             },
             inputContainer: {
                 closeButton: {
-                    size: foundationTokens.unit[12],
+                    width: foundationTokens.unit[12],
                 },
                 offSet: 24,
                 fontSize: {
@@ -92,17 +92,25 @@ export const getMultiValueInputV2LightTokens = (
                 },
                 gap: foundationTokens.unit[8],
                 borderRadius: foundationTokens.unit[10],
-                padding: {
-                    x: {
-                        sm: foundationTokens.unit[10],
-                        md: foundationTokens.unit[12],
-                        lg: foundationTokens.unit[14],
-                    },
-                    y: {
-                        sm: foundationTokens.unit[5],
-                        md: foundationTokens.unit[7],
-                        lg: foundationTokens.unit[13],
-                    },
+                paddingTop: {
+                    sm: foundationTokens.unit[5],
+                    md: foundationTokens.unit[7],
+                    lg: foundationTokens.unit[13],
+                },
+                paddingRight: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[12],
+                    lg: foundationTokens.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationTokens.unit[5],
+                    md: foundationTokens.unit[7],
+                    lg: foundationTokens.unit[13],
+                },
+                paddingLeft: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[12],
+                    lg: foundationTokens.unit[14],
                 },
                 border: {
                     default: `1px solid ${foundationTokens.colors.gray[200]}`,
@@ -118,7 +126,13 @@ export const getMultiValueInputV2LightTokens = (
                     error: foundationTokens.colors.red[800],
                     disabled: foundationTokens.colors.gray[300],
                 },
-                placeholderColor: foundationTokens.colors.gray[400],
+                placeholderColor: {
+                    default: foundationTokens.colors.gray[400],
+                    focus: foundationTokens.colors.gray[400],
+                    hover: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.gray[400],
+                    disabled: foundationTokens.colors.gray[400],
+                },
                 backgroundColor: {
                     default: foundationTokens.colors.gray[0],
                     disabled: foundationTokens.colors.gray[50],
@@ -263,7 +277,7 @@ export const getMultiValueInputV2LightTokens = (
             },
             inputContainer: {
                 closeButton: {
-                    size: foundationTokens.unit[12],
+                    width: foundationTokens.unit[12],
                 },
                 offSet: 24,
                 fontSize: {
@@ -278,17 +292,25 @@ export const getMultiValueInputV2LightTokens = (
                 },
                 gap: foundationTokens.unit[8],
                 borderRadius: foundationTokens.unit[10],
-                padding: {
-                    x: {
-                        sm: foundationTokens.unit[10],
-                        md: foundationTokens.unit[12],
-                        lg: foundationTokens.unit[14],
-                    },
-                    y: {
-                        sm: foundationTokens.unit[4],
-                        md: foundationTokens.unit[6],
-                        lg: foundationTokens.unit[8],
-                    },
+                paddingTop: {
+                    sm: foundationTokens.unit[4],
+                    md: foundationTokens.unit[6],
+                    lg: foundationTokens.unit[8],
+                },
+                paddingRight: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[12],
+                    lg: foundationTokens.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationTokens.unit[4],
+                    md: foundationTokens.unit[6],
+                    lg: foundationTokens.unit[8],
+                },
+                paddingLeft: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[12],
+                    lg: foundationTokens.unit[14],
                 },
                 border: {
                     default: `1px solid ${foundationTokens.colors.gray[200]}`,
@@ -304,7 +326,13 @@ export const getMultiValueInputV2LightTokens = (
                     error: foundationTokens.colors.red[800],
                     disabled: foundationTokens.colors.gray[300],
                 },
-                placeholderColor: foundationTokens.colors.gray[400],
+                placeholderColor: {
+                    default: foundationTokens.colors.gray[400],
+                    focus: foundationTokens.colors.gray[600],
+                    hover: foundationTokens.colors.gray[400],
+                    error: foundationTokens.colors.gray[400],
+                    disabled: foundationTokens.colors.gray[400],
+                },
                 backgroundColor: {
                     default: foundationTokens.colors.gray[0],
                     disabled: foundationTokens.colors.gray[50],

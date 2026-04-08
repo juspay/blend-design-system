@@ -141,8 +141,8 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
             inputRef.current?.focus()
         }
 
-        const paddingX = multiValueInputTokens.inputContainer.padding.x[size]
-        const paddingY = multiValueInputTokens.inputContainer.padding.y[size]
+        const paddingX = multiValueInputTokens.inputContainer.paddingLeft[size]
+        const paddingY = multiValueInputTokens.inputContainer.paddingTop[size]
         const ic = multiValueInputTokens.inputContainer
 
         const borderToken = disabled
@@ -223,10 +223,8 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
                     <ContentContainer
                         $hasLeftSlot={!!leftSlot}
                         $hasRightSlot={!!rightSlot}
-                        $slotOffset={
-                            multiValueInputTokens.inputContainer.offSet
-                        }
-                        gap={multiValueInputTokens.inputContainer.gap}
+                        $slotOffset={ic.offSet}
+                        gap={ic.gap}
                     >
                         {leftSlot && (
                             <Block
@@ -234,14 +232,8 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
                                 display="flex"
                                 alignItems="center"
                                 justifyContent="center"
-                                width={
-                                    multiValueInputTokens.inputContainer
-                                        .leftSlot.width
-                                }
-                                height={
-                                    multiValueInputTokens.inputContainer
-                                        .leftSlot.height
-                                }
+                                width={ic.leftSlot.width}
+                                height={ic.leftSlot.height}
                                 flexShrink={0}
                                 style={{
                                     marginLeft: -ic.offSet,
@@ -294,7 +286,7 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
                                             size={
                                                 multiValueInputTokens
                                                     .inputContainer.closeButton
-                                                    .size
+                                                    .width
                                             }
                                             aria-hidden="true"
                                             style={{ pointerEvents: 'none' }}
@@ -310,27 +302,13 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
                             flexGrow={1}
                             minWidth="120px"
                             color={ic.color[labelState]}
-                            placeholderColor={
-                                multiValueInputTokens.inputContainer
-                                    .placeholderColor
-                            }
-                            fontSize={
-                                multiValueInputTokens.inputContainer.fontSize[
-                                    size
-                                ]
-                            }
-                            fontWeight={
-                                multiValueInputTokens.inputContainer.fontWeight[
-                                    size
-                                ]
-                            }
+                            placeholderColor={ic.placeholderColor[labelState]}
+                            fontSize={ic.fontSize[size]}
+                            fontWeight={ic.fontWeight[size]}
                             ref={inputRef}
                             paddingInlineStart={2}
                             paddingInlineEnd={2}
-                            borderRadius={
-                                multiValueInputTokens.inputContainer
-                                    .borderRadius
-                            }
+                            borderRadius={ic.borderRadius}
                             outline="none"
                             border="none"
                             value={value}
@@ -341,7 +319,7 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
                             disabled={disabled}
                             placeholderStyles={{
                                 transition: 'opacity 150ms ease-out',
-                                opacity: isFocused ? 0 : 1,
+                                color: ic.placeholderColor[labelState],
                             }}
                             onChange={(e) => {
                                 const newValue = e.target.value

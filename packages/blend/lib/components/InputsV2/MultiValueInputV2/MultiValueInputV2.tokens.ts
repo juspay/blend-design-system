@@ -27,27 +27,28 @@ export type MultiValueInputV2TokensType = {
         boxShadow: {
             [key in InputStateV2]: CSSObject['boxShadow']
         }
-        padding: {
-            x: {
-                [key in InputSizeV2]: CSSObject['padding']
-            }
-
-            y: {
-                [key in InputSizeV2]: CSSObject['padding']
-            }
-        }
+        paddingTop: { [key in InputSizeV2]: CSSObject['paddingTop'] }
+        paddingRight: { [key in InputSizeV2]: CSSObject['paddingRight'] }
+        paddingBottom: { [key in InputSizeV2]: CSSObject['paddingBottom'] }
+        paddingLeft: { [key in InputSizeV2]: CSSObject['paddingLeft'] }
         border: {
             [key in InputStateV2]: CSSObject['border']
         }
         color: {
             [key in InputStateV2]: CSSObject['color']
         }
-        placeholderColor: CSSObject['color']
+        placeholderColor: {
+            default: CSSObject['color']
+            focus: CSSObject['color']
+            hover: CSSObject['color']
+            error: CSSObject['color']
+            disabled: CSSObject['color']
+        }
         backgroundColor: {
             [key in InputStateV2]: CSSObject['backgroundColor']
         }
         closeButton: {
-            size: CSSObject['width']
+            width: CSSObject['width']
         }
         leftSlot: {
             width: CSSObject['width']
