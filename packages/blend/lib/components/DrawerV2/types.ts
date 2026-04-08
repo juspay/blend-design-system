@@ -29,14 +29,7 @@ export type DrawerV2OverlayProps = React.ComponentPropsWithoutRef<
 export type DrawerV2ContentRef = React.ComponentRef<typeof VaulDrawer.Content>
 export type DrawerV2ContentProps = React.ComponentPropsWithoutRef<
     typeof VaulDrawer.Content
-> & {
-    /**
-     * Keep the drawer content mounted in the DOM even when closed.
-     * (Maps to the underlying Radix/Vaul `forceMount` behavior.)
-     * @default false
-     */
-    isContentPersistent?: boolean
-}
+>
 
 export type DrawerV2TitleRef = React.ComponentRef<typeof VaulDrawer.Title>
 export type DrawerV2TitleProps = React.ComponentPropsWithoutRef<

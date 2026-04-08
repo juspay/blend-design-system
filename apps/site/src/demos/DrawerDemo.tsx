@@ -385,7 +385,6 @@ export const SideDrawerExample = () => {
                 <DrawerContent
                     direction="right"
                     width="500px"
-                    isContentPersistent
                     // offSet="20px"
                 >
                     <DrawerHeader>
@@ -1824,20 +1823,36 @@ export const PersistentDrawerExample = () => {
         'idle'
     )
     const [message, setMessage] = useState('')
+    const [open, setOpen] = useState(false)
+    const [data, setData] = useState<unknown>(null)
+    const [error, setError] = useState<string | null>(null)
 
     const simulateApiCall = () => {
         setApiStatus('loading')
         setMessage('API call started...')
+        setError(null)
 
-        // Simulate a long-running API call (5 seconds)
-        setTimeout(() => {
-            setApiStatus('success')
-            setMessage('API call completed successfully!')
-        }, 5000)
+        fetch('https://httpbin.org/delay/5')
+            .then((response) => response.json())
+            .then((json) => {
+                console.log('Response received after 5s:', json)
+                setData(json)
+                setApiStatus('success')
+                setMessage('API call completed successfully!')
+            })
+            .catch((e: unknown) => {
+                setApiStatus('idle')
+                setMessage('API call failed.')
+                setError(e instanceof Error ? e.message : String(e))
+            })
     }
 
     return (
-        <Drawer direction="right">
+        <Drawer
+            direction="right"
+            open={open}
+            onOpenChange={(next) => setOpen(!!next)}
+        >
             <DrawerTrigger>
                 <button
                     style={{
@@ -1857,21 +1872,20 @@ export const PersistentDrawerExample = () => {
                         cursor: 'pointer',
                     }}
                 >
-                    Persistent Drawer
+                    Persistent Drawer (fetch demo)
                 </button>
             </DrawerTrigger>
             <DrawerPortal>
                 <DrawerOverlay />
-                <DrawerContent
-                    direction="right"
-                    width="400px"
-                    isContentPersistent
-                >
+                <DrawerContent direction="right" width="400px">
                     <DrawerHeader>
-                        <DrawerTitle>API Call Preservation Demo</DrawerTitle>
+                        <DrawerTitle>
+                            API Call Preservation Demo (fetch)
+                        </DrawerTitle>
                         <DrawerDescription>
-                            Close this drawer during an API call - the call
-                            continues in the background!
+                            Start fetch, close drawer, reopen — result is shown
+                            because the drawer stays mounted and the fetch state
+                            lives outside the closing subtree.
                         </DrawerDescription>
                     </DrawerHeader>
                     <DrawerBody>
@@ -1912,6 +1926,36 @@ export const PersistentDrawerExample = () => {
                                 </p>
                             </div>
 
+                            <div
+                                style={{
+                                    padding: '12px',
+                                    backgroundColor: 'white',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e5e7eb',
+                                    fontSize: '13px',
+                                }}
+                            >
+                                <div
+                                    style={{ fontWeight: 600, marginBottom: 6 }}
+                                >
+                                    Latest response
+                                </div>
+                                <pre
+                                    style={{
+                                        margin: 0,
+                                        whiteSpace: 'pre-wrap',
+                                        wordBreak: 'break-word',
+                                        color: '#111827',
+                                    }}
+                                >
+                                    {error
+                                        ? `Error: ${error}`
+                                        : data
+                                          ? JSON.stringify(data, null, 2)
+                                          : 'No response yet.'}
+                                </pre>
+                            </div>
+
                             <button
                                 onClick={simulateApiCall}
                                 disabled={apiStatus === 'loading'}
@@ -1946,9 +1990,10 @@ export const PersistentDrawerExample = () => {
                                     fontSize: '13px',
                                 }}
                             >
-                                <strong>💡 Try this:</strong> Click "Start API
-                                Call", then close the drawer. Wait 5 seconds and
-                                reopen - you'll see the API completed!
+                                <strong>Try this:</strong> Click “Start API
+                                Call”, then close the drawer immediately. Reopen
+                                after a second — you’ll see the fetched JSON
+                                when it arrives.
                             </div>
 
                             <div style={{ marginTop: '8px' }}>
@@ -1988,7 +2033,7 @@ export const PersistentDrawerExample = () => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                Close (Drawer stays mounted)
+                                Close drawer
                             </button>
                         </DrawerClose>
                     </DrawerFooter>
@@ -4841,11 +4886,10 @@ export const DrawerDemo = () => {
                     Persistent Drawer (API Call Preservation)
                 </h2>
                 <p style={{ marginBottom: '16px', color: '#6b7280' }}>
-                    Use <code>isContentPersistent</code> to keep drawer content
-                    mounted even when closed. Perfect for chat widgets, API
-                    calls, or any UI state that should survive drawer closure.
-                    The API call continues in the background while the UI state
-                    is preserved.
+                    Keep the drawer component mounted (controlled{' '}
+                    <code>open</code> prop) and store fetch state outside the
+                    closing subtree. This preserves UI across close/open for
+                    chat widgets, long API calls, or drafts.
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     <PersistentDrawerExample />

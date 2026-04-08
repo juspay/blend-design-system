@@ -96,8 +96,6 @@ const DrawerV2Demo = () => {
     const [showOverlay, setShowOverlay] = useState(true)
     const [overlayOpacity, setOverlayOpacity] = useState<number>(60)
     const [contentOffset, setContentOffset] = useState<number>(16)
-    const [isContentPersistent, setIsContentPersistent] = useState(false)
-
     const [mountProbeCount, setMountProbeCount] = useState(0)
     const [mountProbeText, setMountProbeText] = useState('')
 
@@ -435,19 +433,6 @@ const DrawerV2Demo = () => {
                         </span>
                     </label>
 
-                    <label className="flex items-center gap-2 h-10 px-3 border border-gray-200 rounded-lg bg-gray-50">
-                        <input
-                            type="checkbox"
-                            checked={isContentPersistent}
-                            onChange={(e) =>
-                                setIsContentPersistent(e.target.checked)
-                            }
-                        />
-                        <span className="text-sm text-gray-700">
-                            keep content mounted
-                        </span>
-                    </label>
-
                     <div className="flex flex-col gap-1">
                         <div className="text-xs font-medium text-gray-700">
                             Overlay opacity
@@ -523,7 +508,6 @@ const DrawerV2Demo = () => {
                                 className={getContentClassName(direction)}
                                 style={contentStyle}
                                 tabIndex={-1}
-                                isContentPersistent={isContentPersistent}
                             >
                                 <div className={getHeaderClassName()}>
                                     <DrawerV2Title className="text-base font-semibold text-gray-900">
@@ -539,9 +523,16 @@ const DrawerV2Demo = () => {
                                 {variant === 'basic' && (
                                     <div className={getBodyClassName()}>
                                         <div className="text-sm text-gray-700">
-                                            Toggle “keep content mounted”, then
-                                            close and reopen the drawer to see
-                                            whether this state persists.
+                                            This demo shows that consumer-owned
+                                            state (like the input below) will
+                                            reset if the drawer subtree is
+                                            unmounted by the consumer, but you
+                                            can keep the drawer mounted by
+                                            always rendering it and controlling{' '}
+                                            <span className="font-medium">
+                                                open
+                                            </span>
+                                            .
                                         </div>
                                         <div className="mt-4 space-y-3">
                                             <div className="flex items-center gap-2">

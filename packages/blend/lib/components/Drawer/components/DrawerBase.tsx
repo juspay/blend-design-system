@@ -458,7 +458,6 @@ export const DrawerContent = forwardRef<
             offSet,
             mobileOffset,
             fullScreen = false,
-            isContentPersistent = false,
             'aria-label': ariaLabel,
             'aria-describedby': ariaDescribedBy,
             ...props
@@ -491,7 +490,6 @@ export const DrawerContent = forwardRef<
                 customMargin={offSet}
                 mobileOffset={mobileOffset}
                 fullScreen={fullScreen}
-                forceMount={isContentPersistent ? true : undefined}
                 role="dialog"
                 aria-modal="true"
                 aria-label={ariaLabel}
