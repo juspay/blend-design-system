@@ -596,6 +596,11 @@ const TableBody = forwardRef<
 
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
 
+        const hasAnySubtext = visibleColumns.some(
+            (col) => col.headerSubtext && col.headerSubtext.trim() !== ''
+        )
+        const headerHeight = hasAnySubtext ? '56px' : '46px'
+
         const globalLoadingState = isLoading || showSkeleton
         const { shouldShowSkeleton: globalShouldShowSkeleton } =
             getSkeletonState(globalLoadingState)
@@ -690,7 +695,7 @@ const TableBody = forwardRef<
                                       }
                                       $hasCustomBackground={hasCustomBackground}
                                       $isSticky={isExpanded}
-                                      $headerHeight="55px"
+                                      $headerHeight={headerHeight}
                                       role="row"
                                       aria-rowindex={index + 1}
                                       aria-selected={
