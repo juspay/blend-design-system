@@ -354,6 +354,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 }
                                 transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
                                 pointerEvents={isHovering ? 'auto' : 'none'}
+                                onMouseLeave={() => setIsHovering(false)}
                             >
                                 <SidebarV2Panel
                                     sidebarTopSlot={sidebarTopSlot}
