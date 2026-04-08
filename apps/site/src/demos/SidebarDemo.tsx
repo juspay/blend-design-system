@@ -142,6 +142,7 @@ import ProgressBarV2Demo from './ProgressBarV2Demo'
 import MultiValueInputV2Demo from './MultiValueInputV2Demo'
 import NumberInputV2Demo from './NumberInputV2Demo'
 import OTPInputV2Demo from './OTPInputV2Demo'
+import TextAreaV2Demo from './TextAreaV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -239,7 +240,8 @@ const SidebarDemo = () => {
         | 'multiValueInputV2'
         | 'numberInputV2'
         | 'otpInputV2'
-    >('otpInputV2')
+        | 'textAreaV2'
+    >('textAreaV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -600,6 +602,8 @@ const SidebarDemo = () => {
                 return <ProgressBarV2Demo />
             case 'otpInputV2':
                 return <OTPInputV2Demo />
+            case 'textAreaV2':
+                return <TextAreaV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -1010,6 +1014,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'textArea',
                     onClick: () => setActiveComponent('textArea'),
+                },
+                {
+                    label: 'Text Area V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textAreaV2',
+                    onClick: () => setActiveComponent('textAreaV2'),
                 },
                 {
                     label: 'Chat Input',
