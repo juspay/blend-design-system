@@ -4,10 +4,11 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 const TextAreaV2Demo = () => {
     const { theme } = useTheme()
+    const playgroundTextAreaRef = useRef<HTMLTextAreaElement>(null)
     const [playgroundValue, setPlaygroundValue] = useState(
         "This is a sample text area content that demonstrates the component's capabilities."
     )
@@ -18,6 +19,13 @@ const TextAreaV2Demo = () => {
     const [isDisabled, setIsDisabled] = useState(false)
     const [hasError, setHasError] = useState(false)
     const [showAutoFocus, setShowAutoFocus] = useState(false)
+
+    // `autoFocus` only applies on mount; focus when the switch turns on (skip if disabled)
+    useEffect(() => {
+        if (showAutoFocus && !isDisabled) {
+            playgroundTextAreaRef.current?.focus()
+        }
+    }, [showAutoFocus, isDisabled])
 
     // Options for selects
     const rowsOptions = [
@@ -101,6 +109,7 @@ const TextAreaV2Demo = () => {
                     >
                         <div className="w-full max-w-md">
                             <TextAreaV2
+                                ref={playgroundTextAreaRef}
                                 label="Playground Text Area"
                                 value={playgroundValue}
                                 onChange={(e) =>
@@ -109,7 +118,6 @@ const TextAreaV2Demo = () => {
                                 placeholder="Enter text here..."
                                 rows={playgroundRows}
                                 resize={playgroundResize}
-                                autoFocus={showAutoFocus}
                                 disabled={isDisabled}
                                 error={hasError}
                                 errorMessage={
