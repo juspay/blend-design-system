@@ -1,4 +1,11 @@
-import { forwardRef, useEffect, useRef, useState, useId } from 'react'
+import {
+    forwardRef,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    useId,
+} from 'react'
 import { StepperV2Props, StepperV2StepStatus } from '../stepperV2.types'
 import { scheduleLiveRegionAnnouncement } from '../utils'
 import Block from '../../Primitives/Block/Block'
@@ -13,9 +20,13 @@ const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
         )
         const stepRefs = useRef<(HTMLDivElement | null)[]>([])
 
-        const handleStepClick = (stepIndex: number) => {
-            onStepClick?.(stepIndex)
-        }
+        const handleStepClick = useCallback(
+            (stepIndex: number) => {
+                onStepClick?.(stepIndex)
+            },
+            [onStepClick]
+        )
+        const stepClickHandler = onStepClick ? handleStepClick : undefined
 
         const currentExplicitIndex = steps.findIndex(
             (s) => s.status === StepperV2StepStatus.CURRENT
@@ -102,7 +113,7 @@ const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
                         isCurrent={index === derivedIndex}
                         isFirst={index === 0}
                         isLast={index === steps.length - 1}
-                        onClick={handleStepClick}
+                        onClick={stepClickHandler}
                         onSubstepClick={handleSubstepClick}
                         clickable={clickable}
                         onKeyDown={handleKeyDown}

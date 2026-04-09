@@ -25,7 +25,7 @@ export type StepperV2Props = {
     onSubstepClick?: (stepId: number, substepIndex: number) => void
     clickable?: boolean
     stepperType?: StepperV2Type
-}
+} & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'id'>
 
 export type SubStep = {
     id: number

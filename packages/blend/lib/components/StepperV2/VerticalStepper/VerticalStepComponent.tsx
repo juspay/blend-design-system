@@ -2,10 +2,9 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { StepperV2TokensType } from '../stepperV2.tokens'
 import { Check, Lock, ChevronDown } from 'lucide-react'
 import Text from '../../Text/Text'
-import { toPixels } from '../../../global-utils/GlobalUtils'
+import { composeRefs, toPixels } from '../../../global-utils/GlobalUtils'
 import VerticalLineV2 from './VerticalLineV2'
-import { FOUNDATION_THEME } from '../../../tokens'
-import { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 import { StepperV2StepProps, StepperV2StepStatus } from '../stepperV2.types'
 import Block from '../../Primitives/Block/Block'
 import { getStepState } from '../utils'
@@ -35,6 +34,12 @@ export const VerticalStepComponent = forwardRef<
             useResponsiveTokens<StepperV2TokensType>('STEPPERV2')
         const verticalLineRef = useRef<HTMLDivElement>(null)
         const descriptionRef = useRef<HTMLDivElement>(null)
+        /** Parent step focus target; substeps are not DOM descendants of this node, so bubbling + currentTarget cannot move focus here */
+        const stepContentRef = useRef<HTMLDivElement | null>(null)
+        const setStepContentRef = useMemo(
+            () => composeRefs(stepContentRef, ref),
+            [ref]
+        )
         const [verticalLineHeight, setVerticalLineHeight] = useState<number>(0)
         const [descriptionHeight, setDescriptionHeight] = useState<number>(0)
 
@@ -45,16 +50,25 @@ export const VerticalStepComponent = forwardRef<
         )
 
         useEffect(() => {
-            if (verticalLineRef.current || descriptionRef.current) {
+            if (step.isExpanded !== undefined) {
+                setIsExpanded(step.isExpanded)
+            }
+        }, [step.isExpanded])
+
+        useEffect(() => {
+            if (!isExpanded) {
+                setVerticalLineHeight(0)
+                setDescriptionHeight(0)
+                return
+            }
+            const animationFrameId = requestAnimationFrame(() => {
                 setVerticalLineHeight(
                     verticalLineRef.current?.clientHeight || 0
                 )
                 setDescriptionHeight(descriptionRef.current?.clientHeight || 0)
-            }
-            if (step.isExpanded) {
-                setIsExpanded(true)
-            }
-        }, [step.isExpanded])
+            })
+            return () => cancelAnimationFrame(animationFrameId)
+        }, [isExpanded, hasSubsteps, step.substeps?.length])
 
         const stepState = getStepState(step, isCompleted, isCurrent)
         const isClickable = clickable && !step.disabled && onClick
@@ -125,9 +139,7 @@ export const VerticalStepComponent = forwardRef<
                     case 'ArrowRight':
                         event.preventDefault()
                         setFocusedSubstepIndex(null)
-                        if (ref && typeof ref !== 'function') {
-                            ref.current?.focus()
-                        }
+                        stepContentRef.current?.focus()
                         return
                     case 'Enter':
                     case ' ':
@@ -289,7 +301,10 @@ export const VerticalStepComponent = forwardRef<
                         alignItems="center"
                         justifyContent="center"
                         role="presentation"
-                        paddingY={6}
+                        paddingY={
+                            stepperTokens.container.step.circle[stepState]
+                                .default.paddingTop
+                        }
                     >
                         <Block
                             width={
@@ -328,20 +343,6 @@ export const VerticalStepComponent = forwardRef<
                                       }
                                     : undefined
                             }
-                            _focus={
-                                isClickable
-                                    ? {
-                                          outline:
-                                              stepperTokens.container.step
-                                                  .circle[stepState].focus
-                                                  .outline,
-                                          outlineOffset:
-                                              stepperTokens.container.step
-                                                  .circle[stepState].focus
-                                                  .outlineOffset,
-                                      }
-                                    : undefined
-                            }
                         >
                             {renderStepIcon()}
                         </Block>
@@ -368,16 +369,31 @@ export const VerticalStepComponent = forwardRef<
                                 justifyContent="center"
                             >
                                 <Block
-                                    paddingY={4}
+                                    paddingY={
+                                        stepperTokens.container.subConnector.dot
+                                            .paddingTop
+                                    }
                                     display="flex"
                                     alignItems="center"
                                     justifyContent="center"
                                 >
                                     <Block
-                                        width={8}
-                                        height={8}
-                                        border={`1px solid ${FOUNDATION_THEME.colors.primary[500]}`}
-                                        borderRadius={'50%'}
+                                        width={
+                                            stepperTokens.container.subConnector
+                                                .dot.width
+                                        }
+                                        height={
+                                            stepperTokens.container.subConnector
+                                                .dot.height
+                                        }
+                                        border={
+                                            stepperTokens.container.subConnector
+                                                .dot.border
+                                        }
+                                        borderRadius={
+                                            stepperTokens.container.subConnector
+                                                .dot.borderRadius
+                                        }
                                     />
                                 </Block>
                                 <VerticalLineV2
@@ -396,17 +412,35 @@ export const VerticalStepComponent = forwardRef<
                 <Block
                     display="flex"
                     flexDirection="column"
-                    padding={8}
+                    paddingTop={
+                        stepperTokens.container.title.text[stepState].default
+                            .paddingTop
+                    }
+                    paddingRight={
+                        stepperTokens.container.title.text[stepState].default
+                            .paddingRight
+                    }
+                    paddingBottom={
+                        stepperTokens.container.title.text[stepState].default
+                            .paddingBottom
+                    }
+                    paddingLeft={
+                        stepperTokens.container.title.text[stepState].default
+                            .paddingLeft
+                    }
                     style={{ flex: 1 }}
                 >
                     <Block
                         display="flex"
                         justifyContent="space-between"
-                        gap={8}
+                        gap={
+                            stepperTokens.container.title.text[stepState]
+                                .default.gap
+                        }
                         alignItems="center"
                     >
                         <Block
-                            ref={ref}
+                            ref={setStepContentRef}
                             display="flex"
                             flexDirection="column"
                             gap={2}
@@ -457,10 +491,17 @@ export const VerticalStepComponent = forwardRef<
                                     <Text
                                         id={stepDescriptionId}
                                         truncate={true}
-                                        fontSize={12}
-                                        fontWeight={500}
+                                        fontSize={
+                                            stepperTokens.container.description
+                                                .text.fontSize
+                                        }
+                                        fontWeight={
+                                            stepperTokens.container.description
+                                                .text.fontWeight
+                                        }
                                         color={
-                                            FOUNDATION_THEME.colors.gray[500]
+                                            stepperTokens.container.description
+                                                .text.color
                                         }
                                         as="span"
                                         style={{
@@ -505,7 +546,10 @@ export const VerticalStepComponent = forwardRef<
                                 flexShrink={0}
                             >
                                 <ChevronDown
-                                    size={16}
+                                    size={
+                                        stepperTokens.container.subConnector
+                                            .expander.width
+                                    }
                                     style={{
                                         transform: isExpanded
                                             ? 'rotate(180deg)'
@@ -513,7 +557,10 @@ export const VerticalStepComponent = forwardRef<
                                         transition: 'transform 120ms ease',
                                         cursor: 'pointer',
                                     }}
-                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                    color={
+                                        stepperTokens.container.subConnector
+                                            .expander.icon.color
+                                    }
                                     aria-hidden="true"
                                 />
                             </Block>
@@ -548,22 +595,28 @@ export const VerticalStepComponent = forwardRef<
                                         step.disabled || subStep.disabled
 
                                     let textColor =
-                                        FOUNDATION_THEME.colors.gray[500]
+                                        stepperTokens.container.subConnector
+                                            .text.default.color
                                     if (isSubstepDisabled) {
                                         textColor =
-                                            FOUNDATION_THEME.colors.gray[300]
+                                            stepperTokens.container.subConnector
+                                                .text.disabled.color
                                     } else if (isSubstepCompleted) {
                                         textColor =
-                                            FOUNDATION_THEME.colors.primary[500]
+                                            stepperTokens.container.subConnector
+                                                .text.completed.color
                                     } else if (isSubstepCurrent) {
                                         textColor =
-                                            FOUNDATION_THEME.colors.primary[500]
+                                            stepperTokens.container.subConnector
+                                                .text.current.color
                                     } else if (isSubstepPending) {
                                         textColor =
-                                            FOUNDATION_THEME.colors.gray[400]
+                                            stepperTokens.container.subConnector
+                                                .text.pending.color
                                     } else if (isSubstepSkipped) {
                                         textColor =
-                                            FOUNDATION_THEME.colors.gray[400]
+                                            stepperTokens.container.subConnector
+                                                .text.skipped.color
                                     }
 
                                     return (
@@ -629,12 +682,16 @@ export const VerticalStepComponent = forwardRef<
                                                         : undefined
                                                 }
                                                 style={{
-                                                    cursor: clickable
-                                                        ? 'pointer'
-                                                        : 'default',
+                                                    cursor:
+                                                        clickable &&
+                                                        !isSubstepDisabled
+                                                            ? 'pointer'
+                                                            : 'default',
                                                 }}
                                                 onClick={
-                                                    clickable && onSubstepClick
+                                                    clickable &&
+                                                    onSubstepClick &&
+                                                    !isSubstepDisabled
                                                         ? (
                                                               e: React.MouseEvent
                                                           ) => {
@@ -728,18 +785,12 @@ export const VerticalStepComponent = forwardRef<
                                                         }
                                                         case 'ArrowLeft':
                                                         case 'ArrowRight': {
-                                                            // Move back to parent step
+                                                            // Move back to parent step (currentTarget is the substep — do not use it here)
                                                             event.preventDefault()
                                                             setFocusedSubstepIndex(
                                                                 null
                                                             )
-                                                            if (
-                                                                ref &&
-                                                                typeof ref !==
-                                                                    'function'
-                                                            ) {
-                                                                ref.current?.focus()
-                                                            }
+                                                            stepContentRef.current?.focus()
                                                             break
                                                         }
                                                     }

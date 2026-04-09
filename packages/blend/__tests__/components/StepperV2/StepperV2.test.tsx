@@ -70,7 +70,7 @@ describe('StepperV2', () => {
                 />
             )
 
-            await user.click(screen.getByRole('button', { name: 'Alpha' }))
+            await user.click(screen.getByRole('button', { name: /Alpha/ }))
             expect(onStepClick).toHaveBeenCalledWith(0)
         })
 

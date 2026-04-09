@@ -24,6 +24,10 @@ export type StepperV2TokensType = {
                         transition: CSSObject['transition']
                         outline: CSSObject['outline']
                         outlineOffset: CSSObject['outlineOffset']
+                        paddingTop: CSSObject['paddingTop']
+                        paddingRight: CSSObject['paddingRight']
+                        paddingBottom: CSSObject['paddingBottom']
+                        paddingLeft: CSSObject['paddingLeft']
                     }
                 }
             }
@@ -51,6 +55,64 @@ export type StepperV2TokensType = {
                 }
             }
         }
+        subConnector: {
+            line: {
+                active: {
+                    default: {
+                        color: CSSObject['color']
+                        height: CSSObject['height']
+                    }
+                }
+            }
+            dot: {
+                border: CSSObject['border']
+                borderRadius: CSSObject['borderRadius']
+                height: CSSObject['height']
+                width: CSSObject['width']
+                paddingTop: CSSObject['paddingTop']
+                paddingRight: CSSObject['paddingRight']
+                paddingBottom: CSSObject['paddingBottom']
+                paddingLeft: CSSObject['paddingLeft']
+            }
+            expander: {
+                icon: {
+                    color: CSSObject['color']
+                }
+                width: CSSObject['width']
+            }
+            text: {
+                default: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                disabled: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                completed: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                current: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                pending: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+                skipped: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                }
+            }
+        }
         title: {
             text: {
                 [key in StepperV2StepStatus]: {
@@ -59,8 +121,19 @@ export type StepperV2TokensType = {
                         fontSize: CSSObject['fontSize']
                         fontWeight: CSSObject['fontWeight']
                         gap: CSSObject['gap']
+                        paddingTop: CSSObject['paddingTop']
+                        paddingRight: CSSObject['paddingRight']
+                        paddingBottom: CSSObject['paddingBottom']
+                        paddingLeft: CSSObject['paddingLeft']
                     }
                 }
+            }
+        }
+        description: {
+            text: {
+                color: CSSObject['color']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
             }
         }
     }

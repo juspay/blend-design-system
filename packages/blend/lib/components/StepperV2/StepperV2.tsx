@@ -20,19 +20,18 @@ const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
         const filteredRest = filterBlockedProps(rest)
         const handleStepClick = useCallback(
             (stepIndex: number) => {
-                if (onStepClick) {
-                    onStepClick(stepIndex)
-                }
+                onStepClick?.(stepIndex)
             },
             [onStepClick]
         )
+        const resolvedOnStepClick = onStepClick ? handleStepClick : undefined
 
         if (stepperType === StepperV2Type.VERTICAL) {
             return (
                 <VerticalStepperV2
                     ref={ref}
                     steps={steps}
-                    onStepClick={handleStepClick}
+                    onStepClick={resolvedOnStepClick}
                     onSubstepClick={onSubstepClick}
                     clickable={clickable}
                     {...filteredRest}
@@ -44,8 +43,7 @@ const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
             <HorizontalStepperV2
                 ref={ref}
                 steps={steps}
-                onStepClick={handleStepClick}
-                onSubstepClick={onSubstepClick}
+                onStepClick={resolvedOnStepClick}
                 clickable={clickable}
                 {...filteredRest}
             />

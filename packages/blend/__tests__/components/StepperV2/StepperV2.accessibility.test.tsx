@@ -193,7 +193,9 @@ describe('StepperV2 Accessibility', () => {
                 />
             )
 
-            const lastStep = screen.getByRole('button', { name: 'Step 3' })
+            // Exposed name is the labelled title (aria-labelledby), not the verbose aria-label
+            // ("Step 3 of Step 3, pending") — match the computed accessible name.
+            const lastStep = screen.getByRole('button', { name: /^Step 3$/ })
             lastStep.focus()
             await user.keyboard(' ')
             expect(onStepClick).toHaveBeenCalledWith(2)

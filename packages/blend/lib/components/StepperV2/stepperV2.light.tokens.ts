@@ -4,6 +4,12 @@ import { ResponsiveStepperV2Tokens } from './stepperV2.tokens'
 export const getStepperV2LightTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveStepperV2Tokens => {
+    let circlePadding = {
+        paddingTop: '6px',
+        paddingRight: '6px',
+        paddingBottom: '6px',
+        paddingLeft: '6px',
+    }
     return {
         sm: {
             container: {
@@ -21,6 +27,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor:
@@ -32,6 +39,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor:
@@ -43,6 +51,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: `2px solid ${foundationToken.colors.gray[400]}`,
                                 outlineOffset: '2px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor:
@@ -54,6 +63,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                         current: {
@@ -67,6 +77,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor:
@@ -78,6 +89,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor:
@@ -89,6 +101,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: `2px solid ${foundationToken.colors.gray[400]}`,
                                 outlineOffset: '2px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor:
@@ -100,6 +113,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                         pending: {
@@ -112,6 +126,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor:
@@ -123,6 +138,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -133,6 +149,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: `2px solid ${foundationToken.colors.gray[400]}`,
                                 outlineOffset: '2px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -143,6 +160,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                         disabled: {
@@ -155,6 +173,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -165,6 +184,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -175,6 +195,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -185,6 +206,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                         skipped: {
@@ -198,6 +220,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor:
@@ -209,6 +232,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor:
@@ -220,6 +244,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: `2px solid ${foundationToken.colors.gray[400]}`,
                                 outlineOffset: '2px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor:
@@ -231,6 +256,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                     },
@@ -303,6 +329,64 @@ export const getStepperV2LightTokens = (
                         },
                     },
                 },
+                subConnector: {
+                    line: {
+                        active: {
+                            default: {
+                                color: foundationToken.colors.gray[300],
+                                height: '1px',
+                            },
+                        },
+                    },
+                    dot: {
+                        border: `1px solid ${foundationToken.colors.primary[500]}`,
+                        borderRadius: '50%',
+                        height: '8px',
+                        width: '8px',
+                        paddingTop: '4px',
+                        paddingRight: '4px',
+                        paddingBottom: '4px',
+                        paddingLeft: '4px',
+                    },
+                    expander: {
+                        icon: {
+                            color: foundationToken.colors.gray[600],
+                        },
+                        width: '16px',
+                    },
+                    text: {
+                        default: {
+                            color: foundationToken.colors.gray[500],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        disabled: {
+                            color: foundationToken.colors.gray[300],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        completed: {
+                            color: foundationToken.colors.gray[500],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        current: {
+                            color: foundationToken.colors.gray[500],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        pending: {
+                            color: foundationToken.colors.gray[400],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        skipped: {
+                            color: foundationToken.colors.gray[400],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                    },
+                },
                 title: {
                     text: {
                         completed: {
@@ -311,24 +395,40 @@ export const getStepperV2LightTokens = (
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[800],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[800],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[800],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
                         current: {
@@ -337,24 +437,40 @@ export const getStepperV2LightTokens = (
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
                         pending: {
@@ -363,24 +479,40 @@ export const getStepperV2LightTokens = (
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[400],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[400],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[400],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
                         disabled: {
@@ -389,24 +521,40 @@ export const getStepperV2LightTokens = (
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[300],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[300],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[300],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
                         skipped: {
@@ -415,26 +563,49 @@ export const getStepperV2LightTokens = (
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
                                 gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
+                    },
+                },
+                description: {
+                    text: {
+                        color: foundationToken.colors.gray[500],
+                        fontSize: '12px',
+                        fontWeight: 500,
                     },
                 },
             },
@@ -455,6 +626,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor:
@@ -466,6 +638,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor:
@@ -477,6 +650,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: `2px solid ${foundationToken.colors.gray[400]}`,
                                 outlineOffset: '2px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor:
@@ -488,6 +662,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                         current: {
@@ -501,6 +676,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor:
@@ -512,6 +688,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor:
@@ -523,6 +700,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: `2px solid ${foundationToken.colors.gray[400]}`,
                                 outlineOffset: '2px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor:
@@ -534,6 +712,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                         pending: {
@@ -546,6 +725,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor:
@@ -557,6 +737,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -567,6 +748,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: `2px solid ${foundationToken.colors.gray[400]}`,
                                 outlineOffset: '2px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -577,6 +759,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                         disabled: {
@@ -589,6 +772,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -599,6 +783,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -609,6 +794,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor: foundationToken.colors.gray[0],
@@ -619,6 +805,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                         skipped: {
@@ -632,6 +819,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             hover: {
                                 backgroundColor:
@@ -643,6 +831,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                             focus: {
                                 backgroundColor:
@@ -654,6 +843,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: `2px solid ${foundationToken.colors.gray[400]}`,
                                 outlineOffset: '2px',
+                                ...circlePadding,
                             },
                             disabled: {
                                 backgroundColor:
@@ -665,6 +855,7 @@ export const getStepperV2LightTokens = (
                                 transition: 'all 0.2s ease-in-out',
                                 outline: 'none',
                                 outlineOffset: '0px',
+                                ...circlePadding,
                             },
                         },
                     },
@@ -737,6 +928,64 @@ export const getStepperV2LightTokens = (
                         },
                     },
                 },
+                subConnector: {
+                    line: {
+                        active: {
+                            default: {
+                                color: foundationToken.colors.gray[300],
+                                height: '1px',
+                            },
+                        },
+                    },
+                    dot: {
+                        border: `1px solid ${foundationToken.colors.primary[500]}`,
+                        borderRadius: '50%',
+                        height: '8px',
+                        width: '8px',
+                        paddingTop: '4px',
+                        paddingRight: '4px',
+                        paddingBottom: '4px',
+                        paddingLeft: '4px',
+                    },
+                    expander: {
+                        icon: {
+                            color: foundationToken.colors.gray[600],
+                        },
+                        width: '16px',
+                    },
+                    text: {
+                        default: {
+                            color: foundationToken.colors.gray[500],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        disabled: {
+                            color: foundationToken.colors.gray[300],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        completed: {
+                            color: foundationToken.colors.gray[500],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        current: {
+                            color: foundationToken.colors.gray[500],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        pending: {
+                            color: foundationToken.colors.gray[400],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                        skipped: {
+                            color: foundationToken.colors.gray[400],
+                            fontSize: '12px',
+                            fontWeight: 500,
+                        },
+                    },
+                },
                 title: {
                     text: {
                         completed: {
@@ -744,25 +993,41 @@ export const getStepperV2LightTokens = (
                                 color: foundationToken.colors.gray[800],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[800],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[800],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[800],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
                         current: {
@@ -770,25 +1035,41 @@ export const getStepperV2LightTokens = (
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
                         pending: {
@@ -796,25 +1077,41 @@ export const getStepperV2LightTokens = (
                                 color: foundationToken.colors.gray[400],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[400],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[400],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[400],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
                         disabled: {
@@ -822,25 +1119,41 @@ export const getStepperV2LightTokens = (
                                 color: foundationToken.colors.gray[300],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[300],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[300],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[300],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
                         skipped: {
@@ -848,27 +1161,50 @@ export const getStepperV2LightTokens = (
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             hover: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             focus: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                             disabled: {
                                 color: foundationToken.colors.gray[600],
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                gap: 5,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
                             },
                         },
+                    },
+                },
+                description: {
+                    text: {
+                        color: foundationToken.colors.gray[500],
+                        fontSize: '12px',
+                        fontWeight: 500,
                     },
                 },
             },

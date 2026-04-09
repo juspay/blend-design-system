@@ -204,20 +204,6 @@ export const HorizontalStepComponent = forwardRef<
                                   }
                                 : undefined
                         }
-                        _focus={
-                            isClickable
-                                ? {
-                                      outline:
-                                          stepperTokens.container.step.circle[
-                                              stepState
-                                          ].focus.outline,
-                                      outlineOffset:
-                                          stepperTokens.container.step.circle[
-                                              stepState
-                                          ].focus.outlineOffset,
-                                  }
-                                : undefined
-                        }
                     >
                         {renderStepIcon()}
                     </Block>

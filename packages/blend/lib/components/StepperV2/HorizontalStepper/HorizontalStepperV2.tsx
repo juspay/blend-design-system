@@ -1,4 +1,11 @@
-import React, { forwardRef, useRef, useState, useEffect, useId } from 'react'
+import React, {
+    forwardRef,
+    useRef,
+    useState,
+    useEffect,
+    useId,
+    useCallback,
+} from 'react'
 import Block from '../../Primitives/Block/Block'
 
 import { StepperV2Props, StepperV2StepStatus } from '../stepperV2.types'
@@ -6,7 +13,16 @@ import { scheduleLiveRegionAnnouncement } from '../utils'
 import { HorizontalStepComponent } from './HorizontalStepComponent'
 
 const HorizontalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
-    ({ steps, onStepClick, clickable, ...htmlProps }, ref) => {
+    (
+        {
+            steps,
+            onStepClick,
+            onSubstepClick: _onSubstepClick,
+            clickable,
+            ...htmlProps
+        },
+        ref
+    ) => {
         const stepperInstanceId = useId().replace(/:/g, '-')
 
         const currentExplicitIndex = steps.findIndex(
@@ -20,9 +36,13 @@ const HorizontalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
         )
         const stepRefs = useRef<(HTMLDivElement | null)[]>([])
 
-        const handleStepClick = (stepIndex: number) => {
-            onStepClick?.(stepIndex)
-        }
+        const handleStepClick = useCallback(
+            (stepIndex: number) => {
+                onStepClick?.(stepIndex)
+            },
+            [onStepClick]
+        )
+        const stepClickHandler = onStepClick ? handleStepClick : undefined
 
         const handleKeyDown = (
             event: React.KeyboardEvent,
@@ -98,7 +118,7 @@ const HorizontalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
                         isCurrent={index === derivedIndex}
                         isFirst={index === 0}
                         isLast={index === steps.length - 1}
-                        onClick={handleStepClick}
+                        onClick={stepClickHandler}
                         clickable={clickable}
                         onKeyDown={handleKeyDown}
                         stepperInstanceId={stepperInstanceId}

@@ -26,7 +26,7 @@ Create a token-driven stepper for multi-step flows that supports:
 
 - **Root**: Flex row container (`data-stepper="stepper"`)
 - **Step column**: Connector line segment, status circle (check, lock, or index), title (and optional description / tooltip)
-- **Connectors**: Line tokens differ for first/last and inactive vs active where applicable
+- **Connectors**: Connector line styling is driven by connector line tokens (e.g., first/last segment and inactive state) as used by `StepperV2`
 
 ### Vertical
 
@@ -88,7 +88,7 @@ export type StepperV2Step = {
 } & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'id'>
 ```
 
-Additional HTML attributes may be spread onto the root container, except `className`, `style`, and `id` (the numeric `id` on each step is the domain id, not the DOM `id` attribute).
+Note: the numeric `id` on each step is a domain identifier only and is not used as the DOM `id` attribute.
 
 ## Final Token Type (summary)
 
