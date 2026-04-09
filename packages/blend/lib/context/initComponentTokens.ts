@@ -68,6 +68,7 @@ import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.t
 import { getCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
 import { getProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
 import { getMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import { getUnitInputV2Tokens } from '../components/InputsV2/UnitInputV2/UnitInputV2.token'
 
 const initTokens = (
     componentTokens: ComponentTokenType,
@@ -223,6 +224,9 @@ const initTokens = (
         MULTI_VALUE_INPUT_V2:
             componentTokens.MULTI_VALUE_INPUT_V2 ??
             getMultiValueInputV2Tokens(foundationTokens, theme),
+        UNIT_INPUT_V2:
+            componentTokens.UNIT_INPUT_V2 ??
+            getUnitInputV2Tokens(foundationTokens, theme),
     }
 }
 

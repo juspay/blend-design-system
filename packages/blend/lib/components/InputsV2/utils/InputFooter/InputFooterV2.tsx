@@ -47,14 +47,22 @@ const InputFooterV2 = ({
                         {errorMessage}
                     </Text>
                 )}
-                {hintText && !error && (
+                {hintText && (
                     <Text
                         id={hintTextId || hintId}
                         data-element="hint-text"
                         data-id={hintText || 'hint-text'}
                         fontWeight={tokens?.hintText?.fontWeight[size]}
                         fontSize={tokens?.hintText?.fontSize[size]}
-                        color={tokens?.hintText?.color?.default}
+                        lineHeight={addPxToValue(
+                            tokens?.hintText?.lineHeight[size]
+                        )}
+                        color={
+                            error
+                                ? (tokens?.hintText?.color?.error ??
+                                  tokens?.errorMessage?.color)
+                                : tokens?.hintText?.color?.default
+                        }
                     >
                         {hintText}
                     </Text>

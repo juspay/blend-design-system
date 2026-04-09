@@ -140,6 +140,7 @@ import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 import CodeEditorV2Demo from './CodeEditorV2Demo'
 import ProgressBarV2Demo from './ProgressBarV2Demo'
 import MultiValueInputV2Demo from './MultiValueInputV2Demo'
+import UnitInputV2Demo from './UnitInputV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -235,7 +236,8 @@ const SidebarDemo = () => {
         | 'popoverV2'
         | 'progressBarV2'
         | 'multiValueInputV2'
-    >('multiValueInputV2')
+        | 'unitInputV2'
+    >('unitInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -458,6 +460,8 @@ const SidebarDemo = () => {
                 return <SearchInputDemo />
             case 'unitInput':
                 return <UnitInputDemo />
+            case 'unitInputV2':
+                return <UnitInputV2Demo />
             case 'numberInput':
                 return <NumberInputDemo />
             case 'textArea':
@@ -956,6 +960,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'unitInput',
                     onClick: () => setActiveComponent('unitInput'),
+                },
+                {
+                    label: 'Unit Input V2',
+                    leftSlot: (
+                        <Weight style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'unitInputV2',
+                    onClick: () => setActiveComponent('unitInputV2'),
                 },
                 {
                     label: 'Number Input',
