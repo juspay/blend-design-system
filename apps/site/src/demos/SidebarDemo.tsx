@@ -139,6 +139,7 @@ import TabsV2Demo from './TabsV2Demo'
 import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 import CodeEditorV2Demo from './CodeEditorV2Demo'
 import ProgressBarV2Demo from './ProgressBarV2Demo'
+import MultiValueInputV2Demo from './MultiValueInputV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -231,12 +232,10 @@ const SidebarDemo = () => {
         | 'tooltipV2'
         | 'breadcrumbV2'
         | 'codeEditorV2'
-        | 'singleSelectV2'
         | 'popoverV2'
-        | 'codeEditorV2'
-        | 'breadcrumbV2'
         | 'progressBarV2'
-    >('progressBarV2')
+        | 'multiValueInputV2'
+    >('multiValueInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -545,6 +544,8 @@ const SidebarDemo = () => {
                 return <PopoverV2Demo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'multiValueInputV2':
+                return <MultiValueInputV2Demo />
             case 'stepper':
                 return <StepperDemo />
             case 'topbar':
@@ -1002,6 +1003,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'multiValueInput',
                     onClick: () => setActiveComponent('multiValueInput'),
+                },
+                {
+                    label: 'Multi Value Input V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiValueInputV2',
+                    onClick: () => setActiveComponent('multiValueInputV2'),
                 },
                 {
                     label: 'Key Value Pair',

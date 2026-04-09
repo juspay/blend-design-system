@@ -85,6 +85,7 @@ const TextInputAutofillTestV2 = () => {
                             autoComplete="current-password"
                             required
                             hintText="Test password autofill with TextInputV2"
+                            helpIconText="Help"
                         />
 
                         {/* Username - Another common autofill field */}

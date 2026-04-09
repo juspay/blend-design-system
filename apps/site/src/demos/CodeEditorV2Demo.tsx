@@ -528,6 +528,9 @@ def process_transactions(transactions):
                         </p>
                         <CodeEditorV2
                             diff
+                            isDiffUnchangedCollapsed={true}
+                            diffContextLines={3}
+                            diffExpandChunk={20}
                             originalValue={`function getPaymentPriority(order) {
   const priorities = [];
   if (order.paymentMethod === 'UPI') {
@@ -555,6 +558,79 @@ def process_transactions(transactions):
                             }}
                             language="javascript"
                             height="300px"
+                        />
+                    </div>
+
+                    {/* Large file diff (collapsed unchanged regions) */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Large File Diff (GitHub-style expand)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            For large files, unchanged regions are hidden and
+                            can be expanded from above/below or from the center
+                            control—similar to GitHub.
+                        </p>
+                        <CodeEditorV2
+                            diff
+                            isDiffUnchangedCollapsed={true}
+                            diffContextLines={3}
+                            diffExpandChunk={15}
+                            originalValue={(() => {
+                                const header = Array.from(
+                                    { length: 18 },
+                                    (_, i) => `import { m${i} } from './m${i}'`
+                                ).join('\n')
+                                const middle = Array.from(
+                                    { length: 50 },
+                                    (_, i) => `processStep(${i})`
+                                ).join('\n')
+                                const footer = Array.from(
+                                    { length: 18 },
+                                    (_, i) => `// footer ${i}`
+                                ).join('\n')
+                                return [
+                                    header,
+                                    '',
+                                    'const legacy = fetchLegacy()',
+                                    middle,
+                                    '',
+                                    'export const VERSION = 1',
+                                    footer,
+                                ].join('\n')
+                            })()}
+                            value={(() => {
+                                const header = Array.from(
+                                    { length: 18 },
+                                    (_, i) => `import { m${i} } from './m${i}'`
+                                ).join('\n')
+                                const middle = Array.from(
+                                    { length: 50 },
+                                    (_, i) => `processStep(${i})`
+                                ).join('\n')
+                                const footer = Array.from(
+                                    { length: 18 },
+                                    (_, i) => `// footer ${i}`
+                                ).join('\n')
+                                return [
+                                    header,
+                                    '',
+                                    'const modern = fetchModern()',
+                                    middle,
+                                    '',
+                                    'export const VERSION = 2',
+                                    footer,
+                                ].join('\n')
+                            })()}
+                            header={{
+                                showHeader: true,
+                                title: 'large-file.ts — diff',
+                                leftSlot: <FileCode size={16} />,
+                                rightSlot: null,
+                                showCopyButton: true,
+                            }}
+                            language="typescript"
+                            height="360px"
                         />
                     </div>
 

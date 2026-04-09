@@ -381,10 +381,7 @@ describe('TextInputV2 Component', () => {
                     label="API Key"
                     value=""
                     onChange={() => {}}
-                    helpIconText={{
-                        text: 'Find your key in settings',
-                        onClick: () => {},
-                    }}
+                    helpIconText="Find your key in settings"
                 />
             )
             expect(screen.getByRole('textbox')).toBeInTheDocument()
@@ -421,7 +418,7 @@ describe('TextInputV2 Component', () => {
                     size={InputSizeV2.MD}
                     required
                     hintText="Hint"
-                    helpIconText={{ text: 'Help', onClick: () => {} }}
+                    helpIconText="Help"
                     error={{ show: false, message: '' }}
                     leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     name="complete"

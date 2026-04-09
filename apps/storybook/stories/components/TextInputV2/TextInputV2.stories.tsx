@@ -496,10 +496,7 @@ export const WithLabelsAndHints: Story = {
                 label="Full name"
                 subLabel="As it appears on your ID"
                 hintText="Enter your first and last name"
-                helpIconText={{
-                    text: 'This will be used for official documentation',
-                    onClick: () => {},
-                }}
+                helpIconText="This will be used for official documentation"
                 placeholder="John Doe"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}

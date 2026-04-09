@@ -73,6 +73,15 @@ export type CodeEditorV2Props = {
     originalValue?: string
     /** Render diffs inline (single column) instead of side-by-side. */
     renderSideBySide?: boolean
+    /**
+     * When true (default), Monaco hides unchanged regions in diff mode with a
+     * GitHub-like expand control.
+     */
+    isDiffUnchangedCollapsed?: boolean
+    /** Context lines shown around edits when unchanged regions are hidden. Defaults to 3. */
+    diffContextLines?: number
+    /** Lines revealed per expand action when unchanged regions are hidden. Defaults to 20. */
+    diffExpandChunk?: number
 } & CodeEditorV2Dimensions &
     Omit<
         React.HTMLAttributes<HTMLDivElement>,
@@ -114,4 +123,10 @@ export type MonacoEditorWrapperProps = {
     originalValue?: string
     /** Render diffs inline (single column) instead of side-by-side. */
     renderSideBySide?: boolean
+    /** Hide unchanged regions in diff mode (GitHub-style). */
+    isDiffUnchangedCollapsed?: boolean
+    /** Context lines shown around edits when unchanged regions are hidden. */
+    diffContextLines?: number
+    /** Lines revealed per expand action when unchanged regions are hidden. */
+    diffExpandChunk?: number
 } & MonacoEditorWrapperDimensions
