@@ -50,6 +50,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
             isDiffUnchangedCollapsed = true,
             diffContextLines = 3,
             diffExpandChunk = 20,
+            maxHeight,
         },
         ref
     ) => {
@@ -283,6 +284,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                     }
                     backgroundColor={tokens.body.backgroundColor}
                     overflow="auto"
+                    style={{ maxHeight: maxHeight || 'none' }}
                 >
                     {isDiffMode && diffLines?.length ? (
                         <CodeBlockDiffView

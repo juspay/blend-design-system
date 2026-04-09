@@ -63,4 +63,10 @@ export type CodeBlockProps = {
      * or end (GitHub-style). Defaults to 20.
      */
     diffExpandChunk?: number
+    /**
+     * Maximum height for the code content area. When content exceeds this height,
+     * the code area scrolls while the header remains fixed.
+     * Accepts CSS values like '300px', '20rem', '50vh', etc.
+     */
+    maxHeight?: string
 }

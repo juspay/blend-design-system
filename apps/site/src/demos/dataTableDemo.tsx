@@ -2749,6 +2749,105 @@ const DataTableDemo = () => {
                     </div>
                 </div>
 
+                {/* Demo: nested DataTable inside a single expanded row */}
+                {userRow.id === 1 &&
+                    (() => {
+                        type AuditRow = {
+                            id: string
+                            event: string
+                            value: string
+                            timestamp: string
+                        }
+
+                        const auditData: AuditRow[] = Array.from(
+                            { length: 18 },
+                            (_, i) => ({
+                                id: `audit-${i + 1}`,
+                                event: `Audit log #${i + 1}`,
+                                value:
+                                    userRow.role === 'Admin'
+                                        ? 'Privileged access'
+                                        : 'Standard access',
+                                timestamp: new Date(
+                                    Date.now() - i * 60 * 60 * 1000
+                                ).toLocaleString(),
+                            })
+                        )
+
+                        const auditColumns: ColumnDefinition<AuditRow>[] = [
+                            {
+                                field: 'event',
+                                header: 'Event',
+                                type: ColumnType.TEXT,
+                                minWidth: '180px',
+                            },
+                            {
+                                field: 'value',
+                                header: 'Value',
+                                type: ColumnType.TEXT,
+                                minWidth: '160px',
+                            },
+                            {
+                                field: 'timestamp',
+                                header: 'Timestamp',
+                                type: ColumnType.TEXT,
+                                minWidth: '220px',
+                            },
+                        ]
+
+                        return (
+                            <div
+                                style={{
+                                    marginTop: '16px',
+                                    padding: '16px',
+                                    backgroundColor: 'white',
+                                    borderRadius: '6px',
+                                    border: '1px solid #e5e7eb',
+                                }}
+                            >
+                                <strong
+                                    style={{
+                                        color: '#6b7280',
+                                        fontSize: '12px',
+                                        textTransform: 'uppercase',
+                                    }}
+                                >
+                                    Nested DataTable Demo
+                                </strong>
+                                <div style={{ marginTop: '12px' }}>
+                                    <DataTable
+                                        data={
+                                            auditData as unknown as Record<
+                                                string,
+                                                unknown
+                                            >[]
+                                        }
+                                        columns={
+                                            auditColumns as unknown as ColumnDefinition<
+                                                Record<string, unknown>
+                                            >[]
+                                        }
+                                        idField="id"
+                                        title="Audit log"
+                                        description=""
+                                        showHeader={false}
+                                        showToolbar={false}
+                                        showFooter={false}
+                                        enableSearch={false}
+                                        enableFiltering={false}
+                                        enableAdvancedFilter={false}
+                                        enableRowExpansion={false}
+                                        enableRowSelection={false}
+                                        enableColumnManager={false}
+                                        enableColumnReordering={false}
+                                        enableInlineEdit={false}
+                                        tableBodyHeight={180}
+                                    />
+                                </div>
+                            </div>
+                        )
+                    })()}
+
                 {userRow.role === 'Admin' && (
                     <div
                         style={{
