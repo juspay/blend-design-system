@@ -1,4 +1,4 @@
-import { PageMetadata } from '@/app/docs/utils/getFileContent'
+import type { PageMetadata } from '@/app/docs/utils/getFileContent'
 
 export interface DocsPageProps {
     metadata: PageMetadata

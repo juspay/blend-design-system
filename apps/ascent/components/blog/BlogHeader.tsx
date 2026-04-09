@@ -22,7 +22,6 @@ export function BlogHeader() {
                         fill
                         priority
                         className="object-contain opacity-40 dark:invert transition-transform duration-300000 ease-linear group-hover:rotate-360"
-                        aria-hidden
                         draggable={false}
                     />
                 </div>

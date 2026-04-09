@@ -71,7 +71,7 @@ const ComponentPreview = ({
                     onValueChange={setActiveTab}
                 >
                     <Tabs.List className="w-full pt-4 pb-2.5 px-5 flex items-center gap-1">
-                        <div className="px-1 py-0.5 bg-muted rounded-xl flex item gap-3">
+                        <div className="px-1 py-0.5 bg-muted rounded-xl flex items-center gap-3">
                             {tabs.map((tab) => (
                                 <Tabs.Trigger
                                     key={tab.id}

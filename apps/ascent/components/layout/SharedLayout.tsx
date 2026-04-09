@@ -1,5 +1,5 @@
 import React from 'react'
-import { GlobalKeyboardNavigationProvider } from '../index'
+import { GlobalKeyboardNavigationProvider } from '../Navigation/GlobalKeyboardNavigation'
 import type { DocItem } from '@/docs/utils'
 import { TOCItem } from '../Navigation/TableOfContents'
 import { DynamicSnackbar } from '../ui/DynamicSnackBar'
