@@ -34,6 +34,7 @@ export function SidebarItem({
         <Link
             href={href}
             onClick={onLinkClick}
+            data-sidebar-item={item.path}
             className={cn(
                 'flex shrink-0 items-center rounded-lg py-2 px-3 text-base transition-all duration-120 tracking-[-0.32px] capitalize',
                 isActive

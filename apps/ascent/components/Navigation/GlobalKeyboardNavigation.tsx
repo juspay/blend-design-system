@@ -320,13 +320,6 @@ export const GlobalKeyboardNavigationProvider = ({
         setFocusedElement(null) // Reset focus when changing zones
     }, [currentZone])
 
-    // Auto-focus first item when zone changes
-    useEffect(() => {
-        if (navigableItems.length > 0 && !focusedElement) {
-            setFocusedElement(navigableItems[0])
-        }
-    }, [navigableItems, focusedElement])
-
     // Global keyboard event handler
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -351,7 +344,15 @@ export const GlobalKeyboardNavigationProvider = ({
                 const nextIndex = e.shiftKey
                     ? (currentIndex - 1 + zones.length) % zones.length
                     : (currentIndex + 1) % zones.length
-                setCurrentZone(zones[nextIndex])
+                const nextZone = zones[nextIndex]
+                setCurrentZone(nextZone)
+                // Focus first item in the new zone after items are collected
+                setTimeout(() => {
+                    const items = collectNavigableItems(nextZone)
+                    if (items.length > 0) {
+                        setFocusedElement(items[0])
+                    }
+                }, 0)
                 return
             }
 

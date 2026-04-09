@@ -1,3 +1,5 @@
+import TableOfContentsClient from './TableOfContentsClient'
+
 export interface TOCItem {
     id: string
     text: string
@@ -9,8 +11,6 @@ interface TableOfContentsProps {
     className?: string
     maxLevel?: number
 }
-
-import TableOfContentsClient from './TableOfContentsClient'
 
 export default function TableOfContents({
     items,
