@@ -8,7 +8,6 @@
 
 import { isValidHexColor } from './color-scale'
 import type {
-    BrandConfig,
     ValidationResult,
     ValidationError,
     ValidationWarning,

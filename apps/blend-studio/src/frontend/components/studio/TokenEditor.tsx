@@ -1,9 +1,7 @@
-'use client'
-
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Palette, Radius, Type, Save, RotateCcw } from 'lucide-react'
-import type { BrandConfig, ColorOverrides } from '@blend-design/token-engine'
-import { generateColorScale, PRESETS } from '@blend-design/token-engine'
+import type { BrandConfig } from '@blend-design/token-engine'
+import { generateColorScale } from '@blend-design/token-engine'
 
 interface TokenEditorProps {
     brandConfig: BrandConfig

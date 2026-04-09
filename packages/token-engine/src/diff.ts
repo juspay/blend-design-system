@@ -5,12 +5,7 @@
  * Used by the CLI `diff` command and the dashboard diff view.
  */
 
-import type {
-    BrandConfig,
-    TokenDiff,
-    RadiusOverrides,
-    ShadowOverrides,
-} from './types'
+import type { BrandConfig, TokenDiff } from './types'
 
 /**
  * Diff two brand configs and return a list of changes.

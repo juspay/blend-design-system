@@ -30,6 +30,7 @@ export class RoleService {
                         components: ['read', 'write', 'delete'],
                         npm: ['read', 'write', 'sync'],
                         system: ['read', 'write', 'configure'],
+                        studio: ['read', 'write'],
                     },
                 },
                 editor: {
@@ -40,6 +41,7 @@ export class RoleService {
                         components: ['read', 'write'],
                         npm: ['read', 'sync'],
                         system: ['read'],
+                        studio: ['read', 'write'],
                     },
                 },
                 viewer: {
@@ -50,6 +52,7 @@ export class RoleService {
                         components: ['read'],
                         npm: ['read'],
                         system: ['read'],
+                        studio: ['read'],
                     },
                 },
             }

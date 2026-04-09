@@ -1,30 +1,35 @@
 {
     "compilerOptions": {
-        "target": "ES2017",
-        "lib": ["dom", "dom.iterable", "esnext"],
-        "allowJs": true,
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
         "skipLibCheck": true,
-        "strict": true,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "module": "esnext",
         "moduleResolution": "bundler",
-        "resolveJsonModule": true,
+        "allowImportingTsExtensions": true,
         "isolatedModules": true,
-        "jsx": "preserve",
-        "incremental": true,
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ],
+        "moduleDetection": "force",
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "baseUrl": ".",
         "paths": {
-            "@/*": ["./*"],
-            "@/frontend/*": ["./src/frontend/*"],
-            "@/backend/*": ["./src/backend/*"],
-            "@/shared/*": ["./src/shared/*"]
+            "@/*": ["./src/*"],
+            "@blend-design/token-engine": ["../../packages/token-engine/src"],
+            "@juspay/blend-design-system": ["../../packages/blend/lib/main.ts"]
         }
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-    "exclude": ["node_modules"]
+    "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "src/frontend/app/**",
+        "src/frontend/components/**",
+        "src/frontend/contexts/**"
+    ]
 }

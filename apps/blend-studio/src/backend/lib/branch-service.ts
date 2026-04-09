@@ -17,11 +17,11 @@ import type {
     BranchListOptions,
     BranchListResult,
     BranchDiff,
-} from '@blend-design/token-engine'
+} from '@blend-design/token-engine/server'
 import {
     type BrandConfig,
     validateBrandConfig,
-} from '@blend-design/token-engine'
+} from '@blend-design/token-engine/server'
 
 const BRANCHES_COLLECTION = 'branches'
 const VERSIONS_SUBCOLLECTION = 'versions'
@@ -203,13 +203,20 @@ export async function createBranch(
         photoURL?: string
     }
 ): Promise<Branch> {
-    const db = getDb()
     const brandId = input.brandId
     const slug = input.slug || brandId.split('/')[1] || 'main'
 
-    const validation = validateBrandConfig(
-        input.brandConfig || { brandId, name: input.name, version: '1.0.0' }
-    )
+    const defaultBrandConfig: BrandConfig = {
+        brandId,
+        name: input.name,
+        version: '1.0.0',
+    }
+
+    const brandConfig: BrandConfig = input.brandConfig
+        ? { ...defaultBrandConfig, ...input.brandConfig }
+        : defaultBrandConfig
+
+    const validation = validateBrandConfig(brandConfig)
     if (!validation.valid) {
         throw new Error(
             `Invalid brand config: ${validation.errors.map((e) => e.message).join(', ')}`
@@ -229,11 +236,7 @@ export async function createBranch(
         description: input.description,
         status: 'draft',
         visibility: input.visibility || 'team',
-        brandConfig: input.brandConfig || {
-            brandId,
-            name: input.name,
-            version: '1.0.0',
-        },
+        brandConfig,
         parentBranch: input.parentBranch || null,
         forkedFrom: input.forkFrom || null,
         owner: {

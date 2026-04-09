@@ -1,4 +1,4 @@
-import { auth } from './firebase'
+import { auth } from '@/lib/firebase'
 
 /**
  * Performs an authenticated fetch request by automatically adding the Firebase auth token

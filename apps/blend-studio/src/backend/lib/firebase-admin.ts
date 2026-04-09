@@ -9,6 +9,7 @@ export function initializeAdmin() {
         // For now, we'll use environment variables
         const projectId =
             process.env.FIREBASE_PROJECT_ID ||
+            process.env.VITE_FIREBASE_PROJECT_ID ||
             process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
 
         if (!projectId) {
@@ -21,6 +22,7 @@ export function initializeAdmin() {
         try {
             const storageBucket =
                 process.env.FIREBASE_STORAGE_BUCKET ||
+                process.env.VITE_FIREBASE_STORAGE_BUCKET ||
                 process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
                 `${projectId}.appspot.com`
 
@@ -28,7 +30,8 @@ export function initializeAdmin() {
                 projectId,
                 storageBucket,
                 credential: admin.credential.cert({
-                    projectId: process.env.FIREBASE_PROJECT_ID || '',
+                    projectId:
+                        process.env.FIREBASE_PROJECT_ID || projectId || '',
                     clientEmail: process.env.FIREBASE_CLIENT_EMAIL || '',
                     privateKey:
                         process.env.FIREBASE_PRIVATE_KEY?.replace(

@@ -1,6 +1,10 @@
-import { NextRequest } from 'next/server'
 import { getAdminAuth } from './firebase-admin'
 import { roleService } from './role-service'
+
+/** Subset of Fetch / Next request shape used for auth header reads. */
+export type AuthHeaderSource = {
+    headers: { get(name: string): string | null }
+}
 
 export interface AuthenticatedUser {
     uid: string
@@ -9,22 +13,22 @@ export interface AuthenticatedUser {
     permissions: Record<string, string[]>
 }
 
-export async function authenticateRequest(
-    request: NextRequest
+export async function authenticateBearer(
+    authorizationHeader: string | null
 ): Promise<AuthenticatedUser | null> {
     try {
-        const authHeader = request.headers.get('authorization')
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        if (
+            !authorizationHeader ||
+            !authorizationHeader.startsWith('Bearer ')
+        ) {
             return null
         }
 
-        const token = authHeader.substring(7)
+        const token = authorizationHeader.substring(7)
         const adminAuth = getAdminAuth()
 
-        // Verify the Firebase token
         const decodedToken = await adminAuth.verifyIdToken(token)
 
-        // Get user role and permissions
         const userRole = await roleService.getUserRole(decodedToken.uid)
         if (!userRole) {
             return null
@@ -42,6 +46,12 @@ export async function authenticateRequest(
     }
 }
 
+export async function authenticateRequest(
+    request: AuthHeaderSource
+): Promise<AuthenticatedUser | null> {
+    return authenticateBearer(request.headers.get('authorization'))
+}
+
 export function hasPermission(
     user: AuthenticatedUser,
     resource: string,
@@ -54,7 +64,10 @@ export function hasPermission(
 }
 
 export function requirePermission(resource: string, action: string) {
-    return async (request: NextRequest, user: AuthenticatedUser | null) => {
+    return async (
+        _request: AuthHeaderSource,
+        user: AuthenticatedUser | null
+    ) => {
         if (!user) {
             return new Response(
                 JSON.stringify({ error: 'Authentication required' }),

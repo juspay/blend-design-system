@@ -1,8 +1,6 @@
-'use client'
-
 import React from 'react'
-import Link from 'next/link'
-import { GitBranch, Plus, Eye, Clock, Tag, MoreVertical } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { GitBranch, Plus, Eye, Clock, Tag } from 'lucide-react'
 import type { Branch } from '@blend-design/token-engine'
 
 interface BranchListProps {
@@ -81,7 +79,8 @@ function BranchCard({ branch }: { branch: Branch }) {
 
     return (
         <Link
-            href={`/studio/editor/${encodeURIComponent(branch.brandId)}`}
+            to="/studio/editor/$branchId"
+            params={{ branchId: branch.brandId }}
             className="block bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-sm transition-all"
         >
             <div className="flex items-start justify-between">
@@ -137,7 +136,8 @@ function BranchCard({ branch }: { branch: Branch }) {
 
                 <div className="flex items-center gap-2 ml-4">
                     <Link
-                        href={`/studio/preview/${encodeURIComponent(branch.brandId)}`}
+                        to="/studio/preview/$branchId"
+                        params={{ branchId: branch.brandId }}
                         onClick={(e) => e.stopPropagation()}
                         className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
                         title="Preview"

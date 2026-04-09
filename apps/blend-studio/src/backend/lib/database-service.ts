@@ -4,7 +4,6 @@ import {
     SQL,
     DatabaseUser,
     DatabaseComponent,
-    DatabaseActivityLog,
 } from './database'
 import {
     ComponentInfo,
@@ -640,32 +639,6 @@ export class DatabaseService {
             lastModified:
                 dbComponent.last_modified?.toISOString() ||
                 new Date().toISOString(),
-        }
-    }
-
-    private mapDatabaseActivityToActivity(
-        dbActivity: DatabaseActivityLog
-    ): Activity {
-        return {
-            id: dbActivity.id,
-            type: dbActivity.action as Activity['type'],
-            timestamp: dbActivity.timestamp.toISOString(),
-            details:
-                typeof dbActivity.details?.details === 'string'
-                    ? dbActivity.details.details
-                    : undefined,
-            component:
-                typeof dbActivity.details?.component === 'string'
-                    ? dbActivity.details.component
-                    : undefined,
-            version:
-                typeof dbActivity.details?.version === 'string'
-                    ? dbActivity.details.version
-                    : undefined,
-            user:
-                typeof dbActivity.details?.user === 'string'
-                    ? dbActivity.details.user
-                    : undefined,
         }
     }
 
