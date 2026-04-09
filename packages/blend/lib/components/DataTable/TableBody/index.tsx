@@ -123,6 +123,9 @@ const StyledTableCell = styled.td<{
 const ExpandedCell = styled.td`
     padding: ${FOUNDATION_THEME.unit[16]};
     background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
 `
 
 const ExpandedRow = styled(TableRow)`
