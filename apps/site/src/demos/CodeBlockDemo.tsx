@@ -6,6 +6,7 @@ import {
     CodeBlock,
     CodeBlockVariant,
     DiffLineType,
+    type DiffLine,
 } from '../../../../packages/blend/lib/components/CodeBlock'
 import {
     Tag,
@@ -213,7 +214,48 @@ fibonacci n
   | otherwise = fibonacci (n - 1) + fibonacci (n - 2)`,
     }
 
+    /** Long unified diff: two change hunks with lots of unchanged lines (GitHub-style expand bars). */
+    const buildGithubStyleDiffDemo = (): DiffLine[] => {
+        const lines: DiffLine[] = []
+        for (let i = 0; i < 8; i++) {
+            lines.push({
+                content: `import { module${i} } from './mod-${i}';`,
+                type: DiffLineType.UNCHANGED,
+            })
+        }
+        lines.push({
+            content: 'const legacy = fetchLegacy();',
+            type: DiffLineType.REMOVED,
+        })
+        lines.push({
+            content: 'const modern = fetchModern();',
+            type: DiffLineType.ADDED,
+        })
+        for (let i = 0; i < 28; i++) {
+            lines.push({
+                content: `  processStep(${i});`,
+                type: DiffLineType.UNCHANGED,
+            })
+        }
+        lines.push({
+            content: 'export const VERSION = 1;',
+            type: DiffLineType.REMOVED,
+        })
+        lines.push({
+            content: 'export const VERSION = 2;',
+            type: DiffLineType.ADDED,
+        })
+        for (let i = 0; i < 8; i++) {
+            lines.push({
+                content: `// footer ${i}`,
+                type: DiffLineType.UNCHANGED,
+            })
+        }
+        return lines
+    }
+
     const [customCode, setCustomCode] = useState(codeExamples.payment)
+    const [maxHeight, setMaxHeight] = useState('')
 
     // Options for selects
     const variantOptions = [
@@ -382,6 +424,15 @@ fibonacci n
                         />
                     </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <TextInput
+                            label="Max Height"
+                            value={maxHeight}
+                            onChange={(e) => setMaxHeight(e.target.value)}
+                            placeholder="e.g. 300px, 20rem, 50vh"
+                        />
+                    </div>
+
                     <div className="flex items-center gap-6">
                         <Switch
                             label="Show Header"
@@ -426,6 +477,7 @@ fibonacci n
                             showLineNumbers={showLineNumbers}
                             showHeader={showHeader}
                             header={headerText}
+                            maxHeight={maxHeight || undefined}
                             diffLines={
                                 variant === CodeBlockVariant.DIFF
                                     ? [
@@ -477,6 +529,55 @@ fibonacci n
                             }
                         />
                     </form>
+                </div>
+            </div>
+
+            {/* Max Height with Scroll */}
+            <div className="space-y-6" id="max-height">
+                <h2 className="text-2xl font-bold">Max Height with Scroll</h2>
+                <p className="text-gray-600">
+                    CodeBlock supports a maxHeight prop to limit the visible
+                    code area. The header stays fixed while the content scrolls.
+                </p>
+
+                <div className="space-y-8">
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Long Code with max height (300px)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            The header remains fixed while code content scrolls
+                        </p>
+                        <CodeBlock
+                            code={codeExamples.rust}
+                            header="transaction.rs"
+                            maxHeight="300px"
+                        />
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Haskell Code (250px max height)
+                        </h3>
+                        <CodeBlock
+                            code={codeExamples.haskell}
+                            header="Payment.hs"
+                            maxHeight="250px"
+                        />
+                    </div>
+
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Diff with max height (200px)
+                        </h3>
+                        <CodeBlock
+                            code=""
+                            variant={CodeBlockVariant.DIFF}
+                            header="large-file.ts"
+                            diffLines={buildGithubStyleDiffDemo()}
+                            maxHeight="200px"
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -605,6 +706,30 @@ fibonacci n
                                 },
                                 { content: '}', type: DiffLineType.UNCHANGED },
                             ]}
+                        />
+                    </div>
+
+                    {/* GitHub-style diff: expand above / below hunks */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">
+                            Diff — GitHub-style expand (above &amp; below hunks)
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            Long files collapse unchanged regions. The bar uses
+                            compact controls: load context from above or below,
+                            or expand the whole section from the center (similar
+                            to GitHub). Expanded sections stay open without an
+                            extra collapse row.
+                        </p>
+                        <CodeBlock
+                            code=""
+                            variant={CodeBlockVariant.DIFF}
+                            language="typescript"
+                            header="large-file.ts"
+                            diffLines={buildGithubStyleDiffDemo()}
+                            diffContextLines={3}
+                            diffExpandChunk={15}
+                            isDiffUnchangedCollapsed={true}
                         />
                     </div>
                 </div>

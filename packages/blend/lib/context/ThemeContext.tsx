@@ -182,11 +182,19 @@ import {
     getCodeEditorV2Tokens,
     ResponsiveCodeEditorV2Tokens,
 } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import {
+    getProgressBarV2Tokens,
+    ResponsiveProgressBarV2Tokens,
+} from '../components/ProgressBarV2/progressBarV2.tokens'
 
 import {
     getBreadcrumbV2Tokens,
     ResponsiveBreadcrumbV2Tokens,
 } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
+import {
+    ResponsiveMultiValueInputV2Tokens,
+    getMultiValueInputV2Tokens,
+} from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -253,6 +261,8 @@ export type ComponentTokenType = {
     TABSV2?: ResponsiveTabsV2Tokens
     BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
     CODEEDITORV2?: ResponsiveCodeEditorV2Tokens
+    PROGRESS_BARV2?: ResponsiveProgressBarV2Tokens
+    MULTI_VALUE_INPUT_V2?: ResponsiveMultiValueInputV2Tokens
 }
 
 type ThemeContextType = {
@@ -333,6 +343,11 @@ const ThemeContext = createContext<ThemeContextType>({
         TABSV2: getTabsV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CODEEDITORV2: getCodeEditorV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        PROGRESS_BARV2: getProgressBarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        MULTI_VALUE_INPUT_V2: getMultiValueInputV2Tokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

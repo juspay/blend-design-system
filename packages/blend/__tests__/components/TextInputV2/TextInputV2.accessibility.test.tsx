@@ -489,10 +489,7 @@ describe('TextInputV2 Accessibility', () => {
                     label="Complete Test"
                     subLabel="Additional context"
                     hintText="Helpful hint"
-                    helpIconText={{
-                        text: 'Tooltip information',
-                        onClick: () => {},
-                    }}
+                    helpIconText="Tooltip information"
                     placeholder="Enter value"
                     value=""
                     onChange={() => {}}

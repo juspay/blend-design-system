@@ -12,10 +12,7 @@ export type TextInputV2Props = {
         message?: string
     }
     hintText?: string
-    helpIconText?: {
-        text: string
-        onClick?: () => void
-    }
+    helpIconText?: string
     leftSlot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']

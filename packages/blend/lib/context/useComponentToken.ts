@@ -63,6 +63,8 @@ import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.tok
 import { ResponsiveTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import { ResponsiveProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
+import { ResponsiveMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -120,9 +122,9 @@ export const useComponentToken = (
     | ResponsiveSwitchV2Tokens
     | ResponsiveSingleSelectV2Tokens
     | ResponsiveMultiSelectV2Tokens
-    | ResponsiveTextInputV2Tokens
     | ResponsiveChartV2Tokens
     | ResponsiveAvatarV2Tokens
+    | ResponsiveTextInputV2Tokens
     | ResponsiveTimelineTokens
     | ResponsiveCheckboxV2Tokens
     | ResponsiveKeyValuePairV2Tokens
@@ -131,6 +133,8 @@ export const useComponentToken = (
     | ResponsivePopoverV2Tokens
     | ResponsiveTabsV2Tokens
     | ResponsiveBreadcrumbV2Tokens
+    | ResponsiveProgressBarV2Tokens
+    | ResponsiveMultiValueInputV2Tokens
     | ResponsiveCodeEditorV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -264,6 +268,10 @@ export const useComponentToken = (
             return componentTokens.BREADCRUMBV2
         case 'CODEEDITORV2':
             return componentTokens.CODEEDITORV2
+        case 'PROGRESS_BARV2':
+            return componentTokens.PROGRESS_BARV2
+        case 'MULTI_VALUE_INPUT_V2':
+            return componentTokens.MULTI_VALUE_INPUT_V2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
