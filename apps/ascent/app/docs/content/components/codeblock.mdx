@@ -184,6 +184,19 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'maxHeight',
+                hintText:
+                    'Optional CSS value that sets the maximum height of the code content area. When the code exceeds this height, the content scrolls vertically while the header remains fixed. Accepts any valid CSS dimension such as "300px", "20rem", or "50vh". When not provided, the code block expands to fit all content without scrolling.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS max-height value (e.g. "300px", "20rem", "50vh")',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
