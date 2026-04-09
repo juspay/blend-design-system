@@ -77,6 +77,9 @@ importers:
             '@next/mdx':
                 specifier: ^15.3.4
                 version: 15.5.9(@mdx-js/loader@3.1.1)(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.3))
+            '@phosphor-icons/react':
+                specifier: ^2.1.10
+                version: 2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             '@radix-ui/react-accordion':
                 specifier: ^1.2.3
                 version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -107,6 +110,9 @@ importers:
             '@types/mdx':
                 specifier: ^2.0.13
                 version: 2.0.13
+            clsx:
+                specifier: ^2.1.1
+                version: 2.1.1
             cmdk:
                 specifier: ^1.1.1
                 version: 1.1.1(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -152,6 +158,12 @@ importers:
             sugar-high:
                 specifier: ^0.9.3
                 version: 0.9.5
+            svg-dotted-map:
+                specifier: ^2.1.0
+                version: 2.1.0
+            tailwind-merge:
+                specifier: ^3.5.0
+                version: 3.5.0
             three:
                 specifier: ^0.182.0
                 version: 0.182.0
@@ -8164,6 +8176,7 @@ packages:
                 integrity: sha512-ICsMM1Wk8xSGMowkOmPrzo2Fgmfo4bMHLNX6ytHjajRJUqvHOw/TFapQ+QG75c3X/tTDDhOSRPGC52dDbNM8FQ==,
             }
         engines: { node: '>=16' }
+        deprecated: This package is no longer maintained. For the JavaScript API, please use @conventional-changelog/git-client instead.
         hasBin: true
 
     glob-parent@5.1.2:
@@ -8185,6 +8198,7 @@ packages:
             {
                 integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==,
             }
+        deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
         hasBin: true
 
     glob@11.1.0:
@@ -8193,6 +8207,7 @@ packages:
                 integrity: sha512-vuNwKSaKiqm7g0THUBu2x7ckSs3XJLXE+2ssL7/MfTGPLLcrJQ/4Uq1CjPTtO5cCIiRxqvN6Twy1qOwhL0Xjcw==,
             }
         engines: { node: 20 || >=22 }
+        deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
         hasBin: true
 
     global-directory@4.0.1:
@@ -10377,6 +10392,7 @@ packages:
                 integrity: sha512-oI6D1zbbsh6JzzZFDCSHnnx6Qpvd1fSkVJu/5d8uluqnxzuoqtodVZjYvNovooznUq8udSAiKp7MbwlfZ8Gm6w==,
             }
         engines: { node: ^18.18.0 || ^19.8.0 || >= 20.0.0 }
+        deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
         hasBin: true
         peerDependencies:
             '@opentelemetry/api': ^1.1.0
@@ -10401,6 +10417,7 @@ packages:
                 integrity: sha512-jwOXTz/bo0Pvlf20FSb6VXVeWRssA2vbvq9SdrOPEg9x8E1B27C2rQtvriAn600o9hH61kjrVRexEffv3JybuA==,
             }
         engines: { node: ^18.18.0 || ^19.8.0 || >= 20.0.0 }
+        deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
         hasBin: true
         peerDependencies:
             '@opentelemetry/api': ^1.1.0
@@ -12178,10 +12195,23 @@ packages:
         peerDependencies:
             react: '>=17.0'
 
+    svg-dotted-map@2.1.0:
+        resolution:
+            {
+                integrity: sha512-4RnunTLPFMyQGnkeqL7BfFT+M/9disoFfDVZBq2eOfRrMgBQBmYbu09QcH/SAxez4JRmqM0UYSgo9u/cpkeykA==,
+            }
+        deprecated: This package has been renamed to piri. Please install that instead.
+
     symbol-tree@3.2.4:
         resolution:
             {
                 integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==,
+            }
+
+    tailwind-merge@3.5.0:
+        resolution:
+            {
+                integrity: sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A==,
             }
 
     tailwindcss@4.1.18:
@@ -13119,6 +13149,7 @@ packages:
                 integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==,
             }
         engines: { node: '>=18' }
+        deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
     whatwg-mimetype@4.0.0:
         resolution:
@@ -21612,7 +21643,11 @@ snapshots:
         dependencies:
             react: 19.2.3
 
+    svg-dotted-map@2.1.0: {}
+
     symbol-tree@3.2.4: {}
+
+    tailwind-merge@3.5.0: {}
 
     tailwindcss@4.1.18: {}
 

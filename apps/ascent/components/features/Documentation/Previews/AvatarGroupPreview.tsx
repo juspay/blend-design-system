@@ -93,9 +93,9 @@ external make: (
             rescript={reCode}
             rescriptBinding={bindingCode}
         >
-            <div className="flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-8">
                 <div className="flex flex-col items-center gap-2">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground font-manrope">
                         Basic Group (3 avatars)
                     </span>
                     <AvatarGroup
@@ -106,7 +106,7 @@ external make: (
                 </div>
 
                 <div className="flex flex-col items-center gap-2">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground font-manrope">
                         With Overflow (+3 more)
                     </span>
                     <AvatarGroup
@@ -118,7 +118,7 @@ external make: (
                 </div>
 
                 <div className="flex flex-col items-center gap-2">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground font-manrope">
                         Different Sizes
                     </span>
                     <div className="flex items-center gap-4">

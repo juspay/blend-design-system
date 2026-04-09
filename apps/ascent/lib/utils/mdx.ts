@@ -9,15 +9,9 @@ import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import { components } from '@/mdx-components'
 
-export interface MDXContent {
+interface MDXContent {
     content: React.ReactElement
     frontmatter: Record<string, any>
-}
-
-export interface MDXMetadata {
-    title: string
-    description?: string
-    [key: string]: any
 }
 
 /**
@@ -25,7 +19,7 @@ export interface MDXMetadata {
  * @param filePath - Full path to the MDX file
  * @returns Compiled MDX content and frontmatter
  */
-export async function compileMDXFromFile(
+async function compileMDXFromFile(
     filePath: string
 ): Promise<MDXContent | null> {
     try {
@@ -60,66 +54,6 @@ export async function compileMDXFromSlug(
 ): Promise<MDXContent | null> {
     const filePath = path.join(process.cwd(), contentDir, `${slug}.mdx`)
     return compileMDXFromFile(filePath)
-}
-
-/**
- * Generates metadata for Next.js from frontmatter
- * @param frontmatter - MDX frontmatter object
- * @param slug - Page slug for fallback title
- * @param defaultTitle - Default title if not in frontmatter
- * @returns Next.js metadata object
- */
-export function generateMetadataFromFrontmatter(
-    frontmatter: Record<string, any>,
-    slug: string,
-    defaultTitle?: string
-): MDXMetadata {
-    return {
-        title: frontmatter.title || defaultTitle || slug,
-        description: frontmatter.description || `Content for ${slug}`,
-        ...frontmatter,
-    }
-}
-
-/**
- * Generates static params for all MDX files in a directory
- * @param contentDir - Directory containing MDX files (relative to process.cwd())
- * @returns Array of static params for Next.js
- */
-export function generateStaticParamsFromMDX(
-    contentDir: string
-): Array<{ slug: string[] }> {
-    try {
-        const fullPath = path.join(process.cwd(), contentDir)
-        const files = fs.readdirSync(fullPath)
-        const mdxFiles = files.filter((file) => file.endsWith('.mdx'))
-
-        return mdxFiles.map((file) => ({
-            slug: [file.replace('.mdx', '')],
-        }))
-    } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(
-            `Error generating static params from ${contentDir}:`,
-            error
-        )
-        return []
-    }
-}
-
-/**
- * Checks if an MDX file exists in the content directory
- * @param contentDir - Directory containing MDX files
- * @param slug - File slug to check
- * @returns Whether the file exists
- */
-export function mdxFileExists(contentDir: string, slug: string): boolean {
-    try {
-        const filePath = path.join(process.cwd(), contentDir, `${slug}.mdx`)
-        return fs.existsSync(filePath)
-    } catch {
-        return false
-    }
 }
 
 /**
