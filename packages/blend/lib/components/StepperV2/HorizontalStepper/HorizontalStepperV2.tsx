@@ -13,16 +13,7 @@ import { scheduleLiveRegionAnnouncement } from '../utils'
 import { HorizontalStepComponent } from './HorizontalStepComponent'
 
 const HorizontalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
-    (
-        {
-            steps,
-            onStepClick,
-            onSubstepClick: _onSubstepClick,
-            clickable,
-            ...htmlProps
-        },
-        ref
-    ) => {
+    ({ steps, onStepClick, clickable, ...htmlProps }, ref) => {
         const stepperInstanceId = useId().replace(/:/g, '-')
 
         const currentExplicitIndex = steps.findIndex(

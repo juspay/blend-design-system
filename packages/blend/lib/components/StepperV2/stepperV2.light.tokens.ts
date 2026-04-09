@@ -4,7 +4,7 @@ import { ResponsiveStepperV2Tokens } from './stepperV2.tokens'
 export const getStepperV2LightTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveStepperV2Tokens => {
-    let circlePadding = {
+    const circlePadding = {
         paddingTop: '6px',
         paddingRight: '6px',
         paddingBottom: '6px',
