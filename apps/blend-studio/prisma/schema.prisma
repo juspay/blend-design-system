@@ -1,0 +1,342 @@
+// Prisma schema for Blend Studio
+// Defines the database models for user management, audit logs, and analytics
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+generator kysely {
+  provider = "prisma-kysely"
+  output   = "../src/backend/db/types"
+  fileName = "types.ts"
+  // Optional: Include relation fields in types
+  includeRelationFields = "true"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User management - linked to Firebase Authentication
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  firebaseUid   String    @unique @map("firebase_uid") @db.VarChar(255)
+  email         String    @unique @db.VarChar(255)
+  displayName   String?   @map("display_name") @db.VarChar(255)
+  photoUrl      String?   @map("photo_url") @db.Text
+  role          String    @default("viewer") @db.VarChar(50)
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  lastLogin     DateTime? @map("last_login")
+
+  // Relations
+  activityLogs  ActivityLog[]
+  deploymentApprovalsRequested DeploymentApproval[] @relation("RequestedBy")
+  deploymentApprovalsApproved  DeploymentApproval[] @relation("ApprovedBy")
+  deploymentApprovalsRejected  DeploymentApproval[] @relation("RejectedBy")
+  auditLogs     AuditLog[]
+
+  @@index([firebaseUid])
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@map("users")
+}
+
+// Role-based access control
+model Role {
+  id          String   @id @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  permissions Json     @db.JsonB
+  isCustom    Boolean  @default(false) @map("is_custom")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("roles")
+}
+
+// Component inventory tracking
+model Component {
+  id                String    @id @default(uuid()) @db.Uuid
+  componentId       String    @unique @map("component_id") @db.VarChar(255)
+  name              String    @db.VarChar(255)
+  path              String    @db.Text
+  category          String    @db.VarChar(100)
+  hasStorybook      Boolean   @default(false) @map("has_storybook")
+  hasFigmaConnect   Boolean   @default(false) @map("has_figma_connect")
+  hasTests          Boolean   @default(false) @map("has_tests")
+  lastModified      DateTime? @map("last_modified")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  integrations ComponentIntegration[]
+
+  @@index([componentId])
+  @@index([category])
+  @@index([name])
+  @@map("components")
+}
+
+// Component integration status with Figma
+model ComponentIntegration {
+  id               String    @id @default(uuid()) @db.Uuid
+  componentId      String    @map("component_id") @db.Uuid
+  status           String    @default("not_integrated") @db.VarChar(50)
+  lastSync         DateTime? @map("last_sync")
+  validationErrors Json?     @map("validation_errors") @db.JsonB
+  figmaUrl         String?   @map("figma_url") @db.Text
+  variants         Json?     @db.JsonB
+  propsMapping     Json?     @map("props_mapping") @db.JsonB
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  component Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+
+  @@index([componentId])
+  @@index([status])
+  @@map("component_integrations")
+}
+
+// Coverage metrics snapshot
+model CoverageMetric {
+  id                String   @id @default(uuid()) @db.Uuid
+  totalComponents   Int      @map("total_components")
+  integratedComponents Int  @map("integrated_components")
+  percentage        Decimal  @db.Decimal(5, 2)
+  categoryBreakdown Json?    @map("category_breakdown") @db.JsonB
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@map("coverage_metrics")
+}
+
+// NPM package statistics
+model NpmPackageStat {
+  id                 String    @id @default(uuid()) @db.Uuid
+  packageName        String    @map("package_name") @db.VarChar(255)
+  version            String    @db.VarChar(50)
+  downloadsDaily     Int       @default(0) @map("downloads_daily")
+  downloadsWeekly    Int       @default(0) @map("downloads_weekly")
+  downloadsMonthly   Int       @default(0) @map("downloads_monthly")
+  downloadsTotal     Int       @default(0) @map("downloads_total")
+  sizeUnpacked       Int       @default(0) @map("size_unpacked")
+  sizeGzipped        Int       @default(0) @map("size_gzipped")
+  dependenciesCount  Int       @default(0) @map("dependencies_count")
+  lastPublish        DateTime? @map("last_publish")
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  @@map("npm_package_stats")
+}
+
+// NPM version history
+model NpmVersion {
+  id            String    @id @default(uuid()) @db.Uuid
+  version       String    @unique @db.VarChar(50)
+  publishedAt   DateTime  @map("published_at")
+  publisher     String?   @db.VarChar(255)
+  downloads     Int       @default(0)
+  changelog     String?   @db.Text
+  sizeUnpacked  Int?      @map("size_unpacked")
+  sizeGzipped   Int?      @map("size_gzipped")
+  isBreaking    Boolean   @default(false) @map("is_breaking")
+  isPrerelease  Boolean   @default(false) @map("is_prerelease")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@index([publishedAt])
+  @@index([version])
+  @@map("npm_versions")
+}
+
+// Download trends tracking
+model DownloadTrend {
+  id          String   @id @default(uuid()) @db.Uuid
+  date        DateTime @db.Date
+  downloads   Int
+  packageName String   @default("@juspay/blend-design-system") @map("package_name") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([date, packageName])
+  @@index([date])
+  @@index([packageName])
+  @@map("download_trends")
+}
+
+// Deployment tracking
+model Deployment {
+  id              String    @id @default(uuid()) @db.Uuid
+  environment     String    @db.VarChar(100)
+  version         String    @db.VarChar(100)
+  deployerName    String    @map("deployer_name") @db.VarChar(255)
+  deployerEmail   String    @map("deployer_email") @db.VarChar(255)
+  startTime       DateTime  @map("start_time")
+  endTime         DateTime? @map("end_time")
+  status          String    @db.VarChar(50)
+  durationSeconds Int?      @map("duration_seconds")
+  commitSha       String?   @map("commit_sha") @db.VarChar(40)
+  buildLogsUrl    String?   @map("build_logs_url") @db.Text
+  configuration   Json?     @db.JsonB
+  rollbackAvailable Boolean @default(false) @map("rollback_available")
+  source          String    @default("database") @db.VarChar(50)
+  service         String?   @db.VarChar(255)
+  siteUrl         String?   @map("site_url") @db.Text
+  branch          String?   @db.VarChar(255)
+  buildLogs       String[]  @map("build_logs") @db.Text
+  deploymentLogs  String[]  @map("deployment_logs") @db.Text
+  buildCacheKey   String?   @map("build_cache_key") @db.VarChar(255)
+  previewUrl      String?   @map("preview_url") @db.Text
+  scheduledFor    DateTime? @map("scheduled_for")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  approvals DeploymentApproval[]
+
+  @@index([environment])
+  @@index([status])
+  @@index([startTime])
+  @@map("deployments")
+}
+
+// Deployment approval workflow
+model DeploymentApproval {
+  id            String    @id @default(uuid()) @db.Uuid
+  deploymentId  String    @map("deployment_id") @db.Uuid
+  requestedBy   String    @map("requested_by") @db.Uuid
+  requestedAt   DateTime  @map("requested_at")
+  approvedBy    String?   @map("approved_by") @db.Uuid
+  approvedAt    DateTime? @map("approved_at")
+  rejectedBy    String?   @map("rejected_by") @db.Uuid
+  rejectedAt    DateTime? @map("rejected_at")
+  status        String    @default("pending") @db.VarChar(50)
+  comments      String?   @db.Text
+  expiresAt     DateTime  @map("expires_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  deployment Deployment @relation(fields: [deploymentId], references: [id], onDelete: Cascade)
+  requester  User       @relation("RequestedBy", fields: [requestedBy], references: [id])
+  approver   User?      @relation("ApprovedBy", fields: [approvedBy], references: [id])
+  rejector   User?      @relation("RejectedBy", fields: [rejectedBy], references: [id])
+
+  @@index([deploymentId])
+  @@index([status])
+  @@map("deployment_approvals")
+}
+
+// Environment status tracking
+model Environment {
+  id              String    @id @default(uuid()) @db.Uuid
+  name            String    @unique @db.VarChar(100)
+  status          String    @default("unknown") @db.VarChar(50)
+  uptimePercentage Decimal? @map("uptime_percentage") @db.Decimal(5, 2)
+  currentVersion  String?   @map("current_version") @db.VarChar(100)
+  lastDeployment  DateTime? @map("last_deployment")
+  url             String?   @db.Text
+  channel         String?   @db.VarChar(100)
+  responseTimeP50 Int?      @map("response_time_p50")
+  responseTimeP95 Int?      @map("response_time_p95")
+  responseTimeP99 Int?      @map("response_time_p99")
+  requestRate     Int?      @map("request_rate")
+  errorRate       Decimal?  @map("error_rate") @db.Decimal(5, 2)
+  activeUsers     Int?      @map("active_users")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@map("environments")
+}
+
+// User activity logging
+model ActivityLog {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String?   @map("user_id") @db.Uuid
+  action    String    @db.VarChar(255)
+  details   Json?     @db.JsonB
+  metadata  Json?     @db.JsonB
+  timestamp DateTime  @default(now())
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([action])
+  @@index([timestamp])
+  @@map("activity_logs")
+}
+
+// System-level activity logging
+model SystemActivity {
+  id        String   @id @default(uuid()) @db.Uuid
+  action    String   @db.VarChar(255)
+  details   Json?    @db.JsonB
+  timestamp DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([action])
+  @@index([timestamp])
+  @@map("system_activity")
+}
+
+// Audit logging for compliance
+model AuditLog {
+  id         String    @id @default(uuid()) @db.Uuid
+  action     String    @db.VarChar(255)
+  userId     String?   @map("user_id") @db.Uuid
+  resource   String?   @db.VarChar(255)
+  resourceId String?   @map("resource_id") @db.VarChar(255)
+  oldValues  Json?     @map("old_values") @db.JsonB
+  newValues  Json?     @map("new_values") @db.JsonB
+  result     String    @db.VarChar(50)
+  timestamp  DateTime  @default(now())
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([timestamp])
+  @@index([action])
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+// Cloud Functions monitoring
+model CloudFunction {
+  id                 String    @id @default(uuid()) @db.Uuid
+  name               String    @db.VarChar(255)
+  version            String?   @db.VarChar(50)
+  status             String    @db.VarChar(50)
+  avgResponseTime    Int?      @map("avg_response_time")
+  errorRate          Decimal?  @map("error_rate") @db.Decimal(5, 2)
+  invocations        Int?
+  executionsPerHour  Int?      @map("executions_per_hour")
+  executionsPerDay   Int?      @map("executions_per_day")
+  schedule           String?   @db.VarChar(255)
+  lastExecution      DateTime? @map("last_execution")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  @@map("cloud_functions")
+}
+
+// Firebase usage tracking for billing
+model FirebaseUsage {
+  id               String    @id @default(uuid()) @db.Uuid
+  service          String    @db.VarChar(100)
+  metric           String    @db.VarChar(100)
+  usedAmount       BigInt    @map("used_amount")
+  limitAmount      BigInt?   @map("limit_amount")
+  unit             String    @db.VarChar(50)
+  currentCost      Decimal?  @map("current_cost") @db.Decimal(10, 2)
+  projectedCost    Decimal?  @map("projected_cost") @db.Decimal(10, 2)
+  billingPeriodEnd DateTime? @map("billing_period_end") @db.Date
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  @@index([service])
+  @@index([createdAt])
+  @@map("firebase_usage")
+}

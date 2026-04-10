@@ -151,4 +151,18 @@ program
         await generateCommand(input, options)
     })
 
+import { previewCommand } from './commands/preview'
+
+program
+    .command('preview')
+    .description('Open a local preview server with live component showcase')
+    .option('-p, --port <port>', 'Port number', '3456')
+    .option('--no-open', 'Do not open browser automatically')
+    .action(async (options) => {
+        await previewCommand({
+            port: parseInt(options.port, 10),
+            open: options.open,
+        })
+    })
+
 program.parse()
