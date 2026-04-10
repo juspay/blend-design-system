@@ -30,7 +30,8 @@
         "test:run": "vitest run",
         "test:a11y": "vitest run --testNamePattern 'accessibility|Accessibility'",
         "test:a11y:watch": "vitest --testNamePattern 'accessibility|Accessibility'",
-        "test:file": "vitest run"
+        "test:file": "vitest run",
+        "generate:bindings": "node scripts/generate-bindings.mjs"
     },
     "peerDependencies": {
         "react": "^18.3.1 || >=19.2.1",
@@ -64,6 +65,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.25.0",
+        "@juspay/neurolink": "^9.50.1",
         "@storybook/addon-essentials": "^8.6.12",
         "@storybook/addon-interactions": "^8.6.12",
         "@storybook/addon-onboarding": "^8.6.12",
@@ -82,6 +84,7 @@
         "@vitejs/plugin-react": "^4.4.1",
         "@vitest/coverage-v8": "^3.2.4",
         "@vitest/ui": "^3.2.4",
+        "dotenv": "^17.4.1",
         "eslint": "^9.25.0",
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.19",
