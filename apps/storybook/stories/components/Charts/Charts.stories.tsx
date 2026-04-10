@@ -6,7 +6,6 @@ import {
     ChartLegendPosition,
     NewNestedDataPoint,
     AxisType,
-    AxisIntervalType,
     LegendsChangeType,
 } from '@juspay/blend-design-system'
 import {
@@ -189,10 +188,36 @@ const data = [
         data: {
             control: 'object',
             description: 'Array of nested data points for the chart',
+            table: {
+                type: {
+                    summary: 'NewNestedDataPoint[]',
+                    detail: `{
+  name: string;           // Data point name/label
+  data: {
+    [key: string]: {      // Series name as key
+      primary: {
+        label: string;
+        val: number;
+      };
+      aux?: Array<{
+        label: string;
+        val: number;
+        type?: AxisType;
+      }>;
+    };
+  };
+}`,
+                },
+                category: 'Data',
+            },
         },
         colors: {
             control: 'object',
             description: 'Array of colors for the chart series',
+            table: {
+                type: { summary: 'string[]' },
+                category: 'Appearance',
+            },
         },
         legendPosition: {
             control: 'select',
@@ -207,6 +232,17 @@ const data = [
             control: 'object',
             description:
                 'Data for stacked legends with value, delta, and change type',
+            table: {
+                type: {
+                    summary: 'StackedLegendsDataPoint[]',
+                    detail: `{
+  value: number;                    // The value to display
+  delta: number;                    // The change delta value
+  changeType: LegendsChangeType;    // 'increase' | 'decrease'
+}`,
+                },
+                category: 'Data',
+            },
         },
         barsize: {
             control: 'number',
@@ -216,16 +252,74 @@ const data = [
             control: 'object',
             description:
                 'X-axis configuration with label, type, formatting options',
+            table: {
+                type: {
+                    summary: 'XAxisConfig',
+                    detail: `{
+  label?: string;                   // Axis label text
+  showLabel?: boolean;              // Whether to show the label
+  show?: boolean;                   // Whether to show the axis
+  type?: AxisType;                  // 'dateTime' | 'currency' | 'percentage' | 'number'
+  interval?: number | AxisIntervalType; // Tick interval
+  tickFormatter?: (value) => string; // Custom tick formatter
+  dateOnly?: boolean;               // Show date only (no time)
+  useUTC?: boolean;                 // Use UTC for dates
+  formatString?: string;            // Custom format string
+  timeOnly?: boolean;               // Show time only
+  showYear?: boolean;               // Show year in labels
+  ticks?: (number | string)[];      // Custom tick values
+  autoConsistentTicks?: boolean;    // Auto-generate consistent ticks
+  maxTicks?: number;                // Maximum number of ticks
+  smartDateTimeFormat?: boolean;    // Smart date/time formatting
+}`,
+                },
+                category: 'Axis',
+            },
         },
         yAxis: {
             control: 'object',
             description:
                 'Y-axis configuration with label, type, formatting options',
+            table: {
+                type: {
+                    summary: 'YAxisConfig',
+                    detail: `{
+  label?: string;                   // Axis label text
+  showLabel?: boolean;              // Whether to show the label
+  show?: boolean;                   // Whether to show the axis
+  type?: AxisType;                  // 'dateTime' | 'currency' | 'percentage' | 'number'
+  interval?: number | AxisIntervalType; // Tick interval
+  tickFormatter?: (value) => string; // Custom tick formatter
+  dateOnly?: boolean;               // Show date only (no time)
+  useUTC?: boolean;                 // Use UTC for dates
+  formatString?: string;            // Custom format string
+  timeOnly?: boolean;               // Show time only
+  showYear?: boolean;               // Show year in labels
+  ticks?: (number | string)[];      // Custom tick values
+  autoConsistentTicks?: boolean;    // Auto-generate consistent ticks
+  maxTicks?: number;                // Maximum number of ticks
+  smartDateTimeFormat?: boolean;    // Smart date/time formatting
+}`,
+                },
+                category: 'Axis',
+            },
         },
         noData: {
             control: 'object',
             description:
                 'Configuration for no-data state with title, subtitle, slot, and button',
+            table: {
+                type: {
+                    summary: 'NoDataProps',
+                    detail: `{
+  title?: string;                   // Title text for no-data state
+  subtitle?: string;                // Subtitle/description text
+  slot?: ReactNode;                 // Custom content slot
+  button?: ButtonProps;             // Button configuration for action
+}`,
+                },
+                category: 'State',
+            },
         },
         height: {
             control: 'number',
@@ -401,7 +495,11 @@ export const LineChartExample: Story = {
                     show: true,
                     type: AxisType.CURRENCY,
                 }}
-                colors={['#3b82f6', '#10b981', '#ef4444']}
+                colors={[
+                    { key: 'revenue', color: '#3b82f6' },
+                    { key: 'profit', color: '#10b981' },
+                    { key: 'expenses', color: '#ef4444' },
+                ]}
                 chartHeaderSlot={
                     <div
                         style={{
@@ -472,7 +570,11 @@ export const BarChartExample: Story = {
                     show: true,
                     type: AxisType.CURRENCY,
                 }}
-                colors={['#8b5cf6', '#f59e0b', '#06b6d4']}
+                colors={[
+                    { key: 'revenue', color: '#8b5cf6' },
+                    { key: 'profit', color: '#f59e0b' },
+                    { key: 'expenses', color: '#06b6d4' },
+                ]}
                 chartHeaderSlot={
                     <div
                         style={{
@@ -518,7 +620,13 @@ export const PieChartExample: Story = {
             <Charts
                 chartType={ChartType.PIE}
                 data={generateCategoryData()}
-                colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']}
+                colors={[
+                    { key: 'Electronics', color: '#3b82f6' },
+                    { key: 'Clothing', color: '#10b981' },
+                    { key: 'Food', color: '#f59e0b' },
+                    { key: 'Books', color: '#ef4444' },
+                    { key: 'Other', color: '#8b5cf6' },
+                ]}
                 chartHeaderSlot={
                     <div
                         style={{
@@ -625,7 +733,11 @@ export const CustomColors: Story = {
                     show: true,
                     type: AxisType.CURRENCY,
                 }}
-                colors={['#dc2626', '#059669', '#7c3aed']}
+                colors={[
+                    { key: 'revenue', color: '#dc2626' },
+                    { key: 'profit', color: '#059669' },
+                    { key: 'expenses', color: '#7c3aed' },
+                ]}
                 chartHeaderSlot={
                     <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
                         Custom Color Scheme
@@ -701,7 +813,12 @@ export const ComplexDataExample: Story = {
                         show: true,
                         type: AxisType.NUMBER,
                     }}
-                    colors={['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6']}
+                    colors={[
+                        { key: 'desktop', color: '#3b82f6' },
+                        { key: 'mobile', color: '#10b981' },
+                        { key: 'tablet', color: '#f59e0b' },
+                        { key: 'other', color: '#8b5cf6' },
+                    ]}
                     chartHeaderSlot={
                         <div
                             style={{
@@ -1097,6 +1214,111 @@ export const InteractivePlayground: Story = {
                 story: 'Interactive playground to experiment with all Charts props using the controls panel.',
             },
         },
+    },
+}
+
+// ============================================================================
+// Skeleton Loading State
+// ============================================================================
+
+export const SkeletonState: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '32px',
+                padding: '24px',
+            }}
+        >
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Line Chart - Pulse Variant
+                </h4>
+                <Charts
+                    chartType={ChartType.LINE}
+                    data={generateMonthlyData()}
+                    height={300}
+                    chartHeaderSlot="Loading Chart Data..."
+                    skeleton={{ show: true, variant: 'pulse' }}
+                    showHeader={true}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Bar Chart - Wave Variant
+                </h4>
+                <Charts
+                    chartType={ChartType.BAR}
+                    data={generateMonthlyData()}
+                    height={300}
+                    chartHeaderSlot="Loading Chart Data..."
+                    skeleton={{ show: true, variant: 'wave' }}
+                    showHeader={true}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Pie Chart - Pulse Variant
+                </h4>
+                <Charts
+                    chartType={ChartType.PIE}
+                    data={generateCategoryData()}
+                    height={300}
+                    chartHeaderSlot="Loading Chart Data..."
+                    skeleton={{ show: true, variant: 'pulse' }}
+                    showHeader={true}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Without Header - Skeleton Only
+                </h4>
+                <Charts
+                    chartType={ChartType.LINE}
+                    data={generateMonthlyData()}
+                    height={300}
+                    chartHeaderSlot="Loading..."
+                    skeleton={{ show: true, variant: 'pulse' }}
+                    showHeader={false}
+                />
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates skeleton loading states for different chart types. Shows pulse and wave variants for Line, Bar, and Pie charts, with and without headers.',
+            },
+        },
+        a11y: getA11yConfig('content'),
     },
 }
 

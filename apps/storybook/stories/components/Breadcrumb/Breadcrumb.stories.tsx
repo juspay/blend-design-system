@@ -56,7 +56,7 @@ A navigation breadcrumb component that displays the current page's location with
 
 **Level AAA Compliance**: ✅ Fully Compliant
 - All Level A, Level AA, and Level AAA criteria met
-- Semantic HTML structure with <nav>, <ol>, and <li> elements
+- Semantic HTML structure with nav, ol, and li elements
 - Comprehensive ARIA labels for all interactive elements
 - Proper use of aria-current="page" for active item
 - All interactive elements meet 44x44px touch target requirement (WCAG 2.5.5)
@@ -133,11 +133,33 @@ const items: BreadcrumbItemType[] = [
             control: 'object',
             description:
                 'Array of breadcrumb items to display in the navigation',
+            table: {
+                type: {
+                    summary: 'BreadcrumbItemType[]',
+                    detail: `BreadcrumbItemType: {
+  label: string;                    // Display text for the item (required)
+  href?: string;                   // URL for navigation
+  onClick?: (e) => void;          // Click handler (receives event)
+  disabled?: boolean;             // Disable this item
+}`,
+                },
+                category: 'Data',
+            },
         },
         skeleton: {
             control: 'object',
             description:
                 'Skeleton loading state configuration with show and variant properties',
+            table: {
+                type: {
+                    summary: 'SkeletonConfig',
+                    detail: `{
+  show: boolean;              // Whether to show skeleton loading
+  variant?: 'pulse' | 'wave'; // Animation variant (default: 'pulse')
+}`,
+                },
+                category: 'State',
+            },
         },
     },
     tags: ['autodocs'],

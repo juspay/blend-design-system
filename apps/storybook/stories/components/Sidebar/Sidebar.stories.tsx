@@ -108,101 +108,287 @@ const meta: Meta<typeof Sidebar> = {
             description: {
                 component: `
 
-A comprehensive sidebar navigation component with collapsible sections, integrated directory navigation, and customizable panels.
+A comprehensive sidebar navigation component with collapsible sections, integrated directory navigation, customizable panels, and responsive design.
+
+## Overview
+
+The Sidebar component provides a complete application navigation solution with support for hierarchical menus, tenant/workspace switching, mobile responsiveness, and extensive customization options.
 
 ## Features
-Collapsible/expandable sidebar with smooth animations, integrated Directory component for hierarchical navigation, optional left panel for tenant/category switching, sticky header and footer sections, customizable topbar and footer content, responsive design with proper scrolling, support for nested navigation items, and icon and badge support in navigation items.
+
+- **Collapsible/expandable** sidebar with smooth animations
+- **Integrated Directory component** for hierarchical navigation
+- **Optional left panel** for tenant/workspace/category switching
+- **Sticky header and footer** sections that remain visible while scrolling
+- **Customizable topbar and footer** content
+- **Responsive design** with mobile navigation drawer
+- **Nested navigation items** with collapsible sections
+- **Icon and badge support** in navigation items
+- **Keyboard navigation** with configurable shortcuts
+- **Accessibility compliant** (WCAG 2.1 Level AA)
+
+## Props Categories
+
+### Core Props
+- **children**: Main content area
+- **data**: Navigation structure
+
+### Layout Props
+- **topbar**, **leftPanel**, **footer**, **sidebarTopSlot**
+
+### State Control
+- **isExpanded** / **onExpandedChange**: Controlled expand/collapse
+- **activeItem** / **onActiveItemChange**: Controlled active navigation
+- **defaultIsExpanded**, **defaultActiveItem**: Uncontrolled defaults
+
+### Behavior Props
+- **disableIntermediateState**: Disable hover peek
+- **iconOnlyMode**: Icon-only view with tooltips
+- **hideOnIconOnlyToggle**: Hide instead of expand in icon-only
+- **sidebarCollapseKey**: Keyboard shortcut (default: "/")
+
+### Topbar Options
+- **enableTopbarAutoHide**: Auto-hide on scroll
+- **isTopbarVisible** / **onTopbarVisibilityChange**: Controlled visibility
+
+### Mobile Options
+- **showPrimaryActionButton**: Show FAB on mobile
+- **primaryActionButtonProps**: Configure FAB
+
+## Quick Start
+
+### Basic Usage
+
+\`\`\`tsx
+import { Sidebar } from '@juspay/blend-design-system';
+import { Home, Users, Settings } from 'lucide-react';
+
+function App() {
+  return (
+    <Sidebar
+      data={[
+        {
+          label: "Main",
+          items: [
+            { label: "Dashboard", leftSlot: <Home size={16} />, onClick: () => {} },
+            { label: "Users", leftSlot: <Users size={16} />, onClick: () => {} },
+            { label: "Settings", leftSlot: <Settings size={16} />, onClick: () => {} },
+          ]
+        }
+      ]}
+    >
+      <div>Your main content here</div>
+    </Sidebar>
+  );
+}
+\`\`\`
+
+### With Tenant Switching
+
+\`\`\`tsx
+<Sidebar
+  leftPanel={{
+    items: [
+      { label: "Production", icon: <Zap size={16} color="#ef4444" /> },
+      { label: "Staging", icon: <Server size={16} color="#f59e0b" /> },
+    ],
+    selected: activeEnv,
+    onSelect: setActiveEnv,
+  }}
+  data={navigationData}
+>
+  {children}
+</Sidebar>
+\`\`\`
+
+### Controlled Expand/Collapse
+
+\`\`\`tsx
+const [isExpanded, setIsExpanded] = useState(true);
+
+<Sidebar
+  isExpanded={isExpanded}
+  onExpandedChange={setIsExpanded}
+  data={navigationData}
+>
+  {children}
+</Sidebar>
+\`\`\`
+
+### Icon-Only Mode
+
+\`\`\`tsx
+<Sidebar
+  iconOnlyMode={true}
+  defaultIsExpanded={false}
+  data={navigationData}
+>
+  {children}
+</Sidebar>
+\`\`\`
 
 ## Accessibility
 
 **WCAG Compliance**: 2.1 Level AA Compliant | Partial AAA Compliance
 
-**Level AA Compliance**: ✅ Fully Compliant
-- All Level A and Level AA criteria met
-- Keyboard accessible navigation (Tab, Arrow keys, Enter, Space, Escape)
-- Screen reader support (VoiceOver/NVDA)
-- Proper semantic structure and ARIA attributes
-- Focus management and visible focus indicators
-- Logical tab order throughout navigation
-- Responsive design that works across screen sizes
-- Mobile navigation with accessible touch targets
+**Keyboard Navigation**:
+- \`Tab\`: Navigate between interactive elements
+- \`Arrow Keys\`: Navigate within Directory sections
+- \`Enter/Space\`: Activate navigation items
+- \`/\` (default): Toggle sidebar expand/collapse
+- \`Escape\`: Close mobile navigation drawer
 
-**Level AAA Compliance**: ⚠️ Partial
-- ✅ **Compliant**: 1.3.4 Orientation, 2.1.3 Keyboard (No Exception), 3.2.5 Change on Request
-- ❌ **Non-Compliant**: 1.4.6 Contrast (Enhanced) - requires 7:1 contrast ratio (currently designed for AA 4.5:1)
-- ⚠️ **Verification Required**: Color contrast ratios should be verified using actual color values from theme tokens
-
-**Key Accessibility Features**:
-- Keyboard shortcut support (configurable collapse key, default '/')
-- Proper ARIA landmarks and navigation regions
-- Focus trap management in mobile drawer
+**ARIA Landmarks**:
+- Navigation regions properly labeled
+- Search region with role="search"
+- Complementary regions for footer
 - Screen reader announcements for state changes
-- Skip links and logical heading hierarchy
-- Touch targets meet Level AA requirement (24x24px minimum)
 
-**Verification:**
-- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
-- **Chromatic**: Visual regression for focus rings and states
-- **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
-
-## Usage
-
-\`\`\`tsx
-import { Sidebar } from '@juspay/blend-design-system';
-
-const navigationData = [
-  {
-    label: "Main",
-    items: [
-      { label: "Dashboard", leftSlot: <Home size={16} />, onClick: () => {} },
-      { label: "Analytics", leftSlot: <BarChart3 size={16} />, onClick: () => {} }
-    ]
-  }
-];
-
-<Sidebar
-  data={navigationData}
-  topbar={<div>Search bar</div>}
-  leftPanel={{
-    items: [{ label: "Tenant 1", icon: <Building size={16} /> }],
-    selected: "Tenant 1",
-    onSelect: (value) => console.log(value)
-  }}
->
-  <div>Main content</div>
-</Sidebar>
-\`\`\`
+**Verification**:
+- Storybook a11y addon (0 violations expected)
+- Chromatic visual regression
+- Manual testing with VoiceOver/NVDA
+- Contrast ratio verification
         `,
             },
         },
     },
     argTypes: {
+        // Core Props
+        children: {
+            control: false,
+            description:
+                'Main content to render in the sidebar layout. This is displayed in the main content area to the right of the sidebar.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Core',
+            },
+        },
         data: {
             control: 'object',
-            description: 'Directory navigation data structure',
+            description:
+                'Directory navigation data structure defining the sidebar menu items, sections, and hierarchy',
+            table: {
+                type: {
+                    summary: 'DirectoryData[]',
+                    detail: `DirectoryData: {
+  label?: string;           // Section label
+  items: NavbarItem[];      // Array of navigation items
+  isCollapsible?: boolean;  // Whether section can be collapsed
+  defaultOpen?: boolean;    // Default expanded state
+}
+
+NavbarItem: {
+  label: string;            // Display text (required)
+  leftSlot?: ReactNode;     // Icon/content on left
+  rightSlot?: ReactNode;    // Badge/content on right
+  items?: NavbarItem[];     // Nested sub-items
+  onClick?: () => void;     // Click handler
+  href?: string;            // Link URL
+  isSelected?: boolean;     // Selected state
+}`,
+                },
+                category: 'Core',
+            },
         },
+        // Layout Props
         topbar: {
             control: false,
-            description: 'Content to display in the topbar',
+            description:
+                'Content to display in the topbar/header area. Typically contains search, notifications, and user avatar. Rendered within the Topbar component.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Layout',
+            },
         },
         leftPanel: {
             control: 'object',
             description:
-                'Left panel configuration for tenant/category switching',
+                'Left panel configuration for tenant/workspace/category switching',
+            table: {
+                type: {
+                    summary: 'LeftPanelInfo',
+                    detail: `{
+  items: LeftPanelItem[];     // Array of panel items
+  selected: string;           // Currently selected value
+  onSelect: (value) => void; // Selection callback
+  tenantSlot1?: ReactNode;    // Custom slot 1
+  tenantSlot2?: ReactNode;    // Custom slot 2
+  tenantFooter?: ReactNode;   // Footer content
+}
+
+LeftPanelItem: {
+  label: string;          // Display text
+  icon: ReactNode;        // Icon element
+  value?: string;         // Item value
+  showInPanel?: boolean;  // Whether to show in panel
+}`,
+                },
+                category: 'Layout',
+            },
         },
         footer: {
             control: false,
-            description: 'Content to display in the sidebar footer',
+            description:
+                'Content to display in the sidebar footer. Typically contains user profile info, logout button, or action buttons. Sticky at bottom of sidebar.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Layout',
+            },
         },
         sidebarTopSlot: {
             control: false,
             description:
-                'Custom content for the sidebar top slot (replaces default merchant selector)',
+                'Custom content for the sidebar top slot. Replaces the default merchant/tenant selector. Use for custom header content in the sidebar.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Layout',
+            },
         },
+        showLeftPanel: {
+            control: 'boolean',
+            description:
+                'Whether to show the left panel (tenant/workspace selector). When false, the left panel is hidden even if leftPanel config is provided. Useful for role-based panel visibility.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Layout',
+            },
+        },
+        // State Control Props - Expanded/Collapsed
+        isExpanded: {
+            control: 'boolean',
+            description:
+                'Controlled expanded state. When provided, the sidebar becomes a controlled component and does not manage its own expanded state. Use with onExpandedChange for full control.',
+            table: {
+                type: { summary: 'boolean' },
+                category: 'State',
+            },
+        },
+        onExpandedChange: {
+            control: false,
+            description:
+                'Callback fired when the sidebar expanded state changes. Receives the new expanded state (true/false). Use with isExpanded for controlled behavior.',
+            table: {
+                type: { summary: '(expanded: boolean) => void' },
+                category: 'Events',
+            },
+        },
+        defaultIsExpanded: {
+            control: 'boolean',
+            description:
+                'Default expanded state for uncontrolled sidebar. Only used when isExpanded is not provided. Determines initial expanded state on mount.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'State',
+            },
+        },
+        // Behavior Props
         disableIntermediateState: {
             control: 'boolean',
             description:
-                'When true, disables the intermediate state that appears on hover. When false or undefined, hovering over the collapsed sidebar will temporarily show it in an intermediate/expanded state. The intermediate state allows users to see the sidebar content without fully expanding it. Defaults to false (intermediate state enabled).',
+                'When true, disables the intermediate state that appears on hover. When false, hovering over the collapsed sidebar temporarily shows it in an intermediate/expanded state. This allows users to peek at sidebar content without fully expanding it.',
             table: {
                 type: { summary: 'boolean' },
                 defaultValue: { summary: 'false' },
@@ -212,7 +398,7 @@ const navigationData = [
         iconOnlyMode: {
             control: 'boolean',
             description:
-                'When true, shows only icons (52px width) with tooltips on hover. In this mode: directory items show only their icons, tooltips appear on hover showing the item label, sections render as horizontal dividers, merchant switcher moves to topbar, and intermediate/hover state expansion is disabled. The toggle button appears at the top of the icon-only panel. Clicking the toggle button expands to full sidebar view (or hides the sidebar if hideOnIconOnlyToggle is true). Defaults to false.',
+                'When true, shows only icons (52px width) with tooltips on hover. Directory items show only icons, tooltips appear on hover, sections render as dividers, and merchant switcher moves to topbar. Toggle button appears at top.',
             table: {
                 type: { summary: 'boolean' },
                 defaultValue: { summary: 'false' },
@@ -222,16 +408,121 @@ const navigationData = [
         hideOnIconOnlyToggle: {
             control: 'boolean',
             description:
-                'When true, clicking the toggle button in icon-only mode will completely hide the sidebar. When false, clicking the toggle button will expand to full sidebar view with tenant panel (if provided) and directory. Only applies when iconOnlyMode is true. Defaults to false (expands to full sidebar).',
+                'When true, clicking the toggle button in icon-only mode completely hides the sidebar. When false, clicking expands to full sidebar view. Only applies when iconOnlyMode is true.',
             table: {
                 type: { summary: 'boolean' },
                 defaultValue: { summary: 'false' },
                 category: 'Behavior',
             },
         },
+        sidebarCollapseKey: {
+            control: 'text',
+            description:
+                'Keyboard key to toggle sidebar expand/collapse. Pressing this key (when not in an input) toggles the sidebar. Set to empty string to disable keyboard shortcut.',
+            table: {
+                type: { summary: 'string' },
+                defaultValue: { summary: '"/"' },
+                category: 'Behavior',
+            },
+        },
+        // Topbar Auto-Hide Props
+        enableTopbarAutoHide: {
+            control: 'boolean',
+            description:
+                'When true, the topbar automatically hides when scrolling down and reappears when scrolling up. Provides more content space. Only works when topbar content is provided.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Topbar',
+            },
+        },
+        isTopbarVisible: {
+            control: 'boolean',
+            description:
+                'Controlled topbar visibility. Use with onTopbarVisibilityChange for controlled topbar visibility. Overrides auto-hide behavior when set.',
+            table: {
+                type: { summary: 'boolean' },
+                category: 'Topbar',
+            },
+        },
+        onTopbarVisibilityChange: {
+            control: false,
+            description:
+                'Callback fired when topbar visibility changes. Receives boolean indicating new visibility state. Use with isTopbarVisible for controlled behavior.',
+            table: {
+                type: { summary: '(visible: boolean) => void' },
+                category: 'Events',
+            },
+        },
+        defaultIsTopbarVisible: {
+            control: 'boolean',
+            description:
+                'Default topbar visibility state. Used when isTopbarVisible is not provided. Has no effect unless enableTopbarAutoHide is true.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Topbar',
+            },
+        },
+        // Active Item Props
+        activeItem: {
+            control: 'text',
+            description:
+                'Currently active navigation item identifier. Used for highlighting the active menu item. Should match the href or unique identifier of the active item in the data.',
+            table: {
+                type: { summary: 'string' },
+                category: 'Navigation',
+            },
+        },
+        onActiveItemChange: {
+            control: false,
+            description:
+                'Callback fired when the active navigation item changes. Receives the identifier of the newly active item. Use with activeItem for controlled active state.',
+            table: {
+                type: { summary: '(item: string | null) => void' },
+                category: 'Events',
+            },
+        },
+        defaultActiveItem: {
+            control: 'text',
+            description:
+                'Default active item identifier for uncontrolled mode. Used when activeItem prop is not provided. Sets initial active item on mount.',
+            table: {
+                type: { summary: 'string' },
+                category: 'Navigation',
+            },
+        },
+        // Mobile Props
+        showPrimaryActionButton: {
+            control: 'boolean',
+            description:
+                'Whether to show a floating action button (FAB) on mobile. The FAB appears at the bottom of the screen on mobile devices for primary actions like "Create" or "Add".',
+            table: {
+                type: { summary: 'boolean' },
+                category: 'Mobile',
+            },
+        },
+        primaryActionButtonProps: {
+            control: 'object',
+            description:
+                'Configuration for the mobile floating action button (FAB)',
+            table: {
+                type: {
+                    summary: 'ButtonProps',
+                    detail: `{
+  text?: string;           // Button text
+  onClick?: () => void;    // Click handler
+  icon?: ReactNode;        // Icon element
+  // ...extends ButtonHTMLAttributes
+}`,
+                },
+                category: 'Mobile',
+            },
+        },
+        // Event Props
         onSidebarStateChange: {
             description:
-                'Callback fired when the sidebar transitions between collapsed, intermediate (hover), and expanded states.',
+                'Callback fired when the sidebar transitions between states: "collapsed", "intermediate" (hover peek), and "expanded". Useful for analytics or syncing external UI.',
             control: false,
             action: 'onSidebarStateChange',
             table: {
@@ -240,6 +531,36 @@ const navigationData = [
                         '(state: "collapsed" | "intermediate" | "expanded") => void',
                 },
                 category: 'Events',
+            },
+        },
+        // Legacy Props
+        merchantInfo: {
+            control: 'object',
+            description:
+                'Legacy merchant information object. Consider using leftPanel for modern tenant switching.',
+            table: {
+                type: {
+                    summary: 'SidebarMerchantInfo',
+                    detail: `{
+  items: Array<{
+    label: string;
+    value: string;
+    icon?: ReactNode;
+  }>;
+  selected: string;
+  onSelect: (value) => void;
+}`,
+                },
+                category: 'Legacy',
+            },
+        },
+        rightActions: {
+            control: false,
+            description:
+                'Legacy right-side actions for topbar. Array of action objects with icon, label, and onClick. Consider using topbar prop for custom topbar content instead.',
+            table: {
+                type: { summary: 'TopbarAction[]' },
+                category: 'Legacy',
             },
         },
     },

@@ -123,6 +123,31 @@ import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
             options: ['none', 'star', 'checkCircle', 'settings'],
             description: 'Content to display after the avatar',
         },
+        onlinePosition: {
+            control: 'select',
+            options: Object.values(AvatarOnlinePosition),
+            description:
+                'Position of the online status indicator (top or bottom)',
+        },
+        skeleton: {
+            control: 'object',
+            description:
+                'Skeleton loading state configuration with show and variant properties',
+            table: {
+                type: {
+                    summary: 'SkeletonConfig',
+                    detail: `{
+  show: boolean;              // Whether to show skeleton loading
+  variant?: 'pulse' | 'wave'; // Animation variant (default: 'pulse')
+}`,
+                },
+                category: 'State',
+            },
+        },
+        onClick: {
+            action: 'onClick',
+            description: 'Click handler for the avatar',
+        },
     },
     tags: ['autodocs'],
 }

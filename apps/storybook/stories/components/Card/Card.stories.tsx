@@ -303,12 +303,140 @@ enum CardAlignment {
             control: { type: 'text' },
             description: 'Maximum width of the card',
         },
+        maxHeight: {
+            control: { type: 'text' },
+            description: 'Maximum height of the card',
+        },
+        minHeight: {
+            control: { type: 'text' },
+            description: 'Minimum height of the card',
+        },
         className: {
             control: { type: 'text' },
             description: 'Additional CSS class names',
         },
+        headerSlot1: {
+            control: false,
+            description:
+                'Leading content in header (icons, avatars, status indicators). Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Header Slots',
+            },
+        },
+        headerTitle: {
+            control: { type: 'text' },
+            description: 'Main header text/title',
+        },
+        headerTag: {
+            control: false,
+            description:
+                'Status tags, badges, or category labels in header. Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Header Slots',
+            },
+        },
+        headerSlot2: {
+            control: false,
+            description:
+                'Trailing content in header (buttons, menu actions). Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Header Slots',
+            },
+        },
+        subHeader: {
+            control: { type: 'text' },
+            description:
+                'Descriptive text positioned below header title and tag',
+        },
+        bodySlot1: {
+            control: false,
+            description:
+                'Custom content above body title (alerts, notifications). Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Body Slots',
+            },
+        },
+        bodyTitle: {
+            control: { type: 'text' },
+            description: 'Main body heading',
+        },
+        content: {
+            control: { type: 'text' },
+            description: 'Primary body content (descriptions, details)',
+        },
+        bodySlot2: {
+            control: false,
+            description:
+                'Custom content below main content (metrics, statistics). Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Body Slots',
+            },
+        },
+        actionButton: {
+            control: { type: 'object' },
+            description:
+                'Primary action button configuration with full ButtonProps support',
+            table: {
+                type: {
+                    summary: 'ButtonProps',
+                    detail: `{
+  text: string;
+  buttonType?: ButtonType;
+  size?: ButtonSize;
+  subType?: ButtonSubType;
+  leadingIcon?: ReactNode;
+  trailingIcon?: ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  loading?: boolean;
+}`,
+                },
+                category: 'Actions',
+            },
+        },
+        cardSlot: {
+            control: false,
+            description:
+                'Flexible content area for images, icons, avatars, graphics (ALIGNED variant only). Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Aligned Card',
+            },
+            if: { arg: 'variant', eq: CardVariant.ALIGNED },
+        },
+        skeleton: {
+            control: { type: 'object' },
+            description:
+                'Skeleton loading state configuration with show and variant properties',
+            table: {
+                type: {
+                    summary: 'SkeletonConfig',
+                    detail: `{
+  show: boolean;           // Whether to show skeleton loading state
+  variant?: 'pulse' | 'wave';  // Animation style (default: 'pulse')
+}`,
+                },
+                category: 'State',
+            },
+        },
+        children: {
+            control: false,
+            description:
+                'Complete custom content with full React element support (CUSTOM variant only). Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Custom Card',
+            },
+            if: { arg: 'variant', eq: CardVariant.CUSTOM },
+        },
     },
-}
+    tags: ['autodocs'],
+} as Meta<typeof Card>
 
 export default meta
 type Story = StoryObj<typeof Card>
@@ -727,6 +855,7 @@ export const CustomCardDashboard: Story = {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '16px',
+                    padding: '20px',
                 }}
             >
                 <div
@@ -827,6 +956,7 @@ export const CustomCardForm: Story = {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '16px',
+                    padding: '15px',
                 }}
             >
                 <h3
@@ -905,6 +1035,7 @@ export const CustomCardProfile: Story = {
                     flexDirection: 'column',
                     gap: '16px',
                     textAlign: 'center',
+                    padding: '25px',
                 }}
             >
                 <div
@@ -984,6 +1115,114 @@ export const Playground: Story = {
                 story: 'Interactive playground to test different card configurations. Use the controls panel to experiment with various props and see real-time changes.',
             },
         },
+    },
+}
+
+// Skeleton Loading State
+export const SkeletonState: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '32px',
+                padding: '24px',
+            }}
+        >
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Default Card - Pulse Variant
+                </h4>
+                <Card
+                    headerTitle="Loading..."
+                    subHeader="Skeleton loading state"
+                    bodyTitle="Content"
+                    content="This card is in a loading state with pulse animation."
+                    skeleton={{ show: true, variant: 'pulse' }}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Default Card - Wave Variant
+                </h4>
+                <Card
+                    headerTitle="Loading..."
+                    subHeader="Skeleton loading state"
+                    bodyTitle="Content"
+                    content="This card is in a loading state with wave animation."
+                    skeleton={{ show: true, variant: 'wave' }}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Aligned Card - Vertical with Skeleton
+                </h4>
+                <Card
+                    variant={CardVariant.ALIGNED}
+                    alignment={CardAlignment.VERTICAL}
+                    centerAlign
+                    cardSlot={
+                        <div
+                            style={{
+                                width: '80px',
+                                height: '80px',
+                                background: '#e5e7eb',
+                                borderRadius: '50%',
+                            }}
+                        />
+                    }
+                    headerTitle="Profile Loading"
+                    content="User profile data is loading..."
+                    skeleton={{ show: true, variant: 'pulse' }}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Custom Card - Skeleton
+                </h4>
+                <Card
+                    variant={CardVariant.CUSTOM}
+                    skeleton={{ show: true, variant: 'wave' }}
+                >
+                    <div>Custom content is loading...</div>
+                </Card>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates skeleton loading states for all Card variants. Shows pulse and wave animations for Default, Aligned, and Custom card types.',
+            },
+        },
+        a11y: getA11yConfig('content'),
     },
 }
 

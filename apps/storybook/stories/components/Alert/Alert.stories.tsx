@@ -144,10 +144,32 @@ import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system';
         primaryAction: {
             control: 'object',
             description: 'Primary action button configuration',
+            table: {
+                type: {
+                    summary: 'AlertActionConfig',
+                    detail: `{
+  label: string;              // Button text (required)
+  onClick: () => void;       // Click handler (required)
+  disabled?: boolean;        // Disable the button
+}`,
+                },
+                category: 'Actions',
+            },
         },
         secondaryAction: {
             control: 'object',
             description: 'Secondary action button configuration',
+            table: {
+                type: {
+                    summary: 'AlertActionConfig',
+                    detail: `{
+  label: string;              // Button text (required)
+  onClick: () => void;       // Click handler (required)
+  disabled?: boolean;        // Disable the button
+}`,
+                },
+                category: 'Actions',
+            },
         },
         maxWidth: {
             control: 'text',

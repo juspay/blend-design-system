@@ -170,6 +170,23 @@ const [tabs, setTabs] = useState<TabItem[]>([
         items: {
             control: 'object',
             description: 'Array of tab items for dynamic management',
+            table: {
+                type: {
+                    summary: 'TabItem[]',
+                    detail: `TabItem: {
+  value: string;                      // Unique identifier for the tab (required)
+  label: string;                      // Display text for the tab (required)
+  content: ReactNode;                 // Tab panel content (required)
+  disable?: boolean;                  // Disable this tab
+  showSkeleton?: boolean;             // Show skeleton loading state
+  skeletonVariant?: 'pulse' | 'wave'; // Skeleton animation variant
+  leftSlot?: ReactNode;               // Icon/content on left of label
+  rightSlot?: ReactNode;              // Icon/content on right of label
+  newItem?: boolean;                  // Highlight as new item
+}`,
+                },
+                category: 'Data',
+            },
         },
         onTabClose: {
             action: 'tabClosed',
@@ -3174,6 +3191,379 @@ export const RealWorldScenarios: Story = {
             },
         },
         a11y: getA11yConfig('interactive'),
+    },
+}
+
+// ============================================================================
+// Skeleton Loading States
+// ============================================================================
+
+/**
+ * Tabs with skeleton loading states
+ */
+export const SkeletonLoading: Story = {
+    render: () => {
+        const [loading, setLoading] = useState(true)
+        const [variant, setVariant] = useState<'pulse' | 'wave' | 'shimmer'>(
+            'pulse'
+        )
+
+        const skeletonItems: TabItem[] = [
+            {
+                value: 'overview',
+                label: 'Overview',
+                content: <div>Overview content loaded!</div>,
+                showSkeleton: loading,
+                skeletonVariant: variant,
+            },
+            {
+                value: 'analytics',
+                label: 'Analytics',
+                content: <div>Analytics content loaded!</div>,
+                showSkeleton: loading,
+                skeletonVariant: variant,
+            },
+            {
+                value: 'reports',
+                label: 'Reports',
+                content: <div>Reports content loaded!</div>,
+                showSkeleton: loading,
+                skeletonVariant: variant,
+            },
+        ]
+
+        return (
+            <div style={{ width: '600px' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Skeleton Loading Demo
+                    </h3>
+                    <p
+                        style={{
+                            margin: '0 0 16px 0',
+                            color: '#64748b',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Toggle loading state to see skeleton placeholders.
+                        Select different animation variants.
+                    </p>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '12px',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <button
+                            onClick={() => setLoading(!loading)}
+                            style={{
+                                padding: '8px 16px',
+                                backgroundColor: loading
+                                    ? '#10b981'
+                                    : '#3b82f6',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                            }}
+                        >
+                            {loading ? 'Load Content' : 'Show Skeleton'}
+                        </button>
+                        <select
+                            value={variant}
+                            onChange={(e) =>
+                                setVariant(
+                                    e.target.value as
+                                        | 'pulse'
+                                        | 'wave'
+                                        | 'shimmer'
+                                )
+                            }
+                            style={{
+                                padding: '8px 12px',
+                                borderRadius: '6px',
+                                border: '1px solid #e2e8f0',
+                                fontSize: '14px',
+                            }}
+                        >
+                            <option value="pulse">Pulse</option>
+                            <option value="wave">Wave</option>
+                            <option value="shimmer">Shimmer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <Tabs
+                    items={skeletonItems}
+                    defaultValue="overview"
+                    showSkeleton={loading}
+                    skeletonVariant={variant}
+                />
+
+                <div
+                    style={{
+                        marginTop: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f0f9ff',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                    }}
+                >
+                    <strong>Features:</strong>
+                    <ul
+                        style={{
+                            margin: '8px 0 0 0',
+                            paddingLeft: '20px',
+                            color: '#64748b',
+                        }}
+                    >
+                        <li>
+                            <code>showSkeleton</code>: Displays loading
+                            placeholders
+                        </li>
+                        <li>
+                            <code>skeletonVariant</code>: Choose pulse, wave, or
+                            shimmer animation
+                        </li>
+                        <li>Maintains tab structure during loading</li>
+                        <li>Smooth transition when content loads</li>
+                    </ul>
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates skeleton loading states with different animation variants (pulse, wave, shimmer). Useful for showing loading feedback while tab content is being fetched.',
+            },
+        },
+    },
+}
+
+// ============================================================================
+// Sticky Header
+// ============================================================================
+
+/**
+ * Tabs with sticky header for long content
+ */
+export const StickyHeader: Story = {
+    render: () => {
+        const [isSticky, setIsSticky] = useState(true)
+        const [offsetTop, setOffsetTop] = useState(0)
+
+        const longContentItems: TabItem[] = [
+            {
+                value: 'section1',
+                label: 'Section 1',
+                content: (
+                    <div style={{ padding: '20px' }}>
+                        <h3>Scrollable Content Section 1</h3>
+                        {Array.from({ length: 20 }).map((_, i) => (
+                            <p
+                                key={i}
+                                style={{ lineHeight: '2', color: '#64748b' }}
+                            >
+                                Paragraph {i + 1}: Lorem ipsum dolor sit amet,
+                                consectetur adipiscing elit. Sed do eiusmod
+                                tempor incididunt ut labore et dolore magna
+                                aliqua.
+                            </p>
+                        ))}
+                    </div>
+                ),
+            },
+            {
+                value: 'section2',
+                label: 'Section 2',
+                content: (
+                    <div style={{ padding: '20px' }}>
+                        <h3>Scrollable Content Section 2</h3>
+                        {Array.from({ length: 20 }).map((_, i) => (
+                            <p
+                                key={i}
+                                style={{ lineHeight: '2', color: '#64748b' }}
+                            >
+                                Paragraph {i + 1}: Ut enim ad minim veniam, quis
+                                nostrud exercitation ullamco laboris nisi ut
+                                aliquip ex ea commodo consequat.
+                            </p>
+                        ))}
+                    </div>
+                ),
+            },
+            {
+                value: 'section3',
+                label: 'Section 3',
+                content: (
+                    <div style={{ padding: '20px' }}>
+                        <h3>Scrollable Content Section 3</h3>
+                        {Array.from({ length: 20 }).map((_, i) => (
+                            <p
+                                key={i}
+                                style={{ lineHeight: '2', color: '#64748b' }}
+                            >
+                                Paragraph {i + 1}: Duis aute irure dolor in
+                                reprehenderit in voluptate velit esse cillum
+                                dolore eu fugiat nulla pariatur.
+                            </p>
+                        ))}
+                    </div>
+                ),
+            },
+        ]
+
+        return (
+            <div style={{ width: '600px' }}>
+                <div
+                    style={{
+                        marginBottom: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Sticky Header Demo
+                    </h3>
+                    <p
+                        style={{
+                            margin: '0 0 16px 0',
+                            color: '#64748b',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Scroll down in the content area below. The tab header
+                        stays visible when sticky is enabled.
+                    </p>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '12px',
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                fontSize: '14px',
+                            }}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={isSticky}
+                                onChange={(e) => setIsSticky(e.target.checked)}
+                            />
+                            Enable Sticky Header
+                        </label>
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                            }}
+                        >
+                            <label style={{ fontSize: '14px' }}>
+                                Offset Top:
+                            </label>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={offsetTop}
+                                onChange={(e) =>
+                                    setOffsetTop(Number(e.target.value))
+                                }
+                                style={{ width: '100px' }}
+                            />
+                            <span
+                                style={{ fontSize: '14px', minWidth: '40px' }}
+                            >
+                                {offsetTop}px
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style={{
+                        height: '400px',
+                        overflow: 'auto',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                    }}
+                >
+                    <Tabs
+                        items={longContentItems}
+                        defaultValue="section1"
+                        stickyHeader={isSticky}
+                        offsetTop={offsetTop}
+                    />
+                </div>
+
+                <div
+                    style={{
+                        marginTop: '20px',
+                        padding: '16px',
+                        backgroundColor: '#f0fdf4',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                    }}
+                >
+                    <strong>Features:</strong>
+                    <ul
+                        style={{
+                            margin: '8px 0 0 0',
+                            paddingLeft: '20px',
+                            color: '#64748b',
+                        }}
+                    >
+                        <li>
+                            <code>stickyHeader</code>: Keeps tabs visible while
+                            scrolling
+                        </li>
+                        <li>
+                            <code>offsetTop</code>: Adjust sticky position
+                            (0-100px)
+                        </li>
+                        <li>Useful for long tab content</li>
+                        <li>Maintains context during navigation</li>
+                    </ul>
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates sticky header functionality that keeps tab navigation visible while scrolling through long content. Includes offset top adjustment for fine-tuning the sticky position.',
+            },
+        },
     },
 }
 

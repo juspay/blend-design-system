@@ -21,7 +21,7 @@ import {
 
 type DateRange = {
     startDate: Date
-    endDate: Date
+    endDate?: Date
     showTimePicker?: boolean
 }
 
@@ -162,6 +162,33 @@ const [dateRange, setDateRange] = useState({
             table: {
                 type: { summary: 'boolean' },
                 defaultValue: { summary: 'false' },
+                category: 'Date Configuration',
+            },
+        },
+        showDateInput: {
+            control: { type: 'boolean' },
+            description: 'Show date input fields for manual date entry',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Date Configuration',
+            },
+        },
+        isSingleDatePicker: {
+            control: { type: 'boolean' },
+            description: 'Enable single date picker mode instead of date range',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'Date Configuration',
+            },
+        },
+        maxYearOffset: {
+            control: { type: 'number', min: 1, max: 100 },
+            description:
+                'Maximum year offset from current year for date selection',
+            table: {
+                type: { summary: 'number' },
                 category: 'Date Configuration',
             },
         },
@@ -922,7 +949,7 @@ export const CustomTriggers: Story = {
                         triggerElement={
                             <Button
                                 buttonType={ButtonType.SECONDARY}
-                                text={`${analyticsRange.startDate.toLocaleDateString()} - ${analyticsRange.endDate.toLocaleDateString()}`}
+                                text={`${analyticsRange.startDate.toLocaleDateString()} - ${analyticsRange.endDate?.toLocaleDateString() ?? 'Select end date'}`}
                                 leadingIcon={React.createElement(TrendingUp, {
                                     size: 16,
                                 })}
@@ -1433,9 +1460,9 @@ export const TimezoneSupport: Story = {
                                 </div>
                                 <div>
                                     <strong>End:</strong>{' '}
-                                    {nyRange.endDate.toLocaleString('en-US', {
+                                    {nyRange.endDate?.toLocaleString('en-US', {
                                         timeZone: 'America/New_York',
-                                    })}
+                                    }) ?? 'Not selected'}
                                 </div>
                             </div>
                         )}
@@ -1484,12 +1511,12 @@ export const TimezoneSupport: Story = {
                                 </div>
                                 <div>
                                     <strong>End:</strong>{' '}
-                                    {tokyoRange.endDate.toLocaleString(
+                                    {tokyoRange.endDate?.toLocaleString(
                                         'en-US',
                                         {
                                             timeZone: 'Asia/Tokyo',
                                         }
-                                    )}
+                                    ) ?? 'Not selected'}
                                 </div>
                             </div>
                         )}
@@ -1538,12 +1565,12 @@ export const TimezoneSupport: Story = {
                                 </div>
                                 <div>
                                     <strong>End:</strong>{' '}
-                                    {londonRange.endDate.toLocaleString(
+                                    {londonRange.endDate?.toLocaleString(
                                         'en-US',
                                         {
                                             timeZone: 'Europe/London',
                                         }
-                                    )}
+                                    ) ?? 'Not selected'}
                                 </div>
                             </div>
                         )}
@@ -1592,12 +1619,12 @@ export const TimezoneSupport: Story = {
                                 </div>
                                 <div>
                                     <strong>End:</strong>{' '}
-                                    {sydneyRange.endDate.toLocaleString(
+                                    {sydneyRange.endDate?.toLocaleString(
                                         'en-US',
                                         {
                                             timeZone: 'Australia/Sydney',
                                         }
-                                    )}
+                                    ) ?? 'Not selected'}
                                 </div>
                             </div>
                         )}

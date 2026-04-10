@@ -185,6 +185,20 @@ import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
             action: 'clicked',
             description: 'Click handler function',
         },
+        showSkeleton: {
+            control: 'boolean',
+            description:
+                'Shows skeleton loading state instead of the button content',
+        },
+        skeletonVariant: {
+            control: 'select',
+            options: ['pulse', 'wave'],
+            description: 'Animation variant for the skeleton loading state',
+        },
+        width: {
+            control: 'text',
+            description: 'Custom width for the button (e.g., "120px", "100%")',
+        },
     },
     tags: ['autodocs'],
 }
@@ -888,6 +902,179 @@ export const Showcase: Story = {
                 story: 'Button variations showcase.',
             },
         },
+    },
+}
+
+// ============================================================================
+// Skeleton Loading State
+// ============================================================================
+
+export const SkeletonState: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '32px',
+                padding: '24px',
+            }}
+        >
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Pulse Variant (Default)
+                </h4>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        text="Primary Button"
+                        buttonType={ButtonType.PRIMARY}
+                        showSkeleton={true}
+                        skeletonVariant="pulse"
+                    />
+                    <Button
+                        text="Secondary Button"
+                        buttonType={ButtonType.SECONDARY}
+                        showSkeleton={true}
+                        skeletonVariant="pulse"
+                    />
+                    <Button
+                        text="Danger Button"
+                        buttonType={ButtonType.DANGER}
+                        showSkeleton={true}
+                        skeletonVariant="pulse"
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Wave Variant
+                </h4>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        text="Primary Button"
+                        buttonType={ButtonType.PRIMARY}
+                        showSkeleton={true}
+                        skeletonVariant="wave"
+                    />
+                    <Button
+                        text="Secondary Button"
+                        buttonType={ButtonType.SECONDARY}
+                        showSkeleton={true}
+                        skeletonVariant="wave"
+                    />
+                    <Button
+                        text="Success Button"
+                        buttonType={ButtonType.SUCCESS}
+                        showSkeleton={true}
+                        skeletonVariant="wave"
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Different Sizes (Pulse)
+                </h4>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '12px',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Button
+                        text="Small"
+                        size={ButtonSize.SMALL}
+                        showSkeleton={true}
+                        skeletonVariant="pulse"
+                    />
+                    <Button
+                        text="Medium"
+                        size={ButtonSize.MEDIUM}
+                        showSkeleton={true}
+                        skeletonVariant="pulse"
+                    />
+                    <Button
+                        text="Large"
+                        size={ButtonSize.LARGE}
+                        showSkeleton={true}
+                        skeletonVariant="pulse"
+                    />
+                </div>
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Full Width Skeleton
+                </h4>
+                <Button
+                    text="Full Width Button"
+                    fullWidth
+                    showSkeleton={true}
+                    skeletonVariant="pulse"
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Icon Only Skeleton
+                </h4>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Settings size={20} />}
+                        showSkeleton={true}
+                        skeletonVariant="pulse"
+                    />
+                    <Button
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Search size={20} />}
+                        size={ButtonSize.MEDIUM}
+                        showSkeleton={true}
+                        skeletonVariant="wave"
+                    />
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates skeleton loading states for Button component. Shows pulse and wave variants across different button types, sizes, and configurations including full-width and icon-only buttons.',
+            },
+        },
+        a11y: getA11yConfig('content'),
     },
 }
 

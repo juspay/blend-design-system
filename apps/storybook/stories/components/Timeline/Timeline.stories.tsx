@@ -196,6 +196,61 @@ export const ShowMoreDisabled: Story = {
     },
 }
 
+/**
+ * Additional Timeline props not covered in other stories:
+ *
+ * ## Timeline.Node Additional Props
+ *
+ * - **maxLines**: number - Truncates long text after N lines with ellipsis
+ * - **avatarProps**: Partial<Omit<AvatarV2Props, 'src' | 'fallbackText'>> - Custom avatar styling (size, shape, etc.)
+ * - **datetime**: string - Machine-readable datetime (ISO format) for accessibility, distinct from display 'time'
+ * - **title**: string - Adds a header/title above the comment text
+ * - **status**: TimelineNodeStatus - Shows colored status indicator (SUCCESS, WARNING, ERROR, NEUTRAL)
+ * - **datetimeLeftSlot** / **datetimeRightSlot**: ReactNode - Extra content rendered beside the timestamp
+ * - **leftSlot** / **headerRightSlot**: ReactNode - Custom content in the node header area
+ * - **children**: ReactNode - Additional content rendered below the text
+ *
+ * ## Timeline.ShowMore Additional Props
+ *
+ * - **label**: string - Custom button text (defaults to "Show more")
+ * - **buttonProps**: Partial<Omit<ButtonV2Props, 'text' | 'onClick'>> - Custom button styling (variant, size, etc.)
+ *
+ * ## Timeline.Substep Additional Props
+ *
+ * - **datetimeLeftSlot** / **datetimeRightSlot**: ReactNode - Extra content rendered beside the timestamp
+ *
+ * ## Example Usage
+ *
+ * ```tsx
+ * <Timeline.Node
+ *   title="Status Update"
+ *   text="The payment has been processed successfully."
+ *   maxLines={2}
+ *   status={TimelineNodeStatus.SUCCESS}
+ *   user={{ name: 'John Doe', avatar: '/avatar.jpg' }}
+ *   time="2:30 PM"
+ *   datetime="2025-01-15T14:30:00Z"
+ *   avatarProps={{ size: 'sm', shape: 'circle' }}
+ *   datetimeRightSlot={<span>✓</span>}
+ * >
+ *   <button>View Details</button>
+ * </Timeline.Node>
+ *
+ * <Timeline.ShowMore
+ *   count={5}
+ *   label="Load more comments"
+ *   buttonProps={{ variant: 'secondary', size: 'sm' }}
+ *   onShowMore={() => loadMore()}
+ * />
+ *
+ * <Timeline.Substep
+ *   title="Step completed"
+ *   timestamp="3:00 PM"
+ *   datetimeRightSlot={<Badge>Done</Badge>}
+ * />
+ * ```
+ */
+
 export const Visual: Story = {
     render: () => (
         <div

@@ -122,6 +122,18 @@ import { StatCard, StatCardVariant, ChangeType } from '@juspay/blend-design-syst
         change: {
             control: 'object',
             description: 'Change indicator with value and type',
+            table: {
+                type: {
+                    summary: 'StatCardChange',
+                    detail: `{
+  value: number | null;           // The change value (percentage or number)
+  valueType: ChangeType;          // 'increase' | 'decrease'
+  arrowDirection?: 'up' | 'down'; // Override default arrow direction
+  tooltip?: ReactNode;            // Custom tooltip content
+}`,
+                },
+                category: 'Data',
+            },
         },
         progressValue: {
             control: { type: 'number', min: 0, max: 100 },

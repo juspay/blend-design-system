@@ -317,10 +317,21 @@ import { Modal, Button, ButtonType } from '@juspay/blend-design-system';
         },
         skeleton: {
             control: { type: 'object' },
-            description: 'Skeleton props for the modal',
+            description: 'Skeleton loading state configuration for the modal',
             table: {
-                type: { summary: 'ModalSkeletonProps' },
-                category: 'Appearance',
+                type: {
+                    summary: 'ModalSkeletonProps',
+                    detail: `{
+  show?: boolean;              // Whether to show skeleton loading
+  variant?: 'pulse' | 'wave';  // Animation variant (default: 'pulse')
+  bodySkeletonProps?: {        // Additional body skeleton config
+    show?: boolean;
+    width?: string;
+    height?: string;
+  }
+}`,
+                },
+                category: 'State',
             },
         },
     },
