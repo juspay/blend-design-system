@@ -378,4 +378,5 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
     }
 )
 
+MultiValueInputV2.displayName = 'MultiValueInputV2'
 export default MultiValueInputV2

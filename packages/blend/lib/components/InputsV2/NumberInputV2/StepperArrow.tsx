@@ -16,7 +16,6 @@ export const StepperArrow = ({
                 transform: flip ? 'rotate(180deg)' : undefined,
                 opacity: disabled ? 1 : dimmed ? 0.3 : 1,
             }}
-            direction="up"
             color={color}
             fill={color}
             size={size}

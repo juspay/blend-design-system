@@ -195,7 +195,8 @@ import {
     ResponsiveMultiValueInputV2Tokens,
     getMultiValueInputV2Tokens,
 } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
-import {getNumberInputV2Tokens,
+import {
+    getNumberInputV2Tokens,
     ResponsiveNumberInputV2Tokens,
 } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
 export type ComponentTokenType = {

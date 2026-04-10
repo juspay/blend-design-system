@@ -36,7 +36,7 @@ export const sanitizeNumberInput = (
 
     if (sanitized.startsWith('-0')) {
         const afterZero = sanitized.substring(2)
-        if (afterZero === '' || afterZero === '.' || /^\.0+$/.test(afterZero)) {
+        if (/^\.0+$/.test(afterZero)) {
             sanitized = '0'
         }
     }

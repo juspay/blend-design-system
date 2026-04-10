@@ -175,17 +175,25 @@ export const getNumberInputV2LightTokens = (
                     md: foundationToken.unit[20],
                     lg: foundationToken.unit[20],
                 },
-                padding: {
-                    x: {
-                        sm: foundationToken.unit[10],
-                        md: foundationToken.unit[12],
-                        lg: foundationToken.unit[14],
-                    },
-                    y: {
-                        sm: foundationToken.unit[6],
-                        md: foundationToken.unit[8],
-                        lg: foundationToken.unit[14],
-                    },
+                paddingTop: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
+                },
+                paddingRight: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
+                },
+                paddingLeft: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
                 },
                 border: {
                     default: `1px solid ${foundationToken.colors.gray[200]}`,
@@ -231,6 +239,12 @@ export const getNumberInputV2LightTokens = (
                     },
                 },
             },
+            floatingLabels: {
+                placeholder: inputPlaceholder(foundationToken),
+                required: {
+                    color: foundationToken.colors.red[600],
+                },
+            },
             bottomContainer: bottomContainer(foundationToken),
         },
         lg: {
@@ -265,17 +279,25 @@ export const getNumberInputV2LightTokens = (
                     error: foundationToken.colors.red[800],
                     disabled: foundationToken.colors.gray[300],
                 },
-                padding: {
-                    x: {
-                        sm: foundationToken.unit[10],
-                        md: foundationToken.unit[12],
-                        lg: foundationToken.unit[14],
-                    },
-                    y: {
-                        sm: foundationToken.unit[4],
-                        md: foundationToken.unit[6],
-                        lg: foundationToken.unit[8],
-                    },
+                paddingTop: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
+                },
+                paddingRight: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
+                },
+                paddingLeft: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
                 },
                 border: {
                     default: `1px solid ${foundationToken.colors.gray[200]}`,
@@ -321,6 +343,12 @@ export const getNumberInputV2LightTokens = (
                             lg: foundationToken.unit[6],
                         },
                     },
+                },
+            },
+            floatingLabels: {
+                placeholder: inputPlaceholder(foundationToken),
+                required: {
+                    color: foundationToken.colors.red[600],
                 },
             },
             bottomContainer: bottomContainer(foundationToken),

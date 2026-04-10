@@ -66,8 +66,8 @@ const NumberInputV2Demo = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <NumberInputV2
                             data-id={'Enter value'}
-                            data-input-name={playgroundValue?.toString() || ''}
-                            name={playgroundValue?.toString() || ''}
+                            data-input-name="playground-value"
+                            name="playground-value"
                             label={{ text: 'Value', subtext: '' }}
                             value={playgroundValue}
                             onChange={(e) =>
@@ -175,10 +175,14 @@ const NumberInputV2Demo = () => {
                                 size={playgroundSize}
                                 step={Number(playgroundStep)}
                                 min={
-                                    showMin ? Number(playgroundMin) : undefined
+                                    showMin && playgroundMin != null
+                                        ? Number(playgroundMin)
+                                        : undefined
                                 }
                                 max={
-                                    showMax ? Number(playgroundMax) : undefined
+                                    showMax && playgroundMax != null
+                                        ? Number(playgroundMax)
+                                        : undefined
                                 }
                                 preventNegative={preventNegative}
                                 disabled={isDisabled}
@@ -460,7 +464,6 @@ const NumberInputV2Demo = () => {
                                         ? null
                                         : Number(e.target.value)
                                 setPlaygroundValue(newValue)
-                                console.log('newValue', newValue)
                             }}
                             placeholder="Try typing 3 or 40..."
                             min={5}
