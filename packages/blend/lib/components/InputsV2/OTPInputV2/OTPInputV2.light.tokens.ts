@@ -1,4 +1,4 @@
-import { FoundationTokenType } from '../../../tokens/theme.token'
+import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { ResponsiveOTPInputV2Tokens } from './OTPInputV2.tokens'
 
 export const getOTPInputV2LightTokens = (
@@ -83,7 +83,6 @@ export const getOTPInputV2LightTokens = (
                     fontSize: foundationTokens.font.size.heading.md.fontSize,
                     fontWeight: foundationTokens.font.weight[600],
                     borderRadius: foundationTokens.border.radius[12],
-                    boxShadow: foundationTokens.shadows.sm,
 
                     border: {
                         default: `1px solid ${foundationTokens.colors.gray[200]}`,
@@ -230,7 +229,6 @@ export const getOTPInputV2LightTokens = (
                     fontSize: foundationTokens.font.size.heading.md.fontSize,
                     fontWeight: foundationTokens.font.weight[600],
                     borderRadius: foundationTokens.border.radius[12],
-                    boxShadow: foundationTokens.shadows.sm,
                     border: {
                         default: `1px solid ${foundationTokens.colors.gray[200]}`,
                         hover: `1px solid ${foundationTokens.colors.gray[400]}`,

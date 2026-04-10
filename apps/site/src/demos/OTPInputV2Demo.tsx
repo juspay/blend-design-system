@@ -82,7 +82,9 @@ const OTPInputV2Demo = () => {
                             items={[{ items: lengthOptions }]}
                             selected={playgroundLength.toString()}
                             onSelect={(value) => {
-                                setPlaygroundLength(parseInt(value as string))
+                                setPlaygroundLength(
+                                    parseInt(value as string, 10)
+                                )
                                 setPlaygroundValue('')
                             }}
                             placeholder="Select length"

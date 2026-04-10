@@ -1,7 +1,7 @@
 import type { CSSObject } from 'styled-components'
-import { BreakpointType } from '../../../breakpoints/breakPoints'
+import type { BreakpointType } from '../../../breakpoints/breakPoints'
 import { InputFooterV2Tokens, InputLabelsV2Tokens } from '../inputV2.tokens'
-import { InputStateV2 } from '../inputV2.types'
+import type { InputStateV2 } from '../inputV2.types'
 import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { Theme } from '../../../context/theme.enum'
 import { getOTPInputV2DarkTokens } from './OTPInputV2.dark.tokens'
@@ -21,7 +21,6 @@ export type OTPInputV2TokensType = {
                 [key in InputStateV2]: CSSObject['color']
             }
             borderRadius: CSSObject['borderRadius']
-            boxShadow: CSSObject['boxShadow']
             border: {
                 [key in InputStateV2]: CSSObject['border']
             }

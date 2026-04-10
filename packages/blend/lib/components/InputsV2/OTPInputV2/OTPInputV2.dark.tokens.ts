@@ -1,4 +1,4 @@
-import { FoundationTokenType } from '../../../tokens/theme.token'
+import type { FoundationTokenType } from '../../../tokens/theme.token'
 import { ResponsiveOTPInputV2Tokens } from './OTPInputV2.tokens'
 
 export const getOTPInputV2DarkTokens = (
@@ -20,11 +20,11 @@ export const getOTPInputV2DarkTokens = (
                         lg: foundationTokens.font.weight[500],
                     },
                     color: {
-                        default: foundationTokens.colors.gray[700],
-                        hover: foundationTokens.colors.gray[700],
-                        focus: foundationTokens.colors.gray[700],
-                        disabled: foundationTokens.colors.gray[400],
-                        error: foundationTokens.colors.red[600],
+                        default: foundationTokens.colors.gray[100],
+                        hover: foundationTokens.colors.gray[100],
+                        focus: foundationTokens.colors.gray[100],
+                        disabled: foundationTokens.colors.gray[500],
+                        error: foundationTokens.colors.red[400],
                     },
                     lineHeight: {
                         sm: foundationTokens.font.lineHeight[20],
@@ -52,8 +52,8 @@ export const getOTPInputV2DarkTokens = (
                         default: foundationTokens.colors.gray[400],
                         hover: foundationTokens.colors.gray[400],
                         focus: foundationTokens.colors.gray[400],
-                        disabled: foundationTokens.colors.gray[300],
-                        error: foundationTokens.colors.red[600],
+                        disabled: foundationTokens.colors.gray[600],
+                        error: foundationTokens.colors.red[400],
                     },
                 },
                 helpIcon: {
@@ -64,14 +64,14 @@ export const getOTPInputV2DarkTokens = (
                     },
                     color: {
                         default: foundationTokens.colors.gray[400],
-                        hover: foundationTokens.colors.gray[400],
-                        focus: foundationTokens.colors.gray[400],
-                        disabled: foundationTokens.colors.gray[400],
-                        error: foundationTokens.colors.red[600],
+                        hover: foundationTokens.colors.gray[300],
+                        focus: foundationTokens.colors.gray[300],
+                        disabled: foundationTokens.colors.gray[600],
+                        error: foundationTokens.colors.red[400],
                     },
                 },
                 required: {
-                    color: foundationTokens.colors.red[600],
+                    color: foundationTokens.colors.red[400],
                 },
             },
             inputContainer: {
@@ -82,7 +82,6 @@ export const getOTPInputV2DarkTokens = (
                     fontSize: foundationTokens.font.size.heading.md.fontSize,
                     fontWeight: foundationTokens.font.weight[600],
                     borderRadius: foundationTokens.border.radius[12],
-                    boxShadow: foundationTokens.shadows.sm,
                     border: {
                         default: `1px solid ${foundationTokens.colors.gray[800]}`,
                         hover: `1px solid ${foundationTokens.colors.gray[700]}`,
@@ -127,8 +126,8 @@ export const getOTPInputV2DarkTokens = (
                         default: foundationTokens.colors.gray[500],
                         hover: foundationTokens.colors.gray[500],
                         focus: foundationTokens.colors.gray[500],
-                        disabled: foundationTokens.colors.gray[400],
-                        error: foundationTokens.colors.red[600],
+                        disabled: foundationTokens.colors.gray[600],
+                        error: foundationTokens.colors.red[400],
                     },
                 },
                 errorMessage: {
@@ -147,7 +146,7 @@ export const getOTPInputV2DarkTokens = (
                         md: foundationTokens.font.lineHeight[20],
                         lg: foundationTokens.font.lineHeight[20],
                     },
-                    color: foundationTokens.colors.red[600],
+                    color: foundationTokens.colors.red[400],
                 },
             },
         },
@@ -166,11 +165,11 @@ export const getOTPInputV2DarkTokens = (
                         lg: foundationTokens.font.weight[500],
                     },
                     color: {
-                        default: foundationTokens.colors.gray[0],
-                        hover: foundationTokens.colors.gray[700],
-                        focus: foundationTokens.colors.gray[700],
-                        disabled: foundationTokens.colors.gray[400],
-                        error: foundationTokens.colors.red[600],
+                        default: foundationTokens.colors.gray[100],
+                        hover: foundationTokens.colors.gray[100],
+                        focus: foundationTokens.colors.gray[100],
+                        disabled: foundationTokens.colors.gray[500],
+                        error: foundationTokens.colors.red[400],
                     },
                     lineHeight: {
                         sm: foundationTokens.font.lineHeight[20],
@@ -198,8 +197,8 @@ export const getOTPInputV2DarkTokens = (
                         default: foundationTokens.colors.gray[400],
                         hover: foundationTokens.colors.gray[400],
                         focus: foundationTokens.colors.gray[400],
-                        disabled: foundationTokens.colors.gray[300],
-                        error: foundationTokens.colors.red[600],
+                        disabled: foundationTokens.colors.gray[600],
+                        error: foundationTokens.colors.red[400],
                     },
                 },
                 helpIcon: {
@@ -210,14 +209,14 @@ export const getOTPInputV2DarkTokens = (
                     },
                     color: {
                         default: foundationTokens.colors.gray[400],
-                        hover: foundationTokens.colors.gray[400],
-                        focus: foundationTokens.colors.gray[400],
-                        disabled: foundationTokens.colors.gray[400],
-                        error: foundationTokens.colors.red[600],
+                        hover: foundationTokens.colors.gray[300],
+                        focus: foundationTokens.colors.gray[300],
+                        disabled: foundationTokens.colors.gray[600],
+                        error: foundationTokens.colors.red[400],
                     },
                 },
                 required: {
-                    color: foundationTokens.colors.red[600],
+                    color: foundationTokens.colors.red[400],
                 },
             },
             inputContainer: {
@@ -228,7 +227,6 @@ export const getOTPInputV2DarkTokens = (
                     fontSize: foundationTokens.font.size.heading.md.fontSize,
                     fontWeight: foundationTokens.font.weight[600],
                     borderRadius: foundationTokens.border.radius[12],
-                    boxShadow: foundationTokens.shadows.xs,
                     border: {
                         default: `1px solid ${foundationTokens.colors.gray[800]}`,
                         hover: `1px solid ${foundationTokens.colors.gray[700]}`,
@@ -273,8 +271,8 @@ export const getOTPInputV2DarkTokens = (
                         default: foundationTokens.colors.gray[500],
                         hover: foundationTokens.colors.gray[500],
                         focus: foundationTokens.colors.gray[500],
-                        disabled: foundationTokens.colors.gray[400],
-                        error: foundationTokens.colors.red[600],
+                        disabled: foundationTokens.colors.gray[600],
+                        error: foundationTokens.colors.red[400],
                     },
                 },
                 errorMessage: {
@@ -293,7 +291,7 @@ export const getOTPInputV2DarkTokens = (
                         md: foundationTokens.font.lineHeight[20],
                         lg: foundationTokens.font.lineHeight[20],
                     },
-                    color: foundationTokens.colors.red[600],
+                    color: foundationTokens.colors.red[400],
                 },
             },
         },

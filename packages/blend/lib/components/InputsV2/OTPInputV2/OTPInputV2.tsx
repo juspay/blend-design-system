@@ -14,13 +14,13 @@ import Block from '../../Primitives/Block/Block'
 import InputFooterV2 from '../utils/InputFooter/InputFooterV2'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
-import type { AnyRef } from '../inputV2.types'
+import { InputStateV2, type AnyRef } from '../inputV2.types'
 import { FOCUS_RING_STYLES, TRANSITION } from '../TextInputV2/utils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
 import type { OTPInputV2Props } from './OTPInputV2.types'
 import type { OTPInputV2TokensType } from './OTPInputV2.tokens'
-import { otpCharsToPaddedArray } from './utils'
+import { mergeDigitRunIntoOtp, otpCharsToPaddedArray } from './otpInputV2Utils'
 import { setExternalRef } from '../utils/utils'
 
 const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
@@ -45,8 +45,13 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
         },
         ref
     ) => {
-        const { onKeyDown: restOnKeyDown, ...restWithoutKeyDown } = rest
-        const filteredRest = filterBlockedProps(restWithoutKeyDown)
+        const {
+            onKeyDown: restOnKeyDown,
+            onFocus: restOnFocus,
+            onClick: restOnClick,
+            ...restWithoutForwardedHandlers
+        } = rest
+        const filteredRest = filterBlockedProps(restWithoutForwardedHandlers)
         /** Avoid invalid or huge slot counts; caps DOM / state size. */
         const slotLength = Math.max(1, Math.min(length, 32))
         const otpInputTokens =
@@ -73,9 +78,12 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
 
         // Disabled inputs mirror `value`; enabled inputs keep local state until remount / parent pattern.
         useEffect(() => {
-            if (!disabled) return
-            setOtp(otpCharsToPaddedArray(value || '', slotLength))
-        }, [disabled, value, slotLength])
+            const nextOtp = otpCharsToPaddedArray(value || '', slotLength)
+            setOtp((prevOtp) => {
+                if (prevOtp.join('') === nextOtp.join('')) return prevOtp
+                return nextOtp
+            })
+        }, [value, slotLength])
 
         useEffect(() => {
             setOtp((prevOtp) => {
@@ -102,23 +110,27 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
                 return
             }
 
+            if (val.length > 1) {
+                const { newOtp, digitCount } = mergeDigitRunIntoOtp(
+                    otp,
+                    index,
+                    val,
+                    slotLength
+                )
+                if (digitCount === 0) return
+                setOtp(newOtp)
+                onChange?.(newOtp.join(''))
+                const nextIndex = Math.min(
+                    index + digitCount - 1,
+                    slotLength - 1
+                )
+                inputRefs.current[nextIndex]?.focus()
+                return
+            }
+
             const newVal = val.slice(-1)
 
             if (newVal && !/^\d$/.test(newVal)) return
-
-            if (otp[index] && newVal !== otp[index]) {
-                for (let i = index + 1; i < slotLength; i++) {
-                    if (!otp[i]) {
-                        const newOtp = [...otp]
-                        newOtp[i] = newVal
-                        setOtp(newOtp)
-                        onChange?.(newOtp.join(''))
-                        inputRefs.current[i]?.focus()
-                        return
-                    }
-                }
-                return
-            }
 
             const newOtp = [...otp]
             newOtp[index] = newVal
@@ -177,9 +189,16 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
         }
 
         const inputTokens = otpInputTokens.inputContainer.input
-        const borderState = error ? 'error' : 'default'
-        const bgState = error ? 'error' : 'default'
-        const colorState = disabled ? 'disabled' : 'default'
+        const labelState: InputStateV2 = disabled
+            ? InputStateV2.DISABLED
+            : error
+              ? InputStateV2.ERROR
+              : InputStateV2.DEFAULT
+
+        const inputState = disabled ? 'disabled' : error ? 'error' : 'default'
+        const borderState = inputState
+        const bgState = inputState
+        const colorState = inputState
         const focusBorderState = error ? 'error' : 'focus'
 
         return (
@@ -198,6 +217,7 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
                     name={name}
                     inputId={firstInputId}
                     required={required}
+                    state={labelState}
                     tokens={otpInputTokens.topContainer}
                 />
                 <Block
@@ -240,9 +260,16 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
                                 value={digit}
                                 maxLength={1}
                                 disabled={disabled}
+                                required={required}
                                 data-element={`otp-input-${index}`}
                                 form={form}
                                 name={name ? `${name}-${index}` : undefined}
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]"
+                                autoComplete={
+                                    index === 0 ? 'one-time-code' : undefined
+                                }
                                 width={inputTokens.width}
                                 height={inputTokens.height}
                                 borderRadius={inputTokens.borderRadius}
@@ -257,17 +284,21 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
                                 }
                                 transition={TRANSITION}
                                 _hover={{
-                                    border: inputTokens.border.hover,
-                                    backgroundColor:
-                                        inputTokens.backgroundColor.hover,
+                                    border: error
+                                        ? inputTokens.border.error
+                                        : inputTokens.border.hover,
+                                    backgroundColor: error
+                                        ? inputTokens.backgroundColor.error
+                                        : inputTokens.backgroundColor.hover,
                                 }}
                                 _focus={{
-                                    border: inputTokens.border[
-                                        focusBorderState
-                                    ],
+                                    border: error
+                                        ? inputTokens.border.error
+                                        : inputTokens.border[focusBorderState],
                                     boxShadow: FOCUS_RING_STYLES.boxShadow,
-                                    backgroundColor:
-                                        FOCUS_RING_STYLES.backgroundColor,
+                                    backgroundColor: error
+                                        ? inputTokens.backgroundColor.error
+                                        : FOCUS_RING_STYLES.backgroundColor,
                                 }}
                                 _disabled={{
                                     backgroundColor:
@@ -278,7 +309,12 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
                                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                                     handleChange(index, e.target.value)
                                 }
-                                onPaste={handlePaste}
+                                onPaste={(
+                                    e: ClipboardEvent<HTMLInputElement>
+                                ) => {
+                                    handlePaste(e)
+                                    rest.onPaste?.(e)
+                                }}
                                 onKeyDown={(
                                     e: KeyboardEvent<HTMLInputElement>
                                 ) => {
@@ -287,9 +323,11 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
                                 }}
                                 onFocus={(e: FocusEvent<HTMLInputElement>) => {
                                     moveCaretToEnd(e.target)
+                                    if (index === 0) restOnFocus?.(e)
                                 }}
                                 onClick={(e: MouseEvent<HTMLInputElement>) => {
                                     moveCaretToEnd(e.currentTarget)
+                                    if (index === 0) restOnClick?.(e)
                                 }}
                                 aria-label={ariaLabel}
                                 aria-required={required ? 'true' : undefined}

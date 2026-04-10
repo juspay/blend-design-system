@@ -103,6 +103,7 @@ describe('OTPInputV2', () => {
             )
             getCells().forEach((input) => {
                 expect(input).toHaveAttribute('aria-required', 'true')
+                expect(input).toBeRequired()
             })
         })
     })
@@ -126,6 +127,22 @@ describe('OTPInputV2', () => {
             expect(onChange).toHaveBeenLastCalledWith('12')
         })
 
+        it('replaces the focused cell when entering a different digit over an existing one', async () => {
+            const { user } = render(
+                <OTPInputV2 length={4} value="" onChange={() => {}} />
+            )
+            const inputs = getCells()
+            await user.click(inputs[0]!)
+            await user.keyboard('1')
+            await user.keyboard('2')
+            expect(inputs[0]).toHaveValue('1')
+            expect(inputs[1]).toHaveValue('2')
+            await user.click(inputs[0]!)
+            fireEvent.change(inputs[0]!, { target: { value: '9' } })
+            expect(inputs[0]).toHaveValue('9')
+            expect(inputs[1]).toHaveValue('2')
+        })
+
         it('does not call onChange when typing a non-digit', async () => {
             const onChange = vi.fn()
             const { user } = render(<OTPInputV2 value="" onChange={onChange} />)
@@ -134,6 +151,24 @@ describe('OTPInputV2', () => {
             onChange.mockClear()
             await user.keyboard('a')
             expect(onChange).not.toHaveBeenCalled()
+        })
+
+        it('distributes multi-digit onChange across cells (e.g. SMS autofill)', () => {
+            const onChange = vi.fn()
+            render(<OTPInputV2 length={4} value="" onChange={onChange} />)
+            const inputs = getCells()
+            fireEvent.change(inputs[0]!, { target: { value: '1234' } })
+            expect(onChange).toHaveBeenLastCalledWith('1234')
+            const after = getCells()
+            expect(after[0]).toHaveValue('1')
+            expect(after[3]).toHaveValue('4')
+        })
+
+        it('strips non-digits from multi-character onChange', () => {
+            const onChange = vi.fn()
+            render(<OTPInputV2 length={4} value="" onChange={onChange} />)
+            fireEvent.change(getCells()[0]!, { target: { value: '12-34' } })
+            expect(onChange).toHaveBeenLastCalledWith('1234')
         })
     })
 

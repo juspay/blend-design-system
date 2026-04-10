@@ -199,7 +199,8 @@ import {
     getNumberInputV2Tokens,
     ResponsiveNumberInputV2Tokens,
 } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
- import {ResponsiveOTPInputV2Tokens,
+import {
+    ResponsiveOTPInputV2Tokens,
     getOTPInputV2Tokens,
 } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 export type ComponentTokenType = {

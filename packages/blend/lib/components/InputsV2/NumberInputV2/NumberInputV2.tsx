@@ -34,7 +34,7 @@ import {
     shouldEmitBlurChange,
 } from './utils'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
-import { setExternalRef } from '../TextInputV2/utils'
+import { setExternalRef } from '../utils/utils'
 import NumberInputV2Stepper from './NumberInputV2Stepper'
 
 const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(

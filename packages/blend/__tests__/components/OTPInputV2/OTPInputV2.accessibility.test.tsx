@@ -189,6 +189,7 @@ describe('OTPInputV2 Accessibility', () => {
             )
             screen.getAllByRole('textbox').forEach((input) => {
                 expect(input).toHaveAttribute('aria-required', 'true')
+                expect(input).toBeRequired()
             })
         })
 

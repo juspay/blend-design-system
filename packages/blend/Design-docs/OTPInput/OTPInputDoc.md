@@ -4,7 +4,7 @@
 
 Create a one-time password (OTP) field that supports:
 
-- **Controlled value**: Full code as a single string via `value` and `onChange(value: string)` (not a DOM event)
+- **Value API**: Full code exposed as a single string via `value` and `onChange(value: string)` (not a DOM event), without implying fully controlled behavior
 - **Configurable length**: Number of digit cells via `length` (implementation clamps to a safe range; see decisions below)
 - **Digits-only entry**: Each cell accepts at most one numeric character; paste fills from the start of the code
 - **Keyboard UX**: Auto-advance after digit entry; **Backspace** on an empty cell moves focus to the previous cell; **ArrowLeft** / **ArrowRight** move between cells
@@ -14,7 +14,7 @@ Create a one-time password (OTP) field that supports:
 - **Help**: Hint text below the group (`InputFooterV2`)
 - **Accessibility**: Multiple native inputs in a **`role="group"`** container; per-cell `aria-label`; `aria-describedby` for hint and/or error; `aria-invalid` / `aria-required` on cells
 - **Ref forwarding**: Consumer `ref` is attached to the **first** cell only (see decisions)
-- **Theme**: Light/dark responsive tokens via `useResponsiveTokens('OTP_INPUT_V2')`
+- **Theme**: Light/dark responsive tokens via `useResponsiveTokens('OTP_INPUTV2')`
 - **No per-cell placeholder**: Use label, hint, and `aria-label` for instructions (placeholders are omitted from the public API)
 
 ## Anatomy
@@ -65,7 +65,7 @@ type OTPInputV2Props = {
 
 ## Final Token Type
 
-Tokens are **responsive** per breakpoint (`sm`, `md`, `lg`). Each breakpoint maps to `OTPInputV2TokensType`:
+Tokens are **responsive** per breakpoint (`sm`, `lg`). Each breakpoint maps to `OTPInputV2TokensType`:
 
 ```typescript
 type OTPInputV2TokensType = {
@@ -153,8 +153,8 @@ const filteredRest = filterBlockedProps(restWithoutKeyDown)
 
 ## Testing & Storybook
 
-- **Unit tests**: `packages/blend/__tests__/components/OPTInputV2/OTPInputV2.test.tsx`
-- **Accessibility (axe + behaviors)**: `packages/blend/__tests__/components/OPTInputV2/OTPInputV2.accessibility.test.tsx`
+- **Unit tests**: `packages/blend/__tests__/components/OTPInputV2/OTPInputV2.test.tsx`
+- **Accessibility (axe + behaviors)**: `packages/blend/__tests__/components/OTPInputV2/OTPInputV2.accessibility.test.tsx`
 - **Storybook**: `apps/storybook/stories/components/OTPInputV2/OTPInputV2.stories.tsx` under **Components → Inputs → OTPInputV2**
 
 ## Related
