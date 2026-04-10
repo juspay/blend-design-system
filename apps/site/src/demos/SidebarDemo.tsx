@@ -140,6 +140,7 @@ import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 import CodeEditorV2Demo from './CodeEditorV2Demo'
 import ProgressBarV2Demo from './ProgressBarV2Demo'
 import MultiValueInputV2Demo from './MultiValueInputV2Demo'
+import NumberInputV2Demo from './NumberInputV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -235,7 +236,8 @@ const SidebarDemo = () => {
         | 'popoverV2'
         | 'progressBarV2'
         | 'multiValueInputV2'
-    >('multiValueInputV2')
+        | 'numberInputV2'
+    >('numberInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -460,6 +462,8 @@ const SidebarDemo = () => {
                 return <UnitInputDemo />
             case 'numberInput':
                 return <NumberInputDemo />
+            case 'numberInputV2':
+                return <NumberInputV2Demo />
             case 'textArea':
                 return <TextAreaDemo />
             case 'chatInput':
@@ -966,6 +970,16 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'numberInput',
                     onClick: () => setActiveComponent('numberInput'),
+                },
+                {
+                    label: 'Number Input V2',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'numberInputV2',
+                    onClick: () => setActiveComponent('numberInputV2'),
                 },
                 {
                     label: 'Dropdown Input',

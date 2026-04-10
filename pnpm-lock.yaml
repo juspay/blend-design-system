@@ -7,6 +7,9 @@ settings:
 importers:
     .:
         dependencies:
+            '@phosphor-icons/react':
+                specifier: ^2.1.10
+                version: 2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             react-hook-form:
                 specifier: ^7.62.0
                 version: 7.69.0(react@19.2.3)
@@ -16810,6 +16813,22 @@ snapshots:
         transitivePeerDependencies:
             - supports-color
 
+    '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)':
+        dependencies:
+            '@eslint-community/regexpp': 4.12.2
+            '@typescript-eslint/parser': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+            '@typescript-eslint/scope-manager': 8.50.0
+            '@typescript-eslint/type-utils': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
+            '@typescript-eslint/utils': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
+            '@typescript-eslint/visitor-keys': 8.50.0
+            eslint: 9.39.2(jiti@2.6.1)
+            ignore: 7.0.5
+            natural-compare: 1.4.0
+            ts-api-utils: 2.1.0(typescript@5.8.3)
+            typescript: 5.8.3
+        transitivePeerDependencies:
+            - supports-color
+
     '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)':
         dependencies:
             '@eslint-community/regexpp': 4.12.2
@@ -21894,7 +21913,7 @@ snapshots:
 
     typescript-eslint@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3):
         dependencies:
-            '@typescript-eslint/eslint-plugin': 8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
+            '@typescript-eslint/eslint-plugin': 8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
             '@typescript-eslint/parser': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
             '@typescript-eslint/typescript-estree': 8.50.0(typescript@5.8.3)
             '@typescript-eslint/utils': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
