@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { expect, userEvent, within } from '@storybook/test'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -18,6 +19,23 @@ const parseNumberInputValue = (
     return Number.isNaN(n) ? null : n
 }
 
+const noop = (): void => {}
+
+const stack = (maxWidth = 420) =>
+    ({
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20,
+        maxWidth,
+    }) as const
+
+const visualGrid = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+    gap: 24,
+    alignItems: 'start',
+} as const
+
 const meta: Meta<typeof NumberInputV2> = {
     title: 'Components/Inputs/NumberInputV2',
     component: NumberInputV2,
@@ -35,20 +53,26 @@ const meta: Meta<typeof NumberInputV2> = {
         docs: {
             description: {
                 component: `
-Numeric input (V2) with responsive tokens, static or floating labels, min/max validation, stepper buttons, and \`forwardRef\` to the native \`<input>\`.
+Numeric input (V2) with responsive tokens, static or floating labels (small viewport + large size), min/max validation, stepper buttons, and \`forwardRef\` to the native \`<input>\`.
 
 ## Features
 - **Value**: \`number | null\` (empty input → \`null\`)
 - Sizes: \`sm\`, \`md\`, \`lg\` (\`InputSizeV2\`)
 - Label with optional subtext; hint under field; optional help tooltip on label
-- External error: \`error: { show, message? }\`; internal range errors while typing
-- \`min\`, \`max\`, \`step\`; \`preventNegative\` clamps display and stepping
+- External error: \`error: { show, message? }\`; internal range messages when value is outside \`min\` / \`max\`
+- \`min\`, \`max\`, \`step\`; \`preventNegative\` normalizes display and stepping
 - \`forwardRef\` → underlying \`<input>\` for focus and form libraries
 
 ## Accessibility
-- Native text input with \`role="spinbutton"\` and value-related ARIA attributes
-- Labels associated via \`inputId\`; error/hint via \`aria-describedby\`
-- Keyboard: Arrow Up/Down adjust value when steppers are enabled
+
+- Uses \`role="spinbutton"\` with \`aria-valuenow\`, \`aria-valuemin\`, \`aria-valuemax\`, \`aria-required\`, \`aria-invalid\` where applicable
+- Label associated via \`id\`; hint and error linked through \`aria-describedby\`
+- **Keyboard**: **Arrow Up** / **Arrow Down** adjust the value when the field is enabled and within stepper bounds (same as v1)
+- **WCAG target**: 2.1 Level AA (supports 2.2)
+
+**Verification**
+- **Storybook a11y addon**: Accessibility panel — expect no A/AA violations for these stories
+- **Manual**: Keyboard-only navigation; VoiceOver / NVDA for label, value, hints, and errors; verify stepper buttons have clear affordances
 
 \`\`\`tsx
 import { NumberInputV2, InputSizeV2 } from '…';
@@ -170,6 +194,8 @@ import { NumberInputV2, InputSizeV2 } from '…';
 export default meta
 type Story = StoryObj<typeof NumberInputV2>
 
+// —— Core (controls) ——————————————————————————————————————————
+
 export const Default: Story = {
     render: function DefaultNumberInputV2(args) {
         const [value, setValue] = useState<number | null>(null)
@@ -192,6 +218,63 @@ export const Default: Story = {
     },
 }
 
+// —— Visual (Chromatic / static variants) ——————————————————————
+
+/** Representative states for visual regression and design review. */
+export const VisualStates: Story = {
+    render: function VisualStatesStory() {
+        return (
+            <div style={visualGrid}>
+                <NumberInputV2
+                    label={{ text: 'Empty', subtext: '' }}
+                    placeholder="0"
+                    value={null}
+                    onChange={noop}
+                />
+                <NumberInputV2
+                    label={{ text: 'With value', subtext: '' }}
+                    placeholder="0"
+                    value={42}
+                    onChange={noop}
+                />
+                <NumberInputV2
+                    label={{ text: 'Required', subtext: '' }}
+                    placeholder="0"
+                    value={null}
+                    onChange={noop}
+                    required
+                />
+                <NumberInputV2
+                    label={{ text: 'Error', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    error={{
+                        show: true,
+                        message: 'Please enter a number.',
+                    }}
+                />
+                <NumberInputV2
+                    label={{ text: 'Disabled', subtext: '' }}
+                    value={7}
+                    onChange={noop}
+                    disabled
+                />
+            </div>
+        )
+    },
+    parameters: {
+        controls: { disable: true },
+        docs: {
+            description: {
+                story: 'Static snapshot of common states (empty, filled, required, error, disabled).',
+            },
+        },
+        chromatic: { ...CHROMATIC_CONFIG, delay: 400 },
+    },
+}
+
+// —— Variants ———————————————————————————————————————————————————
+
 export const Sizes: Story = {
     render: function SizesStory() {
         const [values, setValues] = useState<{
@@ -200,14 +283,7 @@ export const Sizes: Story = {
             lg: number | null
         }>({ sm: null, md: null, lg: null })
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 20,
-                    maxWidth: 400,
-                }}
-            >
+            <div style={stack()}>
                 <NumberInputV2
                     label={{ text: 'Small', subtext: '' }}
                     placeholder="0"
@@ -256,6 +332,8 @@ export const Sizes: Story = {
     },
 }
 
+// —— Validation & hints ———————————————————————————————————————————
+
 export const WithMinMax: Story = {
     render: function WithMinMaxStory() {
         const [value, setValue] = useState<number | null>(25)
@@ -298,7 +376,7 @@ export const Disabled: Story = {
             <NumberInputV2
                 label={{ text: 'Read-only value', subtext: '' }}
                 value={value}
-                onChange={() => {}}
+                onChange={noop}
                 disabled
             />
         )
@@ -343,6 +421,61 @@ export const WithHintAndHelp: Story = {
     },
 }
 
+// —— Interactive (keyboard + stepper) ————————————————————————————
+
+/** Live value + interaction test: Arrow Up/Down and stepper buttons. */
+export const InteractiveKeyboard: Story = {
+    render: function InteractiveKeyboardStory() {
+        const [value, setValue] = useState<number | null>(10)
+        return (
+            <div style={stack(480)}>
+                <p
+                    style={{
+                        margin: 0,
+                        fontSize: 13,
+                        color: 'var(--color-text-muted, #64748b)',
+                    }}
+                >
+                    Focus the field and use <strong>Arrow Up</strong> /{' '}
+                    <strong>Arrow Down</strong>, or the stepper buttons. Current
+                    value:{' '}
+                    <output
+                        htmlFor="interactive-number-input"
+                        style={{ fontWeight: 600, color: 'inherit' }}
+                    >
+                        {value === null ? 'null' : value}
+                    </output>
+                </p>
+                <NumberInputV2
+                    id="interactive-number-input"
+                    label={{ text: 'Adjustable', subtext: '0–100, step 1' }}
+                    placeholder="0"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={value}
+                    onChange={(e) => setValue(parseNumberInputValue(e))}
+                    hintText="Stepper mirrors keyboard behavior."
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Use keyboard arrows or the built-in steppers. The interaction test focuses the input and presses Arrow Up once.',
+            },
+        },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const input = canvas.getByRole('spinbutton')
+        await userEvent.click(input)
+        await userEvent.keyboard('{ArrowUp}')
+        await expect(input).toHaveValue('11')
+    },
+}
+
 export const WithForwardedRef: Story = {
     render: function WithForwardedRefStory() {
         const [value, setValue] = useState<number | null>(null)
@@ -367,5 +500,128 @@ export const WithForwardedRef: Story = {
                 story: '`ref` is attached to the underlying `<input>` element.',
             },
         },
+    },
+}
+
+// —— Accessibility (reference) ——————————————————————————————————
+
+export const Accessibility: Story = {
+    render: function AccessibilityStory() {
+        const [qty, setQty] = useState<number | null>(null)
+        const [score, setScore] = useState<number | null>(null)
+        const [rangeDemo, setRangeDemo] = useState<number | null>(150)
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 24,
+                    padding: 24,
+                    maxWidth: 560,
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: 12,
+                            fontSize: 16,
+                            fontWeight: 600,
+                        }}
+                    >
+                        Label, required, and hint
+                    </h3>
+                    <NumberInputV2
+                        label={{ text: 'Quantity', subtext: 'Units to ship' }}
+                        hintText="Whole numbers only."
+                        placeholder="0"
+                        value={qty}
+                        onChange={(e) => setQty(parseNumberInputValue(e))}
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: 12,
+                            fontSize: 16,
+                            fontWeight: 600,
+                        }}
+                    >
+                        External error
+                    </h3>
+                    <NumberInputV2
+                        label={{ text: 'Score', subtext: '' }}
+                        value={score}
+                        onChange={(e) => setScore(parseNumberInputValue(e))}
+                        error={{
+                            show: true,
+                            message: 'Enter a score between 0 and 10.',
+                        }}
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: 12,
+                            fontSize: 16,
+                            fontWeight: 600,
+                        }}
+                    >
+                        Range validation (built-in message)
+                    </h3>
+                    <NumberInputV2
+                        label={{ text: 'Clamped range', subtext: '0–100' }}
+                        min={0}
+                        max={100}
+                        value={rangeDemo}
+                        onChange={(e) => setRangeDemo(parseNumberInputValue(e))}
+                        hintText="Try a value outside 0–100 to hear the range message."
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: 12,
+                            fontSize: 16,
+                            fontWeight: 600,
+                        }}
+                    >
+                        Disabled
+                    </h3>
+                    <NumberInputV2
+                        label={{ text: 'Locked field', subtext: '' }}
+                        value={99}
+                        onChange={noop}
+                        disabled
+                        hintText="Not focusable when disabled."
+                    />
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Reference layout for accessibility review of NumberInputV2:
+
+- **Labels**: Associated with the input via \`id\`; subtext and required asterisk where applicable
+- **Hints & errors**: Linked with \`aria-describedby\`; invalid state uses \`aria-invalid\`
+- **Spinbutton**: \`aria-valuenow\`, \`aria-valuemin\`, \`aria-valuemax\` reflect numeric bounds when set
+- **Keyboard**: Arrow Up/Down change the value when steppers are not disabled
+- **Disabled**: Removed from tab order and not editable
+
+**Verification**
+1. Open the **Accessibility** addon — no violations for these examples.
+2. Navigate with **Tab** only; confirm focus order and visible focus.
+3. Use a screen reader to verify label, value, hint, and error announcements.
+`,
+            },
+        },
+        a11y: getA11yConfig('form'),
+        chromatic: { ...CHROMATIC_CONFIG, delay: 500 },
     },
 }

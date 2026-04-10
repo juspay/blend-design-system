@@ -1,4 +1,4 @@
-import { Triangle } from 'lucide-react'
+import { TriangleIcon } from '@phosphor-icons/react'
 import type { StepperArrowProps } from './numberInputV2.types'
 
 export const StepperArrow = ({
@@ -11,7 +11,7 @@ export const StepperArrow = ({
 }: StepperArrowProps) => {
     const color = disabled ? colorDisabled : colorDefault
     return (
-        <Triangle
+        <TriangleIcon
             style={{
                 transform: flip ? 'rotate(180deg)' : undefined,
                 opacity: disabled ? 1 : dimmed ? 0.3 : 1,
@@ -19,6 +19,7 @@ export const StepperArrow = ({
             color={color}
             fill={color}
             size={size}
+            weight="fill"
         />
     )
 }

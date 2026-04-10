@@ -64,6 +64,7 @@
         "typescript-eslint": "^8.37.0"
     },
     "dependencies": {
+        "@phosphor-icons/react": "^2.1.10",
         "react-hook-form": "^7.62.0",
         "react-phone-input-2": "^2.15.1"
     }

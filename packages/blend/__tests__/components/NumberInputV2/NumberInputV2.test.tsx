@@ -1,10 +1,15 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, act } from '../../test-utils'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, act, fireEvent } from '../../test-utils'
+import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 
 const noop = () => {}
+
+afterEach(() => {
+    vi.restoreAllMocks()
+})
 
 describe('NumberInputV2 Component', () => {
     describe('Rendering', () => {
@@ -397,6 +402,108 @@ describe('NumberInputV2 Component', () => {
                 handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
             expect(lastCall.target.value).toBe('2')
         })
+
+        it('decrements value when decrease button is clicked', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'Count', subtext: '' }}
+                    value={3}
+                    onChange={handleChange}
+                    min={0}
+                    max={10}
+                    step={1}
+                />
+            )
+            await user.click(
+                screen.getByRole('button', { name: /Decrease Count/i })
+            )
+            expect(handleChange).toHaveBeenCalled()
+            const lastCall =
+                handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
+            expect(lastCall.target.value).toBe('2')
+        })
+
+        it('increments via ArrowUp when focused', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'K', subtext: '' }}
+                    value={4}
+                    onChange={handleChange}
+                    min={0}
+                    max={10}
+                    step={1}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            handleChange.mockClear()
+            await user.keyboard('{ArrowUp}')
+            expect(handleChange).toHaveBeenCalledTimes(1)
+            expect(
+                handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
+                    .target.value
+            ).toBe('5')
+        })
+
+        it('decrements via ArrowDown when focused', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'K', subtext: '' }}
+                    value={4}
+                    onChange={handleChange}
+                    min={0}
+                    max={10}
+                    step={1}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            handleChange.mockClear()
+            await user.keyboard('{ArrowDown}')
+            expect(handleChange).toHaveBeenCalledTimes(1)
+            expect(
+                handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
+                    .target.value
+            ).toBe('3')
+        })
+
+        it('does not call onChange when change event matches current value', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'Same', subtext: '' }}
+                    value={5}
+                    onChange={handleChange}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            handleChange.mockClear()
+            fireEvent.change(input, { target: { value: '5' } })
+            expect(handleChange).not.toHaveBeenCalled()
+        })
+
+        it('does not increment via ArrowUp when already at max', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'Max', subtext: '' }}
+                    value={10}
+                    onChange={handleChange}
+                    min={0}
+                    max={10}
+                    step={1}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            handleChange.mockClear()
+            await user.keyboard('{ArrowUp}')
+            expect(handleChange).not.toHaveBeenCalled()
+        })
     })
 
     describe('preventNegative', () => {
@@ -410,6 +517,120 @@ describe('NumberInputV2 Component', () => {
                 />
             )
             expect(screen.getByRole('spinbutton')).toHaveValue('0')
+        })
+    })
+
+    describe('Blur clamping', () => {
+        it('fires onChange with clamped value on blur when typed value exceeds max', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'Clamp', subtext: '' }}
+                    value={null}
+                    onChange={handleChange}
+                    min={0}
+                    max={10}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            await user.type(input, '50')
+            handleChange.mockClear()
+            await user.tab()
+            expect(handleChange).toHaveBeenCalled()
+            const lastCall =
+                handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
+            expect(lastCall.target.value).toBe('10')
+        })
+
+        it('calls onBlur after internal blur handling', async () => {
+            const handleBlur = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'B', subtext: '' }}
+                    value={5}
+                    onChange={noop}
+                    onBlur={handleBlur}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            await user.tab()
+            expect(handleBlur).toHaveBeenCalledTimes(1)
+        })
+    })
+
+    describe('Small viewport + large size (floating label)', () => {
+        it('renders floating label instead of static label when breakpoint is sm and size is lg', () => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                breakPointLabel: 'sm',
+                innerWidth: 360,
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+
+            render(
+                <NumberInputV2
+                    label={{ text: 'Floating qty', subtext: 'sub' }}
+                    value={null}
+                    onChange={noop}
+                    size={InputSizeV2.LG}
+                />
+            )
+
+            expect(
+                screen.queryByText('Floating qty', {
+                    selector: '[data-element="input-label"]',
+                })
+            ).not.toBeInTheDocument()
+
+            expect(screen.getByText('Floating qty')).toBeInTheDocument()
+        })
+    })
+
+    describe('Edge values', () => {
+        it('shows empty display when value is NaN', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'NaN', subtext: '' }}
+                    value={Number.NaN as unknown as number}
+                    onChange={noop}
+                />
+            )
+            expect(screen.getByRole('spinbutton')).toHaveValue('')
+        })
+
+        it('forwards native props to the input via spread', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Spread', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    data-testid="number-input-native"
+                />
+            )
+            expect(
+                screen.getByTestId('number-input-native')
+            ).toBeInTheDocument()
+        })
+
+        it('links hint to input via aria-describedby when no error', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'H', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    hintText="Hint text"
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            const describedBy = input.getAttribute('aria-describedby')
+            expect(describedBy).toBeTruthy()
+            const hintId = describedBy!
+                .split(/\s+/)
+                .find((id) => id.endsWith('-hint'))
+            expect(hintId).toBeTruthy()
+            expect(document.getElementById(hintId!)).toHaveTextContent(
+                'Hint text'
+            )
         })
     })
 
