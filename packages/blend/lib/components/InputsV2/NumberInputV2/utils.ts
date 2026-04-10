@@ -1,3 +1,5 @@
+import { InputSizeV2, InputStateV2 } from '../inputV2.types'
+
 export const sanitizeNumberInput = (
     inputValue: string,
     allowNegative: boolean = true
@@ -156,3 +158,139 @@ export const getRangeErrorMessage = (min?: number, max?: number): string => {
     }
     return 'Invalid value'
 }
+
+/** Stepping base: raw controlled number with only `preventNegative` applied (min/max handled in increment/decrement). */
+export const getSteppingBaseValue = (
+    rawNumericValue: number | null,
+    preventNegative: boolean
+): number | null => {
+    if (rawNumericValue === null || isNaN(rawNumericValue)) return null
+    let n = rawNumericValue
+    if (preventNegative && n < 0) n = 0
+    return n
+}
+
+export const getNumberInputDisplayValue = (
+    isFocused: boolean,
+    internalValue: string,
+    value: number | null,
+    effectiveNumericValue: number | null
+): string => {
+    if (isFocused) return internalValue
+    if (value == null) return ''
+    if (effectiveNumericValue !== null) return String(effectiveNumericValue)
+    return ''
+}
+
+export const getInputFocusedOrWithValue = (
+    isFocused: boolean,
+    displayValue: string
+): boolean => isFocused || displayValue !== ''
+
+export const isSmallScreenWithLargeSize = (
+    isSmallScreen: boolean,
+    size: InputSizeV2
+): boolean => isSmallScreen && size === InputSizeV2.LG
+
+export const getRangeErrorMessageIfOutside = (
+    rawNumericValue: number | null,
+    numericMin: number | undefined,
+    numericMax: number | undefined
+): string | undefined => {
+    if (rawNumericValue === null || isNaN(rawNumericValue)) {
+        return undefined
+    }
+    if (isValueOutsideRange(rawNumericValue, numericMin, numericMax)) {
+        return getRangeErrorMessage(numericMin, numericMax)
+    }
+    return undefined
+}
+
+export const getNumberInputHasError = (
+    errorShow: boolean | undefined,
+    errorMessage: string | undefined,
+    rangeErrorMessage: string | undefined
+): boolean => Boolean(errorShow && errorMessage) || Boolean(rangeErrorMessage)
+
+export const getNumberInputDisplayErrorMessage = (
+    errorShow: boolean | undefined,
+    errorMessage: string | undefined,
+    rangeErrorMessage: string | undefined
+): string | undefined => (errorShow && errorMessage) || rangeErrorMessage
+
+export const buildNumberInputAriaDescribedBy = (
+    hintText: string | undefined,
+    hasError: boolean,
+    hintId: string,
+    errorId: string,
+    displayErrorMessage: string | undefined
+): string | undefined => {
+    const parts = [
+        hintText && !hasError ? hintId : null,
+        displayErrorMessage ? errorId : null,
+    ].filter(Boolean) as string[]
+    return parts.length > 0 ? parts.join(' ') : undefined
+}
+
+export const getNumberInputLabelState = (
+    disabled: boolean | undefined,
+    hasError: boolean
+): InputStateV2 => {
+    if (disabled) return InputStateV2.DISABLED
+    if (hasError) return InputStateV2.ERROR
+    return InputStateV2.DEFAULT
+}
+
+export const computeIsUpButtonDisabled = (
+    numericMax: number | undefined,
+    steppingBaseValue: number | null,
+    numericMin: number | undefined,
+    stepValue: number
+): boolean =>
+    numericMax !== undefined &&
+    (steppingBaseValue === null
+        ? (numericMin ?? 0) + stepValue > numericMax
+        : steppingBaseValue >= numericMax ||
+          steppingBaseValue + stepValue > numericMax)
+
+export const computeIsDownButtonDisabled = (
+    steppingBaseValue: number | null,
+    preventNegative: boolean,
+    numericMin: number | undefined,
+    stepValue: number
+): boolean =>
+    steppingBaseValue === null
+        ? preventNegative ||
+          (numericMin !== undefined &&
+              (numericMin ?? 0) - stepValue < numericMin)
+        : (numericMin !== undefined &&
+              (steppingBaseValue <= numericMin ||
+                  steppingBaseValue - stepValue < numericMin)) ||
+          (preventNegative &&
+              (steppingBaseValue <= 0 || steppingBaseValue - stepValue < 0))
+
+/** Parsed numeric string for controlled onChange, or empty string when incomplete/invalid. */
+export const sanitizedToCommittedValueString = (sanitized: string): string => {
+    const numValue =
+        sanitized === '' || sanitized === '-' ? null : Number(sanitized)
+    return numValue !== null && !isNaN(numValue) ? String(numValue) : ''
+}
+
+export const rawNumericToComparableString = (
+    rawNumericValue: number | null
+): string =>
+    rawNumericValue !== null && !isNaN(rawNumericValue)
+        ? String(rawNumericValue)
+        : ''
+
+export const shouldSkipControlledChange = (
+    valueString: string,
+    currentValueString: string
+): boolean => valueString === currentValueString
+
+export const shouldEmitBlurChange = (
+    clamped: string,
+    eventValue: string,
+    clampedNumValue: number | null,
+    rawNumericValue: number | null
+): boolean => clamped !== eventValue && clampedNumValue !== rawNumericValue

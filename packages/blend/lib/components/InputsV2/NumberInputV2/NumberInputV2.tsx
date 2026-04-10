@@ -3,7 +3,7 @@ import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import InputFooterV2 from '../utils/InputFooter/InputFooterV2'
 import type { NumberInputV2Props } from './numberInputV2.types'
-import { AnyRef, InputSizeV2, InputStateV2 } from '../inputV2.types'
+import { AnyRef, InputSizeV2 } from '../inputV2.types'
 import type { NumberInputV2TokensType } from './numberInputV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { addPxToValue, toPixels } from '../../../global-utils/GlobalUtils'
@@ -15,10 +15,23 @@ import {
     sanitizeNumberInput,
     clampValueOnBlur,
     getEffectiveNumericValue,
-    isValueOutsideRange,
-    getRangeErrorMessage,
     incrementValue,
     decrementValue,
+    getSteppingBaseValue,
+    getNumberInputDisplayValue,
+    getInputFocusedOrWithValue,
+    isSmallScreenWithLargeSize,
+    getRangeErrorMessageIfOutside,
+    getNumberInputHasError,
+    getNumberInputDisplayErrorMessage,
+    buildNumberInputAriaDescribedBy,
+    getNumberInputLabelState,
+    computeIsUpButtonDisabled,
+    computeIsDownButtonDisabled,
+    sanitizedToCommittedValueString,
+    rawNumericToComparableString,
+    shouldSkipControlledChange,
+    shouldEmitBlurChange,
 } from './utils'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
 import { setExternalRef } from '../TextInputV2/utils'
@@ -74,13 +87,10 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         const rawNumericValue =
             value !== null && value !== undefined ? Number(value) : null
 
-        /** Raw controlled value with only preventNegative applied — stepping matches v1 (min/max clamping left to increment/decrementValue). */
-        const steppingBaseValue = useMemo(() => {
-            if (rawNumericValue === null || isNaN(rawNumericValue)) return null
-            let n = rawNumericValue
-            if (preventNegative && n < 0) n = 0
-            return n
-        }, [rawNumericValue, preventNegative])
+        const steppingBaseValue = useMemo(
+            () => getSteppingBaseValue(rawNumericValue, preventNegative),
+            [rawNumericValue, preventNegative]
+        )
 
         const effectiveNumericValue = useMemo(
             () =>
@@ -93,53 +103,56 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             [rawNumericValue, preventNegative, numericMin, numericMax]
         )
 
-        const displayValue = isFocused
-            ? internalValue
-            : value == null
-              ? ''
-              : effectiveNumericValue !== null
-                ? String(effectiveNumericValue)
-                : ''
+        const displayValue = getNumberInputDisplayValue(
+            isFocused,
+            internalValue,
+            value,
+            effectiveNumericValue
+        )
 
-        const inputFocusedOrWithValue = isFocused || displayValue !== ''
+        const inputFocusedOrWithValue = getInputFocusedOrWithValue(
+            isFocused,
+            displayValue
+        )
 
-        const isSmallScreenWithLargeSize =
-            isSmallScreen && size === InputSizeV2.LG
+        const smallScreenLarge = isSmallScreenWithLargeSize(isSmallScreen, size)
 
         const paddingX = inputContainerTokens.paddingLeft[size]
         const paddingY =
             toPixels(inputContainerTokens.paddingTop[size]) +
-            (isSmallScreenWithLargeSize ? 0.5 : 1)
+            (smallScreenLarge ? 0.5 : 1)
 
-        const rangeErrorMessage = useMemo(() => {
-            if (rawNumericValue === null || isNaN(rawNumericValue)) {
-                return undefined
-            }
-            if (isValueOutsideRange(rawNumericValue, numericMin, numericMax)) {
-                return getRangeErrorMessage(numericMin, numericMax)
-            }
-            return undefined
-        }, [rawNumericValue, numericMin, numericMax])
+        const rangeErrorMessage = useMemo(
+            () =>
+                getRangeErrorMessageIfOutside(
+                    rawNumericValue,
+                    numericMin,
+                    numericMax
+                ),
+            [rawNumericValue, numericMin, numericMax]
+        )
 
-        const hasError =
-            Boolean(error?.show && error?.message) || Boolean(rangeErrorMessage)
+        const hasError = getNumberInputHasError(
+            error?.show,
+            error?.message,
+            rangeErrorMessage
+        )
 
-        const displayErrorMessage =
-            (error?.show && error?.message) || rangeErrorMessage
+        const displayErrorMessage = getNumberInputDisplayErrorMessage(
+            error?.show,
+            error?.message,
+            rangeErrorMessage
+        )
 
-        const ariaDescribedBy =
-            [
-                hintText && !hasError ? hintId : null,
-                displayErrorMessage ? errorId : null,
-            ]
-                .filter(Boolean)
-                .join(' ') || undefined
+        const ariaDescribedBy = buildNumberInputAriaDescribedBy(
+            hintText,
+            hasError,
+            hintId,
+            errorId,
+            displayErrorMessage
+        )
 
-        const labelState: InputStateV2 = disabled
-            ? InputStateV2.DISABLED
-            : hasError
-              ? InputStateV2.ERROR
-              : InputStateV2.DEFAULT
+        const labelState = getNumberInputLabelState(disabled, hasError)
 
         const updateValue = (newValue: number): void => {
             if (rawNumericValue === newValue) return
@@ -156,24 +169,19 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             } as React.ChangeEvent<HTMLInputElement>)
         }
 
-        const isUpButtonDisabled =
-            numericMax !== undefined &&
-            (steppingBaseValue === null
-                ? (numericMin ?? 0) + stepValue > numericMax
-                : steppingBaseValue >= numericMax ||
-                  steppingBaseValue + stepValue > numericMax)
+        const isUpButtonDisabled = computeIsUpButtonDisabled(
+            numericMax,
+            steppingBaseValue,
+            numericMin,
+            stepValue
+        )
 
-        const isDownButtonDisabled =
-            steppingBaseValue === null
-                ? preventNegative ||
-                  (numericMin !== undefined &&
-                      (numericMin ?? 0) - stepValue < numericMin)
-                : (numericMin !== undefined &&
-                      (steppingBaseValue <= numericMin ||
-                          steppingBaseValue - stepValue < numericMin)) ||
-                  (preventNegative &&
-                      (steppingBaseValue <= 0 ||
-                          steppingBaseValue - stepValue < 0))
+        const isDownButtonDisabled = computeIsDownButtonDisabled(
+            steppingBaseValue,
+            preventNegative,
+            numericMin,
+            stepValue
+        )
 
         const bump = (direction: 'up' | 'down'): void => {
             if (direction === 'up') {
@@ -210,15 +218,11 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             )
             setInternalValue(sanitized)
 
-            const numValue =
-                sanitized === '' || sanitized === '-' ? null : Number(sanitized)
-            const valueString =
-                numValue !== null && !isNaN(numValue) ? String(numValue) : ''
+            const valueString = sanitizedToCommittedValueString(sanitized)
             const currentValueString =
-                rawNumericValue !== null && !isNaN(rawNumericValue)
-                    ? String(rawNumericValue)
-                    : ''
-            if (valueString === currentValueString) return
+                rawNumericToComparableString(rawNumericValue)
+            if (shouldSkipControlledChange(valueString, currentValueString))
+                return
 
             onChange({
                 ...e,
@@ -240,8 +244,12 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
 
             const clampedNumValue = clamped === '' ? null : Number(clamped)
             if (
-                clamped !== e.target.value &&
-                clampedNumValue !== rawNumericValue
+                shouldEmitBlurChange(
+                    clamped,
+                    e.target.value,
+                    clampedNumValue,
+                    rawNumericValue
+                )
             ) {
                 onChange({
                     ...e,
@@ -296,28 +304,24 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                     display="flex"
                     borderRadius={inputContainerTokens.borderRadius[size]}
                 >
-                    {Boolean(label.text?.trim()) &&
-                        isSmallScreenWithLargeSize && (
-                            <FloatingLabelsV2
-                                label={label.text}
-                                required={required || false}
-                                name={name || ''}
-                                inputId={inputId}
-                                isInputFocusedOrWithValue={
-                                    inputFocusedOrWithValue
-                                }
-                                topPadding={paddingY}
-                                leftPadding={toPixels(paddingX)}
-                                tokens={{
-                                    placeholder:
-                                        inputContainerTokens.placeholder,
-                                    required:
-                                        numberInputTokens.topContainer.required,
-                                }}
-                                size={size}
-                                state={labelState}
-                            />
-                        )}
+                    {Boolean(label.text?.trim()) && smallScreenLarge && (
+                        <FloatingLabelsV2
+                            label={label.text}
+                            required={required || false}
+                            name={name || ''}
+                            inputId={inputId}
+                            isInputFocusedOrWithValue={inputFocusedOrWithValue}
+                            topPadding={paddingY}
+                            leftPadding={toPixels(paddingX)}
+                            tokens={{
+                                placeholder: inputContainerTokens.placeholder,
+                                required:
+                                    numberInputTokens.topContainer.required,
+                            }}
+                            size={size}
+                            state={labelState}
+                        />
+                    )}
                     <PrimitiveInput
                         ref={setInputRef}
                         id={inputId}
@@ -330,9 +334,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         name={name}
                         type="text"
                         inputMode="decimal"
-                        placeholder={
-                            isSmallScreenWithLargeSize ? '' : placeholder
-                        }
+                        placeholder={smallScreenLarge ? '' : placeholder}
                         value={displayValue}
                         onChange={handleChange}
                         step={step}
@@ -348,14 +350,12 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         aria-describedby={ariaDescribedBy}
                         paddingX={paddingX}
                         paddingTop={
-                            isSmallScreenWithLargeSize &&
-                            inputFocusedOrWithValue
+                            smallScreenLarge && inputFocusedOrWithValue
                                 ? paddingY * 1.5
                                 : paddingY
                         }
                         paddingBottom={
-                            isSmallScreenWithLargeSize &&
-                            inputFocusedOrWithValue
+                            smallScreenLarge && inputFocusedOrWithValue
                                 ? paddingY / 2
                                 : paddingY
                         }
