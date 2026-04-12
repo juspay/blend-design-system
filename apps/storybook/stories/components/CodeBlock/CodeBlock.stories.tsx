@@ -132,7 +132,57 @@ function MyCodeBlock() {
             ],
             description: 'Programming language for syntax highlighting',
         },
+        headerLeftSlot: {
+            control: false,
+            description:
+                'Custom content to display on the left side of the header. Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Header',
+            },
+        },
+        headerRightSlot: {
+            control: false,
+            description:
+                'Custom content to display on the right side of the header. Pass a React element.',
+            table: {
+                type: { summary: 'React.ReactNode' },
+                category: 'Header',
+            },
+        },
+        diffLines: {
+            control: 'object',
+            description:
+                'Array of diff line objects for highlighting code changes',
+            table: {
+                type: {
+                    summary: 'DiffLine[]',
+                    detail: `{
+  content?: string;           // Line content
+  lineNumber?: number;        // Original line number
+  type: 'added' | 'removed' | 'unchanged';
+}`,
+                },
+                category: 'Diff View',
+            },
+        },
+        isDiffUnchangedCollapsed: {
+            control: 'boolean',
+            description:
+                'Whether to collapse unchanged lines in diff view, showing only context lines around changes',
+        },
+        diffContextLines: {
+            control: 'number',
+            description:
+                'Number of unchanged context lines to show around changed lines when isDiffUnchangedCollapsed is true',
+        },
+        diffExpandChunk: {
+            control: 'number',
+            description:
+                'Number of lines to expand when clicking expand buttons in collapsed diff view',
+        },
     },
+    tags: ['autodocs'],
 }
 
 export default meta
@@ -341,6 +391,485 @@ export const UserList: React.FC = () => {
         showHeader: true,
         header: 'UserList.tsx',
         showCopyButton: true,
+    },
+}
+
+// Header with custom slots
+export const WithHeaderSlots: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Custom Left Slot (File Icon)
+                </h4>
+                <CodeBlock
+                    code={`const greeting = 'Hello, World!';`}
+                    language="javascript"
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="greeting.js"
+                    headerLeftSlot={
+                        <span style={{ fontSize: '18px' }}>📄</span>
+                    }
+                    showCopyButton={true}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Custom Right Slot (Status Badge)
+                </h4>
+                <CodeBlock
+                    code={`function calculateSum(a: number, b: number): number {
+  return a + b;
+}`}
+                    language="typescript"
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="math.ts"
+                    headerRightSlot={
+                        <span
+                            style={{
+                                backgroundColor: '#22c55e',
+                                color: 'white',
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                fontSize: '12px',
+                                fontWeight: '500',
+                            }}
+                        >
+                            Production
+                        </span>
+                    }
+                    showCopyButton={true}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Both Slots (File Icon + Actions)
+                </h4>
+                <CodeBlock
+                    code={`export const config = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+  retries: 3,
+};`}
+                    language="typescript"
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="config.ts"
+                    headerLeftSlot={
+                        <span style={{ fontSize: '18px' }}>⚙️</span>
+                    }
+                    headerRightSlot={
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button
+                                style={{
+                                    background: 'none',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '4px',
+                                    padding: '4px 8px',
+                                    fontSize: '12px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Edit
+                            </button>
+                            <button
+                                style={{
+                                    background: 'none',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '4px',
+                                    padding: '4px 8px',
+                                    fontSize: '12px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    }
+                    showCopyButton={true}
+                />
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates custom header slots for adding icons, badges, and action buttons to the code block header.',
+            },
+        },
+    },
+}
+
+// Auto-format example
+export const AutoFormat: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Without Auto-Format (Minified)
+                </h4>
+                <CodeBlock
+                    code={`{const x=1;const y=2;const sum=x+y;console.log(sum);}`}
+                    language="javascript"
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="minified.js"
+                    autoFormat={false}
+                    showCopyButton={true}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    With Auto-Format (Pretty Print)
+                </h4>
+                <CodeBlock
+                    code={`{const x=1;const y=2;const sum=x+y;console.log(sum);}`}
+                    language="javascript"
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="formatted.js"
+                    autoFormat={true}
+                    showCopyButton={true}
+                />
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates auto-formatting capability that pretty-prints minified or poorly formatted code.',
+            },
+        },
+    },
+}
+
+// Max height with scroll
+export const MaxHeight: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Limited Height (300px) - Content Scrolls
+                </h4>
+                <CodeBlock
+                    code={`// Line 1: Import statements
+import React, { useState, useEffect } from 'react';
+import { fetchUserData } from './api';
+
+// Line 5: Interface definition
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+}
+
+// Line 12: Component definition
+export const UserProfile: React.FC<{ userId: number }> = ({ userId }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Line 19: Effect for data fetching
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchUserData(userId);
+        setUser(data);
+      } catch (err) {
+        setError('Failed to load user data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
+  }, [userId]);
+
+  // Line 37: Render loading state
+  if (loading) {
+    return <div>Loading user profile...</div>;
+  }
+
+  // Line 42: Render error state
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // Line 47: Render user profile
+  return (
+    <div className="user-profile">
+      <h1>{user?.name}</h1>
+      <p>{user?.email}</p>
+      <span className="role">{user?.role}</span>
+    </div>
+  );
+};`}
+                    language="tsx"
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="UserProfile.tsx"
+                    maxHeight="300px"
+                    showCopyButton={true}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Limited Height (200px) - More Compact
+                </h4>
+                <CodeBlock
+                    code={`function fibonacci(n: number): number {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+// Calculate first 10 Fibonacci numbers
+const results: number[] = [];
+for (let i = 0; i < 10; i++) {
+  results.push(fibonacci(i));
+}
+
+console.log('Fibonacci sequence:', results);
+console.log('First 10 numbers calculated successfully');`}
+                    language="typescript"
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="fibonacci.ts"
+                    maxHeight="200px"
+                    showCopyButton={true}
+                />
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates maxHeight prop that limits code block height and enables scrolling while keeping the header fixed.',
+            },
+        },
+    },
+}
+
+// Advanced diff with collapsed unchanged lines
+export const AdvancedDiff: Story = {
+    render: () => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Collapsed Unchanged Lines (GitHub-style)
+                </h4>
+                <CodeBlock
+                    code=""
+                    variant={CodeBlockVariant.DIFF}
+                    diffLines={[
+                        {
+                            content: 'import React from "react";',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: 'import { Button } from "./Button";',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        { content: '', type: DiffLineType.UNCHANGED },
+                        {
+                            content: '// Component configuration',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: 'const CONFIG = {',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: '  maxRetries: 3,',
+                            type: DiffLineType.REMOVED,
+                        },
+                        {
+                            content: '  maxRetries: 5,',
+                            type: DiffLineType.ADDED,
+                        },
+                        {
+                            content: '  timeout: 5000,',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: '  debug: false,',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        { content: '};', type: DiffLineType.UNCHANGED },
+                        { content: '', type: DiffLineType.UNCHANGED },
+                        {
+                            content: '// Utility functions',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: 'const formatData = (data: any) => {',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: '  return JSON.stringify(data, null, 2);',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        { content: '};', type: DiffLineType.UNCHANGED },
+                        { content: '', type: DiffLineType.UNCHANGED },
+                        {
+                            content: 'export const App = () => {',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: '  const [count, setCount] = useState(0);',
+                            type: DiffLineType.REMOVED,
+                        },
+                        {
+                            content:
+                                '  const [count, setCount] = useState<number>(0);',
+                            type: DiffLineType.ADDED,
+                        },
+                        { content: '  ', type: DiffLineType.UNCHANGED },
+                        {
+                            content: '  const handleClick = () => {',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: '    setCount(count + 1);',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        { content: '  };', type: DiffLineType.UNCHANGED },
+                        { content: '  ', type: DiffLineType.UNCHANGED },
+                        { content: '  return (', type: DiffLineType.UNCHANGED },
+                        {
+                            content: '    <div>Hello World</div>',
+                            type: DiffLineType.REMOVED,
+                        },
+                        {
+                            content: '    <div>Hello Universe</div>',
+                            type: DiffLineType.ADDED,
+                        },
+                        { content: '  );', type: DiffLineType.UNCHANGED },
+                        { content: '};', type: DiffLineType.UNCHANGED },
+                    ]}
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="config.tsx (with collapsed view)"
+                    showCopyButton={true}
+                    isDiffUnchangedCollapsed={true}
+                    diffContextLines={2}
+                    diffExpandChunk={10}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Full Diff View (No Collapse)
+                </h4>
+                <CodeBlock
+                    code=""
+                    variant={CodeBlockVariant.DIFF}
+                    diffLines={[
+                        {
+                            content: 'function calculateTotal(items) {',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: '  let total = 0;',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content:
+                                '  for (let i = 0; i < items.length; i++) {',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        {
+                            content: '    total += items[i].price;',
+                            type: DiffLineType.REMOVED,
+                        },
+                        {
+                            content:
+                                '    total += items[i].price * items[i].quantity;',
+                            type: DiffLineType.ADDED,
+                        },
+                        { content: '  }', type: DiffLineType.UNCHANGED },
+                        {
+                            content: '  return total;',
+                            type: DiffLineType.UNCHANGED,
+                        },
+                        { content: '}', type: DiffLineType.UNCHANGED },
+                    ]}
+                    showLineNumbers={true}
+                    showHeader={true}
+                    header="shopping-cart.js (full view)"
+                    showCopyButton={true}
+                    isDiffUnchangedCollapsed={false}
+                />
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates advanced diff features including collapsed unchanged lines (GitHub-style), configurable context lines, and expandable chunks.',
+            },
+        },
     },
 }
 

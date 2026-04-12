@@ -10,6 +10,7 @@ import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
+import { User, Mail, CreditCard, CheckCircle } from 'lucide-react'
 
 const meta: Meta<typeof Stepper> = {
     title: 'Components/Stepper',
@@ -195,6 +196,277 @@ export const WithSubsteps: Story = {
                 <Stepper steps={steps} stepperType={StepperType.VERTICAL} />
             </div>
         )
+    },
+}
+
+// ============================================================================
+// Step States
+// ============================================================================
+
+/**
+ * All step states in one view
+ */
+export const StepStates: Story = {
+    render: () => {
+        const stateSteps: Step[] = [
+            { id: 1, title: 'Completed Step', status: StepState.COMPLETED },
+            { id: 2, title: 'Current Step', status: StepState.CURRENT },
+            { id: 3, title: 'Pending Step', status: StepState.PENDING },
+            { id: 4, title: 'Skipped Step', status: StepState.SKIPPED },
+            { id: 5, title: 'Disabled Step', status: StepState.DISABLED },
+        ]
+
+        return (
+            <div style={{ padding: '20px' }}>
+                <h3
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        marginBottom: '24px',
+                    }}
+                >
+                    All Step States
+                </h3>
+                <Stepper
+                    steps={stateSteps}
+                    stepperType={StepperType.HORIZONTAL}
+                />
+                <div
+                    style={{
+                        marginTop: '24px',
+                        padding: '16px',
+                        backgroundColor: '#f9fafb',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                    }}
+                >
+                    <strong>States shown:</strong>
+                    <ul
+                        style={{
+                            margin: '8px 0 0 0',
+                            paddingLeft: '20px',
+                        }}
+                    >
+                        <li>
+                            <strong>COMPLETED</strong> - Step finished with
+                            checkmark
+                        </li>
+                        <li>
+                            <strong>CURRENT</strong> - Active step being worked
+                            on
+                        </li>
+                        <li>
+                            <strong>PENDING</strong> - Step not yet reached
+                        </li>
+                        <li>
+                            <strong>SKIPPED</strong> - Step was bypassed
+                        </li>
+                        <li>
+                            <strong>DISABLED</strong> - Step is
+                            locked/unavailable
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Displays all available step states (completed, current, pending, skipped, disabled) in a single view for reference.',
+            },
+        },
+    },
+}
+
+// ============================================================================
+// Custom Icons
+// ============================================================================
+
+/**
+ * Stepper with custom icons
+ */
+export const CustomIcons: Story = {
+    render: () => {
+        const customSteps: Step[] = [
+            {
+                id: 1,
+                title: 'Account Setup',
+                status: StepState.COMPLETED,
+                icon: <User size={14} color="#ffffff" />,
+            },
+            {
+                id: 2,
+                title: 'Verify Email',
+                status: StepState.CURRENT,
+                icon: <Mail size={14} color="#3b82f6" />,
+            },
+            {
+                id: 3,
+                title: 'Add Payment',
+                status: StepState.PENDING,
+                icon: <CreditCard size={14} color="#6b7280" />,
+            },
+            {
+                id: 4,
+                title: 'Complete',
+                status: StepState.PENDING,
+                icon: <CheckCircle size={14} color="#6b7280" />,
+            },
+        ]
+
+        return (
+            <div style={{ padding: '20px' }}>
+                <h3
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        marginBottom: '24px',
+                    }}
+                >
+                    Custom Step Icons
+                </h3>
+                <Stepper
+                    steps={customSteps}
+                    stepperType={StepperType.HORIZONTAL}
+                />
+                <div
+                    style={{
+                        marginTop: '24px',
+                        padding: '16px',
+                        backgroundColor: '#f9fafb',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                    }}
+                >
+                    <strong>Note:</strong> Custom icons override the default
+                    state icons. Pass any React node as the icon prop.
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Stepper with custom icons for each step, overriding the default numbered circles and checkmarks.',
+            },
+        },
+    },
+}
+
+// ============================================================================
+// Disabled Steps
+// ============================================================================
+
+/**
+ * Stepper with disabled steps
+ */
+export const DisabledSteps: Story = {
+    render: () => {
+        const [disabledSteps, setDisabledSteps] = useState<Step[]>([
+            { id: 1, title: 'Basic Info', status: StepState.COMPLETED },
+            { id: 2, title: 'Contact Details', status: StepState.COMPLETED },
+            {
+                id: 3,
+                title: 'Premium Features',
+                status: StepState.DISABLED,
+                description: 'Upgrade required',
+            },
+            {
+                id: 4,
+                title: 'Advanced Settings',
+                status: StepState.DISABLED,
+                description: 'Premium only',
+            },
+            { id: 5, title: 'Review', status: StepState.CURRENT },
+        ])
+
+        const toggleUpgrade = () => {
+            setDisabledSteps((prev) =>
+                prev.map((step) =>
+                    step.id === 3 || step.id === 4
+                        ? {
+                              ...step,
+                              status:
+                                  step.status === StepState.DISABLED
+                                      ? StepState.PENDING
+                                      : StepState.DISABLED,
+                          }
+                        : step
+                )
+            )
+        }
+
+        return (
+            <div style={{ padding: '20px' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '24px',
+                    }}
+                >
+                    <h3
+                        style={{
+                            fontSize: '16px',
+                            fontWeight: 600,
+                            margin: 0,
+                        }}
+                    >
+                        Disabled Steps (Gated Content)
+                    </h3>
+                    <button
+                        onClick={toggleUpgrade}
+                        style={{
+                            padding: '8px 16px',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Toggle Premium Access
+                    </button>
+                </div>
+                <Stepper
+                    steps={disabledSteps}
+                    stepperType={StepperType.HORIZONTAL}
+                    clickable={true}
+                />
+                <div
+                    style={{
+                        marginTop: '24px',
+                        padding: '16px',
+                        backgroundColor: '#f9fafb',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                    }}
+                >
+                    <strong>Disabled step behavior:</strong>
+                    <ul
+                        style={{
+                            margin: '8px 0 0 0',
+                            paddingLeft: '20px',
+                        }}
+                    >
+                        <li>Steps show a lock icon</li>
+                        <li>Cannot be clicked or navigated to</li>
+                        <li>Screen readers announce &quot;disabled&quot;</li>
+                        <li>Use for gated/premium content flows</li>
+                    </ul>
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates disabled steps for gated workflows or premium features. Disabled steps are locked and cannot be accessed until prerequisites are met.',
+            },
+        },
     },
 }
 

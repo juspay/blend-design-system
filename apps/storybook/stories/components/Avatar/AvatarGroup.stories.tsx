@@ -96,30 +96,74 @@ const avatars = [
             control: 'object',
             description:
                 'Array of avatar data objects with id, src, alt, and optional fallback',
+            table: {
+                type: {
+                    summary: 'AvatarData[]',
+                    detail: `{
+  id: string | number;     // Unique identifier (required)
+  src: string;             // Image URL
+  alt?: string;            // Alt text for accessibility
+  fallback?: string | ReactNode;  // Fallback initials or element
+}`,
+                },
+                category: 'Data',
+            },
         },
         maxCount: {
             control: { type: 'number', min: 1, max: 10 },
             description:
                 'Maximum number of avatars to display before showing overflow',
+            table: {
+                category: 'Display',
+            },
         },
         size: {
             control: 'select',
             options: Object.values(AvatarSize),
             description: 'Size variant for all avatars in the group',
+            table: {
+                category: 'Appearance',
+            },
         },
         shape: {
             control: 'select',
             options: Object.values(AvatarShape),
             description: 'Shape variant for all avatars in the group',
+            table: {
+                category: 'Appearance',
+            },
         },
         selectedAvatarIds: {
             control: 'object',
             description:
                 'Array of selected avatar IDs for controlled selection',
+            table: {
+                type: {
+                    summary: '(string | number)[]',
+                    detail: `Array of avatar IDs that are currently selected.
+Example: [1, 3, 5] or ['user-1', 'user-3']`,
+                },
+                category: 'Selection',
+            },
         },
         onSelectionChange: {
             action: 'selectionChanged',
             description: 'Callback fired when avatar selection changes',
+        },
+        skeleton: {
+            control: 'object',
+            description:
+                'Skeleton loading state configuration with show and variant properties',
+            table: {
+                type: {
+                    summary: 'SkeletonConfig',
+                    detail: `{
+  show: boolean;              // Whether to show skeleton loading
+  variant?: 'pulse' | 'wave'; // Animation variant (default: 'pulse')
+}`,
+                },
+                category: 'State',
+            },
         },
     },
     decorators: [
@@ -720,6 +764,124 @@ export const SingleAvatar: Story = {
                 story: 'Avatar group with only one avatar, no overflow counter shown.',
             },
         },
+    },
+}
+
+// Skeleton Loading State
+// ============================================================================
+// Demonstrates the skeleton loading state for AvatarGroup
+// ============================================================================
+
+export const SkeletonState: Story = {
+    render: () => (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '32px',
+                padding: '24px',
+            }}
+        >
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Pulse Variant (Default)
+                </h4>
+                <AvatarGroup
+                    avatars={sampleAvatars.slice(0, 5)}
+                    maxCount={5}
+                    size={AvatarSize.MD}
+                    skeleton={{ show: true, variant: 'pulse' }}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Wave Variant
+                </h4>
+                <AvatarGroup
+                    avatars={sampleAvatars.slice(0, 5)}
+                    maxCount={5}
+                    size={AvatarSize.MD}
+                    skeleton={{ show: true, variant: 'wave' }}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    With Overflow Counter (Pulse)
+                </h4>
+                <AvatarGroup
+                    avatars={sampleAvatars}
+                    maxCount={3}
+                    size={AvatarSize.LG}
+                    skeleton={{ show: true, variant: 'pulse' }}
+                />
+            </div>
+
+            <div>
+                <h4
+                    style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '12px',
+                    }}
+                >
+                    Different Sizes (Wave)
+                </h4>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '24px',
+                    }}
+                >
+                    <AvatarGroup
+                        avatars={sampleAvatars.slice(0, 4)}
+                        maxCount={4}
+                        size={AvatarSize.SM}
+                        skeleton={{ show: true, variant: 'wave' }}
+                    />
+                    <AvatarGroup
+                        avatars={sampleAvatars.slice(0, 4)}
+                        maxCount={4}
+                        size={AvatarSize.MD}
+                        skeleton={{ show: true, variant: 'wave' }}
+                    />
+                    <AvatarGroup
+                        avatars={sampleAvatars.slice(0, 4)}
+                        maxCount={4}
+                        size={AvatarSize.XL}
+                        skeleton={{ show: true, variant: 'wave' }}
+                    />
+                </div>
+            </div>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates skeleton loading states for AvatarGroup. Shows pulse and wave variants, with and without overflow counter, and across different sizes. The overflow counter also shows a skeleton when loading.',
+            },
+        },
+        a11y: getA11yConfig('content'),
     },
 }
 

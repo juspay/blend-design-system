@@ -221,7 +221,11 @@ const [selectedValues, setSelectedValues] = useState<string[]>([]);
             control: { type: 'object' },
             description: 'Array of currently selected values',
             table: {
-                type: { summary: 'string[]' },
+                type: {
+                    summary: 'string[]',
+                    detail: `Array of selected option values (matching the 'value' property of items).
+Example: ['react', 'nodejs', 'postgresql']`,
+                },
                 category: 'Core',
             },
         },
@@ -237,7 +241,26 @@ const [selectedValues, setSelectedValues] = useState<string[]>([]);
             control: { type: 'object' },
             description: 'Array of grouped menu items',
             table: {
-                type: { summary: 'MultiSelectMenuGroupType[]' },
+                type: {
+                    summary: 'MultiSelectMenuGroupType[]',
+                    detail: `MultiSelectMenuGroupType: {
+  groupLabel?: string;              // Optional group label
+  items: MultiSelectMenuItemType[]; // Array of menu items
+  showSeparator?: boolean;          // Show separator after group
+}
+
+MultiSelectMenuItemType: {
+  value: string;                    // Unique identifier (required)
+  label: string;                    // Display text (required)
+  subLabel?: string;               // Secondary description text
+  slot1?: ReactNode;               // Leading icon/content
+  slot2?: ReactNode;               // Trailing icon/content
+  disabled?: boolean;              // Disable this item
+  href?: string;                   // Link URL (renders as anchor)
+  onClick?: () => void;            // Click handler
+  tooltip?: string | ReactNode;    // Tooltip content
+}`,
+                },
                 category: 'Core',
             },
         },

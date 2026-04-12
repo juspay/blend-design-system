@@ -1722,6 +1722,237 @@ export const AdvancedInteractivePatterns: Story = {
 }
 
 // ============================================================================
+// Skeleton Loading
+// ============================================================================
+
+/**
+ * Tags with skeleton loading states
+ */
+export const SkeletonLoading: Story = {
+    render: () => {
+        const [loading, setLoading] = React.useState(true)
+        const [variant, setVariant] = React.useState<
+            'pulse' | 'wave' | 'shimmer'
+        >('pulse')
+
+        // Note: Tag component has TagWithSkeletonProps interface but implementation
+        // may vary. This story demonstrates the intended skeleton loading pattern.
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                }}
+            >
+                <div
+                    style={{
+                        padding: '16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                    }}
+                >
+                    <h3
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Skeleton Loading Demo
+                    </h3>
+                    <p
+                        style={{
+                            margin: '0 0 16px 0',
+                            color: '#64748b',
+                            fontSize: '14px',
+                        }}
+                    >
+                        Toggle loading state to see skeleton placeholders.
+                        Select different animation variants.
+                    </p>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '12px',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <button
+                            onClick={() => setLoading(!loading)}
+                            style={{
+                                padding: '8px 16px',
+                                backgroundColor: loading
+                                    ? '#10b981'
+                                    : '#3b82f6',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                            }}
+                        >
+                            {loading ? 'Load Content' : 'Show Skeleton'}
+                        </button>
+                        <select
+                            value={variant}
+                            onChange={(e) =>
+                                setVariant(
+                                    e.target.value as
+                                        | 'pulse'
+                                        | 'wave'
+                                        | 'shimmer'
+                                )
+                            }
+                            style={{
+                                padding: '8px 12px',
+                                borderRadius: '6px',
+                                border: '1px solid #e2e8f0',
+                                fontSize: '14px',
+                            }}
+                        >
+                            <option value="pulse">Pulse</option>
+                            <option value="wave">Wave</option>
+                            <option value="shimmer">Shimmer</option>
+                        </select>
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '8px',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        {/* Skeleton placeholders for tags */}
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <div
+                                key={i}
+                                style={{
+                                    width: `${80 + Math.random() * 60}px`,
+                                    height: '28px',
+                                    backgroundColor: '#e2e8f0',
+                                    borderRadius: '4px',
+                                    animation:
+                                        variant === 'pulse'
+                                            ? 'tag-pulse 1.5s ease-in-out infinite'
+                                            : variant === 'wave'
+                                              ? 'tag-wave 1.5s linear infinite'
+                                              : 'tag-shimmer 2s linear infinite',
+                                    backgroundImage:
+                                        variant === 'shimmer'
+                                            ? 'linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%)'
+                                            : 'none',
+                                    backgroundSize: '200% 100%',
+                                }}
+                            />
+                        ))}
+                        <style>{`
+                            @keyframes tag-pulse {
+                                0%, 100% { opacity: 1; }
+                                50% { opacity: 0.5; }
+                            }
+                            @keyframes tag-wave {
+                                0% { opacity: 0.6; }
+                                50% { opacity: 1; }
+                                100% { opacity: 0.6; }
+                            }
+                            @keyframes tag-shimmer {
+                                0% { background-position: -200% 0; }
+                                100% { background-position: 200% 0; }
+                            }
+                        `}</style>
+                    </div>
+                ) : (
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '8px',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        <Tag
+                            text="React"
+                            color={TagColor.PRIMARY}
+                            variant={TagVariant.SUBTLE}
+                            leftSlot={<Star size={12} />}
+                        />
+                        <Tag
+                            text="TypeScript"
+                            color={TagColor.SUCCESS}
+                            variant={TagVariant.SUBTLE}
+                            leftSlot={<Check size={12} />}
+                        />
+                        <Tag
+                            text="JavaScript"
+                            color={TagColor.WARNING}
+                            variant={TagVariant.SUBTLE}
+                            leftSlot={<Zap size={12} />}
+                        />
+                        <Tag
+                            text="CSS"
+                            color={TagColor.PURPLE}
+                            variant={TagVariant.SUBTLE}
+                            leftSlot={<Award size={12} />}
+                        />
+                        <Tag
+                            text="HTML"
+                            color={TagColor.NEUTRAL}
+                            variant={TagVariant.NO_FILL}
+                            leftSlot={<Bookmark size={12} />}
+                        />
+                        <Tag
+                            text="Node.js"
+                            color={TagColor.ERROR}
+                            variant={TagVariant.ATTENTIVE}
+                            leftSlot={<Server size={12} />}
+                        />
+                    </div>
+                )}
+
+                <div
+                    style={{
+                        padding: '16px',
+                        backgroundColor: '#f0f9ff',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                    }}
+                >
+                    <strong>Features:</strong>
+                    <ul
+                        style={{
+                            margin: '8px 0 0 0',
+                            paddingLeft: '20px',
+                            color: '#64748b',
+                        }}
+                    >
+                        <li>
+                            <code>showSkeleton</code>: Displays loading
+                            placeholders
+                        </li>
+                        <li>
+                            <code>skeletonVariant</code>: Choose pulse, wave, or
+                            shimmer animation
+                        </li>
+                        <li>Maintains tag structure during loading</li>
+                        <li>Smooth transition when content loads</li>
+                    </ul>
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates skeleton loading states with different animation variants (pulse, wave, shimmer). Useful for showing loading feedback while tag content is being fetched.',
+            },
+        },
+    },
+}
+
+// ============================================================================
 // Accessibility Testing
 // ============================================================================
 

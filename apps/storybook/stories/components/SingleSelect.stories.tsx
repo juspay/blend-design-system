@@ -223,7 +223,26 @@ const [selected, setSelected] = useState<string>('');
             control: { type: 'object' },
             description: 'Array of grouped menu items',
             table: {
-                type: { summary: 'SelectMenuGroupType[]' },
+                type: {
+                    summary: 'SelectMenuGroupType[]',
+                    detail: `SelectMenuGroupType: {
+  groupLabel?: string;            // Optional group label
+  items: SelectMenuItemType[];    // Array of menu items
+  showSeparator?: boolean;        // Show separator after group
+}
+
+SelectMenuItemType: {
+  value: string;                  // Unique identifier (required)
+  label: string;                  // Display text (required)
+  subLabel?: string;             // Secondary description text
+  slot1?: ReactNode;             // Leading icon/content
+  slot2?: ReactNode;             // Trailing icon/content
+  disabled?: boolean;            // Disable this item
+  href?: string;                 // Link URL (renders as anchor)
+  onClick?: () => void;          // Click handler
+  tooltip?: string | ReactNode;  // Tooltip content
+}`,
+                },
                 category: 'Core',
             },
         },

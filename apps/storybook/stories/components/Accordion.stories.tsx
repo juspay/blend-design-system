@@ -6,6 +6,7 @@ import {
     AccordionType,
     AccordionChevronPosition,
 } from '@juspay/blend-design-system'
+import type { AccordionProps } from '@juspay/blend-design-system'
 import {
     User,
     Shield,
@@ -20,21 +21,44 @@ import {
     Smartphone,
     Tablet,
     Laptop,
+    Check,
+    X,
 } from 'lucide-react'
+import { Checkbox } from '@juspay/blend-design-system'
+import { Switch } from '@juspay/blend-design-system'
 import { getA11yConfig, CHROMATIC_CONFIG } from '../../.storybook/a11y.config'
+
+// ============================================================================
+// Wrapper type — combines Accordion props with AccordionItem controls
+// so argTypes can reference title, subtext, etc. without TS errors
+// ============================================================================
+
+type AccordionStoryProps = AccordionProps & {
+    title: string
+    subtext?: string
+    leftSlot?: string
+    rightSlot?: string
+    subtextSlot?: string
+    isDisabled?: boolean
+    chevronPosition?: AccordionChevronPosition
+    children?: string
+    triggerSlot?: 'none' | 'checkbox' | 'switch' | 'renderProp'
+    triggerSlotWidth?: number
+}
+
+const AccordionStory = (props: AccordionStoryProps) => <Accordion {...props} />
+AccordionStory.displayName = 'Accordion'
 
 // ============================================================================
 // Meta Configuration
 // ============================================================================
 
-const meta: Meta<typeof Accordion> = {
+const meta: Meta<typeof AccordionStory> = {
     title: 'Components/Accordion',
-    component: Accordion,
+    component: AccordionStory,
     parameters: {
         layout: 'centered',
-        // Use shared a11y config for interactive components
         a11y: getA11yConfig('interactive'),
-        // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
         docs: {
             description: {
@@ -122,7 +146,7 @@ import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-sy
             action: 'valueChanged',
             description: 'Callback when expanded items change',
         },
-        // AccordionItem props for interactive story
+        // AccordionItem props exposed via the wrapper type
         title: {
             table: { category: 'AccordionItem' },
             control: 'text',
@@ -164,11 +188,6 @@ import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-sy
             control: 'boolean',
             description: 'Whether the accordion item is disabled',
         },
-        className: {
-            table: { category: 'AccordionItem' },
-            control: 'text',
-            description: 'Additional CSS class for custom styling',
-        },
         chevronPosition: {
             table: { category: 'AccordionItem' },
             control: 'select',
@@ -180,32 +199,29 @@ import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-sy
             control: 'text',
             description: 'Content to display when expanded',
         },
+        triggerSlot: {
+            table: { category: 'AccordionItem' },
+            control: 'select',
+            options: ['none', 'checkbox', 'switch', 'renderProp'],
+            description:
+                'Custom slot to replace the chevron (checkbox, switch, or render prop)',
+        },
+        triggerSlotWidth: {
+            table: { category: 'AccordionItem' },
+            control: 'number',
+            description: 'Width of the trigger slot container in pixels',
+        },
     },
     tags: ['autodocs'],
 }
 
 export default meta
-type Story = StoryObj<typeof Accordion>
-
-// ============================================================================
-// Story Categories
-// ============================================================================
-// Organize stories into logical groups:
-// 1. Basic Variants (types, multiple expansion)
-// 2. Visual Styles (border, no border, chevron positions)
-// 3. Content Variations (icons, subtext, slots)
-// 4. States (disabled, controlled)
-// 5. Real-World Examples
-// 6. Accessibility Testing
-// ============================================================================
+type Story = StoryObj<typeof AccordionStory>
 
 // ============================================================================
 // Helper Functions
 // ============================================================================
 
-/**
- * Helper functions to render slots based on control selection
- */
 const getLeftSlot = (slotType: string) => {
     switch (slotType) {
         case 'user':
@@ -322,18 +338,54 @@ const getSubtextSlot = (slotType: string) => {
     }
 }
 
+const getTriggerSlot = (slotType: string) => {
+    switch (slotType) {
+        case 'renderProp':
+            return ({
+                isExpanded,
+                toggle,
+            }: {
+                isExpanded: boolean
+                toggle: () => void
+            }) => (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        toggle()
+                    }}
+                    style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        border: '2px solid #3b82f6',
+                        backgroundColor: isExpanded ? '#3b82f6' : 'transparent',
+                        color: isExpanded ? 'white' : '#3b82f6',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                    }}
+                    aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                >
+                    {isExpanded ? <X size={14} /> : <Check size={14} />}
+                </button>
+            )
+        case 'none':
+        default:
+            return undefined
+    }
+}
+
 // ============================================================================
 // Basic Variants
 // ============================================================================
 
-/**
- * Default accordion with interactive controls
- */
 export const Default: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
         isMultiple: false,
-        // AccordionItem props
         title: 'What is an accordion?',
         subtext: 'Click to learn more',
         leftSlot: 'user',
@@ -343,26 +395,27 @@ export const Default: Story = {
         chevronPosition: AccordionChevronPosition.RIGHT,
         children:
             'An accordion is a vertically stacked list of interactive headings that each reveal an associated section of content.',
-        className: '',
+        triggerSlot: 'none',
+        triggerSlotWidth: undefined,
     },
-    render: (args: any) => (
+    render: (args) => (
         <div style={{ width: '600px' }}>
             <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
-                defaultValue={args.isMultiple ? [] : undefined}
                 onValueChange={args.onValueChange}
             >
                 <AccordionItem
                     value="item-1"
                     title={args.title}
                     subtext={args.subtext}
-                    leftSlot={getLeftSlot(args.leftSlot)}
-                    rightSlot={getRightSlot(args.rightSlot)}
-                    subtextSlot={getSubtextSlot(args.subtextSlot)}
+                    leftSlot={getLeftSlot(args.leftSlot ?? 'none')}
+                    rightSlot={getRightSlot(args.rightSlot ?? 'none')}
+                    subtextSlot={getSubtextSlot(args.subtextSlot ?? 'none')}
                     isDisabled={args.isDisabled}
                     chevronPosition={args.chevronPosition}
-                    className={args.className}
+                    triggerSlot={getTriggerSlot(args.triggerSlot ?? 'none')}
+                    triggerSlotWidth={args.triggerSlotWidth}
                 >
                     <div style={{ padding: '16px' }}>{args.children}</div>
                 </AccordionItem>
@@ -399,9 +452,6 @@ export const Default: Story = {
 // Visual Styles
 // ============================================================================
 
-/**
- * Accordion with border style
- */
 export const WithBorder: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -409,7 +459,10 @@ export const WithBorder: Story = {
     },
     render: (args) => (
         <div style={{ width: '600px' }}>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+            >
                 <AccordionItem value="item-1" title="Account Settings">
                     <div style={{ padding: '16px' }}>
                         Manage your account preferences, security settings, and
@@ -434,16 +487,13 @@ export const WithBorder: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion with border style for a more defined visual separation. Maintains proper keyboard navigation and ARIA attributes.',
+                story: 'Accordion with border style for a more defined visual separation.',
             },
         },
         a11y: getA11yConfig('interactive'),
     },
 }
 
-/**
- * Multiple expansion accordion
- */
 export const MultipleExpansion: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -452,7 +502,11 @@ export const MultipleExpansion: Story = {
     },
     render: (args) => (
         <div style={{ width: '600px' }}>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+                defaultValue={args.defaultValue as string[]}
+            >
                 <AccordionItem value="item-1" title="First Section">
                     <div style={{ padding: '16px' }}>
                         This accordion allows multiple sections to be open at
@@ -477,7 +531,7 @@ export const MultipleExpansion: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion that allows multiple items to be expanded at once. Each trigger maintains proper ARIA attributes and keyboard accessibility.',
+                story: 'Accordion that allows multiple items to be expanded at once.',
             },
         },
         a11y: getA11yConfig('interactive'),
@@ -488,9 +542,6 @@ export const MultipleExpansion: Story = {
 // Content Variations
 // ============================================================================
 
-/**
- * Accordion items with icons
- */
 export const WithIcons: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -498,7 +549,10 @@ export const WithIcons: Story = {
     },
     render: (args) => (
         <div style={{ width: '600px' }}>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+            >
                 <AccordionItem
                     value="profile"
                     title="Profile Settings"
@@ -544,16 +598,13 @@ export const WithIcons: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion items with icons for better visual context. Icons are marked with aria-hidden="true" when decorative.',
+                story: 'Accordion items with icons for better visual context.',
             },
         },
         a11y: getA11yConfig('interactive'),
     },
 }
 
-/**
- * Accordion items with subtext
- */
 export const WithSubtext: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -561,7 +612,10 @@ export const WithSubtext: Story = {
     },
     render: (args) => (
         <div style={{ width: '600px' }}>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+            >
                 <AccordionItem
                     value="basic"
                     title="Basic Plan"
@@ -618,16 +672,13 @@ export const WithSubtext: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion items with subtext for additional context. Subtext provides supplementary information while maintaining accessibility.',
+                story: 'Accordion items with subtext for additional context.',
             },
         },
         a11y: getA11yConfig('interactive'),
     },
 }
 
-/**
- * Accordion with chevron on left
- */
 export const ChevronLeft: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -635,7 +686,10 @@ export const ChevronLeft: Story = {
     },
     render: (args) => (
         <div style={{ width: '600px' }}>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+            >
                 <AccordionItem
                     value="item-1"
                     title="Documentation"
@@ -669,7 +723,7 @@ export const ChevronLeft: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion with chevron positioned on the left side. Chevron maintains aria-hidden="true" for accessibility.',
+                story: 'Accordion with chevron positioned on the left side.',
             },
         },
         a11y: getA11yConfig('interactive'),
@@ -680,9 +734,6 @@ export const ChevronLeft: Story = {
 // States
 // ============================================================================
 
-/**
- * Accordion with disabled items
- */
 export const WithDisabledItems: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -690,7 +741,10 @@ export const WithDisabledItems: Story = {
     },
     render: (args) => (
         <div style={{ width: '600px' }}>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+            >
                 <AccordionItem
                     value="available"
                     title="Available Feature"
@@ -728,7 +782,7 @@ export const WithDisabledItems: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion with disabled items to show locked or unavailable content. Disabled items are removed from tab order and properly announced to screen readers.',
+                story: 'Accordion with disabled items to show locked or unavailable content.',
             },
         },
         a11y: getA11yConfig('interactive'),
@@ -739,9 +793,6 @@ export const WithDisabledItems: Story = {
 // Real-World Examples
 // ============================================================================
 
-/**
- * Accordion with complex content layouts
- */
 export const ComplexContent: Story = {
     args: {
         accordionType: AccordionType.BORDER,
@@ -749,7 +800,10 @@ export const ComplexContent: Story = {
     },
     render: (args) => (
         <div style={{ width: '600px' }}>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+            >
                 <AccordionItem
                     value="storage"
                     title="Storage Usage"
@@ -783,66 +837,36 @@ export const ComplexContent: Story = {
                                 gap: '12px',
                             }}
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <span
-                                    style={{ fontSize: '14px', color: '#666' }}
-                                >
-                                    Documents
-                                </span>
-                                <span
+                            {[
+                                { label: 'Documents', size: '12.3 GB' },
+                                { label: 'Images', size: '23.7 GB' },
+                                { label: 'Videos', size: '9.2 GB' },
+                            ].map(({ label, size }) => (
+                                <div
+                                    key={label}
                                     style={{
-                                        fontSize: '14px',
-                                        fontWeight: '500',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
                                     }}
                                 >
-                                    12.3 GB
-                                </span>
-                            </div>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <span
-                                    style={{ fontSize: '14px', color: '#666' }}
-                                >
-                                    Images
-                                </span>
-                                <span
-                                    style={{
-                                        fontSize: '14px',
-                                        fontWeight: '500',
-                                    }}
-                                >
-                                    23.7 GB
-                                </span>
-                            </div>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <span
-                                    style={{ fontSize: '14px', color: '#666' }}
-                                >
-                                    Videos
-                                </span>
-                                <span
-                                    style={{
-                                        fontSize: '14px',
-                                        fontWeight: '500',
-                                    }}
-                                >
-                                    9.2 GB
-                                </span>
-                            </div>
+                                    <span
+                                        style={{
+                                            fontSize: '14px',
+                                            color: '#666',
+                                        }}
+                                    >
+                                        {label}
+                                    </span>
+                                    <span
+                                        style={{
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                        }}
+                                    >
+                                        {size}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </AccordionItem>
@@ -860,95 +884,65 @@ export const ComplexContent: Story = {
                                 gap: '12px',
                             }}
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                }}
-                            >
-                                <Laptop size={16} color="#666" />
-                                <div style={{ flex: 1 }}>
-                                    <div
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                        }}
-                                    >
-                                        MacBook Pro
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#999',
-                                        }}
-                                    >
-                                        Last active: 2 minutes ago
-                                    </div>
-                                </div>
-                                <span
+                            {[
+                                {
+                                    Icon: Laptop,
+                                    name: 'MacBook Pro',
+                                    last: '2 minutes ago',
+                                    active: true,
+                                },
+                                {
+                                    Icon: Smartphone,
+                                    name: 'iPhone 14',
+                                    last: '1 hour ago',
+                                    active: false,
+                                },
+                                {
+                                    Icon: Tablet,
+                                    name: 'iPad Air',
+                                    last: '3 days ago',
+                                    active: false,
+                                },
+                            ].map(({ Icon, name, last, active }) => (
+                                <div
+                                    key={name}
                                     style={{
-                                        fontSize: '12px',
-                                        color: '#22c55e',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '12px',
                                     }}
                                 >
-                                    Active
-                                </span>
-                            </div>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                }}
-                            >
-                                <Smartphone size={16} color="#666" />
-                                <div style={{ flex: 1 }}>
-                                    <div
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                        }}
-                                    >
-                                        iPhone 14
+                                    <Icon size={16} color="#666" />
+                                    <div style={{ flex: 1 }}>
+                                        <div
+                                            style={{
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                            }}
+                                        >
+                                            {name}
+                                        </div>
+                                        <div
+                                            style={{
+                                                fontSize: '12px',
+                                                color: '#999',
+                                            }}
+                                        >
+                                            Last active: {last}
+                                        </div>
                                     </div>
-                                    <div
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#999',
-                                        }}
-                                    >
-                                        Last active: 1 hour ago
-                                    </div>
+                                    {active && (
+                                        <span
+                                            style={{
+                                                fontSize: '12px',
+                                                color: '#22c55e',
+                                            }}
+                                        >
+                                            Active
+                                        </span>
+                                    )}
                                 </div>
-                            </div>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                }}
-                            >
-                                <Tablet size={16} color="#666" />
-                                <div style={{ flex: 1 }}>
-                                    <div
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                        }}
-                                    >
-                                        iPad Air
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#999',
-                                        }}
-                                    >
-                                        Last active: 3 days ago
-                                    </div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </AccordionItem>
@@ -958,16 +952,13 @@ export const ComplexContent: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion with complex content layouts and multiple data points. All interactive elements maintain proper accessibility.',
+                story: 'Accordion with complex content layouts and multiple data points.',
             },
         },
         a11y: getA11yConfig('interactive'),
     },
 }
 
-/**
- * FAQ example using accordion
- */
 export const FAQExample: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -980,7 +971,10 @@ export const FAQExample: Story = {
                     Frequently Asked Questions
                 </h3>
             </div>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+            >
                 <AccordionItem
                     value="q1"
                     title="How do I reset my password?"
@@ -1049,16 +1043,13 @@ export const FAQExample: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'A practical example of using accordions for FAQ sections. Maintains proper ARIA structure and keyboard navigation.',
+                story: 'A practical example of using accordions for FAQ sections.',
             },
         },
         a11y: getA11yConfig('interactive'),
     },
 }
 
-/**
- * Accordion with custom styling
- */
 export const WithCustomStyling: Story = {
     args: {
         accordionType: AccordionType.NO_BORDER,
@@ -1076,10 +1067,6 @@ export const WithCustomStyling: Story = {
                 .custom-accordion-item [data-state="open"] {
                     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
                 }
-                .custom-accordion-item .custom-title {
-                    color: white;
-                    font-weight: 600;
-                }
                 .custom-content {
                     background: rgba(255, 255, 255, 0.95);
                     margin: 8px;
@@ -1088,43 +1075,41 @@ export const WithCustomStyling: Story = {
                 }
                 `}
             </style>
-            <Accordion {...args}>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+            >
                 <AccordionItem
                     value="custom-1"
                     title="Custom Styled Item"
                     subtext="With gradient background"
-                    className="custom-accordion-item"
                     data-testid="custom-accordion-item-1"
                 >
                     <div className="custom-content" style={{ padding: '16px' }}>
                         This accordion item has custom CSS styling applied
-                        through the className prop and additional HTML
-                        attributes.
+                        through data attributes and parent container styles.
                     </div>
                 </AccordionItem>
                 <AccordionItem
                     value="custom-2"
                     title="Another Custom Item"
                     subtext="With hover effects"
-                    className="custom-accordion-item"
                     data-testid="custom-accordion-item-2"
                 >
                     <div className="custom-content" style={{ padding: '16px' }}>
-                        You can pass any valid HTML div attributes to
-                        AccordionItem components for enhanced functionality and
-                        styling.
+                        You can pass data attributes to AccordionItem components
+                        for enhanced functionality.
                     </div>
                 </AccordionItem>
                 <AccordionItem
                     value="custom-3"
                     title="Third Custom Item"
                     subtext="Fully customizable"
-                    className="custom-accordion-item"
                     data-testid="custom-accordion-item-3"
                 >
                     <div className="custom-content" style={{ padding: '16px' }}>
-                        The className prop allows for complete visual
-                        customization while maintaining all accordion
+                        Custom CSS can be applied through parent containers and
+                        data attributes while maintaining all accordion
                         functionality.
                     </div>
                 </AccordionItem>
@@ -1134,16 +1119,17 @@ export const WithCustomStyling: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Accordion items with custom CSS classes and additional HTML attributes like data-testid for testing purposes. Custom styling should maintain accessibility features.',
+                story: 'Accordion items with custom CSS classes and additional HTML attributes.',
             },
         },
         a11y: getA11yConfig('interactive'),
     },
 }
 
-/**
- * Controlled accordion example
- */
+// ============================================================================
+// Controlled
+// ============================================================================
+
 export const Controlled: Story = {
     render: function ControlledExample() {
         const [value, setValue] = React.useState<string>('item-2')
@@ -1156,6 +1142,7 @@ export const Controlled: Story = {
                     </p>
                 </div>
                 <Accordion
+                    accordionType={AccordionType.NO_BORDER}
                     value={value}
                     onValueChange={(newValue) => setValue(newValue as string)}
                 >
@@ -1184,7 +1171,7 @@ export const Controlled: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Controlled accordion where the expanded state is managed externally. Maintains proper ARIA attributes and keyboard navigation.',
+                story: 'Controlled accordion where the expanded state is managed externally.',
             },
         },
         a11y: getA11yConfig('interactive'),
@@ -1195,9 +1182,6 @@ export const Controlled: Story = {
 // Accessibility Testing
 // ============================================================================
 
-/**
- * Accessibility examples
- */
 export const Accessibility: Story = {
     render: () => (
         <div
@@ -1224,8 +1208,7 @@ export const Accessibility: Story = {
                         <AccordionItem value="aria-1" title="ARIA Expanded">
                             <div style={{ padding: '16px' }}>
                                 Accordion triggers have aria-expanded attribute
-                                that updates based on state (true/false). Check
-                                Accessibility panel to verify.
+                                that updates based on state (true/false).
                             </div>
                         </AccordionItem>
                         <AccordionItem value="aria-2" title="ARIA Controls">
@@ -1256,8 +1239,7 @@ export const Accessibility: Story = {
                             title="Tab Navigation"
                         >
                             <div style={{ padding: '16px' }}>
-                                Tab to focus accordion triggers. Each trigger is
-                                keyboard accessible.
+                                Tab to focus accordion triggers.
                             </div>
                         </AccordionItem>
                         <AccordionItem
@@ -1265,8 +1247,7 @@ export const Accessibility: Story = {
                             title="Enter/Space to Toggle"
                         >
                             <div style={{ padding: '16px' }}>
-                                Press Enter or Space to expand/collapse
-                                accordion items.
+                                Press Enter or Space to expand/collapse items.
                             </div>
                         </AccordionItem>
                         <AccordionItem
@@ -1274,8 +1255,7 @@ export const Accessibility: Story = {
                             title="Arrow Key Navigation"
                         >
                             <div style={{ padding: '16px' }}>
-                                Use Arrow Up/Down keys to navigate between
-                                accordion items.
+                                Use Arrow Up/Down to navigate between items.
                             </div>
                         </AccordionItem>
                     </Accordion>
@@ -1301,8 +1281,7 @@ export const Accessibility: Story = {
                         >
                             <div style={{ padding: '16px' }}>
                                 Decorative icons are marked with
-                                aria-hidden="true" to hide them from screen
-                                readers.
+                                aria-hidden="true".
                             </div>
                         </AccordionItem>
                         <AccordionItem
@@ -1311,8 +1290,8 @@ export const Accessibility: Story = {
                             leftSlot={<Shield size={20} color="#666" />}
                         >
                             <div style={{ padding: '16px' }}>
-                                Chevron icons are decorative and properly hidden
-                                from assistive technologies.
+                                Chevron icons are properly hidden from assistive
+                                technologies.
                             </div>
                         </AccordionItem>
                     </Accordion>
@@ -1333,14 +1312,13 @@ export const Accessibility: Story = {
                     <Accordion accordionType={AccordionType.BORDER}>
                         <AccordionItem value="focus-1" title="Focus Me">
                             <div style={{ padding: '16px' }}>
-                                Tab to focus this accordion trigger. You should
-                                see a visible focus indicator.
+                                Tab to focus — you should see a visible focus
+                                indicator.
                             </div>
                         </AccordionItem>
                         <AccordionItem value="focus-2" title="Focus Me Too">
                             <div style={{ padding: '16px' }}>
-                                All accordion triggers have visible focus
-                                indicators for keyboard navigation.
+                                All triggers have visible focus indicators.
                             </div>
                         </AccordionItem>
                     </Accordion>
@@ -1404,15 +1382,14 @@ export const Accessibility: Story = {
                             subtext="Additional context for screen readers"
                         >
                             <div style={{ padding: '16px' }}>
-                                Subtext provides additional context that is
-                                announced to screen readers along with the
-                                title.
+                                Subtext provides additional context announced to
+                                screen readers.
                             </div>
                         </AccordionItem>
                         <AccordionItem value="sr-2" title="State Announcements">
                             <div style={{ padding: '16px' }}>
-                                Screen readers announce when accordion items are
-                                expanded or collapsed via aria-expanded changes.
+                                Screen readers announce expanded/collapsed state
+                                via aria-expanded changes.
                             </div>
                         </AccordionItem>
                     </Accordion>
@@ -1423,67 +1400,370 @@ export const Accessibility: Story = {
     parameters: {
         docs: {
             description: {
-                story: `
-Accessibility examples demonstrating ARIA attributes, keyboard navigation, decorative icons, focus indicators, disabled states, and screen reader support.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0)
-   - Review passing tests (12+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test Accordion.accessibility
-   \`\`\`
-   - 40+ automated tests
-   - WCAG compliance verification
-   - ARIA attribute validation
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes
-   - Responsive behavior
-
-4. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Keyboard navigation (Tab, Enter, Space, Arrow keys)
-   - Color contrast verification
-
-## Accessibility Report
-
-**Current Status**: 
-- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (7/9 applicable criteria compliant)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), No Timing (2.2.3), Interruptions (2.2.4), Animation from Interactions (2.3.3), Change on Request (3.2.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - Interactive elements need 44x44px
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-
-**Key Accessibility Features**:
-- Proper ARIA attributes (aria-expanded, aria-controls)
-- Semantic HTML structure with Radix UI primitives
-- Comprehensive keyboard navigation (Arrow keys, Enter, Space, Tab)
-- Decorative icons marked with aria-hidden="true"
-- Visible focus indicators
-- Disabled items removed from tab order
-- Built on Radix UI with robust accessibility features
-                `,
+                story: 'Accessibility examples demonstrating ARIA attributes, keyboard navigation, focus indicators, disabled states, and screen reader support.',
             },
         },
-        // Enhanced a11y rules for accessibility story
         a11y: getA11yConfig('interactive'),
-        // Extended delay for Chromatic to capture focus states
         chromatic: {
             ...CHROMATIC_CONFIG,
             delay: 500,
         },
+    },
+}
+
+// ============================================================================
+// Trigger Slot Patterns
+// ============================================================================
+
+export const TriggerSlotPatterns: Story = {
+    render: function TriggerSlotPatternsExample() {
+        // Pattern 1: Simple element state
+        const [simpleChecked, setSimpleChecked] = React.useState<
+            Record<string, boolean>
+        >({
+            'el-1': true,
+            'el-2': false,
+        })
+
+        // Pattern 2: Independent selection state
+        const [selectedTasks, setSelectedTasks] = React.useState<string[]>([])
+
+        // Pattern 3: Feature toggle state
+        const [features, setFeatures] = React.useState<string[]>([
+            'feature-analytics',
+        ])
+
+        const toggleSelection = (id: string) => {
+            setSelectedTasks((prev) =>
+                prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
+            )
+        }
+
+        const toggleFeature = (id: string) => {
+            setFeatures((prev) =>
+                prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
+            )
+        }
+
+        return (
+            <div
+                style={{
+                    width: '600px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '48px',
+                }}
+            >
+                {/* Pattern 1: Simple Element */}
+                <section>
+                    <h4
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Pattern 1: Simple React Element
+                    </h4>
+                    <p
+                        style={{
+                            marginBottom: '16px',
+                            fontSize: '14px',
+                            color: '#666',
+                        }}
+                    >
+                        Pass Checkbox or Switch as a simple element. State is
+                        managed externally.
+                    </p>
+                    <Accordion accordionType={AccordionType.BORDER} isMultiple>
+                        <AccordionItem
+                            value="el-1"
+                            title="Checkbox Item"
+                            triggerSlot={
+                                <Checkbox
+                                    checked={simpleChecked['el-1']}
+                                    onCheckedChange={(checked) => {
+                                        if (typeof checked === 'boolean') {
+                                            setSimpleChecked((prev) => ({
+                                                ...prev,
+                                                'el-1': checked,
+                                            }))
+                                        }
+                                    }}
+                                />
+                            }
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Simple checkbox as element
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem
+                            value="el-2"
+                            title="Switch Item"
+                            triggerSlot={
+                                <Switch
+                                    checked={simpleChecked['el-2']}
+                                    onChange={() =>
+                                        setSimpleChecked((prev) => ({
+                                            ...prev,
+                                            'el-2': !prev['el-2'],
+                                        }))
+                                    }
+                                />
+                            }
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Simple switch as element
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </section>
+
+                {/* Pattern 2: Independent Selection + Expansion */}
+                <section>
+                    <h4
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Pattern 2: Independent Selection State
+                    </h4>
+                    <p
+                        style={{
+                            marginBottom: '16px',
+                            fontSize: '14px',
+                            color: '#666',
+                        }}
+                    >
+                        Selected: [{selectedTasks.join(', ') || 'none'}]
+                    </p>
+                    <Accordion accordionType={AccordionType.BORDER} isMultiple>
+                        <AccordionItem
+                            value="task-1"
+                            title="Task 1"
+                            subtext="Deploy pipeline"
+                            leftSlot={<Database size={20} color="#666" />}
+                            triggerSlot={
+                                <Checkbox
+                                    checked={selectedTasks.includes('task-1')}
+                                    onCheckedChange={() =>
+                                        toggleSelection('task-1')
+                                    }
+                                />
+                            }
+                        >
+                            <div style={{ padding: '16px' }}>
+                                CI/CD pipeline configuration
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem
+                            value="task-2"
+                            title="Task 2"
+                            subtext="Security review"
+                            leftSlot={<Shield size={20} color="#666" />}
+                            triggerSlot={
+                                <Checkbox
+                                    checked={selectedTasks.includes('task-2')}
+                                    onCheckedChange={() =>
+                                        toggleSelection('task-2')
+                                    }
+                                />
+                            }
+                        >
+                            <div style={{ padding: '16px' }}>
+                                Security policy audit
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </section>
+
+                {/* Pattern 3: Feature Toggles */}
+                <section>
+                    <h4
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                        }}
+                    >
+                        Pattern 3: Feature Toggles
+                    </h4>
+                    <Accordion accordionType={AccordionType.BORDER}>
+                        <AccordionItem
+                            value="feature-analytics"
+                            title="Analytics Dashboard"
+                            subtext={
+                                features.includes('feature-analytics')
+                                    ? 'Enabled'
+                                    : 'Disabled'
+                            }
+                            leftSlot={<Monitor size={20} color="#666" />}
+                            triggerSlot={
+                                <Switch
+                                    checked={features.includes(
+                                        'feature-analytics'
+                                    )}
+                                    onChange={() =>
+                                        toggleFeature('feature-analytics')
+                                    }
+                                />
+                            }
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <ul style={{ paddingLeft: '20px' }}>
+                                    <li>Real-time metrics</li>
+                                    <li>Custom reports</li>
+                                </ul>
+                            </div>
+                        </AccordionItem>
+                        <AccordionItem
+                            value="feature-security"
+                            title="Advanced Security"
+                            subtext={
+                                features.includes('feature-security')
+                                    ? 'Enabled'
+                                    : 'Disabled'
+                            }
+                            leftSlot={<Lock size={20} color="#666" />}
+                            triggerSlot={
+                                <Switch
+                                    checked={features.includes(
+                                        'feature-security'
+                                    )}
+                                    onChange={() =>
+                                        toggleFeature('feature-security')
+                                    }
+                                />
+                            }
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <ul style={{ paddingLeft: '20px' }}>
+                                    <li>End-to-end encryption</li>
+                                    <li>Audit logging</li>
+                                </ul>
+                            </div>
+                        </AccordionItem>
+                    </Accordion>
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Comprehensive examples of triggerSlot patterns: (1) Simple React elements with external state, (2) Independent selection state separate from expansion, (3) Feature toggles with Switch.',
+            },
+        },
+        a11y: getA11yConfig('interactive'),
+    },
+}
+
+// ============================================================================
+// Default Value Story
+// ============================================================================
+
+export const DefaultValueMultiple: Story = {
+    args: {
+        accordionType: AccordionType.BORDER,
+        isMultiple: true,
+        defaultValue: ['item-1', 'item-3'],
+    },
+    render: (args) => (
+        <div style={{ width: '600px' }}>
+            <p
+                style={{
+                    marginBottom: '16px',
+                    fontSize: '14px',
+                    color: '#666',
+                }}
+            >
+                Items 1 and 3 are expanded by default using the defaultValue
+                prop with an array.
+            </p>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+                defaultValue={args.defaultValue as string[]}
+            >
+                <AccordionItem value="item-1" title="First Item (Default)">
+                    <div style={{ padding: '16px' }}>
+                        This item is expanded by default because defaultValue
+                        includes &quot;item-1&quot;.
+                    </div>
+                </AccordionItem>
+                <AccordionItem value="item-2" title="Second Item">
+                    <div style={{ padding: '16px' }}>
+                        This item is collapsed by default.
+                    </div>
+                </AccordionItem>
+                <AccordionItem value="item-3" title="Third Item (Default)">
+                    <div style={{ padding: '16px' }}>
+                        This item is also expanded by default because
+                        defaultValue includes &quot;item-3&quot;.
+                    </div>
+                </AccordionItem>
+            </Accordion>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates defaultValue in multiple expansion mode. Pass an array of values to expand multiple items by default.',
+            },
+        },
+        a11y: getA11yConfig('interactive'),
+    },
+}
+
+export const DefaultValueSingle: Story = {
+    args: {
+        accordionType: AccordionType.BORDER,
+        isMultiple: false,
+        defaultValue: 'item-2',
+    },
+    render: (args) => (
+        <div style={{ width: '600px' }}>
+            <p
+                style={{
+                    marginBottom: '16px',
+                    fontSize: '14px',
+                    color: '#666',
+                }}
+            >
+                Item 2 is expanded by default using the defaultValue prop.
+            </p>
+            <Accordion
+                accordionType={args.accordionType}
+                isMultiple={args.isMultiple}
+                defaultValue={args.defaultValue}
+            >
+                <AccordionItem value="item-1" title="First Item">
+                    <div style={{ padding: '16px' }}>
+                        This is the first item, collapsed by default.
+                    </div>
+                </AccordionItem>
+                <AccordionItem value="item-2" title="Second Item (Default)">
+                    <div style={{ padding: '16px' }}>
+                        This item is expanded by default because defaultValue is
+                        set to &quot;item-2&quot;. Works in uncontrolled mode.
+                    </div>
+                </AccordionItem>
+                <AccordionItem value="item-3" title="Third Item">
+                    <div style={{ padding: '16px' }}>
+                        This is the third item, collapsed by default.
+                    </div>
+                </AccordionItem>
+            </Accordion>
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Demonstrates defaultValue in single expansion mode. The accordion starts with the specified item expanded.',
+            },
+        },
+        a11y: getA11yConfig('interactive'),
     },
 }

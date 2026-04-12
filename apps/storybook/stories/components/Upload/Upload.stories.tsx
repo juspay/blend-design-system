@@ -198,8 +198,18 @@ const [files, setFiles] = useState<File[]>([]);
         },
         accept: {
             control: 'object',
-            description:
-                'Array of accepted file types (e.g., [".pdf", ".docx"])',
+            description: 'Array of accepted file types for file validation',
+            table: {
+                type: {
+                    summary: 'string[]',
+                    detail: `Array of MIME types or file extensions.
+Examples:
+- ['.pdf', '.docx', '.txt'] - File extensions
+- ['image/*', 'application/pdf'] - MIME types
+- ['.jpg', '.png', 'image/gif'] - Mixed formats`,
+                },
+                category: 'Validation',
+            },
         },
         maxSize: {
             control: 'number',

@@ -158,6 +158,21 @@ import { Checkbox, CheckboxSize } from '@juspay/blend-design-system';
             action: 'checked changed',
             description: 'Callback fired when the checked state changes',
         },
+        maxLength: {
+            control: 'object',
+            description:
+                'Maximum character limits for label and subtext before truncation',
+            table: {
+                type: {
+                    summary: 'MaxLengthConfig',
+                    detail: `{
+  label?: number;    // Max characters for label before truncation
+  subtext?: number;  // Max characters for subtext before truncation
+}`,
+                },
+                category: 'Text',
+            },
+        },
     },
     tags: ['autodocs'],
 }

@@ -106,10 +106,36 @@ import { SplitTag, TagColor, TagSize } from '@juspay/blend-design-system';
         primaryTag: {
             control: 'object',
             description: 'Configuration for the primary (left) tag',
+            table: {
+                type: {
+                    summary: 'TagConfig',
+                    detail: `{
+  text: string;                    // Display text (required)
+  color?: TagColor;               // Color variant
+  variant?: TagVariant;           // Fill variant
+  leftSlot?: ReactNode;           // Icon/content on left
+  rightSlot?: ReactNode;          // Icon/content on right
+}`,
+                },
+                category: 'Primary Tag',
+            },
         },
         secondaryTag: {
             control: 'object',
             description: 'Configuration for the secondary (right) tag',
+            table: {
+                type: {
+                    summary: 'TagConfig',
+                    detail: `{
+  text: string;                    // Display text (required)
+  color?: TagColor;               // Color variant
+  variant?: TagVariant;           // Fill variant
+  leftSlot?: ReactNode;           // Icon/content on left
+  rightSlot?: ReactNode;          // Icon/content on right
+}`,
+                },
+                category: 'Secondary Tag',
+            },
         },
         size: {
             control: 'select',
