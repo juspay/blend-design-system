@@ -42,8 +42,7 @@ describe('TextAreaV2 Accessibility', () => {
                     placeholder="…"
                     value="bad"
                     onChange={noop}
-                    error
-                    errorMessage="Please fix this field"
+                    error={{ show: true, message: 'Please fix this field' }}
                 />
             )
             const results = await axe(container)
@@ -106,8 +105,7 @@ describe('TextAreaV2 Accessibility', () => {
                     placeholder="…"
                     value=""
                     onChange={noop}
-                    error
-                    errorMessage="This field has an error"
+                    error={{ show: true, message: 'This field has an error' }}
                 />
             )
             expect(
@@ -122,8 +120,7 @@ describe('TextAreaV2 Accessibility', () => {
                     placeholder="…"
                     value=""
                     onChange={noop}
-                    error
-                    errorMessage="Invalid"
+                    error={{ show: true, message: 'Invalid' }}
                 />
             )
             const ta = screen.getByRole('textbox')
@@ -138,8 +135,7 @@ describe('TextAreaV2 Accessibility', () => {
                     placeholder="…"
                     value=""
                     onChange={noop}
-                    error
-                    errorMessage="Err"
+                    error={{ show: true, message: 'Err' }}
                 />
             )
             expect(screen.getByRole('textbox')).toHaveAttribute(
@@ -308,8 +304,7 @@ describe('TextAreaV2 Accessibility', () => {
                     placeholder="…"
                     value=""
                     onChange={noop}
-                    error
-                    errorMessage="Problem"
+                    error={{ show: true, message: 'Problem' }}
                 />
             )
             const msg = screen.getByText('Problem')
@@ -346,8 +341,7 @@ describe('TextAreaV2 Accessibility', () => {
                     value="x"
                     onChange={noop}
                     required
-                    error
-                    errorMessage="Please correct"
+                    error={{ show: true, message: 'Please correct' }}
                 />
             )
             const results = await axe(container)

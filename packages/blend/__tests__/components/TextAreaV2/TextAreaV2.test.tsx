@@ -130,8 +130,7 @@ describe('TextAreaV2', () => {
                     placeholder="…"
                     value="x"
                     onChange={noop}
-                    error
-                    errorMessage="Invalid value"
+                    error={{ show: true, message: 'Invalid value' }}
                 />
             )
             expect(screen.getByText('Invalid value')).toBeInTheDocument()
