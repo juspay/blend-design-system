@@ -106,3 +106,24 @@ export {
     validateVersion,
     incrementVersion,
 } from './studio-types'
+
+// User/Team types (PostgreSQL for data, localStorage for preferences)
+export type {
+    TeamRole,
+    TeamPermissions,
+    UserPreferences,
+    OnboardingState,
+} from './user-types'
+
+export {
+    TEAM_ROLE_PERMISSIONS,
+    BRANCH_COLLECTION,
+    VERSION_SUBCOLLECTION,
+    SNAPSHOT_SUBCOLLECTION,
+    versionsPath,
+    snapshotsPath,
+    getDefaultPreferences,
+    getDefaultOnboardingState,
+    STORAGE_KEYS,
+    canUserPerformAction,
+} from './user-types'

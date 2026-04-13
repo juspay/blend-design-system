@@ -495,6 +495,40 @@ export const mockApi = {
         return MOCK_SNAPSHOTS.get(branchId) || []
     },
 
+    deleteBranch: async (branchId: string): Promise<void> => {
+        await delay(600)
+        const idx = MOCK_BRANCHES.findIndex((b) => b.id === branchId)
+        if (idx !== -1) MOCK_BRANCHES.splice(idx, 1)
+    },
+
+    forkBranch: async (
+        sourceBranchId: string,
+        newName: string,
+        newSlug: string
+    ): Promise<Branch> => {
+        await delay(800)
+        const source = MOCK_BRANCHES.find((b) => b.id === sourceBranchId)
+        if (!source) throw new Error(`Branch ${sourceBranchId} not found`)
+        const newBranch: Branch = {
+            ...source,
+            id: `${source.brandId}/${newSlug}`,
+            slug: newSlug,
+            name: newName,
+            status: 'draft',
+            latestVersion: null,
+            publishedCount: 0,
+            snapshotCount: 0,
+            forkedFrom: { branchId: source.id, name: source.name },
+            parentBranch: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastPublishedAt: null,
+            lastPublishedBy: null,
+        }
+        MOCK_BRANCHES.push(newBranch)
+        return newBranch
+    },
+
     createSnapshot: async (
         branchId: string,
         brandConfig: BrandConfig,

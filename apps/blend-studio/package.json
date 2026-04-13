@@ -25,9 +25,11 @@
     "dependencies": {
         "@blend-design/token-engine": "workspace:*",
         "@juspay/blend-design-system": "workspace:*",
+        "@prisma/adapter-pg": "^7.7.0",
         "@prisma/client": "^7.7.0",
         "@tanstack/react-router": "^1.114.0",
         "cors": "^2.8.5",
+        "dotenv": "^17.4.1",
         "express": "^4.21.2",
         "firebase": "^11.10.0",
         "firebase-admin": "^12.7.0",

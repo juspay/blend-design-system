@@ -1046,4 +1046,128 @@ export async function createBranchFirestore(
     return convertFirestoreDoc<Branch>(response.data)
 }
 
+export async function listSnapshotsFirestore(
+    idToken: string,
+    branchId: string
+): Promise<Snapshot[]> {
+    const response = await firestoreRequest<{ documents?: unknown[] }>(
+        `/branches/${branchId}/snapshots`,
+        'GET',
+        undefined,
+        idToken
+    )
+    if (!response.success || !response.data) return []
+    const snaps = (response.data.documents || []).map((doc) =>
+        convertFirestoreDoc<Snapshot>(doc as Record<string, unknown>)
+    )
+    snaps.sort(
+        (a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
+    )
+    return snaps
+}
+
+export async function deleteBranchFirestore(
+    idToken: string,
+    branchId: string
+): Promise<void> {
+    const response = await firestoreRequest(
+        `/branches/${branchId}`,
+        'DELETE',
+        undefined,
+        idToken
+    )
+    if (!response.success) {
+        throw new Error(response.error?.message || 'Failed to delete branch')
+    }
+}
+
+export async function forkBranchFirestore(
+    idToken: string,
+    sourceBranchId: string,
+    newName: string,
+    newSlug: string,
+    userId: string
+): Promise<Branch> {
+    // First read source
+    const sourceResp = await firestoreRequest<{ fields?: unknown }>(
+        `/branches/${sourceBranchId}`,
+        'GET',
+        undefined,
+        idToken
+    )
+    if (!sourceResp.success || !sourceResp.data) {
+        throw new Error(`Source branch ${sourceBranchId} not found`)
+    }
+    const source = convertFirestoreDoc<Branch>(
+        sourceResp.data as Record<string, unknown>
+    )
+    const brandId = source.brandId
+    const newBranchId = `${brandId}/${newSlug}`
+
+    const fields = {
+        id: { stringValue: newBranchId },
+        brandId: { stringValue: brandId },
+        name: { stringValue: newName },
+        slug: { stringValue: newSlug },
+        description: { stringValue: source.description || '' },
+        status: { stringValue: 'draft' },
+        visibility: { stringValue: source.visibility || 'private' },
+        brandConfig: { mapValue: { fields: source.brandConfig } },
+        parentBranch: { nullValue: null },
+        forkedFrom: {
+            mapValue: {
+                fields: {
+                    branchId: { stringValue: source.id },
+                    name: { stringValue: source.name },
+                },
+            },
+        },
+        owner: {
+            mapValue: {
+                fields: {
+                    uid: { stringValue: userId },
+                    email: { stringValue: '' },
+                    displayName: { stringValue: '' },
+                },
+            },
+        },
+        meta: {
+            mapValue: {
+                fields: {
+                    createdByName: { stringValue: '' },
+                    createdByEmail: { stringValue: '' },
+                },
+            },
+        },
+        tags: {
+            arrayValue: {
+                values: (source.tags || []).map((t) => ({ stringValue: t })),
+            },
+        },
+        latestVersion: { nullValue: null },
+        publishedCount: { integerValue: '0' },
+        snapshotCount: { integerValue: '0' },
+        createdBy: { stringValue: userId },
+        createdAt: { timestampValue: new Date().toISOString() },
+        updatedAt: { timestampValue: new Date().toISOString() },
+        lastEditedBy: { stringValue: userId },
+        lastPublishedAt: { nullValue: null },
+        lastPublishedBy: { nullValue: null },
+        isLocked: { booleanValue: false },
+        lockedBy: { nullValue: null },
+        lockedAt: { nullValue: null },
+    }
+
+    const response = await firestoreRequest<{ fields?: unknown }>(
+        `/branches/${newBranchId}`,
+        'PATCH',
+        { fields },
+        idToken
+    )
+    if (!response.success || !response.data) {
+        throw new Error(response.error?.message || 'Failed to fork branch')
+    }
+    return convertFirestoreDoc<Branch>(response.data as Record<string, unknown>)
+}
+
 // React hooks (keep existing implementations)

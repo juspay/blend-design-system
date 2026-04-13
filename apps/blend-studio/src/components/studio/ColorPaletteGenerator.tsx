@@ -1,262 +1,343 @@
-import { useState, useCallback } from 'react'
-import { Copy, RefreshCw, Check } from 'lucide-react'
+import { useState, useCallback, useEffect } from 'react'
+import { Copy, RefreshCw, Check, Pipette } from 'lucide-react'
+import { generateColorScale } from '@blend-design/token-engine'
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const SHADE_KEYS = [
+    '50',
+    '100',
+    '200',
+    '300',
+    '400',
+    '500',
+    '600',
+    '700',
+    '800',
+    '900',
+    '950',
+] as const
+
+type ShadeKey = (typeof SHADE_KEYS)[number]
+
+// ---------------------------------------------------------------------------
+// Props
+// ---------------------------------------------------------------------------
 
 interface ColorPaletteGeneratorProps {
-    value: Record<string, string> | Partial<Record<string, string>>
+    label: string
+    value: Record<string, string>
     onChange: (shades: Record<string, string>) => void
-    label?: string
+    /** Which shade to treat as the "base" for generation (defaults to "500") */
+    baseShade?: string
 }
 
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Normalise a hex string to uppercase 6-char form, or return null. */
+function normaliseHex(raw: string): string | null {
+    let hex = raw.trim()
+    if (!hex.startsWith('#')) hex = `#${hex}`
+    if (/^#[0-9A-Fa-f]{3}$/.test(hex)) {
+        const [, r, g, b] = hex
+        hex = `#${r}${r}${g}${g}${b}${b}`
+    }
+    if (/^#[0-9A-Fa-f]{6}$/.test(hex)) return hex.toUpperCase()
+    return null
+}
+
+/** Determine whether a colour is "light" (needs dark text) or "dark". */
+function isLightColor(hex: string): boolean {
+    const clean = hex.replace('#', '')
+    const r = parseInt(clean.slice(0, 2), 16)
+    const g = parseInt(clean.slice(2, 4), 16)
+    const b = parseInt(clean.slice(4, 6), 16)
+    // Perceived luminance
+    return r * 0.299 + g * 0.587 + b * 0.114 > 160
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
 export function ColorPaletteGenerator({
+    label,
     value,
     onChange,
-    label = 'Primary Color',
+    baseShade = '500',
 }: ColorPaletteGeneratorProps) {
-    const [baseColor, setBaseColor] = useState(value['500'] || '#3B82F6')
+    // ------------------------------------------------------------------
+    // Local state
+    // ------------------------------------------------------------------
+    const [baseHexInput, setBaseHexInput] = useState(
+        () => value[baseShade] || '#3B82F6'
+    )
     const [copied, setCopied] = useState(false)
-
-    // Generate color scale using OKLCH-like algorithm
-    const generateShades = useCallback(
-        (hex: string): Record<string, string> => {
-            const shades: Record<string, string> = {}
-            const levels = [
-                50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950,
-            ]
-
-            // Convert hex to RGB
-            const rgb = hexToRgb(hex)
-            if (!rgb) return shades
-
-            // Convert to HSL for easier manipulation
-            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
-
-            levels.forEach((level) => {
-                let lightness: number
-
-                if (level < 500) {
-                    // Lighter shades - interpolate towards white
-                    const factor = (500 - level) / 450 // 0 to 1
-                    lightness = hsl.l + (95 - hsl.l) * factor * 0.85
-                } else if (level === 500) {
-                    // Base color
-                    lightness = hsl.l
-                } else {
-                    // Darker shades - interpolate towards black
-                    const factor = (level - 500) / 450 // 0 to 1
-                    lightness = hsl.l * (1 - factor * 0.7)
-                }
-
-                // Clamp lightness
-                lightness = Math.max(5, Math.min(98, lightness))
-
-                // Convert back to hex
-                const newRgb = hslToRgb(hsl.h, hsl.s, lightness)
-                shades[level] = rgbToHex(newRgb.r, newRgb.g, newRgb.b)
-            })
-
-            return shades
-        },
-        []
+    const [overriddenShades, setOverriddenShades] = useState<Set<ShadeKey>>(
+        new Set()
     )
 
-    const handleBaseColorChange = (newColor: string) => {
-        setBaseColor(newColor)
-        const shades = generateShades(newColor)
-        onChange(shades)
+    // Keep the base input in sync when the value prop changes externally
+    useEffect(() => {
+        const incoming = value[baseShade]
+        if (incoming) {
+            const n = normaliseHex(incoming)
+            if (n) setBaseHexInput(n)
+        }
+    }, [value, baseShade])
+
+    // ------------------------------------------------------------------
+    // Generation
+    // ------------------------------------------------------------------
+
+    const regenerateFromBase = useCallback(
+        (hex: string) => {
+            const n = normaliseHex(hex)
+            if (!n) return
+            const generated = generateColorScale(n) as Record<string, string>
+            // Preserve manually-overridden shades
+            const merged: Record<string, string> = {}
+            for (const key of SHADE_KEYS) {
+                if (overriddenShades.has(key) && value[key]) {
+                    merged[key] = value[key]
+                } else {
+                    merged[key] = generated[key] ?? n
+                }
+            }
+            onChange(merged)
+        },
+        [onChange, overriddenShades, value]
+    )
+
+    // ------------------------------------------------------------------
+    // Handlers
+    // ------------------------------------------------------------------
+
+    const handleBaseColorChange = (hex: string) => {
+        setBaseHexInput(hex)
+        const n = normaliseHex(hex)
+        if (n) regenerateFromBase(n)
     }
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(JSON.stringify(value, null, 2))
+    const handleShadeChange = (shade: ShadeKey, hex: string) => {
+        const n = normaliseHex(hex)
+        if (!n) return
+        setOverriddenShades((prev) => new Set(prev).add(shade))
+        onChange({ ...value, [shade]: n })
+    }
+
+    const handleResetAll = () => {
+        setOverriddenShades(new Set())
+        const base = normaliseHex(baseHexInput)
+        if (base) {
+            const generated = generateColorScale(base) as Record<string, string>
+            onChange(generated)
+        }
+    }
+
+    const handleResetShade = (shade: ShadeKey) => {
+        setOverriddenShades((prev) => {
+            const next = new Set(prev)
+            next.delete(shade)
+            return next
+        })
+        const base = normaliseHex(baseHexInput)
+        if (base) {
+            const generated = generateColorScale(base) as Record<string, string>
+            onChange({ ...value, [shade]: generated[shade] ?? base })
+        }
+    }
+
+    const handleCopyPalette = () => {
+        const palette: Record<string, string> = {}
+        for (const key of SHADE_KEYS) {
+            if (value[key]) palette[key] = value[key]
+        }
+        navigator.clipboard.writeText(JSON.stringify(palette, null, 2))
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
     }
 
-    const handleRegenerate = () => {
-        const shades = generateShades(baseColor)
-        onChange(shades)
-    }
+    // ------------------------------------------------------------------
+    // Render
+    // ------------------------------------------------------------------
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-5">
+            {/* ---- Header ---- */}
             <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-700">
+                <h3 className="text-sm font-semibold text-gray-800 tracking-wide">
                     {label}
-                </label>
-                <div className="flex gap-2">
+                </h3>
+                <div className="flex items-center gap-1">
                     <button
-                        onClick={handleRegenerate}
-                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-                        title="Regenerate from base color"
+                        type="button"
+                        onClick={handleResetAll}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                        title="Reset all shades to generated values"
                     >
-                        <RefreshCw className="w-4 h-4" />
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        Reset
                     </button>
                     <button
-                        onClick={handleCopy}
-                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-                        title="Copy palette JSON"
+                        type="button"
+                        onClick={handleCopyPalette}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                        title="Copy palette as JSON"
                     >
                         {copied ? (
-                            <Check className="w-4 h-4 text-green-500" />
+                            <Check className="w-3.5 h-3.5 text-green-600" />
                         ) : (
-                            <Copy className="w-4 h-4" />
+                            <Copy className="w-3.5 h-3.5" />
                         )}
+                        {copied ? 'Copied' : 'Copy'}
                     </button>
                 </div>
             </div>
 
-            {/* Base Color Input */}
-            <div className="flex items-center gap-3">
-                <input
-                    type="color"
-                    value={baseColor}
-                    onChange={(e) => handleBaseColorChange(e.target.value)}
-                    className="w-12 h-12 rounded-lg cursor-pointer border-0"
-                />
-                <input
-                    type="text"
-                    value={baseColor}
-                    onChange={(e) => handleBaseColorChange(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm"
-                    placeholder="#3B82F6"
-                />
+            {/* ---- Base Color Picker ---- */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="relative shrink-0">
+                    <input
+                        type="color"
+                        value={normaliseHex(baseHexInput) ?? '#3B82F6'}
+                        onChange={(e) => handleBaseColorChange(e.target.value)}
+                        className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200 bg-transparent p-0.5"
+                    />
+                    <Pipette className="pointer-events-none absolute bottom-0.5 right-0.5 w-3 h-3 text-gray-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                    <label className="block text-[11px] font-medium text-gray-500 mb-1 uppercase tracking-wider">
+                        Base Color ({baseShade})
+                    </label>
+                    <input
+                        type="text"
+                        value={baseHexInput}
+                        onChange={(e) => handleBaseColorChange(e.target.value)}
+                        spellCheck={false}
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-md font-mono text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-shadow"
+                        placeholder="#3B82F6"
+                    />
+                </div>
             </div>
 
-            {/* Generated Shades */}
-            <div className="space-y-2">
-                <div className="text-xs text-gray-500">Generated Palette</div>
-                <div className="grid grid-cols-11 gap-1">
-                    {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(
-                        (shade) => (
-                            <div key={shade} className="group relative">
-                                <div
-                                    className="aspect-square rounded cursor-pointer transition-transform hover:scale-110"
-                                    style={{
-                                        backgroundColor: value[shade] || '#ccc',
-                                    }}
-                                    title={`${shade}: ${value[shade] || ''}`}
-                                />
-                                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* ---- Shade Scale Preview (compact strip) ---- */}
+            <div className="flex rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                {SHADE_KEYS.map((shade) => {
+                    const color = value[shade] || '#CCCCCC'
+                    return (
+                        <div
+                            key={shade}
+                            className="flex-1 h-10 relative group cursor-default"
+                            style={{ backgroundColor: color }}
+                            title={`${shade}: ${color}`}
+                        >
+                            <span
+                                className={`absolute inset-0 flex items-center justify-center text-[9px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity ${
+                                    isLightColor(color)
+                                        ? 'text-gray-800'
+                                        : 'text-white'
+                                }`}
+                            >
+                                {shade}
+                            </span>
+                        </div>
+                    )
+                })}
+            </div>
+
+            {/* ---- Individual Shade Editors ---- */}
+            <div className="space-y-1">
+                <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">
+                    Shade Editor
+                </div>
+                <div className="grid gap-1.5">
+                    {SHADE_KEYS.map((shade) => {
+                        const color = value[shade] || '#CCCCCC'
+                        const isOverridden = overriddenShades.has(shade)
+                        const isBase = shade === baseShade
+
+                        return (
+                            <div
+                                key={shade}
+                                className={`flex items-center gap-3 px-3 py-1.5 rounded-md border transition-colors ${
+                                    isBase
+                                        ? 'border-blue-200 bg-blue-50/50'
+                                        : isOverridden
+                                          ? 'border-amber-200 bg-amber-50/30'
+                                          : 'border-gray-100 bg-white hover:bg-gray-50'
+                                }`}
+                            >
+                                {/* Shade label */}
+                                <span
+                                    className={`w-8 text-xs font-semibold tabular-nums ${
+                                        isBase
+                                            ? 'text-blue-600'
+                                            : 'text-gray-500'
+                                    }`}
+                                >
                                     {shade}
+                                </span>
+
+                                {/* Color swatch + picker */}
+                                <label className="relative shrink-0 cursor-pointer">
+                                    <span
+                                        className="block w-7 h-7 rounded-md border border-gray-200 shadow-inner"
+                                        style={{ backgroundColor: color }}
+                                    />
+                                    <input
+                                        type="color"
+                                        value={normaliseHex(color) ?? '#CCCCCC'}
+                                        onChange={(e) =>
+                                            handleShadeChange(
+                                                shade,
+                                                e.target.value
+                                            )
+                                        }
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                </label>
+
+                                {/* Hex input */}
+                                <input
+                                    type="text"
+                                    value={color}
+                                    onChange={(e) =>
+                                        handleShadeChange(shade, e.target.value)
+                                    }
+                                    spellCheck={false}
+                                    className="flex-1 min-w-0 px-2 py-1 text-xs font-mono text-gray-700 bg-transparent border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 transition-shadow"
+                                />
+
+                                {/* Indicators / reset */}
+                                <div className="flex items-center gap-1 w-16 justify-end">
+                                    {isBase && (
+                                        <span className="text-[10px] font-medium text-blue-500 bg-blue-100 px-1.5 py-0.5 rounded">
+                                            base
+                                        </span>
+                                    )}
+                                    {isOverridden && !isBase && (
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleResetShade(shade)
+                                            }
+                                            className="text-[10px] font-medium text-amber-600 hover:text-amber-700 bg-amber-100 hover:bg-amber-200 px-1.5 py-0.5 rounded transition-colors"
+                                            title="Reset this shade to generated value"
+                                        >
+                                            reset
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         )
-                    )}
+                    })}
                 </div>
-            </div>
-
-            {/* Individual Shade Editors */}
-            <div className="grid grid-cols-4 gap-2 pt-2">
-                {Object.entries(value).map(([shade, color]) => (
-                    <div key={shade} className="flex items-center gap-2">
-                        <input
-                            type="color"
-                            value={color}
-                            onChange={(e) =>
-                                onChange({
-                                    ...(value || {}),
-                                    [shade]: e.target.value,
-                                } as Record<string, string>)
-                            }
-                            className="w-8 h-8 rounded cursor-pointer border-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                            <div className="text-xs text-gray-500">{shade}</div>
-                            <div className="text-[10px] font-mono text-gray-400 truncate">
-                                {color}
-                            </div>
-                        </div>
-                    </div>
-                ))}
             </div>
         </div>
     )
-}
-
-// Color utility functions
-function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return result
-        ? {
-              r: parseInt(result[1], 16),
-              g: parseInt(result[2], 16),
-              b: parseInt(result[3], 16),
-          }
-        : null
-}
-
-function rgbToHex(r: number, g: number, b: number): string {
-    return `#${[r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('')}`
-}
-
-function rgbToHsl(
-    r: number,
-    g: number,
-    b: number
-): { h: number; s: number; l: number } {
-    r /= 255
-    g /= 255
-    b /= 255
-
-    const max = Math.max(r, g, b)
-    const min = Math.min(r, g, b)
-    let h = 0
-    let s = 0
-    const l = (max + min) / 2
-
-    if (max !== min) {
-        const d = max - min
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-
-        switch (max) {
-            case r:
-                h = ((g - b) / d + (g < b ? 6 : 0)) / 6
-                break
-            case g:
-                h = ((b - r) / d + 2) / 6
-                break
-            case b:
-                h = ((r - g) / d + 4) / 6
-                break
-        }
-    }
-
-    return { h: h * 360, s: s * 100, l: l * 100 }
-}
-
-function hslToRgb(
-    h: number,
-    s: number,
-    l: number
-): { r: number; g: number; b: number } {
-    h /= 360
-    s /= 100
-    l /= 100
-
-    let r: number, g: number, b: number
-
-    if (s === 0) {
-        r = g = b = l
-    } else {
-        const hue2rgb = (p: number, q: number, t: number) => {
-            if (t < 0) t += 1
-            if (t > 1) t -= 1
-            if (t < 1 / 6) return p + (q - p) * 6 * t
-            if (t < 1 / 2) return q
-            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
-            return p
-        }
-
-        const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-        const p = 2 * l - q
-
-        r = hue2rgb(p, q, h + 1 / 3)
-        g = hue2rgb(p, q, h)
-        b = hue2rgb(p, q, h - 1 / 3)
-    }
-
-    return {
-        r: Math.round(r * 255),
-        g: Math.round(g * 255),
-        b: Math.round(b * 255),
-    }
 }

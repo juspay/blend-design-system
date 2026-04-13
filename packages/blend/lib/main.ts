@@ -86,6 +86,9 @@ export { getTagV2Tokens } from './components/TagV2/tagV2.tokens'
 export { getTextInputV2Tokens } from './components/InputsV2/TextInputV2/TextInputV2.tokens'
 export { getTimelineTokens } from './components/Timeline/timeline.token'
 export { getTooltipV2Tokens } from './components/TooltipV2/tooltipV2.tokens'
+export { getTopbarTokens } from './components/Topbar/topbar.tokens'
+export { getSidebarTokens } from './components/Sidebar/sidebar.tokens'
+export { getMobileNavigationTokens } from './components/Sidebar/SidebarMobile/mobile.tokens'
 
 // Foundation token type export (for token engine)
 export { default as FOUNDATION_THEME } from './tokens/theme.token'

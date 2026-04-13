@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import path from 'path'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [
         TanStackRouterVite({
             routesDirectory: './src/routes',
@@ -24,6 +24,7 @@ export default defineConfig({
             ),
         },
     },
+    base: mode === 'production' ? '/studio/' : '/',
     server: {
         port: 3000,
         proxy: {
@@ -36,9 +37,10 @@ export default defineConfig({
     },
     build: {
         outDir: 'dist',
-        sourcemap: true,
+        sourcemap: process.env.NODE_ENV !== 'production',
+        minify: 'esbuild',
     },
     optimizeDeps: {
         include: ['@juspay/blend-design-system'],
     },
-})
+}))

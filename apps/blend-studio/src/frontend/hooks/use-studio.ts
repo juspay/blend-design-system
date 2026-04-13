@@ -1,22 +1,22 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '@/lib/firebase'
+import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import { featureFlags } from '@/lib/feature-flags'
 import { mockApi } from '@/api/mock/mock-data'
-import {
-    resolveBrandTokens,
-    type Branch,
-    type BranchListOptions,
-    type BrandConfig,
-    type CreateBranchInput,
-    type Version,
-    type Snapshot,
+import type {
+    Branch,
+    BranchListOptions,
+    BrandConfig,
+    CreateBranchInput,
+    Version,
+    Snapshot,
 } from '@blend-design/token-engine'
 
-// Import Firestore hooks
+// Re-export Firestore hooks so consumers can use either
 export * from '@/api/firestore'
 
-// Export re-exported functions from token-engine
+// Re-export utility functions from token-engine
 export {
     validateBranchId,
     validateVersion,
@@ -24,9 +24,12 @@ export {
     parseBranchId,
 } from '@blend-design/token-engine'
 
-// Wrapper hooks that use feature flags
+// ---------------------------------------------------------------------------
+// useBranchesWithMock — lists branches (mock, backend API, or Firestore)
+// ---------------------------------------------------------------------------
 export function useBranchesWithMock(options?: BranchListOptions) {
-    const [user] = useAuthState(auth)
+    const [firebaseUser] = useAuthState(auth)
+    const { token: backendToken } = useBackendAuth()
     const [branches, setBranches] = useState<Branch[]>([])
     const [total, setTotal] = useState(0)
     const [loading, setLoading] = useState(true)
@@ -35,8 +38,29 @@ export function useBranchesWithMock(options?: BranchListOptions) {
     const fetchBranches = useCallback(async () => {
         const flags = featureFlags.get()
 
+        // Try backend API first
+        if (flags.apiBaseUrl && backendToken) {
+            setLoading(true)
+            try {
+                const { listBranchesBackend } = await import('@/api/backend')
+                const result = await listBranchesBackend(backendToken, {
+                    limit: options?.limit,
+                    createdBy: options?.filters?.createdBy,
+                })
+                setBranches(result.branches)
+                setTotal(result.branches.length)
+                setError(null)
+            } catch (err) {
+                console.error('[useBranchesWithMock] Error:', err)
+                setError(err instanceof Error ? err.message : 'Unknown error')
+            } finally {
+                setLoading(false)
+            }
+            return
+        }
+
+        // Fall back to mock data
         if (flags.useMockData) {
-            // Mock mode - no auth required
             setLoading(true)
             try {
                 const result = await mockApi.listBranches(options?.filters)
@@ -51,31 +75,31 @@ export function useBranchesWithMock(options?: BranchListOptions) {
             return
         }
 
-        // Real Firestore mode
-        if (!user) {
-            setBranches([])
-            setLoading(false)
+        // Fall back to Firestore (legacy Firebase mode)
+        if (firebaseUser) {
+            setLoading(true)
+            setError(null)
+            try {
+                const idToken = await firebaseUser.getIdToken()
+                const { listBranchesFirestore } =
+                    await import('@/api/firestore')
+                const result = await listBranchesFirestore(
+                    idToken,
+                    options?.filters
+                )
+                setBranches(result.branches)
+                setTotal(result.total)
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Unknown error')
+            } finally {
+                setLoading(false)
+            }
             return
         }
 
-        setLoading(true)
-        setError(null)
-
-        try {
-            const idToken = await user.getIdToken()
-            const { listBranchesFirestore } = await import('@/api/firestore')
-            const result = await listBranchesFirestore(
-                idToken,
-                options?.filters
-            )
-            setBranches(result.branches)
-            setTotal(result.total)
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Unknown error')
-        } finally {
-            setLoading(false)
-        }
-    }, [user, options])
+        setBranches([])
+        setLoading(false)
+    }, [firebaseUser, backendToken, options])
 
     useEffect(() => {
         fetchBranches()
@@ -91,61 +115,64 @@ export function useBranchesWithMock(options?: BranchListOptions) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// useBranchWithMock — single branch + updateBranch
+// ---------------------------------------------------------------------------
 export function useBranchWithMock(branchId: string | null) {
     const [user] = useAuthState(auth)
     const [branch, setBranch] = useState<Branch | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
-    useEffect(() => {
-        const fetchBranch = async () => {
-            const flags = featureFlags.get()
+    const fetchBranch = useCallback(async () => {
+        if (!branchId) {
+            setBranch(null)
+            setLoading(false)
+            return
+        }
+        const flags = featureFlags.get()
 
-            if (flags.useMockData) {
-                setLoading(true)
-                try {
-                    const data = await mockApi.getBranch(branchId!)
-                    setBranch(data)
-                    setError(null)
-                } catch (err) {
-                    setError(
-                        err instanceof Error ? err.message : 'Unknown error'
-                    )
-                } finally {
-                    setLoading(false)
-                }
-                return
-            }
-
-            if (!user || !branchId) {
-                setBranch(null)
-                setLoading(false)
-                return
-            }
-
+        if (flags.useMockData) {
             setLoading(true)
-            setError(null)
-
             try {
-                const idToken = await user.getIdToken()
-                const { getBranchFirestore } = await import('@/api/firestore')
-                const data = await getBranchFirestore(idToken, branchId)
+                const data = await mockApi.getBranch(branchId)
                 setBranch(data)
+                setError(null)
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error')
             } finally {
                 setLoading(false)
             }
+            return
         }
 
-        if (branchId) {
-            fetchBranch()
+        if (!user) {
+            setBranch(null)
+            setLoading(false)
+            return
+        }
+
+        setLoading(true)
+        setError(null)
+        try {
+            const idToken = await user.getIdToken()
+            const { getBranchFirestore } = await import('@/api/firestore')
+            const data = await getBranchFirestore(idToken, branchId)
+            setBranch(data)
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Unknown error')
+        } finally {
+            setLoading(false)
         }
     }, [user, branchId])
 
+    useEffect(() => {
+        fetchBranch()
+    }, [fetchBranch])
+
     const updateBranch = useCallback(
         async (
-            branchId: string,
+            id: string,
             updates: {
                 brandConfig?: BrandConfig
                 name?: string
@@ -153,23 +180,32 @@ export function useBranchWithMock(branchId: string | null) {
             }
         ) => {
             const flags = featureFlags.get()
-
             if (flags.useMockData) {
-                return mockApi.updateBranch(branchId, updates)
+                const updated = await mockApi.updateBranch(id, updates)
+                setBranch(updated)
+                return updated
             }
-
             if (!user) return null
-
             const idToken = await user.getIdToken()
             const { updateBranchFirestore } = await import('@/api/firestore')
-            return updateBranchFirestore(idToken, branchId, updates, user.uid)
+            const updated = await updateBranchFirestore(
+                idToken,
+                id,
+                updates,
+                user.uid
+            )
+            if (updated) setBranch(updated)
+            return updated
         },
         [user]
     )
 
-    return { branch, loading, error, updateBranch }
+    return { branch, loading, error, updateBranch, refetch: fetchBranch }
 }
 
+// ---------------------------------------------------------------------------
+// useVersionsWithMock — list versions for a branch
+// ---------------------------------------------------------------------------
 export function useVersionsWithMock(branchId: string | null) {
     const [user] = useAuthState(auth)
     const [versions, setVersions] = useState<Version[]>([])
@@ -177,13 +213,18 @@ export function useVersionsWithMock(branchId: string | null) {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
+        if (!branchId) {
+            setVersions([])
+            setLoading(false)
+            return
+        }
         const fetchVersions = async () => {
             const flags = featureFlags.get()
 
             if (flags.useMockData) {
                 setLoading(true)
                 try {
-                    const data = await mockApi.listVersions(branchId!)
+                    const data = await mockApi.listVersions(branchId)
                     setVersions(data)
                     setError(null)
                 } catch (err) {
@@ -196,8 +237,7 @@ export function useVersionsWithMock(branchId: string | null) {
                 return
             }
 
-            // Real Firestore implementation
-            if (!user || !branchId) {
+            if (!user) {
                 setVersions([])
                 setLoading(false)
                 return
@@ -205,7 +245,6 @@ export function useVersionsWithMock(branchId: string | null) {
 
             setLoading(true)
             setError(null)
-
             try {
                 const idToken = await user.getIdToken()
                 const { listVersionsFirestore } =
@@ -218,15 +257,63 @@ export function useVersionsWithMock(branchId: string | null) {
                 setLoading(false)
             }
         }
-
-        if (branchId) {
-            fetchVersions()
-        }
+        fetchVersions()
     }, [branchId, user])
 
     return { versions, loading, error }
 }
 
+// ---------------------------------------------------------------------------
+// useSnapshotsWithMock — list snapshots for a branch
+// ---------------------------------------------------------------------------
+export function useSnapshotsWithMock(branchId: string | null) {
+    const [user] = useAuthState(auth)
+    const [snapshots, setSnapshots] = useState<Snapshot[]>([])
+    const [loading, setLoading] = useState(true)
+
+    const fetchSnapshots = useCallback(async () => {
+        if (!branchId) {
+            setSnapshots([])
+            setLoading(false)
+            return
+        }
+        const flags = featureFlags.get()
+        if (flags.useMockData) {
+            setLoading(true)
+            try {
+                const data = await mockApi.listSnapshots(branchId)
+                setSnapshots(data)
+            } finally {
+                setLoading(false)
+            }
+            return
+        }
+        if (!user) {
+            setSnapshots([])
+            setLoading(false)
+            return
+        }
+        setLoading(true)
+        try {
+            const idToken = await user.getIdToken()
+            const { listSnapshotsFirestore } = await import('@/api/firestore')
+            const data = await listSnapshotsFirestore(idToken, branchId)
+            setSnapshots(data)
+        } finally {
+            setLoading(false)
+        }
+    }, [branchId, user])
+
+    useEffect(() => {
+        fetchSnapshots()
+    }, [fetchSnapshots])
+
+    return { snapshots, loading, refetch: fetchSnapshots }
+}
+
+// ---------------------------------------------------------------------------
+// usePublishVersionWithMock
+// ---------------------------------------------------------------------------
 export function usePublishVersionWithMock(branchId: string | null) {
     const [user] = useAuthState(auth)
     const [loading, setLoading] = useState(false)
@@ -240,24 +327,19 @@ export function usePublishVersionWithMock(branchId: string | null) {
             isBreaking?: boolean
             isPrerelease?: boolean
         }): Promise<Version | null> => {
-            if (!user || !branchId) return null
-
+            if (!branchId) return null
             setLoading(true)
             setError(null)
-
             try {
                 const flags = featureFlags.get()
-
                 if (flags.useMockData) {
-                    const data = await mockApi.publishVersion(branchId, input)
-                    return data
+                    return await mockApi.publishVersion(branchId, input)
                 }
-
-                // Real Firestore implementation
+                if (!user) return null
                 const idToken = await user.getIdToken()
                 const { publishVersionFirestore } =
                     await import('@/api/firestore')
-                return publishVersionFirestore(
+                return await publishVersionFirestore(
                     idToken,
                     branchId,
                     input,
@@ -277,10 +359,12 @@ export function usePublishVersionWithMock(branchId: string | null) {
     return { publishVersion, loading, error }
 }
 
+// ---------------------------------------------------------------------------
+// useCreateSnapshotWithMock
+// ---------------------------------------------------------------------------
 export function useCreateSnapshotWithMock(branchId: string | null) {
     const [user] = useAuthState(auth)
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
 
     const createSnapshot = useCallback(
         async (
@@ -288,29 +372,23 @@ export function useCreateSnapshotWithMock(branchId: string | null) {
             label?: string,
             isAutoSave = true
         ): Promise<Snapshot | null> => {
-            if (!user || !branchId) return null
-
+            if (!branchId) return null
             setLoading(true)
-            setError(null)
-
             try {
                 const flags = featureFlags.get()
-
                 if (flags.useMockData) {
-                    const data = await mockApi.createSnapshot(
+                    return await mockApi.createSnapshot(
                         branchId,
                         brandConfig,
                         label,
                         isAutoSave
                     )
-                    return data
                 }
-
-                // Real Firestore implementation
+                if (!user) return null
                 const idToken = await user.getIdToken()
                 const { createSnapshotFirestore } =
                     await import('@/api/firestore')
-                return createSnapshotFirestore(
+                return await createSnapshotFirestore(
                     idToken,
                     branchId,
                     brandConfig,
@@ -319,9 +397,6 @@ export function useCreateSnapshotWithMock(branchId: string | null) {
                     label,
                     isAutoSave
                 )
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Unknown error')
-                return null
             } finally {
                 setLoading(false)
             }
@@ -329,39 +404,137 @@ export function useCreateSnapshotWithMock(branchId: string | null) {
         [branchId, user]
     )
 
-    return { createSnapshot, loading, error }
+    return { createSnapshot, loading }
 }
 
+// ---------------------------------------------------------------------------
+// useCreateBranchWithMock
+// ---------------------------------------------------------------------------
 export function useCreateBranchWithMock() {
-    const [user] = useAuthState(auth)
+    const [firebaseUser] = useAuthState(auth)
+    const { token: backendToken } = useBackendAuth()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
     const createBranch = useCallback(
         async (input: CreateBranchInput): Promise<Branch | null> => {
-            if (!user) return null
-
             setLoading(true)
             setError(null)
-
             try {
                 const flags = featureFlags.get()
 
-                if (flags.useMockData) {
-                    const data = await mockApi.createBranch(input)
-                    return data
+                // Try backend API first (if configured and token available)
+                if (flags.apiBaseUrl && backendToken) {
+                    const { createBranchBackend } =
+                        await import('@/api/backend')
+                    return await createBranchBackend(backendToken, input)
                 }
 
-                // Real Firestore implementation
+                // Fall back to mock data
+                if (flags.useMockData) {
+                    return await mockApi.createBranch(input)
+                }
+
+                // Fall back to Firestore (legacy Firebase mode)
+                if (firebaseUser) {
+                    const idToken = await firebaseUser.getIdToken()
+                    const { createBranchFirestore } =
+                        await import('@/api/firestore')
+                    return await createBranchFirestore(
+                        idToken,
+                        firebaseUser.uid,
+                        firebaseUser.email || '',
+                        firebaseUser.displayName || '',
+                        input
+                    )
+                }
+
+                throw new Error('No authentication available')
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Unknown error')
+                console.error('[useCreateBranchWithMock] Error:', err)
+                return null
+            } finally {
+                setLoading(false)
+            }
+        },
+        [firebaseUser, backendToken]
+    )
+
+    return { createBranch, loading, error }
+}
+
+// ---------------------------------------------------------------------------
+// useDeleteBranchWithMock
+// ---------------------------------------------------------------------------
+export function useDeleteBranchWithMock() {
+    const [user] = useAuthState(auth)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
+    const deleteBranch = useCallback(
+        async (branchId: string): Promise<boolean> => {
+            setLoading(true)
+            setError(null)
+            try {
+                const flags = featureFlags.get()
+                if (flags.useMockData) {
+                    await mockApi.deleteBranch(branchId)
+                    return true
+                }
+                if (!user) return false
                 const idToken = await user.getIdToken()
-                const { createBranchFirestore } =
+                const { deleteBranchFirestore } =
                     await import('@/api/firestore')
-                return createBranchFirestore(
+                await deleteBranchFirestore(idToken, branchId)
+                return true
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Unknown error')
+                return false
+            } finally {
+                setLoading(false)
+            }
+        },
+        [user]
+    )
+
+    return { deleteBranch, loading, error }
+}
+
+// ---------------------------------------------------------------------------
+// useForkBranchWithMock
+// ---------------------------------------------------------------------------
+export function useForkBranchWithMock() {
+    const [user] = useAuthState(auth)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
+    const forkBranch = useCallback(
+        async (
+            sourceBranchId: string,
+            newName: string,
+            newSlug: string
+        ): Promise<Branch | null> => {
+            setLoading(true)
+            setError(null)
+            try {
+                const flags = featureFlags.get()
+                if (flags.useMockData) {
+                    return await mockApi.forkBranch(
+                        sourceBranchId,
+                        newName,
+                        newSlug
+                    )
+                }
+                if (!user) return null
+                const idToken = await user.getIdToken()
+                const { forkBranchFirestore } = await import('@/api/firestore')
+                return await forkBranchFirestore(
                     idToken,
-                    user.uid,
-                    user.email || '',
-                    user.displayName || '',
-                    input
+                    sourceBranchId,
+                    newName,
+                    newSlug,
+                    user.uid
                 )
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error')
@@ -373,9 +546,12 @@ export function useCreateBranchWithMock() {
         [user]
     )
 
-    return { createBranch, loading, error }
+    return { forkBranch, loading, error }
 }
 
+// ---------------------------------------------------------------------------
+// useResolvedTokens
+// ---------------------------------------------------------------------------
 export function useResolvedTokens(
     brandConfig: BrandConfig | null,
     theme: 'light' | 'dark' = 'light'

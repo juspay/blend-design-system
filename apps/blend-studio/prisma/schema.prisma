@@ -3,20 +3,17 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
+  output   = "../src/generated/prisma"
 }
 
 generator kysely {
   provider = "prisma-kysely"
   output   = "../src/backend/db/types"
   fileName = "types.ts"
-  // Optional: Include relation fields in types
-  includeRelationFields = "true"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // User management - linked to Firebase Authentication
@@ -38,12 +35,83 @@ model User {
   deploymentApprovalsApproved  DeploymentApproval[] @relation("ApprovedBy")
   deploymentApprovalsRejected  DeploymentApproval[] @relation("RejectedBy")
   auditLogs     AuditLog[]
+  teamMemberships TeamMember[]
 
   @@index([firebaseUid])
   @@index([email])
   @@index([role])
   @@index([isActive])
   @@map("users")
+}
+
+// Team organizations
+model Team {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String    @db.VarChar(255)
+  slug          String    @unique @db.VarChar(100)
+  description   String?   @db.Text
+  logoUrl       String?   @map("logo_url") @db.Text
+  websiteUrl    String?   @map("website_url") @db.Text
+  ownerId       String    @map("owner_id") @db.Uuid
+  ownerName     String    @map("owner_name") @db.VarChar(255)
+  ownerEmail    String    @map("owner_email") @db.VarChar(255)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  members       TeamMember[]
+  invites       TeamInvite[]
+
+  @@index([slug])
+  @@index([ownerId])
+  @@map("teams")
+}
+
+// Team membership (users belonging to teams)
+model TeamMember {
+  id            String    @id @default(uuid()) @db.Uuid
+  teamId        String    @map("team_id") @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  role          String    @default("viewer") @db.VarChar(50) // owner, admin, editor, viewer
+  isActive      Boolean   @default(true) @map("is_active")
+  invitedBy     String    @map("invited_by") @db.Uuid
+  invitedAt     DateTime  @default(now()) @map("invited_at")
+  joinedAt      DateTime? @map("joined_at")
+  lastActiveAt  DateTime? @map("last_active_at")
+
+  // Relations
+  team          Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+  @@index([role])
+  @@map("team_members")
+}
+
+// Team invitations
+model TeamInvite {
+  id            String    @id @default(uuid()) @db.Uuid
+  teamId        String    @map("team_id") @db.Uuid
+  email         String    @db.VarChar(255)
+  role          String    @default("viewer") @db.VarChar(50)
+  message       String?   @db.Text
+  invitedBy     String    @map("invited_by") @db.Uuid
+  invitedByName String    @map("invited_by_name") @db.VarChar(255)
+  status        String    @default("pending") @db.VarChar(50) // pending, accepted, declined, expired
+  expiresAt     DateTime  @map("expires_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  acceptedAt    DateTime? @map("accepted_at")
+  declinedAt    DateTime? @map("declined_at")
+
+  // Relations
+  team          Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([email])
+  @@index([status])
+  @@map("team_invites")
 }
 
 // Role-based access control

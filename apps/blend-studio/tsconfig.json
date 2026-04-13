@@ -30,6 +30,7 @@
         "dist",
         "src/frontend/app/**",
         "src/frontend/components/**",
-        "src/frontend/contexts/**"
+        "src/frontend/contexts/**",
+        "src/backend/**"
     ]
 }

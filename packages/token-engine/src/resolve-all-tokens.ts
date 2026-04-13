@@ -37,6 +37,9 @@ import {
     getTextInputV2Tokens,
     getTimelineTokens,
     getTooltipV2Tokens,
+    getTopbarTokens,
+    getSidebarTokens,
+    getMobileNavigationTokens,
 } from '@juspay/blend-design-system'
 import type { FoundationTokenType } from '@juspay/blend-design-system'
 
@@ -67,6 +70,9 @@ const V2_RESOLVERS: Record<
     TEXT_INPUTV2: getTextInputV2Tokens,
     TIMELINE: getTimelineTokens,
     TOOLTIPV2: getTooltipV2Tokens,
+    TOPBARV2: getTopbarTokens,
+    SIDEBARV2: getSidebarTokens,
+    MOBILE_NAVIGATION_V2: getMobileNavigationTokens,
 }
 
 export function resolveAllTokens(

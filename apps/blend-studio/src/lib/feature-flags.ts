@@ -8,7 +8,8 @@ export interface FeatureFlags {
 const DEFAULT_FLAGS: FeatureFlags = {
     useMockData:
         import.meta.env.VITE_USE_MOCK_DATA === 'true' ||
-        !import.meta.env.VITE_FIREBASE_API_KEY,
+        (!import.meta.env.VITE_FIREBASE_API_KEY &&
+            !import.meta.env.VITE_API_BASE_URL),
     enableRealTimeSync: import.meta.env.VITE_ENABLE_REALTIME_SYNC === 'true',
     enableNotifications: import.meta.env.VITE_ENABLE_NOTIFICATIONS === 'true',
     apiBaseUrl: import.meta.env.VITE_API_BASE_URL || '',

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAuth } from '../../contexts/AuthContext'
+import { useBackendAuth } from '@/contexts/BackendAuthContext'
 
 interface PermissionGuardProps {
     resource: string
@@ -18,9 +18,21 @@ export default function PermissionGuard({
     fallback = null,
     showFallback = false,
 }: PermissionGuardProps) {
-    const { hasPermission } = useAuth()
+    const { user } = useBackendAuth()
 
-    // Combine resource and action into a single permission string
+    // Simple permission check based on user role
+    const hasPermission = (permission: string) => {
+        if (!user) return false
+        const [permResource, permAction] = permission.split(':')
+        // Admin has all permissions
+        if (user.role === 'admin' || user.role === 'superadmin') return true
+        // Editor can write
+        if (user.role === 'editor' && permAction === 'write') return true
+        // Everyone can read
+        if (permAction === 'read') return true
+        return false
+    }
+
     const permission = `${resource}:${action}`
 
     if (!hasPermission(permission)) {
@@ -53,18 +65,29 @@ export function withPermission<T extends object>(
 
 // Hook for permission checking in components
 export function usePermissions() {
-    const { hasPermission, userRole, userData } = useAuth()
+    const { user } = useBackendAuth()
+
+    const hasPermission = (resource: string, action: string) => {
+        if (!user) return false
+        // Admin has all permissions
+        if (user.role === 'admin' || user.role === 'superadmin') return true
+        // Editor can write
+        if (user.role === 'editor' && action === 'write') return true
+        // Everyone can read
+        if (action === 'read') return true
+        return false
+    }
 
     return {
         hasPermission: (resource: string, action: string) =>
-            hasPermission(`${resource}:${action}`),
-        userRole,
-        userData,
-        canManageUsers: hasPermission('users:write'),
-        canEditComponents: hasPermission('components:write'),
-        canManageSettings: hasPermission('settings:write'),
-        isAdmin: userData?.role === 'admin',
-        isDeveloper: userData?.role === 'developer',
-        isViewer: userData?.role === 'viewer',
+            hasPermission(resource, action),
+        userRole: user?.role || null,
+        userData: user,
+        canManageUsers: hasPermission('users', 'write'),
+        canEditComponents: hasPermission('components', 'write'),
+        canManageSettings: hasPermission('settings', 'write'),
+        isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
+        isEditor: user?.role === 'editor',
+        isViewer: user?.role === 'viewer',
     }
 }
