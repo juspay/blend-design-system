@@ -86,7 +86,6 @@ type OTPInputV2TokensType = {
             fontWeight: CSSObject['fontWeight']
             color: { [key in InputStateV2]: CSSObject['color'] }
             borderRadius: CSSObject['borderRadius']
-            boxShadow: CSSObject['boxShadow']
             border: { [key in InputStateV2]: CSSObject['border'] }
             backgroundColor: {
                 [key in InputStateV2]: CSSObject['backgroundColor']

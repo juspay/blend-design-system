@@ -85,7 +85,6 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
             errorId,
         })
 
-        // Disabled inputs mirror `value`; enabled inputs keep local state until remount / parent pattern.
         useEffect(() => {
             const nextOtp = otpCharsToPaddedArray(value || '', slotLength)
             setOtp((prevOtp) => {
