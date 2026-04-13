@@ -1,0 +1,220 @@
+import { ColumnDefinition, PivotAggregationType } from '../types'
+import {
+    PivotFilterConfig,
+    PivotPreviewColumn,
+    PivotPreviewRow,
+    PivotValueConfig,
+} from './types'
+
+export const normalizePivotValue = (value: unknown): string => {
+    if (value == null) return 'N/A'
+    if (typeof value === 'string' || typeof value === 'number') {
+        return String(value)
+    }
+    if (Array.isArray(value)) {
+        return value.map((item) => normalizePivotValue(item)).join(', ')
+    }
+    if (typeof value === 'object') {
+        const objectValue = value as Record<string, unknown>
+        if ('text' in objectValue) return String(objectValue.text)
+        if ('label' in objectValue) return String(objectValue.label)
+        if ('value' in objectValue) return String(objectValue.value)
+        if ('selectedValue' in objectValue)
+            return String(objectValue.selectedValue)
+        if ('values' in objectValue && Array.isArray(objectValue.values)) {
+            return objectValue.values
+                .map((item) => normalizePivotValue(item))
+                .join(', ')
+        }
+        if ('name' in objectValue) return String(objectValue.name)
+        try {
+            return JSON.stringify(objectValue)
+        } catch {
+            return 'N/A'
+        }
+    }
+    return String(value)
+}
+
+const truncatePivotLabel = (value: string, maxLength = 36): string => {
+    if (value.length <= maxLength) return value
+    return `${value.slice(0, maxLength - 3)}...`
+}
+
+const toNumeric = (value: unknown): number => {
+    if (typeof value === 'number') return value
+    const parsed = Number(normalizePivotValue(value).replace(/,/g, ''))
+    return Number.isNaN(parsed) ? 0 : parsed
+}
+
+const aggregate = (
+    rows: Array<Record<string, unknown>>,
+    field: string,
+    aggregation: PivotAggregationType
+): number => {
+    if (aggregation === PivotAggregationType.COUNT) {
+        return rows.length
+    }
+
+    const values = rows.map((row) => toNumeric(row[field]))
+    if (!values.length) return 0
+
+    switch (aggregation) {
+        case PivotAggregationType.SUM:
+            return values.reduce((sum, value) => sum + value, 0)
+        case PivotAggregationType.AVERAGE:
+        case PivotAggregationType.MEAN:
+            return values.reduce((sum, value) => sum + value, 0) / values.length
+        case PivotAggregationType.MEDIAN: {
+            const sorted = [...values].sort((a, b) => a - b)
+            const middle = Math.floor(sorted.length / 2)
+            return sorted.length % 2 === 0
+                ? (sorted[middle - 1] + sorted[middle]) / 2
+                : sorted[middle]
+        }
+        case PivotAggregationType.MIN:
+            return Math.min(...values)
+        case PivotAggregationType.MAX:
+            return Math.max(...values)
+        default:
+            return values.reduce((sum, value) => sum + value, 0)
+    }
+}
+
+export const getPivotFieldOptions = <T extends Record<string, unknown>>(
+    columns: ColumnDefinition<T>[]
+): Array<{ key: string; label: string }> =>
+    columns.map((column) => ({
+        key: String(column.field),
+        label: column.header || String(column.field),
+    }))
+
+export const applyPivotFilters = <T extends Record<string, unknown>>(
+    data: T[],
+    filters: PivotFilterConfig<T>[]
+): T[] => {
+    if (!filters.length) return data
+    return data.filter((row) =>
+        filters.every((filter) => {
+            if (!filter.selectedValues.length) return true
+            const rowValue = normalizePivotValue(row[filter.field])
+            return filter.selectedValues.includes(rowValue)
+        })
+    )
+}
+
+export const buildPivotPreview = <T extends Record<string, unknown>>(
+    data: T[],
+    rowFields: Array<keyof T>,
+    columnFields: Array<keyof T>,
+    valueConfigs: PivotValueConfig<T>[]
+): { columns: PivotPreviewColumn[]; rows: PivotPreviewRow[] } => {
+    if (!valueConfigs.length) return { columns: [], rows: [] }
+
+    const rowGroups = new Map<string, T[]>()
+    const columnKeySet = new Set<string>()
+
+    data.forEach((row) => {
+        const rowKey = rowFields.length
+            ? rowFields
+                  .map((field) => normalizePivotValue(row[field]))
+                  .join(' | ')
+            : 'All Rows'
+        const columnKey = columnFields.length
+            ? columnFields
+                  .map((field) => normalizePivotValue(row[field]))
+                  .join(' | ')
+            : 'All Columns'
+
+        if (!rowGroups.has(rowKey)) {
+            rowGroups.set(rowKey, [])
+        }
+        rowGroups.get(rowKey)!.push(row)
+        columnKeySet.add(columnKey)
+    })
+
+    const orderedColumnKeys = Array.from(columnKeySet).sort((a, b) =>
+        a.localeCompare(b)
+    )
+    const rowLabel = rowFields.length
+        ? rowFields.map((field) => String(field)).join(' / ')
+        : 'All Rows'
+
+    const previewColumns: PivotPreviewColumn[] = [
+        { key: '__rowLabel', label: rowLabel },
+        ...orderedColumnKeys.flatMap((columnKey) =>
+            valueConfigs.map((valueConfig) => ({
+                key: `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}`,
+                label: `${truncatePivotLabel(columnKey)} | ${valueConfig.aggregation}(${String(valueConfig.field)})`,
+            }))
+        ),
+    ]
+
+    const dataRows: PivotPreviewRow[] = Array.from(rowGroups.entries()).map(
+        ([rowKey, groupedRows], index) => {
+            const row: PivotPreviewRow = {
+                __pivotId: `pivot-row-${index}`,
+                __rowLabel: truncatePivotLabel(rowKey, 60),
+                __pivotRowType: 'data',
+            }
+
+            orderedColumnKeys.forEach((columnKey) => {
+                const columnRows = columnFields.length
+                    ? groupedRows.filter(
+                          (groupRow) =>
+                              columnFields
+                                  .map((field) =>
+                                      normalizePivotValue(groupRow[field])
+                                  )
+                                  .join(' | ') === columnKey
+                      )
+                    : groupedRows
+
+                valueConfigs.forEach((valueConfig) => {
+                    const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}`
+                    row[key] = Number(
+                        aggregate(
+                            columnRows as Array<Record<string, unknown>>,
+                            String(valueConfig.field),
+                            valueConfig.aggregation
+                        ).toFixed(2)
+                    )
+                })
+            })
+
+            return row
+        }
+    )
+
+    const grandTotalRow: PivotPreviewRow = {
+        __pivotId: 'pivot-grand-total',
+        __rowLabel: 'Grand Total',
+        __pivotRowType: 'grand_total',
+    }
+
+    orderedColumnKeys.forEach((columnKey) => {
+        const columnRows = columnFields.length
+            ? data.filter(
+                  (row) =>
+                      columnFields
+                          .map((field) => normalizePivotValue(row[field]))
+                          .join(' | ') === columnKey
+              )
+            : data
+        valueConfigs.forEach((valueConfig) => {
+            const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}`
+            grandTotalRow[key] = Number(
+                aggregate(
+                    columnRows as Array<Record<string, unknown>>,
+                    String(valueConfig.field),
+                    valueConfig.aggregation
+                ).toFixed(2)
+            )
+        })
+    })
+
+    return {
+        columns: previewColumns,
+        rows: [...dataRows, grandTotalRow],
+    }
+}

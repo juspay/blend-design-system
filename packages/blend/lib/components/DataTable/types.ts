@@ -35,6 +35,16 @@ export enum ColumnType {
     CUSTOM = 'custom',
 }
 
+export enum PivotAggregationType {
+    SUM = 'sum',
+    COUNT = 'count',
+    AVERAGE = 'average',
+    MEAN = 'mean',
+    MEDIAN = 'median',
+    MIN = 'min',
+    MAX = 'max',
+}
+
 export type AvatarColumnProps = {
     src?: string
     alt?: string
@@ -438,4 +448,56 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     // Mobile configuration
     mobileColumnsToShow?: number
+
+    // Internal pivot modal configuration
+    enablePivotTable?: boolean
+    pivotTableConfig?: {
+        triggerButton?: ReactNode
+        triggerSlot?: 1 | 2 | 3
+        title?: string
+        description?: string
+        showFilters?: boolean
+        showExport?: boolean
+        initialConfig?: {
+            rows?: (keyof T)[]
+            columns?: (keyof T)[]
+            values?: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+            filters?: Array<{
+                field: keyof T
+                selectedValues: string[]
+            }>
+        }
+        previewColumns?: Array<{
+            key: string
+            label: string
+        }>
+        previewRows?: Array<Record<string, unknown> & { __pivotId: string }>
+        onConfigChange?: (config: {
+            rows: (keyof T)[]
+            columns: (keyof T)[]
+            values: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+            filters: Array<{
+                field: keyof T
+                selectedValues: string[]
+            }>
+        }) => void
+        onExport?: (config: {
+            rows: (keyof T)[]
+            columns: (keyof T)[]
+            values: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+            filters: Array<{
+                field: keyof T
+                selectedValues: string[]
+            }>
+        }) => void
+    }
 }

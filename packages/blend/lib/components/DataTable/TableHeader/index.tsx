@@ -438,8 +438,8 @@ const TableHeader = forwardRef<
             const handleScrollOrWheel = (e: Event) => {
                 if (!scrollCloseEnabled.current) return
 
-                const target = e.target as Element
-                if (target) {
+                const target = e.target
+                if (target && target instanceof Element) {
                     const popoverContent =
                         target.closest('[data-radix-popper-content-wrapper]') ||
                         target.closest('[role="dialog"]') ||

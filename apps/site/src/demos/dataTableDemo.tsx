@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
     ColumnDefinition,
     SortDirection,
@@ -9,8 +9,14 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    PivotAggregationType,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
+import type { PivotTableConfig } from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/types'
+import {
+    applyPivotFilters,
+    buildPivotPreview,
+} from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/utils'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
 import { Tag } from '../../../../packages/blend/lib/components/Tags'
 import {
@@ -39,6 +45,7 @@ import {
     Settings,
     Download,
     Trash2,
+    Filter,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
@@ -2104,6 +2111,12 @@ const DataTableDemo = () => {
         field: '',
         direction: SortDirection.NONE,
     })
+    const [pivotPreviewColumns, setPivotPreviewColumns] = useState<
+        Array<{ key: string; label: string }>
+    >([])
+    const [pivotPreviewRows, setPivotPreviewRows] = useState<
+        Array<Record<string, unknown> & { __pivotId: string }>
+    >([])
 
     // Simulate server-side API call
     const fetchServerData = async (
@@ -2749,105 +2762,6 @@ const DataTableDemo = () => {
                     </div>
                 </div>
 
-                {/* Demo: nested DataTable inside a single expanded row */}
-                {userRow.id === 1 &&
-                    (() => {
-                        type AuditRow = {
-                            id: string
-                            event: string
-                            value: string
-                            timestamp: string
-                        }
-
-                        const auditData: AuditRow[] = Array.from(
-                            { length: 18 },
-                            (_, i) => ({
-                                id: `audit-${i + 1}`,
-                                event: `Audit log #${i + 1}`,
-                                value:
-                                    userRow.role === 'Admin'
-                                        ? 'Privileged access'
-                                        : 'Standard access',
-                                timestamp: new Date(
-                                    Date.now() - i * 60 * 60 * 1000
-                                ).toLocaleString(),
-                            })
-                        )
-
-                        const auditColumns: ColumnDefinition<AuditRow>[] = [
-                            {
-                                field: 'event',
-                                header: 'Event',
-                                type: ColumnType.TEXT,
-                                minWidth: '180px',
-                            },
-                            {
-                                field: 'value',
-                                header: 'Value',
-                                type: ColumnType.TEXT,
-                                minWidth: '160px',
-                            },
-                            {
-                                field: 'timestamp',
-                                header: 'Timestamp',
-                                type: ColumnType.TEXT,
-                                minWidth: '220px',
-                            },
-                        ]
-
-                        return (
-                            <div
-                                style={{
-                                    marginTop: '16px',
-                                    padding: '16px',
-                                    backgroundColor: 'white',
-                                    borderRadius: '6px',
-                                    border: '1px solid #e5e7eb',
-                                }}
-                            >
-                                <strong
-                                    style={{
-                                        color: '#6b7280',
-                                        fontSize: '12px',
-                                        textTransform: 'uppercase',
-                                    }}
-                                >
-                                    Nested DataTable Demo
-                                </strong>
-                                <div style={{ marginTop: '12px' }}>
-                                    <DataTable
-                                        data={
-                                            auditData as unknown as Record<
-                                                string,
-                                                unknown
-                                            >[]
-                                        }
-                                        columns={
-                                            auditColumns as unknown as ColumnDefinition<
-                                                Record<string, unknown>
-                                            >[]
-                                        }
-                                        idField="id"
-                                        title="Audit log"
-                                        description=""
-                                        showHeader={false}
-                                        showToolbar={false}
-                                        showFooter={false}
-                                        enableSearch={false}
-                                        enableFiltering={false}
-                                        enableAdvancedFilter={false}
-                                        enableRowExpansion={false}
-                                        enableRowSelection={false}
-                                        enableColumnManager={false}
-                                        enableColumnReordering={false}
-                                        enableInlineEdit={false}
-                                        tableBodyHeight={180}
-                                    />
-                                </div>
-                            </div>
-                        )
-                    })()}
-
                 {userRow.role === 'Admin' && (
                     <div
                         style={{
@@ -3002,6 +2916,24 @@ const DataTableDemo = () => {
         //     api.selectUser(rowData.id, rowData) // rowData has all 10 fields
         // }
     }
+
+    const handlePivotConfigChange = useCallback(
+        (config: PivotTableConfig<Record<string, unknown>>) => {
+            const filteredRows = applyPivotFilters(
+                data as Record<string, unknown>[],
+                config.filters
+            )
+            const preview = buildPivotPreview(
+                filteredRows,
+                config.rows,
+                config.columns,
+                config.values
+            )
+            setPivotPreviewColumns(preview.columns)
+            setPivotPreviewRows(preview.rows)
+        },
+        [data]
+    )
 
     return (
         <div>
@@ -3316,6 +3248,40 @@ const DataTableDemo = () => {
                 columnFreeze={columnFreeze}
                 enableInlineEdit
                 enableRowExpansion
+                enablePivotTable
+                pivotTableConfig={{
+                    triggerSlot: 3,
+                    triggerButton: (
+                        <Button
+                            text="Pivot"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Filter size={16} />}
+                            size={ButtonSize.SMALL}
+                        />
+                    ),
+                    title: 'Pivot Table Editor',
+                    description:
+                        'Configure rows, columns, values, filters, and preview using DataTable.',
+                    showFilters: true,
+                    showExport: true,
+                    previewColumns: pivotPreviewColumns,
+                    previewRows: pivotPreviewRows,
+                    initialConfig: {
+                        rows: ['department'],
+                        columns: ['gateway'],
+                        values: [
+                            {
+                                field: 'id',
+                                aggregation: PivotAggregationType.COUNT,
+                            },
+                            {
+                                field: 'revenueAmount',
+                                aggregation: PivotAggregationType.SUM,
+                            },
+                        ],
+                    },
+                    onConfigChange: handlePivotConfigChange,
+                }}
                 enableRowSelection={enableRowSelection}
                 enableColumnManager={enableColumnManager}
                 columnManagerMaxSelections={9}

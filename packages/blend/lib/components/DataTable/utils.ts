@@ -6,6 +6,7 @@ import {
     FilterType,
     ColumnDefinition,
     ColumnType,
+    PivotAggregationType,
 } from './types'
 import {
     validateColumnData,
@@ -1278,4 +1279,200 @@ export const enforceDataTypeMatching = <T extends Record<string, unknown>>(
     }
 
     return !hasErrors
+}
+
+type PivotValueConfig<T extends Record<string, unknown>> = {
+    field: keyof T
+    aggregation: PivotAggregationType
+    label?: string
+}
+
+type PivotResultRow = Record<string, unknown>
+
+const normalizePivotValue = (value: unknown): string | number => {
+    if (value == null) return 'N/A'
+    if (typeof value === 'number') return value
+    if (typeof value === 'string') return value
+
+    if (typeof value === 'object' && value !== null) {
+        if ('text' in value) {
+            return String((value as { text: unknown }).text)
+        }
+        if ('label' in value) {
+            return String((value as { label: unknown }).label)
+        }
+        if ('value' in value) {
+            return String((value as { value: unknown }).value)
+        }
+        if ('selectedValue' in value) {
+            return String((value as { selectedValue: unknown }).selectedValue)
+        }
+    }
+
+    return String(value)
+}
+
+const aggregatePivotValues = (
+    values: number[],
+    aggregation: PivotAggregationType
+): number => {
+    if (aggregation === PivotAggregationType.COUNT) {
+        return values.length
+    }
+
+    if (values.length === 0) return 0
+
+    switch (aggregation) {
+        case PivotAggregationType.SUM:
+            return values.reduce((sum, value) => sum + value, 0)
+        case PivotAggregationType.AVERAGE:
+        case PivotAggregationType.MEAN:
+            return values.reduce((sum, value) => sum + value, 0) / values.length
+        case PivotAggregationType.MEDIAN: {
+            const sorted = [...values].sort((a, b) => a - b)
+            const middle = Math.floor(sorted.length / 2)
+            if (sorted.length % 2 === 0) {
+                return (sorted[middle - 1] + sorted[middle]) / 2
+            }
+            return sorted[middle]
+        }
+        case PivotAggregationType.MIN:
+            return Math.min(...values)
+        case PivotAggregationType.MAX:
+            return Math.max(...values)
+        default:
+            return values.reduce((sum, value) => sum + value, 0)
+    }
+}
+
+export const buildPivotData = <T extends Record<string, unknown>>(
+    data: T[],
+    rowFields: (keyof T)[],
+    columnFields: (keyof T)[],
+    valueConfigs: PivotValueConfig<T>[],
+    filterValues?: Record<string, string[]>
+): {
+    columns: Array<{ key: string; label: string }>
+    rows: PivotResultRow[]
+} => {
+    if (!data.length || !valueConfigs.length) {
+        return { columns: [], rows: [] }
+    }
+
+    const filteredData = data.filter((row) => {
+        if (!filterValues) return true
+        return Object.entries(filterValues).every(([field, selected]) => {
+            if (!selected.length) return true
+            const value = normalizePivotValue(row[field as keyof T])
+            return selected.includes(String(value))
+        })
+    })
+
+    const rowMap = new Map<string, PivotResultRow>()
+    const dynamicColumnOrder: string[] = []
+
+    filteredData.forEach((row) => {
+        const rowKeyParts = rowFields.map((field) =>
+            String(normalizePivotValue(row[field]))
+        )
+        const rowKey = rowKeyParts.join(' | ') || 'All Rows'
+
+        const columnKeyParts = columnFields.map((field) =>
+            String(normalizePivotValue(row[field]))
+        )
+        const columnKeyBase = columnKeyParts.join(' | ') || 'All Columns'
+
+        if (!rowMap.has(rowKey)) {
+            const baseRow: PivotResultRow = {}
+            rowFields.forEach((field, index) => {
+                baseRow[String(field)] = rowKeyParts[index] || 'N/A'
+            })
+            rowMap.set(rowKey, baseRow)
+        }
+
+        const resultRow = rowMap.get(rowKey)!
+
+        valueConfigs.forEach((valueConfig) => {
+            const rawValue = row[valueConfig.field]
+            const numericValue =
+                typeof rawValue === 'number'
+                    ? rawValue
+                    : Number(normalizePivotValue(rawValue))
+            const valueListKey = `__pivot_values__::${encodeURIComponent(columnKeyBase)}::${String(valueConfig.field)}::${valueConfig.aggregation}`
+            const existingValues = (resultRow[valueListKey] as number[]) || []
+            if (!Number.isNaN(numericValue)) {
+                existingValues.push(numericValue)
+            } else if (valueConfig.aggregation === PivotAggregationType.COUNT) {
+                existingValues.push(1)
+            }
+            resultRow[valueListKey] = existingValues
+        })
+    })
+
+    const rows = Array.from(rowMap.values()).map((row) => {
+        const outputRow: PivotResultRow = {}
+
+        rowFields.forEach((field) => {
+            outputRow[String(field)] = row[String(field)] || 'N/A'
+        })
+
+        Object.keys(row).forEach((key) => {
+            if (!key.startsWith('__pivot_values__')) return
+
+            const pivotKeyParts = key.split('::')
+            if (pivotKeyParts.length !== 4) return
+
+            const columnKey = decodeURIComponent(pivotKeyParts[1] || '')
+            const valueField = pivotKeyParts[2] || ''
+            const aggregation = pivotKeyParts[3] as PivotAggregationType
+            const values = (row[key] as unknown as number[]) || []
+            const label = `${columnKey} | ${valueField} (${aggregation})`
+            outputRow[label] = Number(
+                aggregatePivotValues(
+                    values,
+                    aggregation as PivotAggregationType
+                ).toFixed(2)
+            )
+            if (!dynamicColumnOrder.includes(label)) {
+                dynamicColumnOrder.push(label)
+            }
+        })
+
+        return outputRow
+    })
+
+    const columns = [
+        ...rowFields.map((field) => ({
+            key: String(field),
+            label: String(field),
+        })),
+        ...dynamicColumnOrder.map((key) => ({
+            key,
+            label: key,
+        })),
+    ]
+
+    return { columns, rows }
+}
+
+export const exportPivotToCSV = (
+    rows: PivotResultRow[],
+    columns: Array<{ key: string; label: string }>,
+    filename: string
+): void => {
+    if (!rows.length || !columns.length) {
+        throw new Error('No pivot data available for export')
+    }
+
+    const header = columns.map((column) => `"${column.label}"`).join(',')
+    const lines = rows.map((row) =>
+        columns
+            .map(
+                (column) =>
+                    `"${String(row[column.key] ?? '').replace(/"/g, '""')}"`
+            )
+            .join(',')
+    )
+
+    downloadCSV([header, ...lines].join('\n'), filename)
 }
