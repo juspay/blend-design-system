@@ -39,6 +39,23 @@ describe('OTPInputV2', () => {
             ).toBeInTheDocument()
         })
 
+        it('includes sublabel and required in group accessible name when set', () => {
+            render(
+                <OTPInputV2
+                    label="OTP"
+                    sublabel="extra"
+                    required
+                    value=""
+                    onChange={() => {}}
+                />
+            )
+            expect(
+                screen.getByRole('group', {
+                    name: /OTP extra \(required\)/,
+                })
+            ).toBeInTheDocument()
+        })
+
         it('renders per-cell aria-label including digit index', () => {
             render(
                 <OTPInputV2
@@ -55,6 +72,16 @@ describe('OTPInputV2', () => {
             ).toBeInTheDocument()
             expect(
                 screen.getByRole('textbox', { name: 'OTP digit 2 of 3' })
+            ).toBeInTheDocument()
+        })
+
+        it('uses generic digit labels when main label is omitted', () => {
+            render(<OTPInputV2 length={2} value="" onChange={() => {}} />)
+            expect(
+                screen.getByRole('textbox', { name: 'Digit 1 of 2' })
+            ).toBeInTheDocument()
+            expect(
+                screen.getByRole('textbox', { name: 'Digit 2 of 2' })
             ).toBeInTheDocument()
         })
 
@@ -92,6 +119,13 @@ describe('OTPInputV2', () => {
             })
         })
 
+        it('sets aria-invalid false on cells when not in error', () => {
+            render(<OTPInputV2 label="Code" value="" onChange={() => {}} />)
+            getCells().forEach((input) => {
+                expect(input).toHaveAttribute('aria-invalid', 'false')
+            })
+        })
+
         it('sets aria-required on cells when required', () => {
             render(
                 <OTPInputV2
@@ -104,6 +138,23 @@ describe('OTPInputV2', () => {
             getCells().forEach((input) => {
                 expect(input).toHaveAttribute('aria-required', 'true')
                 expect(input).toBeRequired()
+            })
+        })
+
+        it('links hint to cells via aria-describedby when no error', () => {
+            render(
+                <OTPInputV2
+                    id="otp-test"
+                    label="Code"
+                    value=""
+                    onChange={() => {}}
+                    hintText="Enter digits"
+                />
+            )
+            const hintId = 'otp-test-hint'
+            expect(document.getElementById(hintId)).toBeTruthy()
+            getCells().forEach((input) => {
+                expect(input.getAttribute('aria-describedby')).toContain(hintId)
             })
         })
     })
@@ -170,6 +221,64 @@ describe('OTPInputV2', () => {
             fireEvent.change(getCells()[0]!, { target: { value: '12-34' } })
             expect(onChange).toHaveBeenLastCalledWith('1234')
         })
+
+        it('syncs internal cells when value prop changes', () => {
+            const { rerender } = render(
+                <OTPInputV2 length={4} value="" onChange={() => {}} />
+            )
+            expect(getCells()[0]).toHaveValue('')
+            rerender(<OTPInputV2 length={4} value="12" onChange={() => {}} />)
+            expect(getCells()[0]).toHaveValue('1')
+            expect(getCells()[1]).toHaveValue('2')
+        })
+    })
+
+    describe('Length clamping', () => {
+        it('caps length at 32 cells', () => {
+            render(<OTPInputV2 length={100} value="" onChange={() => {}} />)
+            expect(getCells()).toHaveLength(32)
+        })
+
+        it('treats length 0 as 1 cell', () => {
+            render(<OTPInputV2 length={0} value="" onChange={() => {}} />)
+            expect(getCells()).toHaveLength(1)
+        })
+    })
+
+    describe('Native input attributes', () => {
+        it('sets inputMode numeric and pattern on every cell', () => {
+            render(<OTPInputV2 length={3} value="" onChange={() => {}} />)
+            getCells().forEach((el) => {
+                expect(el).toHaveAttribute('inputMode', 'numeric')
+                expect(el).toHaveAttribute('pattern', '[0-9]')
+            })
+        })
+
+        it('sets autocomplete one-time-code on the first cell only', () => {
+            render(<OTPInputV2 length={3} value="" onChange={() => {}} />)
+            const cells = getCells()
+            expect(cells[0]).toHaveAttribute('autocomplete', 'one-time-code')
+            expect(cells[1]).not.toHaveAttribute('autocomplete')
+            expect(cells[2]).not.toHaveAttribute('autocomplete')
+        })
+    })
+
+    describe('IDs and grouping', () => {
+        it('sets group id from custom id prefix', () => {
+            render(
+                <OTPInputV2
+                    id="my-otp"
+                    label="L"
+                    length={2}
+                    value=""
+                    onChange={() => {}}
+                />
+            )
+            expect(screen.getByRole('group')).toHaveAttribute(
+                'id',
+                'my-otp-group'
+            )
+        })
     })
 
     describe('Paste', () => {
@@ -224,6 +333,16 @@ describe('OTPInputV2', () => {
             await user.keyboard('{ArrowRight}')
             expect(inputs[1]).toHaveFocus()
         })
+
+        it('moves focus with legacy Left and Right keys', () => {
+            render(<OTPInputV2 length={3} value="" onChange={() => {}} />)
+            const inputs = getCells()
+            inputs[1]!.focus()
+            fireEvent.keyDown(inputs[1]!, { key: 'Left' })
+            expect(inputs[0]).toHaveFocus()
+            fireEvent.keyDown(inputs[0]!, { key: 'Right' })
+            expect(inputs[1]).toHaveFocus()
+        })
     })
 
     describe('Disabled', () => {
@@ -232,6 +351,16 @@ describe('OTPInputV2', () => {
             getCells().forEach((input) => {
                 expect(input).toBeDisabled()
             })
+        })
+
+        it('does not call onChange when typing while disabled', async () => {
+            const onChange = vi.fn()
+            const { user } = render(
+                <OTPInputV2 value="" onChange={onChange} disabled />
+            )
+            await user.click(getCells()[0]!)
+            await user.keyboard('1')
+            expect(onChange).not.toHaveBeenCalled()
         })
     })
 
@@ -281,7 +410,7 @@ describe('OTPInputV2', () => {
         })
     })
 
-    describe('rest onKeyDown', () => {
+    describe('rest handlers (first cell only)', () => {
         it('invokes consumer onKeyDown after internal handler', async () => {
             const restOnKeyDown = vi.fn()
             const { user } = render(
@@ -295,6 +424,38 @@ describe('OTPInputV2', () => {
             await user.click(first)
             await user.keyboard('{ArrowRight}')
             expect(restOnKeyDown).toHaveBeenCalled()
+        })
+
+        it('calls consumer onFocus only when the first cell is focused', async () => {
+            const onFocus = vi.fn()
+            const { user } = render(
+                <OTPInputV2
+                    length={3}
+                    value=""
+                    onChange={() => {}}
+                    onFocus={onFocus}
+                />
+            )
+            await user.click(getCells()[1]!)
+            expect(onFocus).not.toHaveBeenCalled()
+            await user.click(getCells()[0]!)
+            expect(onFocus).toHaveBeenCalled()
+        })
+
+        it('calls consumer onClick only when the first cell is clicked', async () => {
+            const onClick = vi.fn()
+            const { user } = render(
+                <OTPInputV2
+                    length={3}
+                    value=""
+                    onChange={() => {}}
+                    onClick={onClick}
+                />
+            )
+            await user.click(getCells()[1]!)
+            expect(onClick).not.toHaveBeenCalled()
+            await user.click(getCells()[0]!)
+            expect(onClick).toHaveBeenCalled()
         })
     })
 })

@@ -4,18 +4,20 @@
 
 Create a one-time password (OTP) field that supports:
 
-- **Value API**: Full code exposed as a single string via `value` and `onChange(value: string)` (not a DOM event), without implying fully controlled behavior
-- **Configurable length**: Number of digit cells via `length` (implementation clamps to a safe range; see decisions below)
-- **Digits-only entry**: Each cell accepts at most one numeric character; paste fills from the start of the code
-- **Keyboard UX**: Auto-advance after digit entry; **Backspace** on an empty cell moves focus to the previous cell; **ArrowLeft** / **ArrowRight** move between cells
-- **Labels**: Primary label, optional `sublabel` (shown in parentheses next to the label), optional help hint on the label (`helpIconHintText` → `InputLabelsV2`)
-- **States**: Default, hover, focus, error, disabled — borders, background, and focus ring driven by tokens (`InputStateV2` for cells)
-- **Validation**: `error` boolean and optional `errorMessage`; required indicator (asterisk) on the label row
-- **Help**: Hint text below the group (`InputFooterV2`)
-- **Accessibility**: Multiple native inputs in a **`role="group"`** container; per-cell `aria-label`; `aria-describedby` for hint and/or error; `aria-invalid` / `aria-required` on cells
-- **Ref forwarding**: Consumer `ref` is attached to the **first** cell only (see decisions)
-- **Theme**: Light/dark responsive tokens via `useResponsiveTokens('OTP_INPUTV2')`
-- **No per-cell placeholder**: Use label, hint, and `aria-label` for instructions (placeholders are omitted from the public API)
+- **Value API**: Full code exposed as a single string via `value` and `onChange(value: string)` (not a DOM event). Internal state stays aligned when **`value`** or **`length`** (`slotLength`) changes via effects (see Implementation Notes).
+- **Configurable length**: Number of digit cells via `length`, clamped to a safe range (`clampOtpSlotLength` in `otpInputV2Utils.ts`; defaults to **6**, min **1**, max **32**).
+- **Digits-only entry**: Each cell accepts at most one numeric character per keystroke; multi-character input (IME / SMS autofill) is merged from the active cell with `mergeDigitRunIntoOtp` / `processOtpCellValueChange`. Typing a digit in a **filled** cell replaces it and advances focus.
+- **Paste**: From any cell; clipboard text is digit-only, truncated to `slotLength`, applied from the start of the row (`parsePastedOtpText`, `otpCharsToPaddedArray`, `getOtpPasteFocusIndex`).
+- **Keyboard UX**: Auto-advance after a valid digit; **Backspace** on an empty cell moves focus to the previous cell; **ArrowLeft** / **ArrowRight** (and legacy **Left** / **Right**) move between cells (`getOtpKeyNavigation` calls `preventDefault` when handling arrows).
+- **Labels**: Primary label, optional `sublabel` (parentheses in `InputLabelsV2`), optional help on the label (`helpIconHintText` → `helpIconText`). Label row uses **`InputStateV2`** so **error** styles the label row via tokens.
+- **States**: Default, hover, focus, error, disabled — cell borders, background, and text use token keys derived from `error` and `disabled`; focus ring uses **`FOCUS_RING_STYLES`** / **`TRANSITION`** from `TextInputV2/utils`.
+- **Validation**: `error` and optional `errorMessage`; **`required`** shows the asterisk on the label and sets **native `required` on every cell** plus `aria-required` for form validity parity with other Inputs V2.
+- **Help**: Hint and/or error in `InputFooterV2` (hint hidden when in error; see footer decision below).
+- **Mobile & autofill**: Each cell uses `type="text"`, **`inputMode="numeric"`**, **`pattern="[0-9]"`**; the **first** cell sets **`autoComplete="one-time-code"`** when useful for WebOTP/SMS. Additional `…rest` attributes are spread only onto the **first** cell (see below).
+- **Accessibility**: Multiple native inputs in a **`role="group"`** container with stable **`id={groupId}`**; IDs from **`generateAccessibilityIds(baseId)`** in `InputsV2/utils/utils.ts` where **`baseId`** is `id` prop or React **`useId()`**; **`InputLabelsV2`** uses **`firstInputId`** (`${baseId}-0`) for the label association. Per-cell **`aria-label`** (`buildOtpCellAriaLabel`), group **`aria-label`** (`buildOtpGroupAriaLabel`), **`aria-describedby`** (`buildOtpAriaDescribedBy`), **`aria-invalid`**, **`aria-required`**. Click/focus runs **`moveCaretToEnd`** so the caret sits after the single character.
+- **Ref forwarding**: Consumer **`ref`** is attached to the **first** cell only via **`setExternalRef`**.
+- **Theme**: Light/dark responsive tokens via **`useResponsiveTokens('OTP_INPUTV2')`**.
+- **No per-cell placeholder**: Omitted from the public API; use label, hint, and `aria-label`.
 
 ## Anatomy
 
@@ -24,19 +26,21 @@ Create a one-time password (OTP) field that supports:
 │  [Top: Label, (sublabel), Required *, Help icon]                    │
 ├─────────────────────────────────────────────────────────────────────┤
 │  [ ○ ] [ ○ ] [ ○ ] [ ○ ] [ ○ ] [ ○ ]   ← one PrimitiveInput per digit │
-│       role="group" + aria-label on the row                          │
+│       role="group" + id + aria-label + aria-describedby            │
 ├─────────────────────────────────────────────────────────────────────┤
 │  [Bottom: Hint text / Error message]                                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Top container**: `InputLabelsV2` — label, sublabel in parentheses, required asterisk, optional help icon + tooltip (`helpIconHintText` is passed as `helpIconText` into labels)
-- **Digit row**: A `Block` with `role="group"`, `aria-label` derived from label/sublabel/required, and `aria-describedby` pointing at hint/error IDs when present. Each digit is a **`PrimitiveInput`** (styled native `<input>`) with `maxLength={1}`, centered text, and token-driven width/height/border/focus ring
-- **Bottom container**: `InputFooterV2` — hint and/or error; element IDs feed `aria-describedby` on **each** cell
+- **Top container**: `InputLabelsV2` — `inputId={firstInputId}` links label to the first cell id prefix.
+- **Digit row**: `Block` with `role="group"`, `id={groupId}`, `aria-label` / `aria-describedby`. Each cell is **`PrimitiveInput`**, `maxLength={1}`, centered.
+- **Bottom container**: `InputFooterV2` — hint/error ids match **`buildOtpAriaDescribedBy`** on each cell.
 
 _(Optional: add `OTPInputAnatomy.png` beside this doc when a diagram is available.)_
 
 ## Props & Types
+
+Declared in `OTPInputV2.types.ts`; HTML attributes come from **`Omit<React.InputHTMLAttributes<HTMLInputElement>, …>`** (see below).
 
 ```typescript
 type OTPInputV2Props = {
@@ -57,11 +61,13 @@ type OTPInputV2Props = {
 >
 ```
 
+**Notable inherited props** (non-exhaustive): **`id`** (prefix for `${id}-0`, `${id}-error`, `${id}-group`, …; if omitted, `useId()` supplies the base), **`name`**, **`required`**, **`disabled`**, and other safe input attributes. **`className`** / **`style`** / **`placeholder`** are omitted from the type; **`filterBlockedProps`** also strips **`className`** and **`style`** from spreadable rest.
+
 - **`onChange`**: Emits the **full OTP string** (all cells concatenated), not a `ChangeEvent`.
-- **`value`**: String of digits; internally split into a fixed-length array of single-character cells. While **enabled**, local state is driven by typing; when **`disabled`**, state mirrors `value` from props (see decisions).
-- **`length`**: Desired number of cells; clamped in implementation (`slotLength`) to avoid invalid or excessive DOM.
-- **Omit `placeholder`**: Per-cell placeholders are not supported; avoids noisy UI and duplicate instructions (labels + `aria-label` are sufficient).
-- **Omit `style` | `className`**: Same pattern as other Inputs V2 — styling is token-driven; `filterBlockedProps` strips `className` and `style` from spreadable rest.
+- **`value`**: Digit string; padded/truncated to `slotLength`. See **Internal state vs `value`**.
+- **`length`**: Desired cell count; clamped by **`clampOtpSlotLength`** (default **6**, **1**–**32**).
+- **`form`**: Passed to cells (same form association for all).
+- **Omit `placeholder`**: Per-cell placeholders are not supported.
 
 ## Final Token Type
 
@@ -91,65 +97,65 @@ type OTPInputV2TokensType = {
 }
 ```
 
-- **`InputStateV2`** drives cell colors/borders for default, hover, focus, error, and disabled (mapped in the component from `error`, `disabled`, and focus styling helpers such as `FOCUS_RING_STYLES` from `TextInputV2/utils` for the focus ring).
-- Theme resolution: `getOTPInputV2Tokens` in `OTPInputV2.tokens.ts` selects light vs dark token factories.
+- **`InputStateV2`** drives cell colors/borders; the component maps `disabled` / `error` to visual states and uses **`FOCUS_RING_STYLES`** for the focus ring.
+- Theme resolution: **`getOTPInputV2Tokens`** in `OTPInputV2.tokens.ts` selects light vs dark token factories.
+
+## Logic module (`otpInputV2Utils.ts`)
+
+Pure helpers live next to the component:
+
+| Export                                             | Purpose                                                                       |
+| -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `otpCharsToPaddedArray`                            | Pad/truncate string to `length` cells                                         |
+| `OTP_SLOT_MIN` / `OTP_SLOT_MAX`                    | Bounds used by `clampOtpSlotLength`                                           |
+| `clampOtpSlotLength`                               | Safe `slotLength` from `length` prop                                          |
+| `mergeDigitRunIntoOtp`                             | Multi-digit insert from a cell index (IME/autofill)                           |
+| `processOtpCellValueChange`                        | Single `onChange` path: clear, multi-char, or one digit + optional focus move |
+| `buildOtpAriaDescribedBy`                          | Hint/error ids for `aria-describedby`                                         |
+| `buildOtpGroupAriaLabel` / `buildOtpCellAriaLabel` | Group and per-cell accessible names                                           |
+| `parsePastedOtpText` / `getOtpPasteFocusIndex`     | Paste normalization and focus after paste                                     |
+| `moveCaretToEnd`                                   | Selection after click/focus on single-char fields                             |
+| `getOtpKeyNavigation`                              | Backspace and arrow focus moves                                               |
+
+Shared with other Inputs V2: **`setExternalRef`**, **`generateAccessibilityIds`** (`packages/blend/lib/components/InputsV2/utils/utils.ts`).
 
 ## Implementation Notes
 
-### 1. Internal state vs `value` when enabled
+### 1. Internal state vs `value`
 
-**Decision**: While the component is **enabled**, OTP digits are held in local React state initialized from `value`. When **`disabled`**, an effect syncs state from `value` so read-only displays stay aligned with the parent.
+**Current behavior**: A `useEffect` depends on **`[value, slotLength]`**. When either changes, internal `otp` is replaced with `otpCharsToPaddedArray(value || '', slotLength)` if the joined string actually changed (avoids redundant `setState`).
 
-**Rationale**: Matches common OTP UX (fast typing without forcing the parent to re-render on every keystroke). If the parent must reset the code while enabled, use a **remount key** or a fully controlled pattern at the app level.
+**Secondary effect**: A `useEffect` on **`[slotLength]`** trims/pads when the array length no longer matches after a length change.
+
+**Rationale**: Keeps the UI aligned when the parent resets or updates `value` (e.g. form reset, programmatic fill). For forcing a full reset without prop change while enabled, a **key** on the component is still a reliable pattern.
 
 ### 2. Safe `length` (`slotLength`)
 
-**Decision**: Compute `slotLength = Math.max(1, Math.min(length, 32))` (or equivalent) before building cell arrays.
+**Decision**: `slotLength = clampOtpSlotLength(length)` → **`Math.max(1, Math.min(length ?? 6, 32))`**.
 
-**Rationale**: Prevents zero/negative lengths and caps DOM size for pathological props.
+**Rationale**: Avoids invalid lengths and caps DOM size.
 
 ### 3. `filterBlockedProps` and `rest` only on the first cell
 
-**Decision**: Spread `filterBlockedProps(restWithoutKeyDown)` on **`index === 0`** only. Destructure `onKeyDown` from `rest` and compose it with the internal handler.
+**Decision**: Destructure **`onKeyDown`**, **`onFocus`**, and **`onClick`** from **`rest`**, apply **`filterBlockedProps`** to the remainder, and spread on **`index === 0`** only. Compose **`onKeyDown`**, **`onFocus`**, and **`onClick`** so internal behavior runs first, then consumer handlers (consumer focus/click only fire for the **first** cell where those are forwarded).
 
-**Rationale**: Spreading the same `data-*`, `autoFocus`, or `id` onto every cell duplicated attributes and could break behavior. The first cell is the natural target for SMS/Web OTP attributes if passed via `rest`. Composing `onKeyDown` ensures Enter/backspace/arrow behavior is not replaced by consumer handlers.
-
-```tsx
-const { onKeyDown: restOnKeyDown, ...restWithoutKeyDown } = rest
-const filteredRest = filterBlockedProps(restWithoutKeyDown)
-// ...
-<PrimitiveInput
-  {...(index === 0 ? filteredRest : {})}
-  onKeyDown={(e) => {
-    handleKeyDown(index, e)
-    restOnKeyDown?.(e)
-  }}
-/>
-```
+**Rationale**: Avoids duplicating `id`, `data-*`, `autoFocus`, etc. on every cell; first cell carries WebOTP-friendly attributes from `rest`.
 
 ### 4. Ref forwarding to the first cell
 
-**Decision**: Use `setExternalRef` (shared helper) so the forwarded ref points at the **first** `PrimitiveInput`’s DOM node.
-
-**Rationale**: Consumers need a stable element for `.focus()` and integration with form libraries; the first cell is the conventional entry point.
+**Decision**: **`setExternalRef`** attaches the forwarded ref to the **first** `PrimitiveInput` DOM node.
 
 ### 5. Paste from any cell
 
-**Decision**: Attach the same `onPaste` handler to every cell; pasted text is normalized (digits only, truncated to `slotLength`) and distributed from the first positions.
-
-**Rationale**: Users may paste after focusing any box; behavior stays consistent.
+**Decision**: Same **`onPaste`** on every cell; normalized digits fill from the start of the OTP string.
 
 ### 6. Shared focus ring with TextInputV2
 
-**Decision**: Reuse `FOCUS_RING_STYLES` and `TRANSITION` from `TextInputV2/utils` for focused cells.
-
-**Rationale**: Visual consistency across Inputs V2. Dark theme may later swap these for theme-specific focus tokens.
+**Decision**: Reuse **`FOCUS_RING_STYLES`** and **`TRANSITION`** from `TextInputV2/utils`.
 
 ### 7. Hint vs error in the footer
 
-**Decision**: `InputFooterV2` shows hint text only when **not** in error; when `error` and `errorMessage` are set, the error message is shown and hint copy is suppressed in the footer (while `aria-describedby` on cells prioritizes the error id when appropriate).
-
-**Rationale**: Avoid conflicting instructions; error takes precedence for both sighted users and assistive tech.
+**Decision**: **`InputFooterV2`** shows hint only when not in error; when **`error`** and **`errorMessage`** are set, error wins in the footer. **`buildOtpAriaDescribedBy`** aligns `aria-describedby` (hint id omitted when `error` is true so hint is not announced with the error).
 
 ## Testing & Storybook
 
@@ -160,4 +166,4 @@ const filteredRest = filterBlockedProps(restWithoutKeyDown)
 ## Related
 
 - **Labels / footer primitives**: `InputLabelsV2`, `InputFooterV2` (`packages/blend/lib/components/InputsV2/utils/…`)
-- **Legacy `OTPInput`** (non-V2): separate component under `Inputs/OTPInput` — different props and styling; prefer **`OTPInputV2`** for new work aligned with Inputs V2 tokens
+- **Legacy `OTPInput`** (non-V2): `Inputs/OTPInput` — different API and styling; prefer **`OTPInputV2`** for Inputs V2 alignment

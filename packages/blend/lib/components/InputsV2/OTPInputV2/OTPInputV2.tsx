@@ -20,8 +20,19 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
 import type { OTPInputV2Props } from './OTPInputV2.types'
 import type { OTPInputV2TokensType } from './OTPInputV2.tokens'
-import { mergeDigitRunIntoOtp, otpCharsToPaddedArray } from './otpInputV2Utils'
-import { setExternalRef } from '../utils/utils'
+import {
+    buildOtpAriaDescribedBy,
+    buildOtpCellAriaLabel,
+    buildOtpGroupAriaLabel,
+    clampOtpSlotLength,
+    getOtpKeyNavigation,
+    getOtpPasteFocusIndex,
+    moveCaretToEnd,
+    otpCharsToPaddedArray,
+    parsePastedOtpText,
+    processOtpCellValueChange,
+} from './otpInputV2Utils'
+import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 
 const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
     (
@@ -52,8 +63,7 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
             ...restWithoutForwardedHandlers
         } = rest
         const filteredRest = filterBlockedProps(restWithoutForwardedHandlers)
-        /** Avoid invalid or huge slot counts; caps DOM / state size. */
-        const slotLength = Math.max(1, Math.min(length, 32))
+        const slotLength = clampOtpSlotLength(length)
         const otpInputTokens =
             useResponsiveTokens<OTPInputV2TokensType>('OTP_INPUTV2')
         const [otp, setOtp] = useState<string[]>(() =>
@@ -63,18 +73,17 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
 
         const generatedId = useId()
         const baseId = providedId || generatedId
-        const errorId = `${baseId}-error`
-        const hintId = `${baseId}-hint`
-        const groupId = `${baseId}-group`
-        const firstInputId = `${baseId}-0`
 
-        const ariaDescribedBy =
-            [
-                hintText && !error ? hintId : null,
-                error && errorMessage ? errorId : null,
-            ]
-                .filter(Boolean)
-                .join(' ') || undefined
+        const { errorId, hintId, groupId, firstInputId } =
+            generateAccessibilityIds(baseId)
+
+        const ariaDescribedBy = buildOtpAriaDescribedBy({
+            hintText,
+            error: Boolean(error),
+            errorMessage,
+            hintId,
+            errorId,
+        })
 
         // Disabled inputs mirror `value`; enabled inputs keep local state until remount / parent pattern.
         useEffect(() => {
@@ -102,44 +111,18 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
         const handleChange = (index: number, val: string) => {
             if (disabled) return
 
-            if (val.length === 0) {
-                const newOtp = [...otp]
-                newOtp[index] = ''
-                setOtp(newOtp)
-                onChange?.(newOtp.join(''))
-                return
-            }
+            const result = processOtpCellValueChange(
+                otp,
+                index,
+                val,
+                slotLength
+            )
+            if (result.kind === 'noop') return
 
-            if (val.length > 1) {
-                const { newOtp, digitCount } = mergeDigitRunIntoOtp(
-                    otp,
-                    index,
-                    val,
-                    slotLength
-                )
-                if (digitCount === 0) return
-                setOtp(newOtp)
-                onChange?.(newOtp.join(''))
-                const nextIndex = Math.min(
-                    index + digitCount - 1,
-                    slotLength - 1
-                )
-                inputRefs.current[nextIndex]?.focus()
-                return
-            }
-
-            const newVal = val.slice(-1)
-
-            if (newVal && !/^\d$/.test(newVal)) return
-
-            const newOtp = [...otp]
-            newOtp[index] = newVal
-            setOtp(newOtp)
-
-            onChange?.(newOtp.join(''))
-
-            if (newVal && index < slotLength - 1) {
-                inputRefs.current[index + 1]?.focus()
+            setOtp(result.newOtp)
+            onChange?.(result.newOtp.join(''))
+            if (result.focusIndex !== undefined) {
+                inputRefs.current[result.focusIndex]?.focus()
             }
         }
 
@@ -149,43 +132,34 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
         ) => {
             if (disabled) return
 
-            const key = e.key
-
-            if (key === 'Backspace') {
-                if (!otp[index] && index > 0) {
-                    inputRefs.current[index - 1]?.focus()
-                }
-            } else if ((key === 'ArrowLeft' || key === 'Left') && index > 0) {
-                e.preventDefault()
-                inputRefs.current[index - 1]?.focus()
-            } else if (
-                (key === 'ArrowRight' || key === 'Right') &&
-                index < slotLength - 1
-            ) {
-                e.preventDefault()
-                inputRefs.current[index + 1]?.focus()
-            }
+            const nav = getOtpKeyNavigation(
+                e.key,
+                index,
+                otp[index] ?? '',
+                slotLength
+            )
+            if (nav.action === 'none') return
+            if (nav.preventDefault) e.preventDefault()
+            inputRefs.current[nav.targetIndex]?.focus()
         }
 
         const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
             if (disabled) return
 
             e.preventDefault()
-            const pastedData = e.clipboardData
-                .getData('text')
-                .replace(/\D/g, '')
-                .slice(0, slotLength)
+            const pastedData = parsePastedOtpText(
+                e.clipboardData.getData('text'),
+                slotLength
+            )
             const newOtp = otpCharsToPaddedArray(pastedData, slotLength)
             setOtp(newOtp)
             onChange?.(newOtp.join(''))
 
-            const nextIndex = Math.min(pastedData.length, slotLength - 1)
+            const nextIndex = getOtpPasteFocusIndex(
+                pastedData.length,
+                slotLength
+            )
             inputRefs.current[nextIndex]?.focus()
-        }
-
-        const moveCaretToEnd = (input: HTMLInputElement) => {
-            const len = input.value.length
-            input.setSelectionRange(len, len)
         }
 
         const inputTokens = otpInputTokens.inputContainer.input
@@ -223,13 +197,11 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
                 <Block
                     id={groupId}
                     role="group"
-                    aria-label={
-                        label
-                            ? `${label}${sublabel ? ` ${sublabel}` : ''}${
-                                  required ? ' (required)' : ''
-                              }`
-                            : undefined
-                    }
+                    aria-label={buildOtpGroupAriaLabel(
+                        label,
+                        sublabel,
+                        required
+                    )}
                     aria-describedby={ariaDescribedBy}
                     data-element="otp-input-container"
                     display="flex"
@@ -239,9 +211,11 @@ const OTPInputV2 = forwardRef<HTMLInputElement, OTPInputV2Props>(
                 >
                     {otp.map((digit, index) => {
                         const inputId = `${baseId}-${index}`
-                        const ariaLabel = label
-                            ? `${label} digit ${index + 1} of ${slotLength}`
-                            : `Digit ${index + 1} of ${slotLength}`
+                        const ariaLabel = buildOtpCellAriaLabel(
+                            label,
+                            index,
+                            slotLength
+                        )
 
                         return (
                             <PrimitiveInput

@@ -9,3 +9,12 @@ export const setExternalRef = <T>(ref: AnyRef<T>, value: T | null): void => {
         ref.current = value
     }
 }
+
+export const generateAccessibilityIds = (baseId?: string) => {
+    return {
+        errorId: `${baseId}-error`,
+        hintId: `${baseId}-hint`,
+        groupId: `${baseId}-group`,
+        firstInputId: `${baseId}-0`,
+    }
+}
