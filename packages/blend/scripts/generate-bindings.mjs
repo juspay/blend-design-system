@@ -60,8 +60,6 @@ ${INSTRUCTIONS_CONTENT}
 }
 `
 
-console.log(SYSTEM_PROMPT)
-
 class BindingsGenerator {
     constructor(options) {
         this.component = options.component
