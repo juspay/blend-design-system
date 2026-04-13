@@ -70,6 +70,7 @@ import { getProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV
 import { getMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
 import { getNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
 import { getTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import { getDropdownInputV2Tokens } from '../components/InputsV2/DropdownInputV2/DropdownInputV2.tokens'
 
 import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 const initTokens = (
@@ -235,6 +236,9 @@ const initTokens = (
         OTP_INPUTV2:
             componentTokens.OTP_INPUTV2 ??
             getOTPInputV2Tokens(foundationTokens, theme),
+        DROPDOWN_INPUT_V2:
+            componentTokens.DROPDOWN_INPUT_V2 ??
+            getDropdownInputV2Tokens(foundationTokens, theme),
     }
 }
 

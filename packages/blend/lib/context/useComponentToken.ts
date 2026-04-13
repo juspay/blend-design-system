@@ -68,6 +68,7 @@ import { ResponsiveMultiValueInputV2Tokens } from '../components/InputsV2/MultiV
 import { ResponsiveNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
 import { ResponsiveOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import { ResponsiveTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import { ResponsiveDropdownInputV2Tokens } from '../components/InputsV2/DropdownInputV2/DropdownInputV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -141,7 +142,9 @@ export const useComponentToken = (
     | ResponsiveNumberInputV2Tokens
     | ResponsiveOTPInputV2Tokens
     | ResponsiveTextAreaV2Tokens
-    | ResponsiveCodeEditorV2Tokens => {
+    | ResponsiveCodeEditorV2Tokens
+    | ResponsiveDropdownInputV2Tokens
+    | ResponsiveNumberInputV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -284,6 +287,8 @@ export const useComponentToken = (
             return componentTokens.NUMBER_INPUT_V2
         case 'OTP_INPUTV2':
             return componentTokens.OTP_INPUTV2
+        case 'DROPDOWN_INPUT_V2':
+            return componentTokens.DROPDOWN_INPUT_V2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

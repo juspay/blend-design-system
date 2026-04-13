@@ -261,6 +261,7 @@ function App() {
                     'NUMBER_INPUT',
                     'OTP_INPUT',
                     'DROPDOWN_INPUT',
+                    'DROPDOWN_INPUT_V2',
                     'MULTI_SELECT',
                     'SINGLE_SELECT',
                     'BREADCRUMB',

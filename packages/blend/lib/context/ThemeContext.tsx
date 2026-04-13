@@ -207,6 +207,10 @@ import {
     ResponsiveOTPInputV2Tokens,
     getOTPInputV2Tokens,
 } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import {
+    ResponsiveDropdownInputV2Tokens,
+    getDropdownInputV2Tokens,
+} from '../components/InputsV2/DropdownInputV2/DropdownInputV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -278,6 +282,7 @@ export type ComponentTokenType = {
     MULTI_VALUE_INPUT_V2?: ResponsiveMultiValueInputV2Tokens
     NUMBER_INPUT_V2?: ResponsiveNumberInputV2Tokens
     OTP_INPUTV2?: ResponsiveOTPInputV2Tokens
+    DROPDOWN_INPUT_V2?: ResponsiveDropdownInputV2Tokens
 }
 
 type ThemeContextType = {
@@ -366,6 +371,10 @@ const ThemeContext = createContext<ThemeContextType>({
         ),
         NUMBER_INPUT_V2: getNumberInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         OTP_INPUTV2: getOTPInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        DROPDOWN_INPUT_V2: getDropdownInputV2Tokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

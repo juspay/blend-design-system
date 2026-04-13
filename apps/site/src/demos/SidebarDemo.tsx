@@ -143,6 +143,7 @@ import MultiValueInputV2Demo from './MultiValueInputV2Demo'
 import NumberInputV2Demo from './NumberInputV2Demo'
 import OTPInputV2Demo from './OTPInputV2Demo'
 import TextAreaV2Demo from './TextAreaV2Demo'
+import DropdownInputV2Demo from './DropdownInputV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -241,7 +242,8 @@ const SidebarDemo = () => {
         | 'numberInputV2'
         | 'otpInputV2'
         | 'textAreaV2'
-    >('textAreaV2')
+        | 'dropdownInputV2'
+    >('dropdownInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -536,6 +538,8 @@ const SidebarDemo = () => {
                 return <DrawerV2Demo />
             case 'dropdownInput':
                 return <DropdownInputDemo />
+            case 'dropdownInputV2':
+                return <DropdownInputV2Demo />
             case 'dataRangePicker':
                 return <DateRangePickerDemo />
             case 'dataTable':
@@ -1006,6 +1010,16 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'dropdownInput',
                     onClick: () => setActiveComponent('dropdownInput'),
+                },
+                {
+                    label: 'Dropdown Input V2',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'dropdownInputV2',
+                    onClick: () => setActiveComponent('dropdownInputV2'),
                 },
                 {
                     label: 'Text Area',
