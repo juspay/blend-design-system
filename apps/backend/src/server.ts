@@ -80,6 +80,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/docs', swaggerUiHandler, swaggerUiSetup)
 app.use('/api/auth', authRoutes)
 app.use('/api/branches', branchRoutes)
+app.use('/api', tokenRoutes)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

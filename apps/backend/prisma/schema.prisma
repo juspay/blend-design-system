@@ -21,6 +21,7 @@ model User {
   lastLogin     DateTime? @map("last_login")
 
   refreshTokens   RefreshToken[]
+  tokenUploads    TokenUpload[]
 
   @@map("users")
 }
@@ -37,4 +38,27 @@ model RefreshToken {
   @@index([userId])
   @@index([tokenHash])
   @@map("refresh_tokens")
+}
+
+model TokenUpload {
+  id            String    @id @default(uuid()) @db.Uuid
+  branchId      String    @map("branch_id") @db.VarChar(255)
+  filePath      String    @map("file_path") @db.Text
+  fileName      String    @map("file_name") @db.VarChar(255)
+  fileSize      Int       @map("file_size")
+  description   String?   @db.Text
+  parsedConfig  Json?     @map("parsed_config") @db.JsonB
+  status        String    @default("pending") @db.VarChar(50)
+  uploadedBy    String    @map("uploaded_by") @db.Uuid
+  uploadedByName String   @map("uploaded_by_name") @db.VarChar(255)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [uploadedBy], references: [id], onDelete: SetNull)
+
+  @@index([branchId])
+  @@index([uploadedBy])
+  @@index([status])
+  @@index([createdAt])
+  @@map("token_uploads")
 }
