@@ -11,7 +11,6 @@ import {
     FOCUS_RING_STYLES,
     getInputState,
     getVerticalInputPadding,
-    setExternalRef,
     TRANSITION,
 } from './utils'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
@@ -26,6 +25,7 @@ import InputSlots from '../utils/InputSlots/InputSlots'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
+import { setExternalRef } from '../utils/utils'
 
 const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
     (

@@ -34,7 +34,7 @@ import {
     shouldEmitBlurChange,
 } from './utils'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
-import { setExternalRef } from '../TextInputV2/utils'
+import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import NumberInputV2Stepper from './NumberInputV2Stepper'
 
 const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
@@ -72,8 +72,8 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         const setInputRef = (node: HTMLInputElement | null): void => {
             setExternalRef(ref as AnyRef<HTMLInputElement>, node)
         }
-        const errorId = `${inputId}-error`
-        const hintId = `${inputId}-hint`
+
+        const { errorId, hintId } = generateAccessibilityIds(inputId)
 
         const [isFocused, setIsFocused] = useState(false)
         const [internalValue, setInternalValue] = useState('')
