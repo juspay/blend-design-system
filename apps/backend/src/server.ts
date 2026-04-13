@@ -8,6 +8,7 @@ import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
 import authRoutes from '@/domains/auth/entry-points/auth.routes.js'
 import branchRoutes from '@/domains/branches/entry-points/branch.routes.js'
+import tokenRoutes from '@/domains/tokens/entry-points/token.routes.js'
 
 const app = express()
 

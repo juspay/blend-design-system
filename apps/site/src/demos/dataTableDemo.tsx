@@ -9,6 +9,7 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    PivotAggregationType,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
@@ -3217,6 +3218,23 @@ const DataTableDemo = () => {
                 columnFreeze={columnFreeze}
                 enableInlineEdit
                 enableRowExpansion
+                enablePivotTable
+                pivotConfig={{
+                    title: 'User Pivot Analytics',
+                    description:
+                        'Build custom row/column/value pivots on top of this table dataset.',
+                    defaultRows: ['department'],
+                    defaultColumns: ['gateway'],
+                    defaultValues: [
+                        {
+                            field: 'id',
+                            aggregation: PivotAggregationType.COUNT,
+                            label: 'User Count',
+                        },
+                    ],
+                    showFilters: true,
+                    enableExport: true,
+                }}
                 enableRowSelection={enableRowSelection}
                 enableColumnManager={enableColumnManager}
                 columnManagerMaxSelections={9}
