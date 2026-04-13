@@ -20,7 +20,6 @@ export const getTextAreaV2DarkTokens = (
                         lg: foundationTokens.font.weight[500],
                     },
                     color: {
-                        // align with TextInputV2 dark: foreground on dark bg
                         default: foundationTokens.colors.gray[100],
                         hover: foundationTokens.colors.gray[100],
                         focus: foundationTokens.colors.gray[100],
@@ -76,12 +75,32 @@ export const getTextAreaV2DarkTokens = (
                 },
             },
             inputContainer: {
+                gap: foundationTokens.unit[8],
                 fontSize: foundationTokens.font.size.body.md.fontSize,
                 fontWeight: foundationTokens.font.weight[500],
                 padding: {
-                    x: foundationTokens.unit[14],
-                    y: foundationTokens.unit[10],
+                    top: {
+                        sm: foundationTokens.unit[10],
+                        md: foundationTokens.unit[10],
+                        lg: foundationTokens.unit[10],
+                    },
+                    right: {
+                        sm: foundationTokens.unit[14],
+                        md: foundationTokens.unit[14],
+                        lg: foundationTokens.unit[14],
+                    },
+                    bottom: {
+                        sm: foundationTokens.unit[10],
+                        md: foundationTokens.unit[10],
+                        lg: foundationTokens.unit[10],
+                    },
+                    left: {
+                        sm: foundationTokens.unit[14],
+                        md: foundationTokens.unit[14],
+                        lg: foundationTokens.unit[14],
+                    },
                 },
+
                 borderRadius: foundationTokens.unit[8],
                 boxShadow: foundationTokens.shadows.sm,
                 border: {
@@ -106,9 +125,29 @@ export const getTextAreaV2DarkTokens = (
                     disabled: foundationTokens.colors.gray[800],
                 },
                 placeholder: {
-                    color: foundationTokens.colors.gray[500],
+                    color: {
+                        default: foundationTokens.colors.gray[500],
+                        hover: foundationTokens.colors.gray[500],
+                        focus: foundationTokens.colors.gray[500],
+                        disabled: foundationTokens.colors.gray[600],
+                        error: foundationTokens.colors.red[400],
+                    },
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[14],
+                        md: foundationTokens.font.fontSize[14],
+                        lg: foundationTokens.font.fontSize[14],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[500],
+                        md: foundationTokens.font.weight[500],
+                        lg: foundationTokens.font.weight[500],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[20],
+                        md: foundationTokens.font.lineHeight[20],
+                        lg: foundationTokens.font.lineHeight[20],
+                    },
                     transition: 'opacity 150ms ease-out',
-                    fontWeight: foundationTokens.font.weight[500],
                 },
             },
             bottomContainer: {
@@ -226,11 +265,30 @@ export const getTextAreaV2DarkTokens = (
                 },
             },
             inputContainer: {
+                gap: foundationTokens.unit[8],
                 fontSize: foundationTokens.font.size.body.md.fontSize,
                 fontWeight: foundationTokens.font.weight[500],
                 padding: {
-                    x: foundationTokens.unit[14],
-                    y: foundationTokens.unit[10],
+                    top: {
+                        sm: foundationTokens.unit[10],
+                        md: foundationTokens.unit[10],
+                        lg: foundationTokens.unit[10],
+                    },
+                    right: {
+                        sm: foundationTokens.unit[14],
+                        md: foundationTokens.unit[14],
+                        lg: foundationTokens.unit[14],
+                    },
+                    bottom: {
+                        sm: foundationTokens.unit[10],
+                        md: foundationTokens.unit[10],
+                        lg: foundationTokens.unit[10],
+                    },
+                    left: {
+                        sm: foundationTokens.unit[14],
+                        md: foundationTokens.unit[14],
+                        lg: foundationTokens.unit[14],
+                    },
                 },
                 borderRadius: foundationTokens.unit[8],
                 boxShadow: foundationTokens.shadows.sm,
@@ -256,9 +314,29 @@ export const getTextAreaV2DarkTokens = (
                     disabled: foundationTokens.colors.gray[800],
                 },
                 placeholder: {
-                    color: foundationTokens.colors.gray[500],
+                    color: {
+                        default: foundationTokens.colors.gray[500],
+                        hover: foundationTokens.colors.gray[500],
+                        focus: foundationTokens.colors.gray[500],
+                        disabled: foundationTokens.colors.gray[600],
+                        error: foundationTokens.colors.red[400],
+                    },
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[14],
+                        md: foundationTokens.font.fontSize[14],
+                        lg: foundationTokens.font.fontSize[14],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[500],
+                        md: foundationTokens.font.weight[500],
+                        lg: foundationTokens.font.weight[500],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[20],
+                        md: foundationTokens.font.lineHeight[20],
+                        lg: foundationTokens.font.lineHeight[20],
+                    },
                     transition: 'opacity 150ms ease-out',
-                    fontWeight: foundationTokens.font.weight[500],
                 },
             },
             bottomContainer: {

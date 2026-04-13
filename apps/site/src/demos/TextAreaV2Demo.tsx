@@ -119,12 +119,10 @@ const TextAreaV2Demo = () => {
                                 rows={playgroundRows}
                                 resize={playgroundResize}
                                 disabled={isDisabled}
-                                error={hasError}
-                                errorMessage={
-                                    hasError
-                                        ? 'This field has an error'
-                                        : undefined
-                                }
+                                error={{
+                                    show: hasError,
+                                    message: 'This field has an error',
+                                }}
                                 hintText="This is a hint text"
                                 helpIconHintText="This is help text for the text area"
                                 required
@@ -372,8 +370,10 @@ const TextAreaV2Demo = () => {
                             value=""
                             onChange={() => {}}
                             placeholder="Error text area"
-                            error
-                            errorMessage="This field is required"
+                            error={{
+                                show: true,
+                                message: 'This field is required',
+                            }}
                         />
                     </div>
 
@@ -506,8 +506,11 @@ const TextAreaV2Demo = () => {
                             placeholder="Describe the bug in detail..."
                             rows={6}
                             required
-                            error
-                            errorMessage="Please provide a detailed description"
+                            error={{
+                                show: true,
+                                message:
+                                    'Please provide a detailed description',
+                            }}
                         />
                     </div>
 
@@ -520,7 +523,7 @@ const TextAreaV2Demo = () => {
                             placeholder="Paste your code here..."
                             rows={8}
                             resize="both"
-                            wrap="pre"
+                            wrap="soft"
                         />
                     </div>
 
@@ -579,8 +582,10 @@ const TextAreaV2Demo = () => {
                                     onChange={() => {}}
                                     placeholder={`${resize} error`}
                                     resize={resize}
-                                    error
-                                    errorMessage="Error message"
+                                    error={{
+                                        show: true,
+                                        message: 'Error message',
+                                    }}
                                 />
                                 <TextAreaV2
                                     label="Disabled"

@@ -10,12 +10,10 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
+import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
 import { InputSizeV2, InputStateV2, type AnyRef } from '../inputV2.types'
-import {
-    FOCUS_RING_STYLES,
-    setExternalRef,
-    TRANSITION,
-} from '../TextInputV2/utils'
+import { FOCUS_RING_STYLES, TRANSITION } from '../TextInputV2/utils'
+import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 
 const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
     (props, ref) => {
@@ -33,12 +31,12 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
             sublabel,
             hintText,
             helpIconHintText,
-            required,
-            error,
-            errorMessage,
+            required = false,
+            error = { show: false, message: '' },
             wrap,
             resize = 'none',
-            name,
+            name = 'text-area',
+            size = InputSizeV2.MD,
             id: providedId,
             ...rest
         } = props
@@ -56,41 +54,40 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
 
         const generatedId = useId()
         const textareaId = providedId || generatedId
-        const errorId = `${textareaId}-error`
-        const hintId = `${textareaId}-hint`
+        const { errorId, hintId } = generateAccessibilityIds(textareaId)
 
         const ariaDescribedBy = useMemo(
             () =>
                 [
-                    hintText && !error ? hintId : null,
-                    error && errorMessage ? errorId : null,
+                    hintText && !error.show ? hintId : null,
+                    error.show && error.message ? errorId : null,
                 ]
                     .filter(Boolean)
                     .join(' ') || undefined,
-            [hintText, error, errorMessage, hintId, errorId]
+            [hintText, error.show, error.message, hintId, errorId]
         )
 
         const labelState = useMemo((): InputStateV2 => {
             if (disabled) return InputStateV2.DISABLED
-            if (error) return InputStateV2.ERROR
+            if (error.show) return InputStateV2.ERROR
             if (isFocused) return InputStateV2.FOCUS
             return InputStateV2.DEFAULT
-        }, [disabled, error, isFocused])
+        }, [disabled, error.show, isFocused])
 
         const inputFocusedOrWithValue = isFocused || value.length > 0
 
-        const paddingX = toPixels(ic.padding.x)
-        const paddingY = toPixels(ic.padding.y)
+        const paddingX = toPixels(ic.padding.right[size])
+        const paddingY = toPixels(ic.padding.top[size])
 
         const setTextAreaRef = (node: HTMLTextAreaElement | null) => {
             setExternalRef(ref as AnyRef<HTMLTextAreaElement>, node)
         }
 
-        const borderDefault = error ? 'error' : 'default'
-        const borderHover = error ? 'error' : 'hover'
-        const borderFocus = error ? 'error' : 'focus'
-        const bgDefault = error ? 'error' : 'default'
-        const bgHover = error ? 'error' : 'hover'
+        const borderDefault = error.show ? 'error' : 'default'
+        const borderHover = error.show ? 'error' : 'hover'
+        const borderFocus = error.show ? 'error' : 'focus'
+        const bgDefault = error.show ? 'error' : 'default'
+        const bgHover = error.show ? 'error' : 'hover'
         const textColorKey = disabled ? 'disabled' : 'default'
 
         return (
@@ -101,7 +98,6 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                 flexDirection="column"
                 gap={textAreaTokens.gap}
                 width="100%"
-                position="relative"
             >
                 {!isSmallScreen && (
                     <InputLabelsV2
@@ -116,76 +112,101 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                         state={labelState}
                     />
                 )}
-                <PrimitiveTextarea
-                    {...filteredRest}
-                    ref={setTextAreaRef}
-                    id={textareaId}
-                    name={name}
-                    width="100%"
-                    autoFocus={autoFocus}
-                    value={value}
-                    placeholder={isSmallScreen ? '' : placeholder}
-                    onChange={onChange}
-                    onFocus={(e) => {
-                        setIsFocused(true)
-                        onFocus?.(e)
-                    }}
-                    onBlur={(e) => {
-                        setIsFocused(false)
-                        onBlur?.(e)
-                    }}
-                    onKeyDown={(e) => {
-                        restOnKeyDown?.(e)
-                    }}
-                    rows={rows}
-                    required={required}
-                    cols={cols}
-                    wrap={wrap}
-                    borderRadius={ic.borderRadius}
-                    resize={resize}
-                    paddingX={paddingX}
-                    paddingTop={
-                        isSmallScreen && inputFocusedOrWithValue
-                            ? paddingY + 14
-                            : paddingY
-                    }
-                    paddingBottom={
-                        isSmallScreen && inputFocusedOrWithValue ? 0 : paddingY
-                    }
-                    border={ic.border[borderDefault]}
-                    fontSize={ic.fontSize}
-                    fontWeight={ic.fontWeight}
-                    backgroundColor={ic.backgroundColor[bgDefault]}
-                    transition={TRANSITION}
-                    placeholderStyles={{
-                        transition: ic.placeholder.transition,
-                        color: ic.placeholder.color,
-                        fontWeight: ic.placeholder.fontWeight,
-                    }}
-                    _hover={{
-                        border: ic.border[borderHover],
-                        backgroundColor: ic.backgroundColor[bgHover],
-                    }}
-                    color={ic.color[textColorKey]}
-                    _focus={{
-                        border: ic.border[borderFocus],
-                        boxShadow: FOCUS_RING_STYLES.boxShadow,
-                        backgroundColor: FOCUS_RING_STYLES.backgroundColor,
-                    }}
-                    disabled={disabled}
-                    _disabled={{
-                        backgroundColor: ic.backgroundColor.disabled,
-                        border: ic.border.disabled,
-                        cursor: 'not-allowed',
-                    }}
-                    aria-required={required ? 'true' : undefined}
-                    aria-invalid={error ? 'true' : 'false'}
-                    aria-describedby={ariaDescribedBy}
-                />
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    position="relative"
+                >
+                    {label && isSmallScreen && (
+                        <FloatingLabelsV2
+                            label={label}
+                            required={required}
+                            name={name}
+                            inputId={textareaId}
+                            isInputFocusedOrWithValue={inputFocusedOrWithValue}
+                            topPadding={paddingX}
+                            leftPadding={paddingX}
+                            tokens={{
+                                placeholder: ic.placeholder,
+                                required: textAreaTokens.topContainer.required,
+                            }}
+                            size={size}
+                            state={labelState}
+                        />
+                    )}
+                    <PrimitiveTextarea
+                        {...filteredRest}
+                        ref={setTextAreaRef}
+                        id={textareaId}
+                        name={name}
+                        width="100%"
+                        autoFocus={autoFocus}
+                        value={value}
+                        placeholder={isSmallScreen ? '' : placeholder}
+                        onChange={onChange}
+                        onFocus={(e) => {
+                            setIsFocused(true)
+                            onFocus?.(e)
+                        }}
+                        onBlur={(e) => {
+                            setIsFocused(false)
+                            onBlur?.(e)
+                        }}
+                        onKeyDown={(e) => {
+                            restOnKeyDown?.(e)
+                        }}
+                        rows={rows}
+                        required={required}
+                        cols={cols}
+                        wrap={wrap}
+                        borderRadius={ic.borderRadius}
+                        resize={resize}
+                        paddingX={paddingX}
+                        paddingTop={
+                            isSmallScreen && inputFocusedOrWithValue
+                                ? paddingY + 14
+                                : paddingY
+                        }
+                        paddingBottom={
+                            isSmallScreen && inputFocusedOrWithValue
+                                ? 0
+                                : paddingY
+                        }
+                        border={ic.border[borderDefault]}
+                        fontSize={ic.fontSize}
+                        fontWeight={ic.fontWeight}
+                        backgroundColor={ic.backgroundColor[bgDefault]}
+                        transition={TRANSITION}
+                        placeholderStyles={{
+                            transition: ic.placeholder.transition,
+                            color: ic.placeholder.color[labelState],
+                            fontWeight: ic.placeholder.fontWeight[size],
+                        }}
+                        _hover={{
+                            border: ic.border[borderHover],
+                            backgroundColor: ic.backgroundColor[bgHover],
+                        }}
+                        color={ic.color[textColorKey]}
+                        _focus={{
+                            border: ic.border[borderFocus],
+                            boxShadow: FOCUS_RING_STYLES.boxShadow,
+                            backgroundColor: FOCUS_RING_STYLES.backgroundColor,
+                        }}
+                        disabled={disabled}
+                        _disabled={{
+                            backgroundColor: ic.backgroundColor.disabled,
+                            border: ic.border.disabled,
+                            cursor: 'not-allowed',
+                        }}
+                        aria-required={required ? 'true' : undefined}
+                        aria-invalid={error.show ? 'true' : 'false'}
+                        aria-describedby={ariaDescribedBy}
+                    />
+                </Block>
                 <InputFooterV2
                     tokens={textAreaTokens.bottomContainer}
-                    error={error}
-                    errorMessage={errorMessage}
+                    error={error.show || false}
+                    errorMessage={error.message}
                     hintText={hintText}
                     errorId={errorId}
                     hintId={hintId}

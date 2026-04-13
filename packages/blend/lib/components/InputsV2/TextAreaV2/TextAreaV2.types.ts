@@ -1,6 +1,8 @@
 import type { CSSObject } from 'styled-components'
+import { InputSizeV2 } from '../inputV2.types'
 
 export type TextAreaV2Props = {
+    size?: InputSizeV2
     value: string
     placeholder: string
     disabled?: boolean
@@ -16,8 +18,10 @@ export type TextAreaV2Props = {
     helpIconHintText?: string
     helpIconText?: string
     required?: boolean
-    error?: boolean
-    errorMessage?: string
+    error?: {
+        show: boolean
+        message?: string
+    }
     resize?: 'none' | 'both' | 'horizontal' | 'vertical' | 'block' | 'inline'
     wrap?: CSSObject['whiteSpace']
 } & Omit<

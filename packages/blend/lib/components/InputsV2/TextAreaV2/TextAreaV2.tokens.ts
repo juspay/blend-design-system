@@ -1,7 +1,7 @@
 import type { CSSObject } from 'styled-components'
 import { BreakpointType } from '../../../breakpoints/breakPoints'
 import { InputFooterV2Tokens, InputLabelsV2Tokens } from '../inputV2.tokens'
-import { InputStateV2 } from '../inputV2.types'
+import { InputStateV2, InputSizeV2 } from '../inputV2.types'
 import { FoundationTokenType } from '../../../tokens/theme.token'
 import { Theme } from '../../../context/theme.enum'
 import { getTextAreaV2DarkTokens } from './TextAreaV2.dark.tokens'
@@ -11,11 +11,37 @@ export type TextAreaTokensType = {
     gap: CSSObject['gap']
     topContainer: InputLabelsV2Tokens
     inputContainer: {
+        gap: CSSObject['gap']
+        placeholder: {
+            transition: CSSObject['transition']
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+        }
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
         padding: {
-            x: CSSObject['padding']
-            y: CSSObject['padding']
+            top: {
+                [key in InputSizeV2]: CSSObject['padding']
+            }
+            right: {
+                [key in InputSizeV2]: CSSObject['padding']
+            }
+            bottom: {
+                [key in InputSizeV2]: CSSObject['padding']
+            }
+            left: {
+                [key in InputSizeV2]: CSSObject['padding']
+            }
         }
         borderRadius: CSSObject['borderRadius']
         boxShadow: CSSObject['boxShadow']
@@ -27,11 +53,6 @@ export type TextAreaTokensType = {
         }
         backgroundColor: {
             [key in InputStateV2]: CSSObject['backgroundColor']
-        }
-        placeholder: {
-            color: CSSObject['color']
-            transition: CSSObject['transition']
-            fontWeight: CSSObject['fontWeight']
         }
     }
     bottomContainer: InputFooterV2Tokens
