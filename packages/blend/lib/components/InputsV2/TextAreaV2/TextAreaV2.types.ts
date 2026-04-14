@@ -1,4 +1,3 @@
-import type { CSSObject } from 'styled-components'
 import { InputSizeV2 } from '../inputV2.types'
 
 export type TextAreaV2Props = {

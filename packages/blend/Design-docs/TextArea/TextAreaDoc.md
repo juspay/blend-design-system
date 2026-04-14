@@ -5,12 +5,13 @@
 Create a scalable multiline text field that supports:
 
 - **Controlled value**: Single source of truth via `value` and `onChange`
-- **Labels**: Optional primary label, optional `sublabel`; on **small** viewports, optional **`FloatingLabelsV2`** when `label` is set (same row as the field, token-driven)
+- **Labels**: Optional primary label, optional `sublabel`; on **small** viewports, optional **`FloatingLabelsV2`** when `label` is set (floated over the field, token-driven)
 - **States**: Default, hover, focus, error, disabled — borders and backgrounds from `inputContainer` tokens
 - **Validation**: `error: { show, message? }` like **`TextInputV2`**; required asterisk via labels / floating label
 - **Help**: Hint text below the field (`InputFooterV2`); optional help on the label row (`helpIconHintText` → `InputLabelsV2`)
 - **Layout**: `rows` / `cols`, CSS **`resize`**, HTML **`wrap`** (`soft` / `hard`) via inherited attributes
-- **Responsive layout**: On **`breakPointLabel === 'sm'`**, static **`InputLabelsV2`** is hidden; if `label` is set, **`FloatingLabelsV2`** is shown; placeholder is cleared on small screens; vertical padding increases top / clears bottom when the field is focused or has text (room for the floating label)
+- **Responsive layout**: **`useBreakpoints(BREAKPOINTS)`**; when **`breakPointLabel === 'sm'`**, static **`InputLabelsV2`** is hidden; if `label` is set, **`FloatingLabelsV2`** is shown; placeholder is cleared on small screens; vertical padding increases top / clears bottom when the field is focused or has text (room for the floating label)
+- **Events**: **`onFocus`**, **`onBlur`**, and **`onKeyDown`** (consumer handler from **`rest`**) each call **`event.stopPropagation()`** first, then run internal focus tracking (where applicable) and the consumer callback — focus, blur, and key events do not bubble to ancestors
 - **Accessibility**: Stable ids from **`generateAccessibilityIds(textareaId)`** (`textareaId` = `id` prop or **`useId()`**); `aria-required`, `aria-invalid`, `aria-describedby` for hint/error; focus ring shared with **`TextInputV2`** (`FOCUS_RING_STYLES`, `TRANSITION`)
 - **Ref forwarding**: Consumer `ref` to **`HTMLTextAreaElement`** via **`setExternalRef`**
 - **Theme**: Light/dark responsive tokens via **`useResponsiveTokens('TEXT_AREA_V2')`**
@@ -34,6 +35,7 @@ Create a scalable multiline text field that supports:
 - **Small breakpoint + `label`**: **`FloatingLabelsV2`** absolutely positioned; **`PrimitiveTextarea`** gets extra top padding when focused or non-empty
 - **Field**: **`PrimitiveTextarea`** — border, background, placeholder styles, **`FOCUS_RING_STYLES`** on focus
 - **Bottom**: **`InputFooterV2`** — hint and/or error; ids align with **`aria-describedby`**
+- **Root**: Outer **`Block`** sets **`data-textarea={label || 'textarea'}`** and **`data-status`** to **`disabled`** or **`enabled`**
 
 ## Props & Types
 
@@ -69,10 +71,12 @@ export type TextAreaV2Props = {
 ```
 
 - **`error`**: Same shape as **`TextInputV2`** — **`show`** gates validation UI; **`message`** feeds the footer and **`aria-describedby`** when present
+- **Implementation defaults** (not all appear in **`TextAreaV2.types.ts`**): **`name`** defaults to **`'text-area'`**; **`rows`** defaults to **`3`**; **`resize`** defaults to **`'none'`**; **`error`** defaults to **`{ show: false, message: '' }`**; **`required`** defaults to **`false`**
 - **`placeholder`**: Required in the type; on **`sm`** the component passes an empty string so the floating label is not duplicated by placeholder text
 - **`wrap`**: Comes from inherited **`TextareaHTMLAttributes`** — use HTML values **`soft`** / **`hard`** for form behavior (not CSS `white-space`; use styling elsewhere if you need `pre` / `pre-wrap`)
 - **Omit `style` | `className`**: **`filterBlockedProps`** strips these from spreadable rest
-- **`onFocus` / `onBlur`**: Omitted from attributes because the component wraps them to track focus for **`labelState`**, then forwards to consumer handlers
+- **`onFocus` / `onBlur`**: Omitted from attributes because the component wraps them to track focus for **`labelState`**, call **`stopPropagation`**, then forwards to consumer handlers
+- **`aria-required`**: Set to **`'true'`** when **`required`**; omitted when false (not **`'false'`**)
 
 Native attributes such as `name`, `id`, `autoComplete`, `maxLength`, and `readOnly` remain available on the spread.
 
@@ -161,23 +165,29 @@ Theme selection: **`getTextAreaV2Tokens`** in **`TextAreaV2.tokens.ts`** (light/
 
 ### 8. `onKeyDown` composition
 
-**Decision**: Destructure **`onKeyDown`** from **`rest`**, **`filterBlockedProps`** on the remainder, invoke consumer **`onKeyDown`** from the textarea handler.
+**Decision**: Destructure **`onKeyDown`** from **`rest`**, **`filterBlockedProps`** on the remainder, invoke consumer **`onKeyDown`** from the textarea **`onKeyDown`** handler (after **`stopPropagation`** — see below).
 
 **Rationale**: Keeps blocked-prop filtering while allowing key handlers.
 
-### 9. Error overrides hover and focus surfaces
+### 9. `stopPropagation` on focus, blur, and keydown
+
+**Decision**: **`onFocus`**, **`onBlur`**, and **`onKeyDown`** on **`PrimitiveTextarea`** call **`e.stopPropagation()`** before updating internal focus state or invoking **`onFocus`** / **`onBlur`** / **`restOnKeyDown`**.
+
+**Rationale**: Prevents focus and keyboard interaction from bubbling to parent interactive regions (e.g. dismissible overlays, accordion headers) while still running consumer handlers on the textarea.
+
+### 10. Error overrides hover and focus surfaces
 
 **Decision**: When **`error.show`**, border and background token keys stay on **error** for default, hover, and focus.
 
 **Rationale**: Validation state remains visible until cleared.
 
-### 10. Shared focus ring and transition
+### 11. Shared focus ring and transition
 
 **Decision**: **`FOCUS_RING_STYLES`** (box shadow + focus background tint) and **`TRANSITION`** from **`TextInputV2/utils`**.
 
 **Rationale**: Visual parity with single-line inputs.
 
-### 11. Blocking `className` and `style`
+### 12. Blocking `className` and `style`
 
 **Decision**: Spread only **`filterBlockedProps(restWithoutKeyDown)`** onto **`PrimitiveTextarea`**.
 
@@ -185,8 +195,8 @@ Theme selection: **`getTextAreaV2Tokens`** in **`TextAreaV2.tokens.ts`** (light/
 
 ## Testing
 
-- **Unit tests**: `packages/blend/__tests__/components/TextAreaV2/TextAreaV2.test.tsx`
-- **Accessibility**: `packages/blend/__tests__/components/TextAreaV2/TextAreaV2.accessibility.test.tsx`
+- **Unit tests**: `packages/blend/__tests__/components/TextAreaV2/TextAreaV2.test.tsx` — mocks **`useBreakpoints`** for stable **`lg`** / **`sm`** coverage (placeholder, floating label, **`aria-describedby`**, **`keydown`** bubbling)
+- **Accessibility**: `packages/blend/__tests__/components/TextAreaV2/TextAreaV2.accessibility.test.tsx` — same breakpoint mocking; axe-core, label association, and small-screen cases
 
 ## Related
 

@@ -1,11 +1,23 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import { TextAreaV2 } from '../../../lib/components/InputsV2/TextAreaV2'
+import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 
 const noop = () => {}
 
 describe('TextAreaV2', () => {
+    beforeEach(() => {
+        vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+            innerWidth: 1280,
+            breakPointLabel: 'lg',
+        } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+    })
+
+    afterEach(() => {
+        vi.restoreAllMocks()
+    })
+
     describe('Rendering', () => {
         it('renders with label and textarea', () => {
             render(
@@ -208,6 +220,23 @@ describe('TextAreaV2', () => {
             })
             expect(onBlur).toHaveBeenCalledTimes(1)
         })
+
+        it('stops keydown from bubbling to parent', async () => {
+            const parentKeyDown = vi.fn()
+            const { user } = render(
+                <div onKeyDown={parentKeyDown}>
+                    <TextAreaV2
+                        label="E"
+                        placeholder="…"
+                        value=""
+                        onChange={noop}
+                    />
+                </div>
+            )
+            await user.click(screen.getByRole('textbox'))
+            await user.keyboard('x')
+            expect(parentKeyDown).not.toHaveBeenCalled()
+        })
     })
 
     describe('Ref forwarding', () => {
@@ -266,6 +295,85 @@ describe('TextAreaV2', () => {
             expect(
                 document.querySelector('[data-textarea="Tagged"]')
             ).toBeInTheDocument()
+        })
+
+        it('sets aria-describedby to hint id when hintText is present', () => {
+            render(
+                <TextAreaV2
+                    id="ta-hint"
+                    label="L"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    hintText="Help text"
+                />
+            )
+            expect(screen.getByRole('textbox')).toHaveAttribute(
+                'aria-describedby',
+                'ta-hint-hint'
+            )
+        })
+
+        it('sets aria-describedby to error id when error is shown with message', () => {
+            render(
+                <TextAreaV2
+                    id="ta-err"
+                    label="L"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    error={{ show: true, message: 'Bad' }}
+                />
+            )
+            expect(screen.getByRole('textbox')).toHaveAttribute(
+                'aria-describedby',
+                'ta-err-error'
+            )
+        })
+
+        it('omits error id from aria-describedby when error has no message', () => {
+            render(
+                <TextAreaV2
+                    id="ta-empty-err"
+                    label="L"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    error={{ show: true, message: '' }}
+                />
+            )
+            expect(screen.getByRole('textbox')).not.toHaveAttribute(
+                'aria-describedby'
+            )
+        })
+    })
+
+    describe('Small screen (sm breakpoint)', () => {
+        beforeEach(() => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                innerWidth: 375,
+                breakPointLabel: 'sm',
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+        })
+
+        it('uses empty native placeholder and hides top InputLabels (sublabel)', () => {
+            render(
+                <TextAreaV2
+                    label="Mobile label"
+                    sublabel="Desktop sublabel only"
+                    placeholder="Type here"
+                    value=""
+                    onChange={noop}
+                />
+            )
+            expect(screen.getByRole('textbox')).toHaveAttribute(
+                'placeholder',
+                ''
+            )
+            expect(
+                screen.queryByText('Desktop sublabel only')
+            ).not.toBeInTheDocument()
+            expect(screen.getByText('Mobile label')).toBeInTheDocument()
         })
     })
 

@@ -1,12 +1,24 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { TextAreaV2 } from '../../../lib/components/InputsV2/TextAreaV2'
+import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 
 const noop = () => {}
 
 describe('TextAreaV2 Accessibility', () => {
+    beforeEach(() => {
+        vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+            innerWidth: 1280,
+            breakPointLabel: 'lg',
+        } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+    })
+
+    afterEach(() => {
+        vi.restoreAllMocks()
+    })
+
     describe('WCAG 2.1/2.2 Compliance (Level A, AA) — axe-core', () => {
         it('meets WCAG standards for default textarea (axe-core validation)', async () => {
             const { container } = render(
@@ -310,6 +322,77 @@ describe('TextAreaV2 Accessibility', () => {
             const msg = screen.getByText('Problem')
             expect(msg).toHaveAttribute('role', 'alert')
             expect(msg).toHaveAttribute('aria-live', 'polite')
+        })
+
+        it('uses stable error id in aria-describedby when id prop is set', () => {
+            render(
+                <TextAreaV2
+                    id="a11y-field"
+                    label="L"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    error={{ show: true, message: 'Bad' }}
+                />
+            )
+            const ta = screen.getByRole('textbox')
+            expect(ta).toHaveAttribute('aria-describedby', 'a11y-field-error')
+            expect(screen.getByText('Bad')).toHaveAttribute(
+                'id',
+                'a11y-field-error'
+            )
+        })
+    })
+
+    describe('Small screen (sm breakpoint, floating label)', () => {
+        beforeEach(() => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                innerWidth: 375,
+                breakPointLabel: 'sm',
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+        })
+
+        it('associates floating label with textarea for accessible name', () => {
+            render(
+                <TextAreaV2
+                    label="About you"
+                    placeholder="ignored on sm"
+                    value=""
+                    onChange={noop}
+                />
+            )
+            expect(
+                screen.getByRole('textbox', { name: /about you/i })
+            ).toBeInTheDocument()
+        })
+
+        it('does not expose desktop sublabel text (top labels omitted)', () => {
+            render(
+                <TextAreaV2
+                    label="Bio"
+                    sublabel="Only on large screens"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                />
+            )
+            expect(
+                screen.queryByText(/Only on large screens/)
+            ).not.toBeInTheDocument()
+        })
+
+        it('meets WCAG standards with axe on sm layout', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Mobile field"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    hintText="Hint for screen readers"
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
