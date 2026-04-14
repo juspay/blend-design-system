@@ -9,6 +9,7 @@ import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
 import authRoutes from '@/domains/auth/entry-points/auth.routes.js'
 import branchRoutes from '@/domains/branches/entry-points/branch.routes.js'
 import tokenRoutes from '@/domains/tokens/entry-points/token.routes.js'
+import { googleCallback } from '@/domains/auth/entry-points/auth.controller.js'
 
 const app = express()
 
@@ -79,6 +80,10 @@ app.get('/api/health', (_req, res) => {
 })
 
 app.use('/docs', swaggerUiHandler, swaggerUiSetup)
+
+// Mount Google callback at root level (required by Google OAuth)
+app.get('/auth/google/callback', googleCallback)
+
 app.use('/api/auth', authRoutes)
 app.use('/api/branches', branchRoutes)
 app.use('/api', tokenRoutes)

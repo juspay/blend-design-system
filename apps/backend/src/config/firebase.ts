@@ -22,8 +22,9 @@ export const initFirestore = (): Firestore => {
             'blend-backend'
         )
 
-        db = getFirestore(app)
-        logger.info('Firestore initialized successfully')
+        const databaseId = env.FIRESTORE_DATABASE_ID || '(default)'
+        db = getFirestore(app, databaseId)
+        logger.info({ databaseId }, 'Firestore initialized successfully')
         return db
     } catch (error) {
         logger.error({ error }, 'Failed to initialize Firestore')

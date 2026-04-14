@@ -95,22 +95,26 @@ export function ColorPaletteGenerator({
     // ------------------------------------------------------------------
 
     const regenerateFromBase = useCallback(
-        (hex: string) => {
+        (
+            hex: string,
+            currentOverrides: Set<ShadeKey>,
+            currentValues: Record<string, string>
+        ) => {
             const n = normaliseHex(hex)
             if (!n) return
             const generated = generateColorScale(n) as Record<string, string>
             // Preserve manually-overridden shades
             const merged: Record<string, string> = {}
             for (const key of SHADE_KEYS) {
-                if (overriddenShades.has(key) && value[key]) {
-                    merged[key] = value[key]
+                if (currentOverrides.has(key) && currentValues[key]) {
+                    merged[key] = currentValues[key]
                 } else {
                     merged[key] = generated[key] ?? n
                 }
             }
             onChange(merged)
         },
-        [onChange, overriddenShades, value]
+        [onChange]
     )
 
     // ------------------------------------------------------------------
@@ -120,7 +124,10 @@ export function ColorPaletteGenerator({
     const handleBaseColorChange = (hex: string) => {
         setBaseHexInput(hex)
         const n = normaliseHex(hex)
-        if (n) regenerateFromBase(n)
+        if (n) {
+            // Use latest state values to avoid stale closure
+            regenerateFromBase(n, overriddenShades, value)
+        }
     }
 
     const handleShadeChange = (shade: ShadeKey, hex: string) => {
@@ -132,7 +139,8 @@ export function ColorPaletteGenerator({
 
     const handleResetAll = () => {
         setOverriddenShades(new Set())
-        const base = normaliseHex(baseHexInput)
+        // Use value from props (latest) instead of baseHexInput state
+        const base = normaliseHex(value[baseShade] || baseHexInput)
         if (base) {
             const generated = generateColorScale(base) as Record<string, string>
             onChange(generated)
@@ -145,7 +153,8 @@ export function ColorPaletteGenerator({
             next.delete(shade)
             return next
         })
-        const base = normaliseHex(baseHexInput)
+        // Use value from props (latest) instead of baseHexInput state
+        const base = normaliseHex(value[baseShade] || baseHexInput)
         if (base) {
             const generated = generateColorScale(base) as Record<string, string>
             onChange({ ...value, [shade]: generated[shade] ?? base })

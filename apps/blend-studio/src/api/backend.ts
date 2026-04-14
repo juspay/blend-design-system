@@ -18,7 +18,8 @@ async function fetchWithAuth(
     token: string
 ): Promise<Response> {
     const flags = featureFlags.get()
-    const baseUrl = flags.apiBaseUrl || 'http://localhost:3001'
+    // Use relative URL to go through Vite proxy in dev
+    const baseUrl = flags.apiBaseUrl || ''
 
     const url = `${baseUrl}${endpoint}`
 

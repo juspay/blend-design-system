@@ -29,7 +29,14 @@ export const createBranch = async (
 export const getBranchById = async (
     branchId: string
 ): Promise<Branch | null> => {
-    const doc = await firestoreCollections.branch(branchId).get()
+    logger.debug({ branchId }, 'Getting branch by ID')
+
+    const docRef = firestoreCollections.branch(branchId)
+    logger.debug({ path: docRef.path }, 'Document reference path')
+
+    const doc = await docRef.get()
+
+    logger.debug({ exists: doc.exists, branchId }, 'Branch lookup result')
 
     if (!doc.exists) return null
 

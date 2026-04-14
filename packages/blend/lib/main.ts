@@ -43,18 +43,52 @@ export * from './components/ChatInput'
 export * from './components/CodeBlock'
 export * from './components/CodeEditor'
 
-export * from './components/ButtonGroup'
-export * from './components/Button'
-
 export * from './context'
 export * from './tokens'
 
-//V2 Components
-
-export * from './components/ChartsV2'
-export * from './components/Timeline'
-export * from './components/AlertV2'
-export * from './components/PopoverV2'
+//V2 Components - Namespaced to avoid conflicts with V1
+export {
+    ButtonV2,
+    ButtonV2Type,
+    ButtonV2Size,
+    ButtonV2SubType,
+    ButtonV2State,
+} from './components/ButtonV2'
+export {
+    AlertV2,
+    AlertV2Type,
+    AlertV2SubType,
+    AlertV2ActionPosition,
+} from './components/AlertV2'
+export { TagV2, TagV2Color, TagV2Size, TagV2Type } from './components/TagV2'
+export {
+    CheckboxV2,
+    type CheckboxV2Props,
+} from './components/SelectorV2/CheckboxV2'
+export { RadioV2, type RadioV2Props } from './components/SelectorV2/RadioV2'
+export { SwitchV2, type SwitchV2Props } from './components/SelectorV2/SwitchV2'
+export { BreadcrumbV2 } from './components/BreadcrumbV2'
+export {
+    AvatarV2,
+    AvatarV2Size,
+    type AvatarV2Props,
+} from './components/AvatarV2'
+export { TooltipV2, type TooltipV2Props } from './components/TooltipV2'
+export {
+    ProgressBarV2,
+    type ProgressBarV2Props,
+} from './components/ProgressBarV2'
+export {
+    StatCardV2,
+    StatCardV2ChangeType,
+    StatCardV2ArrowDirection,
+    type StatCardV2Props,
+} from './components/StatCardV2'
+export { AccordionV2, AccordionV2Item } from './components/AccordionV2'
+export {
+    TextInputV2,
+    type TextInputV2Props,
+} from './components/InputsV2/TextInputV2'
 
 // ---------------------------------------------------------------------------
 // Token Factory Exports (for Token Studio engine)

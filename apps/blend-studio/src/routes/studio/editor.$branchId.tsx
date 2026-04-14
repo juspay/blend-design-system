@@ -210,7 +210,7 @@ function EditorPage() {
         if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current)
         autoSaveTimer.current = setTimeout(async () => {
             await createSnapshot(brand, 'Auto-save', true)
-        }, 30_000)
+        }, 1_000)
         return () => {
             if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current)
         }

@@ -120,6 +120,7 @@ export function useBranchesWithMock(options?: BranchListOptions) {
 // ---------------------------------------------------------------------------
 export function useBranchWithMock(branchId: string | null) {
     const [user] = useAuthState(auth)
+    const { token: backendToken } = useBackendAuth()
     const [branch, setBranch] = useState<Branch | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -146,7 +147,7 @@ export function useBranchWithMock(branchId: string | null) {
             return
         }
 
-        if (!user) {
+        if (!backendToken) {
             setBranch(null)
             setLoading(false)
             return
@@ -155,16 +156,16 @@ export function useBranchWithMock(branchId: string | null) {
         setLoading(true)
         setError(null)
         try {
-            const idToken = await user.getIdToken()
-            const { getBranchFirestore } = await import('@/api/firestore')
-            const data = await getBranchFirestore(idToken, branchId)
+            // Use backend API instead of direct Firestore to respect database selection
+            const { getBranchBackend } = await import('@/api/backend')
+            const data = await getBranchBackend(backendToken, branchId)
             setBranch(data)
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Unknown error')
         } finally {
             setLoading(false)
         }
-    }, [user, branchId])
+    }, [backendToken, branchId])
 
     useEffect(() => {
         fetchBranch()

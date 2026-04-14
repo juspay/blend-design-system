@@ -46,3 +46,6 @@ next-env.d.ts
 
 # build cache
 .build-cache
+
+# Generated route tree
+routeTree.gen.ts
