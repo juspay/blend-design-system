@@ -1,46 +1,55 @@
-import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
+import {
+    CSSProperties,
+    forwardRef,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react'
+import { Check, Trash2 } from 'lucide-react'
 import Modal from '../../Modal/Modal'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import Button from '../../Button/Button'
 import { ButtonSize, ButtonType } from '../../Button/types'
 import SingleSelect from '../../SingleSelect/SingleSelect'
-import {
-    SelectMenuAlignment,
-    SelectMenuSize,
-    SelectMenuVariant,
-} from '../../SingleSelect/types'
-import MultiValueInput from '../../Inputs/MultiValueInput/MultiValueInput'
-import { TextInputSize } from '../../Inputs/TextInput/types'
+import { SelectMenuSize, SelectMenuVariant } from '../../SingleSelect/types'
 import Menu from '../../Menu/Menu'
-import { MenuAlignment, MenuGroupType } from '../../Menu/types'
-import DataTable from '../DataTable'
+import { MenuAlignment, MenuSide } from '../../Menu/types'
 import { ColumnDefinition, ColumnType, PivotAggregationType } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
 import { downloadCSV } from '../utils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { PivotTableModalProps } from './types'
-import { getPivotFieldOptions, normalizePivotValue } from './utils'
+import {
+    applyPivotFilters,
+    buildPivotPreview,
+    getPivotFieldOptions,
+    getSupportedAggregationsForField,
+} from './utils'
+import { FieldChip, NoScrollbar } from './pivotModal.styled'
+import { getPivotModalStyleTokens } from './pivotModalStyleTokens'
+import PivotPreviewPanel from './PivotPreviewPanel'
 
-const NoScrollbar = styled(Block)`
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar {
-        display: none;
-    }
-`
-
-const PivotTableModal = forwardRef(
-    <T extends Record<string, unknown>>(
+/**
+ * Pivot Table Modal Component
+ *
+ * Provides a Google Sheets-like interface for configuring pivot tables
+ * with four main areas: Rows, Columns, Values, and Filters
+ */
+const PivotTableModal = forwardRef<
+    HTMLDivElement,
+    PivotTableModalProps<Record<string, unknown>>
+>(
+    (
         {
             isOpen,
             onClose,
-            data,
             columns,
+            data,
             title = 'Pivot Table',
-            description = 'Build pivot view from base table fields.',
+            description: subtitle,
             showFilters = false,
             showExport = true,
             initialConfig,
@@ -48,192 +57,1015 @@ const PivotTableModal = forwardRef(
             previewRows,
             onConfigChange,
             onExport,
-        }: PivotTableModalProps<T>,
-        ref: React.Ref<HTMLDivElement>
+            availableAggregations,
+        }: PivotTableModalProps<Record<string, unknown>>,
+        ref
     ) => {
-        const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
-        const [rowFields, setRowFields] = useState<Array<keyof T>>(
-            initialConfig?.rows || []
+        const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+        const pivot = useMemo(
+            () => getPivotModalStyleTokens(FOUNDATION_THEME, tableToken),
+            [tableToken]
         )
-        const [columnFields, setColumnFields] = useState<Array<keyof T>>(
-            initialConfig?.columns || []
+        const removeButtonStyle = useMemo(
+            (): CSSProperties => ({
+                minWidth: pivot.removeButton.minWidth,
+                padding: pivot.removeButton.padding,
+                borderRadius: pivot.removeButton.borderRadius,
+                border: pivot.removeButton.border,
+                background: pivot.removeButton.background,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: pivot.chip.transition,
+            }),
+            [pivot]
         )
-        const [valueConfigs, setValueConfigs] = useState(
-            initialConfig?.values || []
-        )
-        const [filterConfigs, setFilterConfigs] = useState(
-            initialConfig?.filters || []
-        )
-        const [selectedRowField, setSelectedRowField] = useState<string>('')
-        const [selectedColumnField, setSelectedColumnField] =
-            useState<string>('')
-        const [selectedValueField, setSelectedValueField] = useState<string>('')
-        const [selectedValueAgg, setSelectedValueAgg] = useState<string>(
-            PivotAggregationType.SUM
-        )
-        const [selectedFilterField, setSelectedFilterField] =
-            useState<string>('')
-        const [filterInputValue, setFilterInputValue] = useState<string>('')
 
+        // State for pivot configuration
+        const [rowFields, setRowFields] = useState<
+            Array<keyof Record<string, unknown>>
+        >(
+            () =>
+                (initialConfig?.rows as Array<keyof Record<string, unknown>>) ||
+                []
+        )
+        const [columnFields, setColumnFields] = useState<
+            Array<keyof Record<string, unknown>>
+        >(
+            () =>
+                (initialConfig?.columns as Array<
+                    keyof Record<string, unknown>
+                >) || []
+        )
+        const [valueConfigs, setValueConfigs] = useState<
+            Array<{
+                field: keyof Record<string, unknown>
+                aggregation: PivotAggregationType
+            }>
+        >(
+            () =>
+                (initialConfig?.values as Array<{
+                    field: keyof Record<string, unknown>
+                    aggregation: PivotAggregationType
+                }>) || []
+        )
+        const [filterConfigs, setFilterConfigs] = useState<
+            Array<{
+                field: keyof Record<string, unknown>
+                selectedValues: string[]
+            }>
+        >(
+            () =>
+                (initialConfig?.filters as Array<{
+                    field: keyof Record<string, unknown>
+                    selectedValues: string[]
+                }>) || []
+        )
+
+        // State for value field selection
+        const [selectedValueField, setSelectedValueField] =
+            useState<keyof Record<string, unknown>>('')
+        const [selectedValueAgg, setSelectedValueAgg] =
+            useState<PivotAggregationType>(PivotAggregationType.SUM)
+
+        // Compute field options from columns
         const fieldOptions = useMemo(
             () => getPivotFieldOptions(columns),
             [columns]
         )
-        const fieldSelectItems = useMemo(
-            () => [
-                {
-                    items: fieldOptions.map((item) => ({
-                        label: item.label,
-                        value: item.key,
-                    })),
-                },
-            ],
-            [fieldOptions]
+        const columnTypeByField = useMemo(
+            () =>
+                new Map(
+                    columns.map((column) => [String(column.field), column.type])
+                ),
+            [columns]
         )
-        const aggregationItems = useMemo(
+        const allowedAggregations = useMemo(
+            () => availableAggregations || Object.values(PivotAggregationType),
+            [availableAggregations]
+        )
+        const supportedAggregationsByField = useMemo(() => {
+            const map = new Map<string, PivotAggregationType[]>()
+            fieldOptions.forEach((option) => {
+                const supported = getSupportedAggregationsForField(
+                    data,
+                    option.key as keyof Record<string, unknown>,
+                    allowedAggregations,
+                    columnTypeByField.get(option.key) === ColumnType.NUMBER
+                )
+                map.set(option.key, supported)
+            })
+            return map
+        }, [fieldOptions, data, allowedAggregations, columnTypeByField])
+        const selectedValueAggregationOptions = useMemo(() => {
+            const fieldKey = String(selectedValueField || '')
+            return supportedAggregationsByField.get(fieldKey) || []
+        }, [selectedValueField, supportedAggregationsByField])
+        const selectedValueAggregationItems = useMemo(
             () => [
                 {
-                    items: Object.values(PivotAggregationType).map((item) => ({
+                    items: selectedValueAggregationOptions.map((item) => ({
                         label: item.toUpperCase(),
                         value: item,
                     })),
                 },
             ],
-            []
+            [selectedValueAggregationOptions]
         )
+        const selectedValueMessage = useMemo(() => {
+            if (!selectedValueField) {
+                return 'Choose a value field to see supported operations.'
+            }
+            if (!selectedValueAggregationOptions.length) {
+                return 'This field does not support pivot aggregations for the current dataset.'
+            }
+            if (
+                selectedValueAggregationOptions.length === 1 &&
+                selectedValueAggregationOptions[0] ===
+                    PivotAggregationType.COUNT
+            ) {
+                return 'Only COUNT is available because this field has no numeric values.'
+            }
+            return null
+        }, [selectedValueField, selectedValueAggregationOptions])
 
-        const pivotConfigState = useMemo(
-            () => ({
-                rows: rowFields,
-                columns: columnFields,
-                values: valueConfigs,
-                filters: filterConfigs,
-            }),
-            [rowFields, columnFields, valueConfigs, filterConfigs]
-        )
-        const configSignature = useMemo(
-            () =>
-                JSON.stringify({
-                    rows: rowFields,
-                    columns: columnFields,
-                    values: valueConfigs,
-                    filters: filterConfigs,
-                }),
-            [rowFields, columnFields, valueConfigs, filterConfigs]
-        )
+        const addRowField = (field: keyof Record<string, unknown>) => {
+            if (field && !rowFields.includes(field)) {
+                setRowFields((prev) => [...prev, field])
+            }
+        }
+
+        const removeRowField = (field: keyof Record<string, unknown>) => {
+            setRowFields((prev) => prev.filter((item) => item !== field))
+        }
+
+        const addColumnField = (field: keyof Record<string, unknown>) => {
+            if (field && !columnFields.includes(field)) {
+                setColumnFields((prev) => [...prev, field])
+            }
+        }
+
+        const removeColumnField = (field: keyof Record<string, unknown>) => {
+            setColumnFields((prev) => prev.filter((item) => item !== field))
+        }
+
+        const addValueField = () => {
+            const supportedAggregations =
+                supportedAggregationsByField.get(String(selectedValueField)) ||
+                []
+            if (
+                selectedValueField &&
+                !valueConfigs.some(
+                    (item) => item.field === selectedValueField
+                ) &&
+                supportedAggregations.length > 0
+            ) {
+                const aggregation = supportedAggregations.includes(
+                    selectedValueAgg
+                )
+                    ? selectedValueAgg
+                    : supportedAggregations[0]
+                setValueConfigs((prev) => [
+                    ...prev,
+                    {
+                        field: selectedValueField,
+                        aggregation,
+                    },
+                ])
+                setSelectedValueField('')
+            }
+        }
+
+        const removeValueField = (index: number) => {
+            setValueConfigs((prev) => prev.filter((_, i) => i !== index))
+        }
+
+        const updateValueAggregation = (
+            index: number,
+            aggregation: PivotAggregationType
+        ) => {
+            setValueConfigs((prev) => {
+                const newConfigs = [...prev]
+                newConfigs[index].aggregation = aggregation
+                return newConfigs
+            })
+        }
+
+        const addFilterField = (field: keyof Record<string, unknown>) => {
+            if (
+                field &&
+                !filterConfigs.some(
+                    (item) => String(item.field) === String(field)
+                )
+            ) {
+                setFilterConfigs((prev) => [
+                    ...prev,
+                    { field, selectedValues: [] },
+                ])
+            }
+        }
+
+        const removeFilterField = (field: keyof Record<string, unknown>) => {
+            setFilterConfigs((prev) =>
+                prev.filter((item) => String(item.field) !== String(field))
+            )
+        }
+
         const lastEmittedConfigRef = useRef<string>('')
-        const onConfigChangeRef = useRef(onConfigChange)
-
-        useEffect(() => {
-            onConfigChangeRef.current = onConfigChange
-        }, [onConfigChange])
-
-        useEffect(() => {
-            if (!isOpen) return
-            if (lastEmittedConfigRef.current === configSignature) return
-            lastEmittedConfigRef.current = configSignature
-            onConfigChangeRef.current?.(pivotConfigState)
-        }, [isOpen, configSignature, pivotConfigState])
 
         useEffect(() => {
             if (!isOpen) {
                 lastEmittedConfigRef.current = ''
+                return
             }
-        }, [isOpen])
+
+            const config = {
+                rows: rowFields,
+                columns: columnFields,
+                values: valueConfigs,
+                filters: filterConfigs,
+            }
+            const configString = JSON.stringify(config)
+
+            if (lastEmittedConfigRef.current !== configString) {
+                lastEmittedConfigRef.current = configString
+                onConfigChange?.(config)
+            }
+        }, [
+            isOpen,
+            rowFields,
+            columnFields,
+            valueConfigs,
+            filterConfigs,
+            onConfigChange,
+        ])
+
+        useEffect(() => {
+            if (!selectedValueField) return
+            if (
+                selectedValueAggregationOptions.length > 0 &&
+                !selectedValueAggregationOptions.includes(selectedValueAgg)
+            ) {
+                setSelectedValueAgg(selectedValueAggregationOptions[0])
+            }
+        }, [
+            selectedValueField,
+            selectedValueAggregationOptions,
+            selectedValueAgg,
+        ])
+        useEffect(() => {
+            setValueConfigs(
+                (prev) =>
+                    prev
+                        .map((config) => {
+                            const supported =
+                                supportedAggregationsByField.get(
+                                    String(config.field)
+                                ) || []
+                            if (!supported.length) return null
+                            if (supported.includes(config.aggregation))
+                                return config
+                            return {
+                                ...config,
+                                aggregation: supported[0],
+                            }
+                        })
+                        .filter(Boolean) as typeof prev
+            )
+        }, [supportedAggregationsByField])
+
+        const exportPivotTable = () => {
+            const exportColumns = effectivePreviewColumns
+            const exportRows = effectivePreviewRows
+
+            if (onExport) {
+                onExport({
+                    rows: rowFields,
+                    columns: columnFields,
+                    values: valueConfigs,
+                    filters: filterConfigs,
+                })
+                return
+            }
+
+            if (!exportRows || exportRows.length === 0) return
+
+            const headers = exportColumns?.map((col) => `"${col.label}"`) || []
+            const rows = exportRows.map((row) =>
+                exportColumns?.map(
+                    (col) =>
+                        `"${String(row[col.key] ?? '').replace(/"/g, '""')}"`
+                )
+            )
+
+            const csvContent = [
+                headers.join(','),
+                ...rows.map((r) => r?.join(',') || ''),
+            ].join('\n')
+            downloadCSV(csvContent, 'pivot-table.csv')
+        }
+
+        const effectivePreview = useMemo(() => {
+            if (previewColumns?.length || previewRows?.length) {
+                return {
+                    columns: previewColumns || [],
+                    rows: previewRows || [],
+                }
+            }
+
+            const filteredRows = applyPivotFilters(
+                data as Record<string, unknown>[],
+                filterConfigs
+            )
+            return buildPivotPreview(
+                filteredRows,
+                rowFields,
+                columnFields,
+                valueConfigs
+            )
+        }, [
+            previewColumns,
+            previewRows,
+            data,
+            filterConfigs,
+            rowFields,
+            columnFields,
+            valueConfigs,
+        ])
+        const effectivePreviewColumns = effectivePreview.columns
+        const effectivePreviewRows = effectivePreview.rows
 
         const previewTableColumns: ColumnDefinition<Record<string, unknown>>[] =
             useMemo(
                 () =>
-                    (previewColumns || []).map((column) => ({
-                        field: column.key,
-                        header: column.label,
+                    effectivePreviewColumns.map((col) => ({
+                        field: col.key,
+                        header: col.label,
                         type: ColumnType.TEXT,
-                        isSortable: true,
-                        minWidth: '170px',
-                        maxWidth: '280px',
                     })),
-                [previewColumns]
+                [effectivePreviewColumns]
             )
 
-        const addRowField = () => {
-            if (!selectedRowField) return
-            const field = selectedRowField as keyof T
-            if (!rowFields.includes(field)) {
-                setRowFields((prev) => [...prev, field])
-            }
-            setSelectedRowField('')
-        }
+        const availableFieldsForRows = useMemo(
+            () =>
+                fieldOptions.filter(
+                    (f) =>
+                        !rowFields.includes(
+                            f.key as keyof Record<string, unknown>
+                        )
+                ),
+            [fieldOptions, rowFields]
+        )
 
-        const addColumnField = () => {
-            if (!selectedColumnField) return
-            const field = selectedColumnField as keyof T
-            if (!columnFields.includes(field)) {
-                setColumnFields((prev) => [...prev, field])
-            }
-            setSelectedColumnField('')
-        }
+        const availableFieldsForColumns = useMemo(
+            () =>
+                fieldOptions.filter(
+                    (f) =>
+                        !columnFields.includes(
+                            f.key as keyof Record<string, unknown>
+                        )
+                ),
+            [fieldOptions, columnFields]
+        )
 
-        const addValueField = () => {
-            if (!selectedValueField) return
-            setValueConfigs((prev) => [
-                ...prev,
-                {
-                    field: selectedValueField as keyof T,
-                    aggregation: selectedValueAgg as PivotAggregationType,
-                },
-            ])
-            setSelectedValueField('')
-        }
+        const availableFieldsForValues = useMemo(
+            () =>
+                fieldOptions.filter(
+                    (f) => !valueConfigs.some((v) => String(v.field) === f.key)
+                ),
+            [fieldOptions, valueConfigs]
+        )
 
-        const addFilterField = () => {
-            if (!selectedFilterField) return
-            const field = selectedFilterField as keyof T
-            if (!filterConfigs.some((item) => item.field === field)) {
-                setFilterConfigs((prev) => [
-                    ...prev,
-                    {
-                        field,
-                        selectedValues: [],
-                    },
-                ])
-            }
-            setSelectedFilterField('')
-        }
+        /**
+         * Section title row (Rows / Columns / Values / Filters).
+         */
+        const renderSectionHeader = (
+            icon: string,
+            iconBg: string,
+            iconColor: string,
+            title: string,
+            count: number
+        ) => (
+            <Block
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: pivot.spacing.iconBadgeGap,
+                    marginBottom: pivot.spacing.sectionHeaderMarginBottom,
+                }}
+            >
+                <Block
+                    style={{
+                        width: pivot.iconBadge.size,
+                        height: pivot.iconBadge.size,
+                        borderRadius: pivot.iconBadge.borderRadius,
+                        backgroundColor: iconBg,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <PrimitiveText
+                        style={{
+                            fontSize: pivot.iconBadge.glyphFontSize,
+                            fontWeight: pivot.iconBadge.glyphFontWeight,
+                            color: iconColor,
+                        }}
+                    >
+                        {icon}
+                    </PrimitiveText>
+                </Block>
+                <PrimitiveText
+                    style={{
+                        fontWeight: pivot.sectionLabel.fontWeight,
+                        fontSize: pivot.sectionLabel.fontSize,
+                        textTransform: pivot.sectionLabel.textTransform,
+                        letterSpacing: pivot.sectionLabel.letterSpacing,
+                    }}
+                >
+                    {title}
+                </PrimitiveText>
+                <Block style={{ flex: 1 }} />
+                <PrimitiveText
+                    style={{
+                        fontSize: pivot.sectionCount.fontSize,
+                        color: pivot.sectionCount.color,
+                    }}
+                >
+                    {count} selected
+                </PrimitiveText>
+            </Block>
+        )
 
-        const exportPivotTable = () => {
-            if (!previewRows?.length || !previewColumns?.length) return
+        const renderEmptyState = (title: string, example: string) => (
+            <Block
+                style={{
+                    textAlign: 'center',
+                    padding: pivot.emptyState.padding,
+                }}
+            >
+                <PrimitiveText
+                    style={{
+                        fontSize: pivot.emptyState.titleFontSize,
+                        color: pivot.emptyState.titleColor,
+                        marginBottom: pivot.emptyState.titleMarginBottom,
+                    }}
+                >
+                    {title}
+                </PrimitiveText>
+                <PrimitiveText
+                    style={{
+                        fontSize: pivot.emptyState.exampleFontSize,
+                        color: pivot.emptyState.exampleColor,
+                    }}
+                >
+                    {example}
+                </PrimitiveText>
+            </Block>
+        )
 
-            if (onExport) {
-                onExport(pivotConfigState)
-                return
-            }
+        const renderFieldChip = (
+            key: string,
+            field: string,
+            bgColor: string,
+            borderColor: string,
+            textColor: string,
+            onRemove: () => void
+        ) => (
+            <FieldChip
+                $pivot={pivot}
+                key={key}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: pivot.chip.padding,
+                    backgroundColor: bgColor,
+                    borderRadius: pivot.chip.borderRadius,
+                    border: `1px solid ${borderColor}`,
+                }}
+            >
+                <PrimitiveText
+                    style={{
+                        fontSize: pivot.valueFieldTitle.fontSize,
+                        fontWeight: pivot.valueFieldTitle.fontWeight,
+                        color: textColor,
+                    }}
+                >
+                    {field}
+                </PrimitiveText>
+                <button
+                    type="button"
+                    style={removeButtonStyle}
+                    onClick={onRemove}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                            pivot.removeButton.hoverBackground
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                            pivot.removeButton.background
+                    }}
+                >
+                    <Trash2 size={pivot.removeButton.iconSize} />
+                </button>
+            </FieldChip>
+        )
 
-            const csvHeader = previewColumns
-                .map((column) => `"${column.label}"`)
-                .join(',')
-            const csvRows = previewRows.map((row) =>
-                previewColumns
-                    .map(
-                        (column) =>
-                            `"${String(row[column.key] ?? '').replace(/"/g, '""')}"`
-                    )
-                    .join(',')
-            )
+        const renderFieldSelector = (
+            placeholder: string,
+            options: { label: string; value: string }[],
+            onSelect: (value: string) => void
+        ) => (
+            <Block
+                style={{
+                    marginTop: pivot.spacing.sectionHeaderMarginBottom,
+                }}
+            >
+                <PrimitiveText
+                    style={{
+                        fontSize: pivot.fieldRowLabel.fontSize,
+                        color: pivot.fieldRowLabel.color,
+                        marginBottom: pivot.fieldRowLabel.marginBottom,
+                    }}
+                >
+                    Add field:
+                </PrimitiveText>
+                <SingleSelect
+                    placeholder={placeholder}
+                    items={[
+                        {
+                            items: options.map((o) => ({
+                                label: o.label,
+                                value: o.value,
+                            })),
+                        },
+                    ]}
+                    selected=""
+                    onSelect={(value) => value && onSelect(value as string)}
+                    variant={SelectMenuVariant.CONTAINER}
+                    size={SelectMenuSize.SMALL}
+                    fullWidth
+                />
+            </Block>
+        )
 
-            downloadCSV(
-                [csvHeader, ...csvRows].join('\n'),
-                `pivot-table-${new Date().toISOString().split('T')[0]}.csv`
-            )
-        }
+        /**
+         * Right panel: maps column fields → pivot config; consumer computes preview from `onConfigChange`.
+         */
+        const renderConfiguration = () => (
+            <NoScrollbar
+                style={{
+                    borderLeft: tableToken.dataTable.border,
+                    padding: pivot.panelPadding,
+                    overflow: 'auto',
+                    backgroundColor: pivot.configPanelBackground,
+                }}
+            >
+                <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
+                    {renderSectionHeader(
+                        '↓',
+                        pivot.sectionAccent.row.background,
+                        pivot.sectionAccent.row.icon,
+                        'Rows',
+                        rowFields.length
+                    )}
+                    <Block
+                        style={{
+                            minHeight:
+                                rowFields.length === 0
+                                    ? pivot.dropZone.emptyMinHeight
+                                    : 'auto',
+                            padding: pivot.dropZone.padding,
+                            backgroundColor: pivot.dropZone.background,
+                            borderRadius: pivot.dropZone.borderRadius,
+                            border: pivot.dropZone.border,
+                        }}
+                    >
+                        {rowFields.length === 0 ? (
+                            renderEmptyState(
+                                'Fields here become row labels',
+                                'Example: Product, Region, Date'
+                            )
+                        ) : (
+                            <Block
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: pivot.spacing.stackGap,
+                                }}
+                            >
+                                {rowFields.map((field) =>
+                                    renderFieldChip(
+                                        `row-${String(field)}`,
+                                        String(field),
+                                        pivot.sectionAccent.row.background,
+                                        pivot.sectionAccent.row.border,
+                                        pivot.sectionAccent.row.text,
+                                        () => removeRowField(field)
+                                    )
+                                )}
+                            </Block>
+                        )}
+                    </Block>
+                    {availableFieldsForRows.length > 0 &&
+                        renderFieldSelector(
+                            'Choose a field...',
+                            availableFieldsForRows.map((f) => ({
+                                label: f.label,
+                                value: f.key,
+                            })),
+                            (value) =>
+                                addRowField(
+                                    value as keyof Record<string, unknown>
+                                )
+                        )}
+                </Block>
 
-        const sectionMenuItems = (
-            action: () => void,
-            label: string
-        ): MenuGroupType[] => [
-            {
-                items: [{ label, onClick: action }],
-            },
-        ]
+                <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
+                    {renderSectionHeader(
+                        '→',
+                        pivot.sectionAccent.column.background,
+                        pivot.sectionAccent.column.icon,
+                        'Columns',
+                        columnFields.length
+                    )}
+                    <Block
+                        style={{
+                            minHeight:
+                                columnFields.length === 0
+                                    ? pivot.dropZone.emptyMinHeight
+                                    : 'auto',
+                            padding: pivot.dropZone.padding,
+                            backgroundColor: pivot.dropZone.background,
+                            borderRadius: pivot.dropZone.borderRadius,
+                            border: pivot.dropZone.border,
+                        }}
+                    >
+                        {columnFields.length === 0 ? (
+                            renderEmptyState(
+                                'Fields here become column headers',
+                                'Example: Quarter, Category, Status'
+                            )
+                        ) : (
+                            <Block
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: pivot.spacing.stackGap,
+                                }}
+                            >
+                                {columnFields.map((field) =>
+                                    renderFieldChip(
+                                        `col-${String(field)}`,
+                                        String(field),
+                                        pivot.sectionAccent.column.background,
+                                        pivot.sectionAccent.column.border,
+                                        pivot.sectionAccent.column.text,
+                                        () => removeColumnField(field)
+                                    )
+                                )}
+                            </Block>
+                        )}
+                    </Block>
+                    {availableFieldsForColumns.length > 0 &&
+                        renderFieldSelector(
+                            'Choose a field...',
+                            availableFieldsForColumns.map((f) => ({
+                                label: f.label,
+                                value: f.key,
+                            })),
+                            (value) =>
+                                addColumnField(
+                                    value as keyof Record<string, unknown>
+                                )
+                        )}
+                </Block>
+
+                <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
+                    {renderSectionHeader(
+                        '∑',
+                        pivot.sectionAccent.value.background,
+                        pivot.sectionAccent.value.icon,
+                        'Values',
+                        valueConfigs.length
+                    )}
+                    <Block
+                        style={{
+                            minHeight:
+                                valueConfigs.length === 0
+                                    ? pivot.dropZone.emptyMinHeight
+                                    : 'auto',
+                            padding: pivot.dropZone.padding,
+                            backgroundColor: pivot.dropZone.background,
+                            borderRadius: pivot.dropZone.borderRadius,
+                            border: pivot.dropZone.border,
+                        }}
+                    >
+                        {valueConfigs.length === 0 ? (
+                            renderEmptyState(
+                                'Numeric fields to calculate',
+                                'Example: Sales, Quantity, Revenue'
+                            )
+                        ) : (
+                            <Block
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: pivot.spacing.stackGap,
+                                }}
+                            >
+                                {valueConfigs.map((config, index) => (
+                                    <FieldChip
+                                        $pivot={pivot}
+                                        key={`val-${String(config.field)}-${index}`}
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: pivot.spacing.stackGap,
+                                            padding: pivot.dropZone.padding,
+                                            backgroundColor:
+                                                pivot.sectionAccent.value
+                                                    .background,
+                                            borderRadius:
+                                                pivot.chip.borderRadius,
+                                            border:
+                                                '1px solid ' +
+                                                pivot.sectionAccent.value
+                                                    .border,
+                                        }}
+                                    >
+                                        <Block
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                            }}
+                                        >
+                                            <PrimitiveText
+                                                style={{
+                                                    fontSize:
+                                                        pivot.valueFieldTitle
+                                                            .fontSize,
+                                                    fontWeight:
+                                                        pivot.valueFieldTitle
+                                                            .fontWeight,
+                                                    color: pivot.sectionAccent
+                                                        .value.text,
+                                                }}
+                                            >
+                                                {String(config.field)}
+                                            </PrimitiveText>
+                                            <button
+                                                type="button"
+                                                style={removeButtonStyle}
+                                                onClick={() =>
+                                                    removeValueField(index)
+                                                }
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.backgroundColor =
+                                                        pivot.removeButton.hoverBackground
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.backgroundColor =
+                                                        pivot.removeButton.background
+                                                }}
+                                            >
+                                                <Trash2
+                                                    size={
+                                                        pivot.removeButton
+                                                            .iconSize
+                                                    }
+                                                    color={
+                                                        pivot.removeButton
+                                                            .iconColor
+                                                    }
+                                                />
+                                            </button>
+                                        </Block>
+                                        <Menu
+                                            items={[
+                                                {
+                                                    items: (
+                                                        supportedAggregationsByField.get(
+                                                            String(config.field)
+                                                        ) || []
+                                                    ).map((item) => ({
+                                                        label: item.toUpperCase(),
+                                                        slot3:
+                                                            config.aggregation ===
+                                                            item ? (
+                                                                <Check
+                                                                    size={
+                                                                        pivot.menuCheckIconSize
+                                                                    }
+                                                                    color={
+                                                                        pivot
+                                                                            .sectionAccent
+                                                                            .value
+                                                                            .icon
+                                                                    }
+                                                                />
+                                                            ) : null,
+                                                        onClick: () =>
+                                                            updateValueAggregation(
+                                                                index,
+                                                                item as PivotAggregationType
+                                                            ),
+                                                    })),
+                                                },
+                                            ]}
+                                            alignment={MenuAlignment.END}
+                                            side={MenuSide.TOP}
+                                            sideOffset={4}
+                                            trigger={
+                                                <Button
+                                                    text={`${config.aggregation.toUpperCase()}()`}
+                                                    buttonType={
+                                                        ButtonType.SECONDARY
+                                                    }
+                                                    size={ButtonSize.SMALL}
+                                                    fullWidth
+                                                />
+                                            }
+                                        />
+                                    </FieldChip>
+                                ))}
+                            </Block>
+                        )}
+                    </Block>
+                    {availableFieldsForValues.length > 0 && (
+                        <Block
+                            style={{
+                                marginTop:
+                                    pivot.spacing.sectionHeaderMarginBottom,
+                            }}
+                        >
+                            <Block
+                                style={{
+                                    display: 'flex',
+                                    gap: pivot.spacing.controlsRowGap,
+                                }}
+                            >
+                                <SingleSelect
+                                    placeholder="Select field..."
+                                    items={[
+                                        {
+                                            items: availableFieldsForValues.map(
+                                                (f) => ({
+                                                    label: f.label,
+                                                    value: f.key,
+                                                })
+                                            ),
+                                        },
+                                    ]}
+                                    selected={selectedValueField as string}
+                                    onSelect={(value) =>
+                                        setSelectedValueField(
+                                            value as keyof Record<
+                                                string,
+                                                unknown
+                                            >
+                                        )
+                                    }
+                                    variant={SelectMenuVariant.CONTAINER}
+                                    size={SelectMenuSize.SMALL}
+                                    fullWidth
+                                />
+                                <SingleSelect
+                                    placeholder="Function"
+                                    items={selectedValueAggregationItems}
+                                    selected={selectedValueAgg}
+                                    onSelect={(value) =>
+                                        setSelectedValueAgg(
+                                            value as PivotAggregationType
+                                        )
+                                    }
+                                    variant={SelectMenuVariant.CONTAINER}
+                                    size={SelectMenuSize.SMALL}
+                                    disabled={
+                                        selectedValueAggregationOptions.length ===
+                                        0
+                                    }
+                                />
+                            </Block>
+                            {selectedValueMessage && (
+                                <PrimitiveText
+                                    style={{
+                                        fontSize:
+                                            pivot.emptyState.exampleFontSize,
+                                        color: pivot.emptyState.exampleColor,
+                                        marginTop: pivot.spacing.stackGap,
+                                    }}
+                                >
+                                    {selectedValueMessage}
+                                </PrimitiveText>
+                            )}
+                            {selectedValueField && (
+                                <Button
+                                    text="Add Value Field"
+                                    buttonType={ButtonType.PRIMARY}
+                                    size={ButtonSize.SMALL}
+                                    onClick={addValueField}
+                                    disabled={
+                                        !selectedValueField ||
+                                        selectedValueAggregationOptions.length ===
+                                            0
+                                    }
+                                    fullWidth
+                                />
+                            )}
+                        </Block>
+                    )}
+                </Block>
+
+                {showFilters && (
+                    <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
+                        {renderSectionHeader(
+                            '⚲',
+                            pivot.sectionAccent.filter.background,
+                            pivot.sectionAccent.filter.icon,
+                            'Filters',
+                            filterConfigs.length
+                        )}
+                        <Block
+                            style={{
+                                minHeight:
+                                    filterConfigs.length === 0
+                                        ? pivot.dropZone.emptyMinHeight
+                                        : 'auto',
+                                padding: pivot.dropZone.padding,
+                                backgroundColor: pivot.dropZone.background,
+                                borderRadius: pivot.dropZone.borderRadius,
+                                border: pivot.dropZone.border,
+                            }}
+                        >
+                            {filterConfigs.length === 0 ? (
+                                renderEmptyState(
+                                    'Filter which data appears',
+                                    ''
+                                )
+                            ) : (
+                                <Block
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: pivot.spacing.stackGap,
+                                    }}
+                                >
+                                    {filterConfigs.map((filterConfig) => {
+                                        const option = fieldOptions.find(
+                                            (item) =>
+                                                item.key ===
+                                                String(filterConfig.field)
+                                        )
+                                        if (!option) return null
+                                        return renderFieldChip(
+                                            `filter-${option.key}`,
+                                            option.label,
+                                            pivot.sectionAccent.filter
+                                                .background,
+                                            pivot.sectionAccent.filter.border,
+                                            pivot.sectionAccent.filter.text,
+                                            () =>
+                                                removeFilterField(
+                                                    filterConfig.field
+                                                )
+                                        )
+                                    })}
+                                </Block>
+                            )}
+                        </Block>
+                        {fieldOptions.filter(
+                            (f) =>
+                                !filterConfigs.some(
+                                    (fc) => String(fc.field) === f.key
+                                )
+                        ).length > 0 &&
+                            renderFieldSelector(
+                                'Choose a field...',
+                                fieldOptions
+                                    .filter(
+                                        (f) =>
+                                            !filterConfigs.some(
+                                                (fc) =>
+                                                    String(fc.field) === f.key
+                                            )
+                                    )
+                                    .map((f) => ({
+                                        label: f.label,
+                                        value: f.key,
+                                    })),
+                                (value) =>
+                                    addFilterField(
+                                        value as keyof Record<string, unknown>
+                                    )
+                            )}
+                    </Block>
+                )}
+            </NoScrollbar>
+        )
 
         return (
             <Modal
@@ -241,555 +1073,31 @@ const PivotTableModal = forwardRef(
                 isOpen={isOpen}
                 onClose={onClose}
                 title={title}
-                subtitle={description}
-                minWidth="80vw"
-                maxWidth="90vw"
-                maxHeight={String(tableToken.dataTable.maxHeight || '90vh')}
+                subtitle={subtitle}
+                minWidth={pivot.modal.minWidth}
+                maxWidth={pivot.modal.maxWidth}
+                maxHeight={pivot.modal.maxHeight}
                 showFooter={false}
                 isCustom
             >
                 <NoScrollbar
                     style={{
-                        display: 'grid',
-                        gridTemplateColumns: '360px 1fr',
-                        height: '76vh',
-                        overflow: 'hidden',
+                        display: pivot.shell.display,
+                        gridTemplateColumns: pivot.shell.gridTemplateColumns,
+                        height: pivot.shell.height,
+                        overflow: pivot.shell.overflow,
                     }}
                 >
-                    <NoScrollbar
-                        style={{
-                            borderRight: tableToken.dataTable.border,
-                            padding: tableToken.padding,
-                            overflow: 'auto',
-                            backgroundColor:
-                                tableToken.dataTable.table.header
-                                    .backgroundColor,
-                        }}
-                    >
-                        <PrimitiveText
-                            style={{ fontWeight: 600, fontSize: '14px' }}
-                        >
-                            Pivot Configuration
-                        </PrimitiveText>
-
-                        <Block
-                            style={{
-                                marginTop: FOUNDATION_THEME.unit[12],
-                                padding:
-                                    tableToken.dataTable.table.body.cell
-                                        .padding,
-                                borderRadius: tableToken.dataTable.borderRadius,
-                                backgroundColor:
-                                    tableToken.dataTable.table.body
-                                        .backgroundColor,
-                                border: tableToken.dataTable.border,
-                            }}
-                        >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="space-between"
-                            >
-                                <PrimitiveText style={{ fontWeight: 600 }}>
-                                    Rows
-                                </PrimitiveText>
-                                <Menu
-                                    items={sectionMenuItems(
-                                        addRowField,
-                                        'Add selected row field'
-                                    )}
-                                    alignment={MenuAlignment.END}
-                                    trigger={
-                                        <Button
-                                            text="Add"
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                        />
-                                    }
-                                />
-                            </Block>
-                            <SingleSelect
-                                placeholder="Select row field"
-                                items={fieldSelectItems}
-                                selected={selectedRowField}
-                                onSelect={setSelectedRowField}
-                                variant={SelectMenuVariant.CONTAINER}
-                                size={SelectMenuSize.SMALL}
-                                fullWidth
-                                alignment={SelectMenuAlignment.START}
-                            />
-                            <NoScrollbar
-                                display="flex"
-                                gap={FOUNDATION_THEME.unit[6]}
-                                style={{
-                                    flexWrap: 'wrap',
-                                    marginTop: FOUNDATION_THEME.unit[8],
-                                    maxHeight: '76px',
-                                    overflow: 'auto',
-                                }}
-                            >
-                                {rowFields.map((field) => (
-                                    <Button
-                                        key={`row-${String(field)}`}
-                                        text={String(field)}
-                                        size={ButtonSize.SMALL}
-                                        buttonType={ButtonType.SECONDARY}
-                                        onClick={() =>
-                                            setRowFields((prev) =>
-                                                prev.filter(
-                                                    (item) => item !== field
-                                                )
-                                            )
-                                        }
-                                    />
-                                ))}
-                            </NoScrollbar>
-                        </Block>
-
-                        <Block
-                            style={{
-                                marginTop: FOUNDATION_THEME.unit[12],
-                                padding:
-                                    tableToken.dataTable.table.body.cell
-                                        .padding,
-                                borderRadius: tableToken.dataTable.borderRadius,
-                                backgroundColor:
-                                    tableToken.dataTable.table.body
-                                        .backgroundColor,
-                                border: tableToken.dataTable.border,
-                            }}
-                        >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="space-between"
-                            >
-                                <PrimitiveText style={{ fontWeight: 600 }}>
-                                    Columns
-                                </PrimitiveText>
-                                <Menu
-                                    items={sectionMenuItems(
-                                        addColumnField,
-                                        'Add selected column field'
-                                    )}
-                                    alignment={MenuAlignment.END}
-                                    trigger={
-                                        <Button
-                                            text="Add"
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                        />
-                                    }
-                                />
-                            </Block>
-                            <SingleSelect
-                                placeholder="Select column field"
-                                items={fieldSelectItems}
-                                selected={selectedColumnField}
-                                onSelect={setSelectedColumnField}
-                                variant={SelectMenuVariant.CONTAINER}
-                                size={SelectMenuSize.SMALL}
-                                fullWidth
-                                alignment={SelectMenuAlignment.START}
-                            />
-                            <NoScrollbar
-                                display="flex"
-                                gap={FOUNDATION_THEME.unit[6]}
-                                style={{
-                                    flexWrap: 'wrap',
-                                    marginTop: FOUNDATION_THEME.unit[8],
-                                    maxHeight: '76px',
-                                    overflow: 'auto',
-                                }}
-                            >
-                                {columnFields.map((field) => (
-                                    <Button
-                                        key={`column-${String(field)}`}
-                                        text={String(field)}
-                                        size={ButtonSize.SMALL}
-                                        buttonType={ButtonType.SECONDARY}
-                                        onClick={() =>
-                                            setColumnFields((prev) =>
-                                                prev.filter(
-                                                    (item) => item !== field
-                                                )
-                                            )
-                                        }
-                                    />
-                                ))}
-                            </NoScrollbar>
-                        </Block>
-
-                        <Block
-                            style={{
-                                marginTop: FOUNDATION_THEME.unit[12],
-                                padding:
-                                    tableToken.dataTable.table.body.cell
-                                        .padding,
-                                borderRadius: tableToken.dataTable.borderRadius,
-                                backgroundColor:
-                                    tableToken.dataTable.table.body
-                                        .backgroundColor,
-                                border: tableToken.dataTable.border,
-                            }}
-                        >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="space-between"
-                            >
-                                <PrimitiveText style={{ fontWeight: 600 }}>
-                                    Values
-                                </PrimitiveText>
-                                <Menu
-                                    items={sectionMenuItems(
-                                        addValueField,
-                                        'Add selected value config'
-                                    )}
-                                    alignment={MenuAlignment.END}
-                                    trigger={
-                                        <Button
-                                            text="Add"
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                        />
-                                    }
-                                />
-                            </Block>
-                            <Block
-                                display="flex"
-                                gap={FOUNDATION_THEME.unit[8]}
-                                style={{
-                                    marginBottom: FOUNDATION_THEME.unit[8],
-                                }}
-                            >
-                                <SingleSelect
-                                    placeholder="Value field"
-                                    items={fieldSelectItems}
-                                    selected={selectedValueField}
-                                    onSelect={setSelectedValueField}
-                                    variant={SelectMenuVariant.CONTAINER}
-                                    size={SelectMenuSize.SMALL}
-                                    fullWidth
-                                />
-                                <SingleSelect
-                                    placeholder="Aggregation"
-                                    items={aggregationItems}
-                                    selected={selectedValueAgg}
-                                    onSelect={setSelectedValueAgg}
-                                    variant={SelectMenuVariant.CONTAINER}
-                                    size={SelectMenuSize.SMALL}
-                                    fullWidth
-                                />
-                            </Block>
-                            {valueConfigs.map((config, index) => (
-                                <Block
-                                    key={`${String(config.field)}-${index}`}
-                                    style={{
-                                        display: 'flex',
-                                        gap: FOUNDATION_THEME.unit[8],
-                                        marginTop: FOUNDATION_THEME.unit[4],
-                                    }}
-                                >
-                                    <PrimitiveText
-                                        style={{
-                                            fontSize: '12px',
-                                            flexGrow: 1,
-                                            alignSelf: 'center',
-                                        }}
-                                    >
-                                        {String(config.field)} (
-                                        {config.aggregation})
-                                    </PrimitiveText>
-                                    <Button
-                                        text="Remove"
-                                        size={ButtonSize.SMALL}
-                                        buttonType={ButtonType.SECONDARY}
-                                        onClick={() =>
-                                            setValueConfigs((prev) =>
-                                                prev.filter(
-                                                    (_, itemIndex) =>
-                                                        itemIndex !== index
-                                                )
-                                            )
-                                        }
-                                    />
-                                </Block>
-                            ))}
-                        </Block>
-
-                        {showFilters && (
-                            <Block
-                                style={{
-                                    marginTop: FOUNDATION_THEME.unit[12],
-                                    padding:
-                                        tableToken.dataTable.table.body.cell
-                                            .padding,
-                                    borderRadius:
-                                        tableToken.dataTable.borderRadius,
-                                    backgroundColor:
-                                        tableToken.dataTable.table.body
-                                            .backgroundColor,
-                                    border: tableToken.dataTable.border,
-                                }}
-                            >
-                                <Block
-                                    display="flex"
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    style={{
-                                        marginBottom: FOUNDATION_THEME.unit[6],
-                                    }}
-                                >
-                                    <PrimitiveText style={{ fontWeight: 600 }}>
-                                        Filters
-                                    </PrimitiveText>
-                                    <Menu
-                                        items={sectionMenuItems(
-                                            addFilterField,
-                                            'Add selected filter field'
-                                        )}
-                                        alignment={MenuAlignment.END}
-                                        trigger={
-                                            <Button
-                                                text="Add"
-                                                buttonType={
-                                                    ButtonType.SECONDARY
-                                                }
-                                                size={ButtonSize.SMALL}
-                                            />
-                                        }
-                                    />
-                                </Block>
-                                <SingleSelect
-                                    placeholder="Select filter field"
-                                    items={fieldSelectItems}
-                                    selected={selectedFilterField}
-                                    onSelect={setSelectedFilterField}
-                                    variant={SelectMenuVariant.CONTAINER}
-                                    size={SelectMenuSize.SMALL}
-                                    fullWidth
-                                />
-                                {filterConfigs.map((filterConfig) => {
-                                    const option = fieldOptions.find(
-                                        (item) =>
-                                            item.key ===
-                                            String(filterConfig.field)
-                                    )
-                                    if (!option) return null
-                                    const uniqueValues = Array.from(
-                                        new Set(
-                                            data.map((row) =>
-                                                normalizePivotValue(
-                                                    row[option.key as keyof T]
-                                                )
-                                            )
-                                        )
-                                    )
-                                    const selectedValues =
-                                        filterConfig.selectedValues || []
-
-                                    return (
-                                        <Block
-                                            key={`filter-${option.key}`}
-                                            style={{
-                                                marginTop:
-                                                    FOUNDATION_THEME.unit[8],
-                                            }}
-                                        >
-                                            <PrimitiveText>
-                                                {option.label}
-                                            </PrimitiveText>
-                                            <MultiValueInput
-                                                label=""
-                                                value={filterInputValue}
-                                                onChange={setFilterInputValue}
-                                                tags={selectedValues}
-                                                size={TextInputSize.SMALL}
-                                                onTagAdd={(tag) => {
-                                                    setFilterConfigs((prev) => {
-                                                        const rest =
-                                                            prev.filter(
-                                                                (item) =>
-                                                                    String(
-                                                                        item.field
-                                                                    ) !==
-                                                                    option.key
-                                                            )
-                                                        return [
-                                                            ...rest,
-                                                            {
-                                                                field: option.key as keyof T,
-                                                                selectedValues:
-                                                                    Array.from(
-                                                                        new Set(
-                                                                            [
-                                                                                ...selectedValues,
-                                                                                tag,
-                                                                            ]
-                                                                        )
-                                                                    ),
-                                                            },
-                                                        ]
-                                                    })
-                                                }}
-                                                onTagRemove={(tag) => {
-                                                    setFilterConfigs((prev) => {
-                                                        const rest =
-                                                            prev.filter(
-                                                                (item) =>
-                                                                    String(
-                                                                        item.field
-                                                                    ) !==
-                                                                    option.key
-                                                            )
-                                                        return [
-                                                            ...rest,
-                                                            {
-                                                                field: option.key as keyof T,
-                                                                selectedValues:
-                                                                    selectedValues.filter(
-                                                                        (
-                                                                            existing
-                                                                        ) =>
-                                                                            existing !==
-                                                                            tag
-                                                                    ),
-                                                            },
-                                                        ]
-                                                    })
-                                                }}
-                                                rightSlot={
-                                                    <Menu
-                                                        alignment={
-                                                            MenuAlignment.END
-                                                        }
-                                                        items={[
-                                                            {
-                                                                items: uniqueValues.map(
-                                                                    (
-                                                                        value
-                                                                    ) => ({
-                                                                        label: value,
-                                                                        onClick:
-                                                                            () => {
-                                                                                if (
-                                                                                    selectedValues.includes(
-                                                                                        value
-                                                                                    )
-                                                                                )
-                                                                                    return
-                                                                                setFilterConfigs(
-                                                                                    (
-                                                                                        prev
-                                                                                    ) => {
-                                                                                        const rest =
-                                                                                            prev.filter(
-                                                                                                (
-                                                                                                    item
-                                                                                                ) =>
-                                                                                                    String(
-                                                                                                        item.field
-                                                                                                    ) !==
-                                                                                                    option.key
-                                                                                            )
-                                                                                        return [
-                                                                                            ...rest,
-                                                                                            {
-                                                                                                field: option.key as keyof T,
-                                                                                                selectedValues:
-                                                                                                    [
-                                                                                                        ...selectedValues,
-                                                                                                        value,
-                                                                                                    ],
-                                                                                            },
-                                                                                        ]
-                                                                                    }
-                                                                                )
-                                                                            },
-                                                                    })
-                                                                ),
-                                                            },
-                                                        ]}
-                                                        trigger={
-                                                            <Button
-                                                                text="+"
-                                                                buttonType={
-                                                                    ButtonType.SECONDARY
-                                                                }
-                                                                size={
-                                                                    ButtonSize.SMALL
-                                                                }
-                                                            />
-                                                        }
-                                                    />
-                                                }
-                                            />
-                                        </Block>
-                                    )
-                                })}
-                            </Block>
-                        )}
-                    </NoScrollbar>
-
-                    <NoScrollbar
-                        style={{
-                            padding: tableToken.padding,
-                            overflow: 'auto',
-                        }}
-                    >
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            style={{ marginBottom: FOUNDATION_THEME.unit[8] }}
-                        >
-                            <PrimitiveText style={{ fontWeight: 600 }}>
-                                Pivot Table Preview
-                            </PrimitiveText>
-                            {showExport && (
-                                <Button
-                                    text="Export Pivot"
-                                    buttonType={ButtonType.SECONDARY}
-                                    size={ButtonSize.SMALL}
-                                    onClick={exportPivotTable}
-                                    disabled={
-                                        !previewRows?.length ||
-                                        !previewColumns?.length
-                                    }
-                                />
-                            )}
-                        </Block>
-                        <DataTable
-                            data={
-                                (previewRows || []) as Record<string, unknown>[]
-                            }
-                            columns={previewTableColumns}
-                            idField="__pivotId"
-                            title="Pivot Preview"
-                            enableSearch={false}
-                            enableFiltering={false}
-                            enableAdvancedFilter={false}
-                            enableColumnManager={false}
-                            enableColumnReordering={false}
-                            enableRowExpansion={false}
-                            enableRowSelection={false}
-                            enableInlineEdit={false}
-                            showHeader={false}
-                            showToolbar={false}
-                            showFooter={false}
-                            getRowStyle={(row) =>
-                                row.__pivotRowType === 'grand_total'
-                                    ? {
-                                          backgroundColor:
-                                              tableToken.dataTable.table.header
-                                                  .backgroundColor,
-                                          fontWeight: 600,
-                                      }
-                                    : {}
-                            }
-                        />
-                    </NoScrollbar>
+                    <PivotPreviewPanel
+                        pivot={pivot}
+                        tableToken={tableToken}
+                        showExport={showExport}
+                        previewRows={effectivePreviewRows}
+                        previewColumns={effectivePreviewColumns}
+                        previewTableColumns={previewTableColumns}
+                        onExport={exportPivotTable}
+                    />
+                    {renderConfiguration()}
                 </NoScrollbar>
             </Modal>
         )

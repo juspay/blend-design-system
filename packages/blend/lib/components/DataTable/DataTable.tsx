@@ -1977,6 +1977,9 @@ const DataTable = forwardRef(
                                   } & Record<string, unknown>)[]
                                 | undefined
                         }
+                        availableAggregations={
+                            pivotTableConfig?.availableAggregations
+                        }
                         initialConfig={
                             pivotTableConfig?.initialConfig as
                                 | Partial<

@@ -475,6 +475,12 @@ export type DataTableProps<T extends Record<string, unknown>> = {
             label: string
         }>
         previewRows?: Array<Record<string, unknown> & { __pivotId: string }>
+        /**
+         * Configure which aggregation operations are available in the Values section.
+         * If not provided, all operations will be shown.
+         * @example ['sum', 'count', 'average'] // Show only sum, count, and average
+         */
+        availableAggregations?: PivotAggregationType[]
         onConfigChange?: (config: {
             rows: (keyof T)[]
             columns: (keyof T)[]

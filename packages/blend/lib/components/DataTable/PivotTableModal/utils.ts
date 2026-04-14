@@ -43,7 +43,11 @@ const truncatePivotLabel = (value: string, maxLength = 36): string => {
 
 const toNumeric = (value: unknown): number => {
     if (typeof value === 'number') return value
-    const parsed = Number(normalizePivotValue(value).replace(/,/g, ''))
+    const parsed = Number(
+        normalizePivotValue(value)
+            .replace(/,/g, '')
+            .replace(/[^\d.-]/g, '')
+    )
     return Number.isNaN(parsed) ? 0 : parsed
 }
 
@@ -103,6 +107,48 @@ export const applyPivotFilters = <T extends Record<string, unknown>>(
     )
 }
 
+export const isPivotNumericValue = (value: unknown): boolean => {
+    if (typeof value === 'number') return Number.isFinite(value)
+    if (value == null) return false
+    const normalized = normalizePivotValue(value)
+        .replace(/,/g, '')
+        .replace(/[^\d.-]/g, '')
+        .trim()
+    if (!normalized) return false
+    const parsed = Number(normalized)
+    return Number.isFinite(parsed)
+}
+
+export const getSupportedAggregationsForField = <
+    T extends Record<string, unknown>,
+>(
+    data: T[],
+    field: keyof T,
+    allowedAggregations: PivotAggregationType[],
+    isNumericColumn = false
+): PivotAggregationType[] => {
+    const hasNumericValue =
+        isNumericColumn || data.some((row) => isPivotNumericValue(row[field]))
+
+    return allowedAggregations.filter((aggregation) => {
+        if (aggregation === PivotAggregationType.COUNT) return true
+        return hasNumericValue
+    })
+}
+
+/**
+ * Builds the rectangular grid the modal preview renders as a {@link DataTable}.
+ *
+ * - **Columns:** First column key `__rowLabel` — header is joined row field names
+ *   (or `All Rows`). Each unique combination of **column** dimension values
+ *   becomes a group; for each group, every **value** config adds one column
+ *   (`columnKey__field__aggregation`).
+ * - **Rows:** One row per distinct row-dimension key; cells are aggregated from
+ *   raw rows that match that row key and column key.
+ * - **Grand total:** Appended last with `__pivotRowType: 'grand_total'` and
+ *   `__rowLabel` `"Grand Total"`; each metric is aggregated over the full
+ *   (already filtered) `data` for that column bucket.
+ */
 export const buildPivotPreview = <T extends Record<string, unknown>>(
     data: T[],
     rowFields: Array<keyof T>,
