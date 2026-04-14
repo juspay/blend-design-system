@@ -33,7 +33,6 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
             helpIconHintText,
             required = false,
             error = { show: false, message: '' },
-            wrap,
             resize = 'none',
             name = 'text-area',
             size = InputSizeV2.MD,
@@ -145,20 +144,22 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                         placeholder={isSmallScreen ? '' : placeholder}
                         onChange={onChange}
                         onFocus={(e) => {
+                            e.stopPropagation()
                             setIsFocused(true)
                             onFocus?.(e)
                         }}
                         onBlur={(e) => {
+                            e.stopPropagation()
                             setIsFocused(false)
                             onBlur?.(e)
                         }}
                         onKeyDown={(e) => {
+                            e.stopPropagation()
                             restOnKeyDown?.(e)
                         }}
                         rows={rows}
                         required={required}
                         cols={cols}
-                        wrap={wrap}
                         borderRadius={ic.borderRadius}
                         resize={resize}
                         paddingX={paddingX}

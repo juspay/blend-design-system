@@ -23,7 +23,6 @@ export type TextAreaV2Props = {
         message?: string
     }
     resize?: 'none' | 'both' | 'horizontal' | 'vertical' | 'block' | 'inline'
-    wrap?: CSSObject['whiteSpace']
 } & Omit<
     React.TextareaHTMLAttributes<HTMLTextAreaElement>,
     'size' | 'style' | 'className' | 'onFocus' | 'onBlur'
