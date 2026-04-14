@@ -1,12 +1,16 @@
 import DropdownInputV2 from '../../../../packages/blend/lib/components/InputsV2/DropdownInputV2/DropdownInputV2'
-import { TextInputSize } from '../../../../packages/blend/lib/components/Inputs/TextInput/types'
-import type { SelectMenuGroupType } from '../../../../packages/blend/lib/components/Select/types'
+import { DropdownPosition } from '../../../../packages/blend/lib/components/InputsV2/DropdownInputV2/DropdownInputV2.types'
+import { InputSizeV2 } from '../../../../packages/blend/lib/components/InputsV2/inputV2.types'
+import type { SingleSelectV2GroupType } from '../../../../packages/blend/lib/components/SingleSelectV2/singleSelectV2.types'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { useState } from 'react'
 
 const DropdownInputV2Demo = () => {
+    const { theme } = useTheme()
     // Individual playground state
     const [playgroundLabel, setPlaygroundLabel] = useState('Your Label')
     const [playgroundSublabel, setPlaygroundSublabel] =
@@ -20,10 +24,13 @@ const DropdownInputV2Demo = () => {
     const [playgroundHelpText, setPlaygroundHelpText] = useState(
         'Select from the dropdown and type in the input'
     )
-    const [playgroundSize, setPlaygroundSize] = useState<TextInputSize>(
-        TextInputSize.LARGE
+    const [playgroundSize, setPlaygroundSize] = useState<InputSizeV2>(
+        InputSizeV2.MD
     )
     const [playgroundValue, setPlaygroundValue] = useState('')
+    const [playgroundDropdownValue, setPlaygroundDropdownValue] = useState('US')
+    const [playgroundDropdownPosition, setPlaygroundDropdownPosition] =
+        useState<DropdownPosition>(DropdownPosition.LEFT)
     const [playgroundDisabled, setPlaygroundDisabled] = useState(false)
     const [playgroundError, setPlaygroundError] = useState(false)
     const [playgroundRequired, setPlaygroundRequired] = useState(false)
@@ -32,50 +39,65 @@ const DropdownInputV2Demo = () => {
     const [showErrorMessage, setShowErrorMessage] = useState(true)
     const [showHelpText, setShowHelpText] = useState(true)
 
-    // Different example states
+    // Real-world example state
     const [currencyValue, setCurrencyValue] = useState('')
+    const [currencyDropdown, setCurrencyDropdown] = useState('USD')
     const [phoneValue, setPhoneValue] = useState('')
+    const [phoneDropdown, setPhoneDropdown] = useState('+1')
     const [emailValue, setEmailValue] = useState('')
+    const [emailDropdown, setEmailDropdown] = useState('gmail.com')
     const [locationValue, setLocationValue] = useState('')
+    const [locationDropdown, setLocationDropdown] = useState('US')
     const [timeValue, setTimeValue] = useState('')
+    const [timeDropdown, setTimeDropdown] = useState('AM')
 
-    // States for different sections
+    // States section
     const [mediumValue, setMediumValue] = useState('')
+    const [mediumDropdown, setMediumDropdown] = useState('option1')
     const [largeValue, setLargeValue] = useState('')
+    const [largeDropdown, setLargeDropdown] = useState('option1')
     const [defaultValue, setDefaultValue] = useState('')
+    const [defaultDropdown, setDefaultDropdown] = useState('option1')
     const [errorValue, setErrorValue] = useState('')
+    const [errorDropdown, setErrorDropdown] = useState('option1')
+    const [disabledItemsValue, setDisabledItemsValue] = useState('')
+    const [disabledItemsDropdown, setDisabledItemsDropdown] =
+        useState('option2')
 
-    // Dropdown options for playground
-    const playgroundDropdownOptions: SelectMenuGroupType[] = [
+    const [positionLeftValue, setPositionLeftValue] = useState('')
+    const [positionLeftDropdown, setPositionLeftDropdown] = useState('USD')
+    const [positionRightValue, setPositionRightValue] = useState('')
+    const [positionRightDropdown, setPositionRightDropdown] = useState('USD')
+
+    const playgroundDropdownOptions: SingleSelectV2GroupType[] = [
         {
             groupLabel: 'Popular Countries',
             items: [
                 {
-                    label: 'tansaction success rate ',
+                    label: 'United States',
                     value: 'US',
-                    isDisabled: false,
+                    disabled: false,
                 },
-                { label: 'United Kingdom', value: 'UK', isDisabled: true },
-                { label: 'Canada', value: 'CA', isDisabled: false },
-                { label: 'Germany', value: 'DE', isDisabled: false },
-                { label: 'France', value: 'FR', isDisabled: false },
+                { label: 'United Kingdom', value: 'UK', disabled: true },
+                { label: 'Canada', value: 'CA', disabled: false },
+                { label: 'Germany', value: 'DE', disabled: false },
+                { label: 'France', value: 'FR', disabled: false },
             ],
             showSeparator: true,
         },
         {
             groupLabel: 'Other Countries',
             items: [
-                { label: 'Australia', value: 'AU', isDisabled: true },
-                { label: 'Japan', value: 'JP', isDisabled: false },
-                { label: 'India', value: 'IN', isDisabled: false },
-                { label: 'Brazil', value: 'BR', isDisabled: false },
-                { label: 'South Africa', value: 'ZA', isDisabled: false },
+                { label: 'Australia', value: 'AU', disabled: true },
+                { label: 'Japan', value: 'JP', disabled: false },
+                { label: 'India', value: 'IN', disabled: false },
+                { label: 'Brazil', value: 'BR', disabled: false },
+                { label: 'South Africa', value: 'ZA', disabled: false },
             ],
         },
     ]
 
-    // Currency options
-    const currencyOptions: SelectMenuGroupType[] = [
+    const currencyOptions: SingleSelectV2GroupType[] = [
         {
             items: [
                 { label: 'USD - US Dollar', value: 'USD' },
@@ -87,8 +109,7 @@ const DropdownInputV2Demo = () => {
         },
     ]
 
-    // Phone country codes
-    const phoneOptions: SelectMenuGroupType[] = [
+    const phoneOptions: SingleSelectV2GroupType[] = [
         {
             items: [
                 { label: '+1 (US/CA)', value: '+1' },
@@ -101,8 +122,7 @@ const DropdownInputV2Demo = () => {
         },
     ]
 
-    // Email domains
-    const emailOptions: SelectMenuGroupType[] = [
+    const emailOptions: SingleSelectV2GroupType[] = [
         {
             groupLabel: 'Popular',
             items: [
@@ -121,8 +141,7 @@ const DropdownInputV2Demo = () => {
         },
     ]
 
-    // Country options
-    const countryOptions: SelectMenuGroupType[] = [
+    const countryOptions: SingleSelectV2GroupType[] = [
         {
             items: [
                 { label: 'United States', value: 'US' },
@@ -136,8 +155,7 @@ const DropdownInputV2Demo = () => {
         },
     ]
 
-    // Time options
-    const timeOptions: SelectMenuGroupType[] = [
+    const timeOptions: SingleSelectV2GroupType[] = [
         {
             items: [
                 { label: 'AM', value: 'AM' },
@@ -146,8 +164,7 @@ const DropdownInputV2Demo = () => {
         },
     ]
 
-    // Basic options for states section
-    const basicOptions: SelectMenuGroupType[] = [
+    const basicOptions: SingleSelectV2GroupType[] = [
         {
             items: [
                 { label: 'Option 1', value: 'option1' },
@@ -156,40 +173,47 @@ const DropdownInputV2Demo = () => {
             ],
         },
     ]
-    // Basic options for states section with disabled items
-    const basicOptionsWithDisabledItems: SelectMenuGroupType[] = [
+
+    const basicOptionsWithDisabledItems: SingleSelectV2GroupType[] = [
         {
             items: [
                 {
                     label: 'Disabled option',
                     value: 'option1',
-                    isDisabled: true,
+                    disabled: true,
                 },
                 {
                     label: 'Enabled option',
                     value: 'option2',
-                    isDisabled: false,
+                    disabled: false,
                 },
                 {
                     label: 'Enabled option',
                     value: 'option3',
-                    isDisabled: false,
+                    disabled: false,
                 },
             ],
         },
     ]
 
-    // Size options for select
-    const sizeOptions = [
-        { value: TextInputSize.MEDIUM, label: 'Medium' },
-        { value: TextInputSize.LARGE, label: 'Large' },
+    const sizeSelectItems = [
+        { value: InputSizeV2.SM, label: 'Small' },
+        { value: InputSizeV2.MD, label: 'Medium' },
+        { value: InputSizeV2.LG, label: 'Large' },
+    ]
+
+    const dropdownPositionSelectItems = [
+        { value: DropdownPosition.LEFT, label: 'Left (default)' },
+        { value: DropdownPosition.RIGHT, label: 'Right' },
     ]
 
     return (
         <div className="p-8 space-y-12">
             {/* Individual DropdownInput Playground */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">DropdownInput Playground</h2>
+                <h2 className="text-2xl font-bold">
+                    DropdownInputV2 Playground
+                </h2>
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <TextInput
@@ -241,12 +265,24 @@ const DropdownInputV2Demo = () => {
 
                         <SingleSelect
                             label="Size"
-                            items={[{ items: sizeOptions }]}
+                            items={[{ items: sizeSelectItems }]}
                             selected={playgroundSize}
                             onSelect={(value) =>
-                                setPlaygroundSize(value as TextInputSize)
+                                setPlaygroundSize(value as InputSizeV2)
                             }
                             placeholder="Select size"
+                        />
+
+                        <SingleSelect
+                            label="Dropdown position"
+                            items={[{ items: dropdownPositionSelectItems }]}
+                            selected={playgroundDropdownPosition}
+                            onSelect={(value) =>
+                                setPlaygroundDropdownPosition(
+                                    value as DropdownPosition
+                                )
+                            }
+                            placeholder="Select position"
                         />
                     </div>
 
@@ -296,12 +332,17 @@ const DropdownInputV2Demo = () => {
                         />
                     </div>
 
-                    <div className="min-h-32 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 bg-gray-50 p-8">
+                    <div
+                        className={`min-h-32 rounded-2xl w-full flex justify-center items-center outline-1 p-8 ${
+                            theme === Theme.DARK
+                                ? 'bg-gray-950 outline-gray-700'
+                                : 'bg-gray-50 outline-gray-200'
+                        }`}
+                    >
                         <div className="w-full max-w-md">
                             <DropdownInputV2
-                                data-id={'Enter city name'}
-                                data-input-name={playgroundValue}
-                                name={playgroundValue}
+                                data-id="dropdown-input-v2-playground"
+                                name="demo-city"
                                 onBlur={() => {
                                     console.log('blur')
                                 }}
@@ -319,20 +360,31 @@ const DropdownInputV2Demo = () => {
                                         ? playgroundHintText
                                         : undefined
                                 }
-                                errorMessage={
-                                    showErrorMessage && playgroundError
-                                        ? playgroundErrorMessage
-                                        : undefined
-                                }
                                 helpIconHintText={
                                     showHelpText
                                         ? playgroundHelpText
                                         : undefined
                                 }
                                 disabled={playgroundDisabled}
-                                error={playgroundError}
+                                error={{
+                                    show: playgroundError,
+                                    message: playgroundErrorMessage,
+                                }}
                                 required={playgroundRequired}
-                                value={playgroundValue}
+                                size={playgroundSize}
+                                dropdownPosition={playgroundDropdownPosition}
+                                input={{
+                                    value: playgroundValue,
+                                    onChange: setPlaygroundValue,
+                                    placeholder: 'Enter city name',
+                                }}
+                                dropDown={{
+                                    label: 'Country',
+                                    items: playgroundDropdownOptions,
+                                    value: playgroundDropdownValue,
+                                    onSelect: setPlaygroundDropdownValue,
+                                    placeholder: 'Country',
+                                }}
                             />
                         </div>
                     </div>
@@ -347,7 +399,18 @@ const DropdownInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">Medium</h3>
                         <DropdownInputV2
                             label="Medium Size"
-                            value={mediumValue}
+                            size={InputSizeV2.MD}
+                            input={{
+                                value: mediumValue,
+                                onChange: setMediumValue,
+                                placeholder: 'Text',
+                            }}
+                            dropDown={{
+                                items: basicOptions,
+                                value: mediumDropdown,
+                                onSelect: setMediumDropdown,
+                                placeholder: 'Select',
+                            }}
                         />
                     </div>
 
@@ -355,7 +418,18 @@ const DropdownInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">Large</h3>
                         <DropdownInputV2
                             label="Large Size"
-                            value={largeValue}
+                            size={InputSizeV2.LG}
+                            input={{
+                                value: largeValue,
+                                onChange: setLargeValue,
+                                placeholder: 'Text',
+                            }}
+                            dropDown={{
+                                items: basicOptions,
+                                value: largeDropdown,
+                                onSelect: setLargeDropdown,
+                                placeholder: 'Select',
+                            }}
                         />
                     </div>
                 </div>
@@ -369,7 +443,17 @@ const DropdownInputV2Demo = () => {
                         <h3 className="text-sm font-medium">Default</h3>
                         <DropdownInputV2
                             label="Default State"
-                            value={defaultValue}
+                            input={{
+                                value: defaultValue,
+                                onChange: setDefaultValue,
+                                placeholder: 'Type here',
+                            }}
+                            dropDown={{
+                                items: basicOptions,
+                                value: defaultDropdown,
+                                onSelect: setDefaultDropdown,
+                                placeholder: 'Select',
+                            }}
                         />
                     </div>
 
@@ -377,9 +461,21 @@ const DropdownInputV2Demo = () => {
                         <h3 className="text-sm font-medium">Error</h3>
                         <DropdownInputV2
                             label="Error State"
-                            error={true}
-                            errorMessage="This field has an error"
-                            value={errorValue}
+                            error={{
+                                show: true,
+                                message: 'This field has an error',
+                            }}
+                            input={{
+                                value: errorValue,
+                                onChange: setErrorValue,
+                                placeholder: 'Type here',
+                            }}
+                            dropDown={{
+                                items: basicOptions,
+                                value: errorDropdown,
+                                onSelect: setErrorDropdown,
+                                placeholder: 'Select',
+                            }}
                         />
                     </div>
 
@@ -388,7 +484,17 @@ const DropdownInputV2Demo = () => {
                         <DropdownInputV2
                             label="Disabled State"
                             disabled={true}
-                            value="Disabled input"
+                            input={{
+                                value: 'Disabled input',
+                                onChange: () => {},
+                                placeholder: 'Type here',
+                            }}
+                            dropDown={{
+                                items: basicOptions,
+                                value: 'option1',
+                                onSelect: () => {},
+                                placeholder: 'Select',
+                            }}
                         />
                     </div>
                     <div className="space-y-3">
@@ -397,8 +503,17 @@ const DropdownInputV2Demo = () => {
                         </h3>
                         <DropdownInputV2
                             label="Disabled items state"
-                            disabled={false}
-                            value="Disabled input"
+                            input={{
+                                value: disabledItemsValue,
+                                onChange: setDisabledItemsValue,
+                                placeholder: 'Select enabled option first',
+                            }}
+                            dropDown={{
+                                items: basicOptionsWithDisabledItems,
+                                value: disabledItemsDropdown,
+                                onSelect: setDisabledItemsDropdown,
+                                placeholder: 'Select',
+                            }}
                         />
                     </div>
                 </div>
@@ -416,9 +531,19 @@ const DropdownInputV2Demo = () => {
                             <DropdownInputV2
                                 label="Amount"
                                 sublabel="Enter the transaction amount"
-                                value={currencyValue}
-                                placeholder="0.00"
                                 hintText="Select currency and enter amount"
+                                input={{
+                                    value: currencyValue,
+                                    onChange: setCurrencyValue,
+                                    placeholder: '0.00',
+                                }}
+                                dropDown={{
+                                    label: 'Currency',
+                                    items: currencyOptions,
+                                    value: currencyDropdown,
+                                    onSelect: setCurrencyDropdown,
+                                    placeholder: 'Currency',
+                                }}
                             />
                         </div>
 
@@ -429,18 +554,38 @@ const DropdownInputV2Demo = () => {
                             <DropdownInputV2
                                 label="Phone Number"
                                 sublabel="Your primary contact number"
-                                value={phoneValue}
-                                placeholder="123-456-7890"
                                 required={true}
+                                input={{
+                                    value: phoneValue,
+                                    onChange: setPhoneValue,
+                                    placeholder: '123-456-7890',
+                                }}
+                                dropDown={{
+                                    label: 'Code',
+                                    items: phoneOptions,
+                                    value: phoneDropdown,
+                                    onSelect: setPhoneDropdown,
+                                    placeholder: 'Code',
+                                }}
                             />
 
                             <DropdownInputV2
                                 label="Email Address"
                                 sublabel="Choose domain or enter custom"
-                                value={emailValue}
-                                placeholder="username"
                                 hintText="Enter username part only"
                                 required={true}
+                                input={{
+                                    value: emailValue,
+                                    onChange: setEmailValue,
+                                    placeholder: 'username',
+                                }}
+                                dropDown={{
+                                    label: 'Domain',
+                                    items: emailOptions,
+                                    value: emailDropdown,
+                                    onSelect: setEmailDropdown,
+                                    placeholder: 'Domain',
+                                }}
                             />
                         </div>
                     </div>
@@ -453,19 +598,98 @@ const DropdownInputV2Demo = () => {
                             <DropdownInputV2
                                 label="Location"
                                 sublabel="Country and city"
-                                value={locationValue}
-                                placeholder="Enter city name"
                                 helpIconHintText="Select country first, then enter city"
+                                input={{
+                                    value: locationValue,
+                                    onChange: setLocationValue,
+                                    placeholder: 'Enter city name',
+                                }}
+                                dropDown={{
+                                    label: 'Country',
+                                    items: countryOptions,
+                                    value: locationDropdown,
+                                    onSelect: setLocationDropdown,
+                                    placeholder: 'Country',
+                                }}
                             />
 
                             <DropdownInputV2
                                 label="Meeting Time"
                                 sublabel="Enter time with AM/PM"
-                                value={timeValue}
-                                placeholder="12:00"
                                 hintText="Enter time in 12-hour format"
+                                input={{
+                                    value: timeValue,
+                                    onChange: setTimeValue,
+                                    placeholder: '12:00',
+                                }}
+                                dropDown={{
+                                    label: 'Period',
+                                    items: timeOptions,
+                                    value: timeDropdown,
+                                    onSelect: setTimeDropdown,
+                                    placeholder: 'AM/PM',
+                                }}
                             />
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Dropdown on left vs right */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Dropdown position</h2>
+                <p
+                    className={`text-sm max-w-3xl ${
+                        theme === Theme.DARK ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                >
+                    Use{' '}
+                    <code className="font-mono text-xs">dropdownPosition</code>{' '}
+                    to place the inline select on the leading or trailing edge
+                    of the field (default is left).
+                </p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Left (default)
+                        </h3>
+                        <DropdownInputV2
+                            label="Amount"
+                            sublabel="Currency on the left"
+                            dropdownPosition={DropdownPosition.LEFT}
+                            input={{
+                                value: positionLeftValue,
+                                onChange: setPositionLeftValue,
+                                placeholder: '0.00',
+                            }}
+                            dropDown={{
+                                label: 'Currency',
+                                items: currencyOptions,
+                                value: positionLeftDropdown,
+                                onSelect: setPositionLeftDropdown,
+                                placeholder: 'Currency',
+                            }}
+                        />
+                    </div>
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Right</h3>
+                        <DropdownInputV2
+                            label="Amount"
+                            sublabel="Currency on the right"
+                            dropdownPosition={DropdownPosition.RIGHT}
+                            input={{
+                                value: positionRightValue,
+                                onChange: setPositionRightValue,
+                                placeholder: '0.00',
+                            }}
+                            dropDown={{
+                                label: 'Currency',
+                                items: currencyOptions,
+                                value: positionRightDropdown,
+                                onSelect: setPositionRightDropdown,
+                                placeholder: 'Currency',
+                            }}
+                        />
                     </div>
                 </div>
             </div>
@@ -481,8 +705,19 @@ const DropdownInputV2Demo = () => {
                         <DropdownInputV2
                             label="Project Settings"
                             sublabel="Configure project parameters"
-                            value=""
                             required={true}
+                            input={{
+                                value: '',
+                                onChange: () => {},
+                                placeholder: 'Value',
+                            }}
+                            dropDown={{
+                                items: basicOptions,
+                                value: 'option1',
+                                onSelect: () => {},
+                                placeholder: 'Setting',
+                            }}
+                            size={InputSizeV2.LG}
                         />
                     </div>
 
@@ -493,10 +728,21 @@ const DropdownInputV2Demo = () => {
                         <DropdownInputV2
                             label="Custom Field"
                             sublabel="Field type and value"
-                            error={false}
-                            errorMessage="Please provide valid data"
+                            error={{ show: false, message: '' }}
                             required={true}
                             helpIconHintText="Choose the field type then enter the corresponding value"
+                            input={{
+                                value: '',
+                                onChange: () => {},
+                                placeholder: 'Enter value',
+                            }}
+                            dropDown={{
+                                items: basicOptions,
+                                value: 'option1',
+                                onSelect: () => {},
+                                placeholder: 'Field type',
+                            }}
+                            size={InputSizeV2.LG}
                         />
                     </div>
                 </div>

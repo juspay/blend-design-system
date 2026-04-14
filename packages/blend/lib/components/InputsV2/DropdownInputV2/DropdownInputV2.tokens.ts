@@ -26,14 +26,17 @@ export type DropdownInputV2TokensType = {
             [key in InputSizeV2]: CSSObject['borderRadius']
         }
         boxShadow: CSSObject['boxShadow']
-
-        padding: {
-            x: {
-                [key in InputSizeV2]: CSSObject['padding']
-            }
-            y: {
-                [key in InputSizeV2]: CSSObject['padding']
-            }
+        paddingTop: {
+            [key in InputSizeV2]: CSSObject['padding']
+        }
+        paddingBottom: {
+            [key in InputSizeV2]: CSSObject['padding']
+        }
+        paddingLeft: {
+            [key in InputSizeV2]: CSSObject['padding']
+        }
+        paddingRight: {
+            [key in InputSizeV2]: CSSObject['padding']
         }
         border: {
             [key in InputStateV2]: CSSObject['border']
@@ -41,6 +44,9 @@ export type DropdownInputV2TokensType = {
 
         backgroundColor: {
             [key in InputStateV2]: CSSObject['backgroundColor']
+        }
+        lineHeight: {
+            [key in InputSizeV2]: CSSObject['lineHeight']
         }
     }
     bottomContainer: InputFooterV2Tokens

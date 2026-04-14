@@ -77,6 +77,11 @@ export const getDropdownInputV2LightTokens = (
                 },
             },
             inputContainer: {
+                lineHeight: {
+                    sm: foundationTokens.font.lineHeight[20],
+                    md: foundationTokens.font.lineHeight[20],
+                    lg: foundationTokens.font.lineHeight[20],
+                },
                 gap: foundationTokens.unit[8],
                 fontSize: {
                     sm: foundationTokens.font.size.body.md.fontSize,
@@ -94,17 +99,25 @@ export const getDropdownInputV2LightTokens = (
                     md: foundationTokens.unit[10],
                     lg: foundationTokens.unit[10],
                 },
-                padding: {
-                    x: {
-                        sm: foundationTokens.unit[10],
-                        md: foundationTokens.unit[12],
-                        lg: foundationTokens.unit[14],
-                    },
-                    y: {
-                        sm: foundationTokens.unit[6],
-                        md: foundationTokens.unit[8],
-                        lg: foundationTokens.unit[14],
-                    },
+                paddingTop: {
+                    sm: foundationTokens.unit[6],
+                    md: foundationTokens.unit[8],
+                    lg: foundationTokens.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationTokens.unit[6],
+                    md: foundationTokens.unit[8],
+                    lg: foundationTokens.unit[14],
+                },
+                paddingLeft: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[12],
+                    lg: foundationTokens.unit[14],
+                },
+                paddingRight: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[12],
+                    lg: foundationTokens.unit[14],
                 },
                 border: {
                     default: `1px solid ${foundationTokens.colors.gray[200]}`,
@@ -198,7 +211,7 @@ export const getDropdownInputV2LightTokens = (
                         hover: foundationTokens.colors.gray[700],
                         focus: foundationTokens.colors.gray[700],
                         disabled: foundationTokens.colors.gray[400],
-                        error: foundationTokens.colors.gray[700],
+                        error: foundationTokens.colors.red[600],
                     },
                 },
                 subLabel: {
@@ -222,7 +235,7 @@ export const getDropdownInputV2LightTokens = (
                         hover: foundationTokens.colors.gray[400],
                         focus: foundationTokens.colors.gray[400],
                         disabled: foundationTokens.colors.gray[400],
-                        error: foundationTokens.colors.gray[400],
+                        error: foundationTokens.colors.red[600],
                     },
                 },
                 helpIcon: {
@@ -245,6 +258,11 @@ export const getDropdownInputV2LightTokens = (
             },
 
             inputContainer: {
+                lineHeight: {
+                    sm: foundationTokens.font.lineHeight[20],
+                    md: foundationTokens.font.lineHeight[20],
+                    lg: foundationTokens.font.lineHeight[20],
+                },
                 gap: foundationTokens.unit[8],
                 fontSize: {
                     sm: foundationTokens.font.size.body.md.fontSize,
@@ -261,17 +279,25 @@ export const getDropdownInputV2LightTokens = (
                     md: foundationTokens.unit[10],
                     lg: foundationTokens.unit[10],
                 },
-                padding: {
-                    x: {
-                        sm: foundationTokens.unit[10],
-                        md: foundationTokens.unit[14],
-                        lg: foundationTokens.unit[14],
-                    },
-                    y: {
-                        sm: foundationTokens.unit[4],
-                        md: foundationTokens.unit[6],
-                        lg: foundationTokens.unit[8],
-                    },
+                paddingTop: {
+                    sm: foundationTokens.unit[6],
+                    md: foundationTokens.unit[8],
+                    lg: foundationTokens.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationTokens.unit[6],
+                    md: foundationTokens.unit[8],
+                    lg: foundationTokens.unit[14],
+                },
+                paddingLeft: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[12],
+                    lg: foundationTokens.unit[14],
+                },
+                paddingRight: {
+                    sm: foundationTokens.unit[10],
+                    md: foundationTokens.unit[12],
+                    lg: foundationTokens.unit[14],
                 },
                 border: {
                     default: `1px solid ${foundationTokens.colors.gray[200]}`,
