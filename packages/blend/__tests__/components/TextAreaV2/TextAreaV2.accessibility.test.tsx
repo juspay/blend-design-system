@@ -366,6 +366,34 @@ describe('TextAreaV2 Accessibility', () => {
             ).toBeInTheDocument()
         })
 
+        it('keeps accessible name when field has value (floated label)', () => {
+            render(
+                <TextAreaV2
+                    label="Summary"
+                    placeholder="…"
+                    value="User content"
+                    onChange={noop}
+                />
+            )
+            const ta = screen.getByRole('textbox', { name: /summary/i })
+            expect(ta).toHaveValue('User content')
+        })
+
+        it('uses empty native placeholder on sm so label is the primary instruction', () => {
+            render(
+                <TextAreaV2
+                    label="Notes"
+                    placeholder="Would be hidden on sm"
+                    value=""
+                    onChange={noop}
+                />
+            )
+            expect(screen.getByRole('textbox')).toHaveAttribute(
+                'placeholder',
+                ''
+            )
+        })
+
         it('does not expose desktop sublabel text (top labels omitted)', () => {
             render(
                 <TextAreaV2
@@ -381,6 +409,36 @@ describe('TextAreaV2 Accessibility', () => {
             ).not.toBeInTheDocument()
         })
 
+        it('associates hint with textarea via aria-describedby on sm', () => {
+            render(
+                <TextAreaV2
+                    label="L"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    hintText="Small-screen hint"
+                />
+            )
+            const ta = screen.getByRole('textbox')
+            const hint = screen.getByText('Small-screen hint')
+            expect(ta.getAttribute('aria-describedby')).toBe(hint.id)
+        })
+
+        it('associates error message with textarea via aria-describedby on sm', () => {
+            render(
+                <TextAreaV2
+                    label="Field"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    error={{ show: true, message: 'Fix on mobile' }}
+                />
+            )
+            const ta = screen.getByRole('textbox')
+            const err = screen.getByText('Fix on mobile')
+            expect(ta.getAttribute('aria-describedby')).toBe(err.id)
+        })
+
         it('meets WCAG standards with axe on sm layout', async () => {
             const { container } = render(
                 <TextAreaV2
@@ -390,6 +448,51 @@ describe('TextAreaV2 Accessibility', () => {
                     onChange={noop}
                     hintText="Hint for screen readers"
                 />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG with axe on sm when value is present (floated label)', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Body"
+                    placeholder="…"
+                    value="Long text for scroll"
+                    onChange={noop}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG with axe on sm with error and hint', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Email body"
+                    placeholder="…"
+                    value="x"
+                    onChange={noop}
+                    hintText="Hint"
+                    error={{ show: true, message: 'Invalid' }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG with axe on sm for optional field using aria-label (no visible label)', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    aria-label="Optional notes"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                />
+            )
+            expect(screen.getByRole('textbox')).toHaveAttribute(
+                'aria-label',
+                'Optional notes'
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()

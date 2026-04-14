@@ -28,7 +28,7 @@ Multi-line text field (V2) using \`TEXT_AREA_V2\` tokens, \`InputLabelsV2\`, and
 
 ## Features
 - Label, sublabel, hint text, and optional help hint on the label (\`helpIconHintText\`)
-- \`error\` / \`errorMessage\`, \`required\`, \`disabled\`
+- \`error: { show, message? }\`, \`required\`, \`disabled\`
 - \`rows\`, \`cols\`, \`resize\`, \`wrap\` — passed to the native \`<textarea>\`
 - On small breakpoints, static labels are hidden and placeholder is cleared
 - Forwarded \`ref\` attaches to the \`<textarea>\` element
@@ -128,14 +128,9 @@ const [notes, setNotes] = useState('');
             table: { type: { summary: 'boolean' }, category: 'State' },
         },
         error: {
-            control: { type: 'boolean' },
-            description: 'Validation error state (use with errorMessage)',
-            table: { type: { summary: 'boolean' }, category: 'Validation' },
-        },
-        errorMessage: {
-            control: { type: 'text' },
-            description: 'Error message shown when error is true',
-            table: { type: { summary: 'string' }, category: 'Validation' },
+            control: { type: 'object' },
+            description: 'Validation: { show: boolean; message?: string }',
+            table: { type: { summary: 'object' }, category: 'Validation' },
         },
         autoFocus: {
             control: { type: 'boolean' },
@@ -199,7 +194,7 @@ export const Default: Story = {
         rows: 4,
         disabled: false,
         required: false,
-        error: false,
+        error: { show: false, message: '' },
         resize: 'vertical',
     },
 }
@@ -213,15 +208,17 @@ export const WithError: Story = {
                 placeholder="Tell us about yourself"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                error
-                errorMessage="Please enter at least 50 characters."
+                error={{
+                    show: true,
+                    message: 'Please enter at least 50 characters.',
+                }}
             />
         )
     },
     parameters: {
         docs: {
             description: {
-                story: 'Error state with `error` and `errorMessage` (footer shows the alert; hint is omitted when `error` is true).',
+                story: 'Error state with `error: { show: true, message }` (footer shows the alert; hint is omitted when `error.show` is true).',
             },
         },
     },

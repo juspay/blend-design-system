@@ -3,8 +3,28 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import { TextAreaV2 } from '../../../lib/components/InputsV2/TextAreaV2'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
+import {
+    getTextAreaAriaDescribedBy,
+    getTextAreaInputPadding,
+    getTextAreaInteractionKeys,
+    getTextAreaLabelState,
+} from '../../../lib/components/InputsV2/TextAreaV2/utils'
+import type { TextAreaTokensType } from '../../../lib/components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import {
+    InputSizeV2,
+    InputStateV2,
+} from '../../../lib/components/InputsV2/inputV2.types'
 
 const noop = () => {}
+
+/** Minimal `inputContainer.padding` for `getTextAreaInputPadding` unit tests. */
+const mockInputContainerPadding: TextAreaTokensType['inputContainer']['padding'] =
+    {
+        top: { sm: 10, md: 10, lg: 10 },
+        right: { sm: 14, md: 14, lg: 14 },
+        bottom: { sm: 10, md: 10, lg: 10 },
+        left: { sm: 14, md: 14, lg: 14 },
+    }
 
 describe('TextAreaV2', () => {
     beforeEach(() => {
@@ -375,6 +395,45 @@ describe('TextAreaV2', () => {
             ).not.toBeInTheDocument()
             expect(screen.getByText('Mobile label')).toBeInTheDocument()
         })
+
+        it('renders floating label layer when label is set', () => {
+            render(
+                <TextAreaV2
+                    label="Float me"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                />
+            )
+            expect(
+                document.querySelector('[data-element="label"]')
+            ).toBeInTheDocument()
+            expect(
+                document.querySelector('[data-element="floating-label"]')
+            ).toBeInTheDocument()
+        })
+
+        it('does not render floating label layer when label is omitted', () => {
+            render(<TextAreaV2 placeholder="…" value="" onChange={noop} />)
+            expect(
+                document.querySelector('[data-element="floating-label"]')
+            ).not.toBeInTheDocument()
+        })
+
+        it('increases top padding when floated (has value on sm)', () => {
+            render(
+                <TextAreaV2
+                    label="Padded"
+                    placeholder="…"
+                    value="x"
+                    onChange={noop}
+                />
+            )
+            const ta = screen.getByRole('textbox')
+            const cs = window.getComputedStyle(ta)
+            expect(parseFloat(cs.paddingTop)).toBeGreaterThan(0)
+            expect(parseFloat(cs.paddingBottom)).toBe(0)
+        })
     })
 
     describe('rest onKeyDown', () => {
@@ -392,6 +451,119 @@ describe('TextAreaV2', () => {
             await user.click(screen.getByRole('textbox'))
             await user.keyboard('{Escape}')
             expect(onKeyDown).toHaveBeenCalled()
+        })
+    })
+
+    describe('utils', () => {
+        describe('getTextAreaInputPadding', () => {
+            it('doubles top padding and clears bottom on sm when focused or filled', () => {
+                const ic = {
+                    padding: mockInputContainerPadding,
+                } as TextAreaTokensType['inputContainer']
+                const r = getTextAreaInputPadding({
+                    inputContainer: ic,
+                    size: InputSizeV2.MD,
+                    isSmallScreen: true,
+                    inputFocusedOrWithValue: true,
+                })
+                expect(r.paddingTop).toBe(20)
+                expect(r.paddingBottom).toBe(0)
+                expect(r.floatingLabelTopPadding).toBe(10)
+                expect(r.floatingLabelLeftPadding).toBe(14)
+            })
+
+            it('uses base padding when not small screen', () => {
+                const ic = {
+                    padding: mockInputContainerPadding,
+                } as TextAreaTokensType['inputContainer']
+                const r = getTextAreaInputPadding({
+                    inputContainer: ic,
+                    size: InputSizeV2.MD,
+                    isSmallScreen: false,
+                    inputFocusedOrWithValue: true,
+                })
+                expect(r.paddingTop).toBe(10)
+                expect(r.paddingBottom).toBe(10)
+            })
+        })
+
+        describe('getTextAreaAriaDescribedBy', () => {
+            it('returns hint id when hint present and no error', () => {
+                expect(
+                    getTextAreaAriaDescribedBy(
+                        'hint',
+                        { show: false, message: '' },
+                        'h-id',
+                        'e-id'
+                    )
+                ).toBe('h-id')
+            })
+
+            it('returns error id when error shown with message', () => {
+                expect(
+                    getTextAreaAriaDescribedBy(
+                        undefined,
+                        { show: true, message: 'bad' },
+                        'h-id',
+                        'e-id'
+                    )
+                ).toBe('e-id')
+            })
+
+            it('returns undefined when nothing describes the field', () => {
+                expect(
+                    getTextAreaAriaDescribedBy(
+                        undefined,
+                        { show: false, message: '' },
+                        'h-id',
+                        'e-id'
+                    )
+                ).toBeUndefined()
+            })
+        })
+
+        describe('getTextAreaLabelState', () => {
+            it('returns DISABLED when disabled', () => {
+                expect(getTextAreaLabelState(true, false, false)).toBe(
+                    InputStateV2.DISABLED
+                )
+            })
+
+            it('returns ERROR when error shown', () => {
+                expect(getTextAreaLabelState(false, true, true)).toBe(
+                    InputStateV2.ERROR
+                )
+            })
+
+            it('returns FOCUS when focused and no error', () => {
+                expect(getTextAreaLabelState(false, false, true)).toBe(
+                    InputStateV2.FOCUS
+                )
+            })
+
+            it('returns DEFAULT otherwise', () => {
+                expect(getTextAreaLabelState(false, false, false)).toBe(
+                    InputStateV2.DEFAULT
+                )
+            })
+        })
+
+        describe('getTextAreaInteractionKeys', () => {
+            it('maps error and disabled to token keys', () => {
+                expect(getTextAreaInteractionKeys(true, false)).toEqual({
+                    borderDefault: 'error',
+                    borderHover: 'error',
+                    borderFocus: 'error',
+                    bgDefault: 'error',
+                    bgHover: 'error',
+                    textColorKey: 'default',
+                })
+                expect(getTextAreaInteractionKeys(false, true)).toEqual(
+                    expect.objectContaining({
+                        textColorKey: 'disabled',
+                    })
+                )
+            })
         })
     })
 })

@@ -8,12 +8,17 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useState, useId, forwardRef, useMemo } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
-import { toPixels } from '../../../global-utils/GlobalUtils'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
 import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
-import { InputSizeV2, InputStateV2, type AnyRef } from '../inputV2.types'
+import { InputSizeV2, type AnyRef } from '../inputV2.types'
 import { FOCUS_RING_STYLES, TRANSITION } from '../TextInputV2/utils'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
+import {
+    getTextAreaAriaDescribedBy,
+    getTextAreaInputPadding,
+    getTextAreaInteractionKeys,
+    getTextAreaLabelState,
+} from './utils'
 
 const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
     (props, ref) => {
@@ -56,38 +61,43 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
         const { errorId, hintId } = generateAccessibilityIds(textareaId)
 
         const ariaDescribedBy = useMemo(
-            () =>
-                [
-                    hintText && !error.show ? hintId : null,
-                    error.show && error.message ? errorId : null,
-                ]
-                    .filter(Boolean)
-                    .join(' ') || undefined,
-            [hintText, error.show, error.message, hintId, errorId]
+            () => getTextAreaAriaDescribedBy(hintText, error, hintId, errorId),
+            [hintText, error, hintId, errorId]
         )
 
-        const labelState = useMemo((): InputStateV2 => {
-            if (disabled) return InputStateV2.DISABLED
-            if (error.show) return InputStateV2.ERROR
-            if (isFocused) return InputStateV2.FOCUS
-            return InputStateV2.DEFAULT
-        }, [disabled, error.show, isFocused])
+        const labelState = useMemo(
+            () => getTextAreaLabelState(disabled, error.show, isFocused),
+            [disabled, error.show, isFocused]
+        )
 
         const inputFocusedOrWithValue = isFocused || value.length > 0
 
-        const paddingX = toPixels(ic.padding.right[size])
-        const paddingY = toPixels(ic.padding.top[size])
+        const inputPadding = useMemo(
+            () =>
+                getTextAreaInputPadding({
+                    inputContainer: ic,
+                    size,
+                    isSmallScreen,
+                    inputFocusedOrWithValue,
+                }),
+            [ic, size, isSmallScreen, inputFocusedOrWithValue]
+        )
+
+        const {
+            borderDefault,
+            borderHover,
+            borderFocus,
+            bgDefault,
+            bgHover,
+            textColorKey,
+        } = useMemo(
+            () => getTextAreaInteractionKeys(error.show, disabled),
+            [error.show, disabled]
+        )
 
         const setTextAreaRef = (node: HTMLTextAreaElement | null) => {
             setExternalRef(ref as AnyRef<HTMLTextAreaElement>, node)
         }
-
-        const borderDefault = error.show ? 'error' : 'default'
-        const borderHover = error.show ? 'error' : 'hover'
-        const borderFocus = error.show ? 'error' : 'focus'
-        const bgDefault = error.show ? 'error' : 'default'
-        const bgHover = error.show ? 'error' : 'hover'
-        const textColorKey = disabled ? 'disabled' : 'default'
 
         return (
             <Block
@@ -123,14 +133,15 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                             name={name}
                             inputId={textareaId}
                             isInputFocusedOrWithValue={inputFocusedOrWithValue}
-                            topPadding={paddingX}
-                            leftPadding={paddingX}
+                            topPadding={inputPadding.floatingLabelTopPadding}
+                            leftPadding={inputPadding.floatingLabelLeftPadding}
                             tokens={{
                                 placeholder: ic.placeholder,
                                 required: textAreaTokens.topContainer.required,
                             }}
                             size={size}
                             state={labelState}
+                            backgroundColor={ic.backgroundColor[bgDefault]}
                         />
                     )}
                     <PrimitiveTextarea
@@ -162,17 +173,10 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                         cols={cols}
                         borderRadius={ic.borderRadius}
                         resize={resize}
-                        paddingX={paddingX}
-                        paddingTop={
-                            isSmallScreen && inputFocusedOrWithValue
-                                ? paddingY + 14
-                                : paddingY
-                        }
-                        paddingBottom={
-                            isSmallScreen && inputFocusedOrWithValue
-                                ? 0
-                                : paddingY
-                        }
+                        paddingTop={inputPadding.paddingTop}
+                        paddingBottom={inputPadding.paddingBottom}
+                        paddingLeft={inputPadding.paddingLeft}
+                        paddingRight={inputPadding.paddingRight}
                         border={ic.border[borderDefault]}
                         fontSize={ic.fontSize}
                         fontWeight={ic.fontWeight}
@@ -191,7 +195,6 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                         _focus={{
                             border: ic.border[borderFocus],
                             boxShadow: FOCUS_RING_STYLES.boxShadow,
-                            backgroundColor: FOCUS_RING_STYLES.backgroundColor,
                         }}
                         disabled={disabled}
                         _disabled={{
