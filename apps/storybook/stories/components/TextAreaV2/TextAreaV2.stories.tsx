@@ -29,7 +29,7 @@ Multi-line text field (V2) using \`TEXT_AREA_V2\` tokens, \`InputLabelsV2\`, and
 ## Features
 - Label, sublabel, hint text, and optional help hint on the label (\`helpIconHintText\`)
 - \`error: { show, message? }\`, \`required\`, \`disabled\`
-- \`rows\`, \`cols\`, \`resize\`, \`wrap\` — passed to the native \`<textarea>\`
+- \`rows\`, \`resize\`, \`wrap\` — passed to the native \`<textarea>\`
 - On small breakpoints, static labels are hidden and placeholder is cleared
 - Forwarded \`ref\` attaches to the \`<textarea>\` element
 - \`filterBlockedProps\` strips \`className\` / \`style\` from spread rest
@@ -98,10 +98,6 @@ const [notes, setNotes] = useState('');
             table: { type: { summary: 'string' }, category: 'Labels' },
         },
         rows: {
-            control: { type: 'number', min: 1 },
-            table: { type: { summary: 'number' }, category: 'Layout' },
-        },
-        cols: {
             control: { type: 'number', min: 1 },
             table: { type: { summary: 'number' }, category: 'Layout' },
         },

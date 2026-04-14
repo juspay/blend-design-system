@@ -31,7 +31,6 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
             onFocus,
             onBlur,
             rows = 3,
-            cols,
             label,
             sublabel,
             hintText,
@@ -170,7 +169,6 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                         }}
                         rows={rows}
                         required={required}
-                        cols={cols}
                         borderRadius={ic.borderRadius}
                         resize={resize}
                         paddingTop={inputPadding.paddingTop}
