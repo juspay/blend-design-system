@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudioIndexRouteImport } from './routes/studio/index'
+import { Route as MonitorIndexRouteImport } from './routes/monitor/index'
 import { Route as AuthCallbackIndexRouteImport } from './routes/auth-callback/index'
 import { Route as StudioTestRouteImport } from './routes/studio/test'
 import { Route as StudioPreviewBranchIdRouteImport } from './routes/studio/preview.$branchId'
@@ -30,6 +31,11 @@ const IndexRoute = IndexRouteImport.update({
 const StudioIndexRoute = StudioIndexRouteImport.update({
   id: '/studio/',
   path: '/studio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MonitorIndexRoute = MonitorIndexRouteImport.update({
+  id: '/monitor/',
+  path: '/monitor/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthCallbackIndexRoute = AuthCallbackIndexRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/studio/test': typeof StudioTestRoute
   '/auth-callback/': typeof AuthCallbackIndexRoute
+  '/monitor/': typeof MonitorIndexRoute
   '/studio/': typeof StudioIndexRoute
   '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
   '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/studio/test': typeof StudioTestRoute
   '/auth-callback': typeof AuthCallbackIndexRoute
+  '/monitor': typeof MonitorIndexRoute
   '/studio': typeof StudioIndexRoute
   '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
   '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/studio/test': typeof StudioTestRoute
   '/auth-callback/': typeof AuthCallbackIndexRoute
+  '/monitor/': typeof MonitorIndexRoute
   '/studio/': typeof StudioIndexRoute
   '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
   '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/studio/test'
     | '/auth-callback/'
+    | '/monitor/'
     | '/studio/'
     | '/studio/editor/$branchId'
     | '/studio/preview/$branchId'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/studio/test'
     | '/auth-callback'
+    | '/monitor'
     | '/studio'
     | '/studio/editor/$branchId'
     | '/studio/preview/$branchId'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/studio/test'
     | '/auth-callback/'
+    | '/monitor/'
     | '/studio/'
     | '/studio/editor/$branchId'
     | '/studio/preview/$branchId'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   StudioTestRoute: typeof StudioTestRoute
   AuthCallbackIndexRoute: typeof AuthCallbackIndexRoute
+  MonitorIndexRoute: typeof MonitorIndexRoute
   StudioIndexRoute: typeof StudioIndexRoute
   StudioEditorBranchIdRoute: typeof StudioEditorBranchIdRoute
   StudioPreviewBranchIdRoute: typeof StudioPreviewBranchIdRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/studio'
       fullPath: '/studio/'
       preLoaderRoute: typeof StudioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/monitor/': {
+      id: '/monitor/'
+      path: '/monitor'
+      fullPath: '/monitor/'
+      preLoaderRoute: typeof MonitorIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth-callback/': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   StudioTestRoute: StudioTestRoute,
   AuthCallbackIndexRoute: AuthCallbackIndexRoute,
+  MonitorIndexRoute: MonitorIndexRoute,
   StudioIndexRoute: StudioIndexRoute,
   StudioEditorBranchIdRoute: StudioEditorBranchIdRoute,
   StudioPreviewBranchIdRoute: StudioPreviewBranchIdRoute,

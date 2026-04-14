@@ -31,25 +31,36 @@ import {
     Zap,
     HelpCircle,
     Palette,
-    Code,
     Sparkles,
+    Terminal,
+    Home,
 } from 'lucide-react'
 import {
     useOnboarding,
     WelcomeOnboarding,
 } from '@/components/studio/WelcomeOnboarding'
 import { featureFlags } from '@/lib/feature-flags'
+import { UserMenu } from '@/components/layout/UserMenu'
 
 export const Route = createFileRoute('/studio/')({
     component: StudioPage,
 })
 
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
 type StatusFilter = 'all' | 'draft' | 'published' | 'archived'
+
 type ModalState =
     | { type: 'none' }
     | { type: 'create' }
     | { type: 'fork'; branch: Branch }
     | { type: 'delete'; branch: Branch }
+
+// ---------------------------------------------------------------------------
+// Main Page
+// ---------------------------------------------------------------------------
 
 function StudioPage() {
     const navigate = useNavigate()
@@ -57,7 +68,7 @@ function StudioPage() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
     const [modal, setModal] = useState<ModalState>({ type: 'none' })
     const [openMenu, setOpenMenu] = useState<string | null>(null)
-    const [showHelp, setShowHelp] = useState(false)
+    const [showGuide, setShowGuide] = useState(false)
     const { isComplete: onboardingComplete, complete: completeOnboarding } =
         useOnboarding()
     const flags = featureFlags.get()
@@ -106,16 +117,25 @@ function StudioPage() {
                     <WelcomeOnboarding onComplete={completeOnboarding} />
                 )}
 
+                {/* Header */}
                 <div className="bg-white border-b border-gray-200">
                     <div className="max-w-7xl mx-auto px-6 py-5">
                         <div className="flex items-center justify-between">
                             <div>
                                 <div className="flex items-center gap-3 mb-1">
+                                    <Link
+                                        to="/"
+                                        className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                                        title="Back to home"
+                                    >
+                                        <Home className="w-4 h-4" />
+                                    </Link>
+                                    <div className="w-px h-5 bg-gray-200" />
                                     <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                                         <Zap className="w-4 h-4 text-white" />
                                     </div>
                                     <h1 className="text-xl font-bold text-gray-900">
-                                        Token Studio
+                                        Branches
                                     </h1>
                                     {flags.useMockData && (
                                         <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
@@ -123,19 +143,24 @@ function StudioPage() {
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-500">
-                                    Manage design tokens for your brand —
-                                    colors, radius, shadows, and more
+                                <p className="text-sm text-gray-500 ml-[72px]">
+                                    Each branch is a versioned brand
+                                    configuration. Edit tokens, preview live,
+                                    publish, then pull into your project.
                                 </p>
                             </div>
 
                             <div className="flex items-center gap-3">
                                 <button
-                                    onClick={() => setShowHelp(!showHelp)}
-                                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                                    title="Help"
+                                    onClick={() => setShowGuide(!showGuide)}
+                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border rounded-lg transition-colors ${
+                                        showGuide
+                                            ? 'bg-blue-50 text-blue-700 border-blue-300'
+                                            : 'text-gray-600 border-gray-300 hover:bg-gray-50'
+                                    }`}
                                 >
-                                    <HelpCircle className="w-5 h-5" />
+                                    <HelpCircle className="w-4 h-4" />
+                                    Quick Guide
                                 </button>
                                 <button
                                     onClick={() => setModal({ type: 'create' })}
@@ -144,66 +169,18 @@ function StudioPage() {
                                     <Plus className="w-4 h-4" />
                                     New Branch
                                 </button>
+                                <UserMenu />
                             </div>
                         </div>
 
-                        {showHelp && (
-                            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                                <div className="flex items-start gap-3">
-                                    <Sparkles className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                                    <div className="flex-1">
-                                        <h3 className="text-sm font-semibold text-blue-900 mb-1">
-                                            What is Token Studio?
-                                        </h3>
-                                        <p className="text-sm text-blue-800 mb-3">
-                                            Token Studio lets you customize
-                                            Blend components for your brand
-                                            visually. Each "branch" contains a
-                                            complete set of design tokens
-                                            (colors, border radius, shadows)
-                                            that can be exported and used in
-                                            your React app.
-                                        </p>
-                                        <div className="grid grid-cols-3 gap-4 text-xs">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center">
-                                                    <GitBranch className="w-3 h-3 text-blue-600" />
-                                                </div>
-                                                <span className="text-blue-700">
-                                                    <strong>Branch:</strong> A
-                                                    versioned token set
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 bg-purple-100 rounded flex items-center justify-center">
-                                                    <Palette className="w-3 h-3 text-purple-600" />
-                                                </div>
-                                                <span className="text-blue-700">
-                                                    <strong>Editor:</strong>{' '}
-                                                    Visual token editor
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 bg-green-100 rounded flex items-center justify-center">
-                                                    <Code className="w-3 h-3 text-green-600" />
-                                                </div>
-                                                <span className="text-blue-700">
-                                                    <strong>CLI:</strong> Pull
-                                                    tokens to your app
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => setShowHelp(false)}
-                                        className="text-blue-400 hover:text-blue-600"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
+                        {/* Quick Guide Panel */}
+                        {showGuide && (
+                            <QuickGuidePanel
+                                onClose={() => setShowGuide(false)}
+                            />
                         )}
 
+                        {/* Search & Filter Bar */}
                         <div className="mt-4 flex items-center gap-3">
                             <div className="relative flex-1 max-w-md">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -385,6 +362,112 @@ function StudioPage() {
         </RequireAuth>
     )
 }
+
+// ---------------------------------------------------------------------------
+// Quick Guide Panel
+// ---------------------------------------------------------------------------
+
+function QuickGuidePanel({ onClose }: { onClose: () => void }) {
+    return (
+        <div className="mt-4 p-5 bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 rounded-xl">
+            <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-blue-600" />
+                    <h3 className="text-sm font-semibold text-blue-900">
+                        How Token Studio Works
+                    </h3>
+                </div>
+                <button
+                    onClick={onClose}
+                    className="text-blue-400 hover:text-blue-600 p-0.5"
+                    aria-label="Close guide"
+                >
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+                <GuideStep
+                    step={1}
+                    icon={GitBranch}
+                    title="Create a Branch"
+                    description="Start from a preset (HDFC, NeoBank, FinTech) or blank. Each branch holds a complete brand config."
+                />
+                <GuideStep
+                    step={2}
+                    icon={Palette}
+                    title="Edit Tokens Visually"
+                    description="Pick colors, adjust radius, shadows, and fonts. See all 26 V2 components update live."
+                />
+                <GuideStep
+                    step={3}
+                    icon={Terminal}
+                    title="Publish & Pull"
+                    description="Publish a version, then run the CLI command below to pull tokens into your app."
+                />
+            </div>
+
+            <div className="bg-gray-900 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-gray-500 font-medium">
+                        Use in your project:
+                    </span>
+                </div>
+                <div className="text-xs font-mono space-y-1">
+                    <div className="text-gray-500"># One-time setup</div>
+                    <div className="text-green-400">
+                        npx blend-token-studio init
+                    </div>
+                    <div className="text-gray-500 mt-2">
+                        # Pull a published branch
+                    </div>
+                    <div className="text-green-400">
+                        npx blend-token-studio pull {'<branchId>'}
+                    </div>
+                    <div className="text-gray-500 mt-2">
+                        # Switch to a different branch/brand anytime
+                    </div>
+                    <div className="text-green-400">
+                        npx blend-token-studio pull neobank/light
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function GuideStep({
+    step,
+    icon: Icon,
+    title,
+    description,
+}: {
+    step: number
+    icon: React.ComponentType<{ className?: string }>
+    title: string
+    description: string
+}) {
+    return (
+        <div className="flex items-start gap-3">
+            <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                {step}
+            </div>
+            <div>
+                <div className="flex items-center gap-1.5 mb-0.5">
+                    <Icon className="w-3.5 h-3.5 text-blue-600" />
+                    <span className="text-sm font-medium text-gray-800">
+                        {title}
+                    </span>
+                </div>
+                <p className="text-xs text-gray-600">{description}</p>
+            </div>
+        </div>
+    )
+}
+
+// ---------------------------------------------------------------------------
+// Branch Card
+// ---------------------------------------------------------------------------
 
 function BranchCard({
     branch,

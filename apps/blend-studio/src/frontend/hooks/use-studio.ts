@@ -45,7 +45,7 @@ export function useBranchesWithMock(options?: BranchListOptions) {
                 const { listBranchesBackend } = await import('@/api/backend')
                 const result = await listBranchesBackend(backendToken, {
                     limit: options?.limit,
-                    createdBy: options?.filters?.createdBy,
+                    createdBy: options?.filters?.owner,
                 })
                 setBranches(result.branches)
                 setTotal(result.branches.length)
@@ -553,12 +553,18 @@ export function useForkBranchWithMock() {
 // ---------------------------------------------------------------------------
 // useResolvedTokens
 // ---------------------------------------------------------------------------
+
+/**
+ * Returns a memoized function that resolves brand config into component tokens.
+ * Call the returned function to get the resolved tokens.
+ */
 export function useResolvedTokens(
     brandConfig: BrandConfig | null,
     theme: 'light' | 'dark' = 'light'
 ) {
     return useCallback(() => {
         if (!brandConfig) return null
+        const { resolveBrandTokens } = require('@blend-design/token-engine')
         return resolveBrandTokens(brandConfig, theme)
     }, [brandConfig, theme])
 }

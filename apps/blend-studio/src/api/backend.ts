@@ -1,57 +1,138 @@
-import { featureFlags } from '@/lib/feature-flags'
-import type { Branch, CreateBranchInput } from '@blend-design/token-engine'
+/**
+ * Backend API Client
+ *
+ * Typed HTTP client for communicating with the Blend Studio backend API.
+ * All responses follow a consistent envelope format:
+ *   { success: true, data: { ... } }
+ *   { success: false, error: { message: string, code?: string } }
+ */
 
+import { featureFlags } from '@/lib/feature-flags'
+import type {
+    Branch,
+    BrandConfig,
+    CreateBranchInput,
+} from '@blend-design/token-engine'
+
+// ---------------------------------------------------------------------------
+// Error Class
+// ---------------------------------------------------------------------------
+
+/**
+ * Structured error from the backend API.
+ * Includes HTTP status code and optional error code for programmatic handling.
+ */
 export class BackendApiError extends Error {
     constructor(
-        public statusCode: number,
+        public readonly statusCode: number,
         message: string,
-        public code?: string
+        public readonly code?: string
     ) {
         super(message)
         this.name = 'BackendApiError'
     }
 }
 
-async function fetchWithAuth(
-    endpoint: string,
-    options: RequestInit = {},
-    token: string
-): Promise<Response> {
-    const flags = featureFlags.get()
-    // Use relative URL to go through Vite proxy in dev
-    const baseUrl = flags.apiBaseUrl || ''
+// ---------------------------------------------------------------------------
+// API Response Types
+// ---------------------------------------------------------------------------
 
-    const url = `${baseUrl}${endpoint}`
+/** Standard successful API response wrapper. */
+interface ApiSuccessResponse<T> {
+    success: true
+    data: T
+}
 
-    const headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-        ...options.headers,
+/** Standard error API response wrapper. */
+interface ApiErrorResponse {
+    success: false
+    error: {
+        message: string
+        code?: string
     }
+}
+
+/** Union type for all API responses. */
+type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse
+
+// ---------------------------------------------------------------------------
+// Response Payload Types
+// ---------------------------------------------------------------------------
+
+interface BranchResponse {
+    branch: Branch
+}
+
+interface BranchListResponse {
+    branches: Branch[]
+    nextCursor?: string
+}
+
+interface ResolveTokensResponse {
+    branch: Branch
+    componentTokens: Record<string, unknown>
+    theme: string
+}
+
+// ---------------------------------------------------------------------------
+// Internal Helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Make an authenticated API request.
+ * Automatically adds auth headers and parses JSON response.
+ */
+async function fetchWithAuth<T>(
+    endpoint: string,
+    options: RequestInit,
+    token: string
+): Promise<T> {
+    const flags = featureFlags.get()
+    const baseUrl = flags.apiBaseUrl || ''
+    const url = `${baseUrl}${endpoint}`
 
     const response = await fetch(url, {
         ...options,
-        headers,
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            ...options.headers,
+        },
         credentials: 'include',
     })
 
     if (!response.ok) {
-        const error = await response.json().catch(() => null)
+        const errorBody = await response.json().catch(() => null)
         throw new BackendApiError(
             response.status,
-            error?.error?.message || `HTTP ${response.status}`,
-            error?.error?.code
+            errorBody?.error?.message || `HTTP ${response.status}`,
+            errorBody?.error?.code
         )
     }
 
-    return response
+    const data = (await response.json()) as ApiResponse<T>
+
+    if (!data.success) {
+        throw new BackendApiError(
+            response.status,
+            (data as ApiErrorResponse).error?.message || 'Unknown error',
+            (data as ApiErrorResponse).error?.code
+        )
+    }
+
+    return (data as ApiSuccessResponse<T>).data
 }
 
+// ---------------------------------------------------------------------------
+// Branch CRUD
+// ---------------------------------------------------------------------------
+
+/** Create a new branch. */
 export async function createBranchBackend(
     token: string,
     input: CreateBranchInput
 ): Promise<Branch> {
-    const response = await fetchWithAuth(
+    const data = await fetchWithAuth<BranchResponse>(
         '/api/branches',
         {
             method: 'POST',
@@ -68,16 +149,10 @@ export async function createBranchBackend(
         },
         token
     )
-
-    const data = await response.json()
-
-    if (!data.success || !data.data?.branch) {
-        throw new Error(data.error?.message || 'Failed to create branch')
-    }
-
-    return data.data.branch as Branch
+    return data.branch
 }
 
+/** List all branches with optional pagination. */
 export async function listBranchesBackend(
     token: string,
     options?: {
@@ -92,48 +167,37 @@ export async function listBranchesBackend(
     if (options?.createdBy) params.append('createdBy', options.createdBy)
 
     const query = params.toString() ? `?${params.toString()}` : ''
-    const response = await fetchWithAuth(`/api/branches${query}`, {}, token)
 
-    const data = await response.json()
-
-    if (!data.success || !data.data) {
-        throw new Error(data.error?.message || 'Failed to list branches')
-    }
-
-    return {
-        branches: data.data.branches as Branch[],
-        nextCursor: data.data.nextCursor,
-    }
+    return fetchWithAuth<BranchListResponse>(
+        `/api/branches${query}`,
+        { method: 'GET' },
+        token
+    )
 }
 
+/** Get a single branch by ID. */
 export async function getBranchBackend(
     token: string,
     branchId: string
 ): Promise<Branch> {
-    const response = await fetchWithAuth(
+    const data = await fetchWithAuth<BranchResponse>(
         `/api/branches/${encodeURIComponent(branchId)}`,
-        {},
+        { method: 'GET' },
         token
     )
-
-    const data = await response.json()
-
-    if (!data.success || !data.data?.branch) {
-        throw new Error(data.error?.message || 'Failed to get branch')
-    }
-
-    return data.data.branch as Branch
+    return data.branch
 }
 
+/** Update a branch's name or brand config. */
 export async function updateBranchBackend(
     token: string,
     branchId: string,
     updates: Partial<{
         name: string
-        brandConfig: Record<string, unknown>
+        brandConfig: BrandConfig
     }>
 ): Promise<Branch> {
-    const response = await fetchWithAuth(
+    const data = await fetchWithAuth<BranchResponse>(
         `/api/branches/${encodeURIComponent(branchId)}`,
         {
             method: 'PATCH',
@@ -141,33 +205,32 @@ export async function updateBranchBackend(
         },
         token
     )
-
-    const data = await response.json()
-
-    if (!data.success || !data.data?.branch) {
-        throw new Error(data.error?.message || 'Failed to update branch')
-    }
-
-    return data.data.branch as Branch
+    return data.branch
 }
 
+/** Delete a branch. */
 export async function deleteBranchBackend(
     token: string,
     branchId: string
 ): Promise<void> {
-    await fetchWithAuth(
+    await fetchWithAuth<Record<string, never>>(
         `/api/branches/${encodeURIComponent(branchId)}`,
         { method: 'DELETE' },
         token
     )
 }
 
+// ---------------------------------------------------------------------------
+// Branch Actions
+// ---------------------------------------------------------------------------
+
+/** Fork a branch into a new branch. */
 export async function forkBranchBackend(
     token: string,
     sourceBranchId: string,
     name: string
 ): Promise<Branch> {
-    const response = await fetchWithAuth(
+    const data = await fetchWithAuth<BranchResponse>(
         `/api/branches/${encodeURIComponent(sourceBranchId)}/fork`,
         {
             method: 'POST',
@@ -175,23 +238,17 @@ export async function forkBranchBackend(
         },
         token
     )
-
-    const data = await response.json()
-
-    if (!data.success || !data.data?.branch) {
-        throw new Error(data.error?.message || 'Failed to fork branch')
-    }
-
-    return data.data.branch as Branch
+    return data.branch
 }
 
+/** Publish a versioned snapshot of a branch. */
 export async function publishBranchBackend(
     token: string,
     branchId: string,
     version: string,
     notes?: string
 ): Promise<void> {
-    await fetchWithAuth(
+    await fetchWithAuth<Record<string, never>>(
         `/api/branches/${encodeURIComponent(branchId)}/publish`,
         {
             method: 'POST',
@@ -201,12 +258,13 @@ export async function publishBranchBackend(
     )
 }
 
+/** Resolve a branch's brand config into component tokens. */
 export async function resolveTokensBackend(
     token: string,
     branchId: string,
     theme: 'light' | 'dark' = 'light'
-): Promise<{ branch: Branch; tokens: Record<string, unknown>; theme: string }> {
-    const response = await fetchWithAuth(
+): Promise<ResolveTokensResponse> {
+    return fetchWithAuth<ResolveTokensResponse>(
         `/api/branches/${encodeURIComponent(branchId)}/resolve`,
         {
             method: 'POST',
@@ -214,16 +272,4 @@ export async function resolveTokensBackend(
         },
         token
     )
-
-    const data = await response.json()
-
-    if (!data.success || !data.data) {
-        throw new Error(data.error?.message || 'Failed to resolve tokens')
-    }
-
-    return {
-        branch: data.data.branch as Branch,
-        tokens: data.data.componentTokens as Record<string, unknown>,
-        theme: data.data.theme,
-    }
 }

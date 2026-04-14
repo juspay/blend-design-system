@@ -23,7 +23,7 @@ export default function PermissionGuard({
     // Simple permission check based on user role
     const hasPermission = (permission: string) => {
         if (!user) return false
-        const [permResource, permAction] = permission.split(':')
+        const [, permAction] = permission.split(':')
         // Admin has all permissions
         if (user.role === 'admin' || user.role === 'superadmin') return true
         // Editor can write
@@ -67,7 +67,7 @@ export function withPermission<T extends object>(
 export function usePermissions() {
     const { user } = useBackendAuth()
 
-    const hasPermission = (resource: string, action: string) => {
+    const hasPermission = (_resource: string, action: string) => {
         if (!user) return false
         // Admin has all permissions
         if (user.role === 'admin' || user.role === 'superadmin') return true
