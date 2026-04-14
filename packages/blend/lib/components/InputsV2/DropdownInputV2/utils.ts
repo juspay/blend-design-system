@@ -33,7 +33,9 @@ export const defaultDropDown: {
 
 export const defaultInput = {
     value: '',
-    onChange: (_value: string) => {},
+    onChange: (value: string) => {
+        void value
+    },
     placeholder: 'Enter value',
     size: InputSizeV2.MD,
     label: 'Value',
