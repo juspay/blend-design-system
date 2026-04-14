@@ -46,6 +46,7 @@ Numeric input (V2) with responsive tokens, static or floating labels (small view
 - Label with optional subtext; hint under field; optional help tooltip on label
 - External error: \`error: { show, message? }\`; internal range messages when value is outside \`min\` / \`max\`
 - \`min\`, \`max\`, \`step\`; \`preventNegative\` normalizes display and stepping
+- Optional \`unit\` (e.g. \`kg\`, \`%\`) — shown in a suffix strip; stepper buttons appear when \`unit\` is omitted or empty
 - \`forwardRef\` → underlying \`<input>\` for focus and form libraries
 
 ## Accessibility
@@ -68,6 +69,7 @@ import { NumberInputV2, InputSizeV2 } from '…';
   onChange={(e) => setQty(parseNumberInputValue(e))}
   min={0}
   max={99}
+  unit="kg"
   size={InputSizeV2.MD}
 />
 \`\`\`
@@ -132,6 +134,12 @@ import { NumberInputV2, InputSizeV2 } from '…';
         hintText: {
             control: { type: 'text' },
             table: { type: { summary: 'string' }, category: 'Labels' },
+        },
+        unit: {
+            control: { type: 'text' },
+            description:
+                'Suffix label (e.g. kg, %). When set, the numeric stepper is hidden and the unit strip is shown.',
+            table: { type: { summary: 'string' }, category: 'Content' },
         },
         error: {
             control: { type: 'object' },
@@ -200,6 +208,7 @@ export const Default: Story = {
         required: false,
         error: { show: false, message: '' },
         step: 1,
+        unit: '',
     },
 }
 
@@ -244,6 +253,13 @@ export const VisualStates: Story = {
                     onChange={noop}
                     disabled
                 />
+                <NumberInputV2
+                    label={{ text: 'With unit', subtext: '' }}
+                    placeholder="0"
+                    value={12}
+                    onChange={noop}
+                    unit="kg"
+                />
             </div>
         )
     },
@@ -251,7 +267,7 @@ export const VisualStates: Story = {
         controls: { disable: true },
         docs: {
             description: {
-                story: 'Static snapshot of common states (empty, filled, required, error, disabled).',
+                story: 'Static snapshot of common states (empty, filled, required, error, disabled, with unit suffix).',
             },
         },
         chromatic: { ...CHROMATIC_CONFIG, delay: 400 },
@@ -317,6 +333,31 @@ export const Sizes: Story = {
     },
 }
 
+export const WithUnit: Story = {
+    render: function WithUnitStory() {
+        const [value, setValue] = useState<number | null>(2.5)
+        return (
+            <NumberInputV2
+                label={{ text: 'Weight', subtext: 'Shippable mass' }}
+                placeholder="0"
+                min={0}
+                step={0.1}
+                unit="kg"
+                value={value}
+                onChange={(e) => setValue(parseNumberInputValue(e))}
+                hintText="Suffix strip for the unit; increment/decrement buttons are omitted when a unit is shown."
+            />
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Use `unit` for dimensions, currency symbols, or other short suffixes. Keyboard stepping (arrows) still applies when the input is focused.',
+            },
+        },
+    },
+}
+
 // —— Validation & hints ———————————————————————————————————————————
 
 export const WithMinMax: Story = {
@@ -329,6 +370,7 @@ export const WithMinMax: Story = {
                 min={0}
                 max={100}
                 step={5}
+                unit="%"
                 value={value}
                 onChange={(e) => setValue(parseNumberInputValue(e))}
                 hintText="Enter a value between 0 and 100."

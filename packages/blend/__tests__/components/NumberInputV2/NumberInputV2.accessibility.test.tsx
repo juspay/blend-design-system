@@ -70,6 +70,20 @@ describe('NumberInputV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards when unit suffix is shown (no stepper buttons)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Weight', subtext: '' }}
+                    value={12}
+                    onChange={noop}
+                    unit="kg"
+                    hintText="Enter mass in kilograms."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {
@@ -298,6 +312,30 @@ describe('NumberInputV2 Accessibility', () => {
     })
 
     describe('WCAG 2.4.3 Focus Order (Level A)', () => {
+        it('tabs from input to next field when unit hides steppers (no focusable increment controls)', async () => {
+            const { user } = render(
+                <>
+                    <NumberInputV2
+                        label={{ text: 'First', subtext: '' }}
+                        value={1}
+                        onChange={noop}
+                        unit="%"
+                    />
+                    <NumberInputV2
+                        label={{ text: 'Second', subtext: '' }}
+                        value={2}
+                        onChange={noop}
+                        unit="px"
+                    />
+                </>
+            )
+            const inputs = screen.getAllByRole('spinbutton')
+            await user.tab()
+            expect(document.activeElement).toBe(inputs[0])
+            await user.tab()
+            expect(document.activeElement).toBe(inputs[1])
+        })
+
         it('maintains logical focus order in form (inputs, steppers, then submit)', async () => {
             const { user } = render(
                 <form>
@@ -493,6 +531,41 @@ describe('NumberInputV2 Accessibility', () => {
                 'placeholder',
                 'Enter amount'
             )
+        })
+    })
+
+    describe('Unit suffix (unit prop)', () => {
+        it('exposes spinbutton name from the label (unit is visual suffix)', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Load', subtext: '' }}
+                    value={5}
+                    onChange={noop}
+                    unit="kg"
+                />
+            )
+            expect(
+                screen.getByRole('spinbutton', { name: /load/i })
+            ).toBeInTheDocument()
+            expect(screen.getByText('kg')).toBeInTheDocument()
+        })
+
+        it('meets WCAG with axe for unit, required, and error', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Portion', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    unit="g"
+                    required
+                    error={{
+                        show: true,
+                        message: 'Amount is required.',
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 

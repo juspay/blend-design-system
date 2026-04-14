@@ -100,6 +100,65 @@ describe('NumberInputV2 Component', () => {
         })
     })
 
+    describe('Unit suffix (unit prop)', () => {
+        it('renders unit strip and hides stepper buttons when unit is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Mass', subtext: '' }}
+                    value={12}
+                    onChange={noop}
+                    unit="kg"
+                />
+            )
+            expect(screen.getByText('kg')).toBeInTheDocument()
+            expect(
+                document.querySelector('[data-element="unit"]')
+            ).toBeInTheDocument()
+            expect(
+                screen.queryByRole('button', { name: /Increase Mass/i })
+            ).not.toBeInTheDocument()
+            expect(
+                screen.queryByRole('button', { name: /Decrease Mass/i })
+            ).not.toBeInTheDocument()
+        })
+
+        it('still exposes spinbutton when unit is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Pct', subtext: '' }}
+                    value={50}
+                    onChange={noop}
+                    unit="%"
+                />
+            )
+            expect(screen.getByRole('spinbutton')).toHaveValue('50')
+        })
+
+        it('increments via ArrowUp when unit is set (no stepper buttons)', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'U', subtext: '' }}
+                    value={4}
+                    onChange={handleChange}
+                    min={0}
+                    max={10}
+                    step={1}
+                    unit="px"
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            handleChange.mockClear()
+            await user.keyboard('{ArrowUp}')
+            expect(handleChange).toHaveBeenCalledTimes(1)
+            expect(
+                handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
+                    .target.value
+            ).toBe('5')
+        })
+    })
+
     describe('Input states', () => {
         it('renders disabled state', () => {
             render(
