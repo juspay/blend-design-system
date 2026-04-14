@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import {
     ColumnDefinition,
     SortDirection,
@@ -14,8 +14,8 @@ import {
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import type { PivotTableConfig } from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/types'
 import {
-    applyPivotFilters,
     buildPivotPreview,
+    normalizePivotValue,
 } from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/utils'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
 import { Tag } from '../../../../packages/blend/lib/components/Tags'
@@ -2118,6 +2118,42 @@ const DataTableDemo = () => {
         Array<Record<string, unknown> & { __pivotId: string }>
     >([])
 
+    /**
+     * Generic pivot source adapter:
+     * - keeps numeric columns numeric for SUM/AVG/MIN/MAX
+     * - normalizes complex UI values (avatar/tag/multiselect objects) into readable strings
+     *
+     * Consumers can copy this pattern for API payloads before calling buildPivotPreview.
+     */
+    const pivotSourceData = useMemo(() => {
+        const parseNumeric = (value: unknown): number => {
+            if (typeof value === 'number') return value
+            const cleaned = normalizePivotValue(value)
+                .replace(/,/g, '')
+                .replace(/[^\d.-]/g, '')
+                .trim()
+            const parsed = Number(cleaned)
+            return Number.isFinite(parsed) ? parsed : 0
+        }
+
+        return (data as Record<string, unknown>[]).map((row) => {
+            const normalizedRow: Record<string, unknown> = {}
+
+            columns.forEach((column) => {
+                const field = String(column.field)
+                const rawValue = row[field]
+
+                if (column.type === ColumnType.NUMBER) {
+                    normalizedRow[field] = parseNumeric(rawValue)
+                } else {
+                    normalizedRow[field] = normalizePivotValue(rawValue)
+                }
+            })
+
+            return normalizedRow
+        })
+    }, [data, columns])
+
     // Simulate server-side API call
     const fetchServerData = async (
         searchQuery: string,
@@ -2919,12 +2955,8 @@ const DataTableDemo = () => {
 
     const handlePivotConfigChange = useCallback(
         (config: PivotTableConfig<Record<string, unknown>>) => {
-            const filteredRows = applyPivotFilters(
-                data as Record<string, unknown>[],
-                config.filters
-            )
             const preview = buildPivotPreview(
-                filteredRows,
+                pivotSourceData,
                 config.rows,
                 config.columns,
                 config.values
@@ -2932,7 +2964,7 @@ const DataTableDemo = () => {
             setPivotPreviewColumns(preview.columns)
             setPivotPreviewRows(preview.rows)
         },
-        [data]
+        [pivotSourceData]
     )
 
     return (
@@ -3196,7 +3228,34 @@ const DataTableDemo = () => {
                 )}
             </div>
 
-            {/* 
+            <div
+                style={{
+                    marginBottom: '16px',
+                    padding: '12px 16px',
+                    backgroundColor: '#f5f7fa',
+                    border: '1px solid #e1e4ea',
+                    borderRadius: '8px',
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        marginBottom: '6px',
+                    }}
+                >
+                    Pivot Quick Guide (ready-to-use pattern)
+                </div>
+                <div style={{ fontSize: '13px', color: '#525866' }}>
+                    1) Use base-table columns as Rows/Columns/Values. <br />
+                    2) Filters are optional: they reduce source rows before
+                    aggregation (COUNT/SUM/AVG/etc.). <br />
+                    3) This demo normalizes complex cell values and keeps
+                    numeric columns numeric so pivot operations map correctly.
+                </div>
+            </div>
+
+            {/*
                 User Management Table - Demonstrating New Features:
                 
                 1. showExport: Set to false to hide the default Export button in BulkActionBar.
@@ -3261,9 +3320,17 @@ const DataTableDemo = () => {
                     ),
                     title: 'Pivot Table Editor',
                     description:
-                        'Configure rows, columns, values, filters, and preview using DataTable.',
-                    showFilters: true,
+                        'Pick Rows/Columns/Values to shape the pivot preview.',
                     showExport: true,
+                    availableAggregations: [
+                        PivotAggregationType.COUNT,
+                        PivotAggregationType.SUM,
+                        PivotAggregationType.AVERAGE,
+                        PivotAggregationType.MEAN,
+                        PivotAggregationType.MEDIAN,
+                        PivotAggregationType.MIN,
+                        PivotAggregationType.MAX,
+                    ],
                     previewColumns: pivotPreviewColumns,
                     previewRows: pivotPreviewRows,
                     initialConfig: {

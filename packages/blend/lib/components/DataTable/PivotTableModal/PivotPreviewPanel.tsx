@@ -121,7 +121,7 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
                             style={{
                                 fontSize: pivot.emptyState.exampleFontSize,
                                 color: pivot.emptyState.exampleColor,
-                                lineHeight: pivot.builder.bodyLineHeight,
+                                lineHeight: pivot.bodyLineHeight,
                             }}
                         >
                             Add at least one field under Values. Rows fill the

@@ -12,6 +12,8 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import Button from '../../Button/Button'
 import { ButtonSize, ButtonType } from '../../Button/types'
+import Tag from '../../Tags/Tag'
+import { TagColor, TagSize, TagVariant } from '../../Tags/types'
 import SingleSelect from '../../SingleSelect/SingleSelect'
 import { SelectMenuSize, SelectMenuVariant } from '../../SingleSelect/types'
 import Menu from '../../Menu/Menu'
@@ -23,12 +25,11 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { PivotTableModalProps } from './types'
 import {
-    applyPivotFilters,
     buildPivotPreview,
     getPivotFieldOptions,
     getSupportedAggregationsForField,
 } from './utils'
-import { FieldChip, NoScrollbar } from './pivotModal.styled'
+import { NoScrollbar } from './pivotModal.styled'
 import { getPivotModalStyleTokens } from './pivotModalStyleTokens'
 import PivotPreviewPanel from './PivotPreviewPanel'
 
@@ -50,7 +51,6 @@ const PivotTableModal = forwardRef<
             data,
             title = 'Pivot Table',
             description: subtitle,
-            showFilters = false,
             showExport = true,
             initialConfig,
             previewColumns,
@@ -110,19 +110,6 @@ const PivotTableModal = forwardRef<
                     aggregation: PivotAggregationType
                 }>) || []
         )
-        const [filterConfigs, setFilterConfigs] = useState<
-            Array<{
-                field: keyof Record<string, unknown>
-                selectedValues: string[]
-            }>
-        >(
-            () =>
-                (initialConfig?.filters as Array<{
-                    field: keyof Record<string, unknown>
-                    selectedValues: string[]
-                }>) || []
-        )
-
         // State for value field selection
         const [selectedValueField, setSelectedValueField] =
             useState<keyof Record<string, unknown>>('')
@@ -152,7 +139,9 @@ const PivotTableModal = forwardRef<
                     data,
                     option.key as keyof Record<string, unknown>,
                     allowedAggregations,
-                    columnTypeByField.get(option.key) === ColumnType.NUMBER
+                    [ColumnType.NUMBER, ColumnType.SLIDER].includes(
+                        columnTypeByField.get(option.key) as ColumnType
+                    )
                 )
                 map.set(option.key, supported)
             })
@@ -252,26 +241,6 @@ const PivotTableModal = forwardRef<
             })
         }
 
-        const addFilterField = (field: keyof Record<string, unknown>) => {
-            if (
-                field &&
-                !filterConfigs.some(
-                    (item) => String(item.field) === String(field)
-                )
-            ) {
-                setFilterConfigs((prev) => [
-                    ...prev,
-                    { field, selectedValues: [] },
-                ])
-            }
-        }
-
-        const removeFilterField = (field: keyof Record<string, unknown>) => {
-            setFilterConfigs((prev) =>
-                prev.filter((item) => String(item.field) !== String(field))
-            )
-        }
-
         const lastEmittedConfigRef = useRef<string>('')
 
         useEffect(() => {
@@ -284,7 +253,6 @@ const PivotTableModal = forwardRef<
                 rows: rowFields,
                 columns: columnFields,
                 values: valueConfigs,
-                filters: filterConfigs,
             }
             const configString = JSON.stringify(config)
 
@@ -292,14 +260,7 @@ const PivotTableModal = forwardRef<
                 lastEmittedConfigRef.current = configString
                 onConfigChange?.(config)
             }
-        }, [
-            isOpen,
-            rowFields,
-            columnFields,
-            valueConfigs,
-            filterConfigs,
-            onConfigChange,
-        ])
+        }, [isOpen, rowFields, columnFields, valueConfigs, onConfigChange])
 
         useEffect(() => {
             if (!selectedValueField) return
@@ -344,7 +305,6 @@ const PivotTableModal = forwardRef<
                     rows: rowFields,
                     columns: columnFields,
                     values: valueConfigs,
-                    filters: filterConfigs,
                 })
                 return
             }
@@ -374,12 +334,8 @@ const PivotTableModal = forwardRef<
                 }
             }
 
-            const filteredRows = applyPivotFilters(
-                data as Record<string, unknown>[],
-                filterConfigs
-            )
             return buildPivotPreview(
-                filteredRows,
+                data as Record<string, unknown>[],
                 rowFields,
                 columnFields,
                 valueConfigs
@@ -388,7 +344,6 @@ const PivotTableModal = forwardRef<
             previewColumns,
             previewRows,
             data,
-            filterConfigs,
             rowFields,
             columnFields,
             valueConfigs,
@@ -442,8 +397,6 @@ const PivotTableModal = forwardRef<
          */
         const renderSectionHeader = (
             icon: string,
-            iconBg: string,
-            iconColor: string,
             title: string,
             count: number
         ) => (
@@ -460,7 +413,8 @@ const PivotTableModal = forwardRef<
                         width: pivot.iconBadge.size,
                         height: pivot.iconBadge.size,
                         borderRadius: pivot.iconBadge.borderRadius,
-                        backgroundColor: iconBg,
+                        backgroundColor:
+                            tableToken.dataTable.table.header.backgroundColor,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -470,7 +424,7 @@ const PivotTableModal = forwardRef<
                         style={{
                             fontSize: pivot.iconBadge.glyphFontSize,
                             fontWeight: pivot.iconBadge.glyphFontWeight,
-                            color: iconColor,
+                            color: tableToken.dataTable.table.body.cell.color,
                         }}
                     >
                         {icon}
@@ -525,52 +479,40 @@ const PivotTableModal = forwardRef<
             </Block>
         )
 
-        const renderFieldChip = (
+        const renderFieldTag = (
             key: string,
             field: string,
-            bgColor: string,
-            borderColor: string,
-            textColor: string,
             onRemove: () => void
         ) => (
-            <FieldChip
-                $pivot={pivot}
+            <Tag
                 key={key}
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: pivot.chip.padding,
-                    backgroundColor: bgColor,
-                    borderRadius: pivot.chip.borderRadius,
-                    border: `1px solid ${borderColor}`,
-                }}
-            >
-                <PrimitiveText
-                    style={{
-                        fontSize: pivot.valueFieldTitle.fontSize,
-                        fontWeight: pivot.valueFieldTitle.fontWeight,
-                        color: textColor,
-                    }}
-                >
-                    {field}
-                </PrimitiveText>
-                <button
-                    type="button"
-                    style={removeButtonStyle}
-                    onClick={onRemove}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor =
-                            pivot.removeButton.hoverBackground
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor =
-                            pivot.removeButton.background
-                    }}
-                >
-                    <Trash2 size={pivot.removeButton.iconSize} />
-                </button>
-            </FieldChip>
+                text={field}
+                variant={TagVariant.SUBTLE}
+                color={TagColor.NEUTRAL}
+                size={TagSize.SM}
+                maxWidth="100%"
+                rightSlot={
+                    <button
+                        type="button"
+                        style={removeButtonStyle}
+                        onClick={onRemove}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor =
+                                pivot.removeButton.hoverBackground
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor =
+                                pivot.removeButton.background
+                        }}
+                        aria-label={`Remove ${field}`}
+                    >
+                        <Trash2
+                            size={pivot.removeButton.iconSize}
+                            color={pivot.removeButton.iconColor}
+                        />
+                    </button>
+                }
+            />
         )
 
         const renderFieldSelector = (
@@ -624,13 +566,7 @@ const PivotTableModal = forwardRef<
                 }}
             >
                 <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
-                    {renderSectionHeader(
-                        '↓',
-                        pivot.sectionAccent.row.background,
-                        pivot.sectionAccent.row.icon,
-                        'Rows',
-                        rowFields.length
-                    )}
+                    {renderSectionHeader('↓', 'Rows', rowFields.length)}
                     <Block
                         style={{
                             minHeight:
@@ -657,12 +593,9 @@ const PivotTableModal = forwardRef<
                                 }}
                             >
                                 {rowFields.map((field) =>
-                                    renderFieldChip(
+                                    renderFieldTag(
                                         `row-${String(field)}`,
                                         String(field),
-                                        pivot.sectionAccent.row.background,
-                                        pivot.sectionAccent.row.border,
-                                        pivot.sectionAccent.row.text,
                                         () => removeRowField(field)
                                     )
                                 )}
@@ -684,13 +617,7 @@ const PivotTableModal = forwardRef<
                 </Block>
 
                 <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
-                    {renderSectionHeader(
-                        '→',
-                        pivot.sectionAccent.column.background,
-                        pivot.sectionAccent.column.icon,
-                        'Columns',
-                        columnFields.length
-                    )}
+                    {renderSectionHeader('→', 'Columns', columnFields.length)}
                     <Block
                         style={{
                             minHeight:
@@ -717,12 +644,9 @@ const PivotTableModal = forwardRef<
                                 }}
                             >
                                 {columnFields.map((field) =>
-                                    renderFieldChip(
+                                    renderFieldTag(
                                         `col-${String(field)}`,
                                         String(field),
-                                        pivot.sectionAccent.column.background,
-                                        pivot.sectionAccent.column.border,
-                                        pivot.sectionAccent.column.text,
                                         () => removeColumnField(field)
                                     )
                                 )}
@@ -744,13 +668,7 @@ const PivotTableModal = forwardRef<
                 </Block>
 
                 <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
-                    {renderSectionHeader(
-                        '∑',
-                        pivot.sectionAccent.value.background,
-                        pivot.sectionAccent.value.icon,
-                        'Values',
-                        valueConfigs.length
-                    )}
+                    {renderSectionHeader('∑', 'Values', valueConfigs.length)}
                     <Block
                         style={{
                             minHeight:
@@ -777,8 +695,7 @@ const PivotTableModal = forwardRef<
                                 }}
                             >
                                 {valueConfigs.map((config, index) => (
-                                    <FieldChip
-                                        $pivot={pivot}
+                                    <Block
                                         key={`val-${String(config.field)}-${index}`}
                                         style={{
                                             display: 'flex',
@@ -786,14 +703,11 @@ const PivotTableModal = forwardRef<
                                             gap: pivot.spacing.stackGap,
                                             padding: pivot.dropZone.padding,
                                             backgroundColor:
-                                                pivot.sectionAccent.value
-                                                    .background,
+                                                tableToken.dataTable.table.body
+                                                    .backgroundColor,
                                             borderRadius:
                                                 pivot.chip.borderRadius,
-                                            border:
-                                                '1px solid ' +
-                                                pivot.sectionAccent.value
-                                                    .border,
+                                            border: tableToken.dataTable.border,
                                         }}
                                     >
                                         <Block
@@ -803,46 +717,47 @@ const PivotTableModal = forwardRef<
                                                 justifyContent: 'space-between',
                                             }}
                                         >
-                                            <PrimitiveText
-                                                style={{
-                                                    fontSize:
-                                                        pivot.valueFieldTitle
-                                                            .fontSize,
-                                                    fontWeight:
-                                                        pivot.valueFieldTitle
-                                                            .fontWeight,
-                                                    color: pivot.sectionAccent
-                                                        .value.text,
-                                                }}
-                                            >
-                                                {String(config.field)}
-                                            </PrimitiveText>
-                                            <button
-                                                type="button"
-                                                style={removeButtonStyle}
-                                                onClick={() =>
-                                                    removeValueField(index)
+                                            <Tag
+                                                text={String(config.field)}
+                                                variant={TagVariant.SUBTLE}
+                                                color={TagColor.NEUTRAL}
+                                                size={TagSize.SM}
+                                                rightSlot={
+                                                    <button
+                                                        type="button"
+                                                        style={
+                                                            removeButtonStyle
+                                                        }
+                                                        onClick={() =>
+                                                            removeValueField(
+                                                                index
+                                                            )
+                                                        }
+                                                        onMouseEnter={(e) => {
+                                                            e.currentTarget.style.backgroundColor =
+                                                                pivot.removeButton.hoverBackground
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            e.currentTarget.style.backgroundColor =
+                                                                pivot.removeButton.background
+                                                        }}
+                                                        aria-label={`Remove ${String(config.field)}`}
+                                                    >
+                                                        <Trash2
+                                                            size={
+                                                                pivot
+                                                                    .removeButton
+                                                                    .iconSize
+                                                            }
+                                                            color={
+                                                                pivot
+                                                                    .removeButton
+                                                                    .iconColor
+                                                            }
+                                                        />
+                                                    </button>
                                                 }
-                                                onMouseEnter={(e) => {
-                                                    e.currentTarget.style.backgroundColor =
-                                                        pivot.removeButton.hoverBackground
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    e.currentTarget.style.backgroundColor =
-                                                        pivot.removeButton.background
-                                                }}
-                                            >
-                                                <Trash2
-                                                    size={
-                                                        pivot.removeButton
-                                                            .iconSize
-                                                    }
-                                                    color={
-                                                        pivot.removeButton
-                                                            .iconColor
-                                                    }
-                                                />
-                                            </button>
+                                            />
                                         </Block>
                                         <Menu
                                             items={[
@@ -861,10 +776,12 @@ const PivotTableModal = forwardRef<
                                                                         pivot.menuCheckIconSize
                                                                     }
                                                                     color={
-                                                                        pivot
-                                                                            .sectionAccent
-                                                                            .value
-                                                                            .icon
+                                                                        tableToken
+                                                                            .dataTable
+                                                                            .table
+                                                                            .body
+                                                                            .cell
+                                                                            .color
                                                                     }
                                                                 />
                                                             ) : null,
@@ -890,7 +807,7 @@ const PivotTableModal = forwardRef<
                                                 />
                                             }
                                         />
-                                    </FieldChip>
+                                    </Block>
                                 ))}
                             </Block>
                         )}
@@ -905,6 +822,7 @@ const PivotTableModal = forwardRef<
                             <Block
                                 style={{
                                     display: 'flex',
+                                    flexDirection: 'column',
                                     gap: pivot.spacing.controlsRowGap,
                                 }}
                             >
@@ -944,6 +862,7 @@ const PivotTableModal = forwardRef<
                                     }
                                     variant={SelectMenuVariant.CONTAINER}
                                     size={SelectMenuSize.SMALL}
+                                    // fullWidth
                                     disabled={
                                         selectedValueAggregationOptions.length ===
                                         0
@@ -979,91 +898,6 @@ const PivotTableModal = forwardRef<
                         </Block>
                     )}
                 </Block>
-
-                {showFilters && (
-                    <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
-                        {renderSectionHeader(
-                            '⚲',
-                            pivot.sectionAccent.filter.background,
-                            pivot.sectionAccent.filter.icon,
-                            'Filters',
-                            filterConfigs.length
-                        )}
-                        <Block
-                            style={{
-                                minHeight:
-                                    filterConfigs.length === 0
-                                        ? pivot.dropZone.emptyMinHeight
-                                        : 'auto',
-                                padding: pivot.dropZone.padding,
-                                backgroundColor: pivot.dropZone.background,
-                                borderRadius: pivot.dropZone.borderRadius,
-                                border: pivot.dropZone.border,
-                            }}
-                        >
-                            {filterConfigs.length === 0 ? (
-                                renderEmptyState(
-                                    'Filter which data appears',
-                                    ''
-                                )
-                            ) : (
-                                <Block
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: pivot.spacing.stackGap,
-                                    }}
-                                >
-                                    {filterConfigs.map((filterConfig) => {
-                                        const option = fieldOptions.find(
-                                            (item) =>
-                                                item.key ===
-                                                String(filterConfig.field)
-                                        )
-                                        if (!option) return null
-                                        return renderFieldChip(
-                                            `filter-${option.key}`,
-                                            option.label,
-                                            pivot.sectionAccent.filter
-                                                .background,
-                                            pivot.sectionAccent.filter.border,
-                                            pivot.sectionAccent.filter.text,
-                                            () =>
-                                                removeFilterField(
-                                                    filterConfig.field
-                                                )
-                                        )
-                                    })}
-                                </Block>
-                            )}
-                        </Block>
-                        {fieldOptions.filter(
-                            (f) =>
-                                !filterConfigs.some(
-                                    (fc) => String(fc.field) === f.key
-                                )
-                        ).length > 0 &&
-                            renderFieldSelector(
-                                'Choose a field...',
-                                fieldOptions
-                                    .filter(
-                                        (f) =>
-                                            !filterConfigs.some(
-                                                (fc) =>
-                                                    String(fc.field) === f.key
-                                            )
-                                    )
-                                    .map((f) => ({
-                                        label: f.label,
-                                        value: f.key,
-                                    })),
-                                (value) =>
-                                    addFilterField(
-                                        value as keyof Record<string, unknown>
-                                    )
-                            )}
-                    </Block>
-                )}
             </NoScrollbar>
         )
 

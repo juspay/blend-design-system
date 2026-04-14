@@ -1,10 +1,5 @@
 import { ColumnDefinition, PivotAggregationType } from '../types'
-import {
-    PivotFilterConfig,
-    PivotPreviewColumn,
-    PivotPreviewRow,
-    PivotValueConfig,
-} from './types'
+import { PivotPreviewColumn, PivotPreviewRow, PivotValueConfig } from './types'
 
 export const normalizePivotValue = (value: unknown): string => {
     if (value == null) return 'N/A'
@@ -92,20 +87,6 @@ export const getPivotFieldOptions = <T extends Record<string, unknown>>(
         key: String(column.field),
         label: column.header || String(column.field),
     }))
-
-export const applyPivotFilters = <T extends Record<string, unknown>>(
-    data: T[],
-    filters: PivotFilterConfig<T>[]
-): T[] => {
-    if (!filters.length) return data
-    return data.filter((row) =>
-        filters.every((filter) => {
-            if (!filter.selectedValues.length) return true
-            const rowValue = normalizePivotValue(row[filter.field])
-            return filter.selectedValues.includes(rowValue)
-        })
-    )
-}
 
 export const isPivotNumericValue = (value: unknown): boolean => {
     if (typeof value === 'number') return Number.isFinite(value)

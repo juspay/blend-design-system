@@ -1967,7 +1967,6 @@ const DataTable = forwardRef(
                         }
                         title={pivotTableConfig?.title}
                         description={pivotTableConfig?.description}
-                        showFilters={pivotTableConfig?.showFilters}
                         showExport={pivotTableConfig?.showExport}
                         previewColumns={pivotTableConfig?.previewColumns}
                         previewRows={

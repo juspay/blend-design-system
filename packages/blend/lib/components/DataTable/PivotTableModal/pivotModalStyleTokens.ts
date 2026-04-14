@@ -1,14 +1,6 @@
 import type { FoundationTokenType } from '../../../tokens/theme.token'
 import type { TableTokenType } from '../dataTable.tokens'
 
-/** Chip / badge colors for pivot builder sections (all from foundation color tokens). */
-export type PivotModalSectionAccent = {
-    background: string
-    border: string
-    text: string
-    icon: string
-}
-
 export type PivotModalStyleTokens = {
     modal: {
         minWidth: string
@@ -24,13 +16,6 @@ export type PivotModalStyleTokens = {
     panelPadding: string
     configPanelBackground: string
     previewPanelBackground: string
-    /** Same primary palette for every section — no ad-hoc palettes. */
-    sectionAccent: {
-        row: PivotModalSectionAccent
-        column: PivotModalSectionAccent
-        value: PivotModalSectionAccent
-        filter: PivotModalSectionAccent
-    }
     spacing: {
         sectionGap: string
         builderIntroGap: string
@@ -92,10 +77,6 @@ export type PivotModalStyleTokens = {
         iconColor: string
         iconSize: number
     }
-    valueFieldTitle: {
-        fontSize: string | number
-        fontWeight: number
-    }
     menuCheckIconSize: number
     preview: {
         headerMarginBottom: string
@@ -104,13 +85,7 @@ export type PivotModalStyleTokens = {
         titleMarginBottom: string
         metaFontSize: string
     }
-    builder: {
-        titleFontWeight: number
-        titleFontSize: string
-        bodyFontSize: string
-        bodyLineHeight: string
-        bodyMarginTop: string
-    }
+    bodyLineHeight: string
 }
 
 /**
@@ -123,14 +98,6 @@ export const getPivotModalStyleTokens = (
 ): PivotModalStyleTokens => {
     const { dataTable, header } = tableToken
     const cell = dataTable.table.body.cell
-    const primary = f.colors.primary
-
-    const sectionAccent: PivotModalSectionAccent = {
-        background: primary[50] as string,
-        border: primary[200] as string,
-        text: primary[700] as string,
-        icon: primary[600] as string,
-    }
 
     const configColumnWidth = `calc(${f.unit[350]} + ${f.unit[32]})`
 
@@ -149,12 +116,6 @@ export const getPivotModalStyleTokens = (
         panelPadding: f.unit[16],
         configPanelBackground: f.colors.gray[50] as string,
         previewPanelBackground: dataTable.table.body.backgroundColor as string,
-        sectionAccent: {
-            row: sectionAccent,
-            column: sectionAccent,
-            value: sectionAccent,
-            filter: sectionAccent,
-        },
         spacing: {
             sectionGap: f.unit[20],
             builderIntroGap: f.unit[20],
@@ -216,10 +177,6 @@ export const getPivotModalStyleTokens = (
             iconColor: f.colors.gray[600] as string,
             iconSize: Number.parseInt(String(f.unit[14]), 10) || 14,
         },
-        valueFieldTitle: {
-            fontSize: f.font.size.body.md.fontSize,
-            fontWeight: 600,
-        },
         menuCheckIconSize: Number.parseInt(String(f.unit[16]), 10) || 16,
         preview: {
             headerMarginBottom: f.unit[16],
@@ -228,12 +185,6 @@ export const getPivotModalStyleTokens = (
             titleMarginBottom: f.unit[4],
             metaFontSize: cell.fontSize as string,
         },
-        builder: {
-            titleFontWeight: header.title.fontWeight as number,
-            titleFontSize: header.title.fontSize as string,
-            bodyFontSize: cell.fontSize as string,
-            bodyLineHeight: header.description.lineHeight as string,
-            bodyMarginTop: f.unit[4],
-        },
+        bodyLineHeight: header.description.lineHeight as string,
     } as PivotModalStyleTokens
 }

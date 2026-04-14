@@ -456,7 +456,6 @@ export type DataTableProps<T extends Record<string, unknown>> = {
         triggerSlot?: 1 | 2 | 3
         title?: string
         description?: string
-        showFilters?: boolean
         showExport?: boolean
         initialConfig?: {
             rows?: (keyof T)[]
@@ -464,10 +463,6 @@ export type DataTableProps<T extends Record<string, unknown>> = {
             values?: Array<{
                 field: keyof T
                 aggregation: PivotAggregationType
-            }>
-            filters?: Array<{
-                field: keyof T
-                selectedValues: string[]
             }>
         }
         previewColumns?: Array<{
@@ -488,10 +483,6 @@ export type DataTableProps<T extends Record<string, unknown>> = {
                 field: keyof T
                 aggregation: PivotAggregationType
             }>
-            filters: Array<{
-                field: keyof T
-                selectedValues: string[]
-            }>
         }) => void
         onExport?: (config: {
             rows: (keyof T)[]
@@ -499,10 +490,6 @@ export type DataTableProps<T extends Record<string, unknown>> = {
             values: Array<{
                 field: keyof T
                 aggregation: PivotAggregationType
-            }>
-            filters: Array<{
-                field: keyof T
-                selectedValues: string[]
             }>
         }) => void
     }
