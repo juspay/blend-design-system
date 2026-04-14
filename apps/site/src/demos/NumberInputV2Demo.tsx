@@ -229,6 +229,18 @@ const NumberInputV2Demo = () => {
                             step={5}
                         />
                     </div>
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">With Unit</h3>
+                        <NumberInputV2
+                            label={{ text: 'With Unit', subtext: '' }}
+                            value={100}
+                            onChange={(e) => {
+                                console.log(e.target.value)
+                            }}
+                            placeholder="Enter number..."
+                            unit="kg"
+                        />
+                    </div>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">

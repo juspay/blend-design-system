@@ -2,6 +2,7 @@ import { InputSizeV2 } from '../inputV2.types'
 
 export type NumberInputV2Props = {
     value: number | null
+    unit?: string
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     min?: number
     max?: number

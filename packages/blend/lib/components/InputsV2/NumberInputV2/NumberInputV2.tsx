@@ -58,6 +58,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             onBlur,
             onFocus,
             id: providedId,
+            unit = '',
             ...rest
         },
         ref
@@ -424,8 +425,9 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         isUpButtonDisabled={isUpButtonDisabled}
                         isDownButtonDisabled={isDownButtonDisabled}
                         onStep={bump}
-                        inputContainerTokens={inputContainerTokens}
+                        inputContainerTokens={numberInputTokens}
                         size={size}
+                        unit={unit}
                     />
                 </Block>
                 <InputFooterV2

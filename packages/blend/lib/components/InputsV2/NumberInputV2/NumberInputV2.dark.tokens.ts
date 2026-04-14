@@ -249,6 +249,64 @@ export const getNumberInputV2DarkTokens = (
                     color: foundationToken.colors.red[600],
                 },
             },
+            unit: {
+                fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                    lg: foundationToken.font.size.body.md.fontSize,
+                },
+                fontWeight: {
+                    sm: foundationToken.font.weight[500],
+                    md: foundationToken.font.weight[500],
+                    lg: foundationToken.font.weight[500],
+                },
+                paddingTop: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
+                },
+                paddingRight: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
+                },
+                paddingLeft: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
+                },
+                borderRadius: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[10],
+                    lg: foundationToken.unit[10],
+                },
+                border: {
+                    default: `1px solid ${foundationToken.colors.gray[200]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[400]}`,
+                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
+                    error: `1px solid ${foundationToken.colors.red[500]}`,
+                    disabled: `1px solid ${foundationToken.colors.gray[200]}`,
+                },
+                backgroundColor: {
+                    default: foundationToken.colors.gray[0],
+                    disabled: foundationToken.colors.gray[50],
+                    hover: foundationToken.colors.gray[0],
+                    focus: foundationToken.colors.gray[0],
+                    error: foundationToken.colors.gray[0],
+                },
+                color: {
+                    default: foundationToken.colors.gray[700],
+                    hover: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
+                    error: foundationToken.colors.red[800],
+                    disabled: foundationToken.colors.gray[300],
+                },
+            },
         },
         lg: {
             gap: foundationToken.unit[8],
@@ -259,6 +317,64 @@ export const getNumberInputV2DarkTokens = (
                 placeholder: inputPlaceholder(foundationToken),
                 required: {
                     color: foundationToken.colors.red[600],
+                },
+            },
+            unit: {
+                fontSize: {
+                    sm: foundationToken.font.size.body.md.fontSize,
+                    md: foundationToken.font.size.body.md.fontSize,
+                    lg: foundationToken.font.size.body.md.fontSize,
+                },
+                fontWeight: {
+                    sm: foundationToken.font.weight[500],
+                    md: foundationToken.font.weight[500],
+                    lg: foundationToken.font.weight[500],
+                },
+                paddingTop: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
+                },
+                paddingRight: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
+                },
+                paddingLeft: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
+                },
+                borderRadius: {
+                    sm: foundationToken.unit[10],
+                    md: foundationToken.unit[10],
+                    lg: foundationToken.unit[10],
+                },
+                border: {
+                    default: `1px solid ${foundationToken.colors.gray[200]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[400]}`,
+                    focus: `1px solid ${foundationToken.colors.primary[500]}`,
+                    error: `1px solid ${foundationToken.colors.red[500]}`,
+                    disabled: `1px solid ${foundationToken.colors.gray[200]}`,
+                },
+                backgroundColor: {
+                    default: foundationToken.colors.gray[0],
+                    disabled: foundationToken.colors.gray[50],
+                    hover: foundationToken.colors.gray[0],
+                    focus: foundationToken.colors.gray[0],
+                    error: foundationToken.colors.gray[0],
+                },
+                color: {
+                    default: foundationToken.colors.gray[700],
+                    hover: foundationToken.colors.gray[700],
+                    focus: foundationToken.colors.gray[700],
+                    error: foundationToken.colors.red[800],
+                    disabled: foundationToken.colors.gray[300],
                 },
             },
         },
