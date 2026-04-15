@@ -6,6 +6,18 @@ For package-specific flows:
 
 - `packages/mcp/PUBLISHING.md` for `blend-ui-mcp`
 
+## Preview releases (pkg.pr.new)
+
+Every pull request to `main` or `dev` automatically publishes an ephemeral preview of `@juspay/blend-design-system` to [pkg.pr.new](https://pkg.pr.new). Reviewers and consumer teams can install the preview directly from a URL in the sticky PR comment:
+
+```bash
+pnpm add https://pkg.pr.new/@juspay/blend-design-system@<commit-sha>
+```
+
+These previews are **not** real npm releases. They are tied to the PR's HEAD commit, are ephemeral by design, and **must not be used in production**. Real releases continue to go through the changesets → beta / stable flow described below.
+
+The workflow lives at `.github/workflows/pkg-pr-new.yml` and uses the [pkg.pr.new GitHub App](https://github.com/apps/pkg-pr-new) — no `NPM_TOKEN` or secrets required.
+
 ## Package Information
 
 - **Package Name**: `@juspay/blend-design-system`
