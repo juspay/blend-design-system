@@ -177,13 +177,7 @@ export const Sizes: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 16,
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <SwitchV2
                         label="Small switch"
                         size={SwitchV2Size.SM}
@@ -216,13 +210,7 @@ export const Sizes: Story = {
 
 export const States: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 12,
-            }}
-        >
+        <div className="flex flex-col gap-3">
             <SwitchV2 label="Default" />
             <SwitchV2 label="Checked" checked />
             <SwitchV2 label="Disabled" disabled />

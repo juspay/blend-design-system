@@ -200,25 +200,8 @@ export const Interactive: Story = {
 
 export const Visual: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '48px',
-                padding: '48px',
-                alignItems: 'center',
-                maxWidth: '600px',
-            }}
-        >
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '24px',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                }}
-            >
+        <div className="flex flex-col gap-12 p-12 items-center max-w-[600px]">
+            <div className="flex gap-6 items-center flex-wrap justify-center">
                 <TooltipV2
                     content="Top tooltip with arrow"
                     side={TooltipV2Side.TOP}
@@ -249,15 +232,7 @@ export const Visual: Story = {
                     <Button buttonType={ButtonType.SECONDARY} text="Left" />
                 </TooltipV2>
             </div>
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '24px',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                }}
-            >
+            <div className="flex gap-6 items-center flex-wrap justify-center">
                 <TooltipV2
                     content="Small size"
                     size={TooltipV2Size.SM}
@@ -299,14 +274,7 @@ export const Visual: Story = {
 
 export const RichContentTooltips: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '24px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-6 items-center flex-wrap">
             <TooltipV2
                 content={
                     <div>
@@ -327,21 +295,8 @@ export const RichContentTooltips: Story = {
 
             <TooltipV2
                 content={
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '4px',
-                        }}
-                    >
-                        <div
-                            style={{
-                                fontWeight: 'bold',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                            }}
-                        >
+                    <div className="flex flex-col gap-1">
+                        <div className="font-bold flex items-center gap-1">
                             <CheckCircle size={14} color="#10b981" />
                             Success
                         </div>
@@ -362,13 +317,7 @@ export const RichContentTooltips: Story = {
             <TooltipV2
                 content={
                     <div>
-                        <div
-                            style={{
-                                color: '#fbbf24',
-                                fontWeight: 'bold',
-                                marginBottom: '4px',
-                            }}
-                        >
+                        <div className="text-amber-400 font-bold mb-1">
                             ⚠️ Warning
                         </div>
                         <div>This action cannot be undone</div>
@@ -397,14 +346,7 @@ export const RichContentTooltips: Story = {
 
 export const WithSlots: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '24px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-6 items-center flex-wrap">
             <TooltipV2
                 content="Upgrade to premium for advanced features"
                 slot={<Star size={16} color="#fbbf24" />}
@@ -461,21 +403,8 @@ export const ControlledTooltip: Story = {
             const [manualOpen, setManualOpen] = useState(false)
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '24px',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                    }}
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '24px',
-                            alignItems: 'center',
-                        }}
-                    >
+                <div className="flex gap-6 items-center flex-col">
+                    <div className="flex gap-6 items-center">
                         <TooltipV2
                             content="This tooltip is controlled by hover state"
                             open={isOpen}
@@ -507,13 +436,7 @@ export const ControlledTooltip: Story = {
                         </TooltipV2>
                     </div>
 
-                    <div
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            textAlign: 'center',
-                        }}
-                    >
+                    <div className="text-sm text-gray-500 text-center">
                         <div>Hover tooltip: {isOpen ? 'Open' : 'Closed'}</div>
                         <div>
                             Click tooltip: {manualOpen ? 'Open' : 'Closed'}
@@ -535,45 +458,22 @@ export const ControlledTooltip: Story = {
 
 export const FormValidationTooltips: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                padding: '20px',
-                maxWidth: '400px',
-            }}
-        >
-            <div
-                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-            >
-                <label style={{ fontSize: '14px', fontWeight: '500' }}>
-                    Email Address *
-                </label>
-                <div style={{ position: 'relative' }}>
+        <div className="flex flex-col gap-6 p-5 max-w-[400px]">
+            <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium">Email Address *</label>
+                <div className="relative">
                     <input
                         type="email"
                         placeholder="Enter your email"
-                        style={{
-                            width: '100%',
-                            padding: '8px 12px',
-                            border: '2px solid #ef4444',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                        }}
+                        className="w-full py-2 px-3 border-2 border-red-500 rounded-md text-sm"
                     />
                     <TooltipV2
                         content={
                             <div>
-                                <div
-                                    style={{
-                                        fontWeight: 'bold',
-                                        color: '#ef4444',
-                                    }}
-                                >
+                                <div className="font-bold text-red-500">
                                     Invalid Email Format
                                 </div>
-                                <div style={{ marginTop: '4px' }}>
+                                <div className="mt-1">
                                     Please enter a valid email address like:
                                     user@example.com
                                 </div>
@@ -596,40 +496,22 @@ export const FormValidationTooltips: Story = {
                 </div>
             </div>
 
-            <div
-                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-            >
-                <label style={{ fontSize: '14px', fontWeight: '500' }}>
-                    Password *
-                </label>
-                <div style={{ position: 'relative' }}>
+            <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium">Password *</label>
+                <div className="relative">
                     <input
                         type="password"
                         placeholder="Enter your password"
-                        style={{
-                            width: '100%',
-                            padding: '8px 12px',
-                            border: '2px solid #10b981',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                        }}
+                        className="w-full py-2 px-3 border-2 border-emerald-500 rounded-md text-sm"
                     />
                     <TooltipV2
                         content={
                             <div>
-                                <div
-                                    style={{
-                                        fontWeight: 'bold',
-                                        color: '#10b981',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '4px',
-                                    }}
-                                >
+                                <div className="font-bold text-emerald-500 flex items-center gap-1">
                                     <CheckCircle size={14} />
                                     Strong Password
                                 </div>
-                                <div style={{ marginTop: '4px' }}>
+                                <div className="mt-1">
                                     ✓ At least 8 characters
                                     <br />
                                     ✓ Contains uppercase letter
@@ -664,37 +546,12 @@ export const FormValidationTooltips: Story = {
 
 export const FeatureAnnouncements: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '24px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-6 items-center flex-wrap">
             <TooltipV2
                 content={
                     <div>
-                        <div
-                            style={{
-                                fontWeight: 'bold',
-                                color: '#3b82f6',
-                                marginBottom: '8px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                            }}
-                        >
-                            <span
-                                style={{
-                                    backgroundColor: '#3b82f6',
-                                    color: 'white',
-                                    padding: '2px 6px',
-                                    borderRadius: '4px',
-                                    fontSize: '10px',
-                                    fontWeight: 'bold',
-                                }}
-                            >
+                        <div className="font-bold text-blue-500 mb-2 flex items-center gap-1.5">
+                            <span className="bg-blue-500 text-white py-0.5 px-1.5 rounded text-xs font-bold">
                                 NEW
                             </span>
                             Dark Mode Available!
@@ -703,7 +560,7 @@ export const FeatureAnnouncements: Story = {
                             Switch to dark mode in settings for a better
                             night-time experience.
                             <br />
-                            <span style={{ fontSize: '12px', color: '#666' }}>
+                            <span className="text-xs text-gray-500">
                                 Click here to try it now →
                             </span>
                         </div>
@@ -724,16 +581,7 @@ export const FeatureAnnouncements: Story = {
             <TooltipV2
                 content={
                     <div>
-                        <div
-                            style={{
-                                fontWeight: 'bold',
-                                color: '#7c3aed',
-                                marginBottom: '8px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                            }}
-                        >
+                        <div className="font-bold text-violet-600 mb-2 flex items-center gap-1.5">
                             <Star size={16} color="#fbbf24" />
                             Upgrade to Premium
                         </div>
@@ -741,7 +589,7 @@ export const FeatureAnnouncements: Story = {
                             Unlock advanced analytics, custom themes, and
                             priority support.
                             <br />
-                            <span style={{ fontSize: '12px', color: '#666' }}>
+                            <span className="text-xs text-gray-500">
                                 50% off for the first month!
                             </span>
                         </div>
@@ -752,16 +600,7 @@ export const FeatureAnnouncements: Story = {
                 side={TooltipV2Side.TOP}
                 maxWidth="300px"
                 slot={
-                    <span
-                        style={{
-                            backgroundColor: '#7c3aed',
-                            color: 'white',
-                            padding: '2px 6px',
-                            borderRadius: '12px',
-                            fontSize: '10px',
-                            fontWeight: 'bold',
-                        }}
-                    >
+                    <span className="bg-violet-600 text-white py-0.5 px-1.5 rounded-xl text-xs font-bold">
                         PRO
                     </span>
                 }
@@ -782,31 +621,12 @@ export const FeatureAnnouncements: Story = {
 
 export const Accessibility: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '32px',
-                maxWidth: '800px',
-            }}
-        >
+        <div className="flex flex-col gap-8 max-w-[800px]">
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Basic Accessible Tooltip
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     Tooltip with proper ARIA attributes and keyboard support.
                     Tab to focus the button, then press Enter or Space to open
                     the tooltip.
@@ -823,26 +643,14 @@ export const Accessibility: Story = {
             </div>
 
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Keyboard Accessible Tooltip
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     Tooltips are fully keyboard accessible. Use Tab to focus,
                     Enter or Space to open, Escape to close.
                 </p>
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="flex gap-4 flex-wrap">
                     <TooltipV2
                         content="Keyboard accessible tooltip 1"
                         showArrow={true}
@@ -871,26 +679,14 @@ export const Accessibility: Story = {
             </div>
 
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Size Variants (Accessible)
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     All tooltip sizes maintain accessibility standards. Text
                     content is accessible to screen readers.
                 </p>
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                <div className="flex gap-4 flex-wrap">
                     <TooltipV2
                         content="Small tooltip with concise information"
                         size={TooltipV2Size.SM}

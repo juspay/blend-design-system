@@ -37,10 +37,29 @@ const meta: Meta<typeof Tabs> = {
         layout: 'centered',
         a11y: getA11yConfig('interactive'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A flexible tabs component for organizing content into multiple panels with various visual styles and sizes.',
         docs: {
             description: {
                 component: `
-A flexible tabs component for organizing content into multiple panels with various visual styles and sizes. Built on Radix UI Tabs primitives for robust accessibility.
+## Usage
+
+\`\`\`tsx
+import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/blend-design-system';
+
+<Tabs defaultValue="tab1" variant={TabsVariant.BOXED}>
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+  </TabsList>
+  <TabsContent value="tab1">
+    Content for Tab 1
+  </TabsContent>
+  <TabsContent value="tab2">
+    Content for Tab 2
+  </TabsContent>
+</Tabs>
+\`\`\`
 
 ## Features
 - Multiple variants (Boxed, Floating, Underline, Pills)
@@ -93,24 +112,6 @@ A flexible tabs component for organizing content into multiple panels with vario
 - **Manual**: Test with VoiceOver/NVDA/JAWS, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-## Basic Usage
-
-\`\`\`tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/blend-design-system';
-
-<Tabs defaultValue="tab1" variant={TabsVariant.BOXED}>
-  <TabsList>
-    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
-    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
-  </TabsList>
-  <TabsContent value="tab1">
-    Content for Tab 1
-  </TabsContent>
-  <TabsContent value="tab2">
-    Content for Tab 2
-  </TabsContent>
-</Tabs>
-\`\`\`
 
 ## Dynamic Tab Management
 
@@ -274,7 +275,7 @@ export const Default: Story = {
         size: TabsSize.MD,
     },
     render: (args: any) => (
-        <div style={{ width: '500px' }}>
+        <div className="w-[500px]">
             <Tabs
                 defaultValue={args.defaultValue}
                 value={args.value}
@@ -305,23 +306,12 @@ export const Default: Story = {
                 </TabsList>
                 <TabsContent
                     value="account"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Account Settings
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Manage your account settings and preferences here. You
                         can update your profile information, change your email
                         address, and configure other account-related options.
@@ -329,23 +319,12 @@ export const Default: Story = {
                 </TabsContent>
                 <TabsContent
                     value="password"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Password & Security
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Update your password and manage security settings.
                         Enable two-factor authentication and review your recent
                         login activity to keep your account secure.
@@ -353,23 +332,12 @@ export const Default: Story = {
                 </TabsContent>
                 <TabsContent
                     value="settings"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         General Settings
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Configure your general preferences including language,
                         timezone, notifications, and other application settings
                         to customize your experience.
@@ -399,23 +367,11 @@ export const DynamicTabManagement: Story = {
     render: () => {
         // Shared content for concatenation demo
         const sharedContent = (
-            <div
-                style={{
-                    padding: '16px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '8px',
-                }}
-            >
-                <h3
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
+            <div className="p-4 bg-gray-50 rounded-lg">
+                <h3 className="m-0 mb-3 text-base font-semibold">
                     Shared Content
                 </h3>
-                <p style={{ margin: 0, color: '#64748b' }}>
+                <p className="m-0 text-slate-500">
                     This content is shared between multiple tabs. When multiple
                     tabs have the same content, their labels are concatenated
                     (e.g., "TabA+TabB+TabC"). Max 3 items can be concatenated.
@@ -441,23 +397,11 @@ export const DynamicTabManagement: Story = {
                 value: 'dashboard',
                 label: 'Dashboard',
                 content: (
-                    <div
-                        style={{
-                            padding: '16px',
-                            backgroundColor: '#eff6ff',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h3 className="m-0 mb-3 text-base font-semibold">
                             Dashboard Content
                         </h3>
-                        <p style={{ margin: 0, color: '#1e40af' }}>
+                        <p className="m-0 text-blue-800">
                             This is a tab that cannot be closed.
                         </p>
                     </div>
@@ -468,23 +412,11 @@ export const DynamicTabManagement: Story = {
                 value: 'overview',
                 label: 'Overview',
                 content: (
-                    <div
-                        style={{
-                            padding: '16px',
-                            backgroundColor: '#f0fdf4',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="p-4 bg-green-50 rounded-lg">
+                        <h3 className="m-0 mb-3 text-base font-semibold">
                             Overview Content
                         </h3>
-                        <p style={{ margin: 0, color: '#166534' }}>
+                        <p className="m-0 text-green-800">
                             Another tab that cannot be closed. Notice it doesn't
                             have an X button.
                         </p>
@@ -541,23 +473,11 @@ export const DynamicTabManagement: Story = {
                     selectedTabsToAdd.length > 1 ? (
                         sharedContent
                     ) : (
-                        <div
-                            style={{
-                                padding: '16px',
-                                backgroundColor: '#faf5ff',
-                                borderRadius: '8px',
-                            }}
-                        >
-                            <h3
-                                style={{
-                                    margin: '0 0 12px 0',
-                                    fontSize: '16px',
-                                    fontWeight: '600',
-                                }}
-                            >
+                        <div className="p-4 bg-purple-50 rounded-lg">
+                            <h3 className="m-0 mb-3 text-base font-semibold">
                                 {item.label} Content
                             </h3>
-                            <p style={{ margin: 0, color: '#7c3aed' }}>
+                            <p className="m-0 text-violet-600">
                                 This is unique content for {item.label} tab.
                             </p>
                         </div>
@@ -589,32 +509,12 @@ export const DynamicTabManagement: Story = {
         ]
 
         return (
-            <div style={{ width: '800px', maxWidth: '90vw' }}>
-                <div
-                    style={{
-                        marginBottom: '20px',
-                        padding: '16px',
-                        backgroundColor: '#f8fafc',
-                        borderRadius: '8px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+            <div className="w-[800px] max-w-[90vw]">
+                <div className="mb-5 p-4 bg-gray-50 rounded-lg">
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Enhanced Tab Features
                     </h3>
-                    <ul
-                        style={{
-                            margin: 0,
-                            paddingLeft: '20px',
-                            color: '#64748b',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <ul className="m-0 pl-5 text-slate-500 text-sm">
                         <li>
                             Tabs (Dashboard, Overview) without newItem cannot be
                             closed
@@ -649,42 +549,12 @@ export const DynamicTabManagement: Story = {
 
                 {/* MultiSelect Modal */}
                 {showMultiSelect && (
-                    <div
-                        style={{
-                            position: 'fixed',
-                            inset: 0,
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            zIndex: 1000,
-                        }}
-                    >
-                        <div
-                            style={{
-                                backgroundColor: 'white',
-                                padding: '24px',
-                                borderRadius: '8px',
-                                maxWidth: '500px',
-                                width: '90%',
-                                margin: '16px',
-                            }}
-                        >
-                            <h3
-                                style={{
-                                    margin: '0 0 16px 0',
-                                    fontSize: '18px',
-                                    fontWeight: '600',
-                                }}
-                            >
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-lg max-w-[500px] w-[90%] m-4">
+                            <h3 className="m-0 mb-4 text-lg font-semibold">
                                 Add New Tabs
                             </h3>
-                            <p
-                                style={{
-                                    margin: '0 0 16px 0',
-                                    color: '#64748b',
-                                }}
-                            >
+                            <p className="m-0 mb-4 text-slate-500">
                                 Select up to 3 tabs to add. If you select
                                 multiple tabs, they will share content and be
                                 concatenated as "TabA+TabB+TabC".
@@ -732,23 +602,11 @@ export const DynamicTabManagement: Story = {
 export const TabConcatenation: Story = {
     render: () => {
         const sharedContent = (
-            <div
-                style={{
-                    padding: '16px',
-                    backgroundColor: '#fef3c7',
-                    borderRadius: '8px',
-                }}
-            >
-                <h3
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
+            <div className="p-4 bg-amber-50 rounded-lg">
+                <h3 className="m-0 mb-3 text-base font-semibold">
                     Concatenated Tab Content
                 </h3>
-                <p style={{ margin: 0, color: '#92400e' }}>
+                <p className="m-0 text-amber-800">
                     This content is shared between multiple tabs. When tabs
                     share the same content, their labels are automatically
                     concatenated for better organization.
@@ -761,23 +619,11 @@ export const TabConcatenation: Story = {
                 value: 'home',
                 label: 'Home',
                 content: (
-                    <div
-                        style={{
-                            padding: '16px',
-                            backgroundColor: '#eff6ff',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                        <h3 className="m-0 mb-3 text-base font-semibold">
                             Home Content
                         </h3>
-                        <p style={{ margin: 0, color: '#1e40af' }}>
+                        <p className="m-0 text-blue-800">
                             This is unique content for the Home tab.
                         </p>
                     </div>
@@ -806,23 +652,11 @@ export const TabConcatenation: Story = {
                 value: 'settings',
                 label: 'Settings',
                 content: (
-                    <div
-                        style={{
-                            padding: '16px',
-                            backgroundColor: '#f0fdf4',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="p-4 bg-green-50 rounded-lg">
+                        <h3 className="m-0 mb-3 text-base font-semibold">
                             Settings Content
                         </h3>
-                        <p style={{ margin: 0, color: '#166534' }}>
+                        <p className="m-0 text-green-800">
                             This is unique content for the Settings tab.
                         </p>
                     </div>
@@ -834,31 +668,12 @@ export const TabConcatenation: Story = {
         const [activeTab, setActiveTab] = useState('home')
 
         return (
-            <div style={{ width: '700px', maxWidth: '90vw' }}>
-                <div
-                    style={{
-                        marginBottom: '20px',
-                        padding: '16px',
-                        backgroundColor: '#fef3c7',
-                        borderRadius: '8px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+            <div className="w-[700px] max-w-[90vw]">
+                <div className="mb-5 p-4 bg-amber-50 rounded-lg">
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Tab Concatenation Example
                     </h3>
-                    <p
-                        style={{
-                            margin: 0,
-                            color: '#92400e',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <p className="m-0 text-amber-800 text-sm">
                         Notice how "Analytics", "Reports", and "Dashboards" are
                         displayed as "Analytics+Reports+Dashboards" because they
                         share the same content. Home and Settings remain
@@ -901,23 +716,9 @@ export const TabVariants: Story = {
         size: TabsSize.MD,
     },
     render: (args: any) => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '32px',
-                width: '500px',
-            }}
-        >
+        <div className="flex flex-col gap-8 w-[500px]">
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 16px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#374151',
-                    }}
-                >
+                <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                     Boxed Variant
                 </h4>
                 <Tabs
@@ -950,40 +751,25 @@ export const TabVariants: Story = {
                     </TabsList>
                     <TabsContent
                         value="tab1"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Overview content with boxed tab styling.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab2"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Analytics content with detailed metrics.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab3"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Reports content with data visualization.
                         </p>
                     </TabsContent>
@@ -991,14 +777,7 @@ export const TabVariants: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 16px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#374151',
-                    }}
-                >
+                <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                     Floating Variant
                 </h4>
                 <Tabs
@@ -1031,40 +810,25 @@ export const TabVariants: Story = {
                     </TabsList>
                     <TabsContent
                         value="tab1"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Overview content with floating tab styling.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab2"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Analytics content with detailed metrics.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab3"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Reports content with data visualization.
                         </p>
                     </TabsContent>
@@ -1072,14 +836,7 @@ export const TabVariants: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 16px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#374151',
-                    }}
-                >
+                <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                     Underline Variant
                 </h4>
                 <Tabs
@@ -1112,40 +869,25 @@ export const TabVariants: Story = {
                     </TabsList>
                     <TabsContent
                         value="tab1"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Overview content with underline tab styling.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab2"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Analytics content with detailed metrics.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab3"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Reports content with data visualization.
                         </p>
                     </TabsContent>
@@ -1153,14 +895,7 @@ export const TabVariants: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 16px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#374151',
-                    }}
-                >
+                <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                     Pills Variant
                 </h4>
                 <Tabs
@@ -1193,40 +928,25 @@ export const TabVariants: Story = {
                     </TabsList>
                     <TabsContent
                         value="tab1"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Overview content with pills tab styling.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab2"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Analytics content with detailed metrics.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab3"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Reports content with data visualization.
                         </p>
                     </TabsContent>
@@ -1254,23 +974,9 @@ export const TabSizes: Story = {
         size: TabsSize.MD,
     },
     render: (args: any) => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '32px',
-                width: '500px',
-            }}
-        >
+        <div className="flex flex-col gap-8 w-[500px]">
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 16px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#374151',
-                    }}
-                >
+                <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                     Medium Size
                 </h4>
                 <Tabs
@@ -1303,40 +1009,25 @@ export const TabSizes: Story = {
                     </TabsList>
                     <TabsContent
                         value="tab1"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Dashboard content in medium size tabs.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab2"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Projects content in medium size tabs.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab3"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Team content in medium size tabs.
                         </p>
                     </TabsContent>
@@ -1344,14 +1035,7 @@ export const TabSizes: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 16px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#374151',
-                    }}
-                >
+                <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                     Large Size
                 </h4>
                 <Tabs
@@ -1384,40 +1068,25 @@ export const TabSizes: Story = {
                     </TabsList>
                     <TabsContent
                         value="tab1"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Dashboard content in large size tabs.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab2"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Projects content in large size tabs.
                         </p>
                     </TabsContent>
                     <TabsContent
                         value="tab3"
-                        style={{
-                            padding: '16px',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '8px',
-                            marginTop: '8px',
-                        }}
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
                     >
-                        <p style={{ margin: 0, color: '#64748b' }}>
+                        <p className="m-0 text-slate-500">
                             Team content in large size tabs.
                         </p>
                     </TabsContent>
@@ -1449,7 +1118,7 @@ export const WithIcons: Story = {
         size: TabsSize.MD,
     },
     render: (args: any) => (
-        <div style={{ width: '600px' }}>
+        <div className="w-[600px]">
             <Tabs
                 defaultValue={args.defaultValue}
                 value={args.value}
@@ -1499,23 +1168,12 @@ export const WithIcons: Story = {
                 </TabsList>
                 <TabsContent
                     value="profile"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Profile Information
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Update your personal information, profile picture, and
                         bio. This information will be visible to other users in
                         your organization.
@@ -1523,23 +1181,12 @@ export const WithIcons: Story = {
                 </TabsContent>
                 <TabsContent
                     value="security"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Security Settings
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Manage your password, two-factor authentication, and
                         review recent login activity. Keep your account secure
                         with these security features.
@@ -1547,23 +1194,12 @@ export const WithIcons: Story = {
                 </TabsContent>
                 <TabsContent
                     value="notifications"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Notification Preferences
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Configure how and when you receive notifications. Choose
                         your preferred channels and frequency for different
                         types of updates.
@@ -1571,23 +1207,12 @@ export const WithIcons: Story = {
                 </TabsContent>
                 <TabsContent
                     value="billing"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Billing & Subscription
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         View your current subscription, payment methods, and
                         billing history. Upgrade or downgrade your plan as
                         needed.
@@ -1595,23 +1220,12 @@ export const WithIcons: Story = {
                 </TabsContent>
                 <TabsContent
                     value="help"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Help & Support
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Find answers to common questions, contact support, or
                         browse our documentation. We're here to help you get the
                         most out of our platform.
@@ -1640,7 +1254,7 @@ export const ExpandedTabs: Story = {
         size: TabsSize.MD,
     },
     render: (args: any) => (
-        <div style={{ width: '100%', maxWidth: '800px' }}>
+        <div className="w-full max-w-[800px]">
             <Tabs
                 defaultValue={args.defaultValue}
                 value={args.value}
@@ -1679,23 +1293,12 @@ export const ExpandedTabs: Story = {
                 </TabsList>
                 <TabsContent
                     value="overview"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Overview Dashboard
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Get a high-level view of your key metrics and
                         performance indicators. This expanded tab layout
                         provides more space for navigation.
@@ -1703,23 +1306,12 @@ export const ExpandedTabs: Story = {
                 </TabsContent>
                 <TabsContent
                     value="analytics"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Analytics & Insights
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Dive deep into your data with detailed analytics and
                         insights. Track trends, identify patterns, and make
                         data-driven decisions.
@@ -1727,23 +1319,12 @@ export const ExpandedTabs: Story = {
                 </TabsContent>
                 <TabsContent
                     value="reports"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Reports & Export
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Generate and export detailed reports for your
                         stakeholders. Schedule automated reports and customize
                         the data included.
@@ -1751,23 +1332,12 @@ export const ExpandedTabs: Story = {
                 </TabsContent>
                 <TabsContent
                     value="settings"
-                    style={{
-                        padding: '20px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-5 border border-slate-200 rounded-lg mt-2"
                 >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Configuration Settings
                     </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Configure your dashboard settings, data sources, and
                         user preferences. Customize the experience to match your
                         workflow.
@@ -1796,7 +1366,7 @@ export const FitContentTabs: Story = {
         size: TabsSize.MD,
     },
     render: (args: any) => (
-        <div style={{ width: '400px' }}>
+        <div className="w-[400px]">
             <Tabs
                 defaultValue={args.defaultValue}
                 value={args.value}
@@ -1827,41 +1397,26 @@ export const FitContentTabs: Story = {
                 </TabsList>
                 <TabsContent
                     value="home"
-                    style={{
-                        padding: '16px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-4 border border-slate-200 rounded-lg mt-2"
                 >
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Welcome to the home page. This tab list fits its content
                         width.
                     </p>
                 </TabsContent>
                 <TabsContent
                     value="about"
-                    style={{
-                        padding: '16px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-4 border border-slate-200 rounded-lg mt-2"
                 >
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Learn more about us on this about page.
                     </p>
                 </TabsContent>
                 <TabsContent
                     value="contact"
-                    style={{
-                        padding: '16px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        marginTop: '8px',
-                    }}
+                    className="p-4 border border-slate-200 rounded-lg mt-2"
                 >
-                    <p style={{ margin: 0, color: '#64748b' }}>
+                    <p className="m-0 text-slate-500">
                         Get in touch with us through this contact page.
                     </p>
                 </TabsContent>
@@ -1878,306 +1433,6 @@ export const FitContentTabs: Story = {
     },
 }
 
-// ============================================================================
-// Advanced Features
-// ============================================================================
-
-/**
- * Complex example with mixed features
- */
-export const ComplexExample: Story = {
-    args: {
-        defaultValue: 'dashboard',
-        variant: TabsVariant.FLOATING,
-        size: TabsSize.LG,
-    },
-    render: (args: any) => (
-        <div style={{ width: '700px' }}>
-            <Tabs
-                defaultValue={args.defaultValue}
-                value={args.value}
-                onValueChange={args.onValueChange}
-            >
-                <TabsList variant={args.variant} size={args.size}>
-                    <TabsTrigger
-                        value="dashboard"
-                        variant={args.variant}
-                        size={args.size}
-                        leftSlot={<Settings size={16} />}
-                        rightSlot={
-                            <span
-                                style={{
-                                    backgroundColor: '#ef4444',
-                                    color: 'white',
-                                    borderRadius: '10px',
-                                    padding: '2px 6px',
-                                    fontSize: '10px',
-                                    fontWeight: '600',
-                                }}
-                            >
-                                3
-                            </span>
-                        }
-                    >
-                        Dashboard
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="users"
-                        variant={args.variant}
-                        size={args.size}
-                        leftSlot={<User size={16} />}
-                    >
-                        Users
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="notifications"
-                        variant={args.variant}
-                        size={args.size}
-                        leftSlot={<Bell size={16} />}
-                        rightSlot={
-                            <span
-                                style={{
-                                    backgroundColor: '#10b981',
-                                    color: 'white',
-                                    borderRadius: '10px',
-                                    padding: '2px 6px',
-                                    fontSize: '10px',
-                                    fontWeight: '600',
-                                }}
-                            >
-                                12
-                            </span>
-                        }
-                    >
-                        Notifications
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="security"
-                        variant={args.variant}
-                        size={args.size}
-                        leftSlot={<Shield size={16} />}
-                    >
-                        Security
-                    </TabsTrigger>
-                </TabsList>
-                <TabsContent
-                    value="dashboard"
-                    style={{
-                        padding: '24px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '12px',
-                        marginTop: '12px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 16px 0',
-                            fontSize: '18px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Admin Dashboard
-                    </h3>
-                    <p style={{ margin: '0 0 16px 0', color: '#64748b' }}>
-                        Monitor system performance, user activity, and key
-                        metrics from this central dashboard. You have 3 pending
-                        alerts that require attention.
-                    </p>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: '16px',
-                            marginTop: '16px',
-                        }}
-                    >
-                        <div
-                            style={{
-                                padding: '16px',
-                                backgroundColor: '#f8fafc',
-                                borderRadius: '8px',
-                            }}
-                        >
-                            <h4
-                                style={{
-                                    margin: '0 0 8px 0',
-                                    fontSize: '14px',
-                                    fontWeight: '600',
-                                }}
-                            >
-                                Active Users
-                            </h4>
-                            <p
-                                style={{
-                                    margin: 0,
-                                    fontSize: '24px',
-                                    fontWeight: '700',
-                                    color: '#059669',
-                                }}
-                            >
-                                1,234
-                            </p>
-                        </div>
-                        <div
-                            style={{
-                                padding: '16px',
-                                backgroundColor: '#f8fafc',
-                                borderRadius: '8px',
-                            }}
-                        >
-                            <h4
-                                style={{
-                                    margin: '0 0 8px 0',
-                                    fontSize: '14px',
-                                    fontWeight: '600',
-                                }}
-                            >
-                                Revenue
-                            </h4>
-                            <p
-                                style={{
-                                    margin: 0,
-                                    fontSize: '24px',
-                                    fontWeight: '700',
-                                    color: '#0891b2',
-                                }}
-                            >
-                                $45,678
-                            </p>
-                        </div>
-                        <div
-                            style={{
-                                padding: '16px',
-                                backgroundColor: '#f8fafc',
-                                borderRadius: '8px',
-                            }}
-                        >
-                            <h4
-                                style={{
-                                    margin: '0 0 8px 0',
-                                    fontSize: '14px',
-                                    fontWeight: '600',
-                                }}
-                            >
-                                Conversion
-                            </h4>
-                            <p
-                                style={{
-                                    margin: 0,
-                                    fontSize: '24px',
-                                    fontWeight: '700',
-                                    color: '#7c3aed',
-                                }}
-                            >
-                                3.2%
-                            </p>
-                        </div>
-                    </div>
-                </TabsContent>
-                <TabsContent
-                    value="users"
-                    style={{
-                        padding: '24px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '12px',
-                        marginTop: '12px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 16px 0',
-                            fontSize: '18px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        User Management
-                    </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
-                        Manage user accounts, permissions, and access levels.
-                        View user activity logs and handle account-related
-                        requests from this centralized interface.
-                    </p>
-                </TabsContent>
-                <TabsContent
-                    value="notifications"
-                    style={{
-                        padding: '24px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '12px',
-                        marginTop: '12px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 16px 0',
-                            fontSize: '18px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Notification Center
-                    </h3>
-                    <p style={{ margin: '0 0 16px 0', color: '#64748b' }}>
-                        You have 12 new notifications. Configure notification
-                        settings and review system alerts, user messages, and
-                        automated reports.
-                    </p>
-                    <div
-                        style={{
-                            padding: '12px',
-                            backgroundColor: '#ecfdf5',
-                            border: '1px solid #10b981',
-                            borderRadius: '8px',
-                            marginTop: '16px',
-                        }}
-                    >
-                        <p
-                            style={{
-                                margin: 0,
-                                fontSize: '14px',
-                                color: '#065f46',
-                            }}
-                        >
-                            ✓ System backup completed successfully at 2:00 AM
-                        </p>
-                    </div>
-                </TabsContent>
-                <TabsContent
-                    value="security"
-                    style={{
-                        padding: '24px',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '12px',
-                        marginTop: '12px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 16px 0',
-                            fontSize: '18px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Security Center
-                    </h3>
-                    <p style={{ margin: 0, color: '#64748b' }}>
-                        Monitor security events, configure access controls, and
-                        review audit logs. Ensure your system remains secure
-                        with comprehensive security management tools.
-                    </p>
-                </TabsContent>
-            </Tabs>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'A complex example showcasing tabs with icons, badges, and rich content areas. All interactive elements maintain proper accessibility.',
-            },
-        },
-        a11y: getA11yConfig('interactive'),
-    },
-}
-
 /**
  * Tabs with newItem property to control closability
  */
@@ -2188,23 +1443,11 @@ export const ClosableTabs: Story = {
                 value: 'home',
                 label: 'Home',
                 content: (
-                    <div
-                        style={{
-                            padding: '16px',
-                            backgroundColor: '#f0f9ff',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="p-4 bg-sky-50 rounded-lg">
+                        <h3 className="m-0 mb-3 text-base font-semibold">
                             Home Dashboard
                         </h3>
-                        <p style={{ margin: 0, color: '#0369a1' }}>
+                        <p className="m-0 text-sky-700">
                             Welcome! This tab cannot be closed. It serves as
                             your home base.
                         </p>
@@ -2216,23 +1459,11 @@ export const ClosableTabs: Story = {
                 value: 'analytics',
                 label: 'Analytics',
                 content: (
-                    <div
-                        style={{
-                            padding: '16px',
-                            backgroundColor: '#f0fdf4',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="p-4 bg-green-50 rounded-lg">
+                        <h3 className="m-0 mb-3 text-base font-semibold">
                             Analytics Dashboard
                         </h3>
-                        <p style={{ margin: 0, color: '#166534' }}>
+                        <p className="m-0 text-green-800">
                             View comprehensive analytics and insights. This tab
                             can be closed using the X button.
                         </p>
@@ -2244,23 +1475,11 @@ export const ClosableTabs: Story = {
                 value: 'reports',
                 label: 'Reports',
                 content: (
-                    <div
-                        style={{
-                            padding: '16px',
-                            backgroundColor: '#fef3c7',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="p-4 bg-amber-50 rounded-lg">
+                        <h3 className="m-0 mb-3 text-base font-semibold">
                             Reports Center
                         </h3>
-                        <p style={{ margin: 0, color: '#92400e' }}>
+                        <p className="m-0 text-amber-800">
                             Generate and export reports. This tab can be closed
                             for a cleaner interface.
                         </p>
@@ -2272,23 +1491,11 @@ export const ClosableTabs: Story = {
                 value: 'settings',
                 label: 'Settings',
                 content: (
-                    <div
-                        style={{
-                            padding: '16px',
-                            backgroundColor: '#faf5ff',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                        <h3 className="m-0 mb-3 text-base font-semibold">
                             Configuration Settings
                         </h3>
-                        <p style={{ margin: 0, color: '#7c3aed' }}>
+                        <p className="m-0 text-violet-600">
                             Customize your experience. Close this tab when
                             configuration is complete.
                         </p>
@@ -2311,31 +1518,12 @@ export const ClosableTabs: Story = {
         }
 
         return (
-            <div style={{ width: '700px', maxWidth: '90vw' }}>
-                <div
-                    style={{
-                        marginBottom: '20px',
-                        padding: '16px',
-                        backgroundColor: '#f8fafc',
-                        borderRadius: '8px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+            <div className="w-[700px] max-w-[90vw]">
+                <div className="mb-5 p-4 bg-gray-50 rounded-lg">
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Tabs with newItem Demo
                     </h3>
-                    <p
-                        style={{
-                            margin: 0,
-                            color: '#64748b',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <p className="m-0 text-slate-500 text-sm">
                         Try closing different tabs using the X button. Notice
                         that the Home tab cannot be closed as it has newItem set
                         to false.
@@ -2368,24 +1556,11 @@ export const ClosableTabs: Story = {
  */
 export const AdvancedSlotUsage: Story = {
     render: () => (
-        <div style={{ width: '800px', maxWidth: '90vw' }}>
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '32px',
-                }}
-            >
+        <div className="w-[800px] max-w-[90vw]">
+            <div className="flex flex-col gap-8">
                 {/* Notification badges and status indicators */}
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 16px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            color: '#374151',
-                        }}
-                    >
+                    <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                         Notification Badges & Status Indicators
                     </h4>
                     <Tabs
@@ -2400,16 +1575,7 @@ export const AdvancedSlotUsage: Story = {
                                 size={TabsSize.MD}
                                 leftSlot={<Bell size={16} />}
                                 rightSlot={
-                                    <span
-                                        style={{
-                                            backgroundColor: '#ef4444',
-                                            color: 'white',
-                                            borderRadius: '10px',
-                                            padding: '2px 6px',
-                                            fontSize: '10px',
-                                            fontWeight: '600',
-                                        }}
-                                    >
+                                    <span className="bg-red-500 text-white rounded-[10px] px-1.5 py-0.5 text-[10px] font-semibold">
                                         5
                                     </span>
                                 }
@@ -2422,16 +1588,7 @@ export const AdvancedSlotUsage: Story = {
                                 size={TabsSize.MD}
                                 leftSlot={<FileText size={16} />}
                                 rightSlot={
-                                    <span
-                                        style={{
-                                            backgroundColor: '#f59e0b',
-                                            color: 'white',
-                                            borderRadius: '10px',
-                                            padding: '2px 6px',
-                                            fontSize: '10px',
-                                            fontWeight: '600',
-                                        }}
-                                    >
+                                    <span className="bg-amber-500 text-white rounded-[10px] px-1.5 py-0.5 text-[10px] font-semibold">
                                         3
                                     </span>
                                 }
@@ -2452,14 +1609,7 @@ export const AdvancedSlotUsage: Story = {
                                 size={TabsSize.MD}
                                 leftSlot={<Send size={16} />}
                                 rightSlot={
-                                    <div
-                                        style={{
-                                            width: '8px',
-                                            height: '8px',
-                                            backgroundColor: '#10b981',
-                                            borderRadius: '50%',
-                                        }}
-                                    />
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full" />
                                 }
                             >
                                 Sent
@@ -2467,53 +1617,33 @@ export const AdvancedSlotUsage: Story = {
                         </TabsList>
                         <TabsContent
                             value="inbox"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 You have 5 unread messages in your inbox.
                             </p>
                         </TabsContent>
                         <TabsContent
                             value="drafts"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 3 draft messages are waiting to be completed.
                             </p>
                         </TabsContent>
                         <TabsContent
                             value="archive"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 Your archived messages are stored here.
                             </p>
                         </TabsContent>
                         <TabsContent
                             value="sent"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 Successfully sent messages with online status
                                 indicator.
                             </p>
@@ -2523,14 +1653,7 @@ export const AdvancedSlotUsage: Story = {
 
                 {/* Project status with emoji and progress */}
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 16px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            color: '#374151',
-                        }}
-                    >
+                    <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                         Project Status with Progress Indicators
                     </h4>
                     <Tabs
@@ -2543,36 +1666,12 @@ export const AdvancedSlotUsage: Story = {
                                 value="frontend"
                                 variant={TabsVariant.PILLS}
                                 size={TabsSize.LG}
-                                leftSlot={
-                                    <span style={{ fontSize: '16px' }}>⚛️</span>
-                                }
+                                leftSlot={<span className="text-base">⚛️</span>}
                                 rightSlot={
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            fontSize: '12px',
-                                            color: '#10b981',
-                                        }}
-                                    >
+                                    <div className="flex items-center gap-1 text-xs text-emerald-500">
                                         <span>85%</span>
-                                        <div
-                                            style={{
-                                                width: '20px',
-                                                height: '4px',
-                                                backgroundColor: '#e5e7eb',
-                                                borderRadius: '2px',
-                                                overflow: 'hidden',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    width: '85%',
-                                                    height: '100%',
-                                                    backgroundColor: '#10b981',
-                                                }}
-                                            />
+                                        <div className="w-5 h-1 bg-gray-200 rounded-sm overflow-hidden">
+                                            <div className="w-[85%] h-full bg-emerald-500" />
                                         </div>
                                     </div>
                                 }
@@ -2583,36 +1682,12 @@ export const AdvancedSlotUsage: Story = {
                                 value="backend"
                                 variant={TabsVariant.PILLS}
                                 size={TabsSize.LG}
-                                leftSlot={
-                                    <span style={{ fontSize: '16px' }}>🔧</span>
-                                }
+                                leftSlot={<span className="text-base">🔧</span>}
                                 rightSlot={
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            fontSize: '12px',
-                                            color: '#f59e0b',
-                                        }}
-                                    >
+                                    <div className="flex items-center gap-1 text-xs text-amber-500">
                                         <span>62%</span>
-                                        <div
-                                            style={{
-                                                width: '20px',
-                                                height: '4px',
-                                                backgroundColor: '#e5e7eb',
-                                                borderRadius: '2px',
-                                                overflow: 'hidden',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    width: '62%',
-                                                    height: '100%',
-                                                    backgroundColor: '#f59e0b',
-                                                }}
-                                            />
+                                        <div className="w-5 h-1 bg-gray-200 rounded-sm overflow-hidden">
+                                            <div className="w-[62%] h-full bg-amber-500" />
                                         </div>
                                     </div>
                                 }
@@ -2623,36 +1698,12 @@ export const AdvancedSlotUsage: Story = {
                                 value="testing"
                                 variant={TabsVariant.PILLS}
                                 size={TabsSize.LG}
-                                leftSlot={
-                                    <span style={{ fontSize: '16px' }}>🧪</span>
-                                }
+                                leftSlot={<span className="text-base">🧪</span>}
                                 rightSlot={
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            fontSize: '12px',
-                                            color: '#ef4444',
-                                        }}
-                                    >
+                                    <div className="flex items-center gap-1 text-xs text-red-500">
                                         <span>28%</span>
-                                        <div
-                                            style={{
-                                                width: '20px',
-                                                height: '4px',
-                                                backgroundColor: '#e5e7eb',
-                                                borderRadius: '2px',
-                                                overflow: 'hidden',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    width: '28%',
-                                                    height: '100%',
-                                                    backgroundColor: '#ef4444',
-                                                }}
-                                            />
+                                        <div className="w-5 h-1 bg-gray-200 rounded-sm overflow-hidden">
+                                            <div className="w-[28%] h-full bg-red-500" />
                                         </div>
                                     </div>
                                 }
@@ -2662,28 +1713,18 @@ export const AdvancedSlotUsage: Story = {
                         </TabsList>
                         <TabsContent
                             value="frontend"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 Frontend development is 85% complete. React
                                 components and styling are nearly finished.
                             </p>
                         </TabsContent>
                         <TabsContent
                             value="backend"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 Backend APIs are 62% implemented. Core
                                 functionality is working, authentication
                                 pending.
@@ -2691,14 +1732,9 @@ export const AdvancedSlotUsage: Story = {
                         </TabsContent>
                         <TabsContent
                             value="testing"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 Testing coverage is at 28%. Unit tests started,
                                 integration tests are next priority.
                             </p>
@@ -2727,24 +1763,11 @@ export const AdvancedSlotUsage: Story = {
  */
 export const RealWorldScenarios: Story = {
     render: () => (
-        <div style={{ width: '900px', maxWidth: '95vw' }}>
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '40px',
-                }}
-            >
+        <div className="w-[900px] max-w-[95vw]">
+            <div className="flex flex-col gap-10">
                 {/* E-commerce admin panel */}
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 16px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                            color: '#374151',
-                        }}
-                    >
+                    <h4 className="m-0 mb-4 text-base font-semibold text-gray-700">
                         E-commerce Admin Panel
                     </h4>
                     <Tabs
@@ -2759,16 +1782,7 @@ export const RealWorldScenarios: Story = {
                                 size={TabsSize.MD}
                                 leftSlot={<ShoppingCart size={16} />}
                                 rightSlot={
-                                    <span
-                                        style={{
-                                            backgroundColor: '#dc2626',
-                                            color: 'white',
-                                            borderRadius: '10px',
-                                            padding: '2px 6px',
-                                            fontSize: '10px',
-                                            fontWeight: '600',
-                                        }}
-                                    >
+                                    <span className="bg-red-600 text-white rounded-[10px] px-1.5 py-0.5 text-[10px] font-semibold">
                                         23
                                     </span>
                                 }
@@ -2789,15 +1803,7 @@ export const RealWorldScenarios: Story = {
                                 size={TabsSize.MD}
                                 leftSlot={<Users size={16} />}
                                 rightSlot={
-                                    <span
-                                        style={{
-                                            width: '6px',
-                                            height: '6px',
-                                            backgroundColor: '#10b981',
-                                            borderRadius: '50%',
-                                            display: 'block',
-                                        }}
-                                    />
+                                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full block" />
                                 }
                             >
                                 Customers
@@ -2813,118 +1819,40 @@ export const RealWorldScenarios: Story = {
                         </TabsList>
                         <TabsContent
                             value="orders"
-                            style={{
-                                padding: '20px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '12px',
-                            }}
+                            className="p-5 border border-slate-200 rounded-lg mt-3"
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    marginBottom: '16px',
-                                }}
-                            >
-                                <h3
-                                    style={{
-                                        margin: 0,
-                                        fontSize: '18px',
-                                        fontWeight: '600',
-                                    }}
-                                >
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="m-0 text-lg font-semibold">
                                     Recent Orders
                                 </h3>
-                                <span
-                                    style={{
-                                        color: '#dc2626',
-                                        fontSize: '14px',
-                                        fontWeight: '500',
-                                    }}
-                                >
+                                <span className="text-red-600 text-sm font-medium">
                                     23 pending orders
                                 </span>
                             </div>
-                            <div style={{ display: 'grid', gap: '12px' }}>
-                                <div
-                                    style={{
-                                        padding: '12px',
-                                        backgroundColor: '#fef2f2',
-                                        border: '1px solid #fecaca',
-                                        borderRadius: '6px',
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <span style={{ fontWeight: '500' }}>
+                            <div className="grid gap-3">
+                                <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-medium">
                                             Order #1234
                                         </span>
-                                        <span
-                                            style={{
-                                                color: '#dc2626',
-                                                fontSize: '12px',
-                                                backgroundColor: '#fee2e2',
-                                                padding: '2px 8px',
-                                                borderRadius: '4px',
-                                            }}
-                                        >
+                                        <span className="text-red-600 text-xs bg-red-100 px-2 py-0.5 rounded">
                                             Pending
                                         </span>
                                     </div>
-                                    <p
-                                        style={{
-                                            margin: '4px 0 0 0',
-                                            fontSize: '14px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
+                                    <p className="mt-1 text-sm text-gray-500">
                                         $299.99 • John Doe • 2 items
                                     </p>
                                 </div>
-                                <div
-                                    style={{
-                                        padding: '12px',
-                                        backgroundColor: '#f0fdf4',
-                                        border: '1px solid #bbf7d0',
-                                        borderRadius: '6px',
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <span style={{ fontWeight: '500' }}>
+                                <div className="p-3 bg-green-50 border border-green-200 rounded-md">
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-medium">
                                             Order #1235
                                         </span>
-                                        <span
-                                            style={{
-                                                color: '#059669',
-                                                fontSize: '12px',
-                                                backgroundColor: '#d1fae5',
-                                                padding: '2px 8px',
-                                                borderRadius: '4px',
-                                            }}
-                                        >
+                                        <span className="text-emerald-600 text-xs bg-emerald-100 px-2 py-0.5 rounded">
                                             Completed
                                         </span>
                                     </div>
-                                    <p
-                                        style={{
-                                            margin: '4px 0 0 0',
-                                            fontSize: '14px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
+                                    <p className="mt-1 text-sm text-gray-500">
                                         $149.50 • Jane Smith • 1 item
                                     </p>
                                 </div>
@@ -2932,23 +1860,12 @@ export const RealWorldScenarios: Story = {
                         </TabsContent>
                         <TabsContent
                             value="products"
-                            style={{
-                                padding: '20px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '12px',
-                            }}
+                            className="p-5 border border-slate-200 rounded-lg mt-3"
                         >
-                            <h3
-                                style={{
-                                    margin: '0 0 16px 0',
-                                    fontSize: '18px',
-                                    fontWeight: '600',
-                                }}
-                            >
+                            <h3 className="m-0 mb-4 text-lg font-semibold">
                                 Product Catalog
                             </h3>
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 Manage your product inventory, pricing, and
                                 descriptions. Add new products or update
                                 existing ones.
@@ -2956,41 +1873,17 @@ export const RealWorldScenarios: Story = {
                         </TabsContent>
                         <TabsContent
                             value="customers"
-                            style={{
-                                padding: '20px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '12px',
-                            }}
+                            className="p-5 border border-slate-200 rounded-lg mt-3"
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    marginBottom: '16px',
-                                }}
-                            >
-                                <h3
-                                    style={{
-                                        margin: 0,
-                                        fontSize: '18px',
-                                        fontWeight: '600',
-                                    }}
-                                >
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="m-0 text-lg font-semibold">
                                     Customer Management
                                 </h3>
-                                <span
-                                    style={{
-                                        color: '#10b981',
-                                        fontSize: '14px',
-                                        fontWeight: '500',
-                                    }}
-                                >
+                                <span className="text-emerald-500 text-sm font-medium">
                                     Online now
                                 </span>
                             </div>
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 View customer profiles, order history, and
                                 support tickets. The green indicator shows
                                 you're connected to real-time customer data.
@@ -2998,23 +1891,12 @@ export const RealWorldScenarios: Story = {
                         </TabsContent>
                         <TabsContent
                             value="analytics"
-                            style={{
-                                padding: '20px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '12px',
-                            }}
+                            className="p-5 border border-slate-200 rounded-lg mt-3"
                         >
-                            <h3
-                                style={{
-                                    margin: '0 0 16px 0',
-                                    fontSize: '18px',
-                                    fontWeight: '600',
-                                }}
-                            >
+                            <h3 className="m-0 mb-4 text-lg font-semibold">
                                 Sales Analytics
                             </h3>
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 Track sales performance, revenue trends, and
                                 customer behavior patterns with detailed charts
                                 and reports.
@@ -3025,14 +1907,7 @@ export const RealWorldScenarios: Story = {
 
                 {/* File browser with different file types */}
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 16px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                            color: '#374151',
-                        }}
-                    >
+                    <h4 className="m-0 mb-4 text-base font-semibold text-gray-700">
                         File Browser with Type Indicators
                     </h4>
                     <Tabs
@@ -3045,16 +1920,9 @@ export const RealWorldScenarios: Story = {
                                 value="documents"
                                 variant={TabsVariant.BOXED}
                                 size={TabsSize.MD}
-                                leftSlot={
-                                    <span style={{ fontSize: '16px' }}>📄</span>
-                                }
+                                leftSlot={<span className="text-base">📄</span>}
                                 rightSlot={
-                                    <span
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
+                                    <span className="text-xs text-gray-500">
                                         24
                                     </span>
                                 }
@@ -3065,16 +1933,9 @@ export const RealWorldScenarios: Story = {
                                 value="images"
                                 variant={TabsVariant.BOXED}
                                 size={TabsSize.MD}
-                                leftSlot={
-                                    <span style={{ fontSize: '16px' }}>🖼️</span>
-                                }
+                                leftSlot={<span className="text-base">🖼️</span>}
                                 rightSlot={
-                                    <span
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
+                                    <span className="text-xs text-gray-500">
                                         156
                                     </span>
                                 }
@@ -3085,16 +1946,9 @@ export const RealWorldScenarios: Story = {
                                 value="videos"
                                 variant={TabsVariant.BOXED}
                                 size={TabsSize.MD}
-                                leftSlot={
-                                    <span style={{ fontSize: '16px' }}>🎥</span>
-                                }
+                                leftSlot={<span className="text-base">🎥</span>}
                                 rightSlot={
-                                    <span
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
+                                    <span className="text-xs text-gray-500">
                                         8
                                     </span>
                                 }
@@ -3105,16 +1959,9 @@ export const RealWorldScenarios: Story = {
                                 value="code"
                                 variant={TabsVariant.BOXED}
                                 size={TabsSize.MD}
-                                leftSlot={
-                                    <span style={{ fontSize: '16px' }}>💻</span>
-                                }
+                                leftSlot={<span className="text-base">💻</span>}
                                 rightSlot={
-                                    <span
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
+                                    <span className="text-xs text-gray-500">
                                         42
                                     </span>
                                 }
@@ -3124,56 +1971,36 @@ export const RealWorldScenarios: Story = {
                         </TabsList>
                         <TabsContent
                             value="documents"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 24 documents including PDFs, Word files, and
                                 spreadsheets. Recent files are shown first.
                             </p>
                         </TabsContent>
                         <TabsContent
                             value="images"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 156 images in various formats (JPG, PNG, SVG).
                                 Organized by upload date and project folders.
                             </p>
                         </TabsContent>
                         <TabsContent
                             value="videos"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 8 video files including MP4 and MOV formats.
                                 Thumbnails and duration shown for each file.
                             </p>
                         </TabsContent>
                         <TabsContent
                             value="code"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
+                            className="p-4 border border-slate-200 rounded-lg mt-2"
                         >
-                            <p style={{ margin: 0, color: '#64748b' }}>
+                            <p className="m-0 text-slate-500">
                                 42 code files across multiple programming
                                 languages. Syntax highlighting available for
                                 preview.
@@ -3233,54 +2060,19 @@ export const SkeletonLoading: Story = {
         ]
 
         return (
-            <div style={{ width: '600px' }}>
-                <div
-                    style={{
-                        marginBottom: '20px',
-                        padding: '16px',
-                        backgroundColor: '#f8fafc',
-                        borderRadius: '8px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+            <div className="w-[600px]">
+                <div className="mb-5 p-4 bg-gray-50 rounded-lg">
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Skeleton Loading Demo
                     </h3>
-                    <p
-                        style={{
-                            margin: '0 0 16px 0',
-                            color: '#64748b',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <p className="m-0 mb-4 text-slate-500 text-sm">
                         Toggle loading state to see skeleton placeholders.
                         Select different animation variants.
                     </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '12px',
-                            alignItems: 'center',
-                        }}
-                    >
+                    <div className="flex gap-3 items-center">
                         <button
                             onClick={() => setLoading(!loading)}
-                            style={{
-                                padding: '8px 16px',
-                                backgroundColor: loading
-                                    ? '#10b981'
-                                    : '#3b82f6',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                            }}
+                            className={`px-4 py-2 text-white border-none rounded-md cursor-pointer text-sm ${loading ? 'bg-emerald-500' : 'bg-blue-500'}`}
                         >
                             {loading ? 'Load Content' : 'Show Skeleton'}
                         </button>
@@ -3294,12 +2086,7 @@ export const SkeletonLoading: Story = {
                                         | 'shimmer'
                                 )
                             }
-                            style={{
-                                padding: '8px 12px',
-                                borderRadius: '6px',
-                                border: '1px solid #e2e8f0',
-                                fontSize: '14px',
-                            }}
+                            className="px-3 py-2 rounded-md border border-slate-200 text-sm"
                         >
                             <option value="pulse">Pulse</option>
                             <option value="wave">Wave</option>
@@ -3315,23 +2102,9 @@ export const SkeletonLoading: Story = {
                     skeletonVariant={variant}
                 />
 
-                <div
-                    style={{
-                        marginTop: '20px',
-                        padding: '16px',
-                        backgroundColor: '#f0f9ff',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                    }}
-                >
+                <div className="mt-5 p-4 bg-sky-50 rounded-lg text-sm">
                     <strong>Features:</strong>
-                    <ul
-                        style={{
-                            margin: '8px 0 0 0',
-                            paddingLeft: '20px',
-                            color: '#64748b',
-                        }}
-                    >
+                    <ul className="mt-2 pl-5 text-slate-500">
                         <li>
                             <code>showSkeleton</code>: Displays loading
                             placeholders
@@ -3373,13 +2146,10 @@ export const StickyHeader: Story = {
                 value: 'section1',
                 label: 'Section 1',
                 content: (
-                    <div style={{ padding: '20px' }}>
+                    <div className="p-5">
                         <h3>Scrollable Content Section 1</h3>
                         {Array.from({ length: 20 }).map((_, i) => (
-                            <p
-                                key={i}
-                                style={{ lineHeight: '2', color: '#64748b' }}
-                            >
+                            <p key={i} className="leading-loose text-slate-500">
                                 Paragraph {i + 1}: Lorem ipsum dolor sit amet,
                                 consectetur adipiscing elit. Sed do eiusmod
                                 tempor incididunt ut labore et dolore magna
@@ -3393,13 +2163,10 @@ export const StickyHeader: Story = {
                 value: 'section2',
                 label: 'Section 2',
                 content: (
-                    <div style={{ padding: '20px' }}>
+                    <div className="p-5">
                         <h3>Scrollable Content Section 2</h3>
                         {Array.from({ length: 20 }).map((_, i) => (
-                            <p
-                                key={i}
-                                style={{ lineHeight: '2', color: '#64748b' }}
-                            >
+                            <p key={i} className="leading-loose text-slate-500">
                                 Paragraph {i + 1}: Ut enim ad minim veniam, quis
                                 nostrud exercitation ullamco laboris nisi ut
                                 aliquip ex ea commodo consequat.
@@ -3412,13 +2179,10 @@ export const StickyHeader: Story = {
                 value: 'section3',
                 label: 'Section 3',
                 content: (
-                    <div style={{ padding: '20px' }}>
+                    <div className="p-5">
                         <h3>Scrollable Content Section 3</h3>
                         {Array.from({ length: 20 }).map((_, i) => (
-                            <p
-                                key={i}
-                                style={{ lineHeight: '2', color: '#64748b' }}
-                            >
+                            <p key={i} className="leading-loose text-slate-500">
                                 Paragraph {i + 1}: Duis aute irure dolor in
                                 reprehenderit in voluptate velit esse cillum
                                 dolore eu fugiat nulla pariatur.
@@ -3430,50 +2194,17 @@ export const StickyHeader: Story = {
         ]
 
         return (
-            <div style={{ width: '600px' }}>
-                <div
-                    style={{
-                        marginBottom: '20px',
-                        padding: '16px',
-                        backgroundColor: '#f8fafc',
-                        borderRadius: '8px',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+            <div className="w-[600px]">
+                <div className="mb-5 p-4 bg-gray-50 rounded-lg">
+                    <h3 className="m-0 mb-3 text-base font-semibold">
                         Sticky Header Demo
                     </h3>
-                    <p
-                        style={{
-                            margin: '0 0 16px 0',
-                            color: '#64748b',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <p className="m-0 mb-4 text-slate-500 text-sm">
                         Scroll down in the content area below. The tab header
                         stays visible when sticky is enabled.
                     </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '12px',
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                        }}
-                    >
-                        <label
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '14px',
-                            }}
-                        >
+                    <div className="flex gap-3 items-center flex-wrap">
+                        <label className="flex items-center gap-2 text-sm">
                             <input
                                 type="checkbox"
                                 checked={isSticky}
@@ -3481,16 +2212,8 @@ export const StickyHeader: Story = {
                             />
                             Enable Sticky Header
                         </label>
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                            }}
-                        >
-                            <label style={{ fontSize: '14px' }}>
-                                Offset Top:
-                            </label>
+                        <div className="flex items-center gap-2">
+                            <label className="text-sm">Offset Top:</label>
                             <input
                                 type="range"
                                 min="0"
@@ -3499,25 +2222,16 @@ export const StickyHeader: Story = {
                                 onChange={(e) =>
                                     setOffsetTop(Number(e.target.value))
                                 }
-                                style={{ width: '100px' }}
+                                className="w-[100px]"
                             />
-                            <span
-                                style={{ fontSize: '14px', minWidth: '40px' }}
-                            >
+                            <span className="text-sm min-w-[40px]">
                                 {offsetTop}px
                             </span>
                         </div>
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        height: '400px',
-                        overflow: 'auto',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                    }}
-                >
+                <div className="h-[400px] overflow-auto border border-slate-200 rounded-lg">
                     <Tabs
                         items={longContentItems}
                         defaultValue="section1"
@@ -3526,23 +2240,9 @@ export const StickyHeader: Story = {
                     />
                 </div>
 
-                <div
-                    style={{
-                        marginTop: '20px',
-                        padding: '16px',
-                        backgroundColor: '#f0fdf4',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                    }}
-                >
+                <div className="mt-5 p-4 bg-green-50 rounded-lg text-sm">
                     <strong>Features:</strong>
-                    <ul
-                        style={{
-                            margin: '8px 0 0 0',
-                            paddingLeft: '20px',
-                            color: '#64748b',
-                        }}
-                    >
+                    <ul className="mt-2 pl-5 text-slate-500">
                         <li>
                             <code>stickyHeader</code>: Keeps tabs visible while
                             scrolling
@@ -3563,559 +2263,6 @@ export const StickyHeader: Story = {
             description: {
                 story: 'Demonstrates sticky header functionality that keeps tab navigation visible while scrolling through long content. Includes offset top adjustment for fine-tuning the sticky position.',
             },
-        },
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples
- */
-export const Accessibility: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                padding: '24px',
-                maxWidth: '900px',
-            }}
-        >
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    ARIA Attributes
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Tabs defaultValue="aria-1" variant={TabsVariant.BOXED}>
-                        <TabsList>
-                            <TabsTrigger value="aria-1">
-                                ARIA Selected
-                            </TabsTrigger>
-                            <TabsTrigger value="aria-2">
-                                ARIA Controls
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent
-                            value="aria-1"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Tab triggers have aria-selected attribute that
-                                updates based on state (true/false). Check
-                                Accessibility panel to verify.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="aria-2"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Each trigger has aria-controls linking to its
-                                tabpanel, establishing proper relationships.
-                            </p>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Keyboard Navigation
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Tabs defaultValue="keyboard-1" variant={TabsVariant.BOXED}>
-                        <TabsList>
-                            <TabsTrigger value="keyboard-1">
-                                Tab Navigation
-                            </TabsTrigger>
-                            <TabsTrigger value="keyboard-2">
-                                Arrow Keys
-                            </TabsTrigger>
-                            <TabsTrigger value="keyboard-3">
-                                Home/End Keys
-                            </TabsTrigger>
-                            <TabsTrigger value="keyboard-4">
-                                Enter/Space
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent
-                            value="keyboard-1"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Tab to focus tabs list. Each tab trigger is
-                                keyboard accessible.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="keyboard-2"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Use Arrow Left/Right keys to navigate between
-                                tabs.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="keyboard-3"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Press Home to go to first tab, End to go to last
-                                tab.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="keyboard-4"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Press Enter or Space to activate the selected
-                                tab.
-                            </p>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Semantic Roles
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Tabs defaultValue="role-1" variant={TabsVariant.BOXED}>
-                        <TabsList>
-                            <TabsTrigger value="role-1">role="tab"</TabsTrigger>
-                            <TabsTrigger value="role-2">
-                                role="tabpanel"
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent
-                            value="role-1"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Tab triggers have role="tab" for proper semantic
-                                structure. Check Accessibility panel to verify.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="role-2"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Tab panels have role="tabpanel" to establish
-                                proper relationships with tabs.
-                            </p>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Decorative Icons
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Tabs defaultValue="icon-1" variant={TabsVariant.BOXED}>
-                        <TabsList>
-                            <TabsTrigger
-                                value="icon-1"
-                                leftSlot={<User size={16} />}
-                            >
-                                Icon with aria-hidden
-                            </TabsTrigger>
-                            <TabsTrigger
-                                value="icon-2"
-                                leftSlot={<Shield size={16} />}
-                            >
-                                Decorative Icon
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent
-                            value="icon-1"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Decorative icons in leftSlot are marked with
-                                aria-hidden="true" to hide them from screen
-                                readers.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="icon-2"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Icons are decorative and properly hidden from
-                                assistive technologies.
-                            </p>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Focus Indicators
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Tabs defaultValue="focus-1" variant={TabsVariant.BOXED}>
-                        <TabsList>
-                            <TabsTrigger value="focus-1">Focus Me</TabsTrigger>
-                            <TabsTrigger value="focus-2">
-                                Focus Me Too
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent
-                            value="focus-1"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Tab to focus this tab trigger. You should see a
-                                visible focus indicator.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="focus-2"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                All tab triggers have visible focus indicators
-                                for keyboard navigation.
-                            </p>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Disabled State
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Tabs defaultValue="enabled-1" variant={TabsVariant.BOXED}>
-                        <TabsList>
-                            <TabsTrigger value="enabled-1">
-                                Enabled Tab
-                            </TabsTrigger>
-                            <TabsTrigger value="disabled-1" disabled>
-                                Disabled Tab
-                            </TabsTrigger>
-                            <TabsTrigger value="enabled-2">
-                                Another Enabled
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent
-                            value="enabled-1"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                This tab is enabled and can be activated.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="disabled-1"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                This tab is disabled and has
-                                aria-disabled="true". Arrow key navigation skips
-                                disabled tabs.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="enabled-2"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Arrow key navigation skips disabled tabs.
-                            </p>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Screen Reader Support
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Tabs defaultValue="sr-1" variant={TabsVariant.BOXED}>
-                        <TabsList>
-                            <TabsTrigger value="sr-1">
-                                State Announcements
-                            </TabsTrigger>
-                            <TabsTrigger value="sr-2">
-                                Tab Navigation
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent
-                            value="sr-1"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Screen readers announce when tabs are selected
-                                via aria-selected changes. Tab panels are
-                                properly associated with their triggers.
-                            </p>
-                        </TabsContent>
-                        <TabsContent
-                            value="sr-2"
-                            style={{
-                                padding: '16px',
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '8px',
-                                marginTop: '8px',
-                            }}
-                        >
-                            <p style={{ margin: 0, color: '#64748b' }}>
-                                Screen readers announce tab count, current tab
-                                position, and tab labels for navigation context.
-                            </p>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Interactive Elements (Close Button, Dropdown, Add Button)
-                </h3>
-                <div style={{ width: '700px' }}>
-                    <Tabs
-                        items={[
-                            {
-                                value: 'tab1',
-                                label: 'Tab 1',
-                                content: (
-                                    <p style={{ margin: 0, color: '#64748b' }}>
-                                        Close button has aria-label for
-                                        accessibility.
-                                    </p>
-                                ),
-                                newItem: true,
-                            },
-                            {
-                                value: 'tab2',
-                                label: 'Tab 2',
-                                content: (
-                                    <p style={{ margin: 0, color: '#64748b' }}>
-                                        Dropdown and add buttons have proper
-                                        accessible names via aria-label.
-                                    </p>
-                                ),
-                                newItem: true,
-                            },
-                        ]}
-                        defaultValue="tab1"
-                        showDropdown={true}
-                        showAddButton={true}
-                        dropdownTooltip="Navigate to any tab"
-                        addButtonTooltip="Add new tab"
-                        variant={TabsVariant.BOXED}
-                    />
-                </div>
-            </section>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating ARIA attributes, keyboard navigation, semantic roles, decorative icons, focus indicators, disabled states, screen reader support, and interactive elements.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0)
-   - Review passing tests (12+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test Tabs.accessibility
-   \`\`\`
-   - 40+ automated tests
-   - WCAG compliance verification
-   - ARIA attribute validation
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes
-   - Responsive behavior
-
-4. **Manual testing**:
-   - VoiceOver (macOS), NVDA (Windows), or JAWS
-   - Keyboard navigation (Tab, Arrow keys, Home/End, Enter/Space)
-   - Color contrast verification
-
-## Accessibility Report
-
-**Current Status**: 
-- ✅ **WCAG 2.2 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.2 Level AAA**: Partial Compliance (7/9 applicable criteria compliant)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), No Timing (2.2.3), Interruptions (2.2.4), Animation from Interactions (2.3.3), Change on Request (3.2.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - Interactive elements need 44x44px
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-
-**Key Accessibility Features**:
-- Proper ARIA attributes (aria-selected, aria-controls, aria-disabled)
-- Semantic HTML structure with role="tab" and role="tabpanel"
-- Comprehensive keyboard navigation (Arrow Left/Right, Home/End, Tab, Enter/Space)
-- Decorative icons marked with aria-hidden="true"
-- Visible focus indicators
-- Disabled tabs properly handled with aria-disabled
-- Interactive elements (close button, dropdown, add button) have proper accessible names
-- Built on Radix UI with robust accessibility features
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('interactive'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
         },
     },
 }

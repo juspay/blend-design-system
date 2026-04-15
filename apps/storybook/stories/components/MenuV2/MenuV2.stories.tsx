@@ -70,11 +70,11 @@ const meta: Meta<typeof MenuV2> = {
         layout: 'centered',
         a11y: getA11yConfig('navigation'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'Context-free menu built on Radix Dropdown with Blend tokens.',
         docs: {
             description: {
                 component: `
-Context-free menu built on Radix Dropdown with Blend tokens.
-
 ## Features
 - Token-driven theming (light/dark)
 - Grouped items with optional separators
@@ -183,25 +183,12 @@ export const WithSubmenu: Story = {
 export const Visual: Story = {
     render: function VisualRender() {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+            <div className="flex flex-col gap-8">
                 <div>
-                    <h3
-                        style={{
-                            marginBottom: 16,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-4 text-base font-semibold">
                         Default vs with search
                     </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: 24,
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                        }}
-                    >
+                    <div className="flex gap-6 items-center flex-wrap">
                         <MenuV2
                             trigger={
                                 <Button buttonType={ButtonType.SECONDARY}>
@@ -223,23 +210,10 @@ export const Visual: Story = {
                     </div>
                 </div>
                 <div>
-                    <h3
-                        style={{
-                            marginBottom: 16,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-4 text-base font-semibold">
                         Alignment & side
                     </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: 24,
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                        }}
-                    >
+                    <div className="flex gap-6 items-center flex-wrap">
                         <MenuV2
                             trigger={
                                 <Button buttonType={ButtonType.SECONDARY}>
@@ -299,7 +273,7 @@ export const Interactive: Story = {
         ]
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div className="flex flex-col gap-3">
                 <MenuV2
                     {...args}
                     items={items}
@@ -311,7 +285,7 @@ export const Interactive: Story = {
                         </Button>
                     }
                 />
-                <div style={{ fontSize: 12, color: '#666' }}>
+                <div className="text-xs text-gray-600">
                     Last selected: <strong>{selected ?? 'none'}</strong>
                 </div>
             </div>

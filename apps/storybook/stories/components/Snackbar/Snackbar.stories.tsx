@@ -32,10 +32,33 @@ const meta: Meta<typeof Snackbar> = {
         layout: 'fullscreen',
         a11y: getA11yConfig('interactive'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A toast notification component for displaying temporary messages, alerts, and feedback to users with various styles and optional actions.',
         docs: {
             description: {
                 component: `
-A toast notification component for displaying temporary messages, alerts, and feedback to users with various styles and optional actions.
+## Usage
+
+\`\`\`tsx
+import { Snackbar, addSnackbar, SnackbarVariant } from '@juspay/blend-design-system';
+
+// First, add the Snackbar component to your app root
+<Snackbar />
+
+// Then trigger snackbars from anywhere
+addSnackbar({
+  header: "Success!",
+  description: "Your changes have been saved.",
+  variant: SnackbarVariant.SUCCESS,
+  actionButton: {
+    label: "Undo",
+    onClick: () => console.log('Undo clicked'),
+    autoDismiss: true
+  },
+  duration: 5000,
+  onClose: () => console.log('Snackbar closed')
+});
+\`\`\`
 
 ## Features
 - Multiple variants (Info, Success, Warning, Error)
@@ -78,28 +101,6 @@ A toast notification component for displaying temporary messages, alerts, and fe
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-## Usage
-
-\`\`\`tsx
-import { Snackbar, addSnackbar, SnackbarVariant } from '@juspay/blend-design-system';
-
-// First, add the Snackbar component to your app root
-<Snackbar />
-
-// Then trigger snackbars from anywhere
-addSnackbar({
-  header: "Success!",
-  description: "Your changes have been saved.",
-  variant: SnackbarVariant.SUCCESS,
-  actionButton: {
-    label: "Undo",
-    onClick: () => console.log('Undo clicked'),
-    autoDismiss: true
-  },
-  duration: 5000,
-  onClose: () => console.log('Snackbar closed')
-});
-\`\`\`
         `,
             },
         },
@@ -139,13 +140,7 @@ addSnackbar({
                     position={context.args.position}
                     dismissOnClickAway={context.args.dismissOnClickAway}
                 />
-                <div
-                    style={{
-                        height: 'auto',
-                        minHeight: '250px',
-                        overflow: 'hidden',
-                    }}
-                >
+                <div className="h-auto min-h-[250px] overflow-hidden">
                     <Story />
                 </div>
             </>
@@ -159,7 +154,7 @@ type Story = StoryObj<typeof Snackbar>
 
 export const Default: Story = {
     render: () => (
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
             <Button
                 text="Show Default Snackbar"
                 onClick={() =>
@@ -183,16 +178,7 @@ export const Default: Story = {
 
 export const SnackbarVariants: Story = {
     render: () => (
-        <div
-            style={{
-                position: 'relative',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gridTemplateRows: 'repeat(2, min-content)',
-                gap: '16px',
-                alignContent: 'start',
-            }}
-        >
+        <div className="relative grid grid-cols-2 grid-rows-[repeat(2,min-content)] gap-4 content-start">
             <Button
                 text="Show Info Snackbar"
                 leadingIcon={<Info />}
@@ -251,15 +237,7 @@ export const SnackbarVariants: Story = {
 }
 export const WithActionButton: Story = {
     render: () => (
-        <div
-            style={{
-                position: 'relative',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '16px',
-                alignContent: 'start',
-            }}
-        >
+        <div className="relative grid grid-cols-2 gap-4 content-start">
             <Button
                 text="Show Delete with Undo"
                 leadingIcon={<Trash2 />}
@@ -326,7 +304,7 @@ export const WithActionButton: Story = {
  */
 export const WithCloseCallback: Story = {
     render: () => (
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
             <Button
                 text="Show with Close Tracking"
                 leadingIcon={<X />}
@@ -360,7 +338,7 @@ export const WithCloseCallback: Story = {
  */
 export const MultipleSnackbars: Story = {
     render: () => (
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
             <Button
                 text="Show Multiple Stacked"
                 leadingIcon={<Layers />}
@@ -403,15 +381,7 @@ export const MultipleSnackbars: Story = {
  */
 export const HeaderOnly: Story = {
     render: () => (
-        <div
-            style={{
-                position: 'relative',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '16px',
-                alignContent: 'start',
-            }}
-        >
+        <div className="relative grid grid-cols-3 gap-4 content-start">
             <Button
                 text="Show Quick Copy"
                 leadingIcon={<Copy />}
@@ -459,7 +429,7 @@ export const HeaderOnly: Story = {
  */
 export const CustomDurationToast: Story = {
     render: () => (
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
             <Button
                 text="Show Snackbar with duration 15000"
                 onClick={() =>
@@ -489,15 +459,7 @@ export const CustomDurationToast: Story = {
  */
 export const ActionButtonBehavior: Story = {
     render: () => (
-        <div
-            style={{
-                position: 'relative',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '16px',
-                alignContent: 'start',
-            }}
-        >
+        <div className="relative grid grid-cols-2 gap-4 content-start">
             <Button
                 text="Action with Auto-Dismiss"
                 onClick={() =>
@@ -565,16 +527,7 @@ export const ActionButtonBehavior: Story = {
  */
 export const RealWorldExamples: Story = {
     render: () => (
-        <div
-            style={{
-                position: 'relative',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gridTemplateRows: 'repeat(2, min-content)',
-                gap: '16px',
-                alignContent: 'start',
-            }}
-        >
+        <div className="relative grid grid-cols-2 grid-rows-[repeat(2,min-content)] gap-4 content-start">
             <Button
                 text="Show Save Success"
                 leadingIcon={<Save />}
@@ -650,316 +603,5 @@ export const RealWorldExamples: Story = {
             },
         },
         a11y: getA11yConfig('interactive'),
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples
- */
-export const Accessibility: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                padding: '24px',
-                maxWidth: '800px',
-            }}
-        >
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    ARIA Roles
-                </h3>
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '12px',
-                    }}
-                >
-                    <Button
-                        text="Info (role='status')"
-                        leadingIcon={<Info />}
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Info Notification',
-                                description:
-                                    'Uses role="status" for polite announcements',
-                                variant: SnackbarVariant.INFO,
-                            })
-                        }
-                    />
-                    <Button
-                        text="Error (role='alert')"
-                        leadingIcon={<XCircle />}
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Error Notification',
-                                description:
-                                    'Uses role="alert" for assertive announcements',
-                                variant: SnackbarVariant.ERROR,
-                            })
-                        }
-                    />
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Keyboard Navigation
-                </h3>
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '12px',
-                    }}
-                >
-                    <Button
-                        text="Tab to Focus Close"
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Keyboard Accessible',
-                                description:
-                                    'Tab to focus close button, press Enter/Space to close',
-                                variant: SnackbarVariant.INFO,
-                            })
-                        }
-                    />
-                    <Button
-                        text="Tab to Focus Action"
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Action Button',
-                                description:
-                                    'Tab to focus action button, press Enter/Space',
-                                variant: SnackbarVariant.SUCCESS,
-                                actionButton: {
-                                    label: 'Action',
-                                    onClick: () => {
-                                        console.log('Action clicked')
-                                    },
-                                },
-                            })
-                        }
-                    />
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Screen Reader Support
-                </h3>
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '12px',
-                    }}
-                >
-                    <Button
-                        text="With Description"
-                        leadingIcon={<Info />}
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Header Text',
-                                description:
-                                    'Description text provides additional context',
-                                variant: SnackbarVariant.INFO,
-                            })
-                        }
-                    />
-                    <Button
-                        text="Header Only"
-                        leadingIcon={<Info />}
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Header Only Notification',
-                                variant: SnackbarVariant.SUCCESS,
-                            })
-                        }
-                    />
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Decorative Icons
-                </h3>
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '12px',
-                    }}
-                >
-                    <Button
-                        text="With Icon (aria-hidden)"
-                        leadingIcon={<CheckCircle />}
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Success with Icon',
-                                description:
-                                    'Icons are marked with aria-hidden="true"',
-                                variant: SnackbarVariant.SUCCESS,
-                            })
-                        }
-                    />
-                    <Button
-                        text="Error with Icon"
-                        leadingIcon={<XCircle />}
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Error with Icon',
-                                description:
-                                    'Decorative icons hidden from screen readers',
-                                variant: SnackbarVariant.ERROR,
-                            })
-                        }
-                    />
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Focus Indicators
-                </h3>
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '12px',
-                    }}
-                >
-                    <Button
-                        text="Show & Focus Close"
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Focus Close Button',
-                                description:
-                                    'Tab to see visible focus indicator on close button',
-                                variant: SnackbarVariant.INFO,
-                            })
-                        }
-                    />
-                    <Button
-                        text="Show & Focus Action"
-                        onClick={() =>
-                            addSnackbar({
-                                header: 'Focus Action Button',
-                                description:
-                                    'Tab to see visible focus indicator on action button',
-                                variant: SnackbarVariant.SUCCESS,
-                                actionButton: {
-                                    label: 'Action',
-                                    onClick: () => {},
-                                },
-                            })
-                        }
-                    />
-                </div>
-            </section>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating ARIA roles, keyboard navigation, screen reader support, decorative icons, and focus indicators.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0)
-   - Review passing tests (12+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test Snackbar.accessibility
-   \`\`\`
-   - 40+ automated tests
-   - WCAG compliance verification
-   - ARIA attribute validation
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes
-   - Responsive behavior
-
-4. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Keyboard navigation (Tab, Enter, Space)
-   - Color contrast verification
-
-## Accessibility Report
-
-**Current Status**: 
-- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (6/9 applicable criteria compliant)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), No Timing (2.2.3), Interruptions (2.2.4), Change on Request (3.2.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - Interactive elements need 44x44px
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-
-**Key Accessibility Features**:
-- Proper ARIA roles (role="alert" for error/warning, role="status" for info/success)
-- Semantic HTML structure with aria-labelledby and aria-describedby
-- Keyboard accessible (Tab, Enter, Space)
-- Decorative icons marked with aria-hidden="true"
-- Accessible button names (aria-label)
-- Focus visible indicators
-- Built on Sonner library with additional accessibility features
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('interactive'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
-        },
     },
 }

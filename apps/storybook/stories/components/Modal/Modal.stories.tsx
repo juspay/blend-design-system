@@ -13,47 +13,13 @@ import {
 import {
     Trash2,
     AlertTriangle,
-    CheckCircle,
-    X,
-    Settings,
     Mail,
     FileText,
     Info,
-    Star,
-    Heart,
     Share2,
-    Copy,
-    ExternalLink,
     Image,
-    User,
-    Camera,
-    Upload,
-    Edit,
-    Save,
     Download,
-    Calendar,
-    Clock,
-    MapPin,
     Phone,
-    Lock,
-    Unlock,
-    Eye,
-    EyeOff,
-    Bell,
-    Shield,
-    CreditCard,
-    Key,
-    Globe,
-    Zap,
-    Gift,
-    Award,
-    Target,
-    TrendingUp,
-    BarChart3,
-    PieChart,
-    LineChart,
-    Folder,
-    FolderPlus,
 } from 'lucide-react'
 
 const meta: Meta<typeof Modal> = {
@@ -65,6 +31,8 @@ const meta: Meta<typeof Modal> = {
         a11y: getA11yConfig('interactive'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A flexible modal dialog component for displaying content in an overlay with customizable header, footer, and action buttons.',
         docs: {
             story: {
                 inline: false,
@@ -72,7 +40,28 @@ const meta: Meta<typeof Modal> = {
             },
             description: {
                 component: `
-A flexible modal dialog component for displaying content in an overlay with customizable header, footer, and action buttons.
+## Usage
+
+\`\`\`tsx
+import { Modal, Button, ButtonType } from '@juspay/blend-design-system';
+
+<Modal
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Modal Title"
+  subtitle="Optional subtitle"
+  primaryAction={{
+    text: 'Save',
+    onClick: handleSave,
+  }}
+  secondaryAction={{
+    text: 'Cancel',
+    onClick: () => setIsOpen(false),
+  }}
+>
+  <p>Modal content goes here</p>
+</Modal>
+\`\`\`
 
 ## Features
 - Customizable header with title and subtitle
@@ -138,28 +127,6 @@ A flexible modal dialog component for displaying content in an overlay with cust
 - User onboarding flows
 - Data import/export interfaces
 
-## Usage
-
-\`\`\`tsx
-import { Modal, Button, ButtonType } from '@juspay/blend-design-system';
-
-<Modal
-  isOpen={isOpen}
-  onClose={() => setIsOpen(false)}
-  title="Modal Title"
-  subtitle="Optional subtitle"
-  primaryAction={{
-    text: 'Save',
-    onClick: handleSave,
-  }}
-  secondaryAction={{
-    text: 'Cancel',
-    onClick: () => setIsOpen(false),
-  }}
->
-  <p>Modal content goes here</p>
-</Modal>
-\`\`\`
         `,
             },
         },
@@ -347,7 +314,7 @@ export const Default: Story = {
         const [isOpen, setIsOpen] = useState(false)
 
         return (
-            <div style={{ padding: '20px' }}>
+            <div className="px-5 pt-60 w-full flex items-center justify-center">
                 <Button
                     buttonType={ButtonType.PRIMARY}
                     text="Open Modal"
@@ -403,7 +370,7 @@ export const ConfirmationDialog: Story = {
         const [isOpen, setIsOpen] = useState(false)
 
         return (
-            <div style={{ padding: '20px' }}>
+            <div className="px-5 py-32 w-full flex items-center justify-center">
                 <Button
                     buttonType={ButtonType.DANGER}
                     text="Delete Item"
@@ -430,26 +397,13 @@ export const ConfirmationDialog: Story = {
                     }}
                     showDivider
                 >
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            marginBottom: '16px',
-                        }}
-                    >
+                    <div className="flex items-center gap-3 mb-4">
                         <AlertTriangle size={24} color="#f59e0b" />
                         <div>
-                            <p style={{ margin: 0, fontWeight: '500' }}>
+                            <p className="m-0 font-medium">
                                 Are you sure you want to delete this item?
                             </p>
-                            <p
-                                style={{
-                                    margin: '4px 0 0 0',
-                                    fontSize: '14px',
-                                    color: '#6b7280',
-                                }}
-                            >
+                            <p className="mt-1 m-0 text-sm text-gray-500">
                                 This will permanently remove the item from your
                                 account.
                             </p>
@@ -490,7 +444,7 @@ export const FormModal: Story = {
         }
 
         return (
-            <div style={{ padding: '20px' }}>
+            <div className="px-5 py-32 w-full flex items-center justify-center">
                 <Button
                     buttonType={ButtonType.PRIMARY}
                     text="Contact Us"
@@ -514,21 +468,9 @@ export const FormModal: Story = {
                     minWidth="500px"
                     showDivider
                 >
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
+                    <div className="flex flex-col gap-4">
                         <div>
-                            <label
-                                style={{
-                                    display: 'block',
-                                    marginBottom: '4px',
-                                    fontWeight: '500',
-                                }}
-                            >
+                            <label className="block mb-1 font-medium">
                                 Name *
                             </label>
                             <input
@@ -540,24 +482,12 @@ export const FormModal: Story = {
                                         name: e.target.value,
                                     }))
                                 }
-                                style={{
-                                    width: '100%',
-                                    padding: '8px 12px',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '6px',
-                                    fontSize: '14px',
-                                }}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                                 placeholder="Enter your full name"
                             />
                         </div>
                         <div>
-                            <label
-                                style={{
-                                    display: 'block',
-                                    marginBottom: '4px',
-                                    fontWeight: '500',
-                                }}
-                            >
+                            <label className="block mb-1 font-medium">
                                 Email *
                             </label>
                             <input
@@ -569,24 +499,12 @@ export const FormModal: Story = {
                                         email: e.target.value,
                                     }))
                                 }
-                                style={{
-                                    width: '100%',
-                                    padding: '8px 12px',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '6px',
-                                    fontSize: '14px',
-                                }}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                                 placeholder="Enter your email address"
                             />
                         </div>
                         <div>
-                            <label
-                                style={{
-                                    display: 'block',
-                                    marginBottom: '4px',
-                                    fontWeight: '500',
-                                }}
-                            >
+                            <label className="block mb-1 font-medium">
                                 Phone (Optional)
                             </label>
                             <input
@@ -598,24 +516,12 @@ export const FormModal: Story = {
                                         phone: e.target.value,
                                     }))
                                 }
-                                style={{
-                                    width: '100%',
-                                    padding: '8px 12px',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '6px',
-                                    fontSize: '14px',
-                                }}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                                 placeholder="Enter your phone number"
                             />
                         </div>
                         <div>
-                            <label
-                                style={{
-                                    display: 'block',
-                                    marginBottom: '4px',
-                                    fontWeight: '500',
-                                }}
-                            >
+                            <label className="block mb-1 font-medium">
                                 Message
                             </label>
                             <textarea
@@ -626,15 +532,7 @@ export const FormModal: Story = {
                                         message: e.target.value,
                                     }))
                                 }
-                                style={{
-                                    width: '100%',
-                                    padding: '8px 12px',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '6px',
-                                    fontSize: '14px',
-                                    minHeight: '80px',
-                                    resize: 'vertical',
-                                }}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm min-h-20 resize-y"
                                 placeholder="Tell us how we can help you..."
                             />
                         </div>
@@ -647,270 +545,6 @@ export const FormModal: Story = {
         docs: {
             description: {
                 story: 'Form modal with validation and input fields. Demonstrates minimum width and form handling.',
-            },
-        },
-    },
-}
-
-// Success Notification
-export const SuccessNotification: Story = {
-    render: () => {
-        const [isOpen, setIsOpen] = useState(false)
-
-        return (
-            <div style={{ padding: '20px' }}>
-                <Button
-                    buttonType={ButtonType.SUCCESS}
-                    text="Complete Action"
-                    leadingIcon={<CheckCircle size={16} />}
-                    onClick={() => setIsOpen(true)}
-                />
-
-                <Modal
-                    isOpen={isOpen}
-                    onClose={() => setIsOpen(false)}
-                    title="Success!"
-                    subtitle="Your action has been completed successfully"
-                    primaryAction={{
-                        text: 'Continue',
-                        onClick: () => setIsOpen(false),
-                    }}
-                    showCloseButton={false}
-                    showDivider
-                >
-                    <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                        <CheckCircle
-                            size={64}
-                            color="#10b981"
-                            style={{ marginBottom: '16px' }}
-                        />
-                        <h3 style={{ margin: '0 0 8px 0', color: '#10b981' }}>
-                            Operation Completed
-                        </h3>
-                        <p style={{ margin: 0, color: '#6b7280' }}>
-                            Your request has been processed successfully. You
-                            can now continue with your workflow.
-                        </p>
-                    </div>
-                </Modal>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Success notification modal without close button. Centered content with icon.',
-            },
-        },
-    },
-}
-
-// Settings Modal with Header Slot
-export const SettingsModal: Story = {
-    render: () => {
-        const [isOpen, setIsOpen] = useState(false)
-        const [activeTab, setActiveTab] = useState('general')
-
-        const tabs = [
-            { id: 'general', label: 'General', icon: Settings },
-            { id: 'privacy', label: 'Privacy', icon: Shield },
-            { id: 'notifications', label: 'Notifications', icon: Bell },
-            { id: 'billing', label: 'Billing', icon: CreditCard },
-        ]
-
-        return (
-            <div style={{ padding: '20px' }}>
-                <Button
-                    buttonType={ButtonType.SECONDARY}
-                    text="Open Settings"
-                    leadingIcon={<Settings size={16} />}
-                    onClick={() => setIsOpen(true)}
-                />
-
-                <Modal
-                    isOpen={isOpen}
-                    onClose={() => setIsOpen(false)}
-                    title="Settings"
-                    subtitle="Configure your preferences"
-                    headerRightSlot={
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                                text="Export"
-                                leadingIcon={<Download size={14} />}
-                            />
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                size={ButtonSize.SMALL}
-                                text="Reset"
-                                leadingIcon={<X size={14} />}
-                            />
-                        </div>
-                    }
-                    primaryAction={{
-                        text: 'Save Changes',
-                        onClick: () => {
-                            alert('Settings saved!')
-                            setIsOpen(false)
-                        },
-                    }}
-                    secondaryAction={{
-                        text: 'Cancel',
-                        onClick: () => setIsOpen(false),
-                    }}
-                    minWidth="600px"
-                    showDivider
-                >
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                        <div style={{ width: '150px' }}>
-                            {tabs.map((tab) => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '8px 12px',
-                                        border: 'none',
-                                        background:
-                                            activeTab === tab.id
-                                                ? '#f3f4f6'
-                                                : 'transparent',
-                                        textAlign: 'left',
-                                        borderRadius: '6px',
-                                        marginBottom: '4px',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                    }}
-                                >
-                                    <tab.icon size={16} />
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </div>
-                        <div style={{ flex: 1 }}>
-                            <h4 style={{ marginTop: 0 }}>
-                                {
-                                    tabs.find((tab) => tab.id === activeTab)
-                                        ?.label
-                                }{' '}
-                                Settings
-                            </h4>
-                            <p style={{ color: '#6b7280' }}>
-                                Configure your {activeTab} preferences here.
-                                Changes will be applied immediately.
-                            </p>
-                            {/* Placeholder content for different tabs */}
-                            <div style={{ marginTop: '20px' }}>
-                                {activeTab === 'general' && (
-                                    <div>
-                                        <label
-                                            style={{
-                                                display: 'block',
-                                                marginBottom: '8px',
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                style={{ marginRight: '8px' }}
-                                            />
-                                            Enable dark mode
-                                        </label>
-                                        <label
-                                            style={{
-                                                display: 'block',
-                                                marginBottom: '8px',
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                style={{ marginRight: '8px' }}
-                                            />
-                                            Show tooltips
-                                        </label>
-                                    </div>
-                                )}
-                                {activeTab === 'privacy' && (
-                                    <div>
-                                        <label
-                                            style={{
-                                                display: 'block',
-                                                marginBottom: '8px',
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                style={{ marginRight: '8px' }}
-                                            />
-                                            Make profile public
-                                        </label>
-                                        <label
-                                            style={{
-                                                display: 'block',
-                                                marginBottom: '8px',
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                style={{ marginRight: '8px' }}
-                                            />
-                                            Allow data collection
-                                        </label>
-                                    </div>
-                                )}
-                                {activeTab === 'notifications' && (
-                                    <div>
-                                        <label
-                                            style={{
-                                                display: 'block',
-                                                marginBottom: '8px',
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                style={{ marginRight: '8px' }}
-                                            />
-                                            Email notifications
-                                        </label>
-                                        <label
-                                            style={{
-                                                display: 'block',
-                                                marginBottom: '8px',
-                                            }}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                style={{ marginRight: '8px' }}
-                                            />
-                                            Push notifications
-                                        </label>
-                                    </div>
-                                )}
-                                {activeTab === 'billing' && (
-                                    <div>
-                                        <p>
-                                            Current plan:{' '}
-                                            <strong>Pro Plan</strong>
-                                        </p>
-                                        <p>
-                                            Next billing date:{' '}
-                                            <strong>March 15, 2024</strong>
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </Modal>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Settings modal with header right slot, tabs navigation, and complex content layout.',
             },
         },
     },
@@ -938,7 +572,7 @@ export const ImageGalleryModal: Story = {
         ]
 
         return (
-            <div style={{ padding: '20px' }}>
+            <div className="px-5 py-32 w-full flex items-center justify-center">
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     text="View Gallery"
@@ -952,7 +586,7 @@ export const ImageGalleryModal: Story = {
                     title={images[currentImage].title}
                     subtitle={`Image ${currentImage + 1} of ${images.length}`}
                     headerRightSlot={
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                        <div className="flex gap-2">
                             <Button
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
@@ -991,39 +625,22 @@ export const ImageGalleryModal: Story = {
                     minWidth="700px"
                     showDivider
                 >
-                    <div style={{ textAlign: 'center' }}>
+                    <div className="text-center">
                         <img
                             src={images[currentImage].src}
                             alt={images[currentImage].title}
-                            style={{
-                                maxWidth: '100%',
-                                height: 'auto',
-                                borderRadius: '8px',
-                                marginBottom: '16px',
-                            }}
+                            className="max-w-full h-auto rounded-lg mb-4"
                         />
-                        <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex justify-center gap-2">
                             {images.map((_, index) => (
                                 <button
                                     key={index}
                                     onClick={() => setCurrentImage(index)}
-                                    style={{
-                                        width: '8px',
-                                        height: '8px',
-                                        borderRadius: '50%',
-                                        border: 'none',
-                                        background:
-                                            index === currentImage
-                                                ? '#3b82f6'
-                                                : '#d1d5db',
-                                        cursor: 'pointer',
-                                    }}
+                                    className={`w-2 h-2 rounded-full border-none cursor-pointer ${
+                                        index === currentImage
+                                            ? 'bg-blue-500'
+                                            : 'bg-gray-300'
+                                    }`}
                                 />
                             ))}
                         </div>
@@ -1041,293 +658,23 @@ export const ImageGalleryModal: Story = {
     },
 }
 
-// Custom Header and Footer
-export const CustomHeaderFooter: Story = {
-    render: () => {
-        const [isOpen, setIsOpen] = useState(false)
-        const [step, setStep] = useState(1)
-        const totalSteps = 3
-
-        const customHeader = (
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '16px 24px',
-                    borderBottom: '1px solid #e5e7eb',
-                    background:
-                        'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)',
-                    color: 'white',
-                }}
-            >
-                <div>
-                    <h3 style={{ margin: 0, fontSize: '18px' }}>
-                        Setup Wizard
-                    </h3>
-                    <p
-                        style={{
-                            margin: '4px 0 0 0',
-                            fontSize: '14px',
-                            opacity: 0.9,
-                        }}
-                    >
-                        Step {step} of {totalSteps}
-                    </p>
-                </div>
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                    }}
-                >
-                    <div
-                        style={{
-                            width: '100px',
-                            height: '4px',
-                            background: 'rgba(255,255,255,0.3)',
-                            borderRadius: '2px',
-                        }}
-                    >
-                        <div
-                            style={{
-                                width: `${(step / totalSteps) * 100}%`,
-                                height: '100%',
-                                background: 'white',
-                                borderRadius: '2px',
-                                transition: 'width 0.3s ease',
-                            }}
-                        />
-                    </div>
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            color: 'white',
-                            cursor: 'pointer',
-                            padding: '4px',
-                        }}
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
-            </div>
-        )
-
-        const customFooter = (
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '16px 24px',
-                    borderTop: '1px solid #e5e7eb',
-                    background: '#f9fafb',
-                }}
-            >
-                <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                    Need help?{' '}
-                    <a href="#" style={{ color: '#3b82f6' }}>
-                        Contact Support
-                    </a>
-                </div>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                    {step > 1 && (
-                        <Button
-                            buttonType={ButtonType.SECONDARY}
-                            text="Previous"
-                            onClick={() => setStep((prev) => prev - 1)}
-                        />
-                    )}
-                    <Button
-                        buttonType={ButtonType.PRIMARY}
-                        text={step === totalSteps ? 'Finish' : 'Next'}
-                        onClick={() => {
-                            if (step === totalSteps) {
-                                alert('Setup completed!')
-                                setIsOpen(false)
-                                setStep(1)
-                            } else {
-                                setStep((prev) => prev + 1)
-                            }
-                        }}
-                    />
-                </div>
-            </div>
-        )
-
-        return (
-            <div style={{ padding: '20px' }}>
-                <Button
-                    buttonType={ButtonType.PRIMARY}
-                    text="Start Setup Wizard"
-                    leadingIcon={<Zap size={16} />}
-                    onClick={() => setIsOpen(true)}
-                />
-
-                <Modal
-                    isOpen={isOpen}
-                    onClose={() => setIsOpen(false)}
-                    customHeader={customHeader}
-                    customFooter={customFooter}
-                    minWidth="500px"
-                >
-                    <div style={{ padding: '40px 24px', textAlign: 'center' }}>
-                        {step === 1 && (
-                            <div>
-                                <User
-                                    size={48}
-                                    color="#3b82f6"
-                                    style={{ marginBottom: '16px' }}
-                                />
-                                <h3>Welcome to the Setup</h3>
-                                <p>
-                                    We'll help you get started with your new
-                                    account. This should only take a few
-                                    minutes.
-                                </p>
-                            </div>
-                        )}
-                        {step === 2 && (
-                            <div>
-                                <Settings
-                                    size={48}
-                                    color="#3b82f6"
-                                    style={{ marginBottom: '16px' }}
-                                />
-                                <h3>Configure Your Preferences</h3>
-                                <p>
-                                    Let's set up your basic preferences to
-                                    personalize your experience.
-                                </p>
-                            </div>
-                        )}
-                        {step === 3 && (
-                            <div>
-                                <CheckCircle
-                                    size={48}
-                                    color="#10b981"
-                                    style={{ marginBottom: '16px' }}
-                                />
-                                <h3>You're All Set!</h3>
-                                <p>
-                                    Your account has been configured
-                                    successfully. You can now start using all
-                                    features.
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                </Modal>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Modal with completely custom header and footer. Demonstrates wizard-style progression.',
-            },
-        },
-    },
-}
-
-// No Header/Footer Modal
-export const MinimalModal: Story = {
-    render: () => {
-        const [isOpen, setIsOpen] = useState(false)
-
-        return (
-            <div style={{ padding: '20px' }}>
-                <Button
-                    buttonType={ButtonType.SECONDARY}
-                    text="Open Minimal Modal"
-                    onClick={() => setIsOpen(true)}
-                />
-
-                <Modal
-                    isOpen={isOpen}
-                    onClose={() => setIsOpen(false)}
-                    showHeader={false}
-                    showFooter={false}
-                    minWidth="400px"
-                >
-                    <div style={{ padding: '40px', textAlign: 'center' }}>
-                        <Gift
-                            size={64}
-                            color="#f59e0b"
-                            style={{ marginBottom: '24px' }}
-                        />
-                        <h2 style={{ margin: '0 0 16px 0', color: '#1f2937' }}>
-                            🎉 Congratulations!
-                        </h2>
-                        <p
-                            style={{
-                                margin: '0 0 24px 0',
-                                color: '#6b7280',
-                                lineHeight: 1.6,
-                            }}
-                        >
-                            You've unlocked a special reward! Your dedication
-                            and hard work have paid off.
-                        </p>
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: '12px',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <Button
-                                buttonType={ButtonType.PRIMARY}
-                                text="Claim Reward"
-                                onClick={() => {
-                                    alert('Reward claimed!')
-                                    setIsOpen(false)
-                                }}
-                            />
-                            <Button
-                                buttonType={ButtonType.SECONDARY}
-                                text="Close"
-                                onClick={() => setIsOpen(false)}
-                            />
-                        </div>
-                    </div>
-                </Modal>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Minimal modal without header and footer. All content and actions are custom.',
-            },
-        },
-    },
-}
-
 // Mobile Drawer Mode
 export const MobileDrawerMode: Story = {
     render: () => {
         const [isOpen, setIsOpen] = useState(false)
 
         return (
-            <div style={{ padding: '20px' }}>
-                <Button
-                    buttonType={ButtonType.PRIMARY}
-                    text="Open Mobile Drawer"
-                    onClick={() => setIsOpen(true)}
-                />
-                <p
-                    style={{
-                        marginTop: '12px',
-                        fontSize: '14px',
-                        color: '#6b7280',
-                    }}
-                >
-                    This modal will display as a drawer on mobile devices
-                </p>
+            <div className="px-5 py-32 w-full flex items-center justify-center">
+                <div className="flex flex-col items-center gap-3">
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        text="Open Mobile Drawer"
+                        onClick={() => setIsOpen(true)}
+                    />
+                    <p className="mt-3 text-sm text-gray-500">
+                        This modal will display as a drawer on mobile devices
+                    </p>
+                </div>
 
                 <Modal
                     isOpen={isOpen}
@@ -1348,47 +695,26 @@ export const MobileDrawerMode: Story = {
                     }}
                     showDivider
                 >
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
+                    <div className="flex flex-col gap-4">
                         <p>
                             This modal automatically switches to a drawer layout
                             on mobile devices for better usability and screen
                             real estate.
                         </p>
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '12px',
-                                padding: '12px',
-                                background: '#f3f4f6',
-                                borderRadius: '8px',
-                            }}
-                        >
+                        <div className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg">
                             <Phone size={20} color="#3b82f6" />
                             <div>
-                                <p style={{ margin: 0, fontWeight: '500' }}>
+                                <p className="m-0 font-medium">
                                     Mobile Optimized
                                 </p>
-                                <p
-                                    style={{
-                                        margin: '4px 0 0 0',
-                                        fontSize: '14px',
-                                        color: '#6b7280',
-                                    }}
-                                >
+                                <p className="mt-1 text-sm text-gray-500">
                                     Drawer style on small screens
                                 </p>
                             </div>
                         </div>
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <h4>Features</h4>
-                            <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                            <ul className="m-0 pl-5">
                                 <li>Slides up from bottom on mobile</li>
                                 <li>Full width utilization</li>
                                 <li>Touch-friendly interactions</li>
@@ -1415,7 +741,7 @@ export const NoBackdropClose: Story = {
         const [isOpen, setIsOpen] = useState(false)
 
         return (
-            <div style={{ padding: '20px' }}>
+            <div className="px-5 py-32 w-full flex items-center justify-center">
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     text="Open Persistent Modal"
@@ -1434,48 +760,24 @@ export const NoBackdropClose: Story = {
                     }}
                     showDivider
                 >
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'flex-start',
-                            gap: '12px',
-                        }}
-                    >
+                    <div className="flex items-start gap-3">
                         <Info
                             size={24}
                             color="#3b82f6"
-                            style={{ marginTop: '2px', flexShrink: 0 }}
+                            className="mt-0.5 shrink-0"
                         />
                         <div>
-                            <h4 style={{ margin: '0 0 8px 0' }}>
+                            <h4 className="m-0 mb-2">
                                 Terms and Conditions Update
                             </h4>
-                            <p
-                                style={{
-                                    margin: '0 0 16px 0',
-                                    lineHeight: 1.6,
-                                }}
-                            >
+                            <p className="m-0 mb-4 leading-relaxed">
                                 We've updated our terms and conditions. Please
                                 review the changes before continuing. This modal
                                 cannot be closed by clicking the backdrop - you
                                 must use the button or close icon.
                             </p>
-                            <div
-                                style={{
-                                    background: '#fef3c7',
-                                    padding: '12px',
-                                    borderRadius: '6px',
-                                    border: '1px solid #f59e0b',
-                                }}
-                            >
-                                <p
-                                    style={{
-                                        margin: 0,
-                                        fontSize: '14px',
-                                        color: '#92400e',
-                                    }}
-                                >
+                            <div className="bg-amber-100 p-3 rounded-md border border-amber-500">
+                                <p className="m-0 text-sm text-amber-800">
                                     <strong>Note:</strong> Backdrop clicks are
                                     disabled for this modal to ensure you
                                     acknowledge this important information.
@@ -1502,7 +804,7 @@ export const LargeContentModal: Story = {
         const [isOpen, setIsOpen] = useState(false)
 
         return (
-            <div style={{ padding: '20px' }}>
+            <div className="px-5 py-32 w-full flex items-center justify-center">
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     text="View Document"
@@ -1537,13 +839,7 @@ export const LargeContentModal: Story = {
                     minWidth="700px"
                     showDivider
                 >
-                    <div
-                        style={{
-                            maxHeight: '400px',
-                            overflow: 'auto',
-                            padding: '0 4px',
-                        }}
-                    >
+                    <div className="max-h-100 overflow-auto px-1">
                         <h3>1. Introduction</h3>
                         <p>
                             Welcome to our service. These terms and conditions
@@ -1622,475 +918,6 @@ export const LargeContentModal: Story = {
             description: {
                 story: 'Modal with large scrollable content. Demonstrates handling of lengthy documents.',
             },
-        },
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples demonstrating WCAG 2.1 Level A, AA, and AAA compliance
- */
-export const Accessibility: Story = {
-    render: () => {
-        const AccessibilityDemo = () => {
-            const [basicOpen, setBasicOpen] = useState(false)
-            const [keyboardOpen, setKeyboardOpen] = useState(false)
-            const [focusOpen, setFocusOpen] = useState(false)
-            const [ariaOpen, setAriaOpen] = useState(false)
-            const [escapeOpen, setEscapeOpen] = useState(false)
-            const [scrollOpen, setScrollOpen] = useState(false)
-
-            return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '32px',
-                        maxWidth: '800px',
-                        padding: '20px',
-                    }}
-                >
-                    {/* Basic Accessible Modal */}
-                    <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Basic Accessible Modal
-                        </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
-                            Modal with proper ARIA attributes, role="dialog",
-                            aria-modal="true", and aria-labelledby.
-                        </p>
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            text="Open Accessible Modal"
-                            onClick={() => setBasicOpen(true)}
-                        />
-                        <Modal
-                            isOpen={basicOpen}
-                            onClose={() => setBasicOpen(false)}
-                            title="Accessible Modal"
-                            subtitle="This modal has proper ARIA attributes"
-                            primaryAction={{
-                                text: 'Save',
-                                onClick: () => setBasicOpen(false),
-                            }}
-                            secondaryAction={{
-                                text: 'Cancel',
-                                onClick: () => setBasicOpen(false),
-                            }}
-                        >
-                            <p>
-                                This modal demonstrates proper accessibility
-                                features including role="dialog",
-                                aria-modal="true", and aria-labelledby linking
-                                to the title.
-                            </p>
-                        </Modal>
-                    </div>
-
-                    {/* Keyboard Accessible Modal */}
-                    <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Keyboard Accessible Modal
-                        </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
-                            Modal is fully keyboard accessible. Tab to navigate,
-                            Escape to close, focus is trapped within modal.
-                        </p>
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            text="Open Keyboard Modal"
-                            onClick={() => setKeyboardOpen(true)}
-                        />
-                        <Modal
-                            isOpen={keyboardOpen}
-                            onClose={() => setKeyboardOpen(false)}
-                            title="Keyboard Accessible Modal"
-                            subtitle="Use Tab, Shift+Tab, and Escape to navigate"
-                            primaryAction={{
-                                text: 'Confirm',
-                                onClick: () => setKeyboardOpen(false),
-                            }}
-                            secondaryAction={{
-                                text: 'Cancel',
-                                onClick: () => setKeyboardOpen(false),
-                            }}
-                        >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '12px',
-                                }}
-                            >
-                                <p>
-                                    <strong>Keyboard Navigation:</strong>
-                                </p>
-                                <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                                    <li>
-                                        Tab - Navigate forward through elements
-                                    </li>
-                                    <li>Shift+Tab - Navigate backward</li>
-                                    <li>Escape - Close modal</li>
-                                    <li>Enter/Space - Activate buttons</li>
-                                </ul>
-                                <p style={{ marginTop: '12px' }}>
-                                    Focus is trapped within the modal when open.
-                                </p>
-                            </div>
-                        </Modal>
-                    </div>
-
-                    {/* Focus Management */}
-                    <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Focus Management (Keyboard Navigation)
-                        </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
-                            Focus is trapped within modal and returns to trigger
-                            when closed.
-                        </p>
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            text="Test Focus Management"
-                            onClick={() => setFocusOpen(true)}
-                        />
-                        <Modal
-                            isOpen={focusOpen}
-                            onClose={() => setFocusOpen(false)}
-                            title="Focus Management Test"
-                            subtitle="Focus is trapped within modal"
-                            primaryAction={{
-                                text: 'Close',
-                                onClick: () => setFocusOpen(false),
-                            }}
-                        >
-                            <p>
-                                When this modal opens, focus moves to the first
-                                focusable element (close button or primary
-                                action). Focus is trapped within the modal until
-                                it is closed. When closed, focus returns to the
-                                trigger button.
-                            </p>
-                        </Modal>
-                    </div>
-
-                    {/* ARIA Attributes */}
-                    <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            ARIA Attributes (Screen Reader Support)
-                        </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
-                            Modal has proper ARIA attributes for screen readers.
-                        </p>
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            text="Test ARIA Attributes"
-                            onClick={() => setAriaOpen(true)}
-                        />
-                        <Modal
-                            isOpen={ariaOpen}
-                            onClose={() => setAriaOpen(false)}
-                            title="ARIA Attributes Modal"
-                            subtitle="Screen reader friendly"
-                            primaryAction={{
-                                text: 'Continue',
-                                onClick: () => setAriaOpen(false),
-                            }}
-                        >
-                            <p>This modal has:</p>
-                            <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                                <li>role="dialog"</li>
-                                <li>aria-modal="true"</li>
-                                <li>aria-labelledby="modal-title"</li>
-                                <li>Backdrop with aria-hidden="true"</li>
-                            </ul>
-                            <p style={{ marginTop: '12px' }}>
-                                Screen readers will announce the modal title and
-                                indicate it is a modal dialog.
-                            </p>
-                        </Modal>
-                    </div>
-
-                    {/* Escape Key */}
-                    <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Escape Key Support
-                        </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
-                            Press Escape to close the modal.
-                        </p>
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            text="Open Escape Test Modal"
-                            onClick={() => setEscapeOpen(true)}
-                        />
-                        <Modal
-                            isOpen={escapeOpen}
-                            onClose={() => setEscapeOpen(false)}
-                            title="Escape Key Test"
-                            subtitle="Press Escape to close"
-                            primaryAction={{
-                                text: 'Close',
-                                onClick: () => setEscapeOpen(false),
-                            }}
-                        >
-                            <p>
-                                Press the <strong>Escape</strong> key to close
-                                this modal. This is a standard keyboard shortcut
-                                for dismissing dialogs.
-                            </p>
-                        </Modal>
-                    </div>
-
-                    {/* Scroll Locking */}
-                    <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Scroll Locking (Focus Management)
-                        </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
-                            Background scrolling is locked when modal is open.
-                        </p>
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            text="Test Scroll Locking"
-                            onClick={() => setScrollOpen(true)}
-                        />
-                        <Modal
-                            isOpen={scrollOpen}
-                            onClose={() => setScrollOpen(false)}
-                            title="Scroll Locking Test"
-                            subtitle="Background scroll is disabled"
-                            primaryAction={{
-                                text: 'Close',
-                                onClick: () => setScrollOpen(false),
-                            }}
-                        >
-                            <p>
-                                When this modal is open, the background content
-                                is locked and cannot be scrolled. This prevents
-                                users from accidentally scrolling the page
-                                behind the modal.
-                            </p>
-                            <div
-                                style={{
-                                    height: '200px',
-                                    padding: '20px',
-                                    background: '#f3f4f6',
-                                    borderRadius: '8px',
-                                    marginTop: '16px',
-                                }}
-                            >
-                                <p>
-                                    Modal content area is scrollable if needed.
-                                </p>
-                            </div>
-                        </Modal>
-                    </div>
-
-                    {/* Backdrop Accessibility */}
-                    <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Backdrop Accessibility
-                        </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
-                            Backdrop is properly hidden from screen readers.
-                        </p>
-                        <p style={{ fontSize: '12px', color: '#999' }}>
-                            The modal backdrop has aria-hidden="true" and
-                            role="presentation" to ensure it is not announced by
-                            screen readers. Only the modal content is
-                            accessible.
-                        </p>
-                    </div>
-
-                    {/* Close Button Accessibility */}
-                    <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Close Button Accessibility
-                        </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
-                            Close button is keyboard accessible and has proper
-                            accessible name.
-                        </p>
-                        <p style={{ fontSize: '12px', color: '#999' }}>
-                            The close button (X icon) in the header is keyboard
-                            accessible and should have an accessible name. It
-                            can be activated with Enter or Space keys.
-                        </p>
-                    </div>
-                </div>
-            )
-        }
-        return <AccessibilityDemo />
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-## Accessibility Testing
-
-This story demonstrates WCAG 2.1 Level A, AA, and AAA compliance features of the Modal component.
-
-### Testing Checklist
-
-1. **Keyboard Navigation**:
-   - Tab to navigate through modal elements
-   - Shift+Tab to navigate backward
-   - Escape to close modal
-   - Enter/Space to activate buttons
-   - Verify focus is trapped within modal
-
-2. **Screen Reader Testing**:
-   - Use VoiceOver (macOS) or NVDA (Windows)
-   - Verify modal title is announced
-   - Verify role="dialog" is announced
-   - Verify backdrop is not announced (aria-hidden)
-   - Verify modal content is accessible
-
-3. **Focus Management**:
-   - Verify focus moves to modal when opened
-   - Verify focus is trapped within modal
-   - Verify focus returns to trigger when closed
-   - Verify focus order is logical
-
-4. **ARIA Attributes**:
-   - Verify role="dialog" is present
-   - Verify aria-modal="true" is present
-   - Verify aria-labelledby links to title
-   - Verify backdrop has aria-hidden="true"
-
-5. **Scroll Locking**:
-   - Verify background content cannot be scrolled when modal is open
-   - Verify modal content area is scrollable if needed
-
-6. **Color Contrast**:
-   - Use WebAIM Contrast Checker or similar tool
-   - Verify modal text meets 4.5:1 contrast ratio (AA)
-   - For AAA compliance, verify 7:1 contrast ratio
-
-### Automated Testing
-
-- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
-- **Chromatic**: Visual regression testing for modal states and interactions
-- **Manual**: Screen reader and keyboard testing required
-
-### WCAG Compliance Summary
-
-- ✅ **Level A**: Fully Compliant
-- ✅ **Level AA**: Fully Compliant
-- ⚠️ **Level AAA**: Partial Compliance (3/4 applicable criteria)
-  - Compliant: Visual Presentation (1.4.8), Keyboard No Exception (2.1.3), Change on Request (3.2.5)
-  - Non-Compliant: Contrast Enhanced (1.4.6) - requires 7:1 ratio
-
-For detailed compliance report, see Accessibility Dashboard.
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('interactive'),
-        // Extended delay for Chromatic to capture modal states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
         },
     },
 }

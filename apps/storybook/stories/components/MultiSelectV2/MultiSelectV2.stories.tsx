@@ -58,11 +58,11 @@ const meta: Meta<typeof MultiSelectV2> = {
         layout: 'centered',
         a11y: getA11yConfig('form'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'Multi-select dropdown for choosing multiple options from grouped lists.',
         docs: {
             description: {
                 component: `
-Multi-select dropdown for choosing multiple options from grouped lists.
-
 ## Features
 - Multiple selection with count or text display
 - Search and filter
@@ -179,25 +179,10 @@ export const WithSelection: Story = {
 export const Visual: Story = {
     render: function VisualRender() {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+            <div className="flex flex-col gap-8">
                 <div>
-                    <h3
-                        style={{
-                            marginBottom: 16,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
-                        All sizes
-                    </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: 24,
-                            alignItems: 'flex-start',
-                            flexWrap: 'wrap',
-                        }}
-                    >
+                    <h3 className="mb-4 text-base font-semibold">All sizes</h3>
+                    <div className="flex flex-wrap items-start gap-6">
                         {Object.values(MultiSelectV2Size).map((size) => (
                             <MultiSelectV2
                                 key={size}
@@ -212,22 +197,8 @@ export const Visual: Story = {
                     </div>
                 </div>
                 <div>
-                    <h3
-                        style={{
-                            marginBottom: 16,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
-                        Variants
-                    </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: 24,
-                            alignItems: 'center',
-                        }}
-                    >
+                    <h3 className="mb-4 text-base font-semibold">Variants</h3>
+                    <div className="flex items-center gap-6">
                         <MultiSelectV2
                             label="Container"
                             placeholder="Container"
@@ -247,22 +218,10 @@ export const Visual: Story = {
                     </div>
                 </div>
                 <div>
-                    <h3
-                        style={{
-                            marginBottom: 16,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-4 text-base font-semibold">
                         Selection display: Count vs Text
                     </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: 24,
-                            alignItems: 'center',
-                        }}
-                    >
+                    <div className="flex items-center gap-6">
                         <MultiSelectV2
                             label="Count"
                             placeholder="Count"
@@ -286,23 +245,8 @@ export const Visual: Story = {
                     </div>
                 </div>
                 <div>
-                    <h3
-                        style={{
-                            marginBottom: 16,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
-                        States
-                    </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: 24,
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                        }}
-                    >
+                    <h3 className="mb-4 text-base font-semibold">States</h3>
+                    <div className="flex flex-wrap items-center gap-6">
                         <MultiSelectV2
                             label="Disabled"
                             placeholder="Disabled"
@@ -460,19 +404,12 @@ export const WithSubMenu: Story = {
 
 export const Accessibility: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 24,
-                maxWidth: 400,
-            }}
-        >
+        <div className="flex flex-col gap-6 max-w-[400px]">
             <div>
-                <h3 style={{ marginBottom: 8, fontSize: 16, fontWeight: 600 }}>
+                <h3 className="mb-2 text-base font-semibold">
                     Keyboard &amp; screen reader
                 </h3>
-                <p style={{ marginBottom: 12, fontSize: 14, color: '#666' }}>
+                <p className="mb-3 text-sm text-gray-500">
                     Use Tab to focus the trigger, Enter/Space to open. Arrow
                     keys to move, Enter to toggle. Escape to close.
                 </p>
@@ -486,7 +423,7 @@ export const Accessibility: Story = {
                 />
             </div>
             <div>
-                <h3 style={{ marginBottom: 8, fontSize: 16, fontWeight: 600 }}>
+                <h3 className="mb-2 text-base font-semibold">
                     With error and required
                 </h3>
                 <MultiSelectV2

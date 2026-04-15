@@ -15,11 +15,26 @@ const meta: Meta<typeof OTPInput> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A specialized input component for One-Time Password (OTP) entry with individual character input fields and validation support.',
         docs: {
             description: {
                 component: `
-A specialized input component for One-Time Password (OTP) entry with individual character input fields and validation support.
 
+## Usage
+
+\`\`\`tsx
+import { OTPInput } from '@juspay/blend-design-system';
+
+<OTPInput
+  label="Verification Code"
+  length={6}
+  value={otp}
+  onChange={(value) => setOtp(value)}
+  placeholder="0"
+  autoFocus
+/>
+\`\`\`
 ## Features
 - Individual input fields for each OTP digit
 - Configurable length (typically 4-8 digits)
@@ -58,21 +73,6 @@ A specialized input component for One-Time Password (OTP) entry with individual 
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
 
 > Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
-
-## Usage
-
-\`\`\`tsx
-import { OTPInput } from '@juspay/blend-design-system';
-
-<OTPInput
-  label="Verification Code"
-  length={6}
-  value={otp}
-  onChange={(value) => setOtp(value)}
-  placeholder="0"
-  autoFocus
-/>
-\`\`\`
         `,
             },
         },
@@ -227,13 +227,7 @@ export const DifferentLengths: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                }}
-            >
+            <div className="flex flex-col gap-6">
                 <OTPInput
                     label="4-Digit Code"
                     length={4}
@@ -309,13 +303,7 @@ export const ErrorStates: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                }}
-            >
+            <div className="flex flex-col gap-6">
                 <OTPInput
                     label="Required OTP"
                     length={4}
@@ -375,7 +363,7 @@ export const ErrorStates: Story = {
 // Disabled state
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <OTPInput
                 label="Disabled Empty"
                 length={4}
@@ -470,13 +458,7 @@ export const VerificationFlow: Story = {
         }, [value])
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
+            <div className="flex flex-col gap-4">
                 <OTPInput
                     label="Email Verification"
                     sublabel="Enter the code sent to your email address"
@@ -490,18 +472,18 @@ export const VerificationFlow: Story = {
                 />
 
                 {isVerifying && (
-                    <div style={{ color: '#0066cc', fontSize: '14px' }}>
+                    <div className="text-sm text-blue-600">
                         Verifying code...
                     </div>
                 )}
 
                 {isVerified && (
-                    <div style={{ color: '#00aa00', fontSize: '14px' }}>
+                    <div className="text-sm text-green-600">
                         ✓ Email verified successfully!
                     </div>
                 )}
 
-                <div style={{ fontSize: '12px', color: '#666' }}>
+                <div className="text-xs text-gray-500">
                     Hint: Try entering "123456" to see successful verification
                 </div>
             </div>
@@ -512,194 +494,6 @@ export const VerificationFlow: Story = {
             description: {
                 story: 'OTPInput with simulated verification flow - automatically verifies when 6 digits are entered.',
             },
-        },
-    },
-}
-
-// Accessibility-focused examples
-export const Accessibility: Story = {
-    render: () => {
-        const [basicOtp, setBasicOtp] = useState('')
-        const [requiredOtp, setRequiredOtp] = useState('')
-        const [errorOtp, setErrorOtp] = useState('123')
-        const [disabledOtp, setDisabledOtp] = useState('123456')
-        const [keyboardOtp, setKeyboardOtp] = useState('')
-
-        const errorMessage =
-            errorOtp.length > 0 && errorOtp.length < 6
-                ? 'Please enter all 6 digits'
-                : ''
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Labels, Required Fields, and Hints
-                    </h3>
-                    <OTPInput
-                        label="Verification Code"
-                        sublabel="Enter the 6-digit code sent to your email"
-                        hintText="Check your email for the verification code"
-                        length={6}
-                        value={basicOtp}
-                        onChange={setBasicOtp}
-                        required
-                        autoFocus
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Error Messaging and Validation
-                    </h3>
-                    <OTPInput
-                        label="Two-Factor Authentication Code"
-                        sublabel="Enter the code from your authenticator app"
-                        length={6}
-                        value={errorOtp}
-                        onChange={setErrorOtp}
-                        error={!!errorMessage}
-                        errorMessage={errorMessage}
-                        hintText="Code must be 6 digits"
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Disabled State
-                    </h3>
-                    <OTPInput
-                        label="Disabled OTP Input"
-                        sublabel="This field is disabled and cannot be edited"
-                        length={6}
-                        value={disabledOtp}
-                        onChange={() => {}}
-                        disabled
-                        hintText="Disabled fields are not focusable and do not submit values"
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Keyboard and Screen Reader Friendly Layout
-                    </h3>
-                    <OTPInput
-                        label="Security Code"
-                        sublabel="Use Tab to navigate, Arrow keys to move between fields, Backspace to delete"
-                        hintText="You can also paste a complete code to fill all fields at once"
-                        length={6}
-                        value={keyboardOtp}
-                        onChange={setKeyboardOtp}
-                        required
-                        helpIconHintText="Keyboard shortcuts: Tab/Shift+Tab to navigate, Arrow keys to move, Backspace to delete, Paste to fill all fields"
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Different OTP Lengths
-                    </h3>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
-                        <OTPInput
-                            label="4-Digit PIN"
-                            length={4}
-                            value=""
-                            onChange={() => {}}
-                            hintText="Enter 4-digit PIN"
-                        />
-                        <OTPInput
-                            label="6-Digit Code"
-                            length={6}
-                            value=""
-                            onChange={() => {}}
-                            hintText="Enter 6-digit verification code"
-                        />
-                        <OTPInput
-                            label="8-Digit Code"
-                            length={8}
-                            value=""
-                            onChange={() => {}}
-                            hintText="Enter 8-digit security code"
-                        />
-                    </div>
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, keyboard navigation, and different OTP lengths.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to label / control associations, error messaging, and keyboard navigation.
-
-2. **jest-axe tests**:
-   - Add \`OTPInput.accessibility.test.tsx\` mirroring TextInput's tests and run:
-   \`\`\`bash
-   pnpm test:a11y:file __tests__/components/Inputs/OTPInput.accessibility.test.tsx
-   \`\`\`
-   - Validate WCAG 2.0, 2.1, 2.2 A, AA, and AAA success criteria for form fields (labels, errors, keyboard support, focus management).
-
-3. **Manual testing**:
-   - Navigate using keyboard only (Tab / Shift+Tab, Arrow keys, Backspace, Paste).
-   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, and errors are announced.
-   - Verify color contrast of text, borders, and focus styles using contrast tools.
-   - Test paste functionality with complete OTP codes.
-                `,
-            },
-        },
-        a11y: {
-            ...getA11yConfig('form'),
         },
     },
 }

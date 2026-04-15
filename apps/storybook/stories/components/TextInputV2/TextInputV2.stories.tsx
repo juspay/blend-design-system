@@ -219,13 +219,7 @@ export const Sizes: Story = {
     render: function SizesStory() {
         const [values, setValues] = useState({ sm: '', md: '', lg: '' })
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextInputV2
                     label="Small"
                     placeholder="Small input"
@@ -274,13 +268,7 @@ export const WithSlots: Story = {
         })
         const [showPassword, setShowPassword] = useState(false)
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextInputV2
                     label="Email"
                     placeholder="Enter your email"
@@ -312,11 +300,7 @@ export const WithSlots: Story = {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                }}
+                                className="bg-transparent border-none cursor-pointer"
                                 aria-label={
                                     showPassword
                                         ? 'Hide password'
@@ -351,7 +335,7 @@ export const WithSlots: Story = {
                                   slot: (
                                       <Check
                                           size={16}
-                                          style={{ color: 'green' }}
+                                          className="text-green-500"
                                       />
                                   ),
                                   maxHeight: 16,
@@ -379,13 +363,7 @@ export const ErrorStates: Story = {
             valid: 'user@example.com',
         })
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextInputV2
                     label="Required field"
                     placeholder="This field is required"
@@ -419,10 +397,7 @@ export const ErrorStates: Story = {
                     leftSlot={{ slot: <Mail size={16} /> }}
                     rightSlot={{
                         slot: (
-                            <AlertCircle
-                                size={16}
-                                style={{ color: 'var(--color-error, red)' }}
-                            />
+                            <AlertCircle size={16} className="text-red-500" />
                         ),
                         maxHeight: 16,
                     }}
@@ -444,7 +419,7 @@ export const ErrorStates: Story = {
                     }
                     leftSlot={{ slot: <Mail size={16} /> }}
                     rightSlot={{
-                        slot: <Check size={16} style={{ color: 'green' }} />,
+                        slot: <Check size={16} className="text-green-500" />,
                         maxHeight: 16,
                     }}
                 />
@@ -462,7 +437,7 @@ export const ErrorStates: Story = {
 
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <TextInputV2
                 label="Disabled empty"
                 placeholder="This input is disabled"
@@ -525,23 +500,9 @@ export const Accessibility: Story = {
                 ? 'Please enter a valid email address'
                 : ''
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
+            <div className="flex flex-col gap-6 p-6 max-w-[800px]">
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Labels, required fields, and hints
                     </h3>
                     <TextInputV2
@@ -556,13 +517,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Error messaging and validation
                     </h3>
                     <TextInputV2
@@ -580,13 +535,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Disabled context
                     </h3>
                     <TextInputV2
@@ -599,13 +548,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Keyboard and screen reader friendly
                     </h3>
                     <TextInputV2
@@ -620,13 +563,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Interactive slot with accessible name
                     </h3>
                     <TextInputV2

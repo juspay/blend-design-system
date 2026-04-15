@@ -24,18 +24,11 @@ const meta: Meta<typeof Timeline> = {
         layout: 'centered',
         a11y: getA11yConfig('content'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'Timeline displays a vertical sequence of events: labels, headers with substeps, and comment-style nodes.',
         docs: {
             description: {
                 component: `
-Timeline displays a vertical sequence of events: labels, headers with substeps, and comment-style nodes.
-
-## Features
-- **Label** – Section divider (e.g. date)
-- **Header** – Main event with optional status and timestamp; can contain **Substeps**
-- **Substep** – Child step under a header (connector + title/description/timestamp)
-- **Node** – Standalone item (e.g. comment) with optional avatar, user, time, body
-- **ShowMore** – "Show more (N+)" to load more items
-
 ## Usage
 
 \`\`\`tsx
@@ -50,6 +43,22 @@ import { Timeline, TimelineNodeStatus } from '@juspay/blend-design-system';
   <Timeline.ShowMore count={5} onShowMore={() => {}} />
 </Timeline>
 \`\`\`
+
+
+## Features
+- **Label** – Section divider (e.g. date)
+- **Header** – Main event with optional status and timestamp; can contain **Substeps**
+- **Substep** – Child step under a header (connector + title/description/timestamp)
+- **Node** – Standalone item (e.g. comment) with optional avatar, user, time, body
+- **ShowMore** – "Show more (N+)" to load more items
+
+## Accessibility
+- Semantic HTML structure with proper heading hierarchy
+- ARIA labels for status indicators
+- Keyboard navigable interactive elements
+- Screen reader compatible timestamps with datetime attributes
+- Color-coded status indicators with text alternatives
+
                 `,
             },
         },
@@ -63,7 +72,7 @@ type Story = StoryObj<typeof Timeline>
 
 export const Default: Story = {
     render: () => (
-        <div style={{ maxWidth: 440 }}>
+        <div className="max-w-[440px]">
             <Timeline>
                 <Timeline.Label text="JAN 15, 2025" />
                 <Timeline.Header
@@ -71,11 +80,9 @@ export const Default: Story = {
                     timestamp="4:00 PM"
                     status={TimelineNodeStatus.SUCCESS}
                     leftSlot={
-                        <span style={{ fontSize: 12, color: '#666' }}>
-                            #TXN-1
-                        </span>
+                        <span className="text-xs text-gray-500">#TXN-1</span>
                     }
-                    rightSlot={<span style={{ fontWeight: 600 }}>₹1,200</span>}
+                    rightSlot={<span className="font-semibold">₹1,200</span>}
                 >
                     <Timeline.Substep
                         title="Transaction Created"
@@ -87,9 +94,7 @@ export const Default: Story = {
                         description="Razorpay."
                         timestamp="4:00:05 PM"
                         rightSlot={
-                            <span style={{ fontSize: 12, opacity: 0.9 }}>
-                                ID
-                            </span>
+                            <span className="text-xs opacity-90">ID</span>
                         }
                     />
                 </Timeline.Header>
@@ -106,7 +111,7 @@ export const Default: Story = {
 
 export const CommentsOnly: Story = {
     render: () => (
-        <div style={{ maxWidth: 400 }}>
+        <div className="max-w-[400px]">
             <Timeline>
                 <Timeline.Label text="Comments" />
                 <Timeline.Node
@@ -139,7 +144,7 @@ export const CommentsOnly: Story = {
 
 export const StatusVariants: Story = {
     render: () => (
-        <div style={{ maxWidth: 400 }}>
+        <div className="max-w-[400px]">
             <Timeline>
                 <Timeline.Label text="JAN 23, 2025" />
                 <Timeline.Header
@@ -176,7 +181,7 @@ export const StatusVariants: Story = {
 
 export const ShowMoreDisabled: Story = {
     render: () => (
-        <div style={{ maxWidth: 400 }}>
+        <div className="max-w-[400px]">
             <Timeline>
                 <Timeline.Node
                     text="One comment."
@@ -253,18 +258,9 @@ export const ShowMoreDisabled: Story = {
 
 export const Visual: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 32,
-                maxWidth: 420,
-            }}
-        >
+        <div className="flex flex-col gap-8 max-w-[420px]">
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    Full timeline
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">Full timeline</h3>
                 <Timeline>
                     <Timeline.Label text="JAN 15, 2025" />
                     <Timeline.Header
@@ -287,9 +283,7 @@ export const Visual: Story = {
                 </Timeline>
             </div>
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    Comments only
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">Comments only</h3>
                 <Timeline>
                     <Timeline.Label text="Comments" />
                     <Timeline.Node

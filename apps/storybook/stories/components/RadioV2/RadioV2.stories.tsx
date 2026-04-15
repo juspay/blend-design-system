@@ -178,13 +178,7 @@ export const Sizes: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 16,
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <RadioV2
                         label="Small radio"
                         size={SelectorV2Size.SM}
@@ -217,13 +211,7 @@ export const Sizes: Story = {
 
 export const States: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 12,
-            }}
-        >
+        <div className="flex flex-col gap-3">
             <RadioV2 label="Default" />
             <RadioV2 label="Checked" checked />
             <RadioV2 label="Disabled" disabled />

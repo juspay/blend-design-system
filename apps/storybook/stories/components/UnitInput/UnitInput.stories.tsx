@@ -20,11 +20,28 @@ const meta: Meta<typeof UnitInput> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A specialized numeric input component with unit display for values that require measurement units like currency, percentage, weight, etc.',
         docs: {
             description: {
                 component: `
-A specialized numeric input component with unit display for values that require measurement units like currency, percentage, weight, etc.
+                ## Usage
 
+\`\`\`tsx
+import { UnitInput, UnitInputSize, UnitPosition } from '@juspay/blend-design-system';
+
+<UnitInput
+  label="Price"
+  unit="USD"
+  unitPosition={UnitPosition.LEFT}
+  value={price}
+  onChange={(e) => setPrice(parseFloat(e.target.value))}
+  min={0}
+  step={0.01}
+  size={UnitInputSize.MEDIUM}
+  required
+/>
+\`\`\`
 ## Features
 - Two sizes (Medium, Large)
 - Unit display with configurable position (left or right)
@@ -64,24 +81,6 @@ A specialized numeric input component with unit display for values that require 
 pnpm test UnitInput.accessibility
 \`\`\`
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
-
-## Usage
-
-\`\`\`tsx
-import { UnitInput, UnitInputSize, UnitPosition } from '@juspay/blend-design-system';
-
-<UnitInput
-  label="Price"
-  unit="USD"
-  unitPosition={UnitPosition.LEFT}
-  value={price}
-  onChange={(e) => setPrice(parseFloat(e.target.value))}
-  min={0}
-  step={0.01}
-  size={UnitInputSize.MEDIUM}
-  required
-/>
-\`\`\`
         `,
             },
         },
@@ -314,13 +313,7 @@ export const Sizes: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <UnitInput
                     label="Medium Size"
                     unit="kg"
@@ -372,13 +365,7 @@ export const UnitPositions: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <UnitInput
                     label="Unit on Left"
                     unit="$"
@@ -434,13 +421,7 @@ export const DifferentUnits: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <UnitInput
                     label="Price"
                     unit="$"
@@ -537,13 +518,7 @@ export const ErrorStates: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <UnitInput
                     label="Required Price"
                     unit="$"
@@ -633,7 +608,7 @@ export const ErrorStates: Story = {
 // Disabled state
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <UnitInput
                 label="Disabled Empty"
                 unit="USD"
@@ -692,152 +667,5 @@ export const WithLabelsAndHints: Story = {
                 story: 'UnitInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
-    },
-}
-
-// Accessibility-focused examples
-export const Accessibility: Story = {
-    render: () => {
-        const [price, setPrice] = useState<number | undefined>(undefined)
-        const [discount, setDiscount] = useState<number | undefined>(undefined)
-        const [weight, setWeight] = useState<number | undefined>(undefined)
-
-        const discountError =
-            discount !== undefined && (discount < 0 || discount > 100)
-                ? 'Discount must be between 0% and 100%'
-                : ''
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Labels, Units, and Hints
-                    </h3>
-                    <UnitInput
-                        label="Product Price"
-                        sublabel="Base price before taxes and discounts"
-                        hintText="Enter the price in US dollars"
-                        unit="$"
-                        unitPosition={UnitPosition.LEFT}
-                        placeholder="0.00"
-                        min={0}
-                        step={0.01}
-                        value={price}
-                        onChange={(e) =>
-                            setPrice(
-                                e.target.value
-                                    ? parseFloat(e.target.value)
-                                    : undefined
-                            )
-                        }
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Error Messaging and Validation
-                    </h3>
-                    <UnitInput
-                        label="Discount"
-                        unit="%"
-                        unitPosition={UnitPosition.RIGHT}
-                        placeholder="0"
-                        min={0}
-                        max={100}
-                        step={1}
-                        value={discount}
-                        onChange={(e) =>
-                            setDiscount(
-                                e.target.value
-                                    ? parseFloat(e.target.value)
-                                    : undefined
-                            )
-                        }
-                        error={!!discountError}
-                        errorMessage={discountError}
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Disabled and Read-Only Contexts
-                    </h3>
-                    <UnitInput
-                        label="Disabled Weight"
-                        unit="kg"
-                        unitPosition={UnitPosition.RIGHT}
-                        value={weight}
-                        onChange={(e) =>
-                            setWeight(
-                                e.target.value
-                                    ? parseFloat(e.target.value)
-                                    : undefined
-                            )
-                        }
-                        disabled
-                        hintText="Disabled fields are not focusable and do not submit values"
-                    />
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating labeling, unit display, required indicators, error messaging, disabled state, and keyboard-friendly focus behavior.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to label / control associations, unit readability, and error messaging.
-
-2. **jest-axe tests**:
-   - Add \`UnitInput.accessibility.test.tsx\` mirroring NumberInput/TextInput/Button tests and run:
-   \`\`\`bash
-   pnpm test UnitInput.accessibility
-   \`\`\`
-   - Validate WCAG 2.0/2.1/2.2 A and AA success criteria for form fields (labels, units, errors, keyboard support).
-
-3. **Manual testing**:
-   - Navigate using keyboard only (Tab / Shift+Tab).
-   - Use a screen reader (VoiceOver/NVDA) to confirm labels, units, hints, and errors are announced.
-   - Verify color contrast of text, borders, and focus styles using contrast tools.
-                `,
-            },
-        },
-        a11y: {
-            ...getA11yConfig('form'),
-        },
-        chromatic: CHROMATIC_CONFIG,
     },
 }

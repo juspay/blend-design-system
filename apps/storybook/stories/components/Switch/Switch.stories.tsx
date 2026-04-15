@@ -56,10 +56,24 @@ const meta: Meta<typeof Switch> = {
         layout: 'centered',
         a11y: getA11yConfig('interactive'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A toggle switch component for binary on/off states with support for controlled and uncontrolled modes, multiple sizes, and comprehensive form integration.',
         docs: {
             description: {
                 component: `
-A toggle switch component for binary on/off states with support for controlled and uncontrolled modes, multiple sizes, and comprehensive form integration capabilities.
+## Usage
+
+\`\`\`tsx
+import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system';
+
+<Switch 
+  size={SwitchSize.MEDIUM}
+  checked={isEnabled}
+  onChange={setIsEnabled}
+  label="Enable notifications"
+  subtext="Get alerts about new messages"
+/>
+\`\`\`
 
 ## Features
 - Controlled and uncontrolled modes
@@ -105,19 +119,6 @@ A toggle switch component for binary on/off states with support for controlled a
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-## Usage
-
-\`\`\`tsx
-import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system';
-
-<Switch 
-  size={SwitchSize.MEDIUM}
-  checked={isEnabled}
-  onChange={setIsEnabled}
-  label="Enable notifications"
-  subtext="Get alerts about new messages"
-/>
-\`\`\`
         `,
             },
         },
@@ -232,13 +233,7 @@ export const SwitchSizes: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Switch
                         size={SwitchSize.SMALL}
                         checked={sizes.small}
@@ -283,20 +278,8 @@ export const SwitchStates: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
-                    <div
-                        style={{
-                            marginBottom: '8px',
-                            fontWeight: '500',
-                            fontSize: '14px',
-                        }}
-                    >
+                <div className="flex flex-col gap-4">
+                    <div className="mb-2 font-medium text-sm">
                         Interactive States:
                     </div>
                     <Switch
@@ -314,14 +297,7 @@ export const SwitchStates: Story = {
                         label="On state (Click to turn off)"
                     />
 
-                    <div
-                        style={{
-                            marginTop: '16px',
-                            marginBottom: '8px',
-                            fontWeight: '500',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <div className="mt-4 mb-2 font-medium text-sm">
                         Disabled States:
                     </div>
                     <Switch
@@ -335,14 +311,7 @@ export const SwitchStates: Story = {
                         label="Disabled on"
                     />
 
-                    <div
-                        style={{
-                            marginTop: '16px',
-                            marginBottom: '8px',
-                            fontWeight: '500',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <div className="mt-4 mb-2 font-medium text-sm">
                         Other States:
                     </div>
                     <Switch
@@ -385,13 +354,7 @@ export const ControlledSwitch: Story = {
             const [isEnabled, setIsEnabled] = useState(false)
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Switch
                         checked={isEnabled}
                         onChange={setIsEnabled}
@@ -399,7 +362,7 @@ export const ControlledSwitch: Story = {
                         label="Dark mode"
                         subtext="Toggle between light and dark themes"
                     />
-                    <div style={{ fontSize: '14px', color: '#666' }}>
+                    <div className="text-sm text-gray-600">
                         Current mode: {isEnabled ? 'Dark' : 'Light'}
                     </div>
                 </div>
@@ -427,13 +390,7 @@ export const WithSubtext: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
-                    }}
-                >
+                <div className="flex flex-col gap-5">
                     <Switch
                         size={SwitchSize.MEDIUM}
                         label="Push notifications"
@@ -494,13 +451,7 @@ export const WithSlots: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Switch
                         size={SwitchSize.MEDIUM}
                         label="Wi-Fi"
@@ -595,13 +546,7 @@ export const ErrorAndValidation: Story = {
             }
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Switch
                         required={true}
                         label="Required setting"
@@ -657,15 +602,7 @@ export const ErrorAndValidation: Story = {
 
                     <button
                         onClick={handleSubmit}
-                        style={{
-                            marginTop: '8px',
-                            padding: '8px 16px',
-                            backgroundColor: '#3b82f6',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                        }}
+                        className="mt-2 px-4 py-2 bg-blue-500 text-white border-none rounded cursor-pointer"
                     >
                         Submit
                     </button>
@@ -693,13 +630,7 @@ export const SwitchGroupExamples: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '32px',
-                    }}
-                >
+                <div className="flex flex-col gap-8">
                     <SwitchGroup
                         label="Network Settings"
                         name="network"
@@ -765,15 +696,7 @@ export const SwitchGroupExamples: Story = {
                         />
                     </SwitchGroup>
 
-                    <div
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            padding: '12px',
-                            backgroundColor: '#f9fafb',
-                            borderRadius: '6px',
-                        }}
-                    >
+                    <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded-md">
                         <strong>Selected values:</strong>
                         <br />
                         Network: {groupStates.basicGroup.join(', ') || 'None'}
@@ -806,13 +729,7 @@ export const UncontrolledSwitch: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <div>
                         <Switch
                             checked={uncontrolledStates.defaultOff}
@@ -886,13 +803,7 @@ export const WithoutLabel: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Switch
                         checked={noLabelStates.ariaLabel}
                         onChange={(checked) =>
@@ -938,14 +849,7 @@ export const TextTruncation: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
-                        maxWidth: '300px',
-                    }}
-                >
+                <div className="flex flex-col gap-5 max-w-[300px]">
                     <Switch
                         checked={truncationStates.longLabel}
                         onChange={(checked) =>
@@ -1005,13 +909,7 @@ export const CombinedStates: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Switch
                         disabled={true}
                         error={true}
@@ -1076,13 +974,7 @@ export const SwitchGroupWithStates: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '32px',
-                    }}
-                >
+                <div className="flex flex-col gap-8">
                     <SwitchGroup
                         label="Settings Group"
                         name="error-group"
@@ -1200,24 +1092,8 @@ export const FormIntegration: Story = {
 
             return (
                 <form onSubmit={handleSubmit}>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '20px',
-                            padding: '20px',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            maxWidth: '400px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: 0,
-                                fontSize: '18px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="flex flex-col gap-5 p-5 border border-gray-200 rounded-lg max-w-[400px]">
+                        <h3 className="m-0 text-lg font-semibold">
                             Notification Preferences
                         </h3>
 
@@ -1265,17 +1141,7 @@ export const FormIntegration: Story = {
 
                         <button
                             type="submit"
-                            style={{
-                                marginTop: '16px',
-                                padding: '10px 20px',
-                                backgroundColor: '#3b82f6',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                fontWeight: '500',
-                            }}
+                            className="mt-4 px-5 py-2.5 bg-blue-500 text-white border-none rounded-md cursor-pointer text-sm font-medium"
                         >
                             Save Preferences
                         </button>
@@ -1289,46 +1155,6 @@ export const FormIntegration: Story = {
         docs: {
             description: {
                 story: 'Switch components integrated into a form with name and value attributes for form submission.',
-            },
-        },
-    },
-}
-
-export const Interactive: Story = {
-    render: function InteractiveSwitch(args: Story['args']) {
-        const [checked, setChecked] = useState(args?.defaultChecked || false)
-
-        return (
-            <Switch
-                {...args}
-                checked={checked}
-                onChange={(newChecked) => setChecked(newChecked)}
-                slot={getSlotContent(args?.slot)}
-            />
-        )
-    },
-    args: {
-        label: 'Interactive switch playground',
-        size: SwitchSize.MEDIUM,
-        defaultChecked: false,
-        disabled: false,
-        required: false,
-        error: false,
-        subtext: 'Customize all props using controls',
-        id: 'interactive-switch',
-        value: 'interactive-value',
-        name: 'interactive-group',
-        slot: 'none',
-    },
-    parameters: {
-        a11y: getA11yConfig('interactive'),
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
-        },
-        docs: {
-            description: {
-                story: 'Interactive playground to test all switch props and combinations. Use the controls panel to modify any property.',
             },
         },
     },

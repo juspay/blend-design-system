@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { MultiValueInput, TextInputSize } from '@juspay/blend-design-system'
-import { Search, User, Mail, Tag, Plus } from 'lucide-react'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -16,11 +15,27 @@ const meta: Meta<typeof MultiValueInput> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A specialized input component for managing multiple values as tags, ideal for features like tagging, categories, keywords, or multi-item selection.',
         docs: {
             description: {
                 component: `
-A specialized input component for managing multiple values as tags, ideal for features like tagging, categories, keywords, or multi-item selection.
 
+## Usage
+
+\`\`\`tsx
+import { MultiValueInput } from '@juspay/blend-design-system';
+
+<MultiValueInput
+  label="Keywords"
+  tags={tags}
+  onTagAdd={(tag) => setTags([...tags, tag])}
+  onTagRemove={(tag) => setTags(tags.filter(t => t !== tag))}
+  size={TextInputSize.MEDIUM}
+  placeholder="Add keyword..."
+  required
+/>
+\`\`\`
 ## Features
 - Three sizes (Small, Medium, Large)
 - Dynamic tag addition and removal
@@ -59,22 +74,6 @@ A specialized input component for managing multiple values as tags, ideal for fe
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
 
 > Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
-
-## Usage
-
-\`\`\`tsx
-import { MultiValueInput } from '@juspay/blend-design-system';
-
-<MultiValueInput
-  label="Keywords"
-  tags={tags}
-  onTagAdd={(tag) => setTags([...tags, tag])}
-  onTagRemove={(tag) => setTags(tags.filter(t => t !== tag))}
-  size={TextInputSize.MEDIUM}
-  placeholder="Add keyword..."
-  required
-/>
-\`\`\`
 
 ### With Controlled Value
 
@@ -323,13 +322,7 @@ export const Sizes: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <MultiValueInput
                     label="Small Size"
                     size={TextInputSize.SMALL}
@@ -398,13 +391,7 @@ export const UseCases: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <MultiValueInput
                     label="Keywords"
                     sublabel="Add relevant keywords for better searchability"
@@ -511,13 +498,7 @@ export const ErrorStates: Story = {
         const maxTags = 5
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <MultiValueInput
                     label="Required Tags"
                     tags={values.required}
@@ -617,7 +598,7 @@ export const ErrorStates: Story = {
 // Disabled state
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <MultiValueInput
                 label="Disabled Empty"
                 tags={[]}
@@ -686,22 +667,9 @@ export const Accessibility: Story = {
             keywords.length === 0 ? 'At least one keyword is required' : ''
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '32px',
-                    maxWidth: '600px',
-                }}
-            >
+            <div className="flex flex-col gap-8 max-w-[600px]">
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Labels, Required Fields, and Hints
                     </h3>
                     <MultiValueInput
@@ -721,13 +689,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Error Messaging and Validation
                     </h3>
                     <MultiValueInput
@@ -750,13 +712,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Disabled and Read-Only Contexts
                     </h3>
                     <MultiValueInput
@@ -771,13 +727,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Keyboard and Screen Reader Friendly Layout
                     </h3>
                     <MultiValueInput
@@ -796,13 +746,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Tag Removal with Keyboard
                     </h3>
                     <MultiValueInput

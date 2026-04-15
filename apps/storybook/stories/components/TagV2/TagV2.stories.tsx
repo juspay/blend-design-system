@@ -168,18 +168,10 @@ export const Default: Story = {
 // Tag Types
 export const Types: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="flex flex-col gap-6">
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    No Fill Type
-                </h3>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <h3 className="mb-3 text-sm text-gray-500">No Fill Type</h3>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Neutral"
                         type={TagV2Type.NO_FILL}
@@ -213,16 +205,8 @@ export const Types: Story = {
                 </div>
             </div>
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Attentive Type
-                </h3>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <h3 className="mb-3 text-sm text-gray-500">Attentive Type</h3>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Neutral"
                         type={TagV2Type.ATTENTIVE}
@@ -256,16 +240,8 @@ export const Types: Story = {
                 </div>
             </div>
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Subtle Type
-                </h3>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <h3 className="mb-3 text-sm text-gray-500">Subtle Type</h3>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Neutral"
                         type={TagV2Type.SUBTLE}
@@ -312,29 +288,22 @@ export const Types: Story = {
 // Tag Sizes
 export const Sizes: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px',
-                alignItems: 'flex-start',
-            }}
-        >
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div className="flex flex-col gap-4 items-start">
+            <div className="flex gap-2 items-center">
                 <TagV2 text="Extra Small" size={TagV2Size.XS} />
-                <span style={{ fontSize: '12px', color: '#666' }}>XS</span>
+                <span className="text-xs text-gray-500">XS</span>
             </div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div className="flex gap-2 items-center">
                 <TagV2 text="Small" size={TagV2Size.SM} />
-                <span style={{ fontSize: '12px', color: '#666' }}>SM</span>
+                <span className="text-xs text-gray-500">SM</span>
             </div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div className="flex gap-2 items-center">
                 <TagV2 text="Medium" size={TagV2Size.MD} />
-                <span style={{ fontSize: '12px', color: '#666' }}>MD</span>
+                <span className="text-xs text-gray-500">MD</span>
             </div>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div className="flex gap-2 items-center">
                 <TagV2 text="Large" size={TagV2Size.LG} />
-                <span style={{ fontSize: '12px', color: '#666' }}>LG</span>
+                <span className="text-xs text-gray-500">LG</span>
             </div>
         </div>
     ),
@@ -350,18 +319,10 @@ export const Sizes: Story = {
 // Tag Shapes
 export const Shapes: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="flex flex-col gap-4">
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Squarical Shape
-                </h3>
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <h3 className="mb-3 text-sm text-gray-500">Squarical Shape</h3>
+                <div className="flex gap-2">
                     <TagV2
                         text="Squarical XS"
                         subType={TagV2SubType.SQUARICAL}
@@ -385,16 +346,8 @@ export const Shapes: Story = {
                 </div>
             </div>
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Rounded Shape
-                </h3>
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <h3 className="mb-3 text-sm text-gray-500">Rounded Shape</h3>
+                <div className="flex gap-2">
                     <TagV2
                         text="Rounded XS"
                         subType={TagV2SubType.ROUNDED}
@@ -431,18 +384,10 @@ export const Shapes: Story = {
 // Tags with Icons
 export const WithIcons: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="flex flex-col gap-4">
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Left Icons
-                </h3>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <h3 className="mb-3 text-sm text-gray-500">Left Icons</h3>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="New"
                         color={TagV2Color.SUCCESS}
@@ -486,16 +431,8 @@ export const WithIcons: Story = {
                 </div>
             </div>
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Right Icons
-                </h3>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <h3 className="mb-3 text-sm text-gray-500">Right Icons</h3>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Close"
                         rightSlot={{
@@ -531,16 +468,8 @@ export const WithIcons: Story = {
                 </div>
             </div>
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Both Icons
-                </h3>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <h3 className="mb-3 text-sm text-gray-500">Both Icons</h3>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Location"
                         leftSlot={{
@@ -604,30 +533,12 @@ export const Interactive: Story = {
             }
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
+                        <h3 className="mb-3 text-sm text-gray-500">
                             Click to Select Tags
                         </h3>
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: '8px',
-                                flexWrap: 'wrap',
-                            }}
-                        >
+                        <div className="flex gap-2 flex-wrap">
                             {tags.map((tag) => (
                                 <TagV2
                                     key={tag}
@@ -661,7 +572,7 @@ export const Interactive: Story = {
                             ))}
                         </div>
                     </div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>
+                    <div className="text-xs text-gray-500">
                         Selected:{' '}
                         {selectedTags.length > 0
                             ? selectedTags.join(', ')
@@ -690,36 +601,17 @@ export const Interactive: Story = {
  */
 export const Accessibility: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '32px',
-                maxWidth: '800px',
-            }}
-        >
+        <div className="flex flex-col gap-8 max-w-[800px]">
             {/* Basic Accessible Tags */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Basic Accessible Tags
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     Tags with proper semantic structure and accessible text
                     content.
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2 text="React" color={TagV2Color.PRIMARY} />
                     <TagV2 text="TypeScript" color={TagV2Color.SUCCESS} />
                     <TagV2 text="JavaScript" color={TagV2Color.WARNING} />
@@ -729,26 +621,14 @@ export const Accessibility: Story = {
 
             {/* Interactive Tags with Keyboard Support */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Interactive Tags (Keyboard Accessible)
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     Tags with onClick handlers are keyboard accessible. Use Tab
                     to focus, Enter or Space to activate.
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Selectable"
                         color={TagV2Color.PRIMARY}
@@ -777,26 +657,14 @@ export const Accessibility: Story = {
 
             {/* Tags with Icons (Accessible) */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Tags with Icons (Properly Hidden)
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     Decorative icons have aria-hidden="true". The tag text
                     provides the accessible name.
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="New Feature"
                         color={TagV2Color.SUCCESS}
@@ -831,47 +699,17 @@ export const Accessibility: Story = {
 
             {/* Different Sizes (Touch Target Compliance) */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Size Variants (Touch Target Compliance)
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     All interactive tag sizes meet WCAG 2.2 Level AA touch
                     target requirement (24x24px minimum). For AAA compliance,
                     44x44px is required.
                 </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                    }}
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: '12px',
-                                color: '#666',
-                                width: '60px',
-                            }}
-                        >
+                <div className="flex flex-col gap-3">
+                    <div className="flex gap-2 items-center">
+                        <span className="text-xs text-gray-500 w-[60px]">
                             XS:
                         </span>
                         <TagV2
@@ -880,20 +718,8 @@ export const Accessibility: Story = {
                             onClick={() => {}}
                         />
                     </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: '12px',
-                                color: '#666',
-                                width: '60px',
-                            }}
-                        >
+                    <div className="flex gap-2 items-center">
+                        <span className="text-xs text-gray-500 w-[60px]">
                             SM:
                         </span>
                         <TagV2
@@ -902,20 +728,8 @@ export const Accessibility: Story = {
                             onClick={() => {}}
                         />
                     </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: '12px',
-                                color: '#666',
-                                width: '60px',
-                            }}
-                        >
+                    <div className="flex gap-2 items-center">
+                        <span className="text-xs text-gray-500 w-[60px]">
                             MD:
                         </span>
                         <TagV2
@@ -924,20 +738,8 @@ export const Accessibility: Story = {
                             onClick={() => {}}
                         />
                     </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: '12px',
-                                color: '#666',
-                                width: '60px',
-                            }}
-                        >
+                    <div className="flex gap-2 items-center">
+                        <span className="text-xs text-gray-500 w-[60px]">
                             LG:
                         </span>
                         <TagV2
@@ -951,27 +753,15 @@ export const Accessibility: Story = {
 
             {/* Color Contrast Examples */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Color Contrast (WCAG AA Compliant)
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     All tag color combinations meet WCAG 2.1 Level AA contrast
                     requirements (4.5:1 for normal text, 3:1 for large text).
                     For AAA compliance, 7:1 contrast ratio is required.
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Neutral"
                         type={TagV2Type.SUBTLE}
@@ -1007,26 +797,14 @@ export const Accessibility: Story = {
 
             {/* Focus Indicators */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Focus Indicators (Keyboard Navigation)
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     Interactive tags have visible focus indicators. Use Tab to
                     navigate, Enter or Space to activate.
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Focusable Tag 1"
                         color={TagV2Color.PRIMARY}
@@ -1043,40 +821,21 @@ export const Accessibility: Story = {
                         onClick={() => {}}
                     />
                 </div>
-                <p
-                    style={{
-                        marginTop: '12px',
-                        fontSize: '12px',
-                        color: '#666',
-                        fontStyle: 'italic',
-                    }}
-                >
+                <p className="mt-3 text-xs text-gray-600 italic">
                     Tip: Press Tab to see focus indicators on interactive tags
                 </p>
             </div>
 
             {/* Screen Reader Support */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     Screen Reader Support
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     Tags provide accessible text content. Interactive tags
                     announce their state and action to screen readers.
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Status: Active"
                         color={TagV2Color.SUCCESS}
@@ -1115,49 +874,19 @@ export const Accessibility: Story = {
 
             {/* Type Examples */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     All Types (Accessible)
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     All tag types maintain accessibility standards across
                     different visual styles.
                 </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <div>
-                        <h4
-                            style={{
-                                marginBottom: '8px',
-                                fontSize: '14px',
-                                fontWeight: '600',
-                            }}
-                        >
+                        <h4 className="mb-2 text-sm font-semibold">
                             No Fill Type
                         </h4>
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: '8px',
-                                flexWrap: 'wrap',
-                            }}
-                        >
+                        <div className="flex gap-2 flex-wrap">
                             <TagV2
                                 text="Neutral"
                                 type={TagV2Type.NO_FILL}
@@ -1176,22 +905,10 @@ export const Accessibility: Story = {
                         </div>
                     </div>
                     <div>
-                        <h4
-                            style={{
-                                marginBottom: '8px',
-                                fontSize: '14px',
-                                fontWeight: '600',
-                            }}
-                        >
+                        <h4 className="mb-2 text-sm font-semibold">
                             Attentive Type
                         </h4>
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: '8px',
-                                flexWrap: 'wrap',
-                            }}
-                        >
+                        <div className="flex gap-2 flex-wrap">
                             <TagV2
                                 text="Neutral"
                                 type={TagV2Type.ATTENTIVE}
@@ -1210,22 +927,10 @@ export const Accessibility: Story = {
                         </div>
                     </div>
                     <div>
-                        <h4
-                            style={{
-                                marginBottom: '8px',
-                                fontSize: '14px',
-                                fontWeight: '600',
-                            }}
-                        >
+                        <h4 className="mb-2 text-sm font-semibold">
                             Subtle Type
                         </h4>
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: '8px',
-                                flexWrap: 'wrap',
-                            }}
-                        >
+                        <div className="flex gap-2 flex-wrap">
                             <TagV2
                                 text="Neutral"
                                 type={TagV2Type.SUBTLE}
@@ -1248,26 +953,14 @@ export const Accessibility: Story = {
 
             {/* ARIA Pressed State */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">
                     ARIA Pressed State (Toggle Tags)
                 </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-4 text-sm text-gray-500">
                     Toggle tags use aria-pressed to communicate their state to
                     assistive technologies.
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Not Pressed"
                         color={TagV2Color.NEUTRAL}
@@ -1294,26 +987,12 @@ export const Accessibility: Story = {
 
             {/* Text Selection */}
             <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    Text Selection
-                </h3>
-                <p
-                    style={{
-                        marginBottom: '16px',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <h3 className="mb-3 text-base font-bold">Text Selection</h3>
+                <p className="mb-4 text-sm text-gray-500">
                     Non-interactive tags allow text selection, while interactive
                     tags follow default button behavior.
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <TagV2
                         text="Non-interactive (Selectable Text)"
                         color={TagV2Color.NEUTRAL}

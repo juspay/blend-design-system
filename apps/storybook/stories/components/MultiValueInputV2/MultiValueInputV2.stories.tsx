@@ -298,14 +298,7 @@ export const Sizes: Story = {
         )
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                    maxWidth: 480,
-                }}
-            >
+            <div className="flex flex-col gap-5 max-w-[480px]">
                 {bind(sm, setSm, InputSizeV2.SM)}
                 {bind(md, setMd, InputSizeV2.MD)}
                 {bind(lg, setLg, InputSizeV2.LG)}
@@ -387,14 +380,7 @@ export const WithSlots: Story = {
             tagValues: ['updates'] as string[],
         })
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    maxWidth: 480,
-                }}
-            >
+            <div className="flex flex-col gap-6 max-w-[480px]">
                 <MultiValueInputV2
                     label="With left slot"
                     placeholder="Keywords"

@@ -23,59 +23,12 @@ import {
     Package,
     ShoppingCart,
     Building,
-    Store,
     DollarSign,
-    TrendingUp,
-    Activity,
-    Calendar,
-    Mail,
     Bell,
     Search,
-    HelpCircle,
     LogOut,
     ChevronRight,
-    Plus,
-    Filter,
-    Download,
-    Upload,
-    RefreshCw,
-    Shield,
-    Lock,
-    Key,
-    Database,
-    Server,
-    Cloud,
-    Zap,
-    Globe,
     Cpu,
-    Tag,
-    Truck,
-    Star,
-    LayoutDashboard,
-    FileBarChart,
-    GitBranch,
-    Brain,
-    AlertTriangle,
-    Lightbulb,
-    Code,
-    ChevronDown,
-    Percent,
-    Share2,
-    Receipt,
-    Shirt,
-    Tent,
-    Webhook,
-    UserCheck,
-    AlertCircle,
-    Layers,
-    FileCode,
-    Wifi,
-    Save,
-    Smartphone,
-    ShoppingBag,
-    Target,
-    Clock,
-    HardDrive,
 } from 'lucide-react'
 
 // Type definitions for Directory data
@@ -104,15 +57,37 @@ const meta: Meta<typeof Sidebar> = {
         a11y: getA11yConfig('interactive'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A comprehensive sidebar navigation component with collapsible sections, integrated directory navigation, customizable panels, and responsive design.',
         docs: {
             description: {
                 component: `
+### Basic Usage
 
-A comprehensive sidebar navigation component with collapsible sections, integrated directory navigation, customizable panels, and responsive design.
+\`\`\`tsx
+import { Sidebar } from '@juspay/blend-design-system';
+import { Home, Users, Settings } from 'lucide-react';
 
-## Overview
+function App() {
+  return (
+    <Sidebar
+      data={[
+        {
+          label: "Main",
+          items: [
+            { label: "Dashboard", leftSlot: <Home size={16} />, onClick: () => {} },
+            { label: "Users", leftSlot: <Users size={16} />, onClick: () => {} },
+            { label: "Settings", leftSlot: <Settings size={16} />, onClick: () => {} },
+          ]
+        }
+      ]}
+    >
+      <div>Your main content here</div>
+    </Sidebar>
+  );
+}
+\`\`\`
 
-The Sidebar component provides a complete application navigation solution with support for hierarchical menus, tenant/workspace switching, mobile responsiveness, and extensive customization options.
 
 ## Features
 
@@ -126,6 +101,29 @@ The Sidebar component provides a complete application navigation solution with s
 - **Icon and badge support** in navigation items
 - **Keyboard navigation** with configurable shortcuts
 - **Accessibility compliant** (WCAG 2.1 Level AA)
+
+## Accessibility
+
+**WCAG Compliance**: 2.1 Level AA Compliant | Partial AAA Compliance
+
+**Keyboard Navigation**:
+- \`Tab\`: Navigate between interactive elements
+- \`Arrow Keys\`: Navigate within Directory sections
+- \`Enter/Space\`: Activate navigation items
+- \`/\` (default): Toggle sidebar expand/collapse
+- \`Escape\`: Close mobile navigation drawer
+
+**ARIA Landmarks**:
+- Navigation regions properly labeled
+- Search region with role="search"
+- Complementary regions for footer
+- Screen reader announcements for state changes
+
+**Verification**:
+- Storybook a11y addon (0 violations expected)
+- Chromatic visual regression
+- Manual testing with VoiceOver/NVDA
+- Contrast ratio verification
 
 ## Props Categories
 
@@ -156,32 +154,6 @@ The Sidebar component provides a complete application navigation solution with s
 - **primaryActionButtonProps**: Configure FAB
 
 ## Quick Start
-
-### Basic Usage
-
-\`\`\`tsx
-import { Sidebar } from '@juspay/blend-design-system';
-import { Home, Users, Settings } from 'lucide-react';
-
-function App() {
-  return (
-    <Sidebar
-      data={[
-        {
-          label: "Main",
-          items: [
-            { label: "Dashboard", leftSlot: <Home size={16} />, onClick: () => {} },
-            { label: "Users", leftSlot: <Users size={16} />, onClick: () => {} },
-            { label: "Settings", leftSlot: <Settings size={16} />, onClick: () => {} },
-          ]
-        }
-      ]}
-    >
-      <div>Your main content here</div>
-    </Sidebar>
-  );
-}
-\`\`\`
 
 ### With Tenant Switching
 
@@ -226,29 +198,6 @@ const [isExpanded, setIsExpanded] = useState(true);
   {children}
 </Sidebar>
 \`\`\`
-
-## Accessibility
-
-**WCAG Compliance**: 2.1 Level AA Compliant | Partial AAA Compliance
-
-**Keyboard Navigation**:
-- \`Tab\`: Navigate between interactive elements
-- \`Arrow Keys\`: Navigate within Directory sections
-- \`Enter/Space\`: Activate navigation items
-- \`/\` (default): Toggle sidebar expand/collapse
-- \`Escape\`: Close mobile navigation drawer
-
-**ARIA Landmarks**:
-- Navigation regions properly labeled
-- Search region with role="search"
-- Complementary regions for footer
-- Screen reader announcements for state changes
-
-**Verification**:
-- Storybook a11y addon (0 violations expected)
-- Chromatic visual regression
-- Manual testing with VoiceOver/NVDA
-- Contrast ratio verification
         `,
             },
         },
@@ -571,38 +520,136 @@ export default meta
 type Story = StoryObj<typeof Sidebar>
 
 // Helper function to create sample content
-const SampleContent = ({ title }: { title: string }) => (
-    <div style={{ padding: '32px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '16px' }}>
-            {title}
-        </h1>
-        <div style={{ display: 'grid', gap: '16px' }}>
-            {[1, 2, 3].map((i) => (
-                <div
-                    key={i}
-                    style={{
-                        padding: '16px',
-                        backgroundColor: '#f3f4f6',
-                        borderRadius: '8px',
-                        border: '1px solid #e5e7eb',
-                    }}
-                >
-                    <h3
-                        style={{
-                            fontSize: '16px',
-                            fontWeight: 500,
-                            marginBottom: '8px',
-                        }}
-                    >
-                        Section {i}
-                    </h3>
-                    <p style={{ color: '#6b7280', fontSize: '14px' }}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua.
-                    </p>
+const DashboardContent = ({ title }: { title: string }) => (
+    <div className="p-8 bg-gray-50 min-h-screen">
+        <div className="mb-8 pb-6 border-b border-gray-300">
+            <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+                {title}
+            </h1>
+            <p className="text-gray-500">
+                Welcome back! Here's what's happening today.
+            </p>
+        </div>
+
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-gray-500">Total Revenue</span>
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center border border-blue-300">
+                        <DollarSign size={20} className="text-blue-600" />
+                    </div>
                 </div>
-            ))}
+                <div className="text-2xl font-bold text-gray-900">$45,231</div>
+                <div className="text-sm text-green-600 mt-1">
+                    +12.5% from last month
+                </div>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-gray-500">Active Users</span>
+                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center border border-purple-300">
+                        <Users size={20} className="text-purple-600" />
+                    </div>
+                </div>
+                <div className="text-2xl font-bold text-gray-900">2,847</div>
+                <div className="text-sm text-green-600 mt-1">
+                    +8.2% from last month
+                </div>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-gray-500">
+                        Pending Orders
+                    </span>
+                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center border border-orange-300">
+                        <Package size={20} className="text-orange-600" />
+                    </div>
+                </div>
+                <div className="text-2xl font-bold text-gray-900">24</div>
+                <div className="text-sm text-red-600 mt-1">
+                    Requires attention
+                </div>
+            </div>
+        </div>
+
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4 pb-3 border-b border-gray-200">
+                    Recent Activity
+                </h3>
+                <div className="space-y-4">
+                    {[
+                        {
+                            icon: ShoppingCart,
+                            text: 'New order received',
+                            time: '2 min ago',
+                            color: 'blue',
+                        },
+                        {
+                            icon: Users,
+                            text: 'New user registered',
+                            time: '15 min ago',
+                            color: 'purple',
+                        },
+                        {
+                            icon: CreditCard,
+                            text: 'Payment processed',
+                            time: '1 hour ago',
+                            color: 'green',
+                        },
+                    ].map((item, i) => (
+                        <div
+                            key={i}
+                            className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors border border-gray-200"
+                        >
+                            <div
+                                className={`w-10 h-10 bg-${item.color}-100 rounded-lg flex items-center justify-center border border-${item.color}-300`}
+                            >
+                                <item.icon
+                                    size={20}
+                                    className={`text-${item.color}-600`}
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                    {item.text}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                    {item.time}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-gray-300 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4 pb-3 border-b border-gray-200">
+                    Quick Actions
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                    {[
+                        { label: 'Add Product', icon: Package },
+                        { label: 'Create Order', icon: ShoppingCart },
+                        { label: 'View Reports', icon: BarChart3 },
+                        { label: 'Manage Team', icon: Users },
+                    ].map((action, i) => (
+                        <button
+                            key={i}
+                            className="p-4 rounded-xl border border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-all text-left group"
+                        >
+                            <action.icon
+                                size={24}
+                                className="text-gray-400 group-hover:text-blue-500 mb-2 transition-colors"
+                            />
+                            <span className="text-sm font-medium text-gray-700 group-hover:text-blue-700">
+                                {action.label}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            </div>
         </div>
     </div>
 )
@@ -657,14 +704,7 @@ export const Default: Story = {
                             ),
                             rightSlot: (
                                 <span
-                                    style={{
-                                        backgroundColor: '#ef4444',
-                                        color: 'white',
-                                        borderRadius: '10px',
-                                        padding: '2px 6px',
-                                        fontSize: '11px',
-                                        fontWeight: 500,
-                                    }}
+                                    className="bg-red-500 text-white rounded-[10px] px-1.5 py-0.5 text-[11px] font-medium"
                                     aria-label="12 new orders"
                                 >
                                     12
@@ -700,7 +740,7 @@ export const Default: Story = {
             ]
 
             return (
-                <div style={{ height: '100vh', display: 'flex' }}>
+                <div className="h-screen flex">
                     <Sidebar
                         onSidebarStateChange={(state) => {
                             setSidebarState(state)
@@ -744,25 +784,8 @@ export const Default: Story = {
                         }}
                         data={navigationData}
                         topbar={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '16px',
-                                    width: '100%',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        flex: 1,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        padding: '8px 16px',
-                                        backgroundColor: '#f3f4f6',
-                                        borderRadius: '8px',
-                                    }}
-                                >
+                            <div className="flex items-center gap-4 w-full">
+                                <div className="flex-1 flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
                                     <Search
                                         size={16}
                                         color="#6b7280"
@@ -772,12 +795,7 @@ export const Default: Story = {
                                         type="text"
                                         placeholder="Search..."
                                         aria-label="Search input"
-                                        style={{
-                                            border: 'none',
-                                            outline: 'none',
-                                            backgroundColor: 'transparent',
-                                            width: '100%',
-                                        }}
+                                        className="border-none outline-none bg-transparent w-full"
                                     />
                                 </div>
                                 <Button
@@ -795,35 +813,18 @@ export const Default: Story = {
                             </div>
                         }
                         footer={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                    width: '100%',
-                                }}
-                            >
+                            <div className="flex items-center gap-3 w-full">
                                 <Avatar
                                     src="https://i.pravatar.cc/150?img=1"
                                     alt="John Doe"
                                     size={AvatarSize.SM}
                                     shape={AvatarShape.CIRCULAR}
                                 />
-                                <div style={{ flex: 1 }}>
-                                    <div
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: 500,
-                                        }}
-                                    >
+                                <div className="flex-1">
+                                    <div className="text-sm font-medium">
                                         John Doe
                                     </div>
-                                    <div
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
+                                    <div className="text-xs text-gray-500">
                                         john@example.com
                                     </div>
                                 </div>
@@ -836,7 +837,7 @@ export const Default: Story = {
                             </div>
                         }
                     >
-                        <SampleContent title="Dashboard" />
+                        <DashboardContent title="Dashboard" />
                     </Sidebar>
                 </div>
             )
@@ -848,648 +849,6 @@ export const Default: Story = {
             description: {
                 story: 'Default sidebar with multi-tenant support, merchant switching, and navigation sections.',
             },
-        },
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples demonstrating WCAG 2.1 Level AA compliance
- */
-export const Accessibility: Story = {
-    render: () => {
-        const AccessibilityComponent = () => {
-            const [activeTenant, setActiveTenant] = useState('Retail Corp')
-            const [isExpanded, setIsExpanded] = useState(true)
-            const [sidebarState, setSidebarState] = useState<
-                'collapsed' | 'expanded' | 'intermediate'
-            >('expanded')
-
-            const navigationData: DirectoryData[] = [
-                {
-                    label: 'Main Navigation',
-                    items: [
-                        {
-                            label: 'Dashboard',
-                            leftSlot: <Home size={16} aria-hidden="true" />,
-                            onClick: () => console.log('Dashboard clicked'),
-                        },
-                        {
-                            label: 'Analytics',
-                            leftSlot: (
-                                <BarChart3 size={16} aria-hidden="true" />
-                            ),
-                            onClick: () => console.log('Analytics clicked'),
-                        },
-                        {
-                            label: 'Reports',
-                            leftSlot: <FileText size={16} aria-hidden="true" />,
-                            onClick: () => console.log('Reports clicked'),
-                        },
-                    ],
-                },
-                {
-                    label: 'Commerce',
-                    items: [
-                        {
-                            label: 'Products',
-                            leftSlot: <Package size={16} aria-hidden="true" />,
-                            onClick: () => console.log('Products clicked'),
-                        },
-                        {
-                            label: 'Orders',
-                            leftSlot: (
-                                <ShoppingCart size={16} aria-hidden="true" />
-                            ),
-                            rightSlot: (
-                                <span
-                                    style={{
-                                        backgroundColor: '#ef4444',
-                                        color: 'white',
-                                        borderRadius: '10px',
-                                        padding: '2px 6px',
-                                        fontSize: '11px',
-                                        fontWeight: 500,
-                                    }}
-                                    aria-label="12 new orders"
-                                >
-                                    12
-                                </span>
-                            ),
-                            onClick: () => console.log('Orders clicked'),
-                        },
-                        {
-                            label: 'Customers',
-                            leftSlot: <Users size={16} aria-hidden="true" />,
-                            onClick: () => console.log('Customers clicked'),
-                        },
-                    ],
-                },
-                {
-                    label: 'Settings',
-                    items: [
-                        {
-                            label: 'General Settings',
-                            leftSlot: <Settings size={16} aria-hidden="true" />,
-                            onClick: () =>
-                                console.log('General settings clicked'),
-                        },
-                        {
-                            label: 'Billing',
-                            leftSlot: (
-                                <CreditCard size={16} aria-hidden="true" />
-                            ),
-                            onClick: () => console.log('Billing clicked'),
-                        },
-                    ],
-                },
-            ]
-
-            return (
-                <div style={{ height: '100vh', display: 'flex' }}>
-                    <Sidebar
-                        onSidebarStateChange={(state) => {
-                            setSidebarState(state)
-                            console.log('[Sidebar state]', state)
-                        }}
-                        isExpanded={isExpanded}
-                        onExpandedChange={setIsExpanded}
-                        leftPanel={{
-                            items: [
-                                {
-                                    label: 'Retail Corp',
-                                    icon: (
-                                        <Building
-                                            size={16}
-                                            color="#3b82f6"
-                                            aria-hidden="true"
-                                        />
-                                    ),
-                                },
-                                {
-                                    label: 'Tech Inc',
-                                    icon: (
-                                        <Cpu
-                                            size={16}
-                                            color="#8b5cf6"
-                                            aria-hidden="true"
-                                        />
-                                    ),
-                                },
-                                {
-                                    label: 'Finance Ltd',
-                                    icon: (
-                                        <DollarSign
-                                            size={16}
-                                            color="#10b981"
-                                            aria-hidden="true"
-                                        />
-                                    ),
-                                },
-                            ],
-                            selected: activeTenant,
-                            onSelect: setActiveTenant,
-                        }}
-                        data={navigationData}
-                        topbar={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '16px',
-                                    width: '100%',
-                                }}
-                                role="search"
-                                aria-label="Search navigation"
-                            >
-                                <div
-                                    style={{
-                                        flex: 1,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        padding: '8px 16px',
-                                        backgroundColor: '#f3f4f6',
-                                        borderRadius: '8px',
-                                    }}
-                                >
-                                    <Search
-                                        size={16}
-                                        color="#6b7280"
-                                        aria-hidden="true"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Search..."
-                                        aria-label="Search navigation items"
-                                        style={{
-                                            border: 'none',
-                                            outline: 'none',
-                                            backgroundColor: 'transparent',
-                                            width: '100%',
-                                        }}
-                                    />
-                                </div>
-                                <Button
-                                    buttonType={ButtonType.SECONDARY}
-                                    size={ButtonSize.SMALL}
-                                    leadingIcon={<Bell aria-hidden="true" />}
-                                    aria-label="View notifications"
-                                />
-                                <Avatar
-                                    src="https://i.pravatar.cc/150?img=1"
-                                    alt="User profile"
-                                    size={AvatarSize.SM}
-                                    shape={AvatarShape.ROUNDED}
-                                />
-                            </div>
-                        }
-                        footer={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                    width: '100%',
-                                }}
-                                role="complementary"
-                                aria-label="User profile and actions"
-                            >
-                                <Avatar
-                                    src="https://i.pravatar.cc/150?img=1"
-                                    alt="John Doe"
-                                    size={AvatarSize.SM}
-                                    shape={AvatarShape.CIRCULAR}
-                                />
-                                <div style={{ flex: 1 }}>
-                                    <div
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: 500,
-                                        }}
-                                    >
-                                        John Doe
-                                    </div>
-                                    <div
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
-                                        john@example.com
-                                    </div>
-                                </div>
-                                <Button
-                                    buttonType={ButtonType.SECONDARY}
-                                    size={ButtonSize.SMALL}
-                                    leadingIcon={<LogOut aria-hidden="true" />}
-                                    aria-label="Sign out"
-                                />
-                            </div>
-                        }
-                    >
-                        <div style={{ padding: '32px' }}>
-                            <h1
-                                style={{
-                                    fontSize: '24px',
-                                    fontWeight: 600,
-                                    marginBottom: '16px',
-                                }}
-                            >
-                                Sidebar Component Accessibility Showcase
-                            </h1>
-                            <p
-                                style={{
-                                    fontSize: '16px',
-                                    color: '#475569',
-                                    lineHeight: '1.6',
-                                    marginBottom: '24px',
-                                }}
-                            >
-                                Interactive examples demonstrating the Sidebar
-                                component's accessibility features including
-                                keyboard navigation, screen reader support, and
-                                proper ARIA attributes.
-                            </p>
-
-                            <section
-                                style={{
-                                    marginBottom: '32px',
-                                    padding: '20px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#fff',
-                                }}
-                            >
-                                <h2
-                                    style={{
-                                        fontSize: '18px',
-                                        fontWeight: 600,
-                                        marginBottom: '16px',
-                                    }}
-                                >
-                                    Keyboard Navigation
-                                </h2>
-                                <p
-                                    style={{
-                                        fontSize: '14px',
-                                        color: '#475569',
-                                        marginBottom: '12px',
-                                    }}
-                                >
-                                    <strong>2.1.1 Keyboard (Level A)</strong>:
-                                    All functionality is keyboard accessible.
-                                </p>
-                                <ul
-                                    style={{
-                                        margin: 0,
-                                        paddingLeft: '20px',
-                                        color: '#475569',
-                                        fontSize: '14px',
-                                    }}
-                                >
-                                    <li>
-                                        <strong>Tab</strong>: Navigate between
-                                        interactive elements
-                                    </li>
-                                    <li>
-                                        <strong>Arrow Keys</strong>: Navigate
-                                        within Directory sections
-                                    </li>
-                                    <li>
-                                        <strong>Enter/Space</strong>: Activate
-                                        navigation items
-                                    </li>
-                                    <li>
-                                        <strong>/ (default)</strong>: Toggle
-                                        sidebar expand/collapse
-                                    </li>
-                                    <li>
-                                        <strong>Escape</strong>: Close mobile
-                                        navigation drawer
-                                    </li>
-                                </ul>
-                            </section>
-
-                            <section
-                                style={{
-                                    marginBottom: '32px',
-                                    padding: '20px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#fff',
-                                }}
-                            >
-                                <h2
-                                    style={{
-                                        fontSize: '18px',
-                                        fontWeight: 600,
-                                        marginBottom: '16px',
-                                    }}
-                                >
-                                    Focus Management
-                                </h2>
-                                <p
-                                    style={{
-                                        fontSize: '14px',
-                                        color: '#475569',
-                                        marginBottom: '12px',
-                                    }}
-                                >
-                                    <strong>
-                                        2.4.7 Focus Visible (Level AA)
-                                    </strong>
-                                    : Focus indicators are visible on all
-                                    interactive elements.
-                                </p>
-                                <ul
-                                    style={{
-                                        margin: 0,
-                                        paddingLeft: '20px',
-                                        color: '#475569',
-                                        fontSize: '14px',
-                                    }}
-                                >
-                                    <li>
-                                        Visible focus rings on all interactive
-                                        elements
-                                    </li>
-                                    <li>
-                                        Focus management in mobile navigation
-                                        drawer
-                                    </li>
-                                    <li>
-                                        Logical tab order: Topbar → Sidebar →
-                                        Content
-                                    </li>
-                                </ul>
-                            </section>
-
-                            <section
-                                style={{
-                                    marginBottom: '32px',
-                                    padding: '20px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#fff',
-                                }}
-                            >
-                                <h2
-                                    style={{
-                                        fontSize: '18px',
-                                        fontWeight: 600,
-                                        marginBottom: '16px',
-                                    }}
-                                >
-                                    Screen Reader Support
-                                </h2>
-                                <p
-                                    style={{
-                                        fontSize: '14px',
-                                        color: '#475569',
-                                        marginBottom: '12px',
-                                    }}
-                                >
-                                    <strong>
-                                        4.1.2 Name, Role, Value (Level A)
-                                    </strong>
-                                    : All elements have programmatically
-                                    determinable names, roles, and values.
-                                </p>
-                                <ul
-                                    style={{
-                                        margin: 0,
-                                        paddingLeft: '20px',
-                                        color: '#475569',
-                                        fontSize: '14px',
-                                    }}
-                                >
-                                    <li>
-                                        Navigation items announced with labels
-                                        and icons (when not decorative)
-                                    </li>
-                                    <li>
-                                        Badge counts announced (e.g., "12 new
-                                        orders")
-                                    </li>
-                                    <li>
-                                        State changes announced
-                                        (expanded/collapsed)
-                                    </li>
-                                    <li>
-                                        Decorative icons marked with
-                                        aria-hidden="true"
-                                    </li>
-                                </ul>
-                            </section>
-
-                            <section
-                                style={{
-                                    marginBottom: '32px',
-                                    padding: '20px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#fff',
-                                }}
-                            >
-                                <h2
-                                    style={{
-                                        fontSize: '18px',
-                                        fontWeight: 600,
-                                        marginBottom: '16px',
-                                    }}
-                                >
-                                    Semantic Structure
-                                </h2>
-                                <p
-                                    style={{
-                                        fontSize: '14px',
-                                        color: '#475569',
-                                        marginBottom: '12px',
-                                    }}
-                                >
-                                    <strong>
-                                        1.3.1 Info and Relationships (Level A)
-                                    </strong>
-                                    : Information structure is programmatically
-                                    determinable.
-                                </p>
-                                <ul
-                                    style={{
-                                        margin: 0,
-                                        paddingLeft: '20px',
-                                        color: '#475569',
-                                        fontSize: '14px',
-                                    }}
-                                >
-                                    <li>Navigation regions properly labeled</li>
-                                    <li>Search region with role="search"</li>
-                                    <li>
-                                        Complementary regions for footer content
-                                    </li>
-                                    <li>
-                                        Logical heading hierarchy maintained
-                                    </li>
-                                </ul>
-                            </section>
-
-                            <section
-                                style={{
-                                    padding: '20px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#fff',
-                                }}
-                            >
-                                <h2
-                                    style={{
-                                        fontSize: '18px',
-                                        fontWeight: 600,
-                                        marginBottom: '16px',
-                                    }}
-                                >
-                                    Accessibility Verification
-                                </h2>
-                                <p
-                                    style={{
-                                        color: '#6b7280',
-                                        fontSize: '14px',
-                                        marginBottom: '12px',
-                                    }}
-                                >
-                                    To verify the accessibility of the Sidebar
-                                    component, follow these steps:
-                                </p>
-                                <ol
-                                    style={{
-                                        margin: 0,
-                                        paddingLeft: '20px',
-                                        color: '#475569',
-                                        fontSize: '14px',
-                                    }}
-                                >
-                                    <li style={{ marginBottom: '8px' }}>
-                                        <strong>Storybook a11y addon</strong>:
-                                        <ul
-                                            style={{
-                                                margin: '4px 0 0 0',
-                                                paddingLeft: '20px',
-                                                listStyleType: 'disc',
-                                            }}
-                                        >
-                                            <li>
-                                                Open the Accessibility panel in
-                                                Storybook and verify there are
-                                                no violations for these
-                                                scenarios.
-                                            </li>
-                                            <li>
-                                                Pay special attention to
-                                                navigation regions, ARIA labels,
-                                                and keyboard accessibility.
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li style={{ marginBottom: '8px' }}>
-                                        <strong>Chromatic visual tests</strong>:
-                                        <ul
-                                            style={{
-                                                margin: '4px 0 0 0',
-                                                paddingLeft: '20px',
-                                                listStyleType: 'disc',
-                                            }}
-                                        >
-                                            <li>
-                                                Run Chromatic visual tests to
-                                                ensure focus ring visibility on
-                                                interactive elements.
-                                            </li>
-                                            <li>
-                                                Verify hover/active states and
-                                                responsive behavior.
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>Manual testing</strong>:
-                                        <ul
-                                            style={{
-                                                margin: '4px 0 0 0',
-                                                paddingLeft: '20px',
-                                                listStyleType: 'disc',
-                                            }}
-                                        >
-                                            <li>
-                                                Navigate using keyboard only (
-                                                <code>Tab</code> to focus,{' '}
-                                                <code>Enter</code>/
-                                                <code>Space</code> to activate,
-                                                <code>/</code> to toggle
-                                                sidebar).
-                                            </li>
-                                            <li>
-                                                Use a screen reader
-                                                (VoiceOver/NVDA) to confirm
-                                                navigation items are announced
-                                                correctly, state changes are
-                                                communicated, and the sidebar
-                                                structure is understandable.
-                                            </li>
-                                            <li>
-                                                Verify color contrast of text
-                                                and icons against their
-                                                backgrounds using contrast
-                                                checker tools.
-                                            </li>
-                                            <li>
-                                                Test responsive behavior and
-                                                mobile navigation drawer
-                                                accessibility.
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ol>
-                            </section>
-                        </div>
-                    </Sidebar>
-                </div>
-            )
-        }
-        return <AccessibilityComponent />
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Interactive examples demonstrating the Sidebar component's accessibility features including keyboard navigation, screen reader support, proper ARIA attributes, and focus management across various configurations.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to navigation regions, ARIA labels, and keyboard accessibility.
-
-2. **Chromatic visual tests**:
-   - Run Chromatic visual tests to ensure focus ring visibility on interactive elements.
-   - Verify hover/active states and responsive behavior.
-
-3. **Manual testing**:
-   - Navigate using keyboard only (\`Tab\` to focus, \`Enter\`/\`Space\` to activate, \`/\` to toggle sidebar).
-   - Use a screen reader (VoiceOver/NVDA) to confirm navigation items are announced correctly, state changes are communicated, and the sidebar structure is understandable.
-   - Verify color contrast of text and icons against their backgrounds using contrast checker tools.
-   - Test responsive behavior and mobile navigation drawer accessibility.
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('interactive'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
         },
     },
 }
@@ -1546,7 +905,7 @@ export const WithoutIntermediateState: Story = {
             ]
 
             return (
-                <div style={{ height: '100vh', display: 'flex' }}>
+                <div className="h-screen flex">
                     <Sidebar
                         onSidebarStateChange={(state) => {
                             setSidebarState(state)
@@ -1582,25 +941,8 @@ export const WithoutIntermediateState: Story = {
                         }}
                         data={navigationData}
                         topbar={
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '16px',
-                                    width: '100%',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        flex: 1,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        padding: '8px 16px',
-                                        backgroundColor: '#f3f4f6',
-                                        borderRadius: '8px',
-                                    }}
-                                >
+                            <div className="flex items-center gap-4 w-full">
+                                <div className="flex-1 flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
                                     <Search
                                         size={16}
                                         color="#6b7280"
@@ -1610,18 +952,13 @@ export const WithoutIntermediateState: Story = {
                                         type="text"
                                         placeholder="Search..."
                                         aria-label="Search input"
-                                        style={{
-                                            border: 'none',
-                                            outline: 'none',
-                                            backgroundColor: 'transparent',
-                                            width: '100%',
-                                        }}
+                                        className="border-none outline-none bg-transparent w-full"
                                     />
                                 </div>
                             </div>
                         }
                     >
-                        <SampleContent title="Sidebar Without Intermediate State" />
+                        <DashboardContent title="Sidebar Without Intermediate State" />
                     </Sidebar>
                 </div>
             )

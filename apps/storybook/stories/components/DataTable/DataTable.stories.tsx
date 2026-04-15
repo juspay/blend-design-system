@@ -38,11 +38,40 @@ const meta: Meta<typeof DataTable> = {
         layout: 'fullscreen',
         a11y: getA11yConfig('interactive'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A comprehensive data table component with advanced features including sorting, filtering, pagination, search, inline editing, and row expansion capabilities.',
         docs: {
             description: {
                 component: `
+## Usage
 
-A comprehensive data table component with advanced features including sorting, filtering, pagination, search, inline editing, and row expansion capabilities.
+\`\`\`tsx
+import { DataTable, ColumnDefinition, ColumnType } from '@juspay/blend-design-system';
+
+const columns: ColumnDefinition<User>[] = [
+  {
+    field: 'name',
+    header: 'Name',
+    type: ColumnType.TEXT,
+    isSortable: true,
+    isFilterable: true
+  },
+  {
+    field: 'status',
+    header: 'Status',
+    type: ColumnType.TAG,
+    isSortable: true
+  }
+];
+
+<DataTable
+  data={users}
+  columns={columns}
+  idField="id"
+  enableSearch={true}
+  enableFiltering={true}
+/>
+\`\`\`
 
 ## Features
 - Advanced sorting and filtering
@@ -97,36 +126,6 @@ A comprehensive data table component with advanced features including sorting, f
 - **Chromatic**: Visual regression for focus rings and states
 - **Manual**: Test with VoiceOver/NVDA, verify keyboard navigation, check contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
-
-## Usage
-
-\`\`\`tsx
-import { DataTable, ColumnDefinition, ColumnType } from '@juspay/blend-design-system';
-
-const columns: ColumnDefinition<User>[] = [
-  {
-    field: 'name',
-    header: 'Name',
-    type: ColumnType.TEXT,
-    isSortable: true,
-    isFilterable: true
-  },
-  {
-    field: 'status',
-    header: 'Status',
-    type: ColumnType.TAG,
-    isSortable: true
-  }
-];
-
-<DataTable
-  data={users}
-  columns={columns}
-  idField="id"
-  enableSearch={true}
-  enableFiltering={true}
-/>
-\`\`\`
         `,
             },
         },
@@ -811,17 +810,9 @@ export const WithRowExpansion: Story = {
         renderExpandedRow: ({ row }) => {
             const user = row as unknown as User
             return (
-                <div style={{ padding: '20px', backgroundColor: '#f9fafb' }}>
-                    <h4 style={{ marginBottom: '16px' }}>
-                        Additional Information
-                    </h4>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: '16px',
-                        }}
-                    >
+                <div className="p-5 bg-gray-50">
+                    <h4 className="mb-4">Additional Information</h4>
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
                             <strong>Email:</strong> {user.email}
                         </div>
@@ -874,7 +865,7 @@ const DataTableWithActions: React.FC = () => {
                 />
             }
             headerSlot3={
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="flex gap-2">
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
@@ -892,13 +883,7 @@ const DataTableWithActions: React.FC = () => {
             // @ts-expect-error - bulkActions prop type mismatch
             bulkActions={
                 selectedRows.length > 0 ? (
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            alignItems: 'center',
-                        }}
-                    >
+                    <div className="flex items-center gap-2">
                         <span>{selectedRows.length} selected</span>
                         <Button
                             buttonType={ButtonType.DANGER}
@@ -1162,7 +1147,7 @@ const ComplexDataTable: React.FC = () => {
             type: ColumnType.CUSTOM,
             minWidth: '100px',
             renderCell: (_, row) => (
-                <div style={{ display: 'flex', gap: '4px' }}>
+                <div className="flex gap-1">
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
@@ -1220,7 +1205,7 @@ const ComplexDataTable: React.FC = () => {
                 />
             }
             headerSlot3={
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="flex gap-2">
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
@@ -1238,14 +1223,8 @@ const ComplexDataTable: React.FC = () => {
             // @ts-expect-error - bulkActions prop type mismatch
             bulkActions={
                 selectedRows.length > 0 ? (
-                    <div
-                        style={{
-                            display: 'flex',
-                            gap: '8px',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <span style={{ marginRight: '16px' }}>
+                    <div className="flex items-center gap-2">
+                        <span className="mr-4">
                             {selectedRows.length} selected
                         </span>
                         <Button
@@ -1270,17 +1249,8 @@ const ComplexDataTable: React.FC = () => {
             renderExpandedRow={({ row, toggleExpansion }) => {
                 const user = row as unknown as User
                 return (
-                    <div
-                        style={{ padding: '24px', backgroundColor: '#f9fafb' }}
-                    >
-                        <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                marginBottom: '16px',
-                            }}
-                        >
+                    <div className="p-6 bg-gray-50">
+                        <div className="flex items-center justify-between mb-4">
                             <h4>Detailed Information for {user.name}</h4>
                             <Button
                                 buttonType={ButtonType.SECONDARY}
@@ -1289,20 +1259,9 @@ const ComplexDataTable: React.FC = () => {
                                 onClick={toggleExpansion}
                             />
                         </div>
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(3, 1fr)',
-                                gap: '24px',
-                            }}
-                        >
+                        <div className="grid grid-cols-3 gap-6">
                             <div>
-                                <h5
-                                    style={{
-                                        marginBottom: '8px',
-                                        color: '#6b7280',
-                                    }}
-                                >
+                                <h5 className="mb-2 text-gray-500">
                                     Contact Information
                                 </h5>
                                 <p>
@@ -1317,12 +1276,7 @@ const ComplexDataTable: React.FC = () => {
                                 </p>
                             </div>
                             <div>
-                                <h5
-                                    style={{
-                                        marginBottom: '8px',
-                                        color: '#6b7280',
-                                    }}
-                                >
+                                <h5 className="mb-2 text-gray-500">
                                     Employment Details
                                 </h5>
                                 <p>
@@ -1342,41 +1296,22 @@ const ComplexDataTable: React.FC = () => {
                                 </p>
                             </div>
                             <div>
-                                <h5
-                                    style={{
-                                        marginBottom: '8px',
-                                        color: '#6b7280',
-                                    }}
-                                >
+                                <h5 className="mb-2 text-gray-500">
                                     Skills & Status
                                 </h5>
                                 <p>
                                     <strong>Status:</strong>{' '}
                                     <span
-                                        style={{
-                                            padding: '2px 8px',
-                                            borderRadius: '4px',
-                                            backgroundColor:
-                                                user.status.color === 'success'
-                                                    ? '#d1fae5'
-                                                    : user.status.color ===
-                                                        'error'
-                                                      ? '#fee2e2'
-                                                      : user.status.color ===
-                                                          'warning'
-                                                        ? '#fef3c7'
-                                                        : '#f3f4f6',
-                                            color:
-                                                user.status.color === 'success'
-                                                    ? '#065f46'
-                                                    : user.status.color ===
-                                                        'error'
-                                                      ? '#991b1b'
-                                                      : user.status.color ===
-                                                          'warning'
-                                                        ? '#92400e'
-                                                        : '#374151',
-                                        }}
+                                        className={`px-2 py-0.5 rounded text-xs ${
+                                            user.status.color === 'success'
+                                                ? 'bg-green-100 text-green-800'
+                                                : user.status.color === 'error'
+                                                  ? 'bg-red-100 text-red-800'
+                                                  : user.status.color ===
+                                                      'warning'
+                                                    ? 'bg-yellow-100 text-yellow-800'
+                                                    : 'bg-gray-100 text-gray-700'
+                                        }`}
                                     >
                                         {user.status.text}
                                     </span>
@@ -1384,23 +1319,11 @@ const ComplexDataTable: React.FC = () => {
                                 <p>
                                     <strong>Skills:</strong>
                                 </p>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexWrap: 'wrap',
-                                        gap: '4px',
-                                        marginTop: '4px',
-                                    }}
-                                >
+                                <div className="flex flex-wrap gap-1 mt-1">
                                     {user.skills.map((skill) => (
                                         <span
                                             key={skill}
-                                            style={{
-                                                padding: '2px 8px',
-                                                borderRadius: '4px',
-                                                backgroundColor: '#e5e7eb',
-                                                fontSize: '12px',
-                                            }}
+                                            className="px-2 py-0.5 rounded bg-gray-200 text-xs"
                                         >
                                             {skill}
                                         </span>
@@ -1493,18 +1416,10 @@ export const RowSelectionWithRawData: Story = {
             }
 
             return (
-                <div style={{ padding: '24px' }}>
-                    <div
-                        style={{
-                            marginBottom: '16px',
-                            padding: '12px',
-                            backgroundColor: '#e0f2fe',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                        }}
-                    >
+                <div className="p-6">
+                    <div className="mb-4 p-3 bg-sky-100 rounded-md text-sm">
                         <strong>✨ New Features:</strong>
-                        <ul style={{ margin: '8px 0 0 20px', padding: 0 }}>
+                        <ul className="mt-2 ml-5 pl-0">
                             <li>
                                 <strong>showExport: false</strong> - Export
                                 button is hidden, only custom actions shown
@@ -1675,34 +1590,15 @@ const SortingControlDataTable: React.FC = () => {
 
     return (
         <div>
-            <div
-                style={{
-                    marginBottom: '20px',
-                    padding: '16px',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '8px',
-                }}
-            >
-                <h4 style={{ marginBottom: '12px', color: '#374151' }}>
+            <div className="mb-5 p-4 bg-gray-50 rounded-lg">
+                <h4 className="mb-3 text-gray-700">
                     Column Sorting Control Demo
                 </h4>
-                <p
-                    style={{
-                        marginBottom: '8px',
-                        color: '#6b7280',
-                        fontSize: '14px',
-                    }}
-                >
+                <p className="mb-2 text-gray-500 text-sm">
                     This example demonstrates how to control sorting at the
                     column level:
                 </p>
-                <ul
-                    style={{
-                        marginLeft: '20px',
-                        color: '#6b7280',
-                        fontSize: '14px',
-                    }}
-                >
+                <ul className="ml-5 text-gray-500 text-sm">
                     <li>
                         <strong>Sortable columns:</strong> User, Email, Join
                         Date - have sort icons and respond to clicks
@@ -1716,13 +1612,7 @@ const SortingControlDataTable: React.FC = () => {
                         (isSortable not specified) - defaults to sortable
                     </li>
                 </ul>
-                <p
-                    style={{
-                        marginTop: '12px',
-                        color: '#6b7280',
-                        fontSize: '14px',
-                    }}
-                >
+                <p className="mt-3 text-gray-500 text-sm">
                     <strong>Usage:</strong> Set <code>isSortable: false</code>{' '}
                     on column definitions to disable sorting. When not
                     specified, columns default to sortable (isSortable: true).
@@ -1801,294 +1691,6 @@ const columns: ColumnDefinition<User>[] = [
 \`\`\`
             `,
             },
-        },
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples demonstrating keyboard navigation, ARIA attributes, and screen reader support
- */
-export const Accessibility: Story = {
-    render: () => {
-        const accessibilityColumns: ColumnDefinition<
-            Record<string, unknown>
-        >[] = [
-            {
-                field: 'name',
-                header: 'Name',
-                type: ColumnType.TEXT,
-                minWidth: '200px',
-                isSortable: true,
-            },
-            {
-                field: 'email',
-                header: 'Email',
-                type: ColumnType.TEXT,
-                minWidth: '200px',
-                isSortable: true,
-            },
-            {
-                field: 'role',
-                header: 'Role',
-                type: ColumnType.SELECT,
-                minWidth: '150px',
-                isSortable: true,
-            },
-        ]
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '32px',
-                    padding: '24px',
-                    maxWidth: '1200px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Keyboard Navigation
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '16px',
-                            color: '#6b7280',
-                            fontSize: '14px',
-                        }}
-                    >
-                        Use Tab to navigate between interactive elements. Press
-                        Enter or Space to activate buttons and toggle
-                        checkboxes. Arrow keys can be used for cell navigation
-                        (when implemented).
-                    </p>
-                    <DataTable
-                        data={sampleUsers.slice(0, 5) as any[]}
-                        columns={accessibilityColumns as any[]}
-                        idField="id"
-                        title="Keyboard Navigation Example"
-                        enableRowSelection={true}
-                        enableRowExpansion={true}
-                        renderExpandedRow={() => (
-                            <div style={{ padding: '16px' }}>
-                                Expanded row content
-                            </div>
-                        )}
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        ARIA Attributes & Screen Reader Support
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '16px',
-                            color: '#6b7280',
-                            fontSize: '14px',
-                        }}
-                    >
-                        The table includes proper ARIA attributes for screen
-                        readers: aria-rowcount, aria-colcount, aria-sort,
-                        aria-expanded, aria-selected, and aria-live regions for
-                        status announcements.
-                    </p>
-                    <DataTable
-                        data={sampleUsers.slice(0, 5) as any[]}
-                        columns={accessibilityColumns as any[]}
-                        idField="id"
-                        title="ARIA Attributes Example"
-                        description="Table with proper ARIA attributes for screen readers"
-                        enableRowSelection={true}
-                        enableRowExpansion={true}
-                        renderExpandedRow={() => (
-                            <div style={{ padding: '16px' }}>
-                                Additional row information
-                            </div>
-                        )}
-                        defaultSort={{
-                            field: 'name',
-                            direction: SortDirection.ASCENDING,
-                        }}
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Focus Indicators
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '16px',
-                            color: '#6b7280',
-                            fontSize: '14px',
-                        }}
-                    >
-                        All interactive elements have visible focus indicators
-                        that meet WCAG 2.4.7 Focus Visible (Level AA)
-                        requirements.
-                    </p>
-                    <DataTable
-                        data={sampleUsers.slice(0, 5) as any[]}
-                        columns={accessibilityColumns as any[]}
-                        idField="id"
-                        title="Focus Indicators Example"
-                        enableSearch={true}
-                        enableFiltering={true}
-                        enableRowSelection={true}
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Status Announcements
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '16px',
-                            color: '#6b7280',
-                            fontSize: '14px',
-                        }}
-                    >
-                        Loading states, empty states, and selection changes are
-                        announced via aria-live regions for screen reader users.
-                    </p>
-                    <DataTable
-                        data={[]}
-                        columns={accessibilityColumns as any[]}
-                        idField="id"
-                        title="Empty State Example"
-                        description="Empty state with proper screen reader announcement"
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Semantic HTML Structure
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '16px',
-                            color: '#6b7280',
-                            fontSize: '14px',
-                        }}
-                    >
-                        The table uses semantic HTML elements (table, thead,
-                        tbody, th, td) with proper scope attributes to associate
-                        headers with cells, meeting WCAG 1.3.1 Info and
-                        Relationships (Level A).
-                    </p>
-                    <DataTable
-                        data={sampleUsers.slice(0, 5) as any[]}
-                        columns={accessibilityColumns as any[]}
-                        idField="id"
-                        title="Semantic Structure Example"
-                    />
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating keyboard navigation, ARIA attributes, screen reader support, focus indicators, status announcements, and semantic HTML structure.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0 for AA compliance)
-   - Review passing tests (15+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test DataTable.accessibility
-   \`\`\`
-   - 25+ automated tests
-   - WCAG 2.0, 2.1, 2.2 compliance verification
-   - ARIA attribute validation
-   - Table structure validation
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes
-   - Responsive behavior
-
-4. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Keyboard navigation (Tab, Enter, Space, Arrow keys)
-   - Color contrast verification
-   - Screen reader announcements
-
-## Accessibility Report
-
-**Current Status**: 
-- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (varies by use case)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Info and Relationships (1.3.1), Keyboard (2.1.1, 2.1.3), Focus Visible (2.4.7), Change on Request (3.2.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - some interactive elements may not meet 44x44px
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-
-**Key Accessibility Features**:
-- Semantic HTML table structure with proper roles
-- ARIA attributes for table structure (aria-rowcount, aria-colcount)
-- ARIA attributes for interactive states (aria-sort, aria-expanded, aria-selected)
-- Keyboard navigation support for all interactive elements
-- Screen reader announcements via aria-live regions
-- Focus indicators meeting WCAG 2.4.7 requirements
-- Accessible names for all buttons and controls
-- Proper label associations for form elements
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('interactive'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
         },
     },
 }

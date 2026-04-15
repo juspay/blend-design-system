@@ -34,16 +34,32 @@ const meta: Meta<typeof DateRangePicker> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A comprehensive date range picker component with calendar interface, time selection, preset ranges, and flexible configuration options for selecting date and time ranges.',
         docs: {
             description: {
                 component: `
-A comprehensive date range picker component with calendar interface, time selection, preset ranges, and flexible configuration options for selecting date and time ranges.
+## Usage
+\`\`\`tsx
+const [dateRange, setDateRange] = useState({
+  startDate: new Date(),
+  endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+});
+
+<DateRangePicker
+  value={dateRange}
+  onChange={setDateRange}
+  showDateTimePicker={true}
+  showPresets={true}
+  placeholder="Select date range"
+/>
+\`\`\`
 
 ## Features:
 - Interactive calendar grid for date selection
 - Optional time picker for precise time selection
 - Quick preset ranges (today, yesterday, last 7 days, etc.)
-- **Timezone support** - IANA timezone strings for global applications
+- **Timezone support** : IANA timezone strings for global applications
 - Custom date range selection
 - Min/max date constraints
 - Future/past date restrictions
@@ -96,22 +112,6 @@ A comprehensive date range picker component with calendar interface, time select
 - User activity tracking
 - Content management systems
 
-## Usage
-
-\`\`\`tsx
-const [dateRange, setDateRange] = useState({
-  startDate: new Date(),
-  endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-});
-
-<DateRangePicker
-  value={dateRange}
-  onChange={setDateRange}
-  showDateTimePicker={true}
-  showPresets={true}
-  placeholder="Select date range"
-/>
-\`\`\`
 
 ## Documentation
 [View complete documentation →](http://localhost:3000/docs/components/DateRangePicker)
@@ -415,7 +415,7 @@ export const Default: Story = {
         })
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-[400px]">
                 <DateRangePicker
                     value={dateRange}
                     onChange={setDateRange}
@@ -443,14 +443,8 @@ export const WithTimePicker: Story = {
         })
 
         return (
-            <div style={{ width: '450px' }}>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
+            <div className="w-[450px]">
+                <h4 className="text-sm font-semibold mb-3">
                     DateRangePicker with Time Picker
                 </h4>
                 <DateRangePicker
@@ -482,14 +476,8 @@ export const WithFloatingTabsMobile: Story = {
         })
 
         return (
-            <div style={{ width: '450px' }}>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
+            <div className="w-[450px]">
+                <h4 className="text-sm font-semibold mb-3">
                     DateRangePicker with Floating Tabs (Mobile)
                 </h4>
                 <DateRangePicker
@@ -500,13 +488,7 @@ export const WithFloatingTabsMobile: Story = {
                     placeholder="Select date range"
                     icon={React.createElement(Calendar, { size: 16 })}
                 />
-                <div
-                    style={{
-                        marginTop: '12px',
-                        fontSize: '12px',
-                        color: '#666',
-                    }}
-                >
+                <div className="mt-3 text-xs text-gray-500">
                     Note: Resize browser to mobile width (&lt;1024px) to see
                     floating tabs interface
                 </div>
@@ -531,14 +513,8 @@ export const WithPresets: Story = {
         })
 
         return (
-            <div style={{ width: '400px' }}>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
+            <div className="w-[400px]">
+                <h4 className="text-sm font-semibold mb-3">
                     With Quick Preset Ranges
                 </h4>
                 <DateRangePicker
@@ -569,14 +545,8 @@ export const WithoutPresets: Story = {
         })
 
         return (
-            <div style={{ width: '400px' }}>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
+            <div className="w-[400px]">
+                <h4 className="text-sm font-semibold mb-3">
                     Calendar Only (No Presets)
                 </h4>
                 <DateRangePicker
@@ -617,22 +587,9 @@ export const WithConstraints: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-[400px]">
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         Disable Future Dates
                     </h4>
                     <DateRangePicker
@@ -646,13 +603,7 @@ export const WithConstraints: Story = {
                 </div>
 
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         Disable Past Dates
                     </h4>
                     <DateRangePicker
@@ -666,13 +617,7 @@ export const WithConstraints: Story = {
                 </div>
 
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         Min/Max Date Range
                     </h4>
                     <DateRangePicker
@@ -706,14 +651,8 @@ export const SingleDateSelection: Story = {
         })
 
         return (
-            <div style={{ width: '400px' }}>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
+            <div className="w-[400px]">
+                <h4 className="text-sm font-semibold mb-3">
                     Single Date Selection
                 </h4>
                 <DateRangePicker
@@ -770,25 +709,13 @@ export const UTCPresetDetection: Story = {
         })
 
         return (
-            <div style={{ width: '500px' }}>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
+            <div className="w-[500px]">
+                <h4 className="text-sm font-semibold mb-3">
                     Timezone-Aware Preset Detection
                 </h4>
 
-                <div style={{ marginBottom: '20px' }}>
-                    <p
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginBottom: '8px',
-                        }}
-                    >
+                <div className="mb-5">
+                    <p className="text-xs text-gray-500 mb-2">
                         Local timezone yesterday (should detect "Yesterday"
                         preset):
                     </p>
@@ -801,13 +728,7 @@ export const UTCPresetDetection: Story = {
                 </div>
 
                 <div>
-                    <p
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginBottom: '8px',
-                        }}
-                    >
+                    <p className="text-xs text-gray-500 mb-2">
                         UTC dates (2025-09-27T18:30:00.000Z to
                         2025-09-28T18:29:59.000Z):
                         <br />
@@ -822,15 +743,7 @@ export const UTCPresetDetection: Story = {
                     />
                 </div>
 
-                <div
-                    style={{
-                        marginTop: '16px',
-                        padding: '12px',
-                        backgroundColor: '#f5f5f5',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                    }}
-                >
+                <div className="mt-4 p-3 bg-gray-100 rounded text-xs">
                     <strong>✅ Robust Preset Detection:</strong> The component
                     now correctly identifies presets like "Yesterday" regardless
                     of whether you pass local timezone or UTC dates. It checks
@@ -868,22 +781,9 @@ export const CustomTriggers: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-[400px]">
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         Primary Button Trigger
                     </h4>
                     <DateRangePicker
@@ -907,13 +807,7 @@ export const CustomTriggers: Story = {
                 </div>
 
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         Secondary Button Trigger
                     </h4>
                     <DateRangePicker
@@ -934,13 +828,7 @@ export const CustomTriggers: Story = {
                 </div>
 
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         Analytics Dashboard Style
                     </h4>
                     <DateRangePicker
@@ -988,24 +876,9 @@ export const DatePickerStates: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-[400px]">
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Normal State
-                    </h4>
+                    <h4 className="text-sm font-semibold mb-3">Normal State</h4>
                     <DateRangePicker
                         value={normalRange}
                         onChange={setNormalRange}
@@ -1016,13 +889,7 @@ export const DatePickerStates: Story = {
                 </div>
 
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         Disabled State
                     </h4>
                     <DateRangePicker
@@ -1042,314 +909,6 @@ export const DatePickerStates: Story = {
             description: {
                 story: 'DateRangePicker in different states: normal interactive state and disabled state.',
             },
-        },
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples demonstrating WCAG compliance features
- */
-export const Accessibility: Story = {
-    render: () => {
-        const [dateRange, setDateRange] = useState<DateRange>({
-            startDate: new Date(),
-            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        })
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        ARIA Attributes
-                    </h3>
-                    <div style={{ width: '400px' }}>
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={setDateRange}
-                            showDateTimePicker={true}
-                            showPresets={true}
-                        />
-                        <p
-                            style={{
-                                marginTop: '8px',
-                                fontSize: '12px',
-                                color: '#666',
-                            }}
-                        >
-                            Trigger button has aria-expanded, aria-haspopup,
-                            aria-label. Calendar cells have aria-label,
-                            aria-selected, aria-disabled. Date inputs have
-                            aria-describedby for errors.
-                        </p>
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Keyboard Navigation
-                    </h3>
-                    <div style={{ width: '400px' }}>
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={setDateRange}
-                            showDateTimePicker={true}
-                            showPresets={true}
-                        />
-                        <p
-                            style={{
-                                marginTop: '8px',
-                                fontSize: '12px',
-                                color: '#666',
-                            }}
-                        >
-                            Tab to navigate, Enter/Space to activate trigger and
-                            calendar cells, Arrow keys to navigate calendar,
-                            Escape to close popover.
-                        </p>
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Error Identification
-                    </h3>
-                    <div style={{ width: '400px' }}>
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={setDateRange}
-                            showDateTimePicker={true}
-                        />
-                        <p
-                            style={{
-                                marginTop: '8px',
-                                fontSize: '12px',
-                                color: '#666',
-                            }}
-                        >
-                            Invalid dates show error state with aria-invalid and
-                            error messages with role="alert" and aria-live.
-                        </p>
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Label Association
-                    </h3>
-                    <div style={{ width: '400px' }}>
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={setDateRange}
-                            showDateTimePicker={true}
-                        />
-                        <p
-                            style={{
-                                marginTop: '8px',
-                                fontSize: '12px',
-                                color: '#666',
-                            }}
-                        >
-                            Date inputs have labels ("Start", "End") associated
-                            via htmlFor/id. Time inputs have aria-label.
-                        </p>
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Focus Indicators
-                    </h3>
-                    <div style={{ width: '400px' }}>
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={setDateRange}
-                            showDateTimePicker={true}
-                        />
-                        <p
-                            style={{
-                                marginTop: '8px',
-                                fontSize: '12px',
-                                color: '#666',
-                            }}
-                        >
-                            All interactive elements have visible focus
-                            indicators for keyboard navigation.
-                        </p>
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Disabled State
-                    </h3>
-                    <div style={{ width: '400px' }}>
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={setDateRange}
-                            isDisabled={true}
-                        />
-                        <p
-                            style={{
-                                marginTop: '8px',
-                                fontSize: '12px',
-                                color: '#666',
-                            }}
-                        >
-                            Disabled DateRangePicker has aria-disabled="true"
-                            and is removed from tab order.
-                        </p>
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Screen Reader Support
-                    </h3>
-                    <div style={{ width: '400px' }}>
-                        <DateRangePicker
-                            value={dateRange}
-                            onChange={setDateRange}
-                            showDateTimePicker={true}
-                        />
-                        <p
-                            style={{
-                                marginTop: '8px',
-                                fontSize: '12px',
-                                color: '#666',
-                            }}
-                        >
-                            Calendar cells announce date, selection state, and
-                            today indicator. Error messages are announced via
-                            aria-live regions.
-                        </p>
-                    </div>
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating ARIA attributes, keyboard navigation, error identification, label association, focus indicators, disabled state, and screen reader support.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0)
-   - Review passing tests (15+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test DateRangePicker.accessibility
-   \`\`\`
-   - 50+ automated tests
-   - WCAG compliance verification
-   - ARIA attribute validation
-   - Keyboard navigation testing
-   - Calendar grid accessibility testing
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes
-   - Responsive behavior
-
-4. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Keyboard navigation (Tab, Enter, Space, Arrow keys, Escape)
-   - Color contrast verification
-   - Touch target size measurement
-
-## Accessibility Report
-
-**Current Status**:
-- ✅ **WCAG 2.2 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.2 Level AAA**: Partial Compliance (6/9 applicable criteria compliant)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), No Timing (2.2.3), Interruptions (2.2.4), Change on Request (3.2.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - Interactive elements need 44x44px
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-
-**Key Accessibility Features**:
-- Proper ARIA attributes (aria-expanded, aria-disabled, aria-label, aria-describedby, aria-invalid, aria-haspopup, aria-selected)
-- Semantic HTML structure (button, input elements)
-- Comprehensive keyboard navigation (Tab, Enter, Space, Arrow keys, Escape)
-- Calendar day cells keyboard accessible with Enter/Space
-- Error identification and suggestions
-- Label association via htmlFor/id
-- Focus management and logical focus order
-- No keyboard traps
-- Mobile-responsive with accessible drawer interface
-                    `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('form'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
         },
     },
 }
@@ -1378,33 +937,12 @@ export const TimezoneSupport: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '32px',
-                    width: '100%',
-                    maxWidth: '900px',
-                }}
-            >
+            <div className="flex flex-col gap-4 w-full max-w-225">
                 <div>
-                    <h3
-                        style={{
-                            marginBottom: '16px',
-                            fontSize: '18px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h3 className="text-lg font-medium mb-4">
                         🌍 Timezone Support
                     </h3>
-                    <p
-                        style={{
-                            marginBottom: '24px',
-                            fontSize: '14px',
-                            color: '#666',
-                            lineHeight: '1.6',
-                        }}
-                    >
+                    <p className="mb-6 text-sm text-gray-500 leading-relaxed font-manrope tracking-wide">
                         The DateRangePicker supports timezone-aware date/time
                         operations. When a timezone is specified, presets like
                         "Yesterday" or "Today" are calculated in that timezone,
@@ -1412,25 +950,9 @@ export const TimezoneSupport: Story = {
                     </p>
                 </div>
 
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns:
-                            'repeat(auto-fit, minmax(400px, 1fr))',
-                        gap: '24px',
-                    }}
-                >
+                <div className="flex flex-col items-start justify-center gap-6">
                     <div>
-                        <h4
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '14px',
-                                fontWeight: '600',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                            }}
-                        >
+                        <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                             🗽 New York (America/New_York)
                         </h4>
                         <DateRangePicker
@@ -1442,16 +964,7 @@ export const TimezoneSupport: Story = {
                             placeholder="Select date range (EST)"
                         />
                         {nyRange && (
-                            <div
-                                style={{
-                                    marginTop: '8px',
-                                    fontSize: '12px',
-                                    color: '#666',
-                                    padding: '8px',
-                                    backgroundColor: '#f5f5f5',
-                                    borderRadius: '4px',
-                                }}
-                            >
+                            <div className="mt-2 text-xs text-gray-500 p-2 bg-gray-100 rounded">
                                 <div>
                                     <strong>Start:</strong>{' '}
                                     {nyRange.startDate.toLocaleString('en-US', {
@@ -1469,16 +982,7 @@ export const TimezoneSupport: Story = {
                     </div>
 
                     <div>
-                        <h4
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '14px',
-                                fontWeight: '600',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                            }}
-                        >
+                        <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                             🗼 Tokyo (Asia/Tokyo)
                         </h4>
                         <DateRangePicker
@@ -1490,16 +994,7 @@ export const TimezoneSupport: Story = {
                             placeholder="Select date range (JST)"
                         />
                         {tokyoRange && (
-                            <div
-                                style={{
-                                    marginTop: '8px',
-                                    fontSize: '12px',
-                                    color: '#666',
-                                    padding: '8px',
-                                    backgroundColor: '#f5f5f5',
-                                    borderRadius: '4px',
-                                }}
-                            >
+                            <div className="mt-2 text-xs text-gray-500 p-2 bg-gray-100 rounded">
                                 <div>
                                     <strong>Start:</strong>{' '}
                                     {tokyoRange.startDate.toLocaleString(
@@ -1523,16 +1018,7 @@ export const TimezoneSupport: Story = {
                     </div>
 
                     <div>
-                        <h4
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '14px',
-                                fontWeight: '600',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                            }}
-                        >
+                        <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                             🇬🇧 London (Europe/London)
                         </h4>
                         <DateRangePicker
@@ -1544,16 +1030,7 @@ export const TimezoneSupport: Story = {
                             placeholder="Select date range (GMT/BST)"
                         />
                         {londonRange && (
-                            <div
-                                style={{
-                                    marginTop: '8px',
-                                    fontSize: '12px',
-                                    color: '#666',
-                                    padding: '8px',
-                                    backgroundColor: '#f5f5f5',
-                                    borderRadius: '4px',
-                                }}
-                            >
+                            <div className="mt-2 text-xs text-gray-500 p-2 bg-gray-100 rounded">
                                 <div>
                                     <strong>Start:</strong>{' '}
                                     {londonRange.startDate.toLocaleString(
@@ -1577,16 +1054,7 @@ export const TimezoneSupport: Story = {
                     </div>
 
                     <div>
-                        <h4
-                            style={{
-                                margin: '0 0 12px 0',
-                                fontSize: '14px',
-                                fontWeight: '600',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                            }}
-                        >
+                        <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
                             🦘 Sydney (Australia/Sydney)
                         </h4>
                         <DateRangePicker
@@ -1598,16 +1066,7 @@ export const TimezoneSupport: Story = {
                             placeholder="Select date range (AEDT/AEST)"
                         />
                         {sydneyRange && (
-                            <div
-                                style={{
-                                    marginTop: '8px',
-                                    fontSize: '12px',
-                                    color: '#666',
-                                    padding: '8px',
-                                    backgroundColor: '#f5f5f5',
-                                    borderRadius: '4px',
-                                }}
-                            >
+                            <div className="mt-2 text-xs text-gray-500 p-2 bg-gray-100 rounded">
                                 <div>
                                     <strong>Start:</strong>{' '}
                                     {sydneyRange.startDate.toLocaleString(
@@ -1631,34 +1090,11 @@ export const TimezoneSupport: Story = {
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        marginTop: '16px',
-                        padding: '16px',
-                        backgroundColor: '#e8f4f8',
-                        borderRadius: '8px',
-                        border: '1px solid #b3d9e6',
-                    }}
-                >
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            color: '#0066cc',
-                        }}
-                    >
+                <div className="mt-4 p-4 bg-sky-50 rounded-lg border border-sky-200">
+                    <h4 className="text-sm font-medium mb-3 text-blue-600">
                         💡 How Timezone Support Works
                     </h4>
-                    <ul
-                        style={{
-                            margin: 0,
-                            paddingLeft: '20px',
-                            fontSize: '13px',
-                            color: '#333',
-                            lineHeight: '1.8',
-                        }}
-                    >
+                    <ul className="m-0 pl-5 text-[13px] text-gray-800 leading-7">
                         <li>
                             <strong>Presets respect timezone:</strong>{' '}
                             "Yesterday" in Tokyo is different from "Yesterday"
@@ -1679,27 +1115,9 @@ export const TimezoneSupport: Story = {
                     </ul>
                 </div>
 
-                <div
-                    style={{
-                        marginTop: '8px',
-                        padding: '12px',
-                        backgroundColor: '#f9f9f9',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        color: '#666',
-                    }}
-                >
+                <div className="mt-2 p-3 bg-gray-50 rounded text-xs text-gray-500">
                     <strong>Usage Example:</strong>
-                    <pre
-                        style={{
-                            marginTop: '8px',
-                            padding: '8px',
-                            backgroundColor: '#fff',
-                            borderRadius: '4px',
-                            overflow: 'auto',
-                            fontSize: '11px',
-                        }}
-                    >
+                    <pre className="mt-2 p-2 bg-white rounded overflow-auto text-[11px]">
                         {`<DateRangePicker
   timezone="Asia/Tokyo"
   value={dateRange}
@@ -1747,22 +1165,9 @@ export const CustomFormatting: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-[400px]">
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         US Format (MM/dd/yyyy)
                     </h4>
                     <DateRangePicker
@@ -1776,13 +1181,7 @@ export const CustomFormatting: Story = {
                 </div>
 
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         ISO Format (yyyy-MM-dd)
                     </h4>
                     <DateRangePicker
@@ -1796,13 +1195,7 @@ export const CustomFormatting: Story = {
                 </div>
 
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="text-sm font-semibold mb-3">
                         Custom Format (dd MMM yyyy)
                     </h4>
                     <DateRangePicker

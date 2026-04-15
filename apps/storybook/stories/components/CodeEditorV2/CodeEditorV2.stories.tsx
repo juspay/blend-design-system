@@ -254,26 +254,9 @@ The **play** function clicks **Copy code** and asserts the control announces **C
 
 export const VisualStates: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 28,
-                maxWidth: 920,
-                margin: '0 auto',
-            }}
-        >
+        <div className="flex flex-col gap-7 max-w-[920px] mx-auto">
             <div>
-                <p
-                    style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        margin: '0 0 8px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                        color: '#666',
-                    }}
-                >
+                <p className="text-xs font-semibold mb-2 uppercase tracking-wide text-gray-600">
                     Default — header, line numbers, copy
                 </p>
                 <CodeEditorV2
@@ -289,16 +272,7 @@ export const VisualStates: Story = {
                 />
             </div>
             <div>
-                <p
-                    style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        margin: '0 0 8px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                        color: '#666',
-                    }}
-                >
+                <p className="text-xs font-semibold mb-2 uppercase tracking-wide text-gray-600">
                     No header
                 </p>
                 <CodeEditorV2
@@ -310,16 +284,7 @@ export const VisualStates: Story = {
                 />
             </div>
             <div>
-                <p
-                    style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        margin: '0 0 8px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                        color: '#666',
-                    }}
-                >
+                <p className="text-xs font-semibold mb-2 uppercase tracking-wide text-gray-600">
                     Read-only
                 </p>
                 <CodeEditorV2
@@ -335,16 +300,7 @@ export const VisualStates: Story = {
                 />
             </div>
             <div>
-                <p
-                    style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        margin: '0 0 8px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                        color: '#666',
-                    }}
-                >
+                <p className="text-xs font-semibold mb-2 uppercase tracking-wide text-gray-600">
                     Disabled
                 </p>
                 <CodeEditorV2
@@ -360,16 +316,7 @@ export const VisualStates: Story = {
                 />
             </div>
             <div>
-                <p
-                    style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        margin: '0 0 8px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                        color: '#666',
-                    }}
-                >
+                <p className="text-xs font-semibold mb-2 uppercase tracking-wide text-gray-600">
                     No gutter variant
                 </p>
                 <CodeEditorV2
@@ -385,16 +332,7 @@ export const VisualStates: Story = {
                 />
             </div>
             <div>
-                <p
-                    style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        margin: '0 0 8px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                        color: '#666',
-                    }}
-                >
+                <p className="text-xs font-semibold mb-2 uppercase tracking-wide text-gray-600">
                     Diff (inline)
                 </p>
                 <CodeEditorV2
@@ -429,37 +367,22 @@ Does not use Controls; each block is fixed for stable snapshots.
 
 export const Accessibility: Story = {
     render: () => (
-        <div
-            style={{
-                padding: '8px 0',
-                maxWidth: 720,
-                margin: '0 auto',
-                fontFamily: 'system-ui, sans-serif',
-            }}
-        >
-            <h2
-                style={{
-                    fontSize: 20,
-                    fontWeight: 700,
-                    margin: '0 0 8px',
-                }}
-            >
+        <div className="py-2 max-w-[720px] mx-auto font-sans">
+            <h2 className="text-xl font-bold mb-2">
                 CodeEditorV2 — accessibility scenarios
             </h2>
-            <p style={{ fontSize: 14, color: '#555', margin: '0 0 24px' }}>
+            <p className="text-sm text-gray-600 mb-6">
                 Use the Storybook <strong>Accessibility</strong> addon on this
-                story. The header and copy button are Blend-owned; Monaco’s
+                story. The header and copy button are Blend-owned; Monaco's
                 internal markup may add additional axe findings (e.g. contrast
                 on token colors).
             </p>
 
-            <section style={{ marginBottom: 28 }}>
-                <h3
-                    style={{ fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}
-                >
+            <section className="mb-7">
+                <h3 className="text-[15px] font-semibold mb-2">
                     Landmark and title
                 </h3>
-                <p style={{ fontSize: 13, color: '#555', margin: '0 0 10px' }}>
+                <p className="text-[13px] text-gray-600 mb-2.5">
                     With a title, the header uses <code>aria-labelledby</code>{' '}
                     pointing at the title text.
                 </p>
@@ -475,13 +398,11 @@ export const Accessibility: Story = {
                 />
             </section>
 
-            <section style={{ marginBottom: 28 }}>
-                <h3
-                    style={{ fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}
-                >
+            <section className="mb-7">
+                <h3 className="text-[15px] font-semibold mb-2">
                     Header without title text
                 </h3>
-                <p style={{ fontSize: 13, color: '#555', margin: '0 0 10px' }}>
+                <p className="text-[13px] text-gray-600 mb-2.5">
                     Empty title falls back to{' '}
                     <code>aria-label=&quot;Code editor header&quot;</code> on
                     the <code>header</code> element.
@@ -498,13 +419,9 @@ export const Accessibility: Story = {
                 />
             </section>
 
-            <section style={{ marginBottom: 28 }}>
-                <h3
-                    style={{ fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}
-                >
-                    Copy control
-                </h3>
-                <p style={{ fontSize: 13, color: '#555', margin: '0 0 10px' }}>
+            <section className="mb-7">
+                <h3 className="text-[15px] font-semibold mb-2">Copy control</h3>
+                <p className="text-[13px] text-gray-600 mb-2.5">
                     Icon-only button: <code>aria-label</code> and{' '}
                     <code>title</code> switch between &quot;Copy code&quot; and
                     &quot;Copied&quot;.
@@ -521,23 +438,15 @@ export const Accessibility: Story = {
                 />
             </section>
 
-            <section style={{ marginBottom: 28 }}>
-                <h3
-                    style={{ fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}
-                >
+            <section className="mb-7">
+                <h3 className="text-[15px] font-semibold mb-2">
                     Read-only and disabled
                 </h3>
-                <p style={{ fontSize: 13, color: '#555', margin: '0 0 10px' }}>
+                <p className="text-[13px] text-gray-600 mb-2.5">
                     Read-only still allows focus in the editor surface; disabled
                     blocks interaction and uses token-driven disabled styling.
                 </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 16,
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <CodeEditorV2
                         value={SHORT_CODE}
                         language="typescript"

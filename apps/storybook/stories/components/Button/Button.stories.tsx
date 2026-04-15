@@ -35,10 +35,23 @@ const meta: Meta<typeof Button> = {
         a11y: getA11yConfig('interactive'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'Button component with multiple types, sizes, and states.',
         docs: {
             description: {
                 component: `
-Button component with multiple types, sizes, and states.
+## Usage
+
+\`\`\`tsx
+import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
+
+<Button
+  buttonType={ButtonType.PRIMARY}
+  size={ButtonSize.MEDIUM}
+  text="Click me"
+  onClick={() => console.log('Button clicked!')}
+/>
+\`\`\`
 
 ## Features
 - Types: Primary, Secondary, Danger, Success
@@ -88,19 +101,6 @@ Button component with multiple types, sizes, and states.
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-
-## Usage
-
-\`\`\`tsx
-import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
-
-<Button
-  buttonType={ButtonType.PRIMARY}
-  size={ButtonSize.MEDIUM}
-  text="Click me"
-  onClick={() => console.log('Button clicked!')}
-/>
-\`\`\`
         `,
             },
         },
@@ -286,14 +286,7 @@ export const Default: Story = {
  */
 export const ButtonTypes: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '12px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-3 items-center flex-wrap">
             <Button buttonType={ButtonType.PRIMARY} text="Primary" />
             <Button buttonType={ButtonType.SECONDARY} text="Secondary" />
             <Button buttonType={ButtonType.DANGER} text="Danger" />
@@ -314,14 +307,7 @@ export const ButtonTypes: Story = {
  */
 export const ButtonSizes: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '12px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-3 items-center flex-wrap">
             <Button size={ButtonSize.SMALL} text="Small" />
             <Button size={ButtonSize.MEDIUM} text="Medium" />
             <Button size={ButtonSize.LARGE} text="Large" />
@@ -341,14 +327,7 @@ export const ButtonSizes: Story = {
  */
 export const ButtonSubTypes: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '12px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-3 items-center flex-wrap">
             <Button subType={ButtonSubType.DEFAULT} text="Default" />
             <Button
                 subType={ButtonSubType.ICON_ONLY}
@@ -376,7 +355,7 @@ export const ButtonSubTypes: Story = {
  */
 export const WithIcons: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+        <div className="flex gap-3 flex-wrap">
             <Button
                 text="Add Item"
                 leadingIcon={<Plus size={16} />}
@@ -414,14 +393,7 @@ export const WithIcons: Story = {
  */
 export const IconOnly: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '12px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-3 items-center flex-wrap">
             <Button
                 subType={ButtonSubType.ICON_ONLY}
                 leadingIcon={<Plus size={16} />}
@@ -480,14 +452,7 @@ export const IconOnly: Story = {
  */
 export const InlineButtons: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '8px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-2 items-center flex-wrap">
             <span>This is some text with </span>
             <Button
                 subType={ButtonSubType.INLINE}
@@ -521,7 +486,7 @@ export const InlineButtons: Story = {
  */
 export const ButtonStates: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+        <div className="flex gap-3 flex-wrap">
             <Button text="Normal" buttonType={ButtonType.PRIMARY} />
             <Button
                 text="Loading"
@@ -619,14 +584,7 @@ export const Disabled: Story = {
  */
 export const FullWidth: Story = {
     render: () => (
-        <div
-            style={{
-                width: '300px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-            }}
-        >
+        <div className="w-75 flex flex-col gap-3">
             <Button
                 text="Full Width Primary"
                 buttonType={ButtonType.PRIMARY}
@@ -659,14 +617,7 @@ export const FullWidth: Story = {
  */
 export const ContentAlignment: Story = {
     render: () => (
-        <div
-            style={{
-                width: '200px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-            }}
-        >
+        <div className="w-50 flex flex-col gap-3">
             <Button
                 text="Left Aligned"
                 buttonType={ButtonType.SECONDARY}
@@ -701,18 +652,10 @@ export const ContentAlignment: Story = {
  */
 export const ButtonGroupPositioning: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="flex flex-col gap-4">
             <div>
-                <h4
-                    style={{
-                        marginBottom: '8px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Button Group
-                </h4>
-                <div style={{ display: 'flex' }}>
+                <h4 className="mb-2 text-sm font-semibold">Button Group</h4>
+                <div className="flex">
                     <Button
                         text="Left"
                         buttonType={ButtonType.SECONDARY}
@@ -731,16 +674,8 @@ export const ButtonGroupPositioning: Story = {
                 </div>
             </div>
             <div>
-                <h4
-                    style={{
-                        marginBottom: '8px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Primary Group
-                </h4>
-                <div style={{ display: 'flex' }}>
+                <h4 className="mb-2 text-sm font-semibold">Primary Group</h4>
+                <div className="flex">
                     <Button
                         text="Save"
                         buttonType={ButtonType.PRIMARY}
@@ -765,171 +700,17 @@ export const ButtonGroupPositioning: Story = {
 }
 
 // ============================================================================
-// Interactive & Showcase
-// ============================================================================
-
-/**
- * Interactive playground
- */
-export const Interactive: Story = {
-    args: {
-        buttonType: ButtonType.PRIMARY,
-        size: ButtonSize.MEDIUM,
-        subType: ButtonSubType.DEFAULT,
-        text: 'Interactive Button',
-        loading: false,
-        disabled: false,
-        fullWidth: false,
-        state: ButtonState.DEFAULT,
-        leadingIcon: 'plus',
-        trailingIcon: 'none',
-        justifyContent: 'center',
-    },
-    render: (args: any) => {
-        const { leadingIcon, trailingIcon, ...restArgs } = args
-        return (
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-                <Button
-                    {...restArgs}
-                    leadingIcon={getIcon(leadingIcon)}
-                    trailingIcon={getIcon(trailingIcon)}
-                />
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Use controls to experiment with button props.',
-            },
-        },
-    },
-}
-
-/**
- * Showcase
- */
-export const Showcase: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                padding: '16px',
-            }}
-        >
-            <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Button Types
-                </h3>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <Button buttonType={ButtonType.PRIMARY} text="Primary" />
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        text="Secondary"
-                    />
-                    <Button buttonType={ButtonType.DANGER} text="Danger" />
-                    <Button buttonType={ButtonType.SUCCESS} text="Success" />
-                </div>
-            </div>
-
-            <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    With Icons
-                </h3>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <Button
-                        text="Add"
-                        leadingIcon={<Plus size={16} />}
-                        buttonType={ButtonType.PRIMARY}
-                    />
-                    <Button
-                        text="Download"
-                        trailingIcon={<Download size={16} />}
-                        buttonType={ButtonType.SECONDARY}
-                    />
-                    <Button
-                        subType={ButtonSubType.ICON_ONLY}
-                        leadingIcon={<Settings size={16} />}
-                        buttonType={ButtonType.SECONDARY}
-                        aria-label="Settings"
-                    />
-                </div>
-            </div>
-
-            <div>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    States
-                </h3>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <Button text="Normal" buttonType={ButtonType.PRIMARY} />
-                    <Button
-                        text="Loading"
-                        buttonType={ButtonType.PRIMARY}
-                        loading={true}
-                    />
-                    <Button
-                        text="Disabled"
-                        buttonType={ButtonType.PRIMARY}
-                        disabled={true}
-                    />
-                </div>
-            </div>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Button variations showcase.',
-            },
-        },
-    },
-}
-
-// ============================================================================
 // Skeleton Loading State
 // ============================================================================
 
 export const SkeletonState: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '32px',
-                padding: '24px',
-            }}
-        >
+        <div className="flex flex-col gap-8 p-6">
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     Pulse Variant (Default)
                 </h4>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <div className="flex gap-3 flex-wrap">
                     <Button
                         text="Primary Button"
                         buttonType={ButtonType.PRIMARY}
@@ -952,16 +733,8 @@ export const SkeletonState: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    Wave Variant
-                </h4>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <h4 className="text-base font-semibold mb-3">Wave Variant</h4>
+                <div className="flex gap-3 flex-wrap">
                     <Button
                         text="Primary Button"
                         buttonType={ButtonType.PRIMARY}
@@ -984,23 +757,10 @@ export const SkeletonState: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     Different Sizes (Pulse)
                 </h4>
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '12px',
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                    }}
-                >
+                <div className="flex gap-3 flex-wrap items-center">
                     <Button
                         text="Small"
                         size={ButtonSize.SMALL}
@@ -1023,13 +783,7 @@ export const SkeletonState: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     Full Width Skeleton
                 </h4>
                 <Button
@@ -1041,16 +795,10 @@ export const SkeletonState: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     Icon Only Skeleton
                 </h4>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <div className="flex gap-3 flex-wrap">
                     <Button
                         subType={ButtonSubType.ICON_ONLY}
                         leadingIcon={<Settings size={20} />}
@@ -1075,208 +823,5 @@ export const SkeletonState: Story = {
             },
         },
         a11y: getA11yConfig('content'),
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples
- */
-export const Accessibility: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                padding: '24px',
-                maxWidth: '800px',
-            }}
-        >
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Keyboard Navigation
-                </h3>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <Button
-                        text="Tab to focus"
-                        buttonType={ButtonType.PRIMARY}
-                    />
-                    <Button
-                        text="Press Enter"
-                        buttonType={ButtonType.SECONDARY}
-                    />
-                    <Button
-                        text="Press Space"
-                        buttonType={ButtonType.SUCCESS}
-                    />
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Icon-Only Buttons
-                </h3>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <Button
-                        subType={ButtonSubType.ICON_ONLY}
-                        leadingIcon={<Settings size={16} />}
-                        buttonType={ButtonType.PRIMARY}
-                        aria-label="Settings"
-                    />
-                    <Button
-                        subType={ButtonSubType.ICON_ONLY}
-                        leadingIcon={<Search size={16} />}
-                        buttonType={ButtonType.SECONDARY}
-                        aria-label="Search"
-                    />
-                    <Button
-                        subType={ButtonSubType.ICON_ONLY}
-                        leadingIcon={<Edit size={16} />}
-                        buttonType={ButtonType.SUCCESS}
-                        aria-label="Edit"
-                    />
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Loading State
-                </h3>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <Button
-                        text="Loading"
-                        buttonType={ButtonType.PRIMARY}
-                        loading={true}
-                    />
-                    <Button
-                        text="Saving"
-                        buttonType={ButtonType.SUCCESS}
-                        loading={true}
-                    />
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Disabled State
-                </h3>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <Button
-                        text="Disabled"
-                        buttonType={ButtonType.PRIMARY}
-                        disabled={true}
-                    />
-                    <Button
-                        subType={ButtonSubType.ICON_ONLY}
-                        leadingIcon={<Settings size={16} />}
-                        buttonType={ButtonType.PRIMARY}
-                        aria-label="Settings"
-                        disabled={true}
-                    />
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Focus Indicators
-                </h3>
-                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    <Button text="Focus me" buttonType={ButtonType.PRIMARY} />
-                    <Button text="Focus me" buttonType={ButtonType.SECONDARY} />
-                    <Button text="Focus me" buttonType={ButtonType.DANGER} />
-                </div>
-            </section>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating keyboard navigation, ARIA labels, loading states, disabled states, and focus indicators.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0)
-   - Review passing tests (12+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test Button.accessibility
-   \`\`\`
-   - 42+ automated tests
-   - WCAG compliance verification
-   - ARIA attribute validation
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes
-   - Responsive behavior
-
-4. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Keyboard navigation (Tab, Enter, Space)
-   - Color contrast verification
-
-## Accessibility Report
-
-**Current Status**: 
-- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (4/9 applicable criteria compliant)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), Change on Request (3.2.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - Small/Medium buttons need 44x44px
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('interactive'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
-        },
     },
 }

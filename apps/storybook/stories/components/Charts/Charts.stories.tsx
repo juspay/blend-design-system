@@ -6,7 +6,6 @@ import {
     ChartLegendPosition,
     NewNestedDataPoint,
     AxisType,
-    LegendsChangeType,
 } from '@juspay/blend-design-system'
 import {
     TrendingUp,
@@ -111,11 +110,34 @@ const meta: Meta<typeof Charts> = {
         a11y: getA11yConfig('interactive'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A powerful and flexible charting component built on Recharts that supports multiple chart types with interactive legends and customizable styling.',
         docs: {
             description: {
                 component: `
+ ## Usage
+\`\`\`tsx
+import { Charts, ChartType, ChartLegendPosition } from '@juspay/blend-design-system';
 
-A powerful and flexible charting component built on Recharts that supports multiple chart types with interactive legends and customizable styling.
+const data = [
+  {
+    name: "Jan",
+    data: {
+      revenue: { primary: { label: "Revenue", val: 4000 } },
+      profit: { primary: { label: "Profit", val: 2400 } }
+    }
+  },
+  // ... more data points
+];
+
+<Charts
+  chartType={ChartType.LINE}
+  data={data}
+  xAxis={{ label: 'Month', showLabel: true, show: true }}
+  yAxis={{ label: 'Amount ($)', showLabel: true, show: true, type: AxisType.CURRENCY }}
+  chartHeaderSlot={<h3>Monthly Revenue</h3>}
+/>
+\`\`\`
 
 ## Features
 - Multiple chart types (Line, Bar, Pie)
@@ -149,31 +171,6 @@ A powerful and flexible charting component built on Recharts that supports multi
 - **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
 - **Chromatic**: Visual regression for focus rings and states
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
-
-## Usage
-
-\`\`\`tsx
-import { Charts, ChartType, ChartLegendPosition } from '@juspay/blend-design-system';
-
-const data = [
-  {
-    name: "Jan",
-    data: {
-      revenue: { primary: { label: "Revenue", val: 4000 } },
-      profit: { primary: { label: "Profit", val: 2400 } }
-    }
-  },
-  // ... more data points
-];
-
-<Charts
-  chartType={ChartType.LINE}
-  data={data}
-  xAxis={{ label: 'Month', showLabel: true, show: true }}
-  yAxis={{ label: 'Amount ($)', showLabel: true, show: true, type: AxisType.CURRENCY }}
-  chartHeaderSlot={<h3>Monthly Revenue</h3>}
-/>
-\`\`\`
         `,
             },
         },
@@ -451,36 +448,40 @@ const generateCategoryData = (): NewNestedDataPoint[] => [
 
 // Default story
 export const Default: Story = {
-    args: {
-        chartType: ChartType.LINE,
-        data: generateMonthlyData(),
-        xAxis: {
-            label: 'Month',
-            showLabel: true,
-            show: true,
-        },
-        yAxis: {
-            label: 'Amount ($)',
-            showLabel: true,
-            show: true,
-            type: AxisType.CURRENCY,
-        },
-        height: 400,
-        showHeader: true,
-        showCollapseIcon: true,
-        legendPosition: ChartLegendPosition.TOP,
-        chartHeaderSlot: (
-            <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                Monthly Financial Overview
-            </div>
-        ),
-    },
+    render: () => (
+        <div className="w-200 h-135">
+            <Charts
+                chartType={ChartType.LINE}
+                data={generateMonthlyData()}
+                xAxis={{
+                    label: 'Month',
+                    showLabel: true,
+                    show: true,
+                }}
+                yAxis={{
+                    label: 'Amount ($)',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                height={400}
+                showHeader={true}
+                showCollapseIcon={true}
+                legendPosition={ChartLegendPosition.TOP}
+                chartHeaderSlot={
+                    <div className="text-lg font-bold">
+                        Monthly Financial Overview
+                    </div>
+                }
+            />
+        </div>
+    ),
 }
 
 // Line Chart
 export const LineChartExample: Story = {
     render: () => (
-        <div style={{ width: '800px', height: '500px' }}>
+        <div className="w-200 h-135">
             <Charts
                 chartType={ChartType.LINE}
                 data={generateMonthlyData()}
@@ -501,43 +502,23 @@ export const LineChartExample: Story = {
                     { key: 'expenses', color: '#ef4444' },
                 ]}
                 chartHeaderSlot={
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                        }}
-                    >
+                    <div className="flex items-center gap-2">
                         <LineChart size={20} />
-                        <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                        <span className="text-lg font-bold">
                             Revenue Trends
                         </span>
                     </div>
                 }
                 slot1={
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                        }}
-                    >
+                    <div className="flex items-center gap-1">
                         <TrendingUp size={16} color="#10b981" />
-                        <span style={{ fontSize: '14px', color: '#10b981' }}>
-                            +12.5%
-                        </span>
+                        <span className="text-sm text-emerald-500">+12.5%</span>
                     </div>
                 }
                 slot2={
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                        }}
-                    >
+                    <div className="flex items-center gap-1">
                         <Calendar size={16} />
-                        <span style={{ fontSize: '14px' }}>Last 6 months</span>
+                        <span className="text-sm">Last 6 months</span>
                     </div>
                 }
             />
@@ -555,7 +536,7 @@ export const LineChartExample: Story = {
 // Bar Chart
 export const BarChartExample: Story = {
     render: () => (
-        <div style={{ width: '800px', height: '500px' }}>
+        <div className="w-200 h-135">
             <Charts
                 chartType={ChartType.BAR}
                 data={generateMonthlyData()}
@@ -576,29 +557,17 @@ export const BarChartExample: Story = {
                     { key: 'expenses', color: '#06b6d4' },
                 ]}
                 chartHeaderSlot={
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                        }}
-                    >
+                    <div className="flex items-center gap-2">
                         <BarChart3 size={20} />
-                        <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                        <span className="text-lg font-bold">
                             Monthly Comparison
                         </span>
                     </div>
                 }
                 slot1={
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                        }}
-                    >
+                    <div className="flex items-center gap-1">
                         <DollarSign size={16} />
-                        <span style={{ fontSize: '14px' }}>Total: $15,060</span>
+                        <span className="text-sm">Total: $15,060</span>
                     </div>
                 }
             />
@@ -616,7 +585,7 @@ export const BarChartExample: Story = {
 // Pie Chart
 export const PieChartExample: Story = {
     render: () => (
-        <div style={{ width: '600px', height: '500px' }}>
+        <div className="w-150 h-125">
             <Charts
                 chartType={ChartType.PIE}
                 data={generateCategoryData()}
@@ -628,29 +597,17 @@ export const PieChartExample: Story = {
                     { key: 'Other', color: '#8b5cf6' },
                 ]}
                 chartHeaderSlot={
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                        }}
-                    >
+                    <div className="flex items-center gap-2">
                         <PieChart size={20} />
-                        <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                        <span className="text-lg font-bold">
                             Sales by Category
                         </span>
                     </div>
                 }
                 slot1={
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                        }}
-                    >
+                    <div className="flex items-center gap-1">
                         <Users size={16} />
-                        <span style={{ fontSize: '14px' }}>5 Categories</span>
+                        <span className="text-sm">5 Categories</span>
                     </div>
                 }
             />
@@ -668,8 +625,8 @@ export const PieChartExample: Story = {
 // Legend Positions
 export const LegendPositions: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <div style={{ width: '800px', height: '500px' }}>
+        <div className="flex flex-col gap-8">
+            <div className="w-200 h-130">
                 <Charts
                     chartType={ChartType.LINE}
                     data={generateMonthlyData()}
@@ -686,19 +643,19 @@ export const LegendPositions: Story = {
                     }}
                     legendPosition={ChartLegendPosition.TOP}
                     chartHeaderSlot={
-                        <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                        <span className="text-base font-bold">
                             Legend Position: Top
                         </span>
                     }
                 />
             </div>
-            <div style={{ width: '800px', height: '500px' }}>
+            <div className="w-200 h-125">
                 <Charts
                     chartType={ChartType.PIE}
                     data={generateCategoryData()}
                     legendPosition={ChartLegendPosition.RIGHT}
                     chartHeaderSlot={
-                        <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                        <span className="text-base font-bold">
                             Legend Position: Right (Pie Chart)
                         </span>
                     }
@@ -718,7 +675,7 @@ export const LegendPositions: Story = {
 // Custom Colors
 export const CustomColors: Story = {
     render: () => (
-        <div style={{ width: '800px', height: '500px' }}>
+        <div className="w-200 h-135">
             <Charts
                 chartType={ChartType.BAR}
                 data={generateMonthlyData()}
@@ -739,7 +696,7 @@ export const CustomColors: Story = {
                     { key: 'expenses', color: '#7c3aed' },
                 ]}
                 chartHeaderSlot={
-                    <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                    <span className="text-lg font-bold">
                         Custom Color Scheme
                     </span>
                 }
@@ -798,7 +755,7 @@ export const ComplexDataExample: Story = {
         ]
 
         return (
-            <div style={{ width: '900px', height: '550px' }}>
+            <div className="w-200 h-135">
                 <Charts
                     chartType={ChartType.LINE}
                     data={complexData}
@@ -820,50 +777,25 @@ export const ComplexDataExample: Story = {
                         { key: 'other', color: '#8b5cf6' },
                     ]}
                     chartHeaderSlot={
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex items-center gap-2">
                             <Activity size={20} />
-                            <span
-                                style={{ fontSize: '18px', fontWeight: 'bold' }}
-                            >
+                            <span className="text-lg font-bold">
                                 User Activity by Device Type
                             </span>
                         </div>
                     }
                     slot1={
-                        <div
-                            style={{
-                                padding: '4px 8px',
-                                background: '#e0f2fe',
-                                borderRadius: '4px',
-                                fontSize: '12px',
-                                color: '#0369a1',
-                            }}
-                        >
+                        <div className="px-2 py-1 bg-sky-100 rounded text-xs text-sky-700">
                             Live Data
                         </div>
                     }
                     slot2={
-                        <div style={{ fontSize: '14px', color: '#666' }}>
+                        <div className="text-sm text-gray-500">
                             Updated 5 mins ago
                         </div>
                     }
                     slot3={
-                        <button
-                            style={{
-                                padding: '6px 12px',
-                                borderRadius: '4px',
-                                border: '1px solid #ccc',
-                                background: 'white',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                            }}
-                        >
+                        <button className="px-3 py-1.5 rounded border border-gray-300 bg-white cursor-pointer text-sm">
                             Export
                         </button>
                     }
@@ -883,7 +815,7 @@ export const ComplexDataExample: Story = {
 // Interactive Features
 export const InteractiveFeatures: Story = {
     render: () => (
-        <div style={{ width: '800px', height: '500px' }}>
+        <div className="w-200 h-155">
             <Charts
                 chartType={ChartType.LINE}
                 data={generateMonthlyData()}
@@ -900,16 +832,10 @@ export const InteractiveFeatures: Story = {
                 }}
                 chartHeaderSlot={
                     <div>
-                        <div
-                            style={{
-                                fontSize: '18px',
-                                fontWeight: 'bold',
-                                marginBottom: '8px',
-                            }}
-                        >
+                        <div className="text-lg font-medium mb-2">
                             Interactive Chart Features
                         </div>
-                        <div style={{ fontSize: '14px', color: '#666' }}>
+                        <div className="text-sm text-gray-500 font-manrope tracking-wide leading-7">
                             • Click legend items to toggle series visibility
                             <br />
                             • Hover over legend items to highlight series
@@ -932,7 +858,7 @@ export const InteractiveFeatures: Story = {
 // Empty State
 export const EmptyState: Story = {
     render: () => (
-        <div style={{ width: '800px', height: '500px' }}>
+        <div className="w-200 h-125">
             <Charts
                 chartType={ChartType.LINE}
                 data={[]}
@@ -948,17 +874,11 @@ export const EmptyState: Story = {
                     type: AxisType.NUMBER,
                 }}
                 chartHeaderSlot={
-                    <div style={{ textAlign: 'center', padding: '20px' }}>
-                        <div
-                            style={{
-                                fontSize: '18px',
-                                fontWeight: 'bold',
-                                marginBottom: '8px',
-                            }}
-                        >
+                    <div className="text-center p-5">
+                        <div className="text-lg font-bold mb-2">
                             No Data Available
                         </div>
-                        <div style={{ fontSize: '14px', color: '#666' }}>
+                        <div className="text-sm text-gray-500">
                             Data will appear here once available
                         </div>
                     </div>
@@ -978,7 +898,7 @@ export const EmptyState: Story = {
 // Responsive Example
 export const ResponsiveExample: Story = {
     render: () => (
-        <div style={{ width: '100%', maxWidth: '1200px', height: '600px' }}>
+        <div className="w-full max-w-300 h-150">
             <Charts
                 chartType={ChartType.BAR}
                 data={generateMonthlyData()}
@@ -994,19 +914,11 @@ export const ResponsiveExample: Story = {
                     type: AxisType.CURRENCY,
                 }}
                 chartHeaderSlot={
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                            gap: '16px',
-                        }}
-                    >
-                        <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                    <div className="flex justify-between items-center flex-wrap gap-4">
+                        <span className="text-lg font-bold">
                             Responsive Chart Container
                         </span>
-                        <div style={{ fontSize: '14px', color: '#666' }}>
+                        <div className="text-sm text-gray-500">
                             Resize the window to see responsive behavior
                         </div>
                     </div>
@@ -1130,37 +1042,21 @@ export const SankeyChartExample: Story = {
         ]
 
         return (
-            <div style={{ width: '900px', height: '600px' }}>
+            <div className="w-200 h-150">
                 <Charts
                     chartType={ChartType.SANKEY}
                     data={sankeyData}
                     height={500}
                     chartHeaderSlot={
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex items-center gap-2">
                             <Activity size={20} />
-                            <span
-                                style={{ fontSize: '18px', fontWeight: 'bold' }}
-                            >
+                            <span className="text-lg font-bold">
                                 Payment Card Flow
                             </span>
                         </div>
                     }
                     slot1={
-                        <div
-                            style={{
-                                padding: '4px 8px',
-                                background: '#dbeafe',
-                                borderRadius: '4px',
-                                fontSize: '12px',
-                                color: '#1e40af',
-                            }}
-                        >
+                        <div className="px-2 py-1 bg-blue-100 rounded text-xs text-blue-800">
                             3DS Authentication
                         </div>
                     }
@@ -1177,70 +1073,15 @@ export const SankeyChartExample: Story = {
     },
 }
 
-// Interactive Playground
-export const InteractivePlayground: Story = {
-    args: {
-        chartType: ChartType.LINE,
-        data: generateMonthlyData(),
-        height: 400,
-        showHeader: true,
-        showCollapseIcon: true,
-        stackedLegends: false,
-        barsize: 30,
-        legendPosition: ChartLegendPosition.TOP,
-        xAxis: {
-            label: 'Month',
-            showLabel: true,
-            show: true,
-        },
-        yAxis: {
-            label: 'Amount ($)',
-            showLabel: true,
-            show: true,
-            type: AxisType.CURRENCY,
-        },
-        chartHeaderSlot: (
-            <div style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                Interactive Chart Playground
-            </div>
-        ),
-        slot1: (
-            <span style={{ color: '#10b981', fontSize: '14px' }}>+12.5%</span>
-        ),
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Interactive playground to experiment with all Charts props using the controls panel.',
-            },
-        },
-    },
-}
-
 // ============================================================================
 // Skeleton Loading State
 // ============================================================================
 
 export const SkeletonState: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '32px',
-                padding: '24px',
-            }}
-        >
-            <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    Line Chart - Pulse Variant
-                </h4>
+        <div className="flex flex-wrap gap-6 p-6 w-full">
+            <div className="min-w-xs">
+                <h4 className="text-base font-semibold mb-3">Pulse Variant</h4>
                 <Charts
                     chartType={ChartType.LINE}
                     data={generateMonthlyData()}
@@ -1251,16 +1092,8 @@ export const SkeletonState: Story = {
                 />
             </div>
 
-            <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    Bar Chart - Wave Variant
-                </h4>
+            <div className="min-w-xs">
+                <h4 className="text-base font-semibold mb-3">Wave Variant</h4>
                 <Charts
                     chartType={ChartType.BAR}
                     data={generateMonthlyData()}
@@ -1268,46 +1101,6 @@ export const SkeletonState: Story = {
                     chartHeaderSlot="Loading Chart Data..."
                     skeleton={{ show: true, variant: 'wave' }}
                     showHeader={true}
-                />
-            </div>
-
-            <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    Pie Chart - Pulse Variant
-                </h4>
-                <Charts
-                    chartType={ChartType.PIE}
-                    data={generateCategoryData()}
-                    height={300}
-                    chartHeaderSlot="Loading Chart Data..."
-                    skeleton={{ show: true, variant: 'pulse' }}
-                    showHeader={true}
-                />
-            </div>
-
-            <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    Without Header - Skeleton Only
-                </h4>
-                <Charts
-                    chartType={ChartType.LINE}
-                    data={generateMonthlyData()}
-                    height={300}
-                    chartHeaderSlot="Loading..."
-                    skeleton={{ show: true, variant: 'pulse' }}
-                    showHeader={false}
                 />
             </div>
         </div>
@@ -1319,539 +1112,5 @@ export const SkeletonState: Story = {
             },
         },
         a11y: getA11yConfig('content'),
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples demonstrating WCAG 2.1 Level AA compliance
- */
-export const Accessibility: Story = {
-    render: () => {
-        const monthlyData = generateMonthlyData()
-        const categoryData = generateCategoryData()
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '32px',
-                    padding: '20px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '8px',
-                }}
-            >
-                <h2
-                    style={{
-                        fontSize: '24px',
-                        fontWeight: 700,
-                        marginBottom: '16px',
-                        color: '#1e293b',
-                    }}
-                >
-                    Charts Component Accessibility Showcase
-                </h2>
-                <p
-                    style={{
-                        fontSize: '16px',
-                        color: '#475569',
-                        lineHeight: '1.6',
-                        marginBottom: '24px',
-                    }}
-                >
-                    Interactive examples demonstrating the Charts component's
-                    accessibility features including keyboard navigation, legend
-                    interactions, screen reader support, and proper ARIA
-                    attributes across all chart types.
-                </p>
-
-                {/* WCAG Principle 1: Perceivable */}
-                <section>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Perceivable Content & Chart Labeling
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        All charts are properly labeled with descriptive titles
-                        and axis labels. Charts have role="img" and aria-label
-                        attributes for screen reader support.
-                    </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '24px',
-                        }}
-                    >
-                        <div style={{ width: '800px' }}>
-                            <Charts
-                                chartType={ChartType.LINE}
-                                data={monthlyData}
-                                height={400}
-                                showHeader={true}
-                                showCollapseIcon={true}
-                                legendPosition={ChartLegendPosition.TOP}
-                                xAxis={{
-                                    label: 'Month',
-                                    showLabel: true,
-                                    show: true,
-                                }}
-                                yAxis={{
-                                    label: 'Amount ($)',
-                                    showLabel: true,
-                                    show: true,
-                                    type: AxisType.CURRENCY,
-                                }}
-                                chartHeaderSlot={
-                                    <h3
-                                        style={{
-                                            fontSize: '18px',
-                                            fontWeight: 'bold',
-                                            margin: 0,
-                                        }}
-                                    >
-                                        Monthly Financial Overview
-                                    </h3>
-                                }
-                                slot1={
-                                    <TrendingUp
-                                        size={20}
-                                        color="#10b981"
-                                        aria-hidden="true"
-                                    />
-                                }
-                                slot2={
-                                    <span
-                                        style={{
-                                            color: '#10b981',
-                                            fontSize: '14px',
-                                        }}
-                                    >
-                                        +12.5%
-                                    </span>
-                                }
-                            />
-                        </div>
-                        <div style={{ width: '600px' }}>
-                            <Charts
-                                chartType={ChartType.BAR}
-                                data={monthlyData}
-                                height={400}
-                                showHeader={true}
-                                showCollapseIcon={true}
-                                legendPosition={ChartLegendPosition.TOP}
-                                xAxis={{
-                                    label: 'Month',
-                                    showLabel: true,
-                                    show: true,
-                                }}
-                                yAxis={{
-                                    label: 'Sales Volume',
-                                    showLabel: true,
-                                    show: true,
-                                    type: AxisType.NUMBER,
-                                }}
-                                chartHeaderSlot={
-                                    <h3
-                                        style={{
-                                            fontSize: '18px',
-                                            fontWeight: 'bold',
-                                            margin: 0,
-                                        }}
-                                    >
-                                        Sales Performance by Month
-                                    </h3>
-                                }
-                                slot1={
-                                    <BarChart3
-                                        size={20}
-                                        color="#3b82f6"
-                                        aria-hidden="true"
-                                    />
-                                }
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                {/* Keyboard Navigation & Focus Management */}
-                <section>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Keyboard Navigation & Legend Interactions
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        All interactive elements (legends, header buttons) are
-                        keyboard accessible. Use Tab to navigate, Enter/Space to
-                        toggle legend items, and Arrow keys for navigation.
-                    </p>
-                    <div style={{ width: '800px' }}>
-                        <Charts
-                            chartType={ChartType.LINE}
-                            data={monthlyData}
-                            height={400}
-                            showHeader={true}
-                            showCollapseIcon={true}
-                            legendPosition={ChartLegendPosition.TOP}
-                            stackedLegends={true}
-                            stackedLegendsData={[
-                                {
-                                    value: 12000,
-                                    delta: 12.5,
-                                    changeType: LegendsChangeType.INCREASE,
-                                },
-                                {
-                                    value: 8000,
-                                    delta: 8.3,
-                                    changeType: LegendsChangeType.INCREASE,
-                                },
-                                {
-                                    value: 6000,
-                                    delta: 5.2,
-                                    changeType: LegendsChangeType.INCREASE,
-                                },
-                            ]}
-                            xAxis={{
-                                label: 'Month',
-                                showLabel: true,
-                                show: true,
-                            }}
-                            yAxis={{
-                                label: 'Revenue ($)',
-                                showLabel: true,
-                                show: true,
-                                type: AxisType.CURRENCY,
-                            }}
-                            chartHeaderSlot={
-                                <h3
-                                    style={{
-                                        fontSize: '18px',
-                                        fontWeight: 'bold',
-                                        margin: 0,
-                                    }}
-                                >
-                                    Revenue Trends with Interactive Legends
-                                </h3>
-                            }
-                            slot1={
-                                <DollarSign
-                                    size={20}
-                                    color="#10b981"
-                                    aria-hidden="true"
-                                />
-                            }
-                            slot2={
-                                <span
-                                    style={{
-                                        color: '#10b981',
-                                        fontSize: '14px',
-                                    }}
-                                >
-                                    +12.5%
-                                </span>
-                            }
-                        />
-                    </div>
-                </section>
-
-                {/* Different Chart Types */}
-                <section>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Chart Type Accessibility
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        All chart types (Line, Bar, Pie) are accessible with
-                        proper labeling and keyboard navigation support.
-                    </p>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '24px',
-                        }}
-                    >
-                        <div>
-                            <Charts
-                                chartType={ChartType.PIE}
-                                data={categoryData}
-                                height={350}
-                                showHeader={true}
-                                showCollapseIcon={true}
-                                legendPosition={ChartLegendPosition.RIGHT}
-                                xAxis={{
-                                    show: false,
-                                }}
-                                yAxis={{
-                                    show: false,
-                                }}
-                                chartHeaderSlot={
-                                    <h3
-                                        style={{
-                                            fontSize: '18px',
-                                            fontWeight: 'bold',
-                                            margin: 0,
-                                        }}
-                                    >
-                                        Sales by Category
-                                    </h3>
-                                }
-                                slot1={
-                                    <PieChart
-                                        size={20}
-                                        color="#8b5cf6"
-                                        aria-hidden="true"
-                                    />
-                                }
-                            />
-                        </div>
-                        <div>
-                            <Charts
-                                chartType={ChartType.BAR}
-                                data={monthlyData}
-                                height={350}
-                                showHeader={true}
-                                showCollapseIcon={true}
-                                legendPosition={ChartLegendPosition.TOP}
-                                barsize={40}
-                                xAxis={{
-                                    label: 'Month',
-                                    showLabel: true,
-                                    show: true,
-                                }}
-                                yAxis={{
-                                    label: 'Value',
-                                    showLabel: true,
-                                    show: true,
-                                    type: AxisType.NUMBER,
-                                }}
-                                chartHeaderSlot={
-                                    <h3
-                                        style={{
-                                            fontSize: '18px',
-                                            fontWeight: 'bold',
-                                            margin: 0,
-                                        }}
-                                    >
-                                        Monthly Comparison
-                                    </h3>
-                                }
-                                slot1={
-                                    <BarChart3
-                                        size={20}
-                                        color="#f59e0b"
-                                        aria-hidden="true"
-                                    />
-                                }
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                {/* Header Actions Accessibility */}
-                <section>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Header Actions & Collapse Functionality
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Header buttons and collapse icons are keyboard
-                        accessible with proper focus indicators and ARIA labels.
-                    </p>
-                    <div style={{ width: '800px' }}>
-                        <Charts
-                            chartType={ChartType.LINE}
-                            data={monthlyData}
-                            height={400}
-                            showHeader={true}
-                            showCollapseIcon={true}
-                            legendPosition={ChartLegendPosition.TOP}
-                            xAxis={{
-                                label: 'Month',
-                                showLabel: true,
-                                show: true,
-                            }}
-                            yAxis={{
-                                label: 'Amount ($)',
-                                showLabel: true,
-                                show: true,
-                                type: AxisType.CURRENCY,
-                            }}
-                            chartHeaderSlot={
-                                <h3
-                                    style={{
-                                        fontSize: '18px',
-                                        fontWeight: 'bold',
-                                        margin: 0,
-                                    }}
-                                >
-                                    Expandable Chart with Header Actions
-                                </h3>
-                            }
-                            slot1={
-                                <Activity
-                                    size={20}
-                                    color="#3b82f6"
-                                    aria-hidden="true"
-                                />
-                            }
-                            slot2={
-                                <Calendar
-                                    size={16}
-                                    color="#6b7280"
-                                    aria-hidden="true"
-                                />
-                            }
-                            slot3={
-                                <span
-                                    style={{
-                                        color: '#6b7280',
-                                        fontSize: '12px',
-                                    }}
-                                >
-                                    Last 6 months
-                                </span>
-                            }
-                        />
-                    </div>
-                </section>
-
-                <div
-                    style={{
-                        marginTop: '32px',
-                        padding: '16px',
-                        backgroundColor: '#f9fafb',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        color: '#6b7280',
-                    }}
-                >
-                    <p
-                        style={{
-                            margin: 0,
-                            fontWeight: 600,
-                            marginBottom: '8px',
-                        }}
-                    >
-                        Accessibility notes:
-                    </p>
-                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                        <li>
-                            All chart containers have proper role="img" and
-                            descriptive aria-label attributes
-                        </li>
-                        <li>
-                            Legend items are keyboard accessible (Tab to focus,
-                            Enter/Space to toggle)
-                        </li>
-                        <li>
-                            Header buttons and collapse icons have visible focus
-                            indicators
-                        </li>
-                        <li>
-                            Chart tooltips are accessible and provide context
-                            for data points
-                        </li>
-                        <li>
-                            Axis labels are properly associated with chart data
-                        </li>
-                        <li>
-                            Decorative icons (slot1, slot2, slot3) are marked
-                            with aria-hidden="true"
-                        </li>
-                        <li>All text content is readable by screen readers</li>
-                        <li>
-                            Focus indicators are visible on all interactive
-                            elements
-                        </li>
-                        <li>
-                            Charts support both mouse and keyboard interactions
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Interactive examples demonstrating the Charts component's accessibility features including keyboard navigation, legend interactions, screen reader support, and proper ARIA attributes across all chart types.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to chart labeling, legend accessibility, and focus indicators.
-
-2. **Chromatic visual tests**:
-   - Focus ring visibility on interactive elements
-   - Legend states and interactions
-   - Responsive behavior
-
-3. **Manual testing**:
-   - Navigate using keyboard only (Tab to focus on legends and interactive elements).
-   - Use a screen reader (VoiceOver/NVDA) to confirm all charts, legends, and tooltips are announced.
-   - Verify color contrast of text, axis labels, and legend items using contrast tools.
-   - Test legend interactions with keyboard (Tab, Enter/Space).
-   - Verify chart tooltips are accessible and provide meaningful data descriptions.
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('interactive'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
-        },
     },
 }

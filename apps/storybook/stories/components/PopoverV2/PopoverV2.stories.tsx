@@ -32,38 +32,13 @@ import {
     Filter,
     Download,
     Share,
-    Calendar,
-    Clock,
-    MapPin,
     Mail,
-    Phone,
     Globe,
-    Search,
-    Star,
-    Heart,
-    Bookmark,
-    Flag,
     Archive,
     Copy,
-    Eye,
-    EyeOff,
-    Lock,
-    Unlock,
-    Shield,
     Zap,
     Palette,
-    Code,
     Briefcase,
-    Target,
-    TrendingUp,
-    BarChart3,
-    PieChart,
-    Database,
-    Server,
-    Cloud,
-    Layers,
-    Cpu,
-    Sliders,
 } from 'lucide-react'
 
 const meta: Meta<typeof PopoverV2> = {
@@ -75,6 +50,8 @@ const meta: Meta<typeof PopoverV2> = {
         a11y: getA11yConfig('interactive'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A modern popover component (V2) for displaying contextual content, forms, and actions in an overlay.',
         docs: {
             description: {
                 component: `
@@ -293,19 +270,6 @@ import { PopoverV2, PopoverV2Size, Button } from '@juspay/blend-design-system';
                 category: 'Behavior',
             },
         },
-        shadow: {
-            control: { type: 'select' },
-            options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', 'full'],
-            description: 'Shadow intensity for the popover',
-            table: {
-                type: {
-                    summary:
-                        '"xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "full"',
-                },
-                defaultValue: { summary: '"lg"' },
-                category: 'Appearance',
-            },
-        },
         primaryAction: {
             control: false,
             description: 'Primary action button configuration',
@@ -385,7 +349,7 @@ export const Default: Story = {
     render: function DefaultPopoverV2(args) {
         return (
             <PopoverV2 {...args}>
-                <div style={{ padding: '16px' }}>
+                <div className="p-4">
                     <p>
                         This is the default popover content. You can put any
                         React content here!
@@ -410,7 +374,7 @@ export const Default: Story = {
 export const Sizes: Story = {
     render: () => {
         return (
-            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+            <div className="flex items-center gap-5">
                 <PopoverV2
                     trigger={
                         <Button
@@ -422,8 +386,8 @@ export const Sizes: Story = {
                     description="Compact popover for quick actions"
                     size={PopoverV2Size.SM}
                 >
-                    <div style={{ padding: '12px' }}>
-                        <p style={{ fontSize: '14px' }}>
+                    <div className="p-3">
+                        <p className="text-sm">
                             Small popover content with reduced padding and
                             typography.
                         </p>
@@ -441,7 +405,7 @@ export const Sizes: Story = {
                     description="Standard popover for most use cases"
                     size={PopoverV2Size.MD}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <p>
                             Medium popover content with standard spacing and
                             typography.
@@ -464,15 +428,7 @@ export const Sizes: Story = {
 export const Positioning: Story = {
     render: () => {
         return (
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '40px',
-                    padding: '60px',
-                    placeItems: 'center',
-                }}
-            >
+            <div className="grid grid-cols-3 gap-10 p-14 place-items-center">
                 <PopoverV2
                     trigger={
                         <Button
@@ -484,7 +440,7 @@ export const Positioning: Story = {
                     side={PopoverV2Side.TOP}
                     align={PopoverV2Align.CENTER}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <p>This popover appears above the trigger button.</p>
                     </div>
                 </PopoverV2>
@@ -497,7 +453,7 @@ export const Positioning: Story = {
                     side={PopoverV2Side.LEFT}
                     align={PopoverV2Align.CENTER}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <p>
                             This popover appears to the left of the trigger
                             button.
@@ -513,7 +469,7 @@ export const Positioning: Story = {
                     side={PopoverV2Side.RIGHT}
                     align={PopoverV2Align.CENTER}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <p>
                             This popover appears to the right of the trigger
                             button.
@@ -534,7 +490,7 @@ export const Positioning: Story = {
                     side={PopoverV2Side.BOTTOM}
                     align={PopoverV2Align.CENTER}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <p>This popover appears below the trigger button.</p>
                     </div>
                 </PopoverV2>
@@ -559,11 +515,8 @@ export const WithActions: Story = {
 
         if (isDeleted) {
             return (
-                <div style={{ textAlign: 'center', padding: '20px' }}>
-                    <CheckCircle
-                        size={48}
-                        style={{ color: '#10b981', marginBottom: '12px' }}
-                    />
+                <div className="text-center p-5">
+                    <CheckCircle size={48} className="text-emerald-500 mb-3" />
                     <p>Item deleted successfully!</p>
                     <Button
                         size={ButtonSize.SMALL}
@@ -596,8 +549,8 @@ export const WithActions: Story = {
                 }}
                 side={PopoverV2Side.TOP}
             >
-                <div style={{ padding: '16px' }}>
-                    <p style={{ color: '#6b7280', fontSize: '14px' }}>
+                <div className="p-4">
+                    <p className="text-gray-500 text-sm">
                         This will permanently remove the item from your account.
                     </p>
                 </div>
@@ -634,79 +587,26 @@ export const UserProfile: Story = {
                 heading="User Profile"
                 maxWidth={350}
             >
-                <div style={{ padding: '16px' }}>
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        <div
-                            style={{
-                                width: '48px',
-                                height: '48px',
-                                borderRadius: '50%',
-                                backgroundColor: '#3b82f6',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'white',
-                                fontWeight: 'bold',
-                            }}
-                        >
+                <div className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
                             JD
                         </div>
                         <div>
-                            <h4 style={{ margin: 0, fontWeight: 600 }}>
-                                {user.name}
-                            </h4>
-                            <p
-                                style={{
-                                    margin: 0,
-                                    color: '#6b7280',
-                                    fontSize: '14px',
-                                }}
-                            >
+                            <h4 className="font-semibold m-0">{user.name}</h4>
+                            <p className="text-gray-500 text-sm m-0">
                                 {user.email}
                             </p>
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    marginTop: '4px',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: '8px',
-                                        height: '8px',
-                                        borderRadius: '50%',
-                                        backgroundColor: '#10b981',
-                                    }}
-                                />
-                                <span
-                                    style={{
-                                        fontSize: '12px',
-                                        color: '#10b981',
-                                        textTransform: 'capitalize',
-                                    }}
-                                >
+                            <div className="flex items-center gap-1.5 mt-1">
+                                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                <span className="text-xs text-emerald-500 capitalize">
                                     {user.status}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '8px',
-                        }}
-                    >
+                    <div className="flex flex-col gap-2">
                         <Button
                             size={ButtonSize.SMALL}
                             buttonType={ButtonType.SECONDARY}
@@ -781,14 +681,7 @@ export const SettingsForm: Story = {
                     buttonType: ButtonType.SECONDARY,
                 }}
             >
-                <div
-                    style={{
-                        padding: '20px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="p-5 flex flex-col gap-4">
                     <TextInput
                         label="Display Name"
                         value={settings.displayName}
@@ -837,22 +730,10 @@ export const SettingsForm: Story = {
                     />
 
                     <div>
-                        <label
-                            style={{
-                                fontWeight: 600,
-                                marginBottom: '8px',
-                                display: 'block',
-                            }}
-                        >
+                        <label className="font-semibold mb-2 block">
                             Privacy Level
                         </label>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex flex-col gap-2">
                             {privacyOptions.map((option) => (
                                 <Radio
                                     key={option.value}
@@ -871,22 +752,10 @@ export const SettingsForm: Story = {
                     </div>
 
                     <div>
-                        <label
-                            style={{
-                                fontWeight: 600,
-                                marginBottom: '8px',
-                                display: 'block',
-                            }}
-                        >
+                        <label className="font-semibold mb-2 block">
                             Notification Preferences
                         </label>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex flex-col gap-2">
                             {notificationSettings.map((setting) => (
                                 <Checkbox
                                     key={setting.id}
@@ -959,38 +828,16 @@ export const ShareDialog: Story = {
                 maxWidth={380}
                 side={PopoverV2Side.TOP}
             >
-                <div style={{ padding: '20px' }}>
-                    <div style={{ marginBottom: '20px' }}>
-                        <label
-                            style={{
-                                display: 'block',
-                                fontWeight: 600,
-                                marginBottom: '8px',
-                                fontSize: '14px',
-                            }}
-                        >
+                <div className="p-5">
+                    <div className="mb-5">
+                        <label className="block font-semibold mb-2 text-sm">
                             Share Link
                         </label>
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: '8px',
-                                padding: '8px',
-                                border: '1px solid #e5e7eb',
-                                borderRadius: '6px',
-                                backgroundColor: '#f9fafb',
-                            }}
-                        >
+                        <div className="flex gap-2 p-2 border border-gray-200 rounded-md bg-gray-50">
                             <input
                                 value={shareUrl}
                                 readOnly
-                                style={{
-                                    flex: 1,
-                                    border: 'none',
-                                    background: 'transparent',
-                                    fontSize: '14px',
-                                    outline: 'none',
-                                }}
+                                className="flex-1 border-none bg-transparent text-sm outline-none"
                             />
                             <Button
                                 size={ButtonSize.SMALL}
@@ -1013,23 +860,10 @@ export const ShareDialog: Story = {
                     </div>
 
                     <div>
-                        <label
-                            style={{
-                                display: 'block',
-                                fontWeight: 600,
-                                marginBottom: '12px',
-                                fontSize: '14px',
-                            }}
-                        >
+                        <label className="block font-semibold mb-3 text-sm">
                             Share via
                         </label>
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="grid grid-cols-2 gap-2">
                             {shareOptions.map((option) => (
                                 <Button
                                     key={option.name}
@@ -1110,19 +944,7 @@ export const FilterPopoverV2: Story = {
                         leadingIcon={<Filter size={16} />}
                         trailingIcon={
                             activeFiltersCount > 0 ? (
-                                <span
-                                    style={{
-                                        backgroundColor: '#3b82f6',
-                                        color: 'white',
-                                        borderRadius: '50%',
-                                        width: '18px',
-                                        height: '18px',
-                                        fontSize: '12px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
+                                <span className="bg-blue-500 text-white rounded-full w-4.5 h-4.5 text-xs flex items-center justify-center">
                                     {activeFiltersCount}
                                 </span>
                             ) : undefined
@@ -1144,32 +966,12 @@ export const FilterPopoverV2: Story = {
                     onClick: handleClearFilters,
                 }}
             >
-                <div
-                    style={{
-                        padding: '20px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
-                    }}
-                >
+                <div className="p-5 flex flex-col gap-5">
                     <div>
-                        <label
-                            style={{
-                                fontWeight: 600,
-                                marginBottom: '8px',
-                                display: 'block',
-                                fontSize: '14px',
-                            }}
-                        >
+                        <label className="font-semibold mb-2 block text-sm">
                             Status
                         </label>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex flex-col gap-2">
                             {statusOptions.map((status) => (
                                 <Checkbox
                                     key={status}
@@ -1191,23 +993,10 @@ export const FilterPopoverV2: Story = {
                     </div>
 
                     <div>
-                        <label
-                            style={{
-                                fontWeight: 600,
-                                marginBottom: '8px',
-                                display: 'block',
-                                fontSize: '14px',
-                            }}
-                        >
+                        <label className="font-semibold mb-2 block text-sm">
                             Priority
                         </label>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex flex-col gap-2">
                             {priorityOptions.map((priority) => (
                                 <Checkbox
                                     key={priority}
@@ -1241,23 +1030,10 @@ export const FilterPopoverV2: Story = {
                     />
 
                     <div>
-                        <label
-                            style={{
-                                fontWeight: 600,
-                                marginBottom: '8px',
-                                display: 'block',
-                                fontSize: '14px',
-                            }}
-                        >
+                        <label className="font-semibold mb-2 block text-sm">
                             Date Range
                         </label>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex flex-col gap-2">
                             {[
                                 { value: 'all', label: 'All time' },
                                 { value: 'today', label: 'Today' },
@@ -1325,59 +1101,22 @@ export const QuickActionsMenu: Story = {
                 side={PopoverV2Side.BOTTOM}
                 align={PopoverV2Align.START}
             >
-                <div style={{ padding: '8px' }}>
+                <div className="p-2">
                     {quickActions.map((action, index) => (
                         <div
                             key={action.label}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                padding: '12px',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.2s',
-                                borderBottom:
-                                    index < quickActions.length - 1
-                                        ? '1px solid #f3f4f6'
-                                        : 'none',
-                            }}
-                            onMouseEnter={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                    '#f9fafb')
-                            }
-                            onMouseLeave={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                    'transparent')
-                            }
+                            className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors hover:bg-gray-50 ${index < quickActions.length - 1 ? 'border-b border-gray-100' : ''}`}
                             onClick={() =>
                                 console.log(`Action: ${action.label}`)
                             }
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '12px',
-                                }}
-                            >
+                            <div className="flex items-center gap-3">
                                 {action.icon}
-                                <span
-                                    style={{
-                                        fontSize: '14px',
-                                        fontWeight: 500,
-                                    }}
-                                >
+                                <span className="text-sm font-medium">
                                     {action.label}
                                 </span>
                             </div>
-                            <span
-                                style={{
-                                    fontSize: '12px',
-                                    color: '#6b7280',
-                                    fontFamily: 'monospace',
-                                }}
-                            >
+                            <span className="text-xs text-gray-500 font-mono">
                                 {action.shortcut}
                             </span>
                         </div>
@@ -1430,14 +1169,14 @@ export const NotificationCenter: Story = {
         const getIcon = (type: string) => {
             switch (type) {
                 case 'info':
-                    return <Info size={16} style={{ color: '#3b82f6' }} />
+                    return <Info size={16} className="text-blue-500" />
                 case 'success':
                     return (
-                        <CheckCircle size={16} style={{ color: '#10b981' }} />
+                        <CheckCircle size={16} className="text-emerald-500" />
                     )
                 case 'warning':
                     return (
-                        <AlertTriangle size={16} style={{ color: '#f59e0b' }} />
+                        <AlertTriangle size={16} className="text-amber-500" />
                     )
                 default:
                     return <Bell size={16} />
@@ -1458,19 +1197,7 @@ export const NotificationCenter: Story = {
                         leadingIcon={<Bell size={16} />}
                         trailingIcon={
                             unreadCount > 0 ? (
-                                <span
-                                    style={{
-                                        backgroundColor: '#ef4444',
-                                        color: 'white',
-                                        borderRadius: '50%',
-                                        width: '18px',
-                                        height: '18px',
-                                        fontSize: '12px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
+                                <span className="bg-red-500 text-white rounded-full w-4.5 h-4.5 text-xs flex items-center justify-center">
                                     {unreadCount}
                                 </span>
                             ) : undefined
@@ -1484,76 +1211,32 @@ export const NotificationCenter: Story = {
                 side={PopoverV2Side.BOTTOM}
                 align={PopoverV2Align.END}
             >
-                <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <div className="max-h-72 overflow-y-auto">
                     {notifications.map((notification) => (
                         <div
                             key={notification.id}
-                            style={{
-                                padding: '16px',
-                                borderBottom: '1px solid #f3f4f6',
-                                backgroundColor: notification.read
-                                    ? 'transparent'
-                                    : '#f8fafc',
-                                cursor: 'pointer',
-                            }}
+                            className={`p-4 border-b border-gray-100 cursor-pointer ${notification.read ? 'bg-transparent' : 'bg-slate-50'}`}
                             onClick={() => markAsRead(notification.id)}
                         >
-                            <div style={{ display: 'flex', gap: '12px' }}>
-                                <div
-                                    style={{ flexShrink: 0, marginTop: '2px' }}
-                                >
+                            <div className="flex gap-3">
+                                <div className="shrink-0 mt-0.5">
                                     {getIcon(notification.type)}
                                 </div>
-                                <div style={{ flex: 1 }}>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'flex-start',
-                                            marginBottom: '4px',
-                                        }}
-                                    >
+                                <div className="flex-1">
+                                    <div className="flex justify-between items-start mb-1">
                                         <h4
-                                            style={{
-                                                margin: 0,
-                                                fontSize: '14px',
-                                                fontWeight: notification.read
-                                                    ? 400
-                                                    : 600,
-                                            }}
+                                            className={`text-sm m-0 ${notification.read ? 'font-normal' : 'font-semibold'}`}
                                         >
                                             {notification.title}
                                         </h4>
                                         {!notification.read && (
-                                            <div
-                                                style={{
-                                                    width: '8px',
-                                                    height: '8px',
-                                                    borderRadius: '50%',
-                                                    backgroundColor: '#3b82f6',
-                                                    flexShrink: 0,
-                                                }}
-                                            />
+                                            <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
                                         )}
                                     </div>
-                                    <p
-                                        style={{
-                                            margin: 0,
-                                            fontSize: '13px',
-                                            color: '#6b7280',
-                                            lineHeight: '1.4',
-                                        }}
-                                    >
+                                    <p className="text-sm text-gray-500 leading-snug m-0">
                                         {notification.message}
                                     </p>
-                                    <span
-                                        style={{
-                                            fontSize: '12px',
-                                            color: '#9ca3af',
-                                            marginTop: '4px',
-                                            display: 'block',
-                                        }}
-                                    >
+                                    <span className="text-xs text-gray-400 mt-1 block">
                                         {notification.time}
                                     </span>
                                 </div>
@@ -1562,17 +1245,8 @@ export const NotificationCenter: Story = {
                     ))}
                 </div>
                 {notifications.length === 0 && (
-                    <div
-                        style={{
-                            padding: '32px',
-                            textAlign: 'center',
-                            color: '#6b7280',
-                        }}
-                    >
-                        <Bell
-                            size={32}
-                            style={{ marginBottom: '8px', opacity: 0.5 }}
-                        />
+                    <div className="p-8 text-center text-gray-500">
+                        <Bell size={32} className="mb-2 opacity-50" />
                         <p>No notifications</p>
                     </div>
                 )}
@@ -1594,7 +1268,7 @@ export const ModalMode: Story = {
         const [isOpen, setIsOpen] = useState(false)
 
         return (
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <PopoverV2
                     trigger={
                         <Button
@@ -1616,41 +1290,20 @@ export const ModalMode: Story = {
                     showCloseButton={false}
                     maxWidth={500}
                 >
-                    <div style={{ padding: '20px', textAlign: 'left' }}>
-                        <div
-                            style={{
-                                padding: '16px',
-                                backgroundColor: '#fef3c7',
-                                borderRadius: '8px',
-                                border: '1px solid #f59e0b',
-                                marginBottom: '16px',
-                            }}
-                        >
-                            <h4
-                                style={{
-                                    margin: '0 0 8px 0',
-                                    color: '#92400e',
-                                }}
-                            >
+                    <div className="p-5 text-left">
+                        <div className="p-4 bg-amber-100 rounded-lg border border-amber-500 mb-4">
+                            <h4 className="m-0 mb-2 text-amber-800">
                                 Scheduled Maintenance
                             </h4>
-                            <p
-                                style={{
-                                    margin: 0,
-                                    color: '#92400e',
-                                    fontSize: '14px',
-                                }}
-                            >
+                            <p className="m-0 text-amber-800 text-sm">
                                 Our system will undergo scheduled maintenance on
                                 Saturday, March 15th from 2:00 AM to 6:00 AM
                                 EST.
                             </p>
                         </div>
 
-                        <h4 style={{ marginBottom: '12px' }}>
-                            What to expect:
-                        </h4>
-                        <ul style={{ paddingLeft: '20px', lineHeight: '1.6' }}>
+                        <h4 className="mb-3">What to expect:</h4>
+                        <ul className="pl-5 leading-relaxed">
                             <li>Service will be temporarily unavailable</li>
                             <li>All scheduled tasks will be paused</li>
                             <li>Data backup will occur automatically</li>
@@ -1659,26 +1312,14 @@ export const ModalMode: Story = {
                             </li>
                         </ul>
 
-                        <p
-                            style={{
-                                marginTop: '16px',
-                                fontSize: '14px',
-                                color: '#6b7280',
-                            }}
-                        >
+                        <p className="mt-4 text-sm text-gray-500">
                             We apologize for any inconvenience and appreciate
                             your understanding.
                         </p>
                     </div>
                 </PopoverV2>
 
-                <p
-                    style={{
-                        marginTop: '16px',
-                        color: '#6b7280',
-                        fontSize: '14px',
-                    }}
-                >
+                <p className="mt-4 text-gray-500 text-sm">
                     Click the button above to see modal mode with backdrop
                 </p>
             </div>
@@ -1727,42 +1368,20 @@ export const CustomContent: Story = {
                 }
                 maxWidth={220}
             >
-                <div style={{ padding: '16px' }}>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            fontWeight: 600,
-                        }}
-                    >
+                <div className="p-4">
+                    <h4 className="text-sm font-semibold mb-3">
                         Select a color
                     </h4>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(6, 1fr)',
-                            gap: '8px',
-                        }}
-                    >
+                    <div className="grid grid-cols-6 gap-2">
                         {colorPalette.map((color) => (
                             <button
                                 key={color}
-                                style={{
-                                    width: '24px',
-                                    height: '24px',
-                                    borderRadius: '4px',
-                                    backgroundColor: color,
-                                    border: '2px solid #e5e7eb',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                }}
+                                className="w-6 h-6 rounded border-2 border-gray-200 cursor-pointer transition-all hover:scale-110"
+                                style={{ backgroundColor: color }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform =
-                                        'scale(1.1)'
                                     e.currentTarget.style.borderColor = color
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'scale(1)'
                                     e.currentTarget.style.borderColor =
                                         '#e5e7eb'
                                 }}
@@ -1772,16 +1391,7 @@ export const CustomContent: Story = {
                             />
                         ))}
                     </div>
-                    <div
-                        style={{
-                            marginTop: '12px',
-                            padding: '8px',
-                            backgroundColor: '#f9fafb',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                            color: '#6b7280',
-                        }}
-                    >
+                    <div className="mt-3 p-2 bg-gray-50 rounded text-xs text-gray-500">
                         Click any color to select it
                     </div>
                 </div>
@@ -1809,15 +1419,7 @@ export const Accessibility: Story = {
             const [focusOpen, setFocusOpen] = useState(false)
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '32px',
-                        maxWidth: '800px',
-                        padding: '20px',
-                    }}
-                >
+                <div className="flex flex-col gap-8">
                     {/* Basic Accessible PopoverV2 */}
                     <div>
                         <h3
@@ -1859,7 +1461,7 @@ export const Accessibility: Story = {
                                 onClick: () => setBasicOpen(false),
                             }}
                         >
-                            <div style={{ padding: '16px' }}>
+                            <div className="p-4">
                                 <p>
                                     This popover demonstrates proper
                                     accessibility features including heading and
@@ -1872,22 +1474,10 @@ export const Accessibility: Story = {
 
                     {/* Keyboard Accessible PopoverV2 */}
                     <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
+                        <h3 className="mb-3 text-base font-bold">
                             Keyboard Accessible PopoverV2
                         </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
+                        <p className="mb-4 text-sm text-gray-500">
                             PopoverV2 is fully keyboard accessible. Tab to
                             trigger, Enter/Space to open, Escape to close.
                         </p>
@@ -1911,23 +1501,12 @@ export const Accessibility: Story = {
                                 onClick: () => setKeyboardOpen(false),
                             }}
                         >
-                            <div style={{ padding: '16px' }}>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '12px',
-                                    }}
-                                >
+                            <div className="p-4">
+                                <div className="flex flex-col gap-3">
                                     <p>
                                         <strong>Keyboard Navigation:</strong>
                                     </p>
-                                    <ul
-                                        style={{
-                                            margin: 0,
-                                            paddingLeft: '20px',
-                                        }}
-                                    >
+                                    <ul className="pl-5 m-0">
                                         <li>
                                             Tab - Navigate to trigger button
                                         </li>
@@ -1936,7 +1515,7 @@ export const Accessibility: Story = {
                                         <li>Escape - Close popover</li>
                                         <li>Enter/Space - Activate buttons</li>
                                     </ul>
-                                    <p style={{ marginTop: '12px' }}>
+                                    <p className="mt-3">
                                         Focus moves to popover content when
                                         opened.
                                     </p>
@@ -1947,22 +1526,10 @@ export const Accessibility: Story = {
 
                     {/* ARIA Attributes */}
                     <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
+                        <h3 className="mb-3 text-base font-bold">
                             ARIA Attributes (Screen Reader Support)
                         </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
+                        <p className="mb-4 text-sm text-gray-500">
                             PopoverV2 has proper ARIA attributes for screen
                             readers. Heading and description are
                             programmatically associated.
@@ -1983,7 +1550,7 @@ export const Accessibility: Story = {
                                 onClick: () => setAriaOpen(false),
                             }}
                         >
-                            <div style={{ padding: '16px' }}>
+                            <div className="p-4">
                                 <p>
                                     This popover demonstrates proper ARIA
                                     relationships. The heading and description
@@ -1996,22 +1563,10 @@ export const Accessibility: Story = {
 
                     {/* Escape Key Support */}
                     <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
+                        <h3 className="mb-3 text-base font-bold">
                             Escape Key Support
                         </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
+                        <p className="mb-4 text-sm text-gray-500">
                             Press Escape key to close the popover.
                         </p>
                         <PopoverV2
@@ -2030,7 +1585,7 @@ export const Accessibility: Story = {
                                 onClick: () => setEscapeOpen(false),
                             }}
                         >
-                            <div style={{ padding: '16px' }}>
+                            <div className="p-4">
                                 <p>
                                     This popover can be closed by pressing the
                                     Escape key. This is a standard keyboard
@@ -2042,22 +1597,10 @@ export const Accessibility: Story = {
 
                     {/* Modal Mode */}
                     <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
+                        <h3 className="mb-3 text-base font-bold">
                             Modal Mode (Focus Trap)
                         </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
+                        <p className="mb-4 text-sm text-gray-500">
                             PopoverV2 in modal mode with backdrop and focus
                             trapping.
                         </p>
@@ -2082,7 +1625,7 @@ export const Accessibility: Story = {
                                 onClick: () => setModalOpen(false),
                             }}
                         >
-                            <div style={{ padding: '16px' }}>
+                            <div className="p-4">
                                 <p>
                                     When in modal mode, the popover includes a
                                     backdrop overlay and focus is trapped within
@@ -2096,22 +1639,10 @@ export const Accessibility: Story = {
 
                     {/* Focus Management */}
                     <div>
-                        <h3
-                            style={{
-                                marginBottom: '12px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                            }}
-                        >
+                        <h3 className="mb-3 text-base font-bold">
                             Focus Management
                         </h3>
-                        <p
-                            style={{
-                                marginBottom: '16px',
-                                fontSize: '14px',
-                                color: '#666',
-                            }}
-                        >
+                        <p className="mb-4 text-sm text-gray-500">
                             Focus moves to popover content when opened and
                             returns to trigger when closed.
                         </p>
@@ -2131,7 +1662,7 @@ export const Accessibility: Story = {
                                 onClick: () => setFocusOpen(false),
                             }}
                         >
-                            <div style={{ padding: '16px' }}>
+                            <div className="p-4">
                                 <p>
                                     When this popover opens, focus moves to the
                                     popover content (first focusable element).

@@ -16,14 +16,9 @@ import {
 import {
     Star,
     Settings,
-    User,
     TrendingUp,
     MoreHorizontal,
     Calendar,
-    Download,
-    Share2,
-    Edit,
-    CheckCircle,
 } from 'lucide-react'
 import {
     getA11yConfig,
@@ -39,20 +34,56 @@ const meta: Meta<typeof Card> = {
         a11y: getA11yConfig('interactive'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A flexible container component that supports three distinct variants, each optimized for different use cases and content types.',
         docs: {
             description: {
                 component: `
-A flexible container component that supports three distinct variants, each optimized for different use cases and content types.
+## Usage 
+\`\`\`tsx
+import { Card, ButtonType, ButtonSize } from '@juspay/blend-design-system';
+
+<Card
+  headerTitle="Analytics Dashboard"
+  headerTag={<Tag text="Pro" color="success" />}
+  subHeader="Real-time performance metrics and insights"
+  bodyTitle="Monthly Summary"
+  content="Track your key metrics and performance indicators with comprehensive analytics."
+  actionButton={{
+    text: "View Full Report",
+    buttonType: ButtonType.PRIMARY,
+    size: ButtonSize.SMALL
+  }}
+/>
+\`\`\`
 
 ## Features
 
-- **Three distinct variants** - Default, Aligned, and Custom for maximum flexibility
+- **Three distinct variants**  Default, Aligned, and Custom for maximum flexibility
 - **Responsive design** with token-based styling system
 - **Hover effects** with smooth transitions and visual feedback
 - **Accessibility support** with proper ARIA attributes and keyboard navigation
 - **Flexible content slots** for complex layouts and content organization
 - **Automatic spacing** and consistent visual hierarchy
 - **Built-in action support** with integrated button handling
+
+
+## Accessibility
+
+**WCAG Compliance**: 2.1 Level AA Compliant
+
+**Level AA Compliance**: ✅ Fully Compliant
+- All Level A and Level AA criteria met
+- Keyboard accessible interactive elements (buttons, links)
+- Screen reader support (VoiceOver/NVDA)
+- Proper semantic structure and heading hierarchy
+- Focus indicators visible on all interactive elements
+- Touch targets meet Level AA requirement (24x24px minimum)
+
+**Verification:**
+- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
+- **Chromatic**: Visual regression for focus rings and states
+- **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 
 ## Variants
 
@@ -109,25 +140,6 @@ The Custom Card provides complete creative control with minimal constraints - ju
 **Available Props:**
 - \`children\` - Complete custom content with full React element support
 
-## Usage Examples
-
-### Basic Default Card
-\`\`\`tsx
-import { Card, ButtonType, ButtonSize } from '@juspay/blend-design-system';
-
-<Card
-  headerTitle="Analytics Dashboard"
-  headerTag={<Tag text="Pro" color="success" />}
-  subHeader="Real-time performance metrics and insights"
-  bodyTitle="Monthly Summary"
-  content="Track your key metrics and performance indicators with comprehensive analytics."
-  actionButton={{
-    text: "View Full Report",
-    buttonType: ButtonType.PRIMARY,
-    size: ButtonSize.SMALL
-  }}
-/>
-\`\`\`
 
 ### Aligned Card with Profile Layout
 \`\`\`tsx
@@ -154,9 +166,9 @@ import { Card, CardVariant, CardAlignment } from '@juspay/blend-design-system';
 import { Card, CardVariant, Button } from '@juspay/blend-design-system';
 
 <Card variant={CardVariant.CUSTOM}>
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+  <div className="flex flex-col gap-4">
     <h3>Custom Dashboard</h3>
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+    <div className="grid grid-cols-2 gap-3">
       <MetricCard value="142" label="Total Users" />
       <MetricCard value="89%" label="Success Rate" />
     </div>
@@ -195,22 +207,6 @@ import { Card, CardVariant, Button } from '@juspay/blend-design-system';
 4. **Slot Usage**: Leverage appropriate slots based on content type and importance
 5. **Responsive Considerations**: Ensure content adapts gracefully across screen sizes
 
-## Accessibility
-
-**WCAG Compliance**: 2.1 Level AA Compliant
-
-**Level AA Compliance**: ✅ Fully Compliant
-- All Level A and Level AA criteria met
-- Keyboard accessible interactive elements (buttons, links)
-- Screen reader support (VoiceOver/NVDA)
-- Proper semantic structure and heading hierarchy
-- Focus indicators visible on all interactive elements
-- Touch targets meet Level AA requirement (24x24px minimum)
-
-**Verification:**
-- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
-- **Chromatic**: Visual regression for focus rings and states
-- **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 
 ## Technical Specifications
 
@@ -443,56 +439,19 @@ type Story = StoryObj<typeof Card>
 
 // Helper components for slots
 const iconSlot = (
-    <div
-        style={{
-            width: '28px',
-            height: '28px',
-            background: '#f0f9ff',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '1px solid #e0f2fe',
-        }}
-    >
-        <TrendingUp size={16} color="#0ea5e9" />
+    <div className="w-7 h-7 bg-sky-50 rounded-xl flex items-center justify-center border border-sky-100">
+        <TrendingUp size={16} className="text-sky-500" />
     </div>
 )
 
 const imageSlot = (
-    <div
-        style={{
-            width: '100%',
-            height: '120px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: '18px',
-            fontWeight: '600',
-            borderRadius: '8px',
-        }}
-    >
+    <div className="w-full h-30 bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-lg font-semibold rounded-lg">
         Image Placeholder
     </div>
 )
 
 const avatarSlot = (
-    <div
-        style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: '24px',
-            fontWeight: '600',
-        }}
-    >
+    <div className="w-20 h-20 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-semibold">
         JD
     </div>
 )
@@ -501,18 +460,8 @@ const avatarSlot = (
 export const DefaultCard: Story = {
     args: {
         headerSlot1: (
-            <div
-                style={{
-                    width: '24px',
-                    height: '24px',
-                    backgroundColor: '#3b82f6',
-                    borderRadius: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Star size={14} color="white" />
+            <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center">
+                <Star size={14} className="text-white" />
             </div>
         ),
         headerTitle: 'Analytics Dashboard',
@@ -533,29 +482,10 @@ export const DefaultCard: Story = {
         ),
         subHeader: 'Real-time performance metrics and insights',
         bodySlot1: (
-            <div
-                style={{
-                    padding: '12px',
-                    backgroundColor: '#f0f9ff',
-                    borderRadius: '8px',
-                    border: '1px solid #e0f2fe',
-                }}
-            >
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                    }}
-                >
-                    <TrendingUp size={16} color="#0ea5e9" />
-                    <span
-                        style={{
-                            fontSize: '14px',
-                            color: '#0ea5e9',
-                            fontWeight: '600',
-                        }}
-                    >
+            <div className="p-3 bg-sky-50 rounded-lg border border-sky-100">
+                <div className="flex items-center gap-2">
+                    <TrendingUp size={16} className="text-sky-500" />
+                    <span className="text-sm text-sky-500 font-semibold font-manrope">
                         Performance is up 23% this month
                     </span>
                 </div>
@@ -565,40 +495,18 @@ export const DefaultCard: Story = {
         content:
             'Track your key metrics and performance indicators with comprehensive analytics and real-time data visualization.',
         bodySlot2: (
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: '16px',
-                }}
-            >
-                <div style={{ textAlign: 'center' }}>
-                    <div
-                        style={{
-                            fontSize: '20px',
-                            fontWeight: '700',
-                            color: '#10b981',
-                        }}
-                    >
+            <div className="flex justify-between gap-4">
+                <div className="text-center">
+                    <div className="text-xl font-bold text-emerald-500">
                         92%
                     </div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>
-                        Success Rate
-                    </div>
+                    <div className="text-xs text-gray-500">Success Rate</div>
                 </div>
-                <div style={{ textAlign: 'center' }}>
-                    <div
-                        style={{
-                            fontSize: '20px',
-                            fontWeight: '700',
-                            color: '#3b82f6',
-                        }}
-                    >
+                <div className="text-center">
+                    <div className="text-xl font-bold text-blue-500">
                         $12.5K
                     </div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>
-                        Revenue
-                    </div>
+                    <div className="text-xs text-gray-500">Revenue</div>
                 </div>
             </div>
         ),
@@ -714,19 +622,8 @@ export const AlignedCardHorizontal: Story = {
         alignment: CardAlignment.HORIZONTAL,
         centerAlign: false,
         cardSlot: (
-            <div
-                style={{
-                    width: '28px',
-                    height: '28px',
-                    background: '#f0f9ff',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '1px solid #e0f2fe',
-                }}
-            >
-                <TrendingUp size={16} color="#0ea5e9" />
+            <div className="w-7 h-7 bg-sky-50 rounded-xl flex items-center justify-center border border-sky-100">
+                <TrendingUp size={16} className="text-sky-500" />
             </div>
         ),
         headerTitle: 'New App Launch',
@@ -761,26 +658,23 @@ export const AlignedCardHorizontalCentered: Story = {
         alignment: CardAlignment.HORIZONTAL,
         centerAlign: true,
         cardSlot: (
-            <div
-                style={{
-                    width: '28px',
-                    height: '28px',
-                    background:
-                        'linear-gradient(135deg, #c084fc 0%, #e879f9 100%)',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <div
-                    style={{
-                        width: '16px',
-                        height: '16px',
-                        background: 'rgba(255,255,255,0.3)',
-                        borderRadius: '4px',
-                    }}
-                />
+            <div className="w-7 h-7 bg-gray-200 rounded-xl flex items-center justify-center">
+                <div className="w-4 h-4 rounded flex items-center justify-center">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3 text-gray-700"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 12h14M12 5l7 7-7 7"
+                        />
+                    </svg>
+                </div>
             </div>
         ),
         headerTitle: 'Customize Board',
@@ -850,28 +744,9 @@ export const CustomCardDashboard: Story = {
     args: {
         variant: CardVariant.CUSTOM,
         children: (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    padding: '20px',
-                }}
-            >
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                    }}
-                >
-                    <h3
-                        style={{
-                            margin: 0,
-                            fontSize: '18px',
-                            fontWeight: '600',
-                        }}
-                    >
+            <div className="flex flex-col gap-4 p-5">
+                <div className="flex justify-between items-center">
+                    <h3 className="m-0 text-lg font-semibold">
                         Custom Dashboard
                     </h3>
                     <Button
@@ -880,52 +755,18 @@ export const CustomCardDashboard: Story = {
                         leadingIcon={<Calendar size={16} />}
                     />
                 </div>
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '12px',
-                    }}
-                >
-                    <div
-                        style={{
-                            textAlign: 'center',
-                            padding: '16px',
-                            backgroundColor: '#f0f9ff',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <div
-                            style={{
-                                fontSize: '24px',
-                                fontWeight: '700',
-                                color: '#3b82f6',
-                            }}
-                        >
+                <div className="grid grid-cols-2 gap-3">
+                    <div className="text-center p-4 bg-sky-50 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-500">
                             142
                         </div>
-                        <div style={{ fontSize: '12px', color: '#666' }}>
-                            Total Users
-                        </div>
+                        <div className="text-xs text-gray-500">Total Users</div>
                     </div>
-                    <div
-                        style={{
-                            textAlign: 'center',
-                            padding: '16px',
-                            backgroundColor: '#f0fdf4',
-                            borderRadius: '8px',
-                        }}
-                    >
-                        <div
-                            style={{
-                                fontSize: '24px',
-                                fontWeight: '700',
-                                color: '#10b981',
-                            }}
-                        >
+                    <div className="text-center p-4 bg-emerald-50 rounded-lg">
+                        <div className="text-2xl font-bold text-emerald-500">
                             89%
                         </div>
-                        <div style={{ fontSize: '12px', color: '#666' }}>
+                        <div className="text-xs text-gray-500">
                             Success Rate
                         </div>
                     </div>
@@ -947,196 +788,12 @@ export const CustomCardDashboard: Story = {
     },
 }
 
-export const CustomCardForm: Story = {
-    args: {
-        variant: CardVariant.CUSTOM,
-        children: (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    padding: '15px',
-                }}
-            >
-                <h3
-                    style={{
-                        margin: 0,
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        textAlign: 'center',
-                    }}
-                >
-                    Quick Contact
-                </h3>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                    }}
-                >
-                    <input
-                        type="text"
-                        placeholder="Your name"
-                        style={{
-                            padding: '12px',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                        }}
-                    />
-                    <input
-                        type="email"
-                        placeholder="Your email"
-                        style={{
-                            padding: '12px',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                        }}
-                    />
-                    <textarea
-                        placeholder="Your message"
-                        rows={3}
-                        style={{
-                            padding: '12px',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            resize: 'vertical',
-                        }}
-                    />
-                </div>
-                <Button
-                    text="Send Message"
-                    buttonType={ButtonType.PRIMARY}
-                    size={ButtonSize.SMALL}
-                />
-            </div>
-        ),
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Custom card with a contact form. Demonstrates how to create completely custom layouts within the card wrapper.',
-            },
-        },
-    },
-}
-
-export const CustomCardProfile: Story = {
-    args: {
-        variant: CardVariant.CUSTOM,
-        children: (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    textAlign: 'center',
-                    padding: '25px',
-                }}
-            >
-                <div
-                    style={{
-                        width: '80px',
-                        height: '80px',
-                        backgroundColor: '#10b981',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto',
-                    }}
-                >
-                    <User size={32} color="white" />
-                </div>
-                <div>
-                    <h3
-                        style={{
-                            margin: '0 0 8px 0',
-                            fontSize: '18px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Custom Profile
-                    </h3>
-                    <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>
-                        This is a custom card where you have complete control
-                        over the content. Just 16px padding wrapper!
-                    </p>
-                </div>
-                <Button
-                    text="Custom Action"
-                    buttonType={ButtonType.PRIMARY}
-                    size={ButtonSize.SMALL}
-                />
-            </div>
-        ),
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Custom card with a profile layout. Shows how to create centered content with custom styling.',
-            },
-        },
-    },
-}
-
-// Interactive Playground
-export const Playground: Story = {
-    args: {
-        variant: CardVariant.DEFAULT,
-        headerTitle: 'Interactive Card',
-        headerTag: (
-            <Tag
-                text="Demo"
-                variant={TagVariant.ATTENTIVE}
-                color={TagColor.PRIMARY}
-                size={TagSize.SM}
-            />
-        ),
-        subHeader:
-            'Use the controls to experiment with different configurations',
-        bodyTitle: 'Playground',
-        content:
-            'This is the interactive playground where you can test different card configurations and see how they behave.',
-        actionButton: {
-            text: 'Test Action',
-            buttonType: ButtonType.PRIMARY,
-            size: ButtonSize.SMALL,
-        },
-        maxWidth: '400px',
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Interactive playground to test different card configurations. Use the controls panel to experiment with various props and see real-time changes.',
-            },
-        },
-    },
-}
-
 // Skeleton Loading State
 export const SkeletonState: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '32px',
-                padding: '24px',
-            }}
-        >
+        <div className="flex flex-wrap gap-8 p-6">
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     Default Card - Pulse Variant
                 </h4>
                 <Card
@@ -1149,13 +806,7 @@ export const SkeletonState: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     Default Card - Wave Variant
                 </h4>
                 <Card
@@ -1166,54 +817,6 @@ export const SkeletonState: Story = {
                     skeleton={{ show: true, variant: 'wave' }}
                 />
             </div>
-
-            <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    Aligned Card - Vertical with Skeleton
-                </h4>
-                <Card
-                    variant={CardVariant.ALIGNED}
-                    alignment={CardAlignment.VERTICAL}
-                    centerAlign
-                    cardSlot={
-                        <div
-                            style={{
-                                width: '80px',
-                                height: '80px',
-                                background: '#e5e7eb',
-                                borderRadius: '50%',
-                            }}
-                        />
-                    }
-                    headerTitle="Profile Loading"
-                    content="User profile data is loading..."
-                    skeleton={{ show: true, variant: 'pulse' }}
-                />
-            </div>
-
-            <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    Custom Card - Skeleton
-                </h4>
-                <Card
-                    variant={CardVariant.CUSTOM}
-                    skeleton={{ show: true, variant: 'wave' }}
-                >
-                    <div>Custom content is loading...</div>
-                </Card>
-            </div>
         </div>
     ),
     parameters: {
@@ -1223,622 +826,5 @@ export const SkeletonState: Story = {
             },
         },
         a11y: getA11yConfig('content'),
-    },
-}
-
-// Accessibility Story
-export const Accessibility: Story = {
-    render: () => {
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '20px',
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                }}
-            >
-                <div
-                    style={{
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '8px',
-                        padding: '20px',
-                        backgroundColor: '#f9fafb',
-                    }}
-                >
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 600,
-                            marginBottom: '12px',
-                        }}
-                    >
-                        Interactive Accessibility Demo
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '20px',
-                        }}
-                    >
-                        Interactive examples demonstrating the Card component's
-                        accessibility features including keyboard navigation,
-                        semantic structure, focus management, and screen reader
-                        support.
-                    </p>
-
-                    {/* Default Card Examples */}
-                    <section style={{ marginBottom: '32px' }}>
-                        <h4
-                            style={{
-                                fontSize: '16px',
-                                fontWeight: 600,
-                                marginBottom: '16px',
-                            }}
-                        >
-                            Default Card - Keyboard Accessible Buttons
-                        </h4>
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: '16px',
-                            }}
-                        >
-                            <Card
-                                headerSlot1={
-                                    <div
-                                        style={{
-                                            width: '24px',
-                                            height: '24px',
-                                            backgroundColor: '#3b82f6',
-                                            borderRadius: '4px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                        aria-label="Analytics icon"
-                                    >
-                                        <TrendingUp size={14} color="white" />
-                                    </div>
-                                }
-                                headerTitle="Analytics Dashboard"
-                                headerTag={
-                                    <Tag
-                                        text="Pro"
-                                        variant={TagVariant.ATTENTIVE}
-                                        color={TagColor.SUCCESS}
-                                        size={TagSize.SM}
-                                    />
-                                }
-                                headerSlot2={
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.SMALL}
-                                        leadingIcon={<Settings size={16} />}
-                                        aria-label="Open dashboard settings"
-                                    />
-                                }
-                                subHeader="Real-time performance metrics and insights"
-                                bodyTitle="Monthly Summary"
-                                content="Track your key metrics and performance indicators with comprehensive analytics and real-time data visualization."
-                                actionButton={{
-                                    text: 'View Full Report',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            />
-                            <Card
-                                headerTitle="User Management"
-                                headerTag={
-                                    <Tag
-                                        text="Active"
-                                        variant={TagVariant.ATTENTIVE}
-                                        color={TagColor.SUCCESS}
-                                        size={TagSize.SM}
-                                    />
-                                }
-                                headerSlot2={
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.SMALL}
-                                        leadingIcon={
-                                            <MoreHorizontal size={16} />
-                                        }
-                                        aria-label="More options for user management"
-                                    />
-                                }
-                                subHeader="Manage users and permissions"
-                                bodyTitle="Active Users"
-                                content="Currently 142 active users with various permission levels. Manage access and roles from this dashboard."
-                                actionButton={{
-                                    text: 'Manage Users',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            />
-                        </div>
-                    </section>
-
-                    {/* Aligned Card Examples */}
-                    <section style={{ marginBottom: '32px' }}>
-                        <h4
-                            style={{
-                                fontSize: '16px',
-                                fontWeight: 600,
-                                marginBottom: '16px',
-                            }}
-                        >
-                            Aligned Card - Semantic Structure
-                        </h4>
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: '16px',
-                            }}
-                        >
-                            <Card
-                                variant={CardVariant.ALIGNED}
-                                alignment={CardAlignment.VERTICAL}
-                                centerAlign={true}
-                                cardSlot={
-                                    <div
-                                        style={{
-                                            width: '80px',
-                                            height: '80px',
-                                            borderRadius: '50%',
-                                            background:
-                                                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: 'white',
-                                            fontSize: '24px',
-                                            fontWeight: '600',
-                                        }}
-                                        aria-label="User avatar for John Doe"
-                                    >
-                                        JD
-                                    </div>
-                                }
-                                headerTitle="John Doe"
-                                headerTag={
-                                    <Tag
-                                        text="Premium"
-                                        variant={TagVariant.ATTENTIVE}
-                                        color={TagColor.SUCCESS}
-                                        size={TagSize.SM}
-                                    />
-                                }
-                                subHeader="Senior Developer"
-                                bodyTitle="Profile Information"
-                                content="Senior Developer with expertise in React and Node.js. 5+ years of experience building scalable web applications."
-                                actionButton={{
-                                    text: 'View Profile',
-                                    buttonType: ButtonType.SECONDARY,
-                                    subType: ButtonSubType.INLINE,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            />
-                            <Card
-                                variant={CardVariant.ALIGNED}
-                                alignment={CardAlignment.HORIZONTAL}
-                                centerAlign={false}
-                                cardSlot={
-                                    <div
-                                        style={{
-                                            width: '28px',
-                                            height: '28px',
-                                            background: '#f0f9ff',
-                                            borderRadius: '12px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            border: '1px solid #e0f2fe',
-                                        }}
-                                        aria-label="New feature icon"
-                                    >
-                                        <TrendingUp size={16} color="#0ea5e9" />
-                                    </div>
-                                }
-                                headerTitle="New App Launch"
-                                headerSlot2={
-                                    <Button
-                                        buttonType={ButtonType.SECONDARY}
-                                        size={ButtonSize.SMALL}
-                                        leadingIcon={
-                                            <MoreHorizontal size={16} />
-                                        }
-                                        aria-label="More options for app launch"
-                                    />
-                                }
-                                subHeader="Latest feature release"
-                                bodyTitle="Feature Details"
-                                content="Introducing our new dashboard with enhanced analytics and real-time data visualization capabilities."
-                                actionButton={{
-                                    text: 'Learn More',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            />
-                        </div>
-                    </section>
-
-                    {/* Custom Card Examples */}
-                    <section style={{ marginBottom: '32px' }}>
-                        <h4
-                            style={{
-                                fontSize: '16px',
-                                fontWeight: 600,
-                                marginBottom: '16px',
-                            }}
-                        >
-                            Custom Card - Flexible Content Structure
-                        </h4>
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: '16px',
-                            }}
-                        >
-                            <Card variant={CardVariant.CUSTOM}>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '16px',
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <h3
-                                            style={{
-                                                margin: 0,
-                                                fontSize: '18px',
-                                                fontWeight: '600',
-                                            }}
-                                        >
-                                            Custom Dashboard
-                                        </h3>
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Calendar size={16} />}
-                                            aria-label="View calendar"
-                                        />
-                                    </div>
-                                    <div
-                                        style={{
-                                            display: 'grid',
-                                            gridTemplateColumns: '1fr 1fr',
-                                            gap: '12px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                textAlign: 'center',
-                                                padding: '16px',
-                                                backgroundColor: '#f0f9ff',
-                                                borderRadius: '8px',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    fontSize: '24px',
-                                                    fontWeight: '700',
-                                                    color: '#3b82f6',
-                                                }}
-                                            >
-                                                142
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: '12px',
-                                                    color: '#666',
-                                                }}
-                                            >
-                                                Total Users
-                                            </div>
-                                        </div>
-                                        <div
-                                            style={{
-                                                textAlign: 'center',
-                                                padding: '16px',
-                                                backgroundColor: '#f0fdf4',
-                                                borderRadius: '8px',
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    fontSize: '24px',
-                                                    fontWeight: '700',
-                                                    color: '#10b981',
-                                                }}
-                                            >
-                                                89%
-                                            </div>
-                                            <div
-                                                style={{
-                                                    fontSize: '12px',
-                                                    color: '#666',
-                                                }}
-                                            >
-                                                Success Rate
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <Button
-                                        text="View Analytics"
-                                        buttonType={ButtonType.PRIMARY}
-                                        size={ButtonSize.SMALL}
-                                    />
-                                </div>
-                            </Card>
-                            <Card variant={CardVariant.CUSTOM}>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '16px',
-                                    }}
-                                >
-                                    <h3
-                                        style={{
-                                            margin: 0,
-                                            fontSize: '18px',
-                                            fontWeight: '600',
-                                            textAlign: 'center',
-                                        }}
-                                    >
-                                        Quick Actions
-                                    </h3>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            gap: '12px',
-                                        }}
-                                    >
-                                        <Button
-                                            text="Download Report"
-                                            buttonType={ButtonType.PRIMARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Download size={16} />}
-                                        />
-                                        <Button
-                                            text="Share Dashboard"
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Share2 size={16} />}
-                                        />
-                                        <Button
-                                            text="Edit Settings"
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                            leadingIcon={<Edit size={16} />}
-                                        />
-                                    </div>
-                                </div>
-                            </Card>
-                        </div>
-                    </section>
-
-                    {/* Interactive Elements */}
-                    <section style={{ marginBottom: '32px' }}>
-                        <h4
-                            style={{
-                                fontSize: '16px',
-                                fontWeight: 600,
-                                marginBottom: '16px',
-                            }}
-                        >
-                            Interactive Elements - Keyboard Navigation
-                        </h4>
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: '16px',
-                            }}
-                        >
-                            <Card
-                                headerTitle="Action Buttons"
-                                subHeader="All buttons are keyboard accessible"
-                                bodyTitle="Keyboard Navigation"
-                                content="Use Tab to navigate between buttons, Enter or Space to activate. All interactive elements have visible focus indicators."
-                                actionButton={{
-                                    text: 'Primary Action',
-                                    buttonType: ButtonType.PRIMARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                                bodySlot2={
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            gap: '8px',
-                                            marginTop: '12px',
-                                        }}
-                                    >
-                                        <Button
-                                            text="Secondary"
-                                            buttonType={ButtonType.SECONDARY}
-                                            size={ButtonSize.SMALL}
-                                        />
-                                        <Button
-                                            text="Danger"
-                                            buttonType={ButtonType.DANGER}
-                                            size={ButtonSize.SMALL}
-                                        />
-                                    </div>
-                                }
-                            />
-                            <Card
-                                headerTitle="Status Indicators"
-                                subHeader="Semantic structure with proper headings"
-                                bodyTitle="Content Organization"
-                                content="Cards use proper heading hierarchy (h3 for bodyTitle) and semantic HTML structure for screen reader navigation."
-                                headerTag={
-                                    <Tag
-                                        text="Active"
-                                        variant={TagVariant.ATTENTIVE}
-                                        color={TagColor.SUCCESS}
-                                        size={TagSize.SM}
-                                    />
-                                }
-                                bodySlot1={
-                                    <div
-                                        style={{
-                                            padding: '12px',
-                                            backgroundColor: '#f0fdf4',
-                                            borderRadius: '8px',
-                                            border: '1px solid #bbf7d0',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '8px',
-                                        }}
-                                    >
-                                        <CheckCircle
-                                            size={16}
-                                            color="#10b981"
-                                        />
-                                        <span
-                                            style={{
-                                                fontSize: '14px',
-                                                color: '#166534',
-                                                fontWeight: '600',
-                                            }}
-                                        >
-                                            All systems operational
-                                        </span>
-                                    </div>
-                                }
-                                actionButton={{
-                                    text: 'View Status',
-                                    buttonType: ButtonType.SECONDARY,
-                                    size: ButtonSize.SMALL,
-                                }}
-                            />
-                        </div>
-                    </section>
-
-                    <div
-                        style={{
-                            marginTop: '24px',
-                            padding: '16px',
-                            backgroundColor: '#fff',
-                            borderRadius: '8px',
-                            border: '1px solid #e5e7eb',
-                        }}
-                    >
-                        <p
-                            style={{
-                                margin: 0,
-                                fontWeight: 600,
-                                marginBottom: '8px',
-                            }}
-                        >
-                            Accessibility notes:
-                        </p>
-                        <ul
-                            style={{
-                                listStyleType: 'disc',
-                                paddingLeft: '20px',
-                                fontSize: '14px',
-                                color: '#4b5563',
-                                lineHeight: '1.6',
-                            }}
-                        >
-                            <li>
-                                All interactive elements (buttons, links) are
-                                keyboard accessible (Tab, Enter/Space).
-                            </li>
-                            <li>
-                                Cards use semantic HTML structure with proper
-                                heading hierarchy for screen reader navigation.
-                            </li>
-                            <li>
-                                Focus indicators are visible on all interactive
-                                elements.
-                            </li>
-                            <li>
-                                Action buttons have descriptive text labels for
-                                screen readers.
-                            </li>
-                            <li>
-                                Header and body titles use proper heading levels
-                                for document structure.
-                            </li>
-                            <li>
-                                All text content is readable by screen readers.
-                            </li>
-                            <li>
-                                Color contrast meets WCAG AA standards for text
-                                and interactive elements.
-                            </li>
-                            <li>
-                                Icons in headerSlot1 and cardSlot should have
-                                aria-label when they convey information.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Interactive examples demonstrating the Card component's accessibility features including keyboard navigation, semantic structure, focus management, and screen reader support.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0 for AA compliance)
-   - Review passing tests (15+)
-   - See real-time accessibility status
-
-2. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Keyboard navigation (Tab, Shift+Tab, Enter/Space for buttons)
-   - Color contrast verification with WebAIM Contrast Checker
-   - Zoom testing up to 200%
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes (hover, active)
-   - Responsive behavior
-
-## Accessibility Report
-
-**Current Status**:
-- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations expected)
-- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (requires manual verification for some criteria like enhanced contrast)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Keyboard No Exception (2.1.3), Change on Request (3.2.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio (currently 4.5:1 for AA)
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-                `,
-            },
-        },
-        a11y: {
-            ...getA11yConfig('interactive'),
-        },
     },
 }

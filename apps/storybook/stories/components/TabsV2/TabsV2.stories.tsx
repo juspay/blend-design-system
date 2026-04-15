@@ -133,7 +133,7 @@ type Story = StoryObj<typeof TabsV2>
 // Basic story with default configuration
 export const Default: Story = {
     render: (args) => (
-        <div style={{ width: '500px' }}>
+        <div className="w-[500px]">
             <TabsV2 {...args} defaultValue="tab1">
                 <TabsV2List>
                     <TabsV2Trigger value="tab1">Overview</TabsV2Trigger>
@@ -141,19 +141,19 @@ export const Default: Story = {
                     <TabsV2Trigger value="tab3">Settings</TabsV2Trigger>
                 </TabsV2List>
                 <TabsV2Content value="tab1">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <h3>Overview Content</h3>
                         <p>This is the overview tab content.</p>
                     </div>
                 </TabsV2Content>
                 <TabsV2Content value="tab2">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <h3>Details Content</h3>
                         <p>This is the details tab content.</p>
                     </div>
                 </TabsV2Content>
                 <TabsV2Content value="tab3">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <h3>Settings Content</h3>
                         <p>This is the settings tab content.</p>
                     </div>
@@ -166,24 +166,10 @@ export const Default: Story = {
 // All variants showcase
 export const AllVariants: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 32,
-                width: '600px',
-            }}
-        >
+        <div className="flex flex-col gap-8 w-[600px]">
             {Object.values(TabsV2Variant).map((variant) => (
                 <div key={variant}>
-                    <h3
-                        style={{
-                            marginBottom: 12,
-                            fontSize: 14,
-                            fontWeight: 600,
-                            textTransform: 'capitalize',
-                        }}
-                    >
+                    <h3 className="mb-3 text-sm font-semibold capitalize">
                         {variant} Variant
                     </h3>
                     <TabsV2 defaultValue="tab1" variant={variant}>
@@ -193,13 +179,13 @@ export const AllVariants: Story = {
                             <TabsV2Trigger value="tab3">Tab 3</TabsV2Trigger>
                         </TabsV2List>
                         <TabsV2Content value="tab1">
-                            <div style={{ padding: '12px' }}>Content 1</div>
+                            <div className="p-3">Content 1</div>
                         </TabsV2Content>
                         <TabsV2Content value="tab2">
-                            <div style={{ padding: '12px' }}>Content 2</div>
+                            <div className="p-3">Content 2</div>
                         </TabsV2Content>
                         <TabsV2Content value="tab3">
-                            <div style={{ padding: '12px' }}>Content 3</div>
+                            <div className="p-3">Content 3</div>
                         </TabsV2Content>
                     </TabsV2>
                 </div>
@@ -222,23 +208,10 @@ export const AllVariants: Story = {
 // Size comparison
 export const Sizes: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 32,
-                width: '600px',
-            }}
-        >
+        <div className="flex flex-col gap-8 w-[600px]">
             {Object.values(TabsV2Size).map((size) => (
                 <div key={size}>
-                    <h3
-                        style={{
-                            marginBottom: 12,
-                            fontSize: 14,
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-sm font-semibold">
                         Size: {size.toUpperCase()}
                     </h3>
                     <TabsV2 defaultValue="tab1" size={size}>
@@ -248,13 +221,13 @@ export const Sizes: Story = {
                             <TabsV2Trigger value="tab3">Tab 3</TabsV2Trigger>
                         </TabsV2List>
                         <TabsV2Content value="tab1">
-                            <div style={{ padding: '12px' }}>Content 1</div>
+                            <div className="p-3">Content 1</div>
                         </TabsV2Content>
                         <TabsV2Content value="tab2">
-                            <div style={{ padding: '12px' }}>Content 2</div>
+                            <div className="p-3">Content 2</div>
                         </TabsV2Content>
                         <TabsV2Content value="tab3">
-                            <div style={{ padding: '12px' }}>Content 3</div>
+                            <div className="p-3">Content 3</div>
                         </TabsV2Content>
                     </TabsV2>
                 </div>
@@ -276,7 +249,7 @@ export const Sizes: Story = {
 
 export const WithIcons: Story = {
     render: () => (
-        <div style={{ width: '500px' }}>
+        <div className="w-[500px]">
             <TabsV2 defaultValue="tab1">
                 <TabsV2List>
                     <TabsV2Trigger value="tab1" leftSlot={<Home size={16} />}>
@@ -293,13 +266,13 @@ export const WithIcons: Story = {
                     </TabsV2Trigger>
                 </TabsV2List>
                 <TabsV2Content value="tab1">
-                    <div style={{ padding: '16px' }}>Home content</div>
+                    <div className="p-4">Home content</div>
                 </TabsV2Content>
                 <TabsV2Content value="tab2">
-                    <div style={{ padding: '16px' }}>Profile content</div>
+                    <div className="p-4">Profile content</div>
                 </TabsV2Content>
                 <TabsV2Content value="tab3">
-                    <div style={{ padding: '16px' }}>Settings content</div>
+                    <div className="p-4">Settings content</div>
                 </TabsV2Content>
             </TabsV2>
         </div>
@@ -326,7 +299,7 @@ export const ClosableTabs: Story = {
         }
 
         return (
-            <div style={{ width: '500px' }}>
+            <div className="w-[500px]">
                 <TabsV2 defaultValue={tabs[0]?.value}>
                     <TabsV2List>
                         {tabs.map((tab) => (
@@ -342,7 +315,7 @@ export const ClosableTabs: Story = {
                     </TabsV2List>
                     {tabs.map((tab) => (
                         <TabsV2Content key={tab.value} value={tab.value}>
-                            <div style={{ padding: '16px' }}>
+                            <div className="p-4">
                                 <h3>{tab.label}</h3>
                                 <p>Content for {tab.label}</p>
                             </div>
@@ -364,7 +337,7 @@ export const ClosableTabs: Story = {
 // Expanded tabs
 export const Expanded: Story = {
     render: () => (
-        <div style={{ width: '600px' }}>
+        <div className="w-[600px]">
             <TabsV2 defaultValue="tab1" expanded>
                 <TabsV2List>
                     <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
@@ -372,13 +345,13 @@ export const Expanded: Story = {
                     <TabsV2Trigger value="tab3">Tab 3</TabsV2Trigger>
                 </TabsV2List>
                 <TabsV2Content value="tab1">
-                    <div style={{ padding: '16px' }}>Content 1</div>
+                    <div className="p-4">Content 1</div>
                 </TabsV2Content>
                 <TabsV2Content value="tab2">
-                    <div style={{ padding: '16px' }}>Content 2</div>
+                    <div className="p-4">Content 2</div>
                 </TabsV2Content>
                 <TabsV2Content value="tab3">
-                    <div style={{ padding: '16px' }}>Content 3</div>
+                    <div className="p-4">Content 3</div>
                 </TabsV2Content>
             </TabsV2>
         </div>
@@ -395,7 +368,7 @@ export const Expanded: Story = {
 // Disabled state
 export const Disabled: Story = {
     render: () => (
-        <div style={{ width: '500px' }}>
+        <div className="w-[500px]">
             <TabsV2 defaultValue="tab1" disabled>
                 <TabsV2List>
                     <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
@@ -403,13 +376,13 @@ export const Disabled: Story = {
                     <TabsV2Trigger value="tab3">Tab 3</TabsV2Trigger>
                 </TabsV2List>
                 <TabsV2Content value="tab1">
-                    <div style={{ padding: '16px' }}>Content 1</div>
+                    <div className="p-4">Content 1</div>
                 </TabsV2Content>
                 <TabsV2Content value="tab2">
-                    <div style={{ padding: '16px' }}>Content 2</div>
+                    <div className="p-4">Content 2</div>
                 </TabsV2Content>
                 <TabsV2Content value="tab3">
-                    <div style={{ padding: '16px' }}>Content 3</div>
+                    <div className="p-4">Content 3</div>
                 </TabsV2Content>
             </TabsV2>
         </div>
@@ -426,7 +399,7 @@ export const Disabled: Story = {
 // Individual disabled tabs
 export const PartiallyDisabled: Story = {
     render: () => (
-        <div style={{ width: '500px' }}>
+        <div className="w-[500px]">
             <TabsV2 defaultValue="tab1">
                 <TabsV2List>
                     <TabsV2Trigger value="tab1">Enabled</TabsV2Trigger>
@@ -436,15 +409,13 @@ export const PartiallyDisabled: Story = {
                     <TabsV2Trigger value="tab3">Enabled</TabsV2Trigger>
                 </TabsV2List>
                 <TabsV2Content value="tab1">
-                    <div style={{ padding: '16px' }}>Tab 1 content</div>
+                    <div className="p-4">Tab 1 content</div>
                 </TabsV2Content>
                 <TabsV2Content value="tab2">
-                    <div style={{ padding: '16px' }}>
-                        Tab 2 content (disabled)
-                    </div>
+                    <div className="p-4">Tab 2 content (disabled)</div>
                 </TabsV2Content>
                 <TabsV2Content value="tab3">
-                    <div style={{ padding: '16px' }}>Tab 3 content</div>
+                    <div className="p-4">Tab 3 content</div>
                 </TabsV2Content>
             </TabsV2>
         </div>
@@ -461,7 +432,7 @@ export const PartiallyDisabled: Story = {
 // Skeleton loading
 export const Skeleton: Story = {
     render: () => (
-        <div style={{ width: '500px' }}>
+        <div className="w-[500px]">
             <TabsV2 defaultValue="tab1" showSkeleton>
                 <TabsV2List>
                     <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
@@ -469,7 +440,7 @@ export const Skeleton: Story = {
                     <TabsV2Trigger value="tab3">Tab 3</TabsV2Trigger>
                 </TabsV2List>
                 <TabsV2Content value="tab1">
-                    <div style={{ padding: '16px' }}>Content 1</div>
+                    <div className="p-4">Content 1</div>
                 </TabsV2Content>
             </TabsV2>
         </div>
@@ -486,7 +457,7 @@ export const Skeleton: Story = {
 // Interactive story with testing
 export const Interactive: Story = {
     render: (args) => (
-        <div style={{ width: '500px' }}>
+        <div className="w-[500px]">
             <TabsV2 {...args} defaultValue="tab1">
                 <TabsV2List>
                     <TabsV2Trigger value="tab1">First Tab</TabsV2Trigger>
@@ -494,17 +465,17 @@ export const Interactive: Story = {
                     <TabsV2Trigger value="tab3">Third Tab</TabsV2Trigger>
                 </TabsV2List>
                 <TabsV2Content value="tab1">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <p>This is the first tab content.</p>
                     </div>
                 </TabsV2Content>
                 <TabsV2Content value="tab2">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <p>This is the second tab content.</p>
                     </div>
                 </TabsV2Content>
                 <TabsV2Content value="tab3">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         <p>This is the third tab content.</p>
                     </div>
                 </TabsV2Content>
@@ -561,7 +532,7 @@ export const CloseButtonInteraction: Story = {
         }
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-[400px]">
                 <TabsV2 defaultValue="tab1">
                     <TabsV2List>
                         {tabs.map((tab) => (
@@ -577,9 +548,7 @@ export const CloseButtonInteraction: Story = {
                     </TabsV2List>
                     {tabs.map((tab) => (
                         <TabsV2Content key={tab.value} value={tab.value}>
-                            <div style={{ padding: '16px' }}>
-                                {tab.label} content
-                            </div>
+                            <div className="p-4">{tab.label} content</div>
                         </TabsV2Content>
                     ))}
                 </TabsV2>
@@ -615,25 +584,10 @@ export const CloseButtonInteraction: Story = {
 // Visual regression test
 export const Visual: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 32,
-                width: '700px',
-            }}
-        >
+        <div className="flex flex-col gap-8 w-[700px]">
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    All Variants
-                </h3>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 24,
-                    }}
-                >
+                <h3 className="mb-3 text-sm font-semibold">All Variants</h3>
+                <div className="flex flex-col gap-6">
                     {Object.values(TabsV2Variant).map((variant) => (
                         <TabsV2
                             key={variant}
@@ -652,7 +606,7 @@ export const Visual: Story = {
                                 </TabsV2Trigger>
                             </TabsV2List>
                             <TabsV2Content value="tab1">
-                                <div style={{ padding: '8px' }}>Content</div>
+                                <div className="p-2">Content</div>
                             </TabsV2Content>
                         </TabsV2>
                     ))}
@@ -660,9 +614,7 @@ export const Visual: Story = {
             </div>
 
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    With Icons
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">With Icons</h3>
                 <TabsV2 defaultValue="tab1">
                     <TabsV2List>
                         <TabsV2Trigger
@@ -685,30 +637,26 @@ export const Visual: Story = {
                         </TabsV2Trigger>
                     </TabsV2List>
                     <TabsV2Content value="tab1">
-                        <div style={{ padding: '8px' }}>Home</div>
+                        <div className="p-2">Home</div>
                     </TabsV2Content>
                 </TabsV2>
             </div>
 
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    Disabled State
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">Disabled State</h3>
                 <TabsV2 defaultValue="tab1" disabled>
                     <TabsV2List>
                         <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
                         <TabsV2Trigger value="tab2">Tab 2</TabsV2Trigger>
                     </TabsV2List>
                     <TabsV2Content value="tab1">
-                        <div style={{ padding: '8px' }}>Content</div>
+                        <div className="p-2">Content</div>
                     </TabsV2Content>
                 </TabsV2>
             </div>
 
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    Closable
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">Closable</h3>
                 <TabsV2 defaultValue="tab1">
                     <TabsV2List>
                         <TabsV2Trigger value="tab1" closable>
@@ -719,7 +667,7 @@ export const Visual: Story = {
                         </TabsV2Trigger>
                     </TabsV2List>
                     <TabsV2Content value="tab1">
-                        <div style={{ padding: '8px' }}>Content</div>
+                        <div className="p-2">Content</div>
                     </TabsV2Content>
                 </TabsV2>
             </div>
@@ -741,19 +689,12 @@ export const Visual: Story = {
 // Accessibility-focused story
 export const Accessibility: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 32,
-                width: '600px',
-            }}
-        >
+        <div className="flex flex-col gap-8 w-[600px]">
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 16, fontWeight: 600 }}>
+                <h3 className="mb-3 text-base font-semibold">
                     Keyboard Navigation
                 </h3>
-                <p style={{ marginBottom: 12, fontSize: 14, color: '#666' }}>
+                <p className="mb-3 text-sm text-gray-500">
                     Use Tab to focus the tab list, then Arrow keys to navigate
                     between tabs. Press Enter or Space to activate a tab.
                 </p>
@@ -764,22 +705,22 @@ export const Accessibility: Story = {
                         <TabsV2Trigger value="tab3">Tab 3</TabsV2Trigger>
                     </TabsV2List>
                     <TabsV2Content value="tab1">
-                        <div style={{ padding: '12px' }}>Content 1</div>
+                        <div className="p-3">Content 1</div>
                     </TabsV2Content>
                     <TabsV2Content value="tab2">
-                        <div style={{ padding: '12px' }}>Content 2</div>
+                        <div className="p-3">Content 2</div>
                     </TabsV2Content>
                     <TabsV2Content value="tab3">
-                        <div style={{ padding: '12px' }}>Content 3</div>
+                        <div className="p-3">Content 3</div>
                     </TabsV2Content>
                 </TabsV2>
             </div>
 
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 16, fontWeight: 600 }}>
+                <h3 className="mb-3 text-base font-semibold">
                     ARIA Attributes
                 </h3>
-                <p style={{ marginBottom: 12, fontSize: 14, color: '#666' }}>
+                <p className="mb-3 text-sm text-gray-500">
                     Tabs have proper ARIA attributes: role=&quot;tab&quot;,
                     aria-selected, aria-controls, and tab panels have
                     role=&quot;tabpanel&quot;.
@@ -795,21 +736,19 @@ export const Accessibility: Story = {
                         <TabsV2Trigger value="tab2">Another Tab</TabsV2Trigger>
                     </TabsV2List>
                     <TabsV2Content value="tab1">
-                        <div style={{ padding: '12px' }}>
+                        <div className="p-3">
                             This content is linked via aria-controls.
                         </div>
                     </TabsV2Content>
                     <TabsV2Content value="tab2">
-                        <div style={{ padding: '12px' }}>More content</div>
+                        <div className="p-3">More content</div>
                     </TabsV2Content>
                 </TabsV2>
             </div>
 
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 16, fontWeight: 600 }}>
-                    Disabled State
-                </h3>
-                <p style={{ marginBottom: 12, fontSize: 14, color: '#666' }}>
+                <h3 className="mb-3 text-base font-semibold">Disabled State</h3>
+                <p className="mb-3 text-sm text-gray-500">
                     Disabled tabs are not focusable and have
                     aria-disabled=&quot;true&quot;.
                 </p>
@@ -821,7 +760,7 @@ export const Accessibility: Story = {
                         </TabsV2Trigger>
                     </TabsV2List>
                     <TabsV2Content value="tab1">
-                        <div style={{ padding: '12px' }}>Enabled content</div>
+                        <div className="p-3">Enabled content</div>
                     </TabsV2Content>
                 </TabsV2>
             </div>

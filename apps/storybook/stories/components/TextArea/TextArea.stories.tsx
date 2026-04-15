@@ -15,10 +15,25 @@ const meta: Meta<typeof TextArea> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A multi-line text input component for longer text content with support for labels, validation, resize controls, and error handling.',
         docs: {
             description: {
                 component: `
-A multi-line text input component for longer text content with support for labels, validation, resize controls, and error handling.
+## Usage
+
+\`\`\`tsx
+import { TextArea } from '@juspay/blend-design-system';
+
+<TextArea
+  label="Description"
+  placeholder="Enter your description..."
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+  rows={4}
+  required
+/>
+\`\`\`
 
 ## Features
 - Multi-line text input with configurable rows and columns
@@ -56,21 +71,6 @@ A multi-line text input component for longer text content with support for label
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
 
 > Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
-
-## Usage
-
-\`\`\`tsx
-import { TextArea } from '@juspay/blend-design-system';
-
-<TextArea
-  label="Description"
-  placeholder="Enter your description..."
-  value={description}
-  onChange={(e) => setDescription(e.target.value)}
-  rows={4}
-  required
-/>
-\`\`\`
         `,
             },
         },
@@ -292,13 +292,7 @@ export const DifferentSizes: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextArea
                     label="Small (3 rows)"
                     placeholder="Small textarea..."
@@ -358,13 +352,7 @@ export const ResizeOptions: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextArea
                     label="No Resize"
                     placeholder="This textarea cannot be resized..."
@@ -433,13 +421,7 @@ export const ErrorStates: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextArea
                     label="Required Field"
                     placeholder="This field is required..."
@@ -508,7 +490,7 @@ export const ErrorStates: Story = {
 // Disabled state
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <TextArea
                 label="Disabled Empty"
                 placeholder="This textarea is disabled"
@@ -519,6 +501,7 @@ export const DisabledState: Story = {
             />
             <TextArea
                 label="Disabled With Content"
+                placeholder="Disabled with content"
                 value="This textarea is disabled and contains some content that cannot be edited."
                 onChange={() => {}}
                 rows={4}
@@ -586,177 +569,6 @@ export const AutoFocus: Story = {
             description: {
                 story: 'TextArea with auto-focus enabled - it will receive focus when the component mounts.',
             },
-        },
-    },
-}
-
-// Accessibility-focused examples
-export const Accessibility: Story = {
-    render: () => {
-        const [description, setDescription] = useState('')
-        const [feedback, setFeedback] = useState('')
-        const [disabledValue] = useState(
-            'This field is disabled and cannot be edited'
-        )
-        const [keyboardText, setKeyboardText] = useState('')
-
-        const descriptionError =
-            description.length > 0 && description.length < 10
-                ? 'Please enter at least 10 characters'
-                : ''
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Labels, Required Fields, and Hints
-                    </h3>
-                    <TextArea
-                        label="Project Description"
-                        sublabel="Provide a detailed overview of your project"
-                        hintText="Enter at least 10 characters for a meaningful description"
-                        placeholder="Describe your project..."
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        rows={4}
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Error Messaging and Validation
-                    </h3>
-                    <TextArea
-                        label="Feedback"
-                        placeholder="Enter your feedback..."
-                        value={feedback}
-                        onChange={(e) => setFeedback(e.target.value)}
-                        rows={4}
-                        error={!!descriptionError}
-                        errorMessage={descriptionError}
-                        hintText="Minimum 10 characters required"
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Disabled and Read-Only Contexts
-                    </h3>
-                    <TextArea
-                        label="Disabled TextArea"
-                        value={disabledValue}
-                        onChange={() => {}}
-                        rows={4}
-                        disabled
-                        hintText="Disabled fields are not focusable and do not submit values"
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Keyboard and Screen Reader Friendly Layout
-                    </h3>
-                    <TextArea
-                        label="Comments"
-                        sublabel="Use Tab to navigate, standard keyboard shortcuts for text editing"
-                        hintText="You can use standard text editing shortcuts (Ctrl/Cmd+A, Ctrl/Cmd+C, etc.)"
-                        placeholder="Enter your comments..."
-                        value={keyboardText}
-                        onChange={(e) => setKeyboardText(e.target.value)}
-                        rows={5}
-                        required
-                        helpIconHintText="Keyboard shortcuts: Tab/Shift+Tab to navigate, standard text editing shortcuts work as expected"
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Character Count and Length Limits
-                    </h3>
-                    <TextArea
-                        label="Review Notes"
-                        sublabel="Maximum 500 characters"
-                        hintText={`${keyboardText.length}/500 characters`}
-                        placeholder="Enter review notes..."
-                        value={keyboardText}
-                        onChange={(e) => setKeyboardText(e.target.value)}
-                        rows={4}
-                        maxLength={500}
-                        required
-                    />
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, keyboard navigation, and character limits.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to label / control associations, error messaging, and keyboard navigation.
-
-2. **jest-axe tests**:
-   - Add \`TextArea.accessibility.test.tsx\` mirroring TextInput's tests and run:
-   \`\`\`bash
-   pnpm test:a11y:file __tests__/components/Inputs/TextArea.accessibility.test.tsx
-   \`\`\`
-   - Validate WCAG 2.0, 2.1, 2.2 A, AA, and AAA success criteria for form fields (labels, errors, keyboard support, focus management).
-
-3. **Manual testing**:
-   - Navigate using keyboard only (Tab / Shift+Tab, standard text editing shortcuts).
-   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, and errors are announced.
-   - Verify color contrast of text, borders, and focus styles using contrast tools.
-   - Test resize functionality with keyboard and screen readers.
-                `,
-            },
-        },
-        a11y: {
-            ...getA11yConfig('form'),
         },
     },
 }

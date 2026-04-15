@@ -16,7 +16,6 @@ import {
     Bell,
     CreditCard,
     HelpCircle,
-    Lock,
     CheckCircle,
     AlertCircle,
     Settings,
@@ -31,11 +30,11 @@ const meta: Meta<typeof AccordionV2> = {
         layout: 'centered',
         a11y: getA11yConfig('interactive'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'Accordion component for showing and hiding sections of related content.',
         docs: {
             description: {
                 component: `
-Accordion component for showing and hiding sections of related content.
-
 ## Features
 - Single or multiple item expansion
 - Two visual styles: Border and No Border
@@ -107,17 +106,17 @@ export const Default: Story = {
     render: () => (
         <AccordionV2>
             <AccordionV2Item value="item-1" title="Account Settings">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Manage your account preferences and settings here.</p>
                 </div>
             </AccordionV2Item>
             <AccordionV2Item value="item-2" title="Privacy & Security">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Configure your privacy and security settings.</p>
                 </div>
             </AccordionV2Item>
             <AccordionV2Item value="item-3" title="Notifications">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Control how and when you receive notifications.</p>
                 </div>
             </AccordionV2Item>
@@ -133,7 +132,7 @@ export const WithIcons: Story = {
                 title="Account Settings"
                 leftSlot={<User size={16} />}
             >
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Manage your account preferences and settings here.</p>
                 </div>
             </AccordionV2Item>
@@ -142,7 +141,7 @@ export const WithIcons: Story = {
                 title="Privacy & Security"
                 leftSlot={<Shield size={16} />}
             >
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Configure your privacy and security settings.</p>
                 </div>
             </AccordionV2Item>
@@ -151,7 +150,7 @@ export const WithIcons: Story = {
                 title="Notifications"
                 leftSlot={<Bell size={16} />}
             >
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Control how and when you receive notifications.</p>
                 </div>
             </AccordionV2Item>
@@ -175,7 +174,7 @@ export const WithSubtext: Story = {
                 subtext="Manage your payment options"
                 leftSlot={<CreditCard size={16} />}
             >
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Add, remove, or update your payment methods.</p>
                 </div>
             </AccordionV2Item>
@@ -185,7 +184,7 @@ export const WithSubtext: Story = {
                 subtext="View past transactions"
                 leftSlot={<Calendar size={16} />}
             >
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Review your billing history and invoices.</p>
                 </div>
             </AccordionV2Item>
@@ -195,7 +194,7 @@ export const WithSubtext: Story = {
                 subtext="Get help and contact us"
                 leftSlot={<HelpCircle size={16} />}
             >
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Find answers to common questions or contact support.</p>
                 </div>
             </AccordionV2Item>
@@ -214,17 +213,17 @@ export const BorderType: Story = {
     render: () => (
         <AccordionV2 accordionType={AccordionV2Type.BORDER}>
             <AccordionV2Item value="item-1" title="First Section">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Content for the first section with border style.</p>
                 </div>
             </AccordionV2Item>
             <AccordionV2Item value="item-2" title="Second Section">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Content for the second section with border style.</p>
                 </div>
             </AccordionV2Item>
             <AccordionV2Item value="item-3" title="Third Section">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Content for the third section with border style.</p>
                 </div>
             </AccordionV2Item>
@@ -243,17 +242,17 @@ export const MultipleSelection: Story = {
     render: () => (
         <AccordionV2 isMultiple>
             <AccordionV2Item value="item-1" title="Section 1">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>Multiple items can be expanded simultaneously.</p>
                 </div>
             </AccordionV2Item>
             <AccordionV2Item value="item-2" title="Section 2">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>This is the second section.</p>
                 </div>
             </AccordionV2Item>
             <AccordionV2Item value="item-3" title="Section 3">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>This is the third section.</p>
                 </div>
             </AccordionV2Item>
@@ -270,9 +269,9 @@ export const MultipleSelection: Story = {
 
 export const ChevronPositions: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div className="flex flex-col gap-6">
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
+                <h3 className="mb-3 text-sm font-semibold">
                     Chevron on Right (Default)
                 </h3>
                 <AccordionV2>
@@ -281,23 +280,21 @@ export const ChevronPositions: Story = {
                         title="Right Chevron"
                         chevronPosition={AccordionV2ChevronPosition.RIGHT}
                     >
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>Chevron icon appears on the right side.</p>
                         </div>
                     </AccordionV2Item>
                 </AccordionV2>
             </div>
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    Chevron on Left
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">Chevron on Left</h3>
                 <AccordionV2>
                     <AccordionV2Item
                         value="item-2"
                         title="Left Chevron"
                         chevronPosition={AccordionV2ChevronPosition.LEFT}
                     >
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>Chevron icon appears on the left side.</p>
                         </div>
                     </AccordionV2Item>
@@ -318,17 +315,17 @@ export const DisabledItems: Story = {
     render: () => (
         <AccordionV2>
             <AccordionV2Item value="item-1" title="Enabled Item">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>This item is enabled and can be expanded.</p>
                 </div>
             </AccordionV2Item>
             <AccordionV2Item value="item-2" title="Disabled Item" isDisabled>
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>This item is disabled and cannot be expanded.</p>
                 </div>
             </AccordionV2Item>
             <AccordionV2Item value="item-3" title="Another Enabled Item">
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>This item is also enabled.</p>
                 </div>
             </AccordionV2Item>
@@ -352,20 +349,12 @@ export const WithRightSlot: Story = {
                 subtext="Manage notification preferences"
                 leftSlot={<Bell size={16} />}
                 rightSlot={
-                    <span
-                        style={{
-                            fontSize: 12,
-                            padding: '2px 8px',
-                            backgroundColor: '#ef4444',
-                            color: 'white',
-                            borderRadius: '12px',
-                        }}
-                    >
+                    <span className="text-xs px-2 py-0.5 bg-red-500 text-white rounded-xl">
                         3
                     </span>
                 }
             >
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>You have 3 unread notifications.</p>
                 </div>
             </AccordionV2Item>
@@ -374,9 +363,9 @@ export const WithRightSlot: Story = {
                 title="Messages"
                 subtext="View your messages"
                 leftSlot={<Mail size={16} />}
-                rightSlot={<CheckCircle size={16} color="#10b981" />}
+                rightSlot={<CheckCircle size={16} className="text-green-500" />}
             >
-                <div style={{ padding: '16px 0' }}>
+                <div className="py-4">
                     <p>All messages have been read.</p>
                 </div>
             </AccordionV2Item>
@@ -393,36 +382,32 @@ export const WithRightSlot: Story = {
 
 export const Visual: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div className="flex flex-col gap-6">
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    NO_BORDER Type
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">NO_BORDER Type</h3>
                 <AccordionV2 accordionType={AccordionV2Type.NO_BORDER}>
                     <AccordionV2Item value="item-1" title="First Item">
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>Content for first item</p>
                         </div>
                     </AccordionV2Item>
                     <AccordionV2Item value="item-2" title="Second Item">
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>Content for second item</p>
                         </div>
                     </AccordionV2Item>
                 </AccordionV2>
             </div>
             <div>
-                <h3 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-                    BORDER Type
-                </h3>
+                <h3 className="mb-3 text-sm font-semibold">BORDER Type</h3>
                 <AccordionV2 accordionType={AccordionV2Type.BORDER}>
                     <AccordionV2Item value="item-3" title="First Item">
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>Content for first item</p>
                         </div>
                     </AccordionV2Item>
                     <AccordionV2Item value="item-4" title="Second Item">
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>Content for second item</p>
                         </div>
                     </AccordionV2Item>
@@ -454,25 +439,9 @@ export const Interactive: Story = {
         )
 
         return (
-            <div style={{ maxWidth: 600 }}>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 12,
-                        marginBottom: 24,
-                        padding: 16,
-                        backgroundColor: '#f5f5f5',
-                        borderRadius: 8,
-                    }}
-                >
-                    <label
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8,
-                        }}
-                    >
+            <div className="max-w-[600px]">
+                <div className="flex flex-col gap-3 mb-6 p-4 bg-gray-100 rounded-lg">
+                    <label className="flex items-center gap-2">
                         <input
                             type="checkbox"
                             checked={isMultiple}
@@ -492,11 +461,7 @@ export const Interactive: Story = {
                                     e.target.value as AccordionV2Type
                                 )
                             }
-                            style={{
-                                width: '100%',
-                                marginTop: 4,
-                                padding: 8,
-                            }}
+                            className="w-full mt-1 p-2"
                         >
                             {Object.values(AccordionV2Type).map((type) => (
                                 <option key={type} value={type}>
@@ -505,7 +470,7 @@ export const Interactive: Story = {
                             ))}
                         </select>
                     </label>
-                    <div style={{ fontSize: 12, color: '#666' }}>
+                    <div className="text-xs text-gray-500">
                         Current value:{' '}
                         {value
                             ? Array.isArray(value)
@@ -525,7 +490,7 @@ export const Interactive: Story = {
                         title="Account Settings"
                         leftSlot={<Settings size={16} />}
                     >
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>Manage your account preferences and settings.</p>
                         </div>
                     </AccordionV2Item>
@@ -534,7 +499,7 @@ export const Interactive: Story = {
                         title="Privacy & Security"
                         leftSlot={<Shield size={16} />}
                     >
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>Configure your privacy and security settings.</p>
                         </div>
                     </AccordionV2Item>
@@ -543,7 +508,7 @@ export const Interactive: Story = {
                         title="Notifications"
                         leftSlot={<Bell size={16} />}
                     >
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>
                                 Control how and when you receive notifications.
                             </p>
@@ -564,38 +529,19 @@ export const Interactive: Story = {
 
 export const Accessibility: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 24,
-                maxWidth: 600,
-            }}
-        >
+        <div className="flex flex-col gap-6 max-w-[600px]">
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">
                     Keyboard Navigation
                 </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-3 text-sm text-gray-500">
                     Use Tab to navigate between accordion items. Press Enter or
                     Space to expand/collapse items. Arrow keys can be used to
                     navigate between items in single selection mode.
                 </p>
                 <AccordionV2>
                     <AccordionV2Item value="item-1" title="Keyboard Accessible">
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>
                                 This accordion item is fully keyboard
                                 accessible.
@@ -603,7 +549,7 @@ export const Accessibility: Story = {
                         </div>
                     </AccordionV2Item>
                     <AccordionV2Item value="item-2" title="Try Tab + Enter">
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>
                                 Press Tab to focus, then Enter or Space to
                                 expand.
@@ -614,22 +560,8 @@ export const Accessibility: Story = {
             </div>
 
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
-                    ARIA Attributes
-                </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">ARIA Attributes</h3>
+                <p className="mb-3 text-sm text-gray-500">
                     Accordion items have proper ARIA attributes including
                     aria-expanded and aria-controls for screen reader support.
                 </p>
@@ -639,7 +571,7 @@ export const Accessibility: Story = {
                         title="Screen Reader Friendly"
                         leftSlot={<AlertCircle size={16} />}
                     >
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>
                                 This accordion item has proper ARIA attributes
                                 for screen readers.
@@ -650,28 +582,14 @@ export const Accessibility: Story = {
             </div>
 
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
-                    Disabled State
-                </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">Disabled State</h3>
+                <p className="mb-3 text-sm text-gray-500">
                     Disabled items are properly marked and cannot be interacted
                     with via keyboard or mouse.
                 </p>
                 <AccordionV2>
                     <AccordionV2Item value="item-4" title="Enabled Item">
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>This item can be expanded.</p>
                         </div>
                     </AccordionV2Item>
@@ -680,7 +598,7 @@ export const Accessibility: Story = {
                         title="Disabled Item"
                         isDisabled
                     >
-                        <div style={{ padding: '16px 0' }}>
+                        <div className="py-4">
                             <p>This item is disabled and cannot be expanded.</p>
                         </div>
                     </AccordionV2Item>

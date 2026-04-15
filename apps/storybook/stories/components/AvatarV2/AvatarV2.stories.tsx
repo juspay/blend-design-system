@@ -22,11 +22,11 @@ const meta: Meta<typeof AvatarV2> = {
         layout: 'centered',
         a11y: getA11yConfig('interactive'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'Avatar component for displaying user images, initials, or icons.',
         docs: {
             description: {
                 component: `
-Avatar component for displaying user images, initials, or icons.
-
 ## Features
 - Image display with automatic fallback
 - Automatic initials generation from text
@@ -133,7 +133,7 @@ export const Default: Story = {}
 
 export const WithSlots: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+        <div className="flex gap-4 items-center">
             <AvatarV2 alt="John Doe" leftSlot={<Mail size={16} />} />
             <AvatarV2 alt="Jane Smith" rightSlot={<Settings size={16} />} />
             <AvatarV2
@@ -154,19 +154,12 @@ export const WithSlots: Story = {
 
 export const Visual: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+        <div className="flex flex-col gap-8">
             <div>
-                <h3 style={{ marginBottom: 16, fontSize: 16, fontWeight: 600 }}>
+                <h3 className="mb-4 text-base font-semibold">
                     All Sizes with Status
                 </h3>
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: 24,
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                    }}
-                >
+                <div className="flex gap-6 items-center flex-wrap">
                     {Object.values(AvatarV2Size).map((size) => (
                         <AvatarV2
                             key={size}
@@ -178,10 +171,8 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <h3 style={{ marginBottom: 16, fontSize: 16, fontWeight: 600 }}>
-                    All Shapes
-                </h3>
-                <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+                <h3 className="mb-4 text-base font-semibold">All Shapes</h3>
+                <div className="flex gap-6 items-center">
                     {Object.values(AvatarV2Shape).map((shape) => (
                         <AvatarV2
                             key={shape}
@@ -193,10 +184,10 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <h3 style={{ marginBottom: 16, fontSize: 16, fontWeight: 600 }}>
+                <h3 className="mb-4 text-base font-semibold">
                     All Status Types
                 </h3>
-                <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+                <div className="flex gap-6 items-center">
                     {Object.values(AvatarV2Status)
                         .filter((status) => status !== AvatarV2Status.NONE)
                         .map((status) => (
@@ -209,10 +200,10 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <h3 style={{ marginBottom: 16, fontSize: 16, fontWeight: 600 }}>
+                <h3 className="mb-4 text-base font-semibold">
                     Status Positions
                 </h3>
-                <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+                <div className="flex gap-6 items-center">
                     {Object.values(AvatarV2StatusPosition).map((position) => (
                         <AvatarV2
                             key={position}
@@ -317,61 +308,30 @@ export const DisabledInteractive: Story = {
 
 export const Accessibility: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 24,
-                maxWidth: 600,
-            }}
-        >
+        <div className="flex flex-col gap-6 max-w-[600px]">
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">
                     Keyboard Navigation
                 </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-3 text-sm text-gray-500">
                     Interactive avatars support keyboard navigation. Tab to
                     focus, then press Enter or Space to activate.
                 </p>
-                <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                <div className="flex gap-4 items-center">
                     <AvatarV2 alt="Keyboard Accessible" onClick={fn()} />
                     <AvatarV2 alt="Press Enter" onClick={fn()} />
                 </div>
             </div>
 
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">
                     Screen Reader Support
                 </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-3 text-sm text-gray-500">
                     Avatars have proper ARIA attributes including aria-label
                     with status information for screen readers.
                 </p>
-                <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                <div className="flex gap-4 items-center">
                     <AvatarV2
                         alt="John Doe"
                         status={{ type: AvatarV2Status.ONLINE }}
@@ -384,26 +344,12 @@ export const Accessibility: Story = {
             </div>
 
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
-                    Disabled State
-                </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">Disabled State</h3>
+                <p className="mb-3 text-sm text-gray-500">
                     Disabled avatars are properly marked and cannot be
                     interacted with via keyboard or mouse.
                 </p>
-                <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                <div className="flex gap-4 items-center">
                     <AvatarV2 alt="Enabled Avatar" onClick={fn()} />
                     <AvatarV2 alt="Disabled Avatar" onClick={fn()} disabled />
                 </div>

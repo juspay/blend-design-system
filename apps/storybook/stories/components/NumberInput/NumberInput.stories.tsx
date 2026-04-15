@@ -15,11 +15,28 @@ const meta: Meta<typeof NumberInput> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A specialized numeric input component with built-in validation for numbers, step controls, and min/max constraints.',
         docs: {
             description: {
                 component: `
-A specialized numeric input component with built-in validation for numbers, step controls, and min/max constraints.
 
+## Usage
+
+\`\`\`tsx
+import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
+
+<NumberInput
+  label="Age"
+  placeholder="Enter your age"
+  value={age}
+  onChange={(e) => setAge(parseInt(e.target.value))}
+  min={0}
+  max={120}
+  size={NumberInputSize.MEDIUM}
+  required
+/>
+\`\`\`
 ## Features
 - Two sizes (Medium, Large)
 - Numeric validation with step controls
@@ -56,23 +73,6 @@ A specialized numeric input component with built-in validation for numbers, step
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
 
 > Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
-
-## Usage
-
-\`\`\`tsx
-import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
-
-<NumberInput
-  label="Age"
-  placeholder="Enter your age"
-  value={age}
-  onChange={(e) => setAge(parseInt(e.target.value))}
-  min={0}
-  max={120}
-  size={NumberInputSize.MEDIUM}
-  required
-/>
-\`\`\`
         `,
             },
         },
@@ -236,16 +236,14 @@ type Story = StoryObj<typeof NumberInput>
 // Default story
 export const Default: Story = {
     render: function DefaultNumberInput(args) {
-        const [value, setValue] = useState<number | undefined>(undefined)
+        const [value, setValue] = useState<number | null>(null)
 
         return (
             <NumberInput
                 {...args}
                 value={value}
                 onChange={(e) =>
-                    setValue(
-                        e.target.value ? parseFloat(e.target.value) : undefined
-                    )
+                    setValue(e.target.value ? parseFloat(e.target.value) : null)
                 }
             />
         )
@@ -264,18 +262,12 @@ export const Default: Story = {
 export const Sizes: Story = {
     render: () => {
         const [values, setValues] = useState({
-            medium: undefined as number | undefined,
-            large: undefined as number | undefined,
+            medium: null as number | null,
+            large: null as number | null,
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <NumberInput
                     label="Medium Size"
                     placeholder="Enter number"
@@ -286,7 +278,7 @@ export const Sizes: Story = {
                             ...prev,
                             medium: e.target.value
                                 ? parseFloat(e.target.value)
-                                : undefined,
+                                : null,
                         }))
                     }
                 />
@@ -300,7 +292,7 @@ export const Sizes: Story = {
                             ...prev,
                             large: e.target.value
                                 ? parseFloat(e.target.value)
-                                : undefined,
+                                : null,
                         }))
                     }
                 />
@@ -320,19 +312,13 @@ export const Sizes: Story = {
 export const WithConstraints: Story = {
     render: () => {
         const [values, setValues] = useState({
-            age: undefined as number | undefined,
-            percentage: undefined as number | undefined,
-            price: undefined as number | undefined,
+            age: null as number | null,
+            percentage: null as number | null,
+            price: null as number | null,
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <NumberInput
                     label="Age"
                     placeholder="Enter your age"
@@ -345,7 +331,7 @@ export const WithConstraints: Story = {
                             ...prev,
                             age: e.target.value
                                 ? parseInt(e.target.value)
-                                : undefined,
+                                : null,
                         }))
                     }
                     hintText="Must be between 0 and 120"
@@ -362,7 +348,7 @@ export const WithConstraints: Story = {
                             ...prev,
                             percentage: e.target.value
                                 ? parseFloat(e.target.value)
-                                : undefined,
+                                : null,
                         }))
                     }
                     hintText="Between 0% and 100%"
@@ -378,7 +364,7 @@ export const WithConstraints: Story = {
                             ...prev,
                             price: e.target.value
                                 ? parseFloat(e.target.value)
-                                : undefined,
+                                : null,
                         }))
                     }
                     hintText="Enter amount in dollars"
@@ -399,19 +385,13 @@ export const WithConstraints: Story = {
 export const ErrorStates: Story = {
     render: () => {
         const [values, setValues] = useState({
-            required: undefined as number | undefined,
-            outOfRange: 150 as number | undefined,
-            valid: 25 as number | undefined,
+            required: null as number | null,
+            outOfRange: 150 as number | null,
+            valid: 25 as number | null,
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <NumberInput
                     label="Required Field"
                     placeholder="This field is required"
@@ -421,15 +401,13 @@ export const ErrorStates: Story = {
                             ...prev,
                             required: e.target.value
                                 ? parseFloat(e.target.value)
-                                : undefined,
+                                : null,
                         }))
                     }
                     required
-                    error={values.required === undefined}
+                    error={values.required === null}
                     errorMessage={
-                        values.required === undefined
-                            ? 'This field is required'
-                            : ''
+                        values.required === null ? 'This field is required' : ''
                     }
                 />
                 <NumberInput
@@ -443,11 +421,11 @@ export const ErrorStates: Story = {
                             ...prev,
                             outOfRange: e.target.value
                                 ? parseInt(e.target.value)
-                                : undefined,
+                                : null,
                         }))
                     }
                     error={
-                        values.outOfRange !== undefined &&
+                        values.outOfRange !== null &&
                         (values.outOfRange < 0 || values.outOfRange > 120)
                     }
                     errorMessage="Age must be between 0 and 120"
@@ -463,7 +441,7 @@ export const ErrorStates: Story = {
                             ...prev,
                             valid: e.target.value
                                 ? parseInt(e.target.value)
-                                : undefined,
+                                : null,
                         }))
                     }
                 />
@@ -482,11 +460,11 @@ export const ErrorStates: Story = {
 // Disabled state
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <NumberInput
                 label="Disabled Empty"
                 placeholder="This input is disabled"
-                value={undefined}
+                value={null}
                 onChange={() => {}}
                 disabled
             />
@@ -510,7 +488,7 @@ export const DisabledState: Story = {
 // With comprehensive labels
 export const WithLabelsAndHints: Story = {
     render: () => {
-        const [value, setValue] = useState<number | undefined>(undefined)
+        const [value, setValue] = useState<number | null>(null)
 
         return (
             <NumberInput
@@ -523,9 +501,7 @@ export const WithLabelsAndHints: Story = {
                 step={100}
                 value={value}
                 onChange={(e) =>
-                    setValue(
-                        e.target.value ? parseFloat(e.target.value) : undefined
-                    )
+                    setValue(e.target.value ? parseFloat(e.target.value) : null)
                 }
                 required
             />
@@ -537,152 +513,5 @@ export const WithLabelsAndHints: Story = {
                 story: 'NumberInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
-    },
-}
-
-// Accessibility-focused examples
-export const Accessibility: Story = {
-    render: () => {
-        const [age, setAge] = useState<number | undefined>(undefined)
-        const [income, setIncome] = useState<number | undefined>(undefined)
-        const [percentage, setPercentage] = useState<number | undefined>(
-            undefined
-        )
-
-        const ageError =
-            age !== undefined && (age < 0 || age > 120)
-                ? 'Age must be between 0 and 120'
-                : ''
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Labels, Required Fields, and Hints
-                    </h3>
-                    <NumberInput
-                        label="Monthly Income"
-                        sublabel="Before taxes and deductions"
-                        hintText="Enter your gross monthly income in USD"
-                        placeholder="5000"
-                        min={0}
-                        step={100}
-                        value={income}
-                        onChange={(e) =>
-                            setIncome(
-                                e.target.value
-                                    ? parseFloat(e.target.value)
-                                    : undefined
-                            )
-                        }
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Error Messaging and Validation
-                    </h3>
-                    <NumberInput
-                        label="Age"
-                        placeholder="Enter your age"
-                        min={0}
-                        max={120}
-                        step={1}
-                        value={age}
-                        onChange={(e) =>
-                            setAge(
-                                e.target.value
-                                    ? parseInt(e.target.value, 10)
-                                    : undefined
-                            )
-                        }
-                        error={!!ageError}
-                        errorMessage={ageError}
-                        required
-                        hintText="Must be between 0 and 120"
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Disabled and Read-Only Contexts
-                    </h3>
-                    <NumberInput
-                        label="Disabled Percentage"
-                        value={percentage}
-                        onChange={(e) =>
-                            setPercentage(
-                                e.target.value
-                                    ? parseFloat(e.target.value)
-                                    : undefined
-                            )
-                        }
-                        min={0}
-                        max={100}
-                        step={0.5}
-                        disabled
-                        hintText="Disabled fields are not focusable and do not submit values"
-                    />
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, and keyboard-friendly focus behavior for numeric inputs.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to label / control associations, numeric constraints, and error messaging.
-
-2. **jest-axe tests**:
-   - Add \`NumberInput.accessibility.test.tsx\` mirroring TextInput/Button tests and run:
-   \`\`\`bash
-   pnpm test NumberInput.accessibility
-   \`\`\`
-   - Validate WCAG 2.1/2.2 A and AA success criteria for form fields (labels, errors, keyboard support, numeric constraints).
-
-3. **Manual testing**:
-   - Navigate using keyboard only (Tab / Shift+Tab, arrow keys / buttons for value changes).
-   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, and errors are announced.
-   - Verify color contrast of text, borders, and focus styles using contrast tools.
-                `,
-            },
-        },
-        a11y: {
-            ...getA11yConfig('form'),
-        },
-        chromatic: CHROMATIC_CONFIG,
     },
 }

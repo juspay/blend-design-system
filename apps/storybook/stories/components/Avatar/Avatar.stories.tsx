@@ -19,10 +19,24 @@ const meta: Meta<typeof Avatar> = {
         layout: 'centered',
         a11y: getA11yConfig('content'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A flexible avatar component for displaying user profile images with automatic fallback to initials, multiple sizes and shapes, and online status indicators.',
         docs: {
             description: {
                 component: `
-A flexible avatar component for displaying user profile images with automatic fallback to initials, multiple sizes and shapes, and online status indicators.
+## Usage
+
+\`\`\`tsx
+import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
+
+<Avatar 
+  src="/user-profile.jpg" 
+  alt="John Doe" 
+  size={AvatarSize.MD}
+  shape={AvatarShape.CIRCULAR}
+  online={true}
+/>
+\`\`\`
 
 ## Features
 - Multiple sizes (Extra Small, Small, Regular, Medium, Large, Extra Large)
@@ -67,20 +81,6 @@ A flexible avatar component for displaying user profile images with automatic fa
 - **jest-axe**: Run \`pnpm test Avatar.accessibility\` (52 tests covering WCAG 2.0, 2.1, 2.2 criteria)
 - **Manual**: Test with VoiceOver/NVDA, verify alt text announcements, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
-
-## Usage
-
-\`\`\`tsx
-import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
-
-<Avatar 
-  src="/user-profile.jpg" 
-  alt="John Doe" 
-  size={AvatarSize.MD}
-  shape={AvatarShape.CIRCULAR}
-  online={true}
-/>
-\`\`\`
         `,
             },
         },
@@ -199,82 +199,42 @@ export const Default: Story = {
 // Avatar sizes
 export const AvatarSizes: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <div style={{ textAlign: 'center' }}>
+        <div className="flex gap-4 items-center">
+            <div className="text-center">
                 <Avatar
                     src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=20&h=20&fit=crop&crop=face"
                     alt="Small Avatar"
                     size={AvatarSize.SM}
                 />
-                <div
-                    style={{
-                        fontSize: '11px',
-                        marginTop: '4px',
-                        color: '#666',
-                    }}
-                >
-                    SM
-                </div>
+                <div className="text-[11px] mt-1 text-gray-700">SM</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <Avatar alt="Regular Avatar" size={AvatarSize.REGULAR} />
-                <div
-                    style={{
-                        fontSize: '11px',
-                        marginTop: '4px',
-                        color: '#666',
-                    }}
-                >
-                    Regular
-                </div>
+                <div className="text-[11px] mt-1 text-gray-700">Regular</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <Avatar
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face"
                     alt="Medium Avatar"
                     size={AvatarSize.MD}
                 />
-                <div
-                    style={{
-                        fontSize: '11px',
-                        marginTop: '4px',
-                        color: '#666',
-                    }}
-                >
-                    MD
-                </div>
+                <div className="text-[11px] mt-1 text-gray-700">MD</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <Avatar
                     src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face"
                     alt="Large Avatar"
                     size={AvatarSize.LG}
                 />
-                <div
-                    style={{
-                        fontSize: '11px',
-                        marginTop: '4px',
-                        color: '#666',
-                    }}
-                >
-                    LG
-                </div>
+                <div className="text-[11px] mt-1 text-gray-700">LG</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <Avatar
                     src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=48&h=48&fit=crop&crop=face"
                     alt="Extra Large Avatar"
                     size={AvatarSize.XL}
                 />
-                <div
-                    style={{
-                        fontSize: '11px',
-                        marginTop: '4px',
-                        color: '#666',
-                    }}
-                >
-                    XL
-                </div>
+                <div className="text-[11px] mt-1 text-gray-700">XL</div>
             </div>
         </div>
     ),
@@ -300,7 +260,7 @@ export const AvatarSizes: Story = {
 // Avatar shapes
 export const AvatarShapes: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div className="flex gap-4 items-center">
             <Avatar
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face"
                 alt="Alex Johnson"
@@ -327,14 +287,7 @@ export const AvatarShapes: Story = {
 // Fallback avatars (no image)
 export const FallbackAvatars: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: '16px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-4 items-center flex-wrap">
             <Avatar alt="John Doe" size={AvatarSize.MD} />
             <Avatar alt="Sarah Wilson" size={AvatarSize.MD} />
             <Avatar alt="Mike Johnson" size={AvatarSize.MD} />
@@ -355,54 +308,32 @@ export const FallbackAvatars: Story = {
 // Online status indicators
 export const OnlineStatus: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <div style={{ textAlign: 'center' }}>
+        <div className="flex gap-4 items-center">
+            <div className="text-center">
                 <Avatar
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face"
                     alt="Online User"
                     size={AvatarSize.LG}
                     online={true}
                 />
-                <div
-                    style={{
-                        fontSize: '12px',
-                        marginTop: '8px',
-                        color: '#666',
-                    }}
-                >
-                    Online
-                </div>
+                <div className="text-xs mt-2 text-gray-700">Online</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <Avatar
                     src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face"
                     alt="Offline User"
                     size={AvatarSize.LG}
                     online={false}
                 />
-                <div
-                    style={{
-                        fontSize: '12px',
-                        marginTop: '8px',
-                        color: '#666',
-                    }}
-                >
-                    Offline
-                </div>
+                <div className="text-xs mt-2 text-gray-700">Offline</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <Avatar
                     alt="Online Fallback"
                     size={AvatarSize.LG}
                     online={true}
                 />
-                <div
-                    style={{
-                        fontSize: '12px',
-                        marginTop: '8px',
-                        color: '#666',
-                    }}
-                >
+                <div className="text-xs mt-2 text-gray-700">
                     Online (Fallback)
                 </div>
             </div>
@@ -420,7 +351,7 @@ export const OnlineStatus: Story = {
 // Custom fallback content
 export const CustomFallback: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div className="flex gap-4 items-center">
             <Avatar
                 alt="User Icon"
                 size={AvatarSize.LG}
@@ -451,7 +382,7 @@ export const CustomFallback: Story = {
 // Error handling (broken images)
 export const ErrorHandling: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div className="flex gap-4 items-center">
             <Avatar
                 src="https://broken-image-url.jpg"
                 alt="Broken Image User"
@@ -483,14 +414,7 @@ export const ErrorHandling: Story = {
 // With slots (leading and trailing)
 export const WithSlots: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px',
-                alignItems: 'flex-start',
-            }}
-        >
+        <div className="flex flex-col gap-4 items-start">
             <Avatar
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face"
                 alt="VIP User"
@@ -523,13 +447,9 @@ export const WithSlots: Story = {
 // Size and shape combinations
 export const SizeShapeCombinations: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                <span
-                    style={{ width: '80px', fontSize: '14px', color: '#666' }}
-                >
-                    Circular:
-                </span>
+        <div className="flex flex-col gap-4">
+            <div className="flex gap-3 items-center">
+                <span className="w-20 text-sm text-gray-700">Circular:</span>
                 <Avatar
                     alt="Small Circular"
                     size={AvatarSize.SM}
@@ -556,12 +476,8 @@ export const SizeShapeCombinations: Story = {
                     shape={AvatarShape.CIRCULAR}
                 />
             </div>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                <span
-                    style={{ width: '80px', fontSize: '14px', color: '#666' }}
-                >
-                    Rounded:
-                </span>
+            <div className="flex gap-3 items-center">
+                <span className="w-20 text-sm text-gray-700">Rounded:</span>
                 <Avatar
                     alt="Small Rounded"
                     size={AvatarSize.SM}
@@ -602,38 +518,22 @@ export const SizeShapeCombinations: Story = {
 // Skeleton state
 export const SkeletonState: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <div style={{ textAlign: 'center' }}>
+        <div className="flex gap-4 items-center">
+            <div className="text-center">
                 <Avatar
                     alt="Loading Avatar"
                     size={AvatarSize.MD}
                     skeleton={{ show: true, variant: 'pulse' }}
                 />
-                <div
-                    style={{
-                        fontSize: '12px',
-                        marginTop: '8px',
-                        color: '#666',
-                    }}
-                >
-                    Pulse
-                </div>
+                <div className="text-xs mt-2 text-gray-700">Pulse</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <Avatar
                     alt="Loading Avatar"
                     size={AvatarSize.LG}
                     skeleton={{ show: true, variant: 'wave' }}
                 />
-                <div
-                    style={{
-                        fontSize: '12px',
-                        marginTop: '8px',
-                        color: '#666',
-                    }}
-                >
-                    Wave
-                </div>
+                <div className="text-xs mt-2 text-gray-700">Wave</div>
             </div>
         </div>
     ),
@@ -649,38 +549,24 @@ export const SkeletonState: Story = {
 // Online position indicators
 export const OnlinePosition: Story = {
     render: () => (
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-            <div style={{ textAlign: 'center' }}>
+        <div className="flex gap-6 items-center">
+            <div className="text-center">
                 <Avatar
                     alt="Top Position User"
                     size={AvatarSize.LG}
                     online={true}
                     onlinePosition={AvatarOnlinePosition.TOP}
                 />
-                <div
-                    style={{
-                        fontSize: '12px',
-                        marginTop: '8px',
-                        color: '#666',
-                    }}
-                >
-                    Top Position
-                </div>
+                <div className="text-xs mt-2 text-gray-700">Top Position</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div className="text-center">
                 <Avatar
                     alt="Bottom Position User"
                     size={AvatarSize.LG}
                     online={true}
                     onlinePosition={AvatarOnlinePosition.BOTTOM}
                 />
-                <div
-                    style={{
-                        fontSize: '12px',
-                        marginTop: '8px',
-                        color: '#666',
-                    }}
-                >
+                <div className="text-xs mt-2 text-gray-700">
                     Bottom Position
                 </div>
             </div>
@@ -692,373 +578,5 @@ export const OnlinePosition: Story = {
                 story: 'Online status indicator positions. Status is communicated via data-status attribute, not solely visual.',
             },
         },
-    },
-}
-
-// Interactive playground
-export const Interactive: Story = {
-    args: {
-        src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face',
-        alt: 'Interactive User',
-        size: AvatarSize.LG,
-        shape: AvatarShape.CIRCULAR,
-        online: true,
-        fallback: '',
-        leadingSlot: 'crown',
-        trailingSlot: 'star',
-    },
-    render: (args: any) => (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-            <Avatar
-                {...args}
-                fallback={args.fallback || undefined}
-                leadingSlot={getSlotContent(args.leadingSlot)}
-                trailingSlot={getSlotContent(args.trailingSlot)}
-            />
-            <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
-                Use the controls below to experiment with different avatar
-                configurations
-            </div>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Interactive playground to experiment with all Avatar props using the controls panel.',
-            },
-        },
-    },
-}
-
-// Accessibility Testing
-// ============================================================================
-// Accessibility examples demonstrating WCAG compliance features
-// ============================================================================
-
-export const Accessibility: Story = {
-    render: () => (
-        <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
-            <div style={{ marginBottom: '32px' }}>
-                <h2
-                    style={{
-                        fontSize: '24px',
-                        fontWeight: 'bold',
-                        marginBottom: '16px',
-                    }}
-                >
-                    Accessibility Examples
-                </h2>
-                <p
-                    style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        lineHeight: '1.6',
-                    }}
-                >
-                    These examples demonstrate WCAG 2.0, 2.1, 2.2 Level AA
-                    compliance features of the Avatar component.
-                </p>
-            </div>
-
-            {/* WCAG 1.1.1 Non-text Content */}
-            <div style={{ marginBottom: '32px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    1.1.1 Non-text Content (Level A)
-                </h3>
-                <p
-                    style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        marginBottom: '16px',
-                    }}
-                >
-                    All images have alt text. Visually hidden text ensures
-                    accessible name is available even when image fails.
-                </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '16px',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                    }}
-                >
-                    <Avatar
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face"
-                        alt="John Doe"
-                        size={AvatarSize.LG}
-                    />
-                    <Avatar alt="Jane Smith" size={AvatarSize.LG} />
-                    <Avatar
-                        src="https://broken-image-url.jpg"
-                        alt="Broken Image User"
-                        size={AvatarSize.LG}
-                    />
-                </div>
-            </div>
-
-            {/* WCAG 1.4.1 Use of Color */}
-            <div style={{ marginBottom: '32px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    1.4.1 Use of Color (Level A)
-                </h3>
-                <p
-                    style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        marginBottom: '16px',
-                    }}
-                >
-                    Online status indicated by both visual indicator and
-                    data-status attribute, not solely by color.
-                </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '16px',
-                        alignItems: 'center',
-                    }}
-                >
-                    <div style={{ textAlign: 'center' }}>
-                        <Avatar
-                            alt="Online User"
-                            size={AvatarSize.LG}
-                            online={true}
-                        />
-                        <div
-                            style={{
-                                fontSize: '12px',
-                                marginTop: '8px',
-                                color: '#666',
-                            }}
-                        >
-                            Online (data-status="online")
-                        </div>
-                    </div>
-                    <div style={{ textAlign: 'center' }}>
-                        <Avatar
-                            alt="Offline User"
-                            size={AvatarSize.LG}
-                            online={false}
-                        />
-                        <div
-                            style={{
-                                fontSize: '12px',
-                                marginTop: '8px',
-                                color: '#666',
-                            }}
-                        >
-                            Offline (data-status="offline")
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* WCAG 4.1.2 Name, Role, Value */}
-            <div style={{ marginBottom: '32px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    4.1.2 Name, Role, Value (Level A)
-                </h3>
-                <p
-                    style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        marginBottom: '16px',
-                    }}
-                >
-                    Accessible name provided via alt text and visually hidden
-                    span. Image has role="img".
-                </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '16px',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face"
-                        alt="User Profile"
-                        size={AvatarSize.LG}
-                    />
-                    <Avatar alt="User Profile" size={AvatarSize.LG} />
-                </div>
-            </div>
-
-            {/* WCAG 4.1.3 Status Messages */}
-            <div style={{ marginBottom: '32px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    4.1.3 Status Messages (Level AA)
-                </h3>
-                <p
-                    style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        marginBottom: '16px',
-                    }}
-                >
-                    Online status changes communicated via data-status attribute
-                    updates.
-                </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '16px',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar
-                        alt="Status User"
-                        size={AvatarSize.LG}
-                        online={true}
-                    />
-                    <Avatar
-                        alt="Status User"
-                        size={AvatarSize.LG}
-                        online={false}
-                    />
-                </div>
-            </div>
-
-            {/* WCAG 2.4.4 Link Purpose */}
-            <div style={{ marginBottom: '32px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    2.4.4 Link Purpose (Level A)
-                </h3>
-                <p
-                    style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        marginBottom: '16px',
-                    }}
-                >
-                    When Avatar is wrapped in a link, alt text provides context
-                    for link purpose.
-                </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '16px',
-                        alignItems: 'center',
-                    }}
-                >
-                    <a href="/profile" style={{ textDecoration: 'none' }}>
-                        <Avatar alt="John Doe's Profile" size={AvatarSize.LG} />
-                    </a>
-                </div>
-            </div>
-
-            {/* All Sizes for Accessibility */}
-            <div style={{ marginBottom: '32px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    All Sizes with Descriptive Alt Text
-                </h3>
-                <p
-                    style={{
-                        fontSize: '14px',
-                        color: '#666',
-                        marginBottom: '16px',
-                    }}
-                >
-                    All avatar sizes include descriptive alt text for
-                    accessibility.
-                </p>
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: '12px',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                    }}
-                >
-                    <Avatar alt="Small User" size={AvatarSize.SM} />
-                    <Avatar alt="Regular User" size={AvatarSize.REGULAR} />
-                    <Avatar alt="Medium User" size={AvatarSize.MD} />
-                    <Avatar alt="Large User" size={AvatarSize.LG} />
-                    <Avatar alt="Extra Large User" size={AvatarSize.XL} />
-                </div>
-            </div>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating WCAG 2.0, 2.1, 2.2 Level AA compliance features including alt text handling, status communication, and semantic structure.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Open the Accessibility panel in Storybook
-   - Check for violations (should be 0 for AA compliance)
-   - Review accessibility tree
-   - See real-time accessibility status
-
-2. **Automated Testing**:
-   \`\`\`bash
-   pnpm test Avatar.accessibility
-   \`\`\`
-   - 52 tests covering WCAG 2.0, 2.1, 2.2 criteria
-   - WCAG compliance verification
-
-3. **Manual Testing**:
-   - **Screen Readers**: Test with VoiceOver (macOS/iOS) or NVDA (Windows)
-   - Verify alt text is announced correctly
-   - Verify visually hidden text is accessible
-   - Verify online status is communicated
-   - **Keyboard Navigation**: Avatar is decorative, should not interfere with tab order
-   - **Contrast**: Verify contrast ratios with WebAIM Contrast Checker
-
-4. **Visual Regression**:
-   - Chromatic snapshots verify focus states and visual appearance
-
-## Accessibility Report
-
-- ✅ **WCAG 2.0, 2.1, 2.2 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.0, 2.1, 2.2 Level AAA**: Partial Compliance (6/9 applicable criteria compliant)
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('content'),
     },
 }

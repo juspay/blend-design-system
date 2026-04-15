@@ -15,12 +15,8 @@ import {
     HelpCircle,
     Lock,
     CheckCircle,
-    AlertCircle,
     Database,
     Monitor,
-    Smartphone,
-    Tablet,
-    Laptop,
     Check,
     X,
 } from 'lucide-react'
@@ -60,10 +56,26 @@ const meta: Meta<typeof AccordionStory> = {
         layout: 'centered',
         a11y: getA11yConfig('interactive'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'An accordion component that allows users to show and hide sections of related content on a page.',
         docs: {
             description: {
                 component: `
-An accordion component that allows users to show and hide sections of related content on a page. Built on top of Radix UI's Accordion primitive with custom styling and features.
+
+## Usage
+
+\`\`\`tsx
+import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-system';
+
+<Accordion accordionType={AccordionType.BORDER}>
+  <AccordionItem value="item-1" title="Section 1">
+    Content for section 1
+  </AccordionItem>
+  <AccordionItem value="item-2" title="Section 2">
+    Content for section 2
+  </AccordionItem>
+</Accordion>
+\`\`\`
 
 ## Features
 - Single or multiple item expansion
@@ -105,21 +117,6 @@ An accordion component that allows users to show and hide sections of related co
 - **Chromatic**: Visual regression for focus rings and states
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
-
-## Usage
-
-\`\`\`tsx
-import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-system';
-
-<Accordion accordionType={AccordionType.BORDER}>
-  <AccordionItem value="item-1" title="Section 1">
-    Content for section 1
-  </AccordionItem>
-  <AccordionItem value="item-2" title="Section 2">
-    Content for section 2
-  </AccordionItem>
-</Accordion>
-\`\`\`
         `,
             },
         },
@@ -245,35 +242,16 @@ const getLeftSlot = (slotType: string) => {
 const getRightSlot = (slotType: string) => {
     switch (slotType) {
         case 'status':
-            return (
-                <span style={{ fontSize: '12px', color: '#22c55e' }}>
-                    Active
-                </span>
-            )
+            return <span className="text-xs text-green-500">Active</span>
         case 'badge':
             return (
-                <span
-                    style={{
-                        fontSize: '10px',
-                        padding: '2px 6px',
-                        backgroundColor: '#3b82f6',
-                        color: 'white',
-                        borderRadius: '4px',
-                    }}
-                >
+                <span className="text-[10px] px-1.5 py-0.5 bg-blue-500 text-white rounded">
                     NEW
                 </span>
             )
         case 'button':
             return (
-                <span
-                    style={{
-                        fontSize: '12px',
-                        color: '#3b82f6',
-                        cursor: 'pointer',
-                        textDecoration: 'underline',
-                    }}
-                >
+                <span className="text-xs text-blue-500 cursor-pointer underline">
                     Edit
                 </span>
             )
@@ -287,48 +265,19 @@ const getSubtextSlot = (slotType: string) => {
     switch (slotType) {
         case 'progressBar':
             return (
-                <div
-                    style={{
-                        width: '80px',
-                        height: '4px',
-                        backgroundColor: '#e5e5e5',
-                        borderRadius: '2px',
-                        overflow: 'hidden',
-                    }}
-                >
-                    <div
-                        style={{
-                            width: '60%',
-                            height: '100%',
-                            backgroundColor: '#3b82f6',
-                        }}
-                    />
+                <div className="w-20 h-1 bg-gray-200 rounded-sm overflow-hidden">
+                    <div className="w-[60%] h-full bg-blue-500" />
                 </div>
             )
         case 'chip':
             return (
-                <span
-                    style={{
-                        fontSize: '10px',
-                        padding: '2px 6px',
-                        backgroundColor: '#f3f4f6',
-                        color: '#374151',
-                        borderRadius: '12px',
-                        border: '1px solid #d1d5db',
-                    }}
-                >
+                <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded-xl border border-gray-300">
                     Premium
                 </span>
             )
         case 'counter':
             return (
-                <span
-                    style={{
-                        fontSize: '11px',
-                        fontWeight: '600',
-                        color: '#ef4444',
-                    }}
-                >
+                <span className="text-[11px] font-semibold text-red-500">
                     3 items
                 </span>
             )
@@ -353,20 +302,11 @@ const getTriggerSlot = (slotType: string) => {
                         e.stopPropagation()
                         toggle()
                     }}
-                    style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        border: '2px solid #3b82f6',
-                        backgroundColor: isExpanded ? '#3b82f6' : 'transparent',
-                        color: isExpanded ? 'white' : '#3b82f6',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                    }}
+                    className={`w-6 h-6 rounded-full border-2 border-blue-500 flex items-center justify-center cursor-pointer text-sm font-bold ${
+                        isExpanded
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-transparent text-blue-500'
+                    }`}
                     aria-label={isExpanded ? 'Collapse' : 'Expand'}
                 >
                     {isExpanded ? <X size={14} /> : <Check size={14} />}
@@ -387,9 +327,6 @@ export const Default: Story = {
         accordionType: AccordionType.NO_BORDER,
         isMultiple: false,
         title: 'What is an accordion?',
-        subtext: 'Click to learn more',
-        leftSlot: 'user',
-        rightSlot: 'status',
         subtextSlot: 'none',
         isDisabled: false,
         chevronPosition: AccordionChevronPosition.RIGHT,
@@ -399,7 +336,7 @@ export const Default: Story = {
         triggerSlotWidth: undefined,
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
+        <div className="w-150">
             <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
@@ -417,10 +354,10 @@ export const Default: Story = {
                     triggerSlot={getTriggerSlot(args.triggerSlot ?? 'none')}
                     triggerSlotWidth={args.triggerSlotWidth}
                 >
-                    <div style={{ padding: '16px' }}>{args.children}</div>
+                    <div className="p-4">{args.children}</div>
                 </AccordionItem>
                 <AccordionItem value="item-2" title="When should I use it?">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Accordions are useful when you want to toggle between
                         hiding and showing large amounts of content, or when you
                         have limited space and need to organize content in a
@@ -428,7 +365,7 @@ export const Default: Story = {
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-3" title="How does it work?">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Click on the accordion headers to expand or collapse the
                         content. By default, only one section can be open at a
                         time, but this can be configured to allow multiple
@@ -458,25 +395,25 @@ export const WithBorder: Story = {
         isMultiple: false,
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
+        <div className="w-150">
             <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
             >
                 <AccordionItem value="item-1" title="Account Settings">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Manage your account preferences, security settings, and
                         personal information.
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-2" title="Privacy & Security">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Control your privacy settings, manage data sharing
                         preferences, and configure security options.
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-3" title="Notifications">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Customize how and when you receive notifications about
                         account activity and updates.
                     </div>
@@ -501,26 +438,26 @@ export const MultipleExpansion: Story = {
         defaultValue: ['item-1', 'item-2'],
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
+        <div className="w-150">
             <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
                 defaultValue={args.defaultValue as string[]}
             >
                 <AccordionItem value="item-1" title="First Section">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         This accordion allows multiple sections to be open at
                         the same time.
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-2" title="Second Section">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Both this section and the first section can be expanded
                         simultaneously.
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-3" title="Third Section">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Click any header to toggle its content without affecting
                         other sections.
                     </div>
@@ -548,7 +485,7 @@ export const WithIcons: Story = {
         isMultiple: false,
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
+        <div className="w-150">
             <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
@@ -558,7 +495,7 @@ export const WithIcons: Story = {
                     title="Profile Settings"
                     leftSlot={<User size={20} color="#666" />}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Update your profile information, including name, email,
                         and avatar.
                     </div>
@@ -568,7 +505,7 @@ export const WithIcons: Story = {
                     title="Security"
                     leftSlot={<Shield size={20} color="#666" />}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Manage your password, two-factor authentication, and
                         login sessions.
                     </div>
@@ -578,7 +515,7 @@ export const WithIcons: Story = {
                     title="Notifications"
                     leftSlot={<Bell size={20} color="#666" />}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         Configure email and push notification preferences.
                     </div>
                 </AccordionItem>
@@ -587,7 +524,7 @@ export const WithIcons: Story = {
                     title="Billing"
                     leftSlot={<CreditCard size={20} color="#666" />}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         View and manage your subscription, payment methods, and
                         invoices.
                     </div>
@@ -611,7 +548,7 @@ export const WithSubtext: Story = {
         isMultiple: false,
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
+        <div className="w-150">
             <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
@@ -621,12 +558,12 @@ export const WithSubtext: Story = {
                     title="Basic Plan"
                     subtext="$9/month • For individuals"
                     rightSlot={
-                        <span style={{ fontSize: '14px', color: '#22c55e' }}>
+                        <span className="text-sm text-green-500">
                             Current Plan
                         </span>
                     }
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         • 5 GB storage
                         <br />• Basic support
                         <br />• Access to core features
@@ -637,12 +574,10 @@ export const WithSubtext: Story = {
                     title="Pro Plan"
                     subtext="$29/month • For professionals"
                     rightSlot={
-                        <span style={{ fontSize: '14px', color: '#3b82f6' }}>
-                            Upgrade
-                        </span>
+                        <span className="text-sm text-blue-500">Upgrade</span>
                     }
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         • 100 GB storage
                         <br />• Priority support
                         <br />• Advanced features
@@ -654,12 +589,12 @@ export const WithSubtext: Story = {
                     title="Enterprise Plan"
                     subtext="Custom pricing • For teams"
                     rightSlot={
-                        <span style={{ fontSize: '14px', color: '#666' }}>
+                        <span className="text-sm text-gray-500">
                             Contact Sales
                         </span>
                     }
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         • Unlimited storage
                         <br />• Dedicated support
                         <br />• Custom integrations
@@ -685,7 +620,7 @@ export const ChevronLeft: Story = {
         isMultiple: false,
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
+        <div className="w-150">
             <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
@@ -695,7 +630,7 @@ export const ChevronLeft: Story = {
                     title="Documentation"
                     chevronPosition={AccordionChevronPosition.LEFT}
                 >
-                    <div style={{ padding: '16px', paddingLeft: '32px' }}>
+                    <div className="p-4 pl-8">
                         Access comprehensive guides and API documentation.
                     </div>
                 </AccordionItem>
@@ -704,7 +639,7 @@ export const ChevronLeft: Story = {
                     title="Tutorials"
                     chevronPosition={AccordionChevronPosition.LEFT}
                 >
-                    <div style={{ padding: '16px', paddingLeft: '32px' }}>
+                    <div className="p-4 pl-8">
                         Step-by-step tutorials to get you started quickly.
                     </div>
                 </AccordionItem>
@@ -713,7 +648,7 @@ export const ChevronLeft: Story = {
                     title="Examples"
                     chevronPosition={AccordionChevronPosition.LEFT}
                 >
-                    <div style={{ padding: '16px', paddingLeft: '32px' }}>
+                    <div className="p-4 pl-8">
                         Real-world examples and best practices.
                     </div>
                 </AccordionItem>
@@ -740,7 +675,7 @@ export const WithDisabledItems: Story = {
         isMultiple: false,
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
+        <div className="w-150">
             <Accordion
                 accordionType={args.accordionType}
                 isMultiple={args.isMultiple}
@@ -750,7 +685,7 @@ export const WithDisabledItems: Story = {
                     title="Available Feature"
                     leftSlot={<CheckCircle size={20} color="#22c55e" />}
                 >
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         This feature is available in your current plan.
                     </div>
                 </AccordionItem>
@@ -761,9 +696,7 @@ export const WithDisabledItems: Story = {
                     leftSlot={<Lock size={20} color="#999" />}
                     isDisabled
                 >
-                    <div style={{ padding: '16px' }}>
-                        This content is locked.
-                    </div>
+                    <div className="p-4">This content is locked.</div>
                 </AccordionItem>
                 <AccordionItem
                     value="locked-2"
@@ -772,9 +705,7 @@ export const WithDisabledItems: Story = {
                     leftSlot={<Lock size={20} color="#999" />}
                     isDisabled
                 >
-                    <div style={{ padding: '16px' }}>
-                        This content is locked.
-                    </div>
+                    <div className="p-4">This content is locked.</div>
                 </AccordionItem>
             </Accordion>
         </div>
@@ -790,343 +721,6 @@ export const WithDisabledItems: Story = {
 }
 
 // ============================================================================
-// Real-World Examples
-// ============================================================================
-
-export const ComplexContent: Story = {
-    args: {
-        accordionType: AccordionType.BORDER,
-        isMultiple: false,
-    },
-    render: (args) => (
-        <div style={{ width: '600px' }}>
-            <Accordion
-                accordionType={args.accordionType}
-                isMultiple={args.isMultiple}
-            >
-                <AccordionItem
-                    value="storage"
-                    title="Storage Usage"
-                    subtext="45.2 GB of 100 GB used"
-                    leftSlot={<Database size={20} color="#666" />}
-                    subtextSlot={
-                        <div
-                            style={{
-                                width: '100px',
-                                height: '4px',
-                                backgroundColor: '#e5e5e5',
-                                borderRadius: '2px',
-                                overflow: 'hidden',
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: '45%',
-                                    height: '100%',
-                                    backgroundColor: '#3b82f6',
-                                }}
-                            />
-                        </div>
-                    }
-                >
-                    <div style={{ padding: '16px' }}>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '12px',
-                            }}
-                        >
-                            {[
-                                { label: 'Documents', size: '12.3 GB' },
-                                { label: 'Images', size: '23.7 GB' },
-                                { label: 'Videos', size: '9.2 GB' },
-                            ].map(({ label, size }) => (
-                                <div
-                                    key={label}
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                    }}
-                                >
-                                    <span
-                                        style={{
-                                            fontSize: '14px',
-                                            color: '#666',
-                                        }}
-                                    >
-                                        {label}
-                                    </span>
-                                    <span
-                                        style={{
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                        }}
-                                    >
-                                        {size}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    value="devices"
-                    title="Connected Devices"
-                    subtext="3 devices connected"
-                    leftSlot={<Monitor size={20} color="#666" />}
-                >
-                    <div style={{ padding: '16px' }}>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '12px',
-                            }}
-                        >
-                            {[
-                                {
-                                    Icon: Laptop,
-                                    name: 'MacBook Pro',
-                                    last: '2 minutes ago',
-                                    active: true,
-                                },
-                                {
-                                    Icon: Smartphone,
-                                    name: 'iPhone 14',
-                                    last: '1 hour ago',
-                                    active: false,
-                                },
-                                {
-                                    Icon: Tablet,
-                                    name: 'iPad Air',
-                                    last: '3 days ago',
-                                    active: false,
-                                },
-                            ].map(({ Icon, name, last, active }) => (
-                                <div
-                                    key={name}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '12px',
-                                    }}
-                                >
-                                    <Icon size={16} color="#666" />
-                                    <div style={{ flex: 1 }}>
-                                        <div
-                                            style={{
-                                                fontSize: '14px',
-                                                fontWeight: '500',
-                                            }}
-                                        >
-                                            {name}
-                                        </div>
-                                        <div
-                                            style={{
-                                                fontSize: '12px',
-                                                color: '#999',
-                                            }}
-                                        >
-                                            Last active: {last}
-                                        </div>
-                                    </div>
-                                    {active && (
-                                        <span
-                                            style={{
-                                                fontSize: '12px',
-                                                color: '#22c55e',
-                                            }}
-                                        >
-                                            Active
-                                        </span>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </AccordionItem>
-            </Accordion>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Accordion with complex content layouts and multiple data points.',
-            },
-        },
-        a11y: getA11yConfig('interactive'),
-    },
-}
-
-export const FAQExample: Story = {
-    args: {
-        accordionType: AccordionType.NO_BORDER,
-        isMultiple: false,
-    },
-    render: (args) => (
-        <div style={{ width: '600px' }}>
-            <div style={{ marginBottom: '24px' }}>
-                <h3 style={{ fontSize: '24px', fontWeight: '600', margin: 0 }}>
-                    Frequently Asked Questions
-                </h3>
-            </div>
-            <Accordion
-                accordionType={args.accordionType}
-                isMultiple={args.isMultiple}
-            >
-                <AccordionItem
-                    value="q1"
-                    title="How do I reset my password?"
-                    leftSlot={<HelpCircle size={20} color="#666" />}
-                >
-                    <div style={{ padding: '16px' }}>
-                        To reset your password:
-                        <br />
-                        1. Click on "Forgot Password" on the login page
-                        <br />
-                        2. Enter your email address
-                        <br />
-                        3. Check your email for a reset link
-                        <br />
-                        4. Follow the link and create a new password
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    value="q2"
-                    title="What payment methods do you accept?"
-                    leftSlot={<CreditCard size={20} color="#666" />}
-                >
-                    <div style={{ padding: '16px' }}>
-                        We accept the following payment methods:
-                        <br />
-                        • Credit cards (Visa, Mastercard, American Express)
-                        <br />
-                        • Debit cards
-                        <br />
-                        • PayPal
-                        <br />• Bank transfers (for Enterprise plans)
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    value="q3"
-                    title="Can I cancel my subscription anytime?"
-                    leftSlot={<AlertCircle size={20} color="#666" />}
-                >
-                    <div style={{ padding: '16px' }}>
-                        Yes, you can cancel your subscription at any time. Your
-                        access will continue until the end of your current
-                        billing period. No refunds are provided for partial
-                        months, but you won't be charged for the next billing
-                        cycle.
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    value="q4"
-                    title="Is my data secure?"
-                    leftSlot={<Shield size={20} color="#666" />}
-                >
-                    <div style={{ padding: '16px' }}>
-                        Absolutely! We take security seriously:
-                        <br />
-                        • All data is encrypted at rest and in transit
-                        <br />
-                        • We use industry-standard security protocols
-                        <br />
-                        • Regular security audits are performed
-                        <br />• GDPR and SOC 2 compliant
-                    </div>
-                </AccordionItem>
-            </Accordion>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'A practical example of using accordions for FAQ sections.',
-            },
-        },
-        a11y: getA11yConfig('interactive'),
-    },
-}
-
-export const WithCustomStyling: Story = {
-    args: {
-        accordionType: AccordionType.NO_BORDER,
-        isMultiple: false,
-    },
-    render: (args) => (
-        <div style={{ width: '600px' }}>
-            <style>
-                {`
-                .custom-accordion-item {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    border-radius: 12px !important;
-                    margin-bottom: 8px;
-                }
-                .custom-accordion-item [data-state="open"] {
-                    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-                }
-                .custom-content {
-                    background: rgba(255, 255, 255, 0.95);
-                    margin: 8px;
-                    border-radius: 8px;
-                    backdrop-filter: blur(10px);
-                }
-                `}
-            </style>
-            <Accordion
-                accordionType={args.accordionType}
-                isMultiple={args.isMultiple}
-            >
-                <AccordionItem
-                    value="custom-1"
-                    title="Custom Styled Item"
-                    subtext="With gradient background"
-                    data-testid="custom-accordion-item-1"
-                >
-                    <div className="custom-content" style={{ padding: '16px' }}>
-                        This accordion item has custom CSS styling applied
-                        through data attributes and parent container styles.
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    value="custom-2"
-                    title="Another Custom Item"
-                    subtext="With hover effects"
-                    data-testid="custom-accordion-item-2"
-                >
-                    <div className="custom-content" style={{ padding: '16px' }}>
-                        You can pass data attributes to AccordionItem components
-                        for enhanced functionality.
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    value="custom-3"
-                    title="Third Custom Item"
-                    subtext="Fully customizable"
-                    data-testid="custom-accordion-item-3"
-                >
-                    <div className="custom-content" style={{ padding: '16px' }}>
-                        Custom CSS can be applied through parent containers and
-                        data attributes while maintaining all accordion
-                        functionality.
-                    </div>
-                </AccordionItem>
-            </Accordion>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Accordion items with custom CSS classes and additional HTML attributes.',
-            },
-        },
-        a11y: getA11yConfig('interactive'),
-    },
-}
-
-// ============================================================================
 // Controlled
 // ============================================================================
 
@@ -1135,8 +729,8 @@ export const Controlled: Story = {
         const [value, setValue] = React.useState<string>('item-2')
 
         return (
-            <div style={{ width: '600px' }}>
-                <div style={{ marginBottom: '16px' }}>
+            <div className="w-150">
+                <div className="mb-4">
                     <p>
                         Currently expanded: <strong>{value || 'none'}</strong>
                     </p>
@@ -1147,19 +741,19 @@ export const Controlled: Story = {
                     onValueChange={(newValue) => setValue(newValue as string)}
                 >
                     <AccordionItem value="item-1" title="First Item">
-                        <div style={{ padding: '16px' }}>
+                        <div className="p-4">
                             This is a controlled accordion. The expanded state
                             is managed externally.
                         </div>
                     </AccordionItem>
                     <AccordionItem value="item-2" title="Second Item">
-                        <div style={{ padding: '16px' }}>
+                        <div className="p-4">
                             This item is expanded by default through the
                             controlled value prop.
                         </div>
                     </AccordionItem>
                     <AccordionItem value="item-3" title="Third Item">
-                        <div style={{ padding: '16px' }}>
+                        <div className="p-4">
                             The parent component controls which item is
                             expanded.
                         </div>
@@ -1175,239 +769,6 @@ export const Controlled: Story = {
             },
         },
         a11y: getA11yConfig('interactive'),
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-export const Accessibility: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                padding: '24px',
-                maxWidth: '800px',
-            }}
-        >
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    ARIA Attributes
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Accordion accordionType={AccordionType.BORDER}>
-                        <AccordionItem value="aria-1" title="ARIA Expanded">
-                            <div style={{ padding: '16px' }}>
-                                Accordion triggers have aria-expanded attribute
-                                that updates based on state (true/false).
-                            </div>
-                        </AccordionItem>
-                        <AccordionItem value="aria-2" title="ARIA Controls">
-                            <div style={{ padding: '16px' }}>
-                                Each trigger has aria-controls linking to its
-                                content panel, establishing proper
-                                relationships.
-                            </div>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Keyboard Navigation
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Accordion accordionType={AccordionType.BORDER}>
-                        <AccordionItem
-                            value="keyboard-1"
-                            title="Tab Navigation"
-                        >
-                            <div style={{ padding: '16px' }}>
-                                Tab to focus accordion triggers.
-                            </div>
-                        </AccordionItem>
-                        <AccordionItem
-                            value="keyboard-2"
-                            title="Enter/Space to Toggle"
-                        >
-                            <div style={{ padding: '16px' }}>
-                                Press Enter or Space to expand/collapse items.
-                            </div>
-                        </AccordionItem>
-                        <AccordionItem
-                            value="keyboard-3"
-                            title="Arrow Key Navigation"
-                        >
-                            <div style={{ padding: '16px' }}>
-                                Use Arrow Up/Down to navigate between items.
-                            </div>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Decorative Icons
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Accordion accordionType={AccordionType.BORDER}>
-                        <AccordionItem
-                            value="icon-1"
-                            title="Icon with aria-hidden"
-                            leftSlot={<User size={20} color="#666" />}
-                        >
-                            <div style={{ padding: '16px' }}>
-                                Decorative icons are marked with
-                                aria-hidden="true".
-                            </div>
-                        </AccordionItem>
-                        <AccordionItem
-                            value="icon-2"
-                            title="Chevron Icon"
-                            leftSlot={<Shield size={20} color="#666" />}
-                        >
-                            <div style={{ padding: '16px' }}>
-                                Chevron icons are properly hidden from assistive
-                                technologies.
-                            </div>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Focus Indicators
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Accordion accordionType={AccordionType.BORDER}>
-                        <AccordionItem value="focus-1" title="Focus Me">
-                            <div style={{ padding: '16px' }}>
-                                Tab to focus — you should see a visible focus
-                                indicator.
-                            </div>
-                        </AccordionItem>
-                        <AccordionItem value="focus-2" title="Focus Me Too">
-                            <div style={{ padding: '16px' }}>
-                                All triggers have visible focus indicators.
-                            </div>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Disabled State
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Accordion accordionType={AccordionType.BORDER}>
-                        <AccordionItem value="enabled-1" title="Enabled Item">
-                            <div style={{ padding: '16px' }}>
-                                This item is enabled and can be expanded.
-                            </div>
-                        </AccordionItem>
-                        <AccordionItem
-                            value="disabled-1"
-                            title="Disabled Item"
-                            isDisabled
-                        >
-                            <div style={{ padding: '16px' }}>
-                                This item is disabled and removed from tab
-                                order.
-                            </div>
-                        </AccordionItem>
-                        <AccordionItem
-                            value="enabled-2"
-                            title="Another Enabled"
-                        >
-                            <div style={{ padding: '16px' }}>
-                                Tab navigation skips disabled items.
-                            </div>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Screen Reader Support
-                </h3>
-                <div style={{ width: '600px' }}>
-                    <Accordion accordionType={AccordionType.BORDER}>
-                        <AccordionItem
-                            value="sr-1"
-                            title="With Subtext"
-                            subtext="Additional context for screen readers"
-                        >
-                            <div style={{ padding: '16px' }}>
-                                Subtext provides additional context announced to
-                                screen readers.
-                            </div>
-                        </AccordionItem>
-                        <AccordionItem value="sr-2" title="State Announcements">
-                            <div style={{ padding: '16px' }}>
-                                Screen readers announce expanded/collapsed state
-                                via aria-expanded changes.
-                            </div>
-                        </AccordionItem>
-                    </Accordion>
-                </div>
-            </section>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Accessibility examples demonstrating ARIA attributes, keyboard navigation, focus indicators, disabled states, and screen reader support.',
-            },
-        },
-        a11y: getA11yConfig('interactive'),
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
-        },
     },
 }
 
@@ -1446,32 +807,13 @@ export const TriggerSlotPatterns: Story = {
         }
 
         return (
-            <div
-                style={{
-                    width: '600px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '48px',
-                }}
-            >
+            <div className="w-150 flex flex-col gap-12">
                 {/* Pattern 1: Simple Element */}
                 <section>
-                    <h4
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="mb-3 text-base font-semibold">
                         Pattern 1: Simple React Element
                     </h4>
-                    <p
-                        style={{
-                            marginBottom: '16px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
+                    <p className="mb-4 text-sm text-gray-500">
                         Pass Checkbox or Switch as a simple element. State is
                         managed externally.
                     </p>
@@ -1493,7 +835,7 @@ export const TriggerSlotPatterns: Story = {
                                 />
                             }
                         >
-                            <div style={{ padding: '16px' }}>
+                            <div className="p-4">
                                 Simple checkbox as element
                             </div>
                         </AccordionItem>
@@ -1512,31 +854,17 @@ export const TriggerSlotPatterns: Story = {
                                 />
                             }
                         >
-                            <div style={{ padding: '16px' }}>
-                                Simple switch as element
-                            </div>
+                            <div className="p-4">Simple switch as element</div>
                         </AccordionItem>
                     </Accordion>
                 </section>
 
                 {/* Pattern 2: Independent Selection + Expansion */}
                 <section>
-                    <h4
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="mb-3 text-base font-semibold">
                         Pattern 2: Independent Selection State
                     </h4>
-                    <p
-                        style={{
-                            marginBottom: '16px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
+                    <p className="mb-4 text-sm text-gray-500">
                         Selected: [{selectedTasks.join(', ') || 'none'}]
                     </p>
                     <Accordion accordionType={AccordionType.BORDER} isMultiple>
@@ -1554,7 +882,7 @@ export const TriggerSlotPatterns: Story = {
                                 />
                             }
                         >
-                            <div style={{ padding: '16px' }}>
+                            <div className="p-4">
                                 CI/CD pipeline configuration
                             </div>
                         </AccordionItem>
@@ -1572,22 +900,14 @@ export const TriggerSlotPatterns: Story = {
                                 />
                             }
                         >
-                            <div style={{ padding: '16px' }}>
-                                Security policy audit
-                            </div>
+                            <div className="p-4">Security policy audit</div>
                         </AccordionItem>
                     </Accordion>
                 </section>
 
                 {/* Pattern 3: Feature Toggles */}
                 <section>
-                    <h4
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
+                    <h4 className="mb-3 text-base font-semibold">
                         Pattern 3: Feature Toggles
                     </h4>
                     <Accordion accordionType={AccordionType.BORDER}>
@@ -1611,8 +931,8 @@ export const TriggerSlotPatterns: Story = {
                                 />
                             }
                         >
-                            <div style={{ padding: '16px' }}>
-                                <ul style={{ paddingLeft: '20px' }}>
+                            <div className="p-4">
+                                <ul className="pl-5">
                                     <li>Real-time metrics</li>
                                     <li>Custom reports</li>
                                 </ul>
@@ -1638,8 +958,8 @@ export const TriggerSlotPatterns: Story = {
                                 />
                             }
                         >
-                            <div style={{ padding: '16px' }}>
-                                <ul style={{ paddingLeft: '20px' }}>
+                            <div className="p-4">
+                                <ul className="pl-5">
                                     <li>End-to-end encryption</li>
                                     <li>Audit logging</li>
                                 </ul>
@@ -1671,14 +991,8 @@ export const DefaultValueMultiple: Story = {
         defaultValue: ['item-1', 'item-3'],
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
-            <p
-                style={{
-                    marginBottom: '16px',
-                    fontSize: '14px',
-                    color: '#666',
-                }}
-            >
+        <div className="w-150">
+            <p className="mb-4 text-sm text-gray-500">
                 Items 1 and 3 are expanded by default using the defaultValue
                 prop with an array.
             </p>
@@ -1688,18 +1002,18 @@ export const DefaultValueMultiple: Story = {
                 defaultValue={args.defaultValue as string[]}
             >
                 <AccordionItem value="item-1" title="First Item (Default)">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         This item is expanded by default because defaultValue
                         includes &quot;item-1&quot;.
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-2" title="Second Item">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         This item is collapsed by default.
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-3" title="Third Item (Default)">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         This item is also expanded by default because
                         defaultValue includes &quot;item-3&quot;.
                     </div>
@@ -1724,14 +1038,8 @@ export const DefaultValueSingle: Story = {
         defaultValue: 'item-2',
     },
     render: (args) => (
-        <div style={{ width: '600px' }}>
-            <p
-                style={{
-                    marginBottom: '16px',
-                    fontSize: '14px',
-                    color: '#666',
-                }}
-            >
+        <div className="w-150">
+            <p className="mb-4 text-sm text-gray-500">
                 Item 2 is expanded by default using the defaultValue prop.
             </p>
             <Accordion
@@ -1740,18 +1048,18 @@ export const DefaultValueSingle: Story = {
                 defaultValue={args.defaultValue}
             >
                 <AccordionItem value="item-1" title="First Item">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         This is the first item, collapsed by default.
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-2" title="Second Item (Default)">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         This item is expanded by default because defaultValue is
                         set to &quot;item-2&quot;. Works in uncontrolled mode.
                     </div>
                 </AccordionItem>
                 <AccordionItem value="item-3" title="Third Item">
-                    <div style={{ padding: '16px' }}>
+                    <div className="p-4">
                         This is the third item, collapsed by default.
                     </div>
                 </AccordionItem>

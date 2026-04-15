@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-    ButtonGroup,
-    Button,
-    ButtonType,
-    ButtonSize,
-} from '@juspay/blend-design-system'
+import { ButtonGroup, Button, ButtonSize } from '@juspay/blend-design-system'
 import { figma } from '@figma/code-connect'
 
 /**

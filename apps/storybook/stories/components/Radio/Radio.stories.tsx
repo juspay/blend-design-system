@@ -55,10 +55,25 @@ const meta: Meta<typeof Radio> = {
         a11y: getA11yConfig('interactive'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A radio button component for single selection within groups, with support for controlled and uncontrolled modes, multiple sizes, and comprehensive form integration.',
         docs: {
             description: {
                 component: `
-A radio button component for single selection within groups, with support for controlled and uncontrolled modes, multiple sizes, and comprehensive form integration.
+## Usage
+
+\`\`\`tsx
+import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system';
+
+<RadioGroup name="plan" label="Select Plan">
+  <Radio value="basic" size={RadioSize.MEDIUM}>
+    Basic Plan
+  </Radio>
+  <Radio value="pro" size={RadioSize.MEDIUM}>
+    Pro Plan
+  </Radio>
+</RadioGroup>
+\`\`\`
 
 ## Features
 - Single selection within radio groups
@@ -103,20 +118,6 @@ A radio button component for single selection within groups, with support for co
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-## Usage
-
-\`\`\`tsx
-import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system';
-
-<RadioGroup name="plan" label="Select Plan">
-  <Radio value="basic" size={RadioSize.MEDIUM}>
-    Basic Plan
-  </Radio>
-  <Radio value="pro" size={RadioSize.MEDIUM}>
-    Pro Plan
-  </Radio>
-</RadioGroup>
-\`\`\`
         `,
             },
         },
@@ -227,13 +228,7 @@ export const RadioSizes: Story = {
             const [selectedSize, setSelectedSize] = useState('medium')
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Radio
                         name="size-demo"
                         value="small"
@@ -279,20 +274,8 @@ export const RadioStates: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
-                    <div
-                        style={{
-                            marginBottom: '8px',
-                            fontWeight: '500',
-                            fontSize: '14px',
-                        }}
-                    >
+                <div className="flex flex-col gap-4">
+                    <div className="mb-2 font-medium text-sm">
                         Interactive States:
                     </div>
                     <Radio
@@ -324,14 +307,7 @@ export const RadioStates: Story = {
                         Checked (Click to select)
                     </Radio>
 
-                    <div
-                        style={{
-                            marginTop: '16px',
-                            marginBottom: '8px',
-                            fontWeight: '500',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <div className="mt-4 mb-2 font-medium text-sm">
                         Disabled States:
                     </div>
                     <Radio
@@ -351,14 +327,7 @@ export const RadioStates: Story = {
                         Disabled checked
                     </Radio>
 
-                    <div
-                        style={{
-                            marginTop: '16px',
-                            marginBottom: '8px',
-                            fontWeight: '500',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <div className="mt-4 mb-2 font-medium text-sm">
                         Other States:
                     </div>
                     <Radio
@@ -416,13 +385,7 @@ export const ControlledRadioGroup: Story = {
             const [selectedPlan, setSelectedPlan] = useState('pro')
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <RadioGroup
                         name="subscription"
                         value={selectedPlan}
@@ -436,13 +399,7 @@ export const ControlledRadioGroup: Story = {
                             Yearly Billing
                         </Radio>
                     </RadioGroup>
-                    <div
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginTop: '8px',
-                        }}
-                    >
+                    <div className="text-sm text-gray-600 mt-2">
                         Selected: {selectedPlan}
                     </div>
                 </div>
@@ -568,7 +525,7 @@ export const ErrorAndValidation: Story = {
             }
 
             return (
-                <div style={{ maxWidth: '400px' }}>
+                <div className="max-w-[400px]">
                     <RadioGroup
                         name="agreement"
                         label="Terms Agreement"
@@ -601,27 +558,13 @@ export const ErrorAndValidation: Story = {
 
                     <button
                         onClick={handleSubmit}
-                        style={{
-                            marginTop: '16px',
-                            padding: '8px 16px',
-                            backgroundColor: '#3b82f6',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                        }}
+                        className="mt-4 px-4 py-2 bg-blue-500 text-white border-none rounded cursor-pointer"
                     >
                         Submit
                     </button>
 
                     {showError && (
-                        <div
-                            style={{
-                                color: '#ef4444',
-                                fontSize: '14px',
-                                marginTop: '8px',
-                            }}
-                        >
+                        <div className="text-red-500 text-sm mt-2">
                             Please select an option to continue.
                         </div>
                     )}
@@ -642,7 +585,7 @@ export const ErrorAndValidation: Story = {
 // Different Radio Group configurations
 export const RadioGroupVariations: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div className="flex flex-col gap-8">
             {/* Small size group */}
             <RadioGroup
                 name="size-small"
@@ -702,7 +645,7 @@ export const RadioGroupVariations: Story = {
 // Uncontrolled Radio Group
 export const UncontrolledRadioGroup: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="flex flex-col gap-6">
             <RadioGroup name="uncontrolled-1" label="Uncontrolled (no default)">
                 <Radio value="option1">Option 1</Radio>
                 <Radio value="option2">Option 2</Radio>
@@ -737,13 +680,7 @@ export const WithoutLabel: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Radio
                         name="no-label-group"
                         value="option1"
@@ -785,191 +722,6 @@ export const WithoutLabel: Story = {
     },
 }
 
-// Text truncation with maxLength
-export const TextTruncation: Story = {
-    render: () => {
-        const TextTruncationComponent = () => {
-            const [truncationStates, setTruncationStates] = useState({
-                longLabel: '',
-                longSubtext: '',
-                both: '',
-            })
-
-            return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
-                        maxWidth: '300px',
-                    }}
-                >
-                    <RadioGroup
-                        name="truncation-label"
-                        label="Long Labels"
-                        value={truncationStates.longLabel}
-                        onChange={(value) =>
-                            setTruncationStates((prev) => ({
-                                ...prev,
-                                longLabel: value,
-                            }))
-                        }
-                    >
-                        <Radio value="long1" maxLength={{ label: 30 }}>
-                            This is a very long label that will be truncated
-                            when it exceeds the maximum length
-                        </Radio>
-                        <Radio value="long2" maxLength={{ label: 30 }}>
-                            Another very long label that demonstrates text
-                            truncation functionality
-                        </Radio>
-                    </RadioGroup>
-
-                    <RadioGroup
-                        name="truncation-subtext"
-                        label="Long Subtext"
-                        value={truncationStates.longSubtext}
-                        onChange={(value) =>
-                            setTruncationStates((prev) => ({
-                                ...prev,
-                                longSubtext: value,
-                            }))
-                        }
-                    >
-                        <Radio
-                            value="subtext1"
-                            subtext="This is a very long subtext description that will be truncated when it exceeds the maximum length specified in the maxLength prop"
-                            maxLength={{ subtext: 50 }}
-                        >
-                            Radio with long subtext
-                        </Radio>
-                        <Radio
-                            value="subtext2"
-                            subtext="Another very long subtext that demonstrates truncation functionality for descriptive text"
-                            maxLength={{ subtext: 50 }}
-                        >
-                            Another radio with long subtext
-                        </Radio>
-                    </RadioGroup>
-
-                    <RadioGroup
-                        name="truncation-both"
-                        label="Both Truncated"
-                        value={truncationStates.both}
-                        onChange={(value) =>
-                            setTruncationStates((prev) => ({
-                                ...prev,
-                                both: value,
-                            }))
-                        }
-                    >
-                        <Radio
-                            value="both1"
-                            subtext="This subtext will also be truncated along with the label above"
-                            maxLength={{ label: 25, subtext: 40 }}
-                        >
-                            Both label and subtext truncated
-                        </Radio>
-                    </RadioGroup>
-                </div>
-            )
-        }
-        return <TextTruncationComponent />
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Radio buttons with text truncation using maxLength prop. Hover over truncated text to see full content in tooltip.',
-            },
-        },
-    },
-}
-
-export const CombinedStates: Story = {
-    render: () => {
-        const CombinedStatesComponent = () => {
-            const [combinedStates, setCombinedStates] = useState({
-                disabledError: '',
-                disabledRequired: '',
-                errorRequired: '',
-            })
-
-            return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
-                    <RadioGroup
-                        name="disabled-error"
-                        label="Disabled with Error"
-                        value={combinedStates.disabledError}
-                        onChange={(value) =>
-                            setCombinedStates((prev) => ({
-                                ...prev,
-                                disabledError: value,
-                            }))
-                        }
-                        disabled={true}
-                        error={true}
-                    >
-                        <Radio value="option1">
-                            Disabled option with error
-                        </Radio>
-                        <Radio value="option2">Another disabled option</Radio>
-                    </RadioGroup>
-
-                    <RadioGroup
-                        name="disabled-required"
-                        label="Disabled and Required"
-                        value={combinedStates.disabledRequired}
-                        onChange={(value) =>
-                            setCombinedStates((prev) => ({
-                                ...prev,
-                                disabledRequired: value,
-                            }))
-                        }
-                        disabled={true}
-                        required={true}
-                    >
-                        <Radio value="option1">
-                            Disabled and required option
-                        </Radio>
-                        <Radio value="option2">Another disabled option</Radio>
-                    </RadioGroup>
-
-                    <RadioGroup
-                        name="error-required"
-                        label="Error and Required"
-                        value={combinedStates.errorRequired}
-                        onChange={(value) =>
-                            setCombinedStates((prev) => ({
-                                ...prev,
-                                errorRequired: value,
-                            }))
-                        }
-                        error={true}
-                        required={true}
-                    >
-                        <Radio value="option1">Error and required option</Radio>
-                        <Radio value="option2">Another option</Radio>
-                    </RadioGroup>
-                </div>
-            )
-        }
-        return <CombinedStatesComponent />
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Radio groups with combined states: disabled + error, disabled + required, and error + required.',
-            },
-        },
-    },
-}
-
 export const FormIntegration: Story = {
     render: () => {
         const FormIntegrationComponent = () => {
@@ -994,24 +746,8 @@ export const FormIntegration: Story = {
 
             return (
                 <form onSubmit={handleSubmit}>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '24px',
-                            padding: '20px',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            maxWidth: '400px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: 0,
-                                fontSize: '18px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="flex flex-col gap-6 p-5 border border-gray-200 rounded-lg min-w-[400px]">
+                        <h3 className="m-0 text-lg font-semibold">
                             Subscription Form
                         </h3>
 
@@ -1064,17 +800,7 @@ export const FormIntegration: Story = {
 
                         <button
                             type="submit"
-                            style={{
-                                marginTop: '16px',
-                                padding: '10px 20px',
-                                backgroundColor: '#3b82f6',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                fontWeight: '500',
-                            }}
+                            className="mt-4 px-5 py-2.5 bg-blue-500 text-white border-none rounded-md cursor-pointer text-sm font-medium"
                         >
                             Submit Form
                         </button>
@@ -1103,13 +829,7 @@ export const RadioGroupWithStates: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '32px',
-                    }}
-                >
+                <div className="flex flex-col gap-8">
                     <RadioGroup
                         label="Settings with Error"
                         name="error-group"
@@ -1170,43 +890,6 @@ export const RadioGroupWithStates: Story = {
         docs: {
             description: {
                 story: 'Radio groups with error, required, and combined error+required states at the group level.',
-            },
-        },
-    },
-}
-
-export const Interactive: Story = {
-    render: function InteractiveRadio(args: Story['args']) {
-        const [checked, setChecked] = useState(args?.defaultChecked || false)
-
-        return (
-            <Radio
-                {...args}
-                checked={checked}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setChecked(e.target.checked)
-                }
-                slot={getSlotContent(args?.slot)}
-            />
-        )
-    },
-    args: {
-        children: 'Interactive radio playground',
-        value: 'interactive',
-        name: 'interactive-group',
-        size: RadioSize.MEDIUM,
-        defaultChecked: false,
-        disabled: false,
-        required: false,
-        error: false,
-        subtext: 'Customize all props using controls',
-        id: 'interactive-radio',
-        slot: 'none',
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Interactive playground to test all radio props and combinations. Use the controls panel to modify any property.',
             },
         },
     },

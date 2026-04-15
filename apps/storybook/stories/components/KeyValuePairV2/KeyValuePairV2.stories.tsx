@@ -11,14 +11,10 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config.js'
 
-const stack = (gap: number) => ({
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: `${gap}px`,
-})
-const sectionTitleWrap = { marginBottom: '12px' }
-const sectionTitle = { margin: 0, fontSize: '15px', fontWeight: 600 as const }
-const caption = { marginBottom: '16px', fontSize: '14px', color: '#64748b' }
+const stackClass = (gap: number) => `flex flex-col gap-[${gap}px]`
+const sectionTitleWrapClass = 'mb-3'
+const sectionTitleClass = 'm-0 text-[15px] font-semibold'
+const captionClass = 'mb-4 text-sm text-slate-500'
 
 const meta: Meta<typeof KeyValuePairV2> = {
     title: 'Components/KeyValuePairV2',
@@ -27,9 +23,11 @@ const meta: Meta<typeof KeyValuePairV2> = {
         layout: 'centered',
         a11y: getA11yConfig('content'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'KeyValuePairV2 — key/value component with tokenization and responsive behavior.',
         docs: {
             description: {
-                component: `KeyValuePairV2 — key/value component with tokenization and responsive behavior.
+                component: `
 - Vertical and horizontal layouts | Sizes: sm, md, lg
 - Slots: slots.key, slots.value.left, slots.value.right
 - Text overflow: truncate, wrap, wrap-clamp with optional tooltip`,
@@ -89,7 +87,7 @@ export const Default: Story = {
 
 export const WithSlots: Story = {
     render: () => (
-        <div style={{ ...stack(24), width: '300px' }}>
+        <div className={`${stackClass(24)} w-[300px]`}>
             <KeyValuePairV2
                 keyString="Rating"
                 value="4.8"
@@ -123,12 +121,12 @@ export const WithSlots: Story = {
 
 export const Visual: Story = {
     render: () => (
-        <div style={{ ...stack(32), maxWidth: '360px' }}>
+        <div className={`${stackClass(32)} max-w-[360px]`}>
             <div>
-                <div style={sectionTitleWrap}>
-                    <h3 style={sectionTitle}>Layouts</h3>
+                <div className={sectionTitleWrapClass}>
+                    <h3 className={sectionTitleClass}>Layouts</h3>
                 </div>
-                <div style={stack(12)}>
+                <div className={stackClass(12)}>
                     <KeyValuePairV2
                         keyString="Vertical"
                         value="Label above value"
@@ -144,10 +142,10 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <div style={sectionTitleWrap}>
-                    <h3 style={sectionTitle}>Sizes</h3>
+                <div className={sectionTitleWrapClass}>
+                    <h3 className={sectionTitleClass}>Sizes</h3>
                 </div>
-                <div style={stack(12)}>
+                <div className={stackClass(12)}>
                     <KeyValuePairV2
                         keyString="Small"
                         value="SM size"
@@ -166,10 +164,10 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <div style={sectionTitleWrap}>
-                    <h3 style={sectionTitle}>Text overflow</h3>
+                <div className={sectionTitleWrapClass}>
+                    <h3 className={sectionTitleClass}>Text overflow</h3>
                 </div>
-                <div style={stack(12)}>
+                <div className={stackClass(12)}>
                     <KeyValuePairV2
                         keyString="Truncate"
                         value="Short"
@@ -194,10 +192,10 @@ export const Visual: Story = {
                 </div>
             </div>
             <div>
-                <div style={sectionTitleWrap}>
-                    <h3 style={sectionTitle}>With slots</h3>
+                <div className={sectionTitleWrapClass}>
+                    <h3 className={sectionTitleClass}>With slots</h3>
                 </div>
-                <div style={stack(12)}>
+                <div className={stackClass(12)}>
                     <KeyValuePairV2
                         keyString="Key slot"
                         value="Icon on key"
@@ -229,14 +227,14 @@ export const Visual: Story = {
 
 export const Interaction: Story = {
     render: () => (
-        <div style={{ ...stack(24), padding: '24px', maxWidth: '400px' }}>
+        <div className={`${stackClass(24)} p-6 max-w-[400px]`}>
             <div>
-                <div style={sectionTitleWrap}>
-                    <h3 style={{ ...sectionTitle, fontSize: '16px' }}>
+                <div className={sectionTitleWrapClass}>
+                    <h3 className="m-0 text-base font-semibold">
                         Truncated value with tooltip
                     </h3>
                 </div>
-                <p style={caption}>
+                <p className={captionClass}>
                     Hover or focus the truncated value to see the full text in a
                     tooltip.
                 </p>
@@ -250,12 +248,12 @@ export const Interaction: Story = {
                 />
             </div>
             <div>
-                <div style={sectionTitleWrap}>
-                    <h3 style={{ ...sectionTitle, fontSize: '16px' }}>
+                <div className={sectionTitleWrapClass}>
+                    <h3 className="m-0 text-base font-semibold">
                         Wrap-clamp with tooltip
                     </h3>
                 </div>
-                <p style={caption}>
+                <p className={captionClass}>
                     Multi-line clamp: hover the value to see the full text.
                 </p>
                 <KeyValuePairV2

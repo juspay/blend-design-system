@@ -16,10 +16,33 @@ const meta: Meta<typeof SearchInput> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A specialized search input component optimized for search functionality with customizable slots for search icons and filter controls.',
         docs: {
             description: {
                 component: `
-A specialized search input component optimized for search functionality with customizable slots for search icons and filter controls.
+
+## Usage
+
+\`\`\`tsx
+import { SearchInput } from '@juspay/blend-design-system';
+
+<SearchInput
+  placeholder="Search products..."
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+  leftSlot={<Search size={16} aria-hidden="true" />}
+  rightSlot={searchQuery && (
+    <button 
+      onClick={() => setSearchQuery('')}
+      aria-label="Clear search"
+      type="button"
+    >
+      <X size={16} />
+    </button>
+  )}
+/>
+\`\`\`
 
 ## Features
 - Optimized for search use cases
@@ -56,28 +79,6 @@ A specialized search input component optimized for search functionality with cus
 pnpm test SearchInput.accessibility
 \`\`\`
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
-
-## Usage
-
-\`\`\`tsx
-import { SearchInput } from '@juspay/blend-design-system';
-
-<SearchInput
-  placeholder="Search products..."
-  value={searchQuery}
-  onChange={(e) => setSearchQuery(e.target.value)}
-  leftSlot={<Search size={16} aria-hidden="true" />}
-  rightSlot={searchQuery && (
-    <button 
-      onClick={() => setSearchQuery('')}
-      aria-label="Clear search"
-      type="button"
-    >
-      <X size={16} />
-    </button>
-  )}
-/>
-\`\`\`
         `,
             },
         },
@@ -219,13 +220,7 @@ export const WithClearButton: Story = {
                         <button
                             type="button"
                             onClick={() => setValue('')}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
+                            className="bg-transparent border-0 cursor-pointer flex items-center"
                         >
                             <X size={16} />
                         </button>
@@ -250,37 +245,19 @@ export const WithFilters: Story = {
         const [showFilters, setShowFilters] = useState(false)
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                }}
-            >
+            <div className="flex flex-col gap-3">
                 <SearchInput
                     placeholder="Search with filters..."
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     leftSlot={<Search size={16} />}
                     rightSlot={
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                            }}
-                        >
+                        <div className="flex items-center gap-2">
                             {value && (
                                 <button
                                     type="button"
                                     onClick={() => setValue('')}
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    }}
+                                    className="bg-transparent border-0 cursor-pointer flex items-center"
                                 >
                                     <X size={16} />
                                 </button>
@@ -288,14 +265,7 @@ export const WithFilters: Story = {
                             <button
                                 type="button"
                                 onClick={() => setShowFilters(!showFilters)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    color: showFilters ? '#0066cc' : 'inherit',
-                                }}
+                                className={`bg-transparent border-0 cursor-pointer flex items-center ${showFilters ? 'text-blue-600' : ''}`}
                             >
                                 <Filter size={16} />
                             </button>
@@ -303,14 +273,7 @@ export const WithFilters: Story = {
                     }
                 />
                 {showFilters && (
-                    <div
-                        style={{
-                            padding: '12px',
-                            backgroundColor: '#f5f5f5',
-                            borderRadius: '4px',
-                            fontSize: '14px',
-                        }}
-                    >
+                    <div className="p-3 bg-gray-100 rounded text-sm">
                         Filter options would appear here
                     </div>
                 )}
@@ -336,13 +299,7 @@ export const SearchContexts: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <SearchInput
                     placeholder="Search everything..."
                     value={values.general}
@@ -363,11 +320,7 @@ export const SearchContexts: Story = {
                                         general: '',
                                     }))
                                 }
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                }}
+                                className="bg-transparent border-0 cursor-pointer"
                             >
                                 <X size={16} />
                             </button>
@@ -394,11 +347,7 @@ export const SearchContexts: Story = {
                                         location: '',
                                     }))
                                 }
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                }}
+                                className="bg-transparent border-0 cursor-pointer"
                             >
                                 <X size={16} />
                             </button>
@@ -419,11 +368,7 @@ export const SearchContexts: Story = {
                                 onClick={() =>
                                     setValues((prev) => ({ ...prev, date: '' }))
                                 }
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                }}
+                                className="bg-transparent border-0 cursor-pointer"
                             >
                                 <X size={16} />
                             </button>
@@ -469,7 +414,7 @@ export const ErrorState: Story = {
 // Disabled state
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <SearchInput
                 placeholder="This search is disabled"
                 value=""
@@ -491,286 +436,6 @@ export const DisabledState: Story = {
             description: {
                 story: 'SearchInput in disabled state, both empty and with content.',
             },
-        },
-    },
-}
-
-// Accessibility-focused examples
-export const Accessibility: Story = {
-    render: () => {
-        const [searchQuery, setSearchQuery] = useState('')
-        const [locationSearch, setLocationSearch] = useState('')
-        const [errorSearch, setErrorSearch] = useState('invalid')
-
-        const searchError =
-            errorSearch.length > 0 && errorSearch.length < 3
-                ? 'Search query must be at least 3 characters'
-                : ''
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Basic Search with Accessible Icons
-                    </h3>
-                    <SearchInput
-                        placeholder="Search products, services, or content..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        leftSlot={<Search size={16} aria-hidden="true" />}
-                        rightSlot={
-                            searchQuery && (
-                                <button
-                                    type="button"
-                                    onClick={() => setSearchQuery('')}
-                                    aria-label="Clear search"
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <X size={16} aria-hidden="true" />
-                                </button>
-                            )
-                        }
-                        name="search"
-                    />
-                    <p
-                        style={{
-                            marginTop: '8px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
-                        <strong>Accessibility notes:</strong> Search icon has
-                        aria-hidden="true" as it's decorative. Clear button has
-                        aria-label for screen readers. Input has name attribute
-                        for form submission.
-                    </p>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Search with Contextual Icons
-                    </h3>
-                    <SearchInput
-                        placeholder="Search locations..."
-                        value={locationSearch}
-                        onChange={(e) => setLocationSearch(e.target.value)}
-                        leftSlot={<MapPin size={16} aria-hidden="true" />}
-                        rightSlot={
-                            locationSearch && (
-                                <button
-                                    type="button"
-                                    onClick={() => setLocationSearch('')}
-                                    aria-label="Clear location search"
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <X size={16} aria-hidden="true" />
-                                </button>
-                            )
-                        }
-                        name="location-search"
-                    />
-                    <p
-                        style={{
-                            marginTop: '8px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
-                        <strong>Accessibility notes:</strong> MapPin icon
-                        provides visual context but is marked as decorative.
-                        Placeholder text clearly indicates the search purpose.
-                    </p>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Error State and Validation
-                    </h3>
-                    <SearchInput
-                        placeholder="Search with validation..."
-                        value={errorSearch}
-                        onChange={(e) => setErrorSearch(e.target.value)}
-                        leftSlot={<Search size={16} aria-hidden="true" />}
-                        error={!!searchError}
-                        name="validated-search"
-                    />
-                    {searchError && (
-                        <p
-                            style={{
-                                marginTop: '8px',
-                                fontSize: '14px',
-                                color: '#E7000B',
-                            }}
-                            role="alert"
-                            aria-live="polite"
-                        >
-                            {searchError}
-                        </p>
-                    )}
-                    <p
-                        style={{
-                            marginTop: '8px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
-                        <strong>Accessibility notes:</strong> Error state is
-                        visually indicated via border color. Error message uses
-                        role="alert" and aria-live="polite" for screen reader
-                        announcements.
-                    </p>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Disabled State
-                    </h3>
-                    <SearchInput
-                        placeholder="This search is disabled"
-                        value=""
-                        onChange={() => {}}
-                        leftSlot={<Search size={16} aria-hidden="true" />}
-                        disabled
-                        name="disabled-search"
-                    />
-                    <p
-                        style={{
-                            marginTop: '8px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
-                        <strong>Accessibility notes:</strong> Disabled fields
-                        are not focusable and do not submit values. Disabled
-                        state is communicated programmatically to assistive
-                        technologies.
-                    </p>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Keyboard and Screen Reader Friendly
-                    </h3>
-                    <SearchInput
-                        placeholder="Try keyboard navigation: Tab to focus, type to search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        leftSlot={<Search size={16} aria-hidden="true" />}
-                        rightSlot={
-                            searchQuery && (
-                                <button
-                                    type="button"
-                                    onClick={() => setSearchQuery('')}
-                                    aria-label="Clear search query"
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <X size={16} aria-hidden="true" />
-                                </button>
-                            )
-                        }
-                        name="keyboard-search"
-                    />
-                    <p
-                        style={{
-                            marginTop: '8px',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
-                        <strong>Accessibility notes:</strong> All interactive
-                        elements (input and clear button) are keyboard
-                        accessible. Focus indicators are clearly visible. Clear
-                        button has descriptive aria-label.
-                    </p>
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating proper icon handling, error messaging, disabled state, keyboard navigation, and screen reader support for search inputs.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to icon accessibility (aria-hidden), button labels (aria-label), and error messaging.
-
-2. **jest-axe tests**:
-   - Add \`SearchInput.accessibility.test.tsx\` mirroring TextInput's tests and run:
-   \`\`\`bash
-   pnpm test SearchInput.accessibility
-   \`\`\`
-   - Validate WCAG 2.0, 2.1, and 2.2 A and AA success criteria for search inputs (keyboard support, icon accessibility, error handling).
-
-3. **Manual testing**:
-   - Navigate using keyboard only (Tab / Shift+Tab, Enter for form submission, Space/Enter on clear button).
-   - Use a screen reader (VoiceOver/NVDA) to confirm placeholder text, clear button labels, and error messages are announced.
-   - Verify color contrast of text, borders, and focus styles using contrast tools.
-   - Test that decorative icons (with aria-hidden="true") are not announced by screen readers.
-                `,
-            },
-        },
-        a11y: {
-            ...getA11yConfig('form'),
         },
     },
 }

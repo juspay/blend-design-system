@@ -1,16 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { TextInput, TextInputSize } from '@juspay/blend-design-system'
-import {
-    User,
-    Mail,
-    Lock,
-    Eye,
-    EyeOff,
-    AlertCircle,
-    Check,
-    X,
-} from 'lucide-react'
+import { User, Mail, Lock, Eye, EyeOff, AlertCircle, Check } from 'lucide-react'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -25,11 +16,27 @@ const meta: Meta<typeof TextInput> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A flexible text input component with support for labels, validation, error handling, and customizable slots for icons and actions.',
         docs: {
             description: {
                 component: `
-A flexible text input component with support for labels, validation, error handling, and customizable slots for icons and actions.
 
+## Usage
+
+\`\`\`tsx
+import { TextInput, TextInputSize } from '@juspay/blend-design-system';
+
+<TextInput
+  label="Email Address"
+  placeholder="Enter your email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  size={TextInputSize.MEDIUM}
+  leftSlot={<Mail size={16} />}
+  required
+/>
+\`\`\`
 ## Features
 - Three sizes (Small, Medium, Large)
 - Label, sublabel, and hint text support
@@ -65,22 +72,6 @@ A flexible text input component with support for labels, validation, error handl
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
 
 > Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
-
-## Usage
-
-\`\`\`tsx
-import { TextInput, TextInputSize } from '@juspay/blend-design-system';
-
-<TextInput
-  label="Email Address"
-  placeholder="Enter your email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  size={TextInputSize.MEDIUM}
-  leftSlot={<Mail size={16} />}
-  required
-/>
-\`\`\`
         `,
             },
         },
@@ -284,13 +275,7 @@ export const Sizes: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextInput
                     label="Small Size"
                     placeholder="Small input"
@@ -350,13 +335,7 @@ export const WithSlots: Story = {
         const [showPassword, setShowPassword] = useState(false)
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextInput
                     label="Email"
                     placeholder="Enter your email"
@@ -387,11 +366,7 @@ export const WithSlots: Story = {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                            }}
+                            className="bg-transparent border-0 cursor-pointer"
                         >
                             {showPassword ? (
                                 <EyeOff size={16} />
@@ -439,13 +414,7 @@ export const ErrorStates: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextInput
                     label="Required Field"
                     placeholder="This field is required"
@@ -507,7 +476,7 @@ export const ErrorStates: Story = {
 // Disabled state
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <TextInput
                 label="Disabled Empty"
                 placeholder="This input is disabled"
@@ -539,13 +508,7 @@ export const WithLabelsAndHints: Story = {
         const [value, setValue] = useState('')
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <TextInput
                     label="Full Name"
                     sublabel="As it appears on your ID"
@@ -565,145 +528,6 @@ export const WithLabelsAndHints: Story = {
             description: {
                 story: 'TextInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
-        },
-    },
-}
-
-// Accessibility-focused examples
-export const Accessibility: Story = {
-    render: () => {
-        const [email, setEmail] = useState('')
-        const [name, setName] = useState('')
-        const [password, setPassword] = useState('')
-
-        const emailError =
-            email.length > 0 && !email.includes('@')
-                ? 'Please enter a valid email address'
-                : ''
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Labels, Required Fields, and Hints
-                    </h3>
-                    <TextInput
-                        label="Full Name"
-                        sublabel="As it appears on your ID"
-                        hintText="Enter your first and last name"
-                        placeholder="John Doe"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Error Messaging and Validation
-                    </h3>
-                    <TextInput
-                        label="Email Address"
-                        placeholder="name@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="email"
-                        error={!!emailError}
-                        errorMessage={emailError}
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Disabled and Read-Only Contexts
-                    </h3>
-                    <TextInput
-                        label="Disabled Input"
-                        value="This field is disabled"
-                        onChange={() => {}}
-                        disabled
-                        hintText="Disabled fields are not focusable and do not submit values"
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Keyboard and Screen Reader Friendly Layout
-                    </h3>
-                    <TextInput
-                        label="Password"
-                        placeholder="Enter a strong password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        hintText="Use at least 12 characters, including letters and numbers"
-                        required
-                    />
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, and keyboard-friendly focus behavior.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to label / control associations and error messaging.
-
-2. **jest-axe tests**:
-   - Add \`TextInput.accessibility.test.tsx\` mirroring Button's tests and run:
-   \`\`\`bash
-   pnpm test TextInput.accessibility
-   \`\`\`
-   - Validate WCAG 2.1/2.2 A and AA success criteria for form fields (labels, errors, keyboard support).
-
-3. **Manual testing**:
-   - Navigate using keyboard only (Tab / Shift+Tab, Enter).
-   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, and errors are announced.
-   - Verify color contrast of text, borders, and focus styles using contrast tools.
-                `,
-            },
-        },
-        a11y: {
-            ...getA11yConfig('form'),
         },
     },
 }

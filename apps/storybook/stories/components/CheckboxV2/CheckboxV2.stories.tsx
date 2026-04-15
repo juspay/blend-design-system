@@ -178,13 +178,7 @@ export const Sizes: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 16,
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <CheckboxV2
                         label="Small checkbox"
                         size={SelectorV2Size.SM}
@@ -217,13 +211,7 @@ export const Sizes: Story = {
 
 export const States: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 12,
-            }}
-        >
+        <div className="flex flex-col gap-3">
             <CheckboxV2 label="Default" />
             <CheckboxV2 label="Checked" checked />
             <CheckboxV2 label="Disabled" disabled />

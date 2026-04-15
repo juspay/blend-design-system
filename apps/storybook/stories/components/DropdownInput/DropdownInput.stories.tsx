@@ -64,11 +64,28 @@ const meta: Meta<typeof DropdownInput> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A combination input component that pairs a text input with a dropdown selector, commonly used for forms requiring both typed input and selection from predefined options.',
         docs: {
             description: {
                 component: `
-A combination input component that pairs a text input with a dropdown selector, commonly used for forms requiring both typed input and selection from predefined options.
+## Usage
 
+\`\`\`tsx
+import { DropdownInput, DropdownPosition, TextInputSize } from '@juspay/blend-design-system';
+
+<DropdownInput
+  label="Phone Number"
+  value={phoneNumber}
+  onChange={(e) => setPhoneNumber(e.target.value)}
+  dropDownValue={countryCode}
+  onDropDownChange={setCountryCode}
+  dropDownItems={countryCodeOptions}
+  dropdownPosition={DropdownPosition.LEFT}
+  size={TextInputSize.MEDIUM}
+  placeholder="Enter phone number"
+/>
+\`\`\`
 ## Features
 - Three sizes (Small, Medium, Large)
 - Text input with dropdown selection
@@ -109,24 +126,6 @@ A combination input component that pairs a text input with a dropdown selector, 
 pnpm test DropdownInput.accessibility
 \`\`\`
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
-
-## Usage
-
-\`\`\`tsx
-import { DropdownInput, DropdownPosition, TextInputSize } from '@juspay/blend-design-system';
-
-<DropdownInput
-  label="Phone Number"
-  value={phoneNumber}
-  onChange={(e) => setPhoneNumber(e.target.value)}
-  dropDownValue={countryCode}
-  onDropDownChange={setCountryCode}
-  dropDownItems={countryCodeOptions}
-  dropdownPosition={DropdownPosition.LEFT}
-  size={TextInputSize.MEDIUM}
-  placeholder="Enter phone number"
-/>
-\`\`\`
         `,
             },
         },
@@ -443,13 +442,7 @@ export const Sizes: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <DropdownInput
                     label="Small Size"
                     size={TextInputSize.SMALL}
@@ -531,13 +524,7 @@ export const DropdownPositions: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <DropdownInput
                     label="Dropdown on Left"
                     value={values.left.input}
@@ -599,13 +586,7 @@ export const ErrorStates: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <DropdownInput
                     label="Required Field"
                     value={values.required.input}
@@ -669,7 +650,7 @@ export const ErrorStates: Story = {
 // Disabled state
 export const DisabledState: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
             <DropdownInput
                 label="Disabled Empty"
                 value=""
@@ -729,139 +710,5 @@ export const WithLabelsAndHints: Story = {
                 story: 'DropdownInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
-    },
-}
-
-// Accessibility-focused examples
-export const Accessibility: Story = {
-    render: () => {
-        const [phoneNumber, setPhoneNumber] = useState('')
-        const [phoneCode, setPhoneCode] = useState('+1')
-        const [city, setCity] = useState('')
-        const [country, setCountry] = useState('')
-
-        const phoneError =
-            phoneNumber.length > 0 && phoneNumber.length < 6
-                ? 'Please enter a valid phone number'
-                : ''
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Labels, Sublabels, and Hints
-                    </h3>
-                    <DropdownInput
-                        label="Shipping Address"
-                        sublabel="Select country and enter city details"
-                        hintText="We ship to major cities worldwide"
-                        helpIconHintText="Shipping costs will be calculated based on your location"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        dropDownValue={country}
-                        onDropDownChange={setCountry}
-                        dropDownItems={countryData}
-                        placeholder="Enter city name"
-                        slot={<MapPin size={16} />}
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Error Messaging and Validation
-                    </h3>
-                    <DropdownInput
-                        label="Phone Number"
-                        sublabel="Include country code"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        dropDownValue={phoneCode}
-                        onDropDownChange={setPhoneCode}
-                        dropDownItems={phoneCodeData}
-                        dropdownPosition={DropdownPosition.LEFT}
-                        placeholder="Enter phone number"
-                        slot={<Phone size={16} />}
-                        type="tel"
-                        error={!!phoneError}
-                        errorMessage={phoneError}
-                        required
-                    />
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                        }}
-                    >
-                        Disabled and Read-Only Contexts
-                    </h3>
-                    <DropdownInput
-                        label="Disabled Country and City"
-                        value="New York"
-                        onChange={() => {}}
-                        dropDownValue="US"
-                        onDropDownChange={() => {}}
-                        dropDownItems={countryData}
-                        disabled
-                        hintText="Disabled fields are not focusable and do not submit values"
-                    />
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, and keyboard-friendly focus behavior for composite DropdownInput.
-
-### Accessibility Verification
-
-1. **Storybook a11y addon**:
-   - Open the Accessibility panel and verify there are no violations for these scenarios.
-   - Pay special attention to input label / control associations and dropdown menu semantics.
-
-2. **jest-axe tests**:
-   - Add \`DropdownInput.accessibility.test.tsx\` mirroring TextInput/NumberInput tests and run:
-   \`\`\`bash
-   pnpm test DropdownInput.accessibility
-   \`\`\`
-   - Validate WCAG 2.0/2.1/2.2 A and AA success criteria for composite form fields (labels, errors, keyboard support, dropdown navigation).
-
-3. **Manual testing**:
-   - Navigate using keyboard only (Tab / Shift+Tab, arrow keys within dropdown, Enter/Escape).
-   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, dropdown labels, and errors are announced.
-   - Verify color contrast of text, borders, and focus styles using contrast tools.
-                `,
-            },
-        },
-        a11y: {
-            ...getA11yConfig('form'),
-        },
-        chromatic: CHROMATIC_CONFIG,
     },
 }

@@ -45,10 +45,25 @@ const meta: Meta<typeof Checkbox> = {
         a11y: getA11yConfig('interactive'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A versatile checkbox component with support for controlled and uncontrolled states, indeterminate state, multiple sizes, and comprehensive form integration capabilities.',
         docs: {
             description: {
                 component: `
-A versatile checkbox component with support for controlled and uncontrolled states, indeterminate state, multiple sizes, and comprehensive form integration capabilities.
+ ## Usage
+
+\`\`\`tsx
+import { Checkbox, CheckboxSize } from '@juspay/blend-design-system';
+
+<Checkbox 
+  size={CheckboxSize.MEDIUM}
+  checked={isChecked}
+  onCheckedChange={setIsChecked}
+  required={true}
+>
+  Accept terms and conditions
+</Checkbox>
+\`\`\`
 
 ## Features
 - Controlled and uncontrolled modes
@@ -91,21 +106,6 @@ A versatile checkbox component with support for controlled and uncontrolled stat
 - **jest-axe**: Run \`pnpm test Checkbox.accessibility\` (automated tests covering WCAG 2.1 criteria)
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
-
-## Usage
-
-\`\`\`tsx
-import { Checkbox, CheckboxSize } from '@juspay/blend-design-system';
-
-<Checkbox 
-  size={CheckboxSize.MEDIUM}
-  checked={isChecked}
-  onCheckedChange={setIsChecked}
-  required={true}
->
-  Accept terms and conditions
-</Checkbox>
-\`\`\`
         `,
             },
         },
@@ -216,13 +216,7 @@ export const CheckboxSizes: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
+            <div className="flex flex-col gap-4">
                 <Checkbox
                     size={CheckboxSize.SMALL}
                     checked={sizes.small}
@@ -272,13 +266,7 @@ export const CheckboxStates: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
+            <div className="flex flex-col gap-4">
                 <Checkbox
                     checked={states.unchecked}
                     onCheckedChange={(checked: CheckboxChangeValue) =>
@@ -339,13 +327,7 @@ export const ControlledCheckbox: Story = {
         const [isChecked, setIsChecked] = useState(false)
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
+            <div className="flex flex-col gap-4">
                 <Checkbox
                     checked={isChecked}
                     onCheckedChange={(checked: CheckboxChangeValue) =>
@@ -355,7 +337,7 @@ export const ControlledCheckbox: Story = {
                 >
                     Subscribe to newsletter
                 </Checkbox>
-                <div style={{ fontSize: '14px', color: '#666' }}>
+                <div className="text-sm text-gray-500">
                     Status: {isChecked ? 'Subscribed' : 'Not subscribed'}
                 </div>
             </div>
@@ -398,13 +380,7 @@ export const IndeterminateState: Story = {
         }
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                }}
-            >
+            <div className="flex flex-col gap-3">
                 <Checkbox
                     checked={
                         allChecked
@@ -418,14 +394,7 @@ export const IndeterminateState: Story = {
                 >
                     Select all items ({checkedCount}/{items.length})
                 </Checkbox>
-                <div
-                    style={{
-                        marginLeft: '24px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px',
-                    }}
-                >
+                <div className="ml-6 flex flex-col gap-2">
                     {items.map((item) => (
                         <Checkbox
                             key={item.id}
@@ -462,13 +431,7 @@ export const ErrorAndRequired: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
+            <div className="flex flex-col gap-4">
                 <Checkbox
                     required={true}
                     checked={errorStates.required}
@@ -542,13 +505,7 @@ export const WithSubtext: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px',
-                }}
-            >
+            <div className="flex flex-col gap-5">
                 <Checkbox
                     size={CheckboxSize.MEDIUM}
                     subtext="We'll send you updates about new features and releases"
@@ -611,13 +568,7 @@ export const WithSlots: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
+            <div className="flex flex-col gap-4">
                 <Checkbox
                     size={CheckboxSize.MEDIUM}
                     slot={<Star size={16} color="#ffd700" />}
@@ -680,64 +631,52 @@ export const UncontrolledCheckbox: Story = {
         })
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
-                <div>
-                    <Checkbox
-                        checked={uncontrolledStates.defaultUnchecked}
-                        onCheckedChange={(checked: CheckboxChangeValue) =>
-                            setUncontrolledStates((prev) => ({
-                                ...prev,
-                                defaultUnchecked: checked === true,
-                            }))
-                        }
-                        size={CheckboxSize.MEDIUM}
-                    >
-                        Started unchecked (now{' '}
-                        {uncontrolledStates.defaultUnchecked
-                            ? 'checked'
-                            : 'unchecked'}
-                        )
-                    </Checkbox>
-                </div>
-                <div>
-                    <Checkbox
-                        checked={uncontrolledStates.defaultChecked}
-                        onCheckedChange={(checked: CheckboxChangeValue) =>
-                            setUncontrolledStates((prev) => ({
-                                ...prev,
-                                defaultChecked: checked === true,
-                            }))
-                        }
-                        size={CheckboxSize.MEDIUM}
-                    >
-                        Started checked (now{' '}
-                        {uncontrolledStates.defaultChecked
-                            ? 'checked'
-                            : 'unchecked'}
-                        )
-                    </Checkbox>
-                </div>
-                <div>
-                    <Checkbox
-                        checked={uncontrolledStates.selfManaged}
-                        onCheckedChange={(checked: CheckboxChangeValue) =>
-                            setUncontrolledStates((prev) => ({
-                                ...prev,
-                                selfManaged: checked === true,
-                            }))
-                        }
-                        size={CheckboxSize.SMALL}
-                        subtext={`Current state: ${uncontrolledStates.selfManaged ? 'enabled' : 'disabled'}`}
-                    >
-                        Self-managed checkbox
-                    </Checkbox>
-                </div>
+            <div className="flex flex-col gap-4">
+                <Checkbox
+                    checked={uncontrolledStates.defaultUnchecked}
+                    onCheckedChange={(checked: CheckboxChangeValue) =>
+                        setUncontrolledStates((prev) => ({
+                            ...prev,
+                            defaultUnchecked: checked === true,
+                        }))
+                    }
+                    size={CheckboxSize.MEDIUM}
+                >
+                    Started unchecked (now{' '}
+                    {uncontrolledStates.defaultUnchecked
+                        ? 'checked'
+                        : 'unchecked'}
+                    )
+                </Checkbox>
+                <Checkbox
+                    checked={uncontrolledStates.defaultChecked}
+                    onCheckedChange={(checked: CheckboxChangeValue) =>
+                        setUncontrolledStates((prev) => ({
+                            ...prev,
+                            defaultChecked: checked === true,
+                        }))
+                    }
+                    size={CheckboxSize.MEDIUM}
+                >
+                    Started checked (now{' '}
+                    {uncontrolledStates.defaultChecked
+                        ? 'checked'
+                        : 'unchecked'}
+                    )
+                </Checkbox>
+                <Checkbox
+                    checked={uncontrolledStates.selfManaged}
+                    onCheckedChange={(checked: CheckboxChangeValue) =>
+                        setUncontrolledStates((prev) => ({
+                            ...prev,
+                            selfManaged: checked === true,
+                        }))
+                    }
+                    size={CheckboxSize.SMALL}
+                    subtext={`Current state: ${uncontrolledStates.selfManaged ? 'enabled' : 'disabled'}`}
+                >
+                    Self-managed checkbox
+                </Checkbox>
             </div>
         )
     },
@@ -760,13 +699,7 @@ export const WithoutLabel: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Checkbox
                         checked={noLabelStates.ariaLabel}
                         onCheckedChange={(checked: CheckboxChangeValue) =>
@@ -813,14 +746,7 @@ export const TextTruncation: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
-                        maxWidth: '300px',
-                    }}
-                >
+                <div className="flex flex-col gap-5 max-w-75">
                     <Checkbox
                         checked={truncationStates.longLabel}
                         onCheckedChange={(checked: CheckboxChangeValue) =>
@@ -885,13 +811,7 @@ export const CombinedStates: Story = {
             })
 
             return (
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '16px',
-                    }}
-                >
+                <div className="flex flex-col gap-4">
                     <Checkbox
                         disabled={true}
                         error={true}
@@ -973,24 +893,8 @@ export const FormIntegration: Story = {
 
             return (
                 <form onSubmit={handleSubmit}>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '20px',
-                            padding: '20px',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            maxWidth: '400px',
-                        }}
-                    >
-                        <h3
-                            style={{
-                                margin: 0,
-                                fontSize: '18px',
-                                fontWeight: '600',
-                            }}
-                        >
+                    <div className="flex flex-col gap-5 p-5 border border-gray-200 rounded-lg max-w-100">
+                        <h3 className="text-lg font-semibold m-0">
                             Registration Preferences
                         </h3>
 
@@ -1039,17 +943,7 @@ export const FormIntegration: Story = {
 
                         <button
                             type="submit"
-                            style={{
-                                marginTop: '16px',
-                                padding: '10px 20px',
-                                backgroundColor: '#3b82f6',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                fontWeight: '500',
-                            }}
+                            className="mt-4 px-5 py-2.5 bg-blue-500 text-white border-none rounded-md cursor-pointer text-sm font-medium"
                         >
                             Submit Preferences
                         </button>
@@ -1063,46 +957,6 @@ export const FormIntegration: Story = {
         docs: {
             description: {
                 story: 'Checkboxes integrated into a form with name and value attributes for form submission.',
-            },
-        },
-    },
-}
-
-// Interactive playground
-export const Interactive: Story = {
-    render: function InteractiveCheckbox(args: Story['args']) {
-        const [checked, setChecked] = useState(args?.defaultChecked || false)
-
-        return (
-            <Checkbox
-                {...args}
-                checked={checked}
-                onCheckedChange={(newChecked: CheckboxChangeValue) =>
-                    setChecked(newChecked === true)
-                }
-                slot={getSlotContent(args?.slot)}
-            />
-        )
-    },
-    args: {
-        children: 'Interactive checkbox playground',
-        size: CheckboxSize.MEDIUM,
-        disabled: false,
-        required: false,
-        error: false,
-        subtext: 'Customize all props using controls',
-        id: 'interactive-checkbox',
-        slot: 'none',
-    },
-    parameters: {
-        a11y: getA11yConfig('interactive'),
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
-        },
-        docs: {
-            description: {
-                story: 'Interactive playground to test all checkbox props and combinations. Use the controls panel to modify any property.',
             },
         },
     },

@@ -5,15 +5,11 @@ import {
     MultiSelectSelectionTagType,
     MultiSelectVariant,
     MultiSelectMenuSize,
-    MultiSelectMenuAlignment,
-    MultiSelectMenuSide,
 } from '@juspay/blend-design-system'
 import { getA11yConfig, CHROMATIC_CONFIG } from '../../.storybook/a11y.config'
 import {
     Palette,
-    User,
     Briefcase,
-    Zap,
     DollarSign,
     TrendingUp,
     BarChart3,
@@ -22,14 +18,10 @@ import {
     Settings,
     Shield,
     Eye,
-    Download,
     Upload,
-    Share2,
     Trash2,
     Edit,
     Plus,
-    Users,
-    Circle,
     Code,
     Database,
     Server,
@@ -37,22 +29,10 @@ import {
     Cpu,
     Layers,
     Archive,
-    GitBranch,
-    Target,
-    Crown,
     Sparkles,
-    RefreshCw,
     Brain,
     Link,
-    Sliders,
-    Lightbulb,
-    LayoutDashboard,
-    Bell,
-    Printer,
-    CheckSquare,
-    Filter,
     Globe,
-    Search,
 } from 'lucide-react'
 
 // Local types for reference
@@ -88,10 +68,44 @@ const meta: Meta<typeof MultiSelect> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A comprehensive multi-selection dropdown component that allows users to select multiple options from grouped lists.',
         docs: {
             description: {
                 component: `
-A comprehensive multi-selection dropdown component that allows users to select multiple options from grouped lists.
+## Usage
+
+\`\`\`tsx
+import { 
+  MultiSelect, 
+  MultiSelectSelectionTagType, 
+  MultiSelectVariant,
+  MultiSelectMenuSize 
+} from '@juspay/blend-design-system';
+
+const [selectedValues, setSelectedValues] = useState<string[]>([]);
+
+<MultiSelect
+  label="Select Skills"
+  placeholder="Choose your skills"
+  items={skillItems}
+  selectedValues={selectedValues}
+  onChange={(value) => {
+    if (value === '') {
+      setSelectedValues([]);
+    } else {
+      setSelectedValues(prev => 
+        prev.includes(value) 
+          ? prev.filter(v => v !== value)
+          : [...prev, value]
+      );
+    }
+  }}
+  selectionTagType={MultiSelectSelectionTagType.COUNT}
+  enableSearch
+  enableSelectAll
+/>
+\`\`\`
 
 ## Features
 - **Multiple Selection**: Select multiple items from grouped lists
@@ -139,39 +153,6 @@ A comprehensive multi-selection dropdown component that allows users to select m
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker, verify touch target width in browser DevTools
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-## Usage
-
-\`\`\`tsx
-import { 
-  MultiSelect, 
-  MultiSelectSelectionTagType, 
-  MultiSelectVariant,
-  MultiSelectMenuSize 
-} from '@juspay/blend-design-system';
-
-const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
-<MultiSelect
-  label="Select Skills"
-  placeholder="Choose your skills"
-  items={skillItems}
-  selectedValues={selectedValues}
-  onChange={(value) => {
-    if (value === '') {
-      setSelectedValues([]);
-    } else {
-      setSelectedValues(prev => 
-        prev.includes(value) 
-          ? prev.filter(v => v !== value)
-          : [...prev, value]
-      );
-    }
-  }}
-  selectionTagType={MultiSelectSelectionTagType.COUNT}
-  enableSearch
-  enableSelectAll
-/>
-\`\`\`
         `,
             },
         },
@@ -674,7 +655,7 @@ export const Default: Story = {
         const [selectedValues, setSelectedValues] = useState<string[]>([])
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-100">
                 <MultiSelect
                     {...args}
                     selectedValues={selectedValues}
@@ -721,14 +702,7 @@ export const SelectionDisplayModes: Story = {
         ])
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-100">
                 <MultiSelect
                     label="Count Display"
                     placeholder="Select skills"
@@ -788,14 +762,7 @@ export const Sizes: Story = {
         const [largeValues, setLargeValues] = useState<string[]>([])
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-100">
                 <MultiSelect
                     label="Small Size"
                     placeholder="Choose options"
@@ -870,7 +837,7 @@ export const WithSearch: Story = {
         const [selectedValues, setSelectedValues] = useState<string[]>([])
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-100">
                 <MultiSelect
                     label="Technologies"
                     placeholder="Search and select technologies"
@@ -910,7 +877,7 @@ export const WithSelectAll: Story = {
         const [selectedValues, setSelectedValues] = useState<string[]>([])
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-100">
                 <MultiSelect
                     label="User Permissions"
                     placeholder="Select permissions"
@@ -953,8 +920,8 @@ export const NoContainer: Story = {
         ])
 
         return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <span style={{ fontWeight: 500 }}>Filter by categories:</span>
+            <div className="flex items-center gap-4">
+                <span className="font-medium">Filter by categories:</span>
                 <MultiSelect
                     label="Categories"
                     placeholder="All categories"
@@ -997,7 +964,7 @@ export const MaxSelections: Story = {
         const maxCount = 3
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-100">
                 <MultiSelect
                     label="Top 3 Skills"
                     sublabel={`Select up to ${maxCount} primary skills`}
@@ -1048,14 +1015,7 @@ export const ErrorStates: Story = {
         ])
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-100">
                 <MultiSelect
                     label="Required Skills"
                     sublabel="Required field"
@@ -1118,14 +1078,7 @@ export const ErrorStates: Story = {
 export const DisabledState: Story = {
     render: () => {
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-100">
                 <MultiSelect
                     label="Disabled Empty"
                     placeholder="Cannot interact"
@@ -1260,7 +1213,7 @@ export const WithCustomSlot: Story = {
         const [selectedValues, setSelectedValues] = useState<string[]>([])
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-100">
                 <MultiSelect
                     label="Feature Selection"
                     placeholder="Enable features"
@@ -1302,7 +1255,7 @@ export const WithActionButtons: Story = {
         ])
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-100">
                 <MultiSelect
                     label="Batch Operations"
                     placeholder="Select items for batch operations"
@@ -1356,14 +1309,7 @@ export const ClearButtonControl: Story = {
         >(['react', 'nodejs', 'postgresql'])
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-100">
                 <MultiSelect
                     label="Hidden Clear Button"
                     sublabel="Clear button hidden - use Apply/Reset buttons"
@@ -1451,832 +1397,6 @@ export const ClearButtonControl: Story = {
             description: {
                 story: 'Control the visibility and behavior of the X icon (clear button). Use showClearButton to hide/show the button, and onClearAllClick for a separate callback when the X icon is clicked. Perfect for analytics filters where API calls should only happen on explicit actions.',
             },
-        },
-    },
-}
-
-// Complex dashboard example
-export const DashboardExample: Story = {
-    render: () => {
-        const [filters, setFilters] = useState<string[]>([
-            'technology',
-            'design',
-        ])
-        const [columns, setColumns] = useState<string[]>([
-            'user.view',
-            'user.edit',
-        ])
-        const [skills, setSkills] = useState<string[]>(['react', 'nodejs'])
-
-        const filterItems: MultiSelectMenuGroupType[] = [
-            {
-                groupLabel: 'Status Filters',
-                items: [
-                    {
-                        value: 'active',
-                        label: 'Active',
-                        slot1: (
-                            <Circle size={16} style={{ color: '#10b981' }} />
-                        ),
-                    },
-                    {
-                        value: 'inactive',
-                        label: 'Inactive',
-                        slot1: (
-                            <Circle size={16} style={{ color: '#ef4444' }} />
-                        ),
-                    },
-                    {
-                        value: 'pending',
-                        label: 'Pending',
-                        slot1: (
-                            <Circle size={16} style={{ color: '#f59e0b' }} />
-                        ),
-                    },
-                ],
-            },
-            {
-                groupLabel: 'Department Filters',
-                items: [
-                    {
-                        value: 'engineering',
-                        label: 'Engineering',
-                        slot1: <Code size={16} />,
-                    },
-                    {
-                        value: 'design',
-                        label: 'Design',
-                        slot1: <Palette size={16} />,
-                    },
-                    {
-                        value: 'product',
-                        label: 'Product',
-                        slot1: <Target size={16} />,
-                    },
-                    {
-                        value: 'marketing',
-                        label: 'Marketing',
-                        slot1: <TrendingUp size={16} />,
-                    },
-                ],
-            },
-        ]
-
-        const actionItems: MultiSelectMenuGroupType[] = [
-            {
-                items: [
-                    {
-                        value: 'export',
-                        label: 'Export Data',
-                        slot1: <Download size={16} />,
-                    },
-                    {
-                        value: 'print',
-                        label: 'Print Report',
-                        slot1: <Printer size={16} />,
-                    },
-                    {
-                        value: 'share',
-                        label: 'Share Dashboard',
-                        slot1: <Share2 size={16} />,
-                    },
-                    {
-                        value: 'archive',
-                        label: 'Archive Items',
-                        slot1: <Archive size={16} />,
-                    },
-                ],
-            },
-        ]
-
-        return (
-            <div
-                style={{
-                    padding: '24px',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '8px',
-                    width: '800px',
-                }}
-            >
-                <h3 style={{ marginBottom: '24px', color: '#1f2937' }}>
-                    Analytics Dashboard Controls
-                </h3>
-
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr 200px',
-                        gap: '16px',
-                        marginBottom: '24px',
-                    }}
-                >
-                    <MultiSelect
-                        label="Dashboard Filters"
-                        placeholder="Apply filters"
-                        items={filterItems}
-                        selectedValues={filters}
-                        onChange={(value) => {
-                            if (value === '') {
-                                setFilters([])
-                            } else if (typeof value === 'string') {
-                                setFilters((prev) =>
-                                    prev.includes(value)
-                                        ? prev.filter((v) => v !== value)
-                                        : [...prev, value]
-                                )
-                            }
-                        }}
-                        size={MultiSelectMenuSize.SMALL}
-                        selectionTagType={MultiSelectSelectionTagType.COUNT}
-                        enableSearch
-                    />
-
-                    <MultiSelect
-                        label="Visible Columns"
-                        placeholder="Select columns"
-                        items={permissionItems}
-                        selectedValues={columns}
-                        onChange={(value) => {
-                            if (value === '') {
-                                setColumns([])
-                            } else if (typeof value === 'string') {
-                                setColumns((prev) =>
-                                    prev.includes(value)
-                                        ? prev.filter((v) => v !== value)
-                                        : [...prev, value]
-                                )
-                            }
-                        }}
-                        size={MultiSelectMenuSize.SMALL}
-                        selectionTagType={MultiSelectSelectionTagType.COUNT}
-                    />
-
-                    <MultiSelect
-                        label="Bulk Actions"
-                        placeholder="Actions"
-                        items={actionItems}
-                        selectedValues={skills}
-                        onChange={(value) => {
-                            if (value === '') {
-                                setSkills([])
-                            } else if (typeof value === 'string') {
-                                setSkills((prev) =>
-                                    prev.includes(value)
-                                        ? prev.filter((v) => v !== value)
-                                        : [...prev, value]
-                                )
-                            }
-                        }}
-                        variant={MultiSelectVariant.NO_CONTAINER}
-                        size={MultiSelectMenuSize.SMALL}
-                        selectionTagType={MultiSelectSelectionTagType.COUNT}
-                    />
-                </div>
-
-                <div
-                    style={{
-                        padding: '16px',
-                        backgroundColor: 'white',
-                        borderRadius: '8px',
-                        border: '1px solid #e5e7eb',
-                    }}
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <div>
-                            <p
-                                style={{
-                                    color: '#6b7280',
-                                    fontSize: '14px',
-                                    margin: 0,
-                                }}
-                            >
-                                {filters.length > 0
-                                    ? `${filters.length} filter${filters.length > 1 ? 's' : ''} applied`
-                                    : 'No filters applied'}
-                            </p>
-                            <p
-                                style={{
-                                    color: '#6b7280',
-                                    fontSize: '14px',
-                                    margin: '4px 0 0 0',
-                                }}
-                            >
-                                {columns.length} column
-                                {columns.length !== 1 ? 's' : ''} visible
-                            </p>
-                        </div>
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                            <Filter size={16} style={{ color: '#6b7280' }} />
-                            <Search size={16} style={{ color: '#6b7280' }} />
-                            <RefreshCw size={16} style={{ color: '#6b7280' }} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Complex dashboard example with multiple MultiSelect components for filtering, column management, and bulk actions.',
-            },
-        },
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples demonstrating keyboard navigation, ARIA attributes, error states, focus management, and multi-select capabilities
- */
-export const Accessibility: Story = {
-    render: () => {
-        const [keyboardSelected, setKeyboardSelected] = useState<string[]>([])
-        const [errorSelected, setErrorSelected] = useState<string[]>([])
-        const [requiredSelected, setRequiredSelected] = useState<string[]>([])
-        const [disabledSelected, setDisabledSelected] = useState<string[]>([
-            'react',
-            'nodejs',
-        ])
-        const [searchSelected, setSearchSelected] = useState<string[]>([])
-        const [selectAllSelected, setSelectAllSelected] = useState<string[]>([])
-
-        const handleMultiSelectChange = (
-            value: string,
-            setter: React.Dispatch<React.SetStateAction<string[]>>
-        ) => {
-            if (value === '') {
-                setter([])
-            } else if (typeof value === 'string') {
-                setter((prev) =>
-                    prev.includes(value)
-                        ? prev.filter((v) => v !== value)
-                        : [...prev, value]
-                )
-            }
-        }
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '32px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Keyboard Navigation
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Tab to focus, Arrow keys to navigate, Enter/Space to
-                        toggle selection, Escape to close
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Keyboard Navigation Example"
-                            placeholder="Use keyboard to navigate"
-                            items={skillItems}
-                            selectedValues={keyboardSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setKeyboardSelected
-                                )
-                            }
-                            enableSearch
-                            helpIconHintText="Tab to focus, Arrow keys to navigate menu items, Enter/Space to toggle selection, Escape to close menu"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Label Association & ARIA Attributes
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Labels properly associated via htmlFor/id. ARIA
-                        attributes (aria-labelledby, aria-describedby,
-                        aria-multiselectable) connect labels, hints, and errors.
-                        Multi-select capability indicated via
-                        aria-multiselectable="true".
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Select Skills"
-                            placeholder="Choose your skills"
-                            items={skillItems}
-                            selectedValues={keyboardSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setKeyboardSelected
-                                )
-                            }
-                            hintText="Select multiple skills from the list"
-                            helpIconHintText="Choose your technical skills"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Error State & Validation
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Error state communicated via aria-invalid="true" and
-                        visual styling. Error message connected via
-                        aria-describedby.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Required Skills"
-                            placeholder="Select required skills"
-                            items={skillItems}
-                            selectedValues={errorSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(value, setErrorSelected)
-                            }
-                            required
-                            error={errorSelected.length === 0}
-                            errorMessage={
-                                errorSelected.length === 0
-                                    ? 'Please select at least one skill'
-                                    : ''
-                            }
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Required Field Indicator
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Required fields indicated with asterisk (*) and
-                        aria-labelledby connection. Screen readers announce
-                        "required".
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Select Permissions"
-                            placeholder="Select permissions"
-                            items={permissionItems}
-                            selectedValues={requiredSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setRequiredSelected
-                                )
-                            }
-                            required
-                            hintText="Required for user setup"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Disabled State
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Disabled MultiSelect is not focusable and removed from
-                        tab order. aria-disabled="true" communicates state to
-                        screen readers.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Disabled Empty"
-                            placeholder="Cannot interact"
-                            items={skillItems}
-                            selectedValues={[]}
-                            onChange={() => {}}
-                            disabled
-                        />
-                        <div style={{ marginTop: '16px' }}>
-                            <MultiSelect
-                                label="Disabled with Selection"
-                                placeholder="Has selections but disabled"
-                                items={skillItems}
-                                selectedValues={disabledSelected}
-                                onChange={() => {}}
-                                disabled
-                                selectionTagType={
-                                    MultiSelectSelectionTagType.TEXT
-                                }
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Search Input Accessibility
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Search input has aria-label for screen reader
-                        identification. Filtered results announced dynamically.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Search Skills"
-                            placeholder="Type to search"
-                            items={skillItems}
-                            selectedValues={searchSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setSearchSelected
-                                )
-                            }
-                            enableSearch
-                            searchPlaceholder="Type to search skills..."
-                            helpIconHintText="Start typing to filter skills by name"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Select All Functionality
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Select All checkbox has accessible name and is keyboard
-                        accessible. Selection count badge is programmatically
-                        determinable.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Select All Permissions"
-                            placeholder="Select permissions"
-                            items={permissionItems}
-                            selectedValues={selectAllSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setSelectAllSelected
-                                )
-                            }
-                            enableSelectAll
-                            selectAllText="Grant All Permissions"
-                            selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            helpIconHintText="Use Select All to grant all permissions at once"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Focus Indicators
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Focus indicators visible with outlineOffset. Menu items
-                        have focus styling. Check Chromatic for focus ring
-                        visibility.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Focus Indicator Example"
-                            placeholder="Tab to focus"
-                            items={skillItems}
-                            selectedValues={keyboardSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setKeyboardSelected
-                                )
-                            }
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Touch Target Size (AAA)
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Height verified: Small (50px), Medium (56px), Large
-                        (72px) all exceed AAA 44px requirement. Width requires
-                        manual verification.
-                    </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                            width: '400px',
-                        }}
-                    >
-                        <MultiSelect
-                            label="Small Size (50px height)"
-                            placeholder="Small touch target"
-                            items={skillItems}
-                            selectedValues={keyboardSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setKeyboardSelected
-                                )
-                            }
-                            size={MultiSelectMenuSize.SMALL}
-                        />
-                        <MultiSelect
-                            label="Medium Size (56px height)"
-                            placeholder="Medium touch target"
-                            items={skillItems}
-                            selectedValues={keyboardSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setKeyboardSelected
-                                )
-                            }
-                            size={MultiSelectMenuSize.MEDIUM}
-                        />
-                        <MultiSelect
-                            label="Large Size (72px height)"
-                            placeholder="Large touch target"
-                            items={skillItems}
-                            selectedValues={keyboardSelected}
-                            onChange={(value) =>
-                                handleMultiSelectChange(
-                                    value,
-                                    setKeyboardSelected
-                                )
-                            }
-                            size={MultiSelectMenuSize.LARGE}
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Selection Display Modes
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        COUNT mode shows compact selection count badge. TEXT
-                        mode shows readable list of selected items. Both are
-                        accessible to screen readers.
-                    </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                            width: '400px',
-                        }}
-                    >
-                        <MultiSelect
-                            label="Count Display Mode"
-                            placeholder="Select skills"
-                            items={skillItems}
-                            selectedValues={['react', 'nodejs']}
-                            onChange={() => {}}
-                            selectionTagType={MultiSelectSelectionTagType.COUNT}
-                            helpIconHintText="Shows selected count in a compact format"
-                        />
-                        <MultiSelect
-                            label="Text Display Mode"
-                            placeholder="Select categories"
-                            items={categoryItems}
-                            selectedValues={['technology', 'design']}
-                            onChange={() => {}}
-                            selectionTagType={MultiSelectSelectionTagType.TEXT}
-                            helpIconHintText="Shows selected items as readable text"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Max Selections & Validation
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Maximum selections limit with validation feedback. Error
-                        state communicated when limit exceeded or minimum not
-                        met.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <MultiSelect
-                            label="Top 3 Skills"
-                            placeholder="Choose your top skills"
-                            items={skillItems}
-                            selectedValues={['react', 'nodejs']}
-                            onChange={() => {}}
-                            maxSelections={3}
-                            selectionTagType={MultiSelectSelectionTagType.TEXT}
-                            hintText="2/3 skills selected"
-                            error={false}
-                        />
-                    </div>
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating keyboard navigation, ARIA attributes, error states, required fields, disabled states, search input accessibility, select all functionality, focus indicators, touch target sizes, selection display modes, and validation.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0 for AA compliance)
-   - Review passing tests (15+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test MultiSelect.accessibility
-   \`\`\`
-   - 55+ automated tests
-   - WCAG compliance verification
-   - ARIA attribute validation
-   - Keyboard navigation testing
-   - Multi-select capability verification (aria-multiselectable)
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes (error, disabled, required)
-   - Responsive behavior
-   - Menu open/close animations
-   - Selection count badge visibility
-
-4. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Keyboard navigation (Tab, Arrow keys, Enter/Space, Escape)
-   - Color contrast verification with WebAIM Contrast Checker
-   - Touch target width verification in browser DevTools (console: \`getComputedStyle(element).width\`)
-   - Multi-select announcements (selection count, select all state)
-
-## Accessibility Report
-
-**Current Status**: 
-- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (6/9 applicable criteria compliant)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), Animation from Interactions (2.3.3), Change on Request (3.2.5), Target Size Height (2.5.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio (currently 4.5:1 for AA)
-- ⚠️ Verification Required: Target Size Width (2.5.5) - height verified but width requires manual verification
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('form'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
         },
     },
 }

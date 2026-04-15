@@ -21,21 +21,6 @@ const parseNumberInputValue = (
 
 const noop = (): void => {}
 
-const stack = (maxWidth = 420) =>
-    ({
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 20,
-        maxWidth,
-    }) as const
-
-const visualGrid = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-    gap: 24,
-    alignItems: 'start',
-} as const
-
 const meta: Meta<typeof NumberInputV2> = {
     title: 'Components/Inputs/NumberInputV2',
     component: NumberInputV2,
@@ -224,7 +209,7 @@ export const Default: Story = {
 export const VisualStates: Story = {
     render: function VisualStatesStory() {
         return (
-            <div style={visualGrid}>
+            <div className="grid gap-6 items-start grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
                 <NumberInputV2
                     label={{ text: 'Empty', subtext: '' }}
                     placeholder="0"
@@ -283,7 +268,7 @@ export const Sizes: Story = {
             lg: number | null
         }>({ sm: null, md: null, lg: null })
         return (
-            <div style={stack()}>
+            <div className="flex flex-col gap-5 max-w-[420px]">
                 <NumberInputV2
                     label={{ text: 'Small', subtext: '' }}
                     placeholder="0"
@@ -428,20 +413,14 @@ export const InteractiveKeyboard: Story = {
     render: function InteractiveKeyboardStory() {
         const [value, setValue] = useState<number | null>(10)
         return (
-            <div style={stack(480)}>
-                <p
-                    style={{
-                        margin: 0,
-                        fontSize: 13,
-                        color: 'var(--color-text-muted, #64748b)',
-                    }}
-                >
+            <div className="flex flex-col gap-5 max-w-[480px]">
+                <p className="text-[13px] text-[var(--color-text-muted,#64748b)] m-0">
                     Focus the field and use <strong>Arrow Up</strong> /{' '}
                     <strong>Arrow Down</strong>, or the stepper buttons. Current
                     value:{' '}
                     <output
                         htmlFor="interactive-number-input"
-                        style={{ fontWeight: 600, color: 'inherit' }}
+                        className="font-semibold text-inherit"
                     >
                         {value === null ? 'null' : value}
                     </output>
@@ -481,7 +460,7 @@ export const WithForwardedRef: Story = {
         const [value, setValue] = useState<number | null>(null)
         const inputRef = React.useRef<HTMLInputElement>(null)
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div className="flex flex-col gap-3">
                 <NumberInputV2
                     ref={inputRef}
                     label={{ text: 'Focus target', subtext: '' }}
@@ -511,23 +490,9 @@ export const Accessibility: Story = {
         const [score, setScore] = useState<number | null>(null)
         const [rangeDemo, setRangeDemo] = useState<number | null>(150)
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 24,
-                    padding: 24,
-                    maxWidth: 560,
-                }}
-            >
+            <div className="flex flex-col gap-6 p-6 max-w-[560px]">
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: 12,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Label, required, and hint
                     </h3>
                     <NumberInputV2
@@ -541,13 +506,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: 12,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         External error
                     </h3>
                     <NumberInputV2
@@ -562,13 +521,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: 12,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
+                    <h3 className="mb-3 text-base font-semibold">
                         Range validation (built-in message)
                     </h3>
                     <NumberInputV2
@@ -582,15 +535,7 @@ export const Accessibility: Story = {
                 </section>
 
                 <section>
-                    <h3
-                        style={{
-                            marginBottom: 12,
-                            fontSize: 16,
-                            fontWeight: 600,
-                        }}
-                    >
-                        Disabled
-                    </h3>
+                    <h3 className="mb-3 text-base font-semibold">Disabled</h3>
                     <NumberInputV2
                         label={{ text: 'Locked field', subtext: '' }}
                         value={99}

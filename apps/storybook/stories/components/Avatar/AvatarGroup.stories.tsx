@@ -18,10 +18,30 @@ const meta: Meta<typeof AvatarGroup> = {
         layout: 'centered',
         a11y: getA11yConfig('interactive'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A flexible avatar group component for displaying multiple user avatars with overflow handling, selection support, and search functionality.',
         docs: {
             description: {
                 component: `
-A flexible avatar group component for displaying multiple user avatars with overflow handling, selection support, and search functionality.
+## Usage
+
+\`\`\`tsx
+import { AvatarGroup, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
+
+const avatars = [
+  { id: 1, src: "/user1.jpg", alt: "John Doe" },
+  { id: 2, src: "/user2.jpg", alt: "Jane Smith" },
+  // ... more avatars
+];
+
+<AvatarGroup 
+  avatars={avatars}
+  maxCount={5}
+  size={AvatarSize.MD}
+  shape={AvatarShape.CIRCULAR}
+  onSelectionChange={(selectedIds) => console.log(selectedIds)}
+/>
+\`\`\`
 
 ## Features
 - Display multiple avatars in a compact group
@@ -68,25 +88,6 @@ A flexible avatar group component for displaying multiple user avatars with over
 - **Manual**: Test with VoiceOver/NVDA, verify keyboard navigation, verify selection announcements
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-## Usage
-
-\`\`\`tsx
-import { AvatarGroup, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
-
-const avatars = [
-  { id: 1, src: "/user1.jpg", alt: "John Doe" },
-  { id: 2, src: "/user2.jpg", alt: "Jane Smith" },
-  // ... more avatars
-];
-
-<AvatarGroup 
-  avatars={avatars}
-  maxCount={5}
-  size={AvatarSize.MD}
-  shape={AvatarShape.CIRCULAR}
-  onSelectionChange={(selectedIds) => console.log(selectedIds)}
-/>
-\`\`\`
         `,
             },
         },
@@ -168,15 +169,7 @@ Example: [1, 3, 5] or ['user-1', 'user-3']`,
     },
     decorators: [
         (Story) => (
-            <div
-                style={{
-                    minHeight: '400px',
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                    paddingTop: '50px',
-                }}
-            >
+            <div className="min-h-100 flex items-start justify-center pt-12.4">
                 <Story />
             </div>
         ),
@@ -241,24 +234,18 @@ export const Default: Story = {
         selectedAvatarIds: [],
     },
     render: (args: any) => (
-        <AvatarGroup {...args} onSelectionChange={args.onSelectionChange} />
+        <div className="flex items-center justify-center h-full pt-50">
+            <AvatarGroup {...args} onSelectionChange={args.onSelectionChange} />
+        </div>
     ),
 }
 
 // Different sizes
 export const Sizes: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="flex flex-col gap-6">
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Small (24px)
-                </h4>
+                <h4 className="m-0 mb-3 text-sm text-gray-600">Small (24px)</h4>
                 <AvatarGroup
                     avatars={sampleAvatars}
                     maxCount={5}
@@ -266,13 +253,7 @@ export const Sizes: Story = {
                 />
             </div>
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <h4 className="m-0 mb-3 text-sm text-gray-600">
                     Regular (28px)
                 </h4>
                 <AvatarGroup
@@ -282,13 +263,7 @@ export const Sizes: Story = {
                 />
             </div>
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <h4 className="m-0 mb-3 text-sm text-gray-600">
                     Medium (32px)
                 </h4>
                 <AvatarGroup
@@ -298,15 +273,7 @@ export const Sizes: Story = {
                 />
             </div>
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Large (40px)
-                </h4>
+                <h4 className="m-0 mb-3 text-sm text-gray-600">Large (40px)</h4>
                 <AvatarGroup
                     avatars={sampleAvatars}
                     maxCount={5}
@@ -314,13 +281,7 @@ export const Sizes: Story = {
                 />
             </div>
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <h4 className="m-0 mb-3 text-sm text-gray-600">
                     Extra Large (48px)
                 </h4>
                 <AvatarGroup
@@ -343,17 +304,9 @@ export const Sizes: Story = {
 // Different shapes
 export const Shapes: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="flex flex-col items-center h-full gap-6 mt-16">
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Circular
-                </h4>
+                <h4 className="m-0 mb-3 text-sm text-gray-600">Circular</h4>
                 <AvatarGroup
                     avatars={sampleAvatars}
                     maxCount={5}
@@ -362,15 +315,7 @@ export const Shapes: Story = {
                 />
             </div>
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Rounded
-                </h4>
+                <h4 className="m-0 mb-3 text-sm text-gray-600">Rounded</h4>
                 <AvatarGroup
                     avatars={sampleAvatars}
                     maxCount={5}
@@ -392,51 +337,21 @@ export const Shapes: Story = {
 // Different max counts
 export const MaxCountVariations: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="flex flex-col gap-6">
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Max Count: 1
-                </h4>
+                <h4 className="m-0 mb-3 text-sm text-gray-600">Max Count: 1</h4>
                 <AvatarGroup avatars={sampleAvatars} maxCount={1} />
             </div>
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Max Count: 3
-                </h4>
+                <h4 className="m-0 mb-3 text-sm text-gray-600">Max Count: 3</h4>
                 <AvatarGroup avatars={sampleAvatars} maxCount={3} />
             </div>
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
-                    Max Count: 5
-                </h4>
+                <h4 className="m-0 mb-3 text-sm text-gray-600">Max Count: 5</h4>
                 <AvatarGroup avatars={sampleAvatars} maxCount={5} />
             </div>
             <div>
-                <h4
-                    style={{
-                        margin: '0 0 12px 0',
-                        fontSize: '14px',
-                        color: '#666',
-                    }}
-                >
+                <h4 className="m-0 mb-3 text-sm text-gray-600">
                     Max Count: 10 (All visible)
                 </h4>
                 <AvatarGroup avatars={sampleAvatars} maxCount={10} />
@@ -460,13 +375,7 @@ export const WithSelection: Story = {
         ])
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                }}
-            >
+            <div className="flex flex-col gap-4 pt-40">
                 <AvatarGroup
                     avatars={sampleAvatars}
                     maxCount={5}
@@ -474,7 +383,7 @@ export const WithSelection: Story = {
                     selectedAvatarIds={selectedIds}
                     onSelectionChange={setSelectedIds}
                 />
-                <div style={{ fontSize: '14px', color: '#666' }}>
+                <div className="text-sm text-gray-600">
                     Selected IDs:{' '}
                     {selectedIds.length > 0 ? selectedIds.join(', ') : 'None'}
                 </div>
@@ -505,11 +414,13 @@ export const WithFallbacks: Story = {
         ]
 
         return (
-            <AvatarGroup
-                avatars={avatarsWithFallbacks}
-                maxCount={5}
-                size={AvatarSize.LG}
-            />
+            <div className="pt-40">
+                <AvatarGroup
+                    avatars={avatarsWithFallbacks}
+                    maxCount={5}
+                    size={AvatarSize.LG}
+                />
+            </div>
         )
     },
     parameters: {
@@ -534,21 +445,9 @@ export const LargeGroup: Story = {
         }))
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                }}
-            >
+            <div className="flex flex-col gap-6 pt-40">
                 <div>
-                    <h4
-                        style={{
-                            margin: '0 0 12px 0',
-                            fontSize: '14px',
-                            color: '#666',
-                        }}
-                    >
+                    <h4 className="m-0 mb-3 text-sm text-gray-600">
                         20 users, showing 5
                     </h4>
                     <AvatarGroup
@@ -557,7 +456,7 @@ export const LargeGroup: Story = {
                         size={AvatarSize.MD}
                     />
                 </div>
-                <div style={{ fontSize: '12px', color: '#666' }}>
+                <div className="text-xs text-gray-600">
                     Click the +15 counter to see all users and search
                     functionality
                 </div>
@@ -600,137 +499,20 @@ export const MixedContent: Story = {
         ]
 
         return (
-            <AvatarGroup
-                avatars={mixedAvatars}
-                maxCount={5}
-                size={AvatarSize.LG}
-                shape={AvatarShape.ROUNDED}
-            />
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: 'Avatar group mixing real user images with system icons and special users.',
-            },
-        },
-    },
-}
-
-// Interactive example
-export const InteractiveExample: Story = {
-    render: () => {
-        const [selectedIds, setSelectedIds] = useState<(string | number)[]>([])
-        const [maxCount, setMaxCount] = useState(5)
-        const [size, setSize] = useState(AvatarSize.MD)
-        const [shape, setShape] = useState(AvatarShape.CIRCULAR)
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                }}
-            >
-                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                    <div>
-                        <label style={{ fontSize: '12px', color: '#666' }}>
-                            Max Count:
-                            <input
-                                type="number"
-                                min="1"
-                                max="10"
-                                value={maxCount}
-                                onChange={(e) =>
-                                    setMaxCount(Number(e.target.value))
-                                }
-                                style={{
-                                    marginLeft: '8px',
-                                    width: '60px',
-                                    padding: '4px',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '4px',
-                                }}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label style={{ fontSize: '12px', color: '#666' }}>
-                            Size:
-                            <select
-                                value={size}
-                                onChange={(e) =>
-                                    setSize(e.target.value as AvatarSize)
-                                }
-                                style={{
-                                    marginLeft: '8px',
-                                    padding: '4px',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '4px',
-                                }}
-                            >
-                                {Object.values(AvatarSize).map((s) => (
-                                    <option key={s} value={s}>
-                                        {s.toUpperCase()}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                    </div>
-                    <div>
-                        <label style={{ fontSize: '12px', color: '#666' }}>
-                            Shape:
-                            <select
-                                value={shape}
-                                onChange={(e) =>
-                                    setShape(e.target.value as AvatarShape)
-                                }
-                                style={{
-                                    marginLeft: '8px',
-                                    padding: '4px',
-                                    border: '1px solid #ccc',
-                                    borderRadius: '4px',
-                                }}
-                            >
-                                {Object.values(AvatarShape).map((s) => (
-                                    <option key={s} value={s}>
-                                        {s.charAt(0).toUpperCase() + s.slice(1)}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
-                    </div>
-                </div>
-
+            <div className="pt-40">
                 <AvatarGroup
-                    avatars={sampleAvatars}
-                    maxCount={maxCount}
-                    size={size}
-                    shape={shape}
-                    selectedAvatarIds={selectedIds}
-                    onSelectionChange={setSelectedIds}
+                    avatars={mixedAvatars}
+                    maxCount={5}
+                    size={AvatarSize.LG}
+                    shape={AvatarShape.ROUNDED}
                 />
-
-                <div style={{ fontSize: '14px', color: '#666' }}>
-                    <div>
-                        Selected:{' '}
-                        {selectedIds.length > 0
-                            ? selectedIds.join(', ')
-                            : 'None'}
-                    </div>
-                    <div style={{ marginTop: '4px', fontSize: '12px' }}>
-                        Try clicking avatars to select them, or click the
-                        overflow counter to see all users
-                    </div>
-                </div>
             </div>
         )
     },
     parameters: {
         docs: {
             description: {
-                story: 'Interactive example allowing you to experiment with different configurations.',
+                story: 'Avatar group mixing real user images with system icons and special users.',
             },
         },
     },
@@ -774,22 +556,9 @@ export const SingleAvatar: Story = {
 
 export const SkeletonState: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '32px',
-                padding: '24px',
-            }}
-        >
+        <div className="flex flex-col gap-8 p-6">
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     Pulse Variant (Default)
                 </h4>
                 <AvatarGroup
@@ -801,15 +570,7 @@ export const SkeletonState: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
-                    Wave Variant
-                </h4>
+                <h4 className="text-base font-semibold mb-3">Wave Variant</h4>
                 <AvatarGroup
                     avatars={sampleAvatars.slice(0, 5)}
                     maxCount={5}
@@ -819,13 +580,7 @@ export const SkeletonState: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     With Overflow Counter (Pulse)
                 </h4>
                 <AvatarGroup
@@ -837,22 +592,10 @@ export const SkeletonState: Story = {
             </div>
 
             <div>
-                <h4
-                    style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginBottom: '12px',
-                    }}
-                >
+                <h4 className="text-base font-semibold mb-3">
                     Different Sizes (Wave)
                 </h4>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '24px',
-                    }}
-                >
+                <div className="flex flex-col gap-6">
                     <AvatarGroup
                         avatars={sampleAvatars.slice(0, 4)}
                         maxCount={4}
@@ -882,488 +625,5 @@ export const SkeletonState: Story = {
             },
         },
         a11y: getA11yConfig('content'),
-    },
-}
-
-// Accessibility Testing
-// ============================================================================
-// Accessibility examples demonstrating WCAG compliance features
-// ============================================================================
-
-export const Accessibility: Story = {
-    render: () => {
-        const [selectedIds, setSelectedIds] = useState<(string | number)[]>([
-            1, 3,
-        ])
-
-        return (
-            <div
-                style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}
-            >
-                <div style={{ marginBottom: '32px' }}>
-                    <h2
-                        style={{
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Accessibility Examples
-                    </h2>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            lineHeight: '1.6',
-                        }}
-                    >
-                        These examples demonstrate WCAG 2.0, 2.1, 2.2 Level AA
-                        compliance features of the AvatarGroup component.
-                    </p>
-                </div>
-
-                {/* WCAG 2.1.1 Keyboard (Level A) */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        2.1.1 Keyboard (Level A)
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        All avatars are keyboard accessible. Use Tab to
-                        navigate, Enter or Space to select/deselect.
-                    </p>
-                    <AvatarGroup
-                        avatars={sampleAvatars.slice(0, 5)}
-                        maxCount={5}
-                        size={AvatarSize.MD}
-                        selectedAvatarIds={selectedIds}
-                        onSelectionChange={setSelectedIds}
-                    />
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '12px',
-                        }}
-                    >
-                        Selected IDs:{' '}
-                        {selectedIds.length > 0
-                            ? selectedIds.join(', ')
-                            : 'None'}
-                    </div>
-                </div>
-
-                {/* WCAG 1.3.1 Info and Relationships (Level A) */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        1.3.1 Info and Relationships (Level A)
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Proper semantic structure with role="group" and
-                        role="button". Selection state communicated via
-                        aria-pressed.
-                    </p>
-                    <AvatarGroup
-                        avatars={sampleAvatars.slice(0, 4)}
-                        maxCount={3}
-                        size={AvatarSize.LG}
-                        selectedAvatarIds={[1, 2]}
-                    />
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '12px',
-                        }}
-                    >
-                        Group has role="group" with aria-label. Buttons have
-                        role="button" with aria-pressed state.
-                    </div>
-                </div>
-
-                {/* WCAG 4.1.2 Name, Role, Value (Level A) */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        4.1.2 Name, Role, Value (Level A)
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Each avatar button has an accessible name via
-                        aria-label, proper role="button", and aria-pressed value
-                        indicating selection state.
-                    </p>
-                    <AvatarGroup
-                        avatars={sampleAvatars.slice(0, 3)}
-                        maxCount={3}
-                        size={AvatarSize.MD}
-                    />
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '12px',
-                        }}
-                    >
-                        Each button has aria-label="[Name]" or
-                        aria-label="[Name], selected". aria-describedby links to
-                        visually hidden description.
-                    </div>
-                </div>
-
-                {/* WCAG 4.1.3 Status Messages (Level AA) */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        4.1.3 Status Messages (Level AA)
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Selection changes are announced via aria-live="polite"
-                        region. Group aria-label updates to reflect selection
-                        count.
-                    </p>
-                    <AvatarGroup
-                        avatars={sampleAvatars.slice(0, 5)}
-                        maxCount={5}
-                        size={AvatarSize.MD}
-                        selectedAvatarIds={selectedIds}
-                        onSelectionChange={setSelectedIds}
-                    />
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '12px',
-                        }}
-                    >
-                        Group has aria-live="polite" and aria-atomic="true" for
-                        status updates. Group aria-label includes selection
-                        count.
-                    </div>
-                </div>
-
-                {/* WCAG 2.4.3 Focus Order (Level A) */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        2.4.3 Focus Order (Level A)
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Logical focus order: avatars from left to right, then
-                        overflow button if present.
-                    </p>
-                    <AvatarGroup
-                        avatars={sampleAvatars}
-                        maxCount={5}
-                        size={AvatarSize.MD}
-                    />
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '12px',
-                        }}
-                    >
-                        Tab through avatars to verify logical order. Overflow
-                        button receives focus after visible avatars.
-                    </div>
-                </div>
-
-                {/* WCAG 2.4.7 Focus Visible (Level AA) */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        2.4.7 Focus Visible (Level AA)
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Focus indicators are clearly visible with sufficient
-                        contrast.
-                    </p>
-                    <AvatarGroup
-                        avatars={sampleAvatars.slice(0, 4)}
-                        maxCount={4}
-                        size={AvatarSize.LG}
-                    />
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '12px',
-                        }}
-                    >
-                        Tab to focus avatars and verify visible focus outline
-                        with sufficient contrast.
-                    </div>
-                </div>
-
-                {/* WCAG 1.4.1 Use of Color (Level A) */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        1.4.1 Use of Color (Level A)
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Selection state is communicated via aria-pressed
-                        attribute, not solely by color.
-                    </p>
-                    <AvatarGroup
-                        avatars={sampleAvatars.slice(0, 4)}
-                        maxCount={4}
-                        size={AvatarSize.MD}
-                        selectedAvatarIds={[1, 3]}
-                    />
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '12px',
-                        }}
-                    >
-                        Selected avatars have aria-pressed="true" and visual
-                        indication. Screen readers announce selection state.
-                    </div>
-                </div>
-
-                {/* Overflow Menu Accessibility */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        Overflow Menu Accessibility
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        Overflow button has proper ARIA attributes
-                        (aria-haspopup, aria-expanded) and descriptive label.
-                    </p>
-                    <AvatarGroup
-                        avatars={sampleAvatars}
-                        maxCount={3}
-                        size={AvatarSize.MD}
-                    />
-                    <div
-                        style={{
-                            fontSize: '12px',
-                            color: '#666',
-                            marginTop: '12px',
-                        }}
-                    >
-                        Overflow button has aria-label with count,
-                        aria-haspopup="menu", and aria-expanded state. Menu is
-                        keyboard accessible.
-                    </div>
-                </div>
-
-                {/* All Sizes for Accessibility */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            marginBottom: '12px',
-                        }}
-                    >
-                        All Sizes with Keyboard Accessibility
-                    </h3>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            marginBottom: '16px',
-                        }}
-                    >
-                        All avatar group sizes support keyboard navigation and
-                        selection.
-                    </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
-                        <div>
-                            <div
-                                style={{
-                                    fontSize: '12px',
-                                    color: '#666',
-                                    marginBottom: '8px',
-                                }}
-                            >
-                                Small (SM)
-                            </div>
-                            <AvatarGroup
-                                avatars={sampleAvatars.slice(0, 4)}
-                                maxCount={4}
-                                size={AvatarSize.SM}
-                            />
-                        </div>
-                        <div>
-                            <div
-                                style={{
-                                    fontSize: '12px',
-                                    color: '#666',
-                                    marginBottom: '8px',
-                                }}
-                            >
-                                Medium (MD)
-                            </div>
-                            <AvatarGroup
-                                avatars={sampleAvatars.slice(0, 4)}
-                                maxCount={4}
-                                size={AvatarSize.MD}
-                            />
-                        </div>
-                        <div>
-                            <div
-                                style={{
-                                    fontSize: '12px',
-                                    color: '#666',
-                                    marginBottom: '8px',
-                                }}
-                            >
-                                Large (LG)
-                            </div>
-                            <AvatarGroup
-                                avatars={sampleAvatars.slice(0, 4)}
-                                maxCount={4}
-                                size={AvatarSize.LG}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating WCAG 2.0, 2.1, 2.2 Level AA compliance features including keyboard navigation, ARIA attributes, focus management, and status announcements.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Open the Accessibility panel in Storybook
-   - Check for violations (should be 0 for AA compliance)
-   - Review accessibility tree
-   - See real-time accessibility status
-
-2. **Automated Testing**:
-   \`\`\`bash
-   pnpm test Avatar.accessibility
-   \`\`\`
-   - 18 AvatarGroup tests covering WCAG 2.0, 2.1, 2.2 criteria
-   - WCAG compliance verification
-
-3. **Manual Testing**:
-   - **Screen Readers**: Test with VoiceOver (macOS/iOS) or NVDA (Windows)
-   - Verify avatar names are announced correctly
-   - Verify selection state announcements
-   - Verify group label includes selection count
-   - **Keyboard Navigation**: Tab through avatars, use Enter/Space to select
-   - **Focus Visibility**: Verify focus indicators are clearly visible
-   - **Overflow Menu**: Verify menu is keyboard accessible
-
-4. **Visual Regression**:
-   - Chromatic snapshots verify focus states and visual appearance
-
-## Accessibility Report
-
-- ✅ **WCAG 2.0, 2.1, 2.2 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.0, 2.1, 2.2 Level AAA**: Partial Compliance (5/6 applicable criteria compliant)
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-                `,
-            },
-        },
-        a11y: getA11yConfig('interactive'),
     },
 }

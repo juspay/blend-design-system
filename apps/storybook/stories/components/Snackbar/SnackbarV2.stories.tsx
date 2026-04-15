@@ -77,7 +77,7 @@ addSnackbarV2({
                     position={ctx.args.position}
                     dismissOnClickAway={ctx.args.dismissOnClickAway}
                 />
-                <div style={{ padding: 24 }}>
+                <div className="p-6">
                     <Story />
                 </div>
             </>
@@ -107,14 +107,7 @@ export const Default: Story = {
 
 export const Variants: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 16,
-                maxWidth: 420,
-            }}
-        >
+        <div className="grid grid-cols-2 gap-4 max-w-[420px]">
             {Object.values(SnackbarV2Variant).map((variant) => (
                 <Button
                     key={variant}
@@ -141,7 +134,7 @@ export const Variants: Story = {
 
 export const Visual: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="flex flex-col gap-4">
             <StyledToast
                 header="Info Snackbar"
                 description="This is an informational message"
@@ -183,7 +176,7 @@ export const Visual: Story = {
 
 export const WithAction: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="flex flex-col gap-4">
             <StyledToast
                 header="File deleted"
                 description="The file has been permanently deleted"
@@ -219,7 +212,7 @@ export const WithAction: Story = {
 
 export const CustomSlot: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="flex flex-col gap-4">
             <StyledToast
                 header="Custom Icon"
                 description="Using a custom slot icon instead of default"
@@ -265,20 +258,14 @@ export const Interactive: Story = {
         const [withAction, setWithAction] = React.useState(false)
 
         return (
-            <div style={{ maxWidth: 420 }}>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 12,
-                    }}
-                >
+            <div className="max-w-[420px]">
+                <div className="flex flex-col gap-3">
                     <label>
                         Header
                         <input
                             value={header}
                             onChange={(e) => setHeader(e.target.value)}
-                            style={{ width: '100%', marginTop: 4, padding: 8 }}
+                            className="w-full mt-1 p-2"
                         />
                     </label>
                     <label>
@@ -286,7 +273,7 @@ export const Interactive: Story = {
                         <input
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            style={{ width: '100%', marginTop: 4, padding: 8 }}
+                            className="w-full mt-1 p-2"
                         />
                     </label>
                     <label>
@@ -296,7 +283,7 @@ export const Interactive: Story = {
                             onChange={(e) =>
                                 setVariant(e.target.value as SnackbarV2Variant)
                             }
-                            style={{ width: '100%', marginTop: 4, padding: 8 }}
+                            className="w-full mt-1 p-2"
                         >
                             {Object.values(SnackbarV2Variant).map((v) => (
                                 <option key={v} value={v}>
@@ -305,13 +292,7 @@ export const Interactive: Story = {
                             ))}
                         </select>
                     </label>
-                    <label
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8,
-                        }}
-                    >
+                    <label className="flex items-center gap-2">
                         <input
                             type="checkbox"
                             checked={withAction}
@@ -350,37 +331,16 @@ export const Interactive: Story = {
 
 export const Accessibility: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 24,
-                maxWidth: 520,
-            }}
-        >
+        <div className="flex flex-col gap-6 max-w-[520px]">
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
-                    ARIA Roles
-                </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">ARIA Roles</h3>
+                <p className="mb-3 text-sm text-gray-500">
                     Info and success variants use{' '}
                     <code>role=&quot;status&quot;</code> for polite
                     announcements. Error and warning variants use{' '}
                     <code>role=&quot;alert&quot;</code> for immediate attention.
                 </p>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <Button
                         text="Info (status)"
                         onClick={() =>
@@ -405,26 +365,14 @@ export const Accessibility: Story = {
             </div>
 
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">
                     Keyboard Navigation
                 </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-3 text-sm text-gray-500">
                     All interactive elements are keyboard accessible. Use Tab to
                     focus, Enter or Space to activate.
                 </p>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <Button
                         text="Test Close Button"
                         onClick={() =>
@@ -453,22 +401,10 @@ export const Accessibility: Story = {
             </div>
 
             <div>
-                <h3
-                    style={{
-                        marginBottom: 8,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                    }}
-                >
+                <h3 className="mb-2 text-base font-bold">
                     Screen Reader Support
                 </h3>
-                <p
-                    style={{
-                        marginBottom: 12,
-                        fontSize: 14,
-                        color: '#666',
-                    }}
-                >
+                <p className="mb-3 text-sm text-gray-500">
                     Icons are marked with{' '}
                     <code>aria-hidden=&quot;true&quot;</code>. Text content is
                     properly associated via <code>aria-labelledby</code> and{' '}

@@ -4,8 +4,6 @@ import {
     SingleSelect,
     SelectMenuSize,
     SelectMenuVariant,
-    SelectMenuAlignment,
-    SelectMenuSide,
 } from '@juspay/blend-design-system'
 import { getA11yConfig, CHROMATIC_CONFIG } from '../../.storybook/a11y.config'
 import {
@@ -23,35 +21,14 @@ import {
     FileText,
     Phone,
     Video,
-    Settings,
     Shield,
     Eye,
     Check,
     AlertCircle,
-    Code,
     Database,
     Server,
-    Cloud,
-    Cpu,
-    Layers,
     Archive,
-    GitBranch,
-    Target,
-    Crown,
-    Brain,
-    Link,
-    Sliders,
-    Lightbulb,
     Users,
-    Bell,
-    Mail,
-    MapPin,
-    Calendar,
-    Building,
-    Award,
-    Star,
-    Heart,
-    Bookmark,
 } from 'lucide-react'
 
 // Local types for reference
@@ -86,10 +63,33 @@ const meta: Meta<typeof SingleSelect> = {
         a11y: getA11yConfig('form'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A comprehensive single selection dropdown component that allows users to select one option from grouped lists.',
         docs: {
             description: {
                 component: `
-A comprehensive single selection dropdown component that allows users to select one option from grouped lists.
+## Usage
+
+\`\`\`tsx
+import { 
+  SingleSelect, 
+  SelectMenuSize, 
+  SelectMenuVariant 
+} from '@juspay/blend-design-system';
+
+const [selected, setSelected] = useState<string>('');
+
+<SingleSelect
+  label="Select Country"
+  placeholder="Choose a country"
+  items={countryItems}
+  selected={selected}
+  onSelect={setSelected}
+  enableSearch
+  size={SelectMenuSize.MEDIUM}
+  variant={SelectMenuVariant.CONTAINER}
+/>
+\`\`\`
 
 ## Features
 - **Single Selection**: Select one item from grouped lists with clear hierarchy
@@ -136,28 +136,6 @@ A comprehensive single selection dropdown component that allows users to select 
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker, verify touch target width in browser DevTools
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-## Usage
-
-\`\`\`tsx
-import { 
-  SingleSelect, 
-  SelectMenuSize, 
-  SelectMenuVariant 
-} from '@juspay/blend-design-system';
-
-const [selected, setSelected] = useState<string>('');
-
-<SingleSelect
-  label="Select Country"
-  placeholder="Choose a country"
-  items={countryItems}
-  selected={selected}
-  onSelect={setSelected}
-  enableSearch
-  size={SelectMenuSize.MEDIUM}
-  variant={SelectMenuVariant.CONTAINER}
-/>
-\`\`\`
         `,
             },
         },
@@ -765,7 +743,7 @@ export const Default: Story = {
         }, [args.selected])
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-[400px]">
                 <SingleSelect
                     {...args}
                     selected={selected}
@@ -794,7 +772,7 @@ export const WithSearch: Story = {
         const [selected, setSelected] = useState<string>('')
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-[400px]">
                 <SingleSelect
                     label="Select Country"
                     placeholder="Search and select a country"
@@ -825,14 +803,7 @@ export const Sizes: Story = {
         const [selectedLarge, setSelectedLarge] = useState<string>('')
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-[400px]">
                 <SingleSelect
                     label="Small Size"
                     placeholder="Choose department"
@@ -877,8 +848,8 @@ export const NoContainer: Story = {
         const [selected, setSelected] = useState<string>('frontend')
 
         return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <span style={{ fontWeight: 500 }}>Filter by department:</span>
+            <div className="flex items-center gap-4">
+                <span className="font-medium">Filter by department:</span>
                 <SingleSelect
                     label="Department"
                     placeholder="All departments"
@@ -909,14 +880,7 @@ export const FormIntegration: Story = {
         const [status, setStatus] = useState<string>('')
 
         return (
-            <form
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '500px',
-                }}
-            >
+            <form className="flex flex-col gap-6 w-[500px]">
                 <SingleSelect
                     label="Country"
                     subLabel="Required field"
@@ -1037,7 +1001,7 @@ export const WithCustomSlot: Story = {
         ]
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-[400px]">
                 <SingleSelect
                     label="Language Preference"
                     placeholder="Select your language"
@@ -1066,14 +1030,7 @@ export const ErrorStates: Story = {
         const [validValue, setValidValue] = useState<string>('frontend')
 
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-[400px]">
                 <SingleSelect
                     label="Required Department"
                     subLabel="This field is required"
@@ -1112,14 +1069,7 @@ export const ErrorStates: Story = {
 export const DisabledState: Story = {
     render: () => {
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '24px',
-                    width: '400px',
-                }}
-            >
+            <div className="flex flex-col gap-6 w-[400px]">
                 <SingleSelect
                     label="Disabled Empty"
                     placeholder="Cannot select"
@@ -1155,7 +1105,7 @@ export const PrioritySelection: Story = {
         const [priority, setPriority] = useState<string>('')
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-[400px]">
                 <SingleSelect
                     label="Task Priority"
                     placeholder="Set priority level"
@@ -1271,25 +1221,10 @@ export const TaskManagement: Story = {
         ]
 
         return (
-            <div
-                style={{
-                    padding: '24px',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '8px',
-                    width: '600px',
-                }}
-            >
-                <h3 style={{ marginBottom: '24px', color: '#1f2937' }}>
-                    Create New Task
-                </h3>
+            <div className="p-6 bg-gray-50 rounded-lg w-[600px]">
+                <h3 className="mb-6 text-gray-800">Create New Task</h3>
 
-                <form
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '20px',
-                    }}
-                >
+                <form className="flex flex-col gap-5">
                     <SingleSelect
                         label="Project"
                         placeholder="Select a project"
@@ -1314,13 +1249,7 @@ export const TaskManagement: Story = {
                         helpIconText="The person responsible for this task"
                     />
 
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '16px',
-                        }}
-                    >
+                    <div className="grid grid-cols-2 gap-4">
                         <SingleSelect
                             label="Priority"
                             placeholder="Set priority"
@@ -1344,40 +1273,23 @@ export const TaskManagement: Story = {
                     </div>
                 </form>
 
-                <div
-                    style={{
-                        marginTop: '24px',
-                        padding: '16px',
-                        backgroundColor: 'white',
-                        borderRadius: '8px',
-                        border: '1px solid #e5e7eb',
-                    }}
-                >
-                    <h4 style={{ margin: '0 0 12px 0', color: '#374151' }}>
-                        Task Summary
-                    </h4>
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'auto 1fr',
-                            gap: '8px',
-                            fontSize: '14px',
-                        }}
-                    >
-                        <span style={{ color: '#6b7280' }}>Project:</span>
-                        <span style={{ color: '#1f2937' }}>
+                <div className="mt-6 p-4 bg-white rounded-lg border border-gray-200">
+                    <h4 className="mb-3 text-gray-700">Task Summary</h4>
+                    <div className="grid grid-cols-[auto_1fr] gap-2 text-sm">
+                        <span className="text-gray-500">Project:</span>
+                        <span className="text-gray-800">
                             {project || 'Not selected'}
                         </span>
-                        <span style={{ color: '#6b7280' }}>Assignee:</span>
-                        <span style={{ color: '#1f2937' }}>
+                        <span className="text-gray-500">Assignee:</span>
+                        <span className="text-gray-800">
                             {assignee || 'Unassigned'}
                         </span>
-                        <span style={{ color: '#6b7280' }}>Priority:</span>
-                        <span style={{ color: '#1f2937' }}>
+                        <span className="text-gray-500">Priority:</span>
+                        <span className="text-gray-800">
                             {priority || 'Not set'}
                         </span>
-                        <span style={{ color: '#6b7280' }}>Status:</span>
-                        <span style={{ color: '#1f2937' }}>
+                        <span className="text-gray-500">Status:</span>
+                        <span className="text-gray-800">
                             {status || 'Not set'}
                         </span>
                     </div>
@@ -1400,7 +1312,7 @@ export const MobileDrawerMode: Story = {
         const [selected, setSelected] = useState<string>('')
 
         return (
-            <div style={{ width: '400px' }}>
+            <div className="w-[400px]">
                 <SingleSelect
                     label="Country (Mobile Drawer)"
                     placeholder="Select your country"
@@ -1419,402 +1331,6 @@ export const MobileDrawerMode: Story = {
             description: {
                 story: 'SingleSelect with mobile drawer mode enabled for better mobile experience.',
             },
-        },
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples demonstrating keyboard navigation, ARIA attributes, error states, and focus management
- */
-export const Accessibility: Story = {
-    render: () => {
-        const [keyboardSelected, setKeyboardSelected] = useState<string>('')
-        const [errorSelected, setErrorSelected] = useState<string>('')
-        const [requiredSelected, setRequiredSelected] = useState<string>('')
-        const [disabledSelected, setDisabledSelected] = useState<string>('us')
-
-        return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '32px',
-                    padding: '24px',
-                    maxWidth: '800px',
-                }}
-            >
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Keyboard Navigation
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Tab to focus, Arrow keys to navigate, Enter to select,
-                        Escape to close
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <SingleSelect
-                            label="Keyboard Navigation Example"
-                            placeholder="Use keyboard to navigate"
-                            items={countryItems}
-                            selected={keyboardSelected}
-                            onSelect={setKeyboardSelected}
-                            enableSearch
-                            helpIconText="Tab to focus, Arrow keys to navigate menu items, Enter to select, Escape to close menu"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Label Association & ARIA Attributes
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Labels properly associated via htmlFor/id. ARIA
-                        attributes (aria-labelledby, aria-describedby) connect
-                        labels, hints, and errors.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <SingleSelect
-                            label="Country Selection"
-                            subLabel="Required field"
-                            placeholder="Select your country"
-                            items={countryItems}
-                            selected={keyboardSelected}
-                            onSelect={setKeyboardSelected}
-                            hintText="This will determine your default settings"
-                            helpIconText="Choose your country for regional settings"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Error State & Validation
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Error state communicated via aria-invalid="true" and
-                        visual styling. Error message connected via
-                        aria-describedby.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <SingleSelect
-                            label="Required Department"
-                            subLabel="This field is required"
-                            placeholder="Select a department"
-                            items={departmentItems}
-                            selected={errorSelected}
-                            onSelect={setErrorSelected}
-                            required
-                            error={errorSelected === ''}
-                            errorMessage={
-                                errorSelected === ''
-                                    ? 'Please select a department'
-                                    : ''
-                            }
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Required Field Indicator
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Required fields indicated with asterisk (*) and
-                        aria-labelledby connection. Screen readers announce
-                        "required".
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <SingleSelect
-                            label="Timezone"
-                            placeholder="Select your timezone"
-                            items={timezoneItems}
-                            selected={requiredSelected}
-                            onSelect={setRequiredSelected}
-                            required
-                            hintText="Required for scheduling"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Disabled State
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Disabled SingleSelect is not focusable and removed from
-                        tab order. aria-disabled="true" communicates state to
-                        screen readers.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <SingleSelect
-                            label="Disabled Empty"
-                            placeholder="Cannot select"
-                            items={countryItems}
-                            selected=""
-                            onSelect={() => {}}
-                            disabled
-                        />
-                        <div style={{ marginTop: '16px' }}>
-                            <SingleSelect
-                                label="Disabled with Value"
-                                placeholder="Choose a country"
-                                items={countryItems}
-                                selected={disabledSelected}
-                                onSelect={() => {}}
-                                disabled
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Search Input Accessibility
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Search input has aria-label for screen reader
-                        identification. Filtered results announced dynamically.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <SingleSelect
-                            label="Search Countries"
-                            placeholder="Type to search"
-                            items={countryItems}
-                            selected={keyboardSelected}
-                            onSelect={setKeyboardSelected}
-                            enableSearch
-                            searchPlaceholder="Type to search countries..."
-                            helpIconText="Start typing to filter countries by name"
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Focus Indicators
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Focus indicators visible with outlineOffset. Menu items
-                        have focus styling. Check Chromatic for focus ring
-                        visibility.
-                    </p>
-                    <div style={{ width: '400px' }}>
-                        <SingleSelect
-                            label="Focus Indicator Example"
-                            placeholder="Tab to focus"
-                            items={departmentItems}
-                            selected={keyboardSelected}
-                            onSelect={setKeyboardSelected}
-                        />
-                    </div>
-                </section>
-
-                <section>
-                    <h3
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                        }}
-                    >
-                        Touch Target Size (AAA)
-                    </h3>
-                    <p
-                        style={{
-                            marginBottom: '12px',
-                            fontSize: '14px',
-                            color: '#6b7280',
-                        }}
-                    >
-                        Height verified: Small (50px), Medium (56px), Large
-                        (72px) all exceed AAA 44px requirement. Width requires
-                        manual verification.
-                    </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                            width: '400px',
-                        }}
-                    >
-                        <SingleSelect
-                            label="Small Size (50px height)"
-                            placeholder="Small touch target"
-                            items={departmentItems}
-                            selected={keyboardSelected}
-                            onSelect={setKeyboardSelected}
-                            size={SelectMenuSize.SMALL}
-                        />
-                        <SingleSelect
-                            label="Medium Size (56px height)"
-                            placeholder="Medium touch target"
-                            items={departmentItems}
-                            selected={keyboardSelected}
-                            onSelect={setKeyboardSelected}
-                            size={SelectMenuSize.MEDIUM}
-                        />
-                        <SingleSelect
-                            label="Large Size (72px height)"
-                            placeholder="Large touch target"
-                            items={departmentItems}
-                            selected={keyboardSelected}
-                            onSelect={setKeyboardSelected}
-                            size={SelectMenuSize.LARGE}
-                        />
-                    </div>
-                </section>
-            </div>
-        )
-    },
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating keyboard navigation, ARIA attributes, error states, required fields, disabled states, search input accessibility, focus indicators, and touch target sizes.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0 for AA compliance)
-   - Review passing tests (15+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test SingleSelect.accessibility
-   \`\`\`
-   - 55+ automated tests
-   - WCAG compliance verification
-   - ARIA attribute validation
-   - Keyboard navigation testing
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Focus ring visibility
-   - State changes (error, disabled, required)
-   - Responsive behavior
-   - Menu open/close animations
-
-4. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Keyboard navigation (Tab, Arrow keys, Enter, Escape)
-   - Color contrast verification with WebAIM Contrast Checker
-   - Touch target width verification in browser DevTools (console: \`getComputedStyle(element).width\`)
-
-## Accessibility Report
-
-**Current Status**: 
-- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (6/9 applicable criteria compliant)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), Animation from Interactions (2.3.3), Change on Request (3.2.5), Target Size Height (2.5.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio (currently 4.5:1 for AA)
-- ⚠️ Verification Required: Target Size Width (2.5.5) - height verified but width requires manual verification
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('form'),
-        // Extended delay for Chromatic to capture focus states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
         },
     },
 }

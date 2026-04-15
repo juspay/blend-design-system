@@ -5,24 +5,7 @@ import {
     KeyValuePairSize,
     KeyValuePairStateType,
 } from '@juspay/blend-design-system'
-import {
-    Info,
-    Star,
-    CheckCircle,
-    AlertCircle,
-    ArrowRight,
-    Eye,
-    Lock,
-    User,
-    Mail,
-    Phone,
-    MapPin,
-    CreditCard,
-    DollarSign,
-    TrendingUp,
-    TrendingDown,
-    Bell,
-} from 'lucide-react'
+import { Info, Star, CheckCircle, ArrowRight, Eye, Bell } from 'lucide-react'
 import { getA11yConfig, CHROMATIC_CONFIG } from '../../.storybook/a11y.config'
 
 // ============================================================================
@@ -38,10 +21,23 @@ const meta: Meta<typeof KeyValuePair> = {
         a11y: getA11yConfig('content'),
         // Chromatic visual regression testing
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'A semantic component for displaying key-value pairs with proper accessibility attributes and flexible layout options.',
         docs: {
             description: {
                 component: `
-A semantic component for displaying key-value pairs with proper accessibility attributes and flexible layout options.
+## Usage
+
+\`\`\`tsx
+import { KeyValuePair, KeyValuePairSize, KeyValuePairStateType } from '@juspay/blend-design-system';
+
+<KeyValuePair
+  keyString="Name"
+  value="John Doe"
+  size={KeyValuePairSize.MEDIUM}
+  keyValuePairState={KeyValuePairStateType.vertical}
+/>
+\`\`\`
 
 ## Features
 - Vertical and horizontal layouts
@@ -80,18 +76,6 @@ A semantic component for displaying key-value pairs with proper accessibility at
 - **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
 - **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
 
-## Usage
-
-\`\`\`tsx
-import { KeyValuePair, KeyValuePairSize, KeyValuePairStateType } from '@juspay/blend-design-system';
-
-<KeyValuePair
-  keyString="Name"
-  value="John Doe"
-  size={KeyValuePairSize.MEDIUM}
-  keyValuePairState={KeyValuePairStateType.vertical}
-/>
-\`\`\`
         `,
             },
         },
@@ -227,14 +211,7 @@ export const HorizontalLayout: Story = {
  */
 export const Sizes: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                width: '300px',
-            }}
-        >
+        <div className="flex flex-col gap-6 w-75">
             <KeyValuePair
                 keyString="Small Size"
                 value="This is small text"
@@ -338,14 +315,7 @@ export const TextWrapClamp: Story = {
  */
 export const WithSlots: Story = {
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                width: '300px',
-            }}
-        >
+        <div className="flex flex-col gap-6 w-75">
             <KeyValuePair
                 keyString="Rating"
                 value="4.8"
@@ -373,462 +343,5 @@ export const WithSlots: Story = {
             },
         },
         a11y: getA11yConfig('content'),
-    },
-}
-
-// ============================================================================
-// Real-World Examples
-// ============================================================================
-
-/**
- * User profile information
- */
-export const UserProfile: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px',
-                width: '300px',
-                padding: '20px',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-            }}
-        >
-            <h3
-                style={{
-                    margin: '0 0 16px 0',
-                    fontSize: '18px',
-                    fontWeight: '600',
-                }}
-            >
-                Profile Information
-            </h3>
-            <KeyValuePair
-                keyString="Full Name"
-                value="John Doe"
-                keySlot={<User size={16} />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-            <KeyValuePair
-                keyString="Email"
-                value="john.doe@example.com"
-                keySlot={<Mail size={16} />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-            <KeyValuePair
-                keyString="Phone"
-                value="+1 (555) 123-4567"
-                keySlot={<Phone size={16} />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-            <KeyValuePair
-                keyString="Location"
-                value="San Francisco, CA"
-                keySlot={<MapPin size={16} />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'User profile information displayed as key-value pairs. All pairs maintain proper semantic structure.',
-            },
-        },
-        a11y: getA11yConfig('content'),
-    },
-}
-
-/**
- * Financial data
- */
-export const FinancialData: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px',
-                width: '300px',
-                padding: '20px',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-            }}
-        >
-            <h3
-                style={{
-                    margin: '0 0 16px 0',
-                    fontSize: '18px',
-                    fontWeight: '600',
-                }}
-            >
-                Financial Summary
-            </h3>
-            <KeyValuePair
-                keyString="Balance"
-                value="$12,345.67"
-                keySlot={<DollarSign size={16} />}
-                size={KeyValuePairSize.LARGE}
-            />
-            <KeyValuePair
-                keyString="Monthly Income"
-                value="$5,000.00"
-                keySlot={<TrendingUp size={16} color="#10b981" />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-            <KeyValuePair
-                keyString="Monthly Expenses"
-                value="$3,200.00"
-                keySlot={<TrendingDown size={16} color="#ef4444" />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-            <KeyValuePair
-                keyString="Payment Method"
-                value="**** **** **** 1234"
-                keySlot={<CreditCard size={16} />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Financial data displayed as key-value pairs. Maintains proper contrast and accessibility.',
-            },
-        },
-        a11y: getA11yConfig('content'),
-    },
-}
-
-/**
- * Status indicators
- */
-export const StatusIndicators: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px',
-                width: '300px',
-                padding: '20px',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-            }}
-        >
-            <h3
-                style={{
-                    margin: '0 0 16px 0',
-                    fontSize: '18px',
-                    fontWeight: '600',
-                }}
-            >
-                System Status
-            </h3>
-            <KeyValuePair
-                keyString="Server Status"
-                value="Online"
-                valueLeftSlot={<CheckCircle size={16} color="#10b981" />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-            <KeyValuePair
-                keyString="Database"
-                value="Connected"
-                valueLeftSlot={<CheckCircle size={16} color="#10b981" />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-            <KeyValuePair
-                keyString="API Status"
-                value="Warning"
-                valueLeftSlot={<AlertCircle size={16} color="#f59e0b" />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-            <KeyValuePair
-                keyString="Security"
-                value="Locked"
-                valueLeftSlot={<Lock size={16} color="#ef4444" />}
-                size={KeyValuePairSize.MEDIUM}
-            />
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: 'Status indicators with color-coded icons. Information is not conveyed solely by color.',
-            },
-        },
-        a11y: getA11yConfig('content'),
-    },
-}
-
-// ============================================================================
-// Accessibility Testing
-// ============================================================================
-
-/**
- * Accessibility examples
- */
-export const Accessibility: Story = {
-    render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '24px',
-                padding: '24px',
-                maxWidth: '800px',
-            }}
-        >
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Semantic Roles
-                </h3>
-                <div style={{ width: '300px' }}>
-                    <KeyValuePair
-                        keyString="Term"
-                        value="Definition"
-                        size={KeyValuePairSize.MEDIUM}
-                    />
-                    <p
-                        style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: '#64748b',
-                        }}
-                    >
-                        Key has role="term", value has role="definition". Check
-                        Accessibility panel to verify semantic structure.
-                    </p>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    ARIA Relationships
-                </h3>
-                <div style={{ width: '300px' }}>
-                    <KeyValuePair
-                        keyString="Label"
-                        value="Value with aria-labelledby"
-                        size={KeyValuePairSize.MEDIUM}
-                    />
-                    <p
-                        style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: '#64748b',
-                        }}
-                    >
-                        Value has aria-labelledby linking to key, establishing
-                        programmatic relationship.
-                    </p>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Group Labeling
-                </h3>
-                <div style={{ width: '300px' }}>
-                    <KeyValuePair
-                        keyString="Name"
-                        value="John Doe"
-                        size={KeyValuePairSize.MEDIUM}
-                    />
-                    <p
-                        style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: '#64748b',
-                        }}
-                    >
-                        Container has role="group" with aria-label combining key
-                        and value for screen readers.
-                    </p>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Text Overflow with Tooltip
-                </h3>
-                <div style={{ width: '200px' }}>
-                    <KeyValuePair
-                        keyString="Long Text"
-                        value="This is a very long value that will be truncated and show a tooltip"
-                        textOverflow="truncate"
-                        maxWidth="200px"
-                        showTooltipOnTruncate={true}
-                        size={KeyValuePairSize.MEDIUM}
-                    />
-                    <p
-                        style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: '#64748b',
-                        }}
-                    >
-                        Truncated text shows accessible tooltip on hover.
-                        Tooltip provides full content for screen readers.
-                    </p>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Reading Order
-                </h3>
-                <div style={{ width: '300px' }}>
-                    <KeyValuePair
-                        keyString="First"
-                        value="Second"
-                        keyValuePairState={KeyValuePairStateType.vertical}
-                        size={KeyValuePairSize.MEDIUM}
-                    />
-                    <KeyValuePair
-                        keyString="Third"
-                        value="Fourth"
-                        keyValuePairState={KeyValuePairStateType.horizontal}
-                        size={KeyValuePairSize.MEDIUM}
-                    />
-                    <p
-                        style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: '#64748b',
-                        }}
-                    >
-                        Logical reading order maintained in both vertical and
-                        horizontal layouts.
-                    </p>
-                </div>
-            </section>
-
-            <section>
-                <h3
-                    style={{
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                    }}
-                >
-                    Color Contrast
-                </h3>
-                <div style={{ width: '300px' }}>
-                    <KeyValuePair
-                        keyString="High Contrast"
-                        value="Text meets WCAG AA contrast requirements"
-                        size={KeyValuePairSize.MEDIUM}
-                    />
-                    <p
-                        style={{
-                            marginTop: '12px',
-                            fontSize: '14px',
-                            color: '#64748b',
-                        }}
-                    >
-                        Text colors use theme tokens ensuring sufficient
-                        contrast (4.5:1 for AA, 7:1 for AAA).
-                    </p>
-                </div>
-            </section>
-        </div>
-    ),
-    parameters: {
-        docs: {
-            description: {
-                story: `
-Accessibility examples demonstrating semantic roles, ARIA relationships, group labeling, text overflow handling, reading order, and color contrast.
-
-## Accessibility Verification
-
-**How to verify accessibility:**
-
-1. **Storybook a11y addon** (Accessibility panel - bottom):
-   - Check for violations (should be 0)
-   - Review passing tests (12+)
-   - See real-time accessibility status
-
-2. **jest-axe unit tests**:
-   \`\`\`bash
-   pnpm test KeyValuePair.accessibility
-   \`\`\`
-   - 40+ automated tests
-   - WCAG compliance verification
-   - ARIA attribute validation
-
-3. **Chromatic visual tests**:
-   \`\`\`bash
-   pnpm chromatic
-   \`\`\`
-   - Text overflow behavior
-   - Tooltip visibility
-   - Responsive behavior
-
-4. **Manual testing**:
-   - VoiceOver (macOS) or NVDA (Windows)
-   - Verify semantic structure and ARIA relationships
-   - Color contrast verification
-
-## Accessibility Report
-
-**Current Status**: 
-- ✅ **WCAG 2.1 Level AA**: Fully Compliant (0 violations)
-- ⚠️ **WCAG 2.1 Level AAA**: Partial Compliance (7/9 applicable criteria compliant)
-
-**AAA Compliance Details**:
-- ✅ Compliant: Visual Presentation (1.4.8), Images of Text (1.4.9), Keyboard No Exception (2.1.3), No Timing (2.2.3), Interruptions (2.2.4), Change on Request (3.2.5)
-- ❌ Needs Improvement: Contrast Enhanced (1.4.6) - requires 7:1 ratio, Target Size (2.5.5) - Interactive elements in slots need 44x44px
-- 📋 See full accessibility report in Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 analysis
-
-**Key Accessibility Features**:
-- Semantic HTML structure with role="group", role="term", and role="definition"
-- Proper ARIA attributes (aria-label, aria-labelledby) for programmatic relationships
-- Text overflow handling with accessible tooltips
-- Logical reading order maintained
-- Sufficient color contrast (4.5:1 for AA)
-- Text resizable up to 200% without loss of functionality
-                `,
-            },
-        },
-        // Enhanced a11y rules for accessibility story
-        a11y: getA11yConfig('content'),
-        // Extended delay for Chromatic to capture tooltip states
-        chromatic: {
-            ...CHROMATIC_CONFIG,
-            delay: 500,
-        },
     },
 }

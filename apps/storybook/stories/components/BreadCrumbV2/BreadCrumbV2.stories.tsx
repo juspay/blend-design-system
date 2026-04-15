@@ -27,10 +27,11 @@ const meta: Meta<typeof BreadcrumbV2> = {
         layout: 'padded',
         a11y: getA11yConfig('navigation'),
         chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'Composable breadcrumb component that accepts items array or wraps Item, Page, and optional Icon children.',
         docs: {
             description: {
                 component: `
-Composable breadcrumb: \`BreadcrumbV2\` accepts an \`items\` array (same overflow behavior as compound \`Item\` children) or wraps \`Item\`, \`Page\`, optional \`Icon\` (repeat for multiple icons; order = layout). Ellipsis + last segments when the trail exceeds \`maxItems\`.
 
 **Accessibility:** The current page link uses \`aria-current="page"\` (implemented as \`aria-current={isActive ? 'page' : undefined}\` on \`BreadcrumbV2.Item\` → \`PrimitiveLink\`). The last \`items\` entry is marked active automatically; set \`isActive\` on \`Item\` when composing children.
 `,
@@ -50,22 +51,9 @@ const SAMPLE_ITEMS: BreadcrumbV2ItemType[] = [
     { label: 'Cameras', href: '/products/electronics/cameras' },
 ]
 
-const sectionStyle: React.CSSProperties = {
-    padding: '20px 24px',
-    borderRadius: 12,
-    border: '1px solid var(--sb-border-color, #e5e7eb)',
-    background: 'var(--sb-background-color, #fafafa)',
-    maxWidth: 720,
-}
-
-const labelStyle: React.CSSProperties = {
-    fontSize: 12,
-    fontWeight: 600,
-    textTransform: 'uppercase',
-    letterSpacing: '0.04em',
-    color: 'var(--sb-text-secondary, #6b7280)',
-    marginBottom: 12,
-}
+const sectionClasses = 'py-5 px-6 rounded-xl border border-solid max-w-[720px]'
+const labelClasses =
+    'text-xs font-semibold uppercase tracking-wide text-gray-500 mb-3'
 
 export const Default: Story = {
     render: () => <BreadcrumbV2 items={SAMPLE_ITEMS} />,
@@ -75,8 +63,8 @@ export const Default: Story = {
 export const Visual_NarrowContainer: Story = {
     name: 'Visual · Narrow container',
     render: () => (
-        <div style={{ width: 320, ...sectionStyle }}>
-            <div style={labelStyle}>320px wide</div>
+        <div className={`${sectionClasses} w-[320px]`}>
+            <div className={labelClasses}>320px wide</div>
             <BreadcrumbV2 items={SAMPLE_ITEMS} />
         </div>
     ),
@@ -85,8 +73,8 @@ export const Visual_NarrowContainer: Story = {
 export const WithOverflowMenu: Story = {
     name: 'Visual · Overflow (7+ items)',
     render: () => (
-        <div style={sectionStyle}>
-            <div style={labelStyle}>Ellipsis + last three segments</div>
+        <div className={sectionClasses}>
+            <div className={labelClasses}>Ellipsis + last three segments</div>
             <BreadcrumbV2
                 items={[
                     { label: 'Home', href: '/' },
@@ -105,8 +93,8 @@ export const WithOverflowMenu: Story = {
 export const Visual_WithLeadingIcons: Story = {
     name: 'Visual · Items with left slots',
     render: () => (
-        <div style={sectionStyle}>
-            <div style={labelStyle}>Icon via items prop</div>
+        <div className={sectionClasses}>
+            <div className={labelClasses}>Icon via items prop</div>
             <BreadcrumbV2
                 items={[
                     {
@@ -138,8 +126,8 @@ export const Visual_WithLeadingIcons: Story = {
 export const Visual_SingleCurrentPage: Story = {
     name: 'Visual · Single item (current page)',
     render: () => (
-        <div style={sectionStyle}>
-            <div style={labelStyle}>One crumb — active</div>
+        <div className={sectionClasses}>
+            <div className={labelClasses}>One crumb — active</div>
             <BreadcrumbV2
                 items={[{ label: 'Dashboard', href: '/dashboard' }]}
             />
@@ -150,8 +138,10 @@ export const Visual_SingleCurrentPage: Story = {
 export const Visual_Composable: Story = {
     name: 'Visual · Composable API',
     render: () => (
-        <div style={sectionStyle}>
-            <div style={labelStyle}>BreadcrumbV2.Item · Icon · Page · Icon</div>
+        <div className={sectionClasses}>
+            <div className={labelClasses}>
+                BreadcrumbV2.Item · Icon · Page · Icon
+            </div>
             <BreadcrumbV2>
                 <BreadcrumbV2.Item href="/">
                     <BreadcrumbV2.Icon>
@@ -179,8 +169,8 @@ export const Visual_Composable: Story = {
 export const Visual_ComposableOverflow: Story = {
     name: 'Visual · Composable overflow',
     render: () => (
-        <div style={sectionStyle}>
-            <div style={labelStyle}>5+ Item children → ellipsis</div>
+        <div className={sectionClasses}>
+            <div className={labelClasses}>5+ Item children → ellipsis</div>
             <BreadcrumbV2>
                 {[0, 1, 2, 3, 4].map((i) => (
                     <BreadcrumbV2.Item key={i} href={`/l${i}`}>
@@ -198,24 +188,16 @@ export const Visual_Showcase: Story = {
         layout: 'fullscreen',
     },
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 24,
-                padding: 24,
-                maxWidth: 800,
-            }}
-        >
-            <h2 style={{ margin: 0, fontSize: 20 }}>BreadcrumbV2 — visual</h2>
+        <div className="flex flex-col gap-6 p-6 max-w-[800px]">
+            <h2 className="m-0 text-xl">BreadcrumbV2 — visual</h2>
 
-            <div style={sectionStyle}>
-                <div style={labelStyle}>Default trail</div>
+            <div className={sectionClasses}>
+                <div className={labelClasses}>Default trail</div>
                 <BreadcrumbV2 items={SAMPLE_ITEMS} />
             </div>
 
-            <div style={sectionStyle}>
-                <div style={labelStyle}>With icons + right slot</div>
+            <div className={sectionClasses}>
+                <div className={labelClasses}>With icons + right slot</div>
                 <BreadcrumbV2
                     items={[
                         {
@@ -238,8 +220,8 @@ export const Visual_Showcase: Story = {
                 />
             </div>
 
-            <div style={{ width: 360, ...sectionStyle }}>
-                <div style={labelStyle}>Overflow</div>
+            <div className={`${sectionClasses} w-[360px]`}>
+                <div className={labelClasses}>Overflow</div>
                 <BreadcrumbV2
                     items={[
                         { label: 'Home', href: '/' },
@@ -276,7 +258,7 @@ function InteractiveRoutingDemo() {
                 index < visible.length - 1
                     ? (e: React.MouseEvent<HTMLAnchorElement>) => {
                           e.preventDefault()
-                          fn('navigate')(seg.label, seg.href)
+                          fn()(seg.label, seg.href)
                           setDepth(index + 1)
                       }
                     : undefined,
@@ -284,13 +266,15 @@ function InteractiveRoutingDemo() {
     }, [depth, segments])
 
     return (
-        <div style={{ ...sectionStyle, maxWidth: 640 }}>
-            <div style={labelStyle}>Interactive · SPA-style navigation</div>
-            <p style={{ margin: '0 0 16px', fontSize: 14, color: '#4b5563' }}>
+        <div className={`${sectionClasses} max-w-[640px]`}>
+            <div className={labelClasses}>
+                Interactive · SPA-style navigation
+            </div>
+            <p className="m-0 mb-4 text-sm text-gray-600">
                 Click any link except the current page. Depth:{' '}
                 <strong>{depth}</strong> / {segments.length}
             </p>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+            <div className="flex gap-2 mb-4">
                 <button
                     type="button"
                     onClick={() => setDepth((d) => Math.max(1, d - 1))}
@@ -323,8 +307,10 @@ function InteractiveComposableDemo() {
     const [last, setLast] = useState<string>('—')
 
     return (
-        <div style={{ ...sectionStyle, maxWidth: 560 }}>
-            <div style={labelStyle}>Interactive · Composable Item onClick</div>
+        <div className={`${sectionClasses} max-w-[560px]`}>
+            <div className={labelClasses}>
+                Interactive · Composable Item onClick
+            </div>
             <p style={{ margin: '0 0 16px', fontSize: 14 }}>
                 Last action: <strong>{last}</strong>
             </p>
@@ -334,7 +320,7 @@ function InteractiveComposableDemo() {
                     onClick={(e) => {
                         e.preventDefault()
                         setLast('Home clicked')
-                        fn('itemClick')('Home')
+                        fn()('Home')
                     }}
                 >
                     <BreadcrumbV2.Page>Home</BreadcrumbV2.Page>
@@ -344,7 +330,7 @@ function InteractiveComposableDemo() {
                     onClick={(e) => {
                         e.preventDefault()
                         setLast('Section clicked')
-                        fn('itemClick')('Section')
+                        fn()('Section')
                     }}
                 >
                     <BreadcrumbV2.Page>Section</BreadcrumbV2.Page>

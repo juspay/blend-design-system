@@ -13,10 +13,7 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
 
-const LINEAR_WIDTH_STYLE: React.CSSProperties = {
-    width: 320,
-    maxWidth: '100%',
-}
+const LINEAR_WIDTH_CLASS = 'w-80 max-w-full'
 
 const meta: Meta<typeof ProgressBarV2> = {
     title: 'Components/ProgressBarV2',
@@ -69,7 +66,7 @@ import {
                 return <Story />
             }
             return (
-                <div style={LINEAR_WIDTH_STYLE}>
+                <div className={LINEAR_WIDTH_CLASS}>
                     <Story />
                 </div>
             )
@@ -160,14 +157,7 @@ export const WithLabel: Story = {
 export const SizesLinear: Story = {
     name: 'Sizes (linear)',
     render: () => (
-        <div
-            style={{
-                ...LINEAR_WIDTH_STYLE,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 16,
-            }}
-        >
+        <div className={`${LINEAR_WIDTH_CLASS} flex flex-col gap-4`}>
             <ProgressBarV2 value={30} size={ProgressBarV2Size.SM} showLabel />
             <ProgressBarV2 value={50} size={ProgressBarV2Size.MD} showLabel />
             <ProgressBarV2 value={70} size={ProgressBarV2Size.LG} showLabel />
@@ -178,15 +168,7 @@ export const SizesLinear: Story = {
 export const SizesCircular: Story = {
     name: 'Sizes (circular)',
     render: () => (
-        <div
-            style={{
-                display: 'flex',
-                gap: 24,
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-            }}
-        >
+        <div className="flex gap-6 items-center justify-center flex-wrap">
             <ProgressBarV2
                 value={40}
                 variant={ProgressBarV2Variant.CIRCULAR}
@@ -223,22 +205,8 @@ export const Interactive: Story = {
     render: function InteractiveRender() {
         const [value, setValue] = useState(40)
         return (
-            <div
-                style={{
-                    ...LINEAR_WIDTH_STYLE,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 12,
-                }}
-            >
-                <label
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 8,
-                        fontSize: 14,
-                    }}
-                >
+            <div className={`${LINEAR_WIDTH_CLASS} flex flex-col gap-3`}>
+                <label className="flex flex-col gap-2 text-sm">
                     <span>Value: {value}</span>
                     <input
                         type="range"
