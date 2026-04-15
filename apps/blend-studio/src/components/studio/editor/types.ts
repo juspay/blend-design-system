@@ -25,7 +25,14 @@ export type EditorTabId =
     | 'json'
 
 /** Identifies which panel is active on the right side. */
-export type EditorPanelId = 'preview' | 'diff' | 'history' | 'export'
+export type EditorPanelId =
+    | 'preview'
+    | 'diff'
+    | 'history'
+    | 'export'
+    | 'accessibility'
+    | 'multi-export'
+    | 'analytics'
 
 // ---------------------------------------------------------------------------
 // Shared Editor Props

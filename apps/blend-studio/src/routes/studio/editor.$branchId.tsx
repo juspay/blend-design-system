@@ -40,6 +40,10 @@ import {
     DiffPanel,
     HistoryPanel,
     ExportPanel,
+    AccessibilityPanel,
+    MultiExportPanel,
+    ImportWizard,
+    TokenAnalyticsPanel,
     type EditorTabId,
     type EditorPanelId,
 } from '@/components/studio/editor'
@@ -65,6 +69,10 @@ import {
     AlertCircle,
     X,
     GitBranch,
+    Shield,
+    Upload,
+    BarChart3,
+    Repeat,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/studio/editor/$branchId')({
@@ -133,6 +141,7 @@ function EditorPage() {
     const [activeTab, setActiveTab] = useState<EditorTabId>('colors')
     const [activePanel, setActivePanel] = useState<EditorPanelId>('preview')
     const [showPublishModal, setShowPublishModal] = useState(false)
+    const [showImportWizard, setShowImportWizard] = useState(false)
     const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     // Sync brand from branch on load
@@ -196,6 +205,9 @@ function EditorPage() {
             },
             { id: 'history', icon: History, label: 'History' },
             { id: 'export', icon: Download, label: 'Export' },
+            { id: 'accessibility', icon: Shield, label: 'A11y' },
+            { id: 'multi-export', icon: Repeat, label: 'Multi-Export' },
+            { id: 'analytics', icon: BarChart3, label: 'Analytics' },
         ],
         [diffs.length]
     )
@@ -212,6 +224,34 @@ function EditorPage() {
         },
         []
     )
+
+    const handleImportTokens = useCallback((imported: Partial<BrandConfig>) => {
+        setBrand((prev) => {
+            if (!prev) return prev
+            const updated = { ...prev }
+            if (imported.colors) {
+                updated.colors = {
+                    ...updated.colors,
+                    ...imported.colors,
+                }
+            }
+            if (imported.radius) {
+                updated.radius = { ...updated.radius, ...imported.radius }
+            }
+            if (imported.shadows) {
+                updated.shadows = {
+                    ...updated.shadows,
+                    ...imported.shadows,
+                }
+            }
+            if (imported.font) {
+                updated.font = { ...updated.font, ...imported.font }
+            }
+            setHasChanges(true)
+            return updated
+        })
+        setShowImportWizard(false)
+    }, [])
 
     const handleSave = useCallback(async () => {
         if (!brand || !branchId) return
@@ -266,6 +306,7 @@ function EditorPage() {
                     saveSuccess={saveSuccess}
                     saving={saving}
                     onSave={handleSave}
+                    onImport={() => setShowImportWizard(true)}
                     publishLoading={publishLoading}
                     onPublish={() => setShowPublishModal(true)}
                     validation={validation}
@@ -387,9 +428,29 @@ function EditorPage() {
                                     branchId={branchId}
                                 />
                             )}
+                            {activePanel === 'accessibility' && (
+                                <AccessibilityPanel brand={brand} />
+                            )}
+                            {activePanel === 'multi-export' && (
+                                <MultiExportPanel
+                                    brand={brand}
+                                    branchId={branchId}
+                                />
+                            )}
+                            {activePanel === 'analytics' && (
+                                <TokenAnalyticsPanel brand={brand} />
+                            )}
                         </div>
                     </div>
                 </div>
+
+                {/* Import Wizard Modal */}
+                {showImportWizard && (
+                    <ImportWizard
+                        onImport={handleImportTokens}
+                        onClose={() => setShowImportWizard(false)}
+                    />
+                )}
 
                 {/* Publish Modal */}
                 {showPublishModal && (
@@ -436,6 +497,7 @@ interface EditorHeaderProps {
     saveSuccess: boolean
     saving: boolean
     onSave: () => void
+    onImport: () => void
     publishLoading: boolean
     onPublish: () => void
     validation: ValidationResult | null
@@ -451,6 +513,7 @@ function EditorHeader({
     saveSuccess,
     saving,
     onSave,
+    onImport,
     publishLoading,
     onPublish,
     validation,
@@ -510,6 +573,15 @@ function EditorHeader({
                     <Eye className="w-4 h-4" />
                     Preview
                 </Link>
+
+                <button
+                    onClick={onImport}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-700 border border-purple-300 rounded-lg hover:bg-purple-50 transition-colors"
+                    title="Import tokens from CSS, Tailwind, Figma, etc."
+                >
+                    <Upload className="w-4 h-4" />
+                    Import
+                </button>
 
                 <button
                     onClick={onSave}
