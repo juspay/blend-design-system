@@ -8,9 +8,10 @@ import {
     getTextAreaInputPadding,
     getTextAreaInteractionKeys,
     getTextAreaLabelState,
+    getTextAreaV2MinHeightFromRows,
     omitTextAreaV2PrivateProps,
 } from '../../../lib/components/InputsV2/TextAreaV2/utils'
-import type { TextAreaTokensType } from '../../../lib/components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import type { TextAreaV2TokensType } from '../../../lib/components/InputsV2/TextAreaV2/TextAreaV2.tokens'
 import {
     InputSizeV2,
     InputStateV2,
@@ -19,7 +20,7 @@ import {
 const noop = () => {}
 
 /** Minimal `inputContainer.padding` for `getTextAreaInputPadding` unit tests. */
-const mockInputContainerPadding: TextAreaTokensType['inputContainer']['padding'] =
+const mockInputContainerPadding: TextAreaV2TokensType['inputContainer']['padding'] =
     {
         top: { sm: 10, md: 10, lg: 10 },
         right: { sm: 14, md: 14, lg: 14 },
@@ -473,7 +474,7 @@ describe('TextAreaV2', () => {
             it('doubles top padding and clears bottom on sm when focused or filled', () => {
                 const ic = {
                     padding: mockInputContainerPadding,
-                } as TextAreaTokensType['inputContainer']
+                } as TextAreaV2TokensType['inputContainer']
                 const r = getTextAreaInputPadding({
                     inputContainer: ic,
                     size: InputSizeV2.MD,
@@ -489,7 +490,7 @@ describe('TextAreaV2', () => {
             it('uses base padding when not small screen', () => {
                 const ic = {
                     padding: mockInputContainerPadding,
-                } as TextAreaTokensType['inputContainer']
+                } as TextAreaV2TokensType['inputContainer']
                 const r = getTextAreaInputPadding({
                     inputContainer: ic,
                     size: InputSizeV2.MD,
@@ -498,6 +499,26 @@ describe('TextAreaV2', () => {
                 })
                 expect(r.paddingTop).toBe(10)
                 expect(r.paddingBottom).toBe(10)
+            })
+        })
+
+        describe('getTextAreaV2MinHeightFromRows', () => {
+            it('computes min height as vertical padding plus rows times line height', () => {
+                expect(
+                    getTextAreaV2MinHeightFromRows(3, 20, {
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                    })
+                ).toBe(10 + 10 + 3 * 20)
+            })
+
+            it('uses at least one row when rows is below 1', () => {
+                expect(
+                    getTextAreaV2MinHeightFromRows(0, 20, {
+                        paddingTop: 0,
+                        paddingBottom: 0,
+                    })
+                ).toBe(20)
             })
         })
 

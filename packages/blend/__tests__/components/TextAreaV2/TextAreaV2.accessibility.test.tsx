@@ -320,6 +320,19 @@ describe('TextAreaV2 Accessibility', () => {
             )
             expect(screen.getByRole('textbox')).not.toHaveAttribute('cols')
         })
+
+        it('sets native rows on the textarea (visible line count for UA and assistive tech)', () => {
+            render(
+                <TextAreaV2
+                    label="Sized"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    rows={6}
+                />
+            )
+            expect(screen.getByRole('textbox')).toHaveAttribute('rows', '6')
+        })
     })
 
     describe('ARIA describedby and live regions', () => {
@@ -544,6 +557,7 @@ describe('TextAreaV2 Accessibility', () => {
                     resize="vertical"
                 />
             )
+            expect(screen.getByRole('textbox')).toHaveAttribute('rows', '4')
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })

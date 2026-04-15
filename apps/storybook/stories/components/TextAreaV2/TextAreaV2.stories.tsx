@@ -6,6 +6,7 @@ import {
 } from '../../../.storybook/a11y.config'
 import { ThemeProvider } from '@juspay/blend-design-system'
 import { TextAreaV2 } from '../../../../../packages/blend/lib/components/InputsV2/TextAreaV2'
+import { InputSizeV2 } from '../../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 
 const meta: Meta<typeof TextAreaV2> = {
     title: 'Components/Inputs/TextAreaV2',
@@ -24,15 +25,16 @@ const meta: Meta<typeof TextAreaV2> = {
         docs: {
             description: {
                 component: `
-Multi-line text field (V2) using \`TEXT_AREA_V2\` tokens, \`InputLabelsV2\`, and \`InputFooterV2\` — same Inputs V2 patterns as \`TextInputV2\` (no size variants or left/right slots).
+Multi-line text field (V2) using \`TEXT_AREA_V2\` tokens, \`InputLabelsV2\`, and \`InputFooterV2\` — same Inputs V2 patterns as \`TextInputV2\` (no left/right slots).
 
 ## Features
-- Label, sublabel, hint text, and optional help hint on the label (\`helpIconHintText\`)
+- Field density: optional \`size\` (\`InputSizeV2\`, default \`md\`) — padding, placeholder maps, and token \`lineHeight\` for the textarea body
+- Label, sublabel, hint text, and optional help hint on the label (\`helpIconText\`)
 - \`error: { show, message? }\`, \`required\`, \`disabled\`
-- \`rows\`, \`resize\`, \`wrap\` — passed to the native \`<textarea>\`
+- \`rows\` sets the native \`rows\` attribute and, with tokens, drives \`minHeight\` so visible height matches the line count; \`resize\` and \`wrap\` follow native \`<textarea>\` behavior (other attributes via spread)
 - On small breakpoints, static labels are hidden and placeholder is cleared
 - Forwarded \`ref\` attaches to the \`<textarea>\` element
-- \`filterBlockedProps\` strips \`className\` / \`style\` from spread rest
+- \`filterBlockedProps\` strips \`className\` / \`style\` from spread rest (field typography comes from tokens)
 
 ## Accessibility
 
@@ -49,7 +51,7 @@ Multi-line text field (V2) using \`TEXT_AREA_V2\` tokens, \`InputLabelsV2\`, and
 ## Usage
 
 \`\`\`tsx
-import { TextAreaV2 } from '@juspay/blend-design-system/...';
+import { TextAreaV2, InputSizeV2 } from '@juspay/blend-design-system/...';
 
 const [notes, setNotes] = useState('');
 
@@ -58,6 +60,7 @@ const [notes, setNotes] = useState('');
   placeholder="Add details..."
   value={notes}
   onChange={(e) => setNotes(e.target.value)}
+  size={InputSizeV2.MD}
   rows={4}
 />
 \`\`\`
@@ -92,8 +95,27 @@ const [notes, setNotes] = useState('');
             description: 'Hint text below the textarea',
             table: { type: { summary: 'string' }, category: 'Labels' },
         },
+        helpIconText: {
+            control: { type: 'text' },
+            description:
+                'Optional help string on the label row (large breakpoint)',
+            table: { type: { summary: 'string' }, category: 'Labels' },
+        },
+        size: {
+            control: { type: 'select' },
+            options: Object.values(InputSizeV2),
+            description:
+                'Field padding and line-height tokens (label/footer use sm in the implementation)',
+            table: {
+                type: { summary: 'InputSizeV2' },
+                defaultValue: { summary: 'md' },
+                category: 'Appearance',
+            },
+        },
         rows: {
             control: { type: 'number', min: 1 },
+            description:
+                'Visible line count — sets native `rows` and token-based `minHeight`',
             table: { type: { summary: 'number' }, category: 'Layout' },
         },
         resize: {
@@ -182,11 +204,65 @@ export const Default: Story = {
     args: {
         label: 'Description',
         placeholder: 'Enter a description…',
+        size: InputSizeV2.MD,
         rows: 4,
         disabled: false,
         required: false,
         error: { show: false, message: '' },
         resize: 'vertical',
+    },
+}
+
+export const Sizes: Story = {
+    render: function SizesStory() {
+        const [values, setValues] = useState({ sm: '', md: '', lg: '' })
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '20px',
+                }}
+            >
+                <TextAreaV2
+                    label="Small"
+                    placeholder="Small field…"
+                    size={InputSizeV2.SM}
+                    value={values.sm}
+                    onChange={(e) =>
+                        setValues((prev) => ({ ...prev, sm: e.target.value }))
+                    }
+                    rows={3}
+                />
+                <TextAreaV2
+                    label="Medium"
+                    placeholder="Medium field…"
+                    size={InputSizeV2.MD}
+                    value={values.md}
+                    onChange={(e) =>
+                        setValues((prev) => ({ ...prev, md: e.target.value }))
+                    }
+                    rows={3}
+                />
+                <TextAreaV2
+                    label="Large"
+                    placeholder="Large field…"
+                    size={InputSizeV2.LG}
+                    value={values.lg}
+                    onChange={(e) =>
+                        setValues((prev) => ({ ...prev, lg: e.target.value }))
+                    }
+                    rows={3}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: '`InputSizeV2` changes padding, placeholder typography, and line height for the textarea body.',
+            },
+        },
     },
 }
 

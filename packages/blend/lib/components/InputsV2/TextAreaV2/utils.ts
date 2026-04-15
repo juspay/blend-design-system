@@ -1,5 +1,5 @@
 import { toPixels } from '../../../global-utils/GlobalUtils'
-import type { TextAreaTokensType } from './TextAreaV2.tokens'
+import type { TextAreaV2TokensType } from './TextAreaV2.tokens'
 import { InputSizeV2, InputStateV2 } from '../inputV2.types'
 
 export function getTextAreaAriaDescribedBy(
@@ -46,7 +46,7 @@ export function getTextAreaInputPadding({
     isSmallScreen,
     inputFocusedOrWithValue,
 }: {
-    inputContainer: TextAreaTokensType['inputContainer']
+    inputContainer: TextAreaV2TokensType['inputContainer']
     size: InputSizeV2
     isSmallScreen: boolean
     inputFocusedOrWithValue: boolean
@@ -70,6 +70,20 @@ export function getTextAreaInputPadding({
         floatingLabelTopPadding: paddingTopBase,
         floatingLabelLeftPadding: paddingLeft,
     }
+}
+
+/**
+ * Minimum textarea height so the visible area matches `rows` lines of text at the
+ * given line-height, including vertical padding (same numbers as {@link getTextAreaInputPadding}).
+ */
+export function getTextAreaV2MinHeightFromRows(
+    rows: number,
+    lineHeight: Parameters<typeof toPixels>[0],
+    padding: Pick<TextAreaInputPadding, 'paddingTop' | 'paddingBottom'>
+): number {
+    const lineHeightPx = toPixels(lineHeight)
+    const rowCount = Math.max(1, Math.floor(rows))
+    return padding.paddingTop + padding.paddingBottom + rowCount * lineHeightPx
 }
 
 export type TextAreaInteractionKeys = {

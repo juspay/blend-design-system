@@ -1,9 +1,9 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import { ResponsiveTextAreaTokens } from './TextAreaV2.tokens'
+import { ResponsiveTextAreaV2Tokens } from './TextAreaV2.tokens'
 
 export const getTextAreaV2DarkTokens = (
     foundationTokens: FoundationTokenType
-): ResponsiveTextAreaTokens => {
+): ResponsiveTextAreaV2Tokens => {
     return {
         sm: {
             gap: foundationTokens.unit[8],
@@ -78,6 +78,11 @@ export const getTextAreaV2DarkTokens = (
                 gap: foundationTokens.unit[8],
                 fontSize: foundationTokens.font.size.body.md.fontSize,
                 fontWeight: foundationTokens.font.weight[500],
+                lineHeight: {
+                    sm: foundationTokens.font.lineHeight[20],
+                    md: foundationTokens.font.lineHeight[20],
+                    lg: foundationTokens.font.lineHeight[20],
+                },
                 padding: {
                     top: {
                         sm: foundationTokens.unit[10],
@@ -268,6 +273,11 @@ export const getTextAreaV2DarkTokens = (
                 gap: foundationTokens.unit[8],
                 fontSize: foundationTokens.font.size.body.md.fontSize,
                 fontWeight: foundationTokens.font.weight[500],
+                lineHeight: {
+                    sm: foundationTokens.font.lineHeight[20],
+                    md: foundationTokens.font.lineHeight[20],
+                    lg: foundationTokens.font.lineHeight[20],
+                },
                 padding: {
                     top: {
                         sm: foundationTokens.unit[10],

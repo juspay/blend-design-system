@@ -7,7 +7,7 @@ import { Theme } from '../../../context/theme.enum'
 import { getTextAreaV2DarkTokens } from './TextAreaV2.dark.tokens'
 import { getTextAreaV2LightTokens } from './TextAreaV2.light.tokens'
 
-export type TextAreaTokensType = {
+export type TextAreaV2TokensType = {
     gap: CSSObject['gap']
     topContainer: InputLabelsV2Tokens
     inputContainer: {
@@ -26,6 +26,9 @@ export type TextAreaTokensType = {
             lineHeight: {
                 [key in InputSizeV2]: CSSObject['lineHeight']
             }
+        }
+        lineHeight: {
+            [key in InputSizeV2]: CSSObject['lineHeight']
         }
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
@@ -58,16 +61,14 @@ export type TextAreaTokensType = {
     bottomContainer: InputFooterV2Tokens
 }
 
-export type ResponsiveTextAreaTokens = {
-    [key in keyof BreakpointType]: TextAreaTokensType
+export type ResponsiveTextAreaV2Tokens = {
+    [key in keyof BreakpointType]: TextAreaV2TokensType
 }
-
-export type ResponsiveTextAreaV2Tokens = ResponsiveTextAreaTokens
 
 export const getTextAreaV2Tokens = (
     foundationToken: FoundationTokenType,
     theme: Theme | string = Theme.LIGHT
-): ResponsiveTextAreaTokens => {
+): ResponsiveTextAreaV2Tokens => {
     if (theme === Theme.DARK || theme === 'dark') {
         return getTextAreaV2DarkTokens(foundationToken)
     }

@@ -3,7 +3,7 @@ import PrimitiveTextarea from '../../Primitives/PrimitiveTextArea'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import InputFooterV2 from '../utils/InputFooter/InputFooterV2'
 import type { TextAreaV2Props } from './TextAreaV2.types'
-import type { TextAreaTokensType } from './TextAreaV2.tokens'
+import type { TextAreaV2TokensType } from './TextAreaV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useState, useId, forwardRef, useMemo } from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
@@ -13,11 +13,13 @@ import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
 import { InputSizeV2, type AnyRef } from '../inputV2.types'
 import { FOCUS_RING_STYLES, TRANSITION } from '../TextInputV2/utils'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
+import { addPxToValue, toPixels } from '../../../global-utils/GlobalUtils'
 import {
     getTextAreaAriaDescribedBy,
     getTextAreaInputPadding,
     getTextAreaInteractionKeys,
     getTextAreaLabelState,
+    getTextAreaV2MinHeightFromRows,
     omitTextAreaV2PrivateProps,
 } from './utils'
 
@@ -53,7 +55,7 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
         )
 
         const textAreaTokens =
-            useResponsiveTokens<TextAreaTokensType>('TEXT_AREA_V2')
+            useResponsiveTokens<TextAreaV2TokensType>('TEXT_AREA_V2')
         const ic = textAreaTokens.inputContainer
 
         const [isFocused, setIsFocused] = useState(false)
@@ -97,6 +99,21 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
         } = useMemo(
             () => getTextAreaInteractionKeys(error.show, disabled),
             [error.show, disabled]
+        )
+
+        const textareaMinHeight = useMemo(
+            () =>
+                getTextAreaV2MinHeightFromRows(rows, ic.lineHeight[size], {
+                    paddingTop: inputPadding.paddingTop,
+                    paddingBottom: inputPadding.paddingBottom,
+                }),
+            [
+                rows,
+                ic.lineHeight,
+                size,
+                inputPadding.paddingTop,
+                inputPadding.paddingBottom,
+            ]
         )
 
         const setTextAreaRef = (node: HTMLTextAreaElement | null) => {
@@ -173,6 +190,12 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                             restOnKeyDown?.(e)
                         }}
                         rows={rows}
+                        minHeight={textareaMinHeight}
+                        style={{
+                            lineHeight: addPxToValue(
+                                toPixels(ic.lineHeight[size])
+                            ),
+                        }}
                         required={required}
                         borderRadius={ic.borderRadius}
                         resize={resize}
