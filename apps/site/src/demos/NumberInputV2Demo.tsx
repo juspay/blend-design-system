@@ -6,7 +6,6 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
-import { TextInputV2 } from '../../../../packages/blend/lib/components/InputsV2/TextInputV2'
 
 const NumberInputV2Demo = () => {
     const { theme } = useTheme()
