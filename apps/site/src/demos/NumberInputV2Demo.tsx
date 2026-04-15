@@ -203,8 +203,8 @@ const NumberInputV2Demo = () => {
                         <div className="w-full max-w-md">
                             <NumberInputV2
                                 slot={{
-                                    left: <Weight size={16} />,
-                                    right: <Ruler size={16} />,
+                                    left: <Weight size={46} />,
+                                    right: <Ruler size={46} />,
                                 }}
                                 unitDirection={unitDirection}
                                 unit={unit}

@@ -87,8 +87,6 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         const generatedId = useId()
         const inputId = providedId ?? generatedId
         const unitRef = useRef<HTMLDivElement>(null)
-        const leftSlotRef = useRef<HTMLDivElement>(null)
-        const rightSlotRef = useRef<HTMLDivElement>(null)
         const [measuredUnitWidth, setMeasuredUnitWidth] = useState(0)
         const [measuredLeftSlotWidth, setMeasuredLeftSlotWidth] = useState(0)
         const [measuredRightSlotWidth, setMeasuredRightSlotWidth] = useState(0)
@@ -197,30 +195,20 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         }, [showUnit, unitDirection, unitText, size, labelState, disabled])
 
         useLayoutEffect(() => {
-            if (!slot.left) {
-                setMeasuredLeftSlotWidth(0)
-                return
-            }
-            const el = leftSlotRef.current
-            if (!el) {
-                setMeasuredLeftSlotWidth(0)
-                return
-            }
-            return subscribeElementOffsetWidth(el, setMeasuredLeftSlotWidth)
-        }, [slot.left, size, labelState, disabled])
+            setMeasuredLeftSlotWidth(
+                slot.left
+                    ? toPixels(inputContainerTokens.slot.left.width[size])
+                    : 0
+            )
+        }, [slot.left])
 
         useLayoutEffect(() => {
-            if (!slot.right) {
-                setMeasuredRightSlotWidth(0)
-                return
-            }
-            const el = rightSlotRef.current
-            if (!el) {
-                setMeasuredRightSlotWidth(0)
-                return
-            }
-            return subscribeElementOffsetWidth(el, setMeasuredRightSlotWidth)
-        }, [slot.right, size, labelState, disabled])
+            setMeasuredRightSlotWidth(
+                slot.right
+                    ? toPixels(inputContainerTokens.slot.right.width[size])
+                    : 0
+            )
+        }, [slot.right])
 
         const updateValue = (newValue: number): void => {
             if (rawNumericValue === newValue) return
@@ -449,12 +437,18 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         showUnit &&
                         unitDirection === NumberInputV2Direction.LEFT && (
                             <Block
-                                ref={leftSlotRef}
                                 position="absolute"
-                                top={0}
+                                top="50%"
                                 left={0}
-                                bottom={0}
+                                width={toPixels(
+                                    inputContainerTokens.slot.left.width[size]
+                                )}
+                                height={toPixels(
+                                    inputContainerTokens.slot.left.height[size]
+                                )}
+                                transform="translateY(-50%)"
                                 contentCentered
+                                overflow="hidden"
                                 marginLeft={`${
                                     measuredUnitWidth +
                                     toPixels(
@@ -471,12 +465,18 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         showUnit &&
                         unitDirection === NumberInputV2Direction.RIGHT && (
                             <Block
-                                ref={leftSlotRef}
                                 position="absolute"
-                                top={0}
+                                top="50%"
                                 left={0}
-                                bottom={0}
+                                width={toPixels(
+                                    inputContainerTokens.slot.left.width[size]
+                                )}
+                                height={toPixels(
+                                    inputContainerTokens.slot.left.height[size]
+                                )}
+                                transform="translateY(-50%)"
                                 contentCentered
+                                overflow="hidden"
                                 marginLeft={toPixels(
                                     inputContainerTokens.slot.left.margin[
                                         size
@@ -586,12 +586,18 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         showUnit &&
                         unitDirection === NumberInputV2Direction.RIGHT && (
                             <Block
-                                ref={rightSlotRef}
                                 position="absolute"
-                                top={0}
+                                top="50%"
                                 right={0}
-                                bottom={0}
+                                width={toPixels(
+                                    inputContainerTokens.slot.right.width[size]
+                                )}
+                                height={toPixels(
+                                    inputContainerTokens.slot.right.height[size]
+                                )}
+                                transform="translateY(-50%)"
                                 contentCentered
+                                overflow="hidden"
                                 marginRight={`${
                                     measuredUnitWidth +
                                     toPixels(
@@ -606,12 +612,18 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         showUnit &&
                         unitDirection === NumberInputV2Direction.LEFT && (
                             <Block
-                                ref={rightSlotRef}
                                 position="absolute"
-                                top={0}
+                                top="50%"
                                 right={0}
-                                bottom={0}
+                                width={toPixels(
+                                    inputContainerTokens.slot.right.width[size]
+                                )}
+                                height={toPixels(
+                                    inputContainerTokens.slot.right.height[size]
+                                )}
+                                transform="translateY(-50%)"
                                 contentCentered
+                                overflow="hidden"
                                 marginRight={toPixels(
                                     inputContainerTokens.slot.right.margin[
                                         size
