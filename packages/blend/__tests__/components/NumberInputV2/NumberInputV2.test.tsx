@@ -122,6 +122,23 @@ describe('NumberInputV2 Component', () => {
             ).not.toBeInTheDocument()
         })
 
+        it('treats whitespace-only unit as empty (steppers shown, no unit strip)', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit="   "
+                />
+            )
+            expect(
+                document.querySelector('[data-element="unit"]')
+            ).not.toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: /Increase Qty/i })
+            ).toBeInTheDocument()
+        })
+
         it('still exposes spinbutton when unit is set', () => {
             render(
                 <NumberInputV2

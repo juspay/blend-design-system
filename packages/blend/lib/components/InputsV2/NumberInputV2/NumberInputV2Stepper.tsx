@@ -2,7 +2,7 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import Text from '../../Text/Text'
 import type { NumberInputV2TokensType } from './numberInputV2.tokens'
-import { InputSizeV2 } from '../inputV2.types'
+import { InputSizeV2, InputStateV2 } from '../inputV2.types'
 import { StepperArrow } from './StepperArrow'
 
 type NumberInputV2StepperProps = {
@@ -15,6 +15,7 @@ type NumberInputV2StepperProps = {
     onStep: (direction: 'up' | 'down') => void
     inputContainerTokens: NumberInputV2TokensType
     size: InputSizeV2
+    inputstate: InputStateV2
 }
 
 const NumberInputV2Stepper = ({
@@ -25,9 +26,14 @@ const NumberInputV2Stepper = ({
     isDownButtonDisabled,
     onStep,
     inputContainerTokens,
+    inputstate = InputStateV2.DEFAULT,
     size,
     unit = '',
 }: NumberInputV2StepperProps) => {
+    /** Whitespace-only `unit` is treated as empty: show steppers, not an empty strip. */
+    const unitText = unit?.trim() ?? ''
+    const showUnit = Boolean(unitText)
+
     const sb = inputContainerTokens.inputContainer.stepperButton
     const border = inputContainerTokens.inputContainer.border
     const radius = inputContainerTokens.inputContainer.borderRadius[size]
@@ -53,7 +59,7 @@ const NumberInputV2Stepper = ({
             bottom={0}
             margin={1}
         >
-            {!unit && (
+            {!showUnit && (
                 <Block
                     display="flex"
                     flexDirection="column"
@@ -69,18 +75,19 @@ const NumberInputV2Stepper = ({
                     }
                 />
             )}
-            {unit ? (
+            {showUnit ? (
                 <Block
                     data-element="unit"
-                    data-id={unit || 'unit'}
+                    data-id={unitText || 'unit'}
                     position="absolute"
                     top={0}
                     right={0}
                     bottom={0}
-                    paddingX={inputContainerTokens.unit.paddingRight[size]}
+                    paddingLeft={inputContainerTokens.unit.paddingLeft[size]}
+                    paddingRight={inputContainerTokens.unit.paddingRight[size]}
                     contentCentered
                     backgroundColor={
-                        inputContainerTokens.unit.backgroundColor.default
+                        inputContainerTokens.unit.backgroundColor[inputstate]
                     }
                     borderLeft={
                         inputContainerTokens.inputContainer.border.default
@@ -96,7 +103,7 @@ const NumberInputV2Stepper = ({
                             ]
                         }
                     >
-                        {unit}
+                        {unitText}
                     </Text>
                 </Block>
             ) : (

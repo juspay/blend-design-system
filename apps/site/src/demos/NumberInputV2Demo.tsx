@@ -6,6 +6,7 @@ import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { TextInputV2 } from '../../../../packages/blend/lib/components/InputsV2/TextInputV2'
 
 const NumberInputV2Demo = () => {
     const { theme } = useTheme()
@@ -26,11 +27,23 @@ const NumberInputV2Demo = () => {
     const [showMin, setShowMin] = useState(false)
     const [showMax, setShowMax] = useState(false)
     const [preventNegative, setPreventNegative] = useState(false)
+    const [unit, setUnit] = useState('')
 
     // Options for selects
     const sizeOptions = [
+        { value: InputSizeV2.SM, label: 'Small' },
         { value: InputSizeV2.MD, label: 'Medium' },
         { value: InputSizeV2.LG, label: 'Large' },
+    ]
+    const unitOptions = [
+        { value: '', label: 'None' },
+        { value: 'kg', label: 'kg' },
+        { value: 'lbs', label: 'lbs' },
+        { value: 'g', label: 'g' },
+        { value: 'mg', label: 'mg' },
+        { value: 'mcg', label: 'mcg' },
+        { value: 'iu', label: 'iu' },
+        { value: 'pascal', label: 'pascal' },
     ]
 
     const stepOptions = [
@@ -78,6 +91,15 @@ const NumberInputV2Demo = () => {
                                 )
                             }
                             placeholder="Enter value"
+                            size={InputSizeV2.MD}
+                        />
+
+                        <SingleSelect
+                            label="Unit"
+                            items={[{ items: unitOptions }]}
+                            selected={unit}
+                            onSelect={(value) => setUnit(value as string)}
+                            placeholder="Select unit"
                         />
 
                         <SingleSelect
@@ -159,6 +181,7 @@ const NumberInputV2Demo = () => {
                     >
                         <div className="w-full max-w-md">
                             <NumberInputV2
+                                unit={unit}
                                 label={{
                                     text: 'Your Label',
                                     subtext: 'This is a sublabel',

@@ -262,23 +262,23 @@ export const getNumberInputV2DarkTokens = (
                 },
                 paddingTop: {
                     sm: foundationToken.unit[6],
-                    md: foundationToken.unit[8],
-                    lg: foundationToken.unit[14],
+                    md: foundationToken.unit[7],
+                    lg: foundationToken.unit[15],
                 },
                 paddingRight: {
-                    sm: foundationToken.unit[10],
+                    sm: foundationToken.unit[12],
                     md: foundationToken.unit[12],
                     lg: foundationToken.unit[14],
                 },
                 paddingBottom: {
                     sm: foundationToken.unit[6],
-                    md: foundationToken.unit[8],
-                    lg: foundationToken.unit[14],
+                    md: foundationToken.unit[7],
+                    lg: foundationToken.unit[15],
                 },
                 paddingLeft: {
-                    sm: foundationToken.unit[10],
+                    sm: foundationToken.unit[12],
                     md: foundationToken.unit[12],
-                    lg: foundationToken.unit[14],
+                    lg: foundationToken.unit[12],
                 },
                 borderRadius: {
                     sm: foundationToken.unit[10],
@@ -286,11 +286,11 @@ export const getNumberInputV2DarkTokens = (
                     lg: foundationToken.unit[10],
                 },
                 border: {
-                    default: `1px solid ${foundationToken.colors.gray[200]}`,
-                    hover: `1px solid ${foundationToken.colors.gray[400]}`,
+                    default: `1px solid ${foundationToken.colors.gray[800]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[700]}`,
                     focus: `1px solid ${foundationToken.colors.primary[500]}`,
                     error: `1px solid ${foundationToken.colors.red[500]}`,
-                    disabled: `1px solid ${foundationToken.colors.gray[200]}`,
+                    disabled: `1px solid ${foundationToken.colors.gray[800]}`,
                 },
                 backgroundColor: {
                     default: foundationToken.colors.gray[900],
@@ -332,21 +332,21 @@ export const getNumberInputV2DarkTokens = (
                 },
                 paddingTop: {
                     sm: foundationToken.unit[6],
-                    md: foundationToken.unit[8],
-                    lg: foundationToken.unit[14],
+                    md: foundationToken.unit[7],
+                    lg: foundationToken.unit[9],
                 },
                 paddingRight: {
-                    sm: foundationToken.unit[10],
+                    sm: foundationToken.unit[12],
                     md: foundationToken.unit[12],
                     lg: foundationToken.unit[14],
                 },
                 paddingBottom: {
                     sm: foundationToken.unit[6],
-                    md: foundationToken.unit[8],
-                    lg: foundationToken.unit[14],
+                    md: foundationToken.unit[7],
+                    lg: foundationToken.unit[9],
                 },
                 paddingLeft: {
-                    sm: foundationToken.unit[10],
+                    sm: foundationToken.unit[12],
                     md: foundationToken.unit[12],
                     lg: foundationToken.unit[14],
                 },
@@ -356,11 +356,11 @@ export const getNumberInputV2DarkTokens = (
                     lg: foundationToken.unit[10],
                 },
                 border: {
-                    default: `1px solid ${foundationToken.colors.gray[200]}`,
-                    hover: `1px solid ${foundationToken.colors.gray[400]}`,
+                    default: `1px solid ${foundationToken.colors.gray[800]}`,
+                    hover: `1px solid ${foundationToken.colors.gray[700]}`,
                     focus: `1px solid ${foundationToken.colors.primary[500]}`,
                     error: `1px solid ${foundationToken.colors.red[500]}`,
-                    disabled: `1px solid ${foundationToken.colors.gray[200]}`,
+                    disabled: `1px solid ${foundationToken.colors.gray[800]}`,
                 },
                 backgroundColor: {
                     default: foundationToken.colors.gray[900],

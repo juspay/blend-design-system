@@ -349,16 +349,17 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         aria-required={required ? 'true' : undefined}
                         aria-invalid={hasError ? 'true' : 'false'}
                         aria-describedby={ariaDescribedBy}
-                        paddingX={paddingX}
+                        paddingLeft={inputContainerTokens.paddingLeft[size]}
+                        paddingRight={inputContainerTokens.paddingRight[size]}
                         paddingTop={
                             smallScreenLarge && inputFocusedOrWithValue
                                 ? paddingY * 1.5
-                                : paddingY
+                                : inputContainerTokens.paddingTop[size]
                         }
                         paddingBottom={
                             smallScreenLarge && inputFocusedOrWithValue
                                 ? paddingY / 2
-                                : paddingY
+                                : inputContainerTokens.paddingBottom[size]
                         }
                         borderRadius={inputContainerTokens.borderRadius[size]}
                         border={inputContainerTokens.border[borderState]}
@@ -428,6 +429,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         inputContainerTokens={numberInputTokens}
                         size={size}
                         unit={unit}
+                        inputstate={labelState}
                     />
                 </Block>
                 <InputFooterV2
