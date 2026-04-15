@@ -243,7 +243,7 @@ const SidebarDemo = () => {
         | 'otpInputV2'
         | 'textAreaV2'
         | 'searchInputV2'
-    >('searchInputV2')
+    >('chatInput')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
