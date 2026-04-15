@@ -4,6 +4,7 @@ import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
+import { NumberInputV2Direction } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.types'
 
 const noop = () => {}
 
@@ -79,6 +80,46 @@ describe('NumberInputV2 Accessibility', () => {
                     onChange={noop}
                     unit="kg"
                     hintText="Enter mass in kilograms."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when unit is on the leading edge (unitDirection left)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Length', subtext: '' }}
+                    value={10}
+                    onChange={noop}
+                    unit="cm"
+                    unitDirection={NumberInputV2Direction.LEFT}
+                    hintText="Metric length."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with unit and decorative slot icons (aria-hidden)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Mass', subtext: '' }}
+                    value={5}
+                    onChange={noop}
+                    unit="kg"
+                    slot={{
+                        left: (
+                            <span aria-hidden="true" data-testid="a11y-slot-l">
+                                L
+                            </span>
+                        ),
+                        right: (
+                            <span aria-hidden="true" data-testid="a11y-slot-r">
+                                R
+                            </span>
+                        ),
+                    }}
                 />
             )
             const results = await axe(container)
@@ -336,6 +377,34 @@ describe('NumberInputV2 Accessibility', () => {
             expect(document.activeElement).toBe(inputs[1])
         })
 
+        it('tabs between spinbuttons when unit and slots are shown (slots are not tab stops)', async () => {
+            const { user } = render(
+                <>
+                    <NumberInputV2
+                        label={{ text: 'A', subtext: '' }}
+                        value={1}
+                        onChange={noop}
+                        unit="kg"
+                        slot={{
+                            left: <span aria-hidden="true">·</span>,
+                            right: <span aria-hidden="true">·</span>,
+                        }}
+                    />
+                    <NumberInputV2
+                        label={{ text: 'B', subtext: '' }}
+                        value={2}
+                        onChange={noop}
+                        unit="g"
+                    />
+                </>
+            )
+            const inputs = screen.getAllByRole('spinbutton')
+            await user.tab()
+            expect(document.activeElement).toBe(inputs[0])
+            await user.tab()
+            expect(document.activeElement).toBe(inputs[1])
+        })
+
         it('maintains logical focus order in form (inputs, steppers, then submit)', async () => {
             const { user } = render(
                 <form>
@@ -548,6 +617,21 @@ describe('NumberInputV2 Accessibility', () => {
                 screen.getByRole('spinbutton', { name: /load/i })
             ).toBeInTheDocument()
             expect(screen.getByText('kg')).toBeInTheDocument()
+        })
+
+        it('keeps spinbutton accessible name when unit is on the left', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Width', subtext: '' }}
+                    value={3}
+                    onChange={noop}
+                    unit="mm"
+                    unitDirection={NumberInputV2Direction.LEFT}
+                />
+            )
+            expect(
+                screen.getByRole('spinbutton', { name: /width/i })
+            ).toBeInTheDocument()
         })
 
         it('meets WCAG with axe for unit, required, and error', async () => {

@@ -71,6 +71,30 @@ export type NumberInputV2TokensType = {
                 }
             }
         }
+        slot: {
+            left: {
+                width: {
+                    [key in InputSizeV2]: CSSObject['width']
+                }
+                height: {
+                    [key in InputSizeV2]: CSSObject['height']
+                }
+                margin: {
+                    [key in InputSizeV2]: CSSObject['margin']
+                }
+            }
+            right: {
+                width: {
+                    [key in InputSizeV2]: CSSObject['width']
+                }
+                height: {
+                    [key in InputSizeV2]: CSSObject['height']
+                }
+                margin: {
+                    [key in InputSizeV2]: CSSObject['margin']
+                }
+            }
+        }
     }
     unit: {
         fontSize: {
@@ -86,9 +110,6 @@ export type NumberInputV2TokensType = {
         borderRadius: { [key in InputSizeV2]: CSSObject['borderRadius'] }
         border: {
             [key in InputStateV2]: CSSObject['border']
-        }
-        backgroundColor: {
-            [key in InputStateV2]: CSSObject['backgroundColor']
         }
         color: {
             [key in InputStateV2]: CSSObject['color']

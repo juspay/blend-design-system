@@ -6,7 +6,11 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
 import { ThemeProvider } from '@juspay/blend-design-system'
-import { NumberInputV2 } from '../../../../../../packages/blend/lib/components/InputsV2/NumberInputV2'
+import { Ruler, Weight } from 'lucide-react'
+import {
+    NumberInputV2,
+    NumberInputV2Direction,
+} from '../../../../../../packages/blend/lib/components/InputsV2/NumberInputV2'
 import { InputSizeV2 } from '../../../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 
 /** Maps change events to `number | null` for controlled `value`. */
@@ -20,6 +24,14 @@ const parseNumberInputValue = (
 }
 
 const noop = (): void => {}
+
+const stack = (maxWidth = 480) =>
+    ({
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20,
+        maxWidth,
+    }) as const
 
 const meta: Meta<typeof NumberInputV2> = {
     title: 'Components/Inputs/NumberInputV2',
@@ -46,7 +58,9 @@ Numeric input (V2) with responsive tokens, static or floating labels (small view
 - Label with optional subtext; hint under field; optional help tooltip on label
 - External error: \`error: { show, message? }\`; internal range messages when value is outside \`min\` / \`max\`
 - \`min\`, \`max\`, \`step\`; \`preventNegative\` normalizes display and stepping
-- Optional \`unit\` (e.g. \`kg\`, \`%\`) — shown in a suffix strip; stepper buttons appear when \`unit\` is omitted or empty
+- Optional \`unit\` (e.g. \`kg\`, \`%\`) — unit strip; steppers show when \`unit\` is omitted or empty (whitespace-only counts as empty)
+- \`unitDirection\`: \`left\` | \`right\` — where the unit strip sits (default \`right\`)
+- \`slot={{ left, right }}\` — optional adornments (e.g. icons) beside the field **when a \`unit\` is set**; padding is measured so text does not overlap
 - \`forwardRef\` → underlying \`<input>\` for focus and form libraries
 
 ## Accessibility
@@ -138,8 +152,25 @@ import { NumberInputV2, InputSizeV2 } from '…';
         unit: {
             control: { type: 'text' },
             description:
-                'Suffix label (e.g. kg, %). When set, the numeric stepper is hidden and the unit strip is shown.',
+                'Unit label (e.g. kg, %). When set, steppers are hidden and the unit strip is shown. Required for `slot` adornments to render.',
             table: { type: { summary: 'string' }, category: 'Content' },
+        },
+        unitDirection: {
+            control: { type: 'select' },
+            options: Object.values(NumberInputV2Direction),
+            description:
+                'Whether the unit strip is on the left or right of the value.',
+            table: {
+                type: { summary: 'NumberInputV2Direction' },
+                defaultValue: { summary: 'right' },
+                category: 'Content',
+            },
+        },
+        slot: {
+            control: false,
+            description:
+                '{ left?: ReactNode; right?: ReactNode } — optional icons/content; only shown when `unit` is non-empty.',
+            table: { type: { summary: 'object' }, category: 'Content' },
         },
         error: {
             control: { type: 'object' },
@@ -209,6 +240,7 @@ export const Default: Story = {
         error: { show: false, message: '' },
         step: 1,
         unit: '',
+        unitDirection: NumberInputV2Direction.RIGHT,
     },
 }
 
@@ -343,9 +375,10 @@ export const WithUnit: Story = {
                 min={0}
                 step={0.1}
                 unit="kg"
+                unitDirection={NumberInputV2Direction.RIGHT}
                 value={value}
                 onChange={(e) => setValue(parseNumberInputValue(e))}
-                hintText="Suffix strip for the unit; increment/decrement buttons are omitted when a unit is shown."
+                hintText="Unit strip on the right by default; steppers are hidden while a unit is shown."
             />
         )
     },
@@ -353,6 +386,66 @@ export const WithUnit: Story = {
         docs: {
             description: {
                 story: 'Use `unit` for dimensions, currency symbols, or other short suffixes. Keyboard stepping (arrows) still applies when the input is focused.',
+            },
+        },
+    },
+}
+
+/** Unit strip on the leading edge (`unitDirection="left"`). */
+export const UnitOnLeft: Story = {
+    render: function UnitOnLeftStory() {
+        const [value, setValue] = useState<number | null>(100)
+        return (
+            <NumberInputV2
+                label={{ text: 'Length', subtext: 'Metric' }}
+                placeholder="0"
+                min={0}
+                step={1}
+                unit="cm"
+                unitDirection={NumberInputV2Direction.LEFT}
+                value={value}
+                onChange={(e) => setValue(parseNumberInputValue(e))}
+                hintText="Unit chip is rendered before the value; input padding adjusts automatically."
+            />
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Set `unitDirection` to `left` when the unit should lead the field (e.g. currency or fixed unit on the start edge).',
+            },
+        },
+    },
+}
+
+/** `slot.left` / `slot.right` with a non-empty `unit` (adornments require `unit`). */
+export const WithSlots: Story = {
+    render: function WithSlotsStory() {
+        const [value, setValue] = useState<number | null>(72)
+        return (
+            <div style={stack(480)}>
+                <NumberInputV2
+                    label={{ text: 'Measurement', subtext: 'Icons + unit' }}
+                    placeholder="0"
+                    min={0}
+                    step={1}
+                    unit="kg"
+                    unitDirection={NumberInputV2Direction.RIGHT}
+                    slot={{
+                        left: <Weight size={16} aria-hidden />,
+                        right: <Ruler size={16} aria-hidden />,
+                    }}
+                    value={value}
+                    onChange={(e) => setValue(parseNumberInputValue(e))}
+                    hintText="Slots sit at the inner edges of the field when a unit is present; they do not block typing."
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: '`slot` accepts React nodes (often icons). Slots render only when `unit` is set. Use `aria-hidden` on decorative icons.',
             },
         },
     },

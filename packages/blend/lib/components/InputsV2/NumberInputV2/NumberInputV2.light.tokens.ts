@@ -147,6 +147,43 @@ export const getNumberInputV2LightTokens = (
             gap: foundationToken.unit[8],
             topContainer: labelTopContainer(foundationToken),
             inputContainer: {
+                slot: {
+                    left: {
+                        width: {
+                            sm: foundationToken.unit[14],
+                            md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
+                        },
+                        height: {
+                            sm: foundationToken.unit[14],
+                            md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
+                        },
+                        margin: {
+                            sm: foundationToken.unit[8],
+                            md: foundationToken.unit[8],
+                            lg: foundationToken.unit[8],
+                        },
+                    },
+                    right: {
+                        width: {
+                            sm: foundationToken.unit[14],
+                            md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
+                        },
+
+                        height: {
+                            sm: foundationToken.unit[14],
+                            md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
+                        },
+                        margin: {
+                            sm: foundationToken.unit[9],
+                            md: foundationToken.unit[9],
+                            lg: foundationToken.unit[9],
+                        },
+                    },
+                },
                 placeholder: inputPlaceholder(foundationToken),
                 borderRadius: {
                     sm: foundationToken.unit[10],
@@ -281,13 +318,6 @@ export const getNumberInputV2LightTokens = (
                     focus: `1px solid ${foundationToken.colors.primary[500]}`,
                     error: `1px solid ${foundationToken.colors.red[500]}`,
                     disabled: `1px solid ${foundationToken.colors.gray[200]}`,
-                },
-                backgroundColor: {
-                    default: foundationToken.colors.gray[50],
-                    disabled: foundationToken.colors.gray[50],
-                    hover: foundationToken.colors.gray[0],
-                    focus: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
                 },
                 color: {
                     default: foundationToken.colors.gray[500],
@@ -309,6 +339,42 @@ export const getNumberInputV2LightTokens = (
             gap: foundationToken.unit[8],
             topContainer: labelTopContainer(foundationToken),
             inputContainer: {
+                slot: {
+                    left: {
+                        width: {
+                            sm: foundationToken.unit[14],
+                            md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
+                        },
+                        height: {
+                            sm: foundationToken.unit[14],
+                            md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
+                        },
+                        margin: {
+                            sm: foundationToken.unit[8],
+                            md: foundationToken.unit[8],
+                            lg: foundationToken.unit[8],
+                        },
+                    },
+                    right: {
+                        width: {
+                            sm: foundationToken.unit[14],
+                            md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
+                        },
+                        height: {
+                            sm: foundationToken.unit[14],
+                            md: foundationToken.unit[14],
+                            lg: foundationToken.unit[14],
+                        },
+                        margin: {
+                            sm: foundationToken.unit[9],
+                            md: foundationToken.unit[9],
+                            lg: foundationToken.unit[9],
+                        },
+                    },
+                },
                 placeholder: inputPlaceholder(foundationToken),
                 lineHeight: {
                     sm: foundationToken.unit[20],
@@ -445,13 +511,6 @@ export const getNumberInputV2LightTokens = (
                     focus: `1px solid ${foundationToken.colors.primary[500]}`,
                     error: `1px solid ${foundationToken.colors.red[500]}`,
                     disabled: `1px solid ${foundationToken.colors.gray[200]}`,
-                },
-                backgroundColor: {
-                    default: foundationToken.colors.gray[50],
-                    disabled: foundationToken.colors.gray[50],
-                    hover: foundationToken.colors.gray[0],
-                    focus: foundationToken.colors.gray[0],
-                    error: foundationToken.colors.gray[0],
                 },
                 color: {
                     default: foundationToken.colors.gray[500],

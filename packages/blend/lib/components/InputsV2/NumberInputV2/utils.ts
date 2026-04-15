@@ -1,4 +1,7 @@
+import { toPixels } from '../../../global-utils/GlobalUtils'
 import { InputSizeV2, InputStateV2 } from '../inputV2.types'
+import type { NumberInputV2TokensType } from './numberInputV2.tokens'
+import { NumberInputV2Direction } from './numberInputV2.types'
 
 export const sanitizeNumberInput = (
     inputValue: string,
@@ -234,10 +237,12 @@ export const buildNumberInputAriaDescribedBy = (
 
 export const getNumberInputLabelState = (
     disabled: boolean | undefined,
-    hasError: boolean
+    hasError: boolean,
+    isFocused: boolean
 ): InputStateV2 => {
     if (disabled) return InputStateV2.DISABLED
     if (hasError) return InputStateV2.ERROR
+    if (isFocused) return InputStateV2.FOCUS
     return InputStateV2.DEFAULT
 }
 
@@ -294,3 +299,70 @@ export const shouldEmitBlurChange = (
     clampedNumValue: number | null,
     rawNumericValue: number | null
 ): boolean => clamped !== eventValue && clampedNumValue !== rawNumericValue
+
+type NumberInputV2InputContainerTokens =
+    NumberInputV2TokensType['inputContainer']
+
+/** Subscribes to `element` width changes; calls `setWidth` with `offsetWidth`. Returns unsubscribe. */
+export const subscribeElementOffsetWidth = (
+    element: HTMLElement,
+    setWidth: (width: number) => void
+): (() => void) => {
+    const measure = (): void => {
+        setWidth(element.offsetWidth)
+    }
+    measure()
+    if (typeof ResizeObserver === 'undefined') {
+        return () => {}
+    }
+    const ro = new ResizeObserver(measure)
+    if (typeof ro.observe !== 'function') {
+        return () => {}
+    }
+    ro.observe(element)
+    return () => {
+        if (typeof ro.disconnect === 'function') {
+            ro.disconnect()
+        }
+    }
+}
+
+export const getNumberInputV2PaddingLeft = (
+    inputContainerTokens: NumberInputV2InputContainerTokens,
+    size: InputSizeV2,
+    showUnit: boolean,
+    unitDirection: NumberInputV2Direction,
+    measuredUnitWidth: number,
+    measuredLeftSlotWidth: number,
+    measuredRightSlotWidth: number
+): string => {
+    const pl = inputContainerTokens.paddingLeft[size]
+    const pr = inputContainerTokens.paddingRight[size]
+    if (showUnit && unitDirection === NumberInputV2Direction.LEFT) {
+        return `${measuredUnitWidth + toPixels(pl) + measuredLeftSlotWidth}px`
+    }
+    if (showUnit && unitDirection === NumberInputV2Direction.RIGHT) {
+        return `${toPixels(pr) + measuredRightSlotWidth}px`
+    }
+    return pl as string
+}
+
+export const getNumberInputV2PaddingRight = (
+    inputContainerTokens: NumberInputV2InputContainerTokens,
+    size: InputSizeV2,
+    showUnit: boolean,
+    unitDirection: NumberInputV2Direction,
+    measuredUnitWidth: number,
+    measuredLeftSlotWidth: number,
+    measuredRightSlotWidth: number
+): string => {
+    const pl = inputContainerTokens.paddingLeft[size]
+    const pr = inputContainerTokens.paddingRight[size]
+    if (showUnit && unitDirection === NumberInputV2Direction.RIGHT) {
+        return `${measuredUnitWidth + toPixels(pl) + measuredLeftSlotWidth}px`
+    }
+    if (showUnit && unitDirection === NumberInputV2Direction.LEFT) {
+        return `${toPixels(pr) + measuredRightSlotWidth}px`
+    }
+    return pr as string
+}

@@ -1,6 +1,15 @@
 import { InputSizeV2 } from '../inputV2.types'
 
+export enum NumberInputV2Direction {
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+
 export type NumberInputV2Props = {
+    slot?: {
+        left: React.ReactNode
+        right: React.ReactNode
+    }
     value: number | null
     unit?: string
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -16,6 +25,7 @@ export type NumberInputV2Props = {
         text: string
         subtext?: string
     }
+    unitDirection?: NumberInputV2Direction
     helpIconText?: string
     hintText?: string
     name?: string
@@ -24,7 +34,7 @@ export type NumberInputV2Props = {
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'value' | 'onBlur' | 'onFocus'
+    'size' | 'style' | 'className' | 'value' | 'onBlur' | 'onFocus' | 'slot'
 >
 
 export type StepperArrowProps = {

@@ -4,6 +4,7 @@ import { render, screen, act, fireEvent } from '../../test-utils'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
+import { NumberInputV2Direction } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.types'
 
 const noop = () => {}
 
@@ -173,6 +174,108 @@ describe('NumberInputV2 Component', () => {
                 handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
                     .target.value
             ).toBe('5')
+        })
+
+        it('renders the unit strip before the input when unitDirection is left', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Len', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit="cm"
+                    unitDirection={NumberInputV2Direction.LEFT}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            const unitEl = document.querySelector('[data-element="unit"]')
+            expect(unitEl).toBeInTheDocument()
+            expect(
+                unitEl!.compareDocumentPosition(input) &
+                    Node.DOCUMENT_POSITION_FOLLOWING
+            ).toBeTruthy()
+        })
+
+        it('renders the unit strip after the input when unitDirection is right', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Len', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit="cm"
+                    unitDirection={NumberInputV2Direction.RIGHT}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            const unitEl = document.querySelector('[data-element="unit"]')
+            expect(unitEl).toBeInTheDocument()
+            expect(
+                input.compareDocumentPosition(unitEl!) &
+                    Node.DOCUMENT_POSITION_FOLLOWING
+            ).toBeTruthy()
+        })
+    })
+
+    describe('Slots (with unit)', () => {
+        it('renders left and right slot content when unit is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'S', subtext: '' }}
+                    value={2}
+                    onChange={noop}
+                    unit="kg"
+                    slot={{
+                        left: <span data-testid="ni-v2-slot-left">L</span>,
+                        right: <span data-testid="ni-v2-slot-right">R</span>,
+                    }}
+                />
+            )
+            expect(screen.getByTestId('ni-v2-slot-left')).toBeInTheDocument()
+            expect(screen.getByTestId('ni-v2-slot-right')).toBeInTheDocument()
+        })
+
+        it('does not render slots when unit is empty', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'S', subtext: '' }}
+                    value={2}
+                    onChange={noop}
+                    unit=""
+                    slot={{
+                        left: <span data-testid="ni-v2-slot-left">L</span>,
+                        right: <span data-testid="ni-v2-slot-right">R</span>,
+                    }}
+                />
+            )
+            expect(
+                screen.queryByTestId('ni-v2-slot-left')
+            ).not.toBeInTheDocument()
+            expect(
+                screen.queryByTestId('ni-v2-slot-right')
+            ).not.toBeInTheDocument()
+        })
+
+        it('still accepts keyboard input when slots are present', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'Type', subtext: '' }}
+                    value={null}
+                    onChange={handleChange}
+                    unit="kg"
+                    slot={{
+                        left: <span data-testid="ni-v2-slot-left">L</span>,
+                        right: <span data-testid="ni-v2-slot-right">R</span>,
+                    }}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            await user.type(input, '9')
+            expect(handleChange).toHaveBeenCalled()
+            expect(
+                handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
+                    .target.value
+            ).toBe('9')
         })
     })
 

@@ -11,12 +11,17 @@ Create a numeric field that supports:
 - **Validation**: External `error: { show, message? }` for footer + label error styling when **both** `show` and `message` are set; internal range errors while typing (min/max)
 - **Help**: `hintText` under the field; optional label help icon tooltip
 - **Numeric behavior**: `min`, `max`, `step`; integrated **stepper** (up/down); **Arrow Up/Down** on the field; `preventNegative` to disallow negatives
+- **Optional unit**: `unit` string (e.g. `kg`, `%`) shown in a **unit strip** (`NumberInputV2Unit`). When a non-empty unit is present, **steppers are hidden** and keyboard arrows still adjust the value. **Whitespace-only** `unit` is treated as empty (steppers show; no strip).
+- **Unit placement**: `unitDirection` — `NumberInputV2Direction.LEFT` | `.RIGHT` (default **right**), controlling whether the strip leads or trails the value.
+- **Optional slots**: `slot={{ left, right }}` — extra **React nodes** (often icons) inside the field edges when **`unit` is set**; horizontal padding is measured (`ResizeObserver` + layout) so text does not overlap adornments.
 - **Responsive labels**: On small viewports with large size, static labels hide and a **floating label** is used (same breakpoint pattern as TextInputV2)
-- **Accessibility**: Native `<input type="text" inputMode="numeric">` with `role="spinbutton"`, `aria-valuenow` / `aria-valuemin` / `aria-valuemax`, `aria-required`, `aria-invalid`, `aria-describedby` for hint/error
+- **Accessibility**: Native `<input type="text" inputMode="decimal">` with `role="spinbutton"`, `aria-valuenow` / `aria-valuemin` / `aria-valuemax`, `aria-required`, `aria-invalid`, `aria-describedby` for hint/error
 - **Ref forwarding**: Consumer `ref` targets the underlying `<input>` via `setExternalRef` (shared with TextInputV2)
 - **Theme**: Light/dark tokens via `useResponsiveTokens('NUMBER_INPUT_V2')`
 
 ## Anatomy
+
+**Default (no unit):** input row with steppers.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -24,15 +29,18 @@ Create a numeric field that supports:
 ├─────────────────────────────────────────────────────────────┤
 │  ┌───────────────────────────────────────┬───┬───┐           │
 │  │  [Floating label or placeholder]     │ ▲ │   │  ← input + stepper │
-│  │  (numeric text field)                │ ▼ │   │                    │
+│  │  (numeric text field)                 │ ▼ │   │                    │
 │  └───────────────────────────────────────┴───┴───┘           │
 ├─────────────────────────────────────────────────────────────┤
 │  [Bottom: Hint text / Error message]                         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
+**With `unit` (and optional `slot`):** unit strip + optional left/right adornments; **no** stepper buttons. Layout is `position: relative` with absolutely positioned unit and slot regions; `PrimitiveInput` receives computed horizontal padding from token baselines + measured widths.
+
 - **Top container**: Shared `InputLabelsV2` pattern with TextInputV2 (label, sublabel, required, help icon)
-- **Input row**: `PrimitiveInput` (text + numeric sanitization) plus `NumberInputV2Stepper` (increase / decrease buttons with triangle icons)
+- **Input row**: `PrimitiveInput` (text + numeric sanitization); either `NumberInputV2Stepper` **or** unit strip + slots depending on props
+- **Unit**: `NumberInputV2Unit` (forwardRef to a `Block`); paired padding math lives in `utils.ts` (`getNumberInputV2PaddingLeft` / `getNumberInputV2PaddingRight`)
 - **Bottom container**: `InputFooterV2` for hint and error; IDs power `aria-describedby`
 - **Floating label**: When `breakPointLabel === 'sm'` and `size === 'lg'`, same floating behavior as TextInputV2
 
@@ -45,8 +53,18 @@ enum InputSizeV2 {
     LG = 'lg',
 }
 
+enum NumberInputV2Direction {
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+
 type NumberInputV2Props = {
+    slot?: {
+        left: React.ReactNode
+        right: React.ReactNode
+    }
     value: number | null
+    unit?: string
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     min?: number
     max?: number
@@ -60,6 +78,7 @@ type NumberInputV2Props = {
         text: string
         subtext?: string
     }
+    unitDirection?: NumberInputV2Direction
     helpIconText?: string
     hintText?: string
     name?: string
@@ -68,11 +87,13 @@ type NumberInputV2Props = {
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'value' | 'onBlur' | 'onFocus'
+    'size' | 'style' | 'className' | 'value' | 'onBlur' | 'onFocus' | 'slot'
 >
 ```
 
 - **`value` / `onChange`**: `onChange` receives a synthetic event; `e.target.value` is a string (empty string when cleared). Callers typically parse to `number | null`.
+- **`unit` / `unitDirection`**: Visual unit strip; direction controls DOM order and which horizontal padding side includes the measured unit width.
+- **`slot`**: Adornments **only render when `unit` is non-empty** (after trim). The HTML attribute `slot` is **omitted** from `InputHTMLAttributes` so it does not collide with this object prop (native `slot` is a string).
 - **Omit `size` | `style` | `className`**: Size is design-system `InputSizeV2`; `filterBlockedProps` strips `className` / `style` on the primitive input.
 - **`helpIconText`**: Plain string for the label tooltip (TextInputV2 uses `{ text, onClick? }`; NumberInputV2 keeps a string for parity with simpler use cases).
 
@@ -82,7 +103,7 @@ Tokens are loaded with `useResponsiveTokens<NumberInputV2TokensType>('NUMBER_INP
 
 - **`gap`**: Vertical stack gap
 - **`topContainer`**: `InputLabelsV2` tokens (label, sublabel, required, help icon)
-- **`inputContainer`**: Placeholder, typography, padding (`x` / `y`), border, background, line height, **`stepperButton`** (width, backgrounds, icon colors)
+- **`inputContainer`**: Placeholder, typography, padding (`x` / `y`), border, background, line height, **`stepperButton`** (width, backgrounds, icon colors), **`unit`** (padding, borders, typography for the strip), **`slot`** (margins / sizing hooks for left and right adornments)
 - **`bottomContainer`**: Hint and error message typography
 
 Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberInputV2.dark.tokens.ts`.
@@ -91,7 +112,7 @@ Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberIn
 
 ### 1. `type="text"` + numeric sanitization (not `type="number"`)
 
-**Decision**: Use a text input with `inputMode="numeric"` and `sanitizeNumberInput()` / `clampValueOnBlur()` in `utils.ts`.
+**Decision**: Use a text input with `inputMode="decimal"` and `sanitizeNumberInput()` / `clampValueOnBlur()` in `utils.ts`.
 
 **Rationale**: Consistent control over formatting, minus sign handling, and blur clamping; avoids browser-specific spinner UI duplicating the custom stepper.
 
@@ -115,9 +136,9 @@ Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberIn
 
 ### 5. Stepper and tab order
 
-**Decision**: Increase and decrease are `PrimitiveButton`s with `aria-label` (`Increase {label}` / `Decrease {label}`). They participate in the normal tab sequence **after** the input.
+**Decision**: Increase and decrease are `PrimitiveButton`s with `aria-label` (`Increase {label}` / `Decrease {label}`). They participate in the normal tab sequence **after** the input **when steppers are visible** (no unit strip).
 
-**Rationale**: Keyboard users can tab through input → up → down → next control. When decrease is **disabled** (e.g. value at `min`), it is not tab-focusable; tests account for this.
+**Rationale**: Keyboard users can tab through input → up → down → next control. When decrease is **disabled** (e.g. value at `min`), it is not tab-focusable; tests account for this. When **`unit`** is set, steppers are removed and tab order skips straight to the next focusable control.
 
 ### 6. Blocking `className` and `style`
 
@@ -134,6 +155,18 @@ Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberIn
 ### 8. Placeholder with floating label
 
 **Decision**: When small screen + large size, placeholder is suppressed on the input (floating label only), matching TextInputV2.
+
+### 9. Unit strip and measured padding
+
+**Decision**: The unit `Block` and slot wrappers use `ResizeObserver` (via `subscribeElementOffsetWidth` in `utils.ts`) so padding updates when copy, theme, or breakpoint changes size.
+
+**Rationale**: Avoids stale layout when `unit` text or slot content width changes without a full prop identity change.
+
+### 10. Slots depend on `unit`
+
+**Decision**: `slot.left` / `slot.right` render only when `showUnit` is true (trimmed `unit` non-empty).
+
+**Rationale**: Keeps one layout model: adornments are for “unit + value” fields; empty `unit` keeps the stepper UX.
 
 ---
 

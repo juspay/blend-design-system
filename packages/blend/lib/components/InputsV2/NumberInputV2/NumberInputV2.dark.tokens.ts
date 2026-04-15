@@ -141,6 +141,42 @@ const bottomContainer = (foundationToken: FoundationTokenType) => ({
 })
 
 const darkInputContainer = (foundationToken: FoundationTokenType) => ({
+    slot: {
+        left: {
+            width: {
+                sm: foundationToken.unit[14],
+                md: foundationToken.unit[14],
+                lg: foundationToken.unit[14],
+            },
+            height: {
+                sm: foundationToken.unit[14],
+                md: foundationToken.unit[14],
+                lg: foundationToken.unit[14],
+            },
+            margin: {
+                sm: foundationToken.unit[8],
+                md: foundationToken.unit[8],
+                lg: foundationToken.unit[8],
+            },
+        },
+        right: {
+            width: {
+                sm: foundationToken.unit[14],
+                md: foundationToken.unit[14],
+                lg: foundationToken.unit[14],
+            },
+            height: {
+                sm: foundationToken.unit[14],
+                md: foundationToken.unit[14],
+                lg: foundationToken.unit[14],
+            },
+            margin: {
+                sm: foundationToken.unit[9],
+                md: foundationToken.unit[9],
+                lg: foundationToken.unit[9],
+            },
+        },
+    },
     placeholder: inputPlaceholder(foundationToken),
     borderRadius: {
         sm: foundationToken.unit[10],
@@ -292,13 +328,6 @@ export const getNumberInputV2DarkTokens = (
                     error: `1px solid ${foundationToken.colors.red[500]}`,
                     disabled: `1px solid ${foundationToken.colors.gray[800]}`,
                 },
-                backgroundColor: {
-                    default: foundationToken.colors.gray[900],
-                    disabled: foundationToken.colors.gray[800],
-                    hover: foundationToken.colors.gray[900],
-                    focus: foundationToken.colors.gray[900],
-                    error: foundationToken.colors.gray[900],
-                },
                 color: {
                     default: foundationToken.colors.gray[100],
                     hover: foundationToken.colors.gray[700],
@@ -361,13 +390,6 @@ export const getNumberInputV2DarkTokens = (
                     focus: `1px solid ${foundationToken.colors.primary[500]}`,
                     error: `1px solid ${foundationToken.colors.red[500]}`,
                     disabled: `1px solid ${foundationToken.colors.gray[800]}`,
-                },
-                backgroundColor: {
-                    default: foundationToken.colors.gray[900],
-                    disabled: foundationToken.colors.gray[800],
-                    hover: foundationToken.colors.gray[900],
-                    focus: foundationToken.colors.gray[900],
-                    error: foundationToken.colors.gray[900],
                 },
                 color: {
                     default: foundationToken.colors.gray[100],

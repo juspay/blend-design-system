@@ -1,11 +1,15 @@
 import { useState } from 'react'
-import { NumberInputV2 } from '../../../../packages/blend/lib/components/InputsV2/NumberInputV2'
+import {
+    NumberInputV2,
+    NumberInputV2Direction,
+} from '../../../../packages/blend/lib/components/InputsV2/NumberInputV2'
 import { InputSizeV2 } from '../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Weight, Ruler } from 'lucide-react'
 
 const NumberInputV2Demo = () => {
     const { theme } = useTheme()
@@ -27,12 +31,19 @@ const NumberInputV2Demo = () => {
     const [showMax, setShowMax] = useState(false)
     const [preventNegative, setPreventNegative] = useState(false)
     const [unit, setUnit] = useState('')
+    const [unitDirection, setUnitDirection] = useState<NumberInputV2Direction>(
+        NumberInputV2Direction.RIGHT
+    )
 
     // Options for selects
     const sizeOptions = [
         { value: InputSizeV2.SM, label: 'Small' },
         { value: InputSizeV2.MD, label: 'Medium' },
         { value: InputSizeV2.LG, label: 'Large' },
+    ]
+    const unitDirectionOptions = [
+        { value: NumberInputV2Direction.LEFT, label: 'Left' },
+        { value: NumberInputV2Direction.RIGHT, label: 'Right' },
     ]
     const unitOptions = [
         { value: '', label: 'None' },
@@ -99,6 +110,17 @@ const NumberInputV2Demo = () => {
                             selected={unit}
                             onSelect={(value) => setUnit(value as string)}
                             placeholder="Select unit"
+                        />
+                        <SingleSelect
+                            label="Unit Direction"
+                            items={[{ items: unitDirectionOptions }]}
+                            selected={unitDirection}
+                            onSelect={(value) =>
+                                setUnitDirection(
+                                    value as NumberInputV2Direction
+                                )
+                            }
+                            placeholder="Select unit direction"
                         />
 
                         <SingleSelect
@@ -180,6 +202,11 @@ const NumberInputV2Demo = () => {
                     >
                         <div className="w-full max-w-md">
                             <NumberInputV2
+                                slot={{
+                                    left: <Weight size={16} />,
+                                    right: <Ruler size={16} />,
+                                }}
+                                unitDirection={unitDirection}
                                 unit={unit}
                                 label={{
                                     text: 'Your Label',
