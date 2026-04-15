@@ -124,7 +124,6 @@ const TextAreaV2Demo = () => {
                                     message: 'This field has an error',
                                 }}
                                 hintText="This is a hint text"
-                                helpIconHintText="This is help text for the text area"
                                 required
                             />
                         </div>
@@ -386,7 +385,7 @@ const TextAreaV2Demo = () => {
                             value=""
                             onChange={() => {}}
                             placeholder="With help text"
-                            helpIconHintText="This is additional help information"
+                            helpIconText="This is additional help information"
                         />
                     </div>
 
@@ -535,7 +534,7 @@ const TextAreaV2Demo = () => {
                             onChange={() => {}}
                             placeholder="Tell us what you think..."
                             rows={4}
-                            helpIconHintText="Your feedback helps us improve"
+                            helpIconText="Your feedback helps us improve"
                         />
                     </div>
                 </div>

@@ -13,7 +13,6 @@ export type TextAreaV2Props = {
     label?: string
     sublabel?: string
     hintText?: string
-    helpIconHintText?: string
     helpIconText?: string
     required?: boolean
     error?: {
@@ -23,5 +22,5 @@ export type TextAreaV2Props = {
     resize?: 'none' | 'both' | 'horizontal' | 'vertical' | 'block' | 'inline'
 } & Omit<
     React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-    'size' | 'style' | 'className' | 'onFocus' | 'onBlur'
+    'size' | 'style' | 'className' | 'onFocus' | 'onBlur' | 'cols'
 >

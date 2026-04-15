@@ -60,6 +60,22 @@ describe('TextAreaV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards with helpIconText on label (lg layout)', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Details"
+                    sublabel="Optional"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    helpIconText="Opens additional guidance."
+                    hintText="Keep it concise."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {
@@ -291,6 +307,19 @@ describe('TextAreaV2 Accessibility', () => {
             )
             expect(screen.getByRole('textbox')).toBeDisabled()
         })
+
+        it('does not set cols on the textarea (width from layout; avoids legacy cols)', () => {
+            render(
+                React.createElement(TextAreaV2, {
+                    label: 'L',
+                    placeholder: '…',
+                    value: '',
+                    onChange: noop,
+                    cols: 50,
+                } as Parameters<typeof TextAreaV2>[0] & { cols?: number })
+            )
+            expect(screen.getByRole('textbox')).not.toHaveAttribute('cols')
+        })
     })
 
     describe('ARIA describedby and live regions', () => {
@@ -509,7 +538,7 @@ describe('TextAreaV2 Accessibility', () => {
                     value=""
                     onChange={noop}
                     hintText="Hint"
-                    helpIconHintText="Help"
+                    helpIconText="Help"
                     required
                     rows={4}
                     resize="vertical"

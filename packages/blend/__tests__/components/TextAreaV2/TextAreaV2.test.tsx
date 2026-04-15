@@ -8,6 +8,7 @@ import {
     getTextAreaInputPadding,
     getTextAreaInteractionKeys,
     getTextAreaLabelState,
+    omitTextAreaV2PrivateProps,
 } from '../../../lib/components/InputsV2/TextAreaV2/utils'
 import type { TextAreaTokensType } from '../../../lib/components/InputsV2/TextAreaV2/TextAreaV2.tokens'
 import {
@@ -366,6 +367,19 @@ describe('TextAreaV2', () => {
                 'aria-describedby'
             )
         })
+
+        it('does not set cols on the textarea (width uses layout/CSS, not cols)', () => {
+            render(
+                React.createElement(TextAreaV2, {
+                    label: 'L',
+                    placeholder: '…',
+                    value: '',
+                    onChange: noop,
+                    cols: 50,
+                } as Parameters<typeof TextAreaV2>[0] & { cols?: number })
+            )
+            expect(screen.getByRole('textbox')).not.toHaveAttribute('cols')
+        })
     })
 
     describe('Small screen (sm breakpoint)', () => {
@@ -563,6 +577,28 @@ describe('TextAreaV2', () => {
                         textColorKey: 'disabled',
                     })
                 )
+            })
+        })
+
+        describe('omitTextAreaV2PrivateProps', () => {
+            it('removes component-only keys and cols from a spread object', () => {
+                const out = omitTextAreaV2PrivateProps({
+                    label: 'x',
+                    sublabel: 'y',
+                    hintText: 'h',
+                    helpIconHintText: 'hi',
+                    helpIconText: 'ht',
+                    error: { show: false, message: '' },
+                    size: 'md',
+                    cols: 40,
+                    maxLength: 500,
+                    spellCheck: false,
+                } as Record<string, unknown>)
+
+                expect(out).toEqual({
+                    maxLength: 500,
+                    spellCheck: false,
+                })
             })
         })
     })

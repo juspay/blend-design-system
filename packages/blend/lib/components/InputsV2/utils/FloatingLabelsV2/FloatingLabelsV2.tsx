@@ -3,7 +3,7 @@ import Block from '../../../Primitives/Block/Block'
 import type { InputSizeV2, InputStateV2 } from '../../inputV2.types'
 import { addPxToValue } from '../../../../global-utils/GlobalUtils'
 import type { FloatingLabelsV2Tokens } from '../../inputV2.tokens'
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 
 const FloatingLabelsV2 = ({
     label,

@@ -92,11 +92,6 @@ const [notes, setNotes] = useState('');
             description: 'Hint text below the textarea',
             table: { type: { summary: 'string' }, category: 'Labels' },
         },
-        helpIconHintText: {
-            control: { type: 'text' },
-            description: 'Tooltip text for the label help icon',
-            table: { type: { summary: 'string' }, category: 'Labels' },
-        },
         rows: {
             control: { type: 'number', min: 1 },
             table: { type: { summary: 'number' }, category: 'Layout' },
@@ -254,7 +249,7 @@ export const Required: Story = {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 required
-                helpIconHintText="Feedback is reviewed by the product team."
+                helpIconText="Feedback is reviewed by the product team."
                 rows={5}
             />
         )

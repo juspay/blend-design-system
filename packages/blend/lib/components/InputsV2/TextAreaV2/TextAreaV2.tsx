@@ -18,6 +18,7 @@ import {
     getTextAreaInputPadding,
     getTextAreaInteractionKeys,
     getTextAreaLabelState,
+    omitTextAreaV2PrivateProps,
 } from './utils'
 
 const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
@@ -34,7 +35,7 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
             label,
             sublabel,
             hintText,
-            helpIconHintText,
+            helpIconText,
             required = false,
             error = { show: false, message: '' },
             resize = 'none',
@@ -45,7 +46,11 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
         } = props
 
         const { onKeyDown: restOnKeyDown, ...restWithoutKeyDown } = rest
-        const filteredRest = filterBlockedProps(restWithoutKeyDown)
+        const filteredRest = filterBlockedProps(
+            omitTextAreaV2PrivateProps(
+                restWithoutKeyDown as Record<string, unknown>
+            ) as typeof restWithoutKeyDown
+        )
 
         const textAreaTokens =
             useResponsiveTokens<TextAreaTokensType>('TEXT_AREA_V2')
@@ -112,7 +117,7 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                         tokens={textAreaTokens.topContainer}
                         label={label}
                         sublabel={sublabel}
-                        helpIconText={helpIconHintText}
+                        helpIconText={helpIconText}
                         inputId={textareaId}
                         name={name}
                         required={required || false}

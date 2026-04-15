@@ -94,3 +94,33 @@ export function getTextAreaInteractionKeys(
         textColorKey: disabled ? 'disabled' : 'default',
     }
 }
+
+/**
+ * Strips TextAreaV2-only props (and `cols`, which this component does not support) so they are
+ * never forwarded to a native {@link HTMLTextAreaElement}.
+ * Use after extracting top-level props, as a safety net for spreads / future API fields.
+ */
+export function omitTextAreaV2PrivateProps(
+    props: Record<string, unknown>
+): Record<string, unknown> {
+    const {
+        label: _label,
+        sublabel: _sublabel,
+        hintText: _hintText,
+        helpIconHintText: _helpIconHintText,
+        helpIconText: _helpIconText,
+        error: _error,
+        size: _size,
+        cols: _cols,
+        ...rest
+    } = props
+    void _label
+    void _sublabel
+    void _hintText
+    void _helpIconHintText
+    void _helpIconText
+    void _error
+    void _size
+    void _cols
+    return rest
+}
