@@ -11,20 +11,18 @@
  *   blend-token-studio brand --primary "#E31837" --radius sharp
  */
 
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import prompts from 'prompts'
 import ora from 'ora'
 import { logger } from '../utils/logger'
+import type { BrandConfig, RadiusPreset } from '@blend-design/token-engine'
 import {
-    resolveBrandTokens,
     generateColorScale,
     getPreset,
     listPresets,
     RADIUS_PRESETS,
-    type BrandConfig,
-    type RadiusPreset,
-} from '@blend-design/token-engine'
+} from '@blend-design/token-engine/server'
 import { generateBrandTokensCode } from '../generators/tokens-generator'
 import type { BlendConfig } from '../generators/config-generator'
 
@@ -92,6 +90,7 @@ export async function brandCommand(options: BrandOptions = {}): Promise<void> {
     // Resolve tokens
     const spinner = ora('Resolving tokens for all V2 components...').start()
 
+    const { resolveBrandTokens } = await import('@blend-design/token-engine')
     const lightTokens = resolveBrandTokens(brandConfig, 'light')
     const darkTokens = resolveBrandTokens(brandConfig, 'dark')
 
@@ -99,6 +98,7 @@ export async function brandCommand(options: BrandOptions = {}): Promise<void> {
 
     // Write files
     const outputDir = join(cwd, config.output)
+    mkdirSync(outputDir, { recursive: true })
 
     const tokensPath = join(outputDir, 'tokens.ts')
     writeFileSync(

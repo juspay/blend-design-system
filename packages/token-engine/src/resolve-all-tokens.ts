@@ -40,8 +40,8 @@ import {
     getTopbarTokens,
     getSidebarTokens,
     getMobileNavigationTokens,
-} from '@juspay/blend-design-system'
-import type { FoundationTokenType } from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/node'
+import type { FoundationTokenType } from '@juspay/blend-design-system/node'
 
 const V2_RESOLVERS: Record<
     string,

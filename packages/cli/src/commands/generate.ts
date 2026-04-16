@@ -12,11 +12,8 @@ import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import ora from 'ora'
 import { logger } from '../utils/logger'
-import {
-    resolveBrandTokens,
-    validateBrandConfig,
-    type BrandConfig,
-} from '@blend-design/token-engine'
+import type { BrandConfig } from '@blend-design/token-engine'
+import { validateBrandConfig } from '@blend-design/token-engine/server'
 import { generateBrandTokensCode } from '../generators/tokens-generator'
 
 interface GenerateOptions {
@@ -61,6 +58,7 @@ export async function generateCommand(
     // 3. Resolve
     const spinner = ora('Resolving tokens...').start()
 
+    const { resolveBrandTokens } = await import('@blend-design/token-engine')
     const lightTokens = resolveBrandTokens(brandConfig, 'light')
     const darkTokens = resolveBrandTokens(brandConfig, 'dark')
 

@@ -2,7 +2,7 @@
  * API Client for Blend Token Studio
  *
  * Handles communication between the CLI and the Studio API.
- * Supports authentication via Firebase ID tokens.
+ * Supports authentication via Studio API tokens (JWT).
  */
 
 import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs'
@@ -53,6 +53,34 @@ export class ApiClient {
 
     private loadAuth(): void {
         try {
+            // Highest precedence: explicit env var for CI/local dev.
+            const envToken = process.env.BLEND_STUDIO_API_TOKEN
+            if (envToken) {
+                const parts = envToken.split('.')
+                if (parts.length === 3) {
+                    const payload = JSON.parse(
+                        Buffer.from(parts[1], 'base64').toString('utf-8')
+                    )
+                    const email = payload.email
+                    const uid = payload.user_id || payload.sub || payload.userId
+                    const expiresAt =
+                        typeof payload.exp === 'number'
+                            ? payload.exp * 1000
+                            : Date.now() + 60 * 60 * 1000
+
+                    if (email && uid && expiresAt > Date.now()) {
+                        this.authData = {
+                            idToken: envToken,
+                            refreshToken: '',
+                            expiresAt,
+                            email,
+                            uid,
+                        }
+                        return
+                    }
+                }
+            }
+
             if (existsSync(AUTH_FILE)) {
                 const data = JSON.parse(readFileSync(AUTH_FILE, 'utf-8'))
                 if (data.expiresAt > Date.now()) {
@@ -110,7 +138,7 @@ export class ApiClient {
         path: string,
         body?: unknown
     ): Promise<ApiResponse<T>> {
-        const url = `${this.apiUrl}/api/studio${path}`
+        const url = `${this.apiUrl}/api${path}`
 
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
@@ -127,21 +155,30 @@ export class ApiClient {
                 body: body ? JSON.stringify(body) : undefined,
             })
 
-            const data = (await response.json()) as
-                | T
-                | { error?: { code: string; message: string } }
+            const raw = (await response.json()) as any
 
             if (!response.ok) {
                 return {
                     success: false,
                     error: (
-                        data as { error?: { code: string; message: string } }
+                        raw as { error?: { code: string; message: string } }
                     ).error || {
                         code: 'UNKNOWN_ERROR',
-                        message: `HTTP ${response.status}: ${response.statusText}`,
+                        message:
+                            raw?.message ||
+                            raw?.error?.message ||
+                            `HTTP ${response.status}: ${response.statusText}`,
                     },
                 }
             }
+
+            // Support both response shapes:
+            // - "studio backend": { success: true, data: <T> }
+            // - "raw backend": <T>
+            const data =
+                raw?.success === true && raw?.data !== undefined
+                    ? raw.data
+                    : raw
 
             return {
                 success: true,

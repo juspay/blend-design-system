@@ -16,6 +16,7 @@ import { logger } from '../utils/logger'
 
 interface PreviewOptions {
     port?: number
+    open?: boolean
 }
 
 export async function previewCommand(
@@ -51,6 +52,11 @@ export async function previewCommand(
     logger.header('Opening Preview')
     logger.success(`Brand: ${brandConfig.name} (${brandConfig.brandId})`)
     logger.info(`Opening ${previewUrl}...`)
+
+    if (options.open === false) {
+        logger.info(`Preview URL: ${previewUrl}`)
+        return
+    }
 
     try {
         await open(previewUrl)

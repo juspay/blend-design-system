@@ -13,7 +13,7 @@
 import {
     FOUNDATION_THEME,
     type FoundationTokenType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/node'
 import type { BrandConfig } from './types'
 
 export function buildBrandFoundation(brand: BrandConfig): FoundationTokenType {

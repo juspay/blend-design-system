@@ -11,6 +11,7 @@ import {
     forkBranchSchema,
 } from '@/middlewares/validate.js'
 import * as branchService from '../domain/branch.service.js'
+import * as branchRepo from '../data-access/branch.repository.js'
 
 const router: IRouter = Router()
 
@@ -71,6 +72,49 @@ router.get(
         res.json({
             success: true,
             data: { branch },
+        })
+    })
+)
+
+// ---------------------------------------------------------------------------
+// Pull Branch (CLI)
+// ---------------------------------------------------------------------------
+router.get(
+    '/:branchId/pull',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response) => {
+        const branch = await branchService.getBranch(req.params.branchId)
+
+        const versionParam =
+            typeof req.query.version === 'string'
+                ? req.query.version
+                : undefined
+
+        const version = versionParam
+            ? await branchRepo.getVersionByNumber(branch.id, versionParam)
+            : null
+
+        const brandConfig = version?.brandConfig ?? branch.brandConfig
+
+        res.json({
+            success: true,
+            data: {
+                branch,
+                version: version
+                    ? {
+                          id: version.id,
+                          branchId: version.branchId,
+                          version: version.version,
+                          changelog: version.changelog,
+                          isBreaking: version.isBreaking,
+                          isPrerelease: version.isPrerelease,
+                          publishedBy: version.publishedBy,
+                          publishedByName: version.publishedByName,
+                          publishedAt: version.publishedAt,
+                      }
+                    : null,
+                brandConfig,
+            },
         })
     })
 )

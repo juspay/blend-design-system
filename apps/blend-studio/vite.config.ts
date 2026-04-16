@@ -18,9 +18,13 @@ export default defineConfig(({ mode }) => ({
                 __dirname,
                 '../../packages/token-engine/src'
             ),
+            '@juspay/blend-design-system/node': path.resolve(
+                __dirname,
+                '../../packages/blend/dist/node.js'
+            ),
             '@juspay/blend-design-system': path.resolve(
                 __dirname,
-                '../../packages/blend/lib/main.ts'
+                '../../packages/blend/dist/main.js'
             ),
         },
     },

@@ -9,15 +9,12 @@
  *   blend-token-studio pull hdfc/retail --theme dark
  */
 
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import ora from 'ora'
 import { logger } from '../utils/logger'
 import { apiClient } from '../utils/api-client'
-import {
-    resolveBrandTokens,
-    type BrandConfig,
-} from '@blend-design/token-engine'
+import type { BrandConfig } from '@blend-design/token-engine'
 import { generateBrandTokensCode } from '../generators/tokens-generator'
 import type { BlendConfig } from '../generators/config-generator'
 
@@ -73,12 +70,14 @@ export async function pullCommand(
         'Resolving tokens for all V2 components...'
     ).start()
 
+    const { resolveBrandTokens } = await import('@blend-design/token-engine')
     const lightTokens = resolveBrandTokens(brandConfig, 'light')
     const darkTokens = resolveBrandTokens(brandConfig, 'dark')
 
     resolveSpinner.succeed('Tokens resolved')
 
     const outputDir = join(cwd, options.output || config.output)
+    mkdirSync(outputDir, { recursive: true })
 
     const tokensPath = join(outputDir, 'tokens.ts')
     writeFileSync(

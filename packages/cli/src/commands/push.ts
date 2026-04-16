@@ -17,11 +17,11 @@ import ora from 'ora'
 import prompts from 'prompts'
 import { logger } from '../utils/logger'
 import { apiClient } from '../utils/api-client'
+import type { BrandConfig } from '@blend-design/token-engine'
 import {
     validateBrandConfig,
     incrementVersion,
-    type BrandConfig,
-} from '@blend-design/token-engine'
+} from '@blend-design/token-engine/server'
 
 interface PushOptions {
     publish?: boolean

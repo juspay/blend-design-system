@@ -13,11 +13,7 @@
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
-        "jsx": "react-jsx",
-        "baseUrl": ".",
-        "paths": {
-            "@juspay/blend-design-system": ["../blend/lib/main.ts"]
-        }
+        "jsx": "react-jsx"
     },
     "include": ["src"]
 }

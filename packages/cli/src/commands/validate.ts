@@ -11,7 +11,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import pc from 'picocolors'
 import { logger } from '../utils/logger'
-import { validateBrandConfig } from '@blend-design/token-engine'
+import { validateBrandConfig } from '@blend-design/token-engine/server'
 
 export async function validateCommand(): Promise<void> {
     const cwd = process.cwd()

@@ -5,14 +5,13 @@ import { FoundationTokenType } from '../../tokens/theme.token'
 import { darkCodeEditorV2Tokens } from './codeEditorV2.dark.tokens'
 import { lightCodeEditorV2Tokens } from './codeEditorV2.light.token'
 import { Theme } from '../../context/theme.enum'
-import { MonacoTheme } from './codeEditorV2.types'
 
 export type CodeEditorV2Tokens = {
     backgroundColor: CSSObject['backgroundColor']
     border: CSSObject['border']
     borderRadius: CSSObject['borderRadius']
     boxShadow: CSSObject['boxShadow']
-    theme: MonacoTheme
+    theme: 'light' | 'dark'
     // Header tokens
     header: {
         backgroundColor: CSSObject['backgroundColor']

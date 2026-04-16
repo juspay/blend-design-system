@@ -321,7 +321,7 @@ function EditorPage() {
 
                 {/* Body: Three Panel Layout */}
                 <div className="flex-1 flex overflow-hidden">
-                    <Group direction="horizontal" style={{ height: '100%' }}>
+                    <Group orientation="horizontal" style={{ height: '100%' }}>
                         {/* Left Panel: Editor Tabs (30%) */}
                         <Panel minSize={20} defaultSize={30}>
                             <div className="h-full bg-white border-r border-gray-200 flex flex-col overflow-hidden">

@@ -194,7 +194,7 @@ export function JsonTab({ brand, onChange }: EditorTabProps) {
     const getLightTokens = () => ({
         theme: 'light',
         colors: brand.colors,
-        typography: brand.typography,
+        font: brand.font,
         radius: brand.radius,
         shadows: brand.shadows,
         componentOverrides: brand.componentOverrides,
@@ -203,7 +203,7 @@ export function JsonTab({ brand, onChange }: EditorTabProps) {
     const getDarkTokens = () => ({
         theme: 'dark',
         colors: brand.darkModeOverrides?.colors || brand.colors,
-        typography: brand.typography,
+        font: brand.font,
         radius: brand.darkModeOverrides?.radius || brand.radius,
         shadows: brand.darkModeOverrides?.shadows || brand.shadows,
         componentOverrides: brand.componentOverrides,

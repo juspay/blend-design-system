@@ -1,0 +1,16 @@
+{
+    "$schema": "https://studio.blend.juspay.design/schemas/blend-config.json",
+    "brand": "blend/default",
+    "theme": "light",
+    "output": "src/blend",
+    "components": [],
+    "studio": {
+        "apiUrl": "https://studio.blend.juspay.design",
+        "autoSync": false
+    },
+    "generate": {
+        "typescript": true,
+        "cssVariables": false,
+        "reactNative": false
+    }
+}

@@ -13,6 +13,8 @@ import {
     LayoutDashboard,
     User,
     Shield,
+    KeyRound,
+    Copy,
 } from 'lucide-react'
 import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import { usePermissions } from '@/frontend/components/auth/PermissionGuard'
@@ -40,6 +42,8 @@ export function UserMenu({
     const { isAdmin } = usePermissions()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
+    const [showTokenModal, setShowTokenModal] = useState(false)
+    const [copied, setCopied] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
 
     // Close menu on click outside
@@ -83,6 +87,35 @@ export function UserMenu({
         setIsOpen(false)
         await logout()
         navigate({ to: '/login', search: { from: undefined } })
+    }
+
+    const apiToken = sessionStorage.getItem('blend_auth_token')
+
+    const handleOpenToken = () => {
+        setIsOpen(false)
+        setCopied(false)
+        setShowTokenModal(true)
+    }
+
+    const handleCopyToken = async () => {
+        if (!apiToken) return
+        try {
+            await navigator.clipboard.writeText(apiToken)
+            setCopied(true)
+            window.setTimeout(() => setCopied(false), 1200)
+        } catch {
+            // Fallback for older browsers / restricted clipboard permissions
+            const textarea = document.createElement('textarea')
+            textarea.value = apiToken
+            textarea.style.position = 'fixed'
+            textarea.style.left = '-9999px'
+            document.body.appendChild(textarea)
+            textarea.select()
+            document.execCommand('copy')
+            document.body.removeChild(textarea)
+            setCopied(true)
+            window.setTimeout(() => setCopied(false), 1200)
+        }
     }
 
     const handleAdminToggle = () => {
@@ -217,6 +250,15 @@ export function UserMenu({
                             </button>
                         )}
 
+                        {/* API Token (for CLI) */}
+                        <button
+                            onClick={handleOpenToken}
+                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                            <KeyRound className="w-4 h-4 text-gray-400" />
+                            <span>API Token (for CLI)</span>
+                        </button>
+
                         {/* Divider */}
                         <div className="my-1 h-px bg-gray-100" />
 
@@ -228,6 +270,72 @@ export function UserMenu({
                             <LogOut className="w-4 h-4" />
                             Sign Out
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Token Modal */}
+            {showTokenModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-black/40"
+                        onClick={() => setShowTokenModal(false)}
+                    />
+                    <div className="relative w-full max-w-xl rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden">
+                        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                            <div>
+                                <div className="text-sm font-semibold text-gray-900">
+                                    API Token (for CLI)
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                    Use this for{' '}
+                                    <span className="font-mono">
+                                        blend-token-studio login --token
+                                    </span>
+                                </div>
+                            </div>
+                            <button
+                                className="text-sm text-gray-500 hover:text-gray-800"
+                                onClick={() => setShowTokenModal(false)}
+                            >
+                                Close
+                            </button>
+                        </div>
+
+                        <div className="p-5 space-y-3">
+                            {!apiToken ? (
+                                <div className="text-sm text-red-600">
+                                    Token not found. Please sign in again.
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="text-xs text-gray-600">
+                                        Copy and paste into your terminal:
+                                    </div>
+                                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+                                        <code className="block text-xs font-mono text-gray-800 break-all">
+                                            {apiToken}
+                                        </code>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={handleCopyToken}
+                                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+                                        >
+                                            <Copy className="w-4 h-4" />
+                                            {copied ? 'Copied' : 'Copy token'}
+                                        </button>
+                                        <div className="text-xs text-gray-500">
+                                            Example:{' '}
+                                            <span className="font-mono">
+                                                blend-token-studio login --token
+                                                &nbsp;&lt;TOKEN&gt;
+                                            </span>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

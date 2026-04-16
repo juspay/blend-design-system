@@ -19,14 +19,14 @@
         "dist"
     ],
     "scripts": {
-        "build": "tsup src/index.ts src/server.ts --format esm --dts",
+        "build": "tsup src/index.ts src/server.ts --format esm --dts --external @juspay/blend-design-system",
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
         "test:watch": "vitest",
         "prepublishOnly": "npm run build"
     },
     "peerDependencies": {
-        "@juspay/blend-design-system": ">=1.0.0"
+        "@juspay/blend-design-system": ">=0.0.37-0 <1.0.0"
     },
     "devDependencies": {
         "@juspay/blend-design-system": "workspace:*",

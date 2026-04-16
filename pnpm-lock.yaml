@@ -121,7 +121,7 @@ importers:
                 version: 0.525.0(react@19.2.3)
             motion:
                 specifier: ^12.23.2
-                version: 12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+                version: 12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             next:
                 specifier: 15.3.6
                 version: 15.3.6(@opentelemetry/api@1.9.0)(@playwright/test@1.59.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -515,6 +515,40 @@ importers:
                 specifier: ^6.3.5
                 version: 6.4.1(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)
 
+    apps/tokenizer-sandbox:
+        dependencies:
+            '@juspay/blend-design-system':
+                specifier: workspace:*
+                version: link:../../packages/blend
+            react:
+                specifier: ^19.2.1
+                version: 19.2.3
+            react-dom:
+                specifier: ^19.2.1
+                version: 19.2.3(react@19.2.3)
+            styled-components:
+                specifier: ^6.4.0
+                version: 6.4.0(css-to-react-native@3.2.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        devDependencies:
+            '@types/react':
+                specifier: ^19.1.2
+                version: 19.2.7
+            '@types/react-dom':
+                specifier: ^19.1.2
+                version: 19.2.3(@types/react@19.2.7)
+            '@vitejs/plugin-react':
+                specifier: ^4.4.1
+                version: 4.7.0(vite@6.4.1(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))
+            blend-token-studio:
+                specifier: workspace:*
+                version: link:../../packages/cli
+            typescript:
+                specifier: ~5.8.3
+                version: 5.8.3
+            vite:
+                specifier: ^6.3.5
+                version: 6.4.1(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)
+
     packages/blend:
         dependencies:
             '@dnd-kit/core':
@@ -561,7 +595,7 @@ importers:
                 version: 5.1.36
             framer-motion:
                 specifier: ^12.23.24
-                version: 12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+                version: 12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             highcharts:
                 specifier: ^12.4.0
                 version: 12.4.0
@@ -751,11 +785,8 @@ importers:
     packages/cli:
         dependencies:
             '@blend-design/token-engine':
-                specifier: workspace:*
+                specifier: workspace:^
                 version: link:../token-engine
-            '@juspay/blend-design-system':
-                specifier: workspace:*
-                version: link:../blend
             commander:
                 specifier: ^12.0.0
                 version: 12.1.0
@@ -1518,10 +1549,22 @@ packages:
                 integrity: sha512-uNsoYd37AFmaCdXlg6EYD1KaPOaRWRByMCYzbKUX4+hhMfrxdVSelShywL4JVaAeM/eHUOSprYBQls+/neX3pw==,
             }
 
+    '@emotion/is-prop-valid@1.4.0':
+        resolution:
+            {
+                integrity: sha512-QgD4fyscGcbbKwJmqNvUMSE02OsHUa+lAWKdEUIJKgqe5IwRSKd7+KhibEWdaKwgjLj0DRSHA9biAIqGBk05lw==,
+            }
+
     '@emotion/memoize@0.8.1':
         resolution:
             {
                 integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==,
+            }
+
+    '@emotion/memoize@0.9.0':
+        resolution:
+            {
+                integrity: sha512-30FAj7/EoJ5mwVPOWhAyCX+FPfMDrVecJAM+Iw9NRoSl4BBAQeqj4cApHHUXOVvIPgLVDsCFoz/hGD+5QQD1GQ==,
             }
 
     '@emotion/unitless@0.8.1':
@@ -14003,6 +14046,25 @@ packages:
             react: '>= 16.8.0'
             react-dom: '>= 16.8.0'
 
+    styled-components@6.4.0:
+        resolution:
+            {
+                integrity: sha512-BL1EDFpt+q10eAeZB0q9ps6pSlPejaBQWBkiuM16pyoVTG4NhZrPrZK0cqNbrozxSsYwUsJ9SQYN6NyeKJYX9A==,
+            }
+        engines: { node: '>= 16' }
+        peerDependencies:
+            css-to-react-native: '>= 3.2.0'
+            react: '>= 16.8.0'
+            react-dom: '>= 16.8.0'
+            react-native: '>= 0.68.0'
+        peerDependenciesMeta:
+            css-to-react-native:
+                optional: true
+            react-dom:
+                optional: true
+            react-native:
+                optional: true
+
     styled-jsx@5.1.6:
         resolution:
             {
@@ -14023,6 +14085,12 @@ packages:
         resolution:
             {
                 integrity: sha512-bhtUjWd/z6ltJiQwg0dUfxEJ+W+jdqQd8TbWLWyeIJHlnsqmGLRFFd8e5mA0AZi/zx90smXRlN66YMTcaSFifg==,
+            }
+
+    stylis@4.3.6:
+        resolution:
+            {
+                integrity: sha512-yQ3rwFWRfwNUY7H5vpU0wfdkNSnvnJinhF9830Swlaxl03zsOjCfmX0ugac+3LtK0lYSgwL/KXc8oYL3mG4YFQ==,
             }
 
     sucrase@3.35.1:
@@ -16028,7 +16096,13 @@ snapshots:
         dependencies:
             '@emotion/memoize': 0.8.1
 
+    '@emotion/is-prop-valid@1.4.0':
+        dependencies:
+            '@emotion/memoize': 0.9.0
+
     '@emotion/memoize@0.8.1': {}
+
+    '@emotion/memoize@0.9.0': {}
 
     '@emotion/unitless@0.8.1': {}
 
@@ -21620,13 +21694,13 @@ snapshots:
 
     fraction.js@5.3.4: {}
 
-    framer-motion@12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+    framer-motion@12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
         dependencies:
             motion-dom: 12.23.23
             motion-utils: 12.23.6
             tslib: 2.8.1
         optionalDependencies:
-            '@emotion/is-prop-valid': 1.2.2
+            '@emotion/is-prop-valid': 1.4.0
             react: 19.2.3
             react-dom: 19.2.3(react@19.2.3)
 
@@ -23325,12 +23399,12 @@ snapshots:
 
     motion-utils@12.23.6: {}
 
-    motion@12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+    motion@12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
         dependencies:
-            framer-motion: 12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+            framer-motion: 12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             tslib: 2.8.1
         optionalDependencies:
-            '@emotion/is-prop-valid': 1.2.2
+            '@emotion/is-prop-valid': 1.4.0
             react: 19.2.3
             react-dom: 19.2.3(react@19.2.3)
 
@@ -25029,12 +25103,24 @@ snapshots:
             stylis: 4.3.2
             tslib: 2.6.2
 
+    styled-components@6.4.0(css-to-react-native@3.2.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+        dependencies:
+            '@emotion/is-prop-valid': 1.4.0
+            csstype: 3.2.3
+            react: 19.2.3
+            stylis: 4.3.6
+        optionalDependencies:
+            css-to-react-native: 3.2.0
+            react-dom: 19.2.3(react@19.2.3)
+
     styled-jsx@5.1.6(react@19.2.3):
         dependencies:
             client-only: 0.0.1
             react: 19.2.3
 
     stylis@4.3.2: {}
+
+    stylis@4.3.6: {}
 
     sucrase@3.35.1:
         dependencies:

@@ -5,7 +5,7 @@
  *
  * Usage:
  *   blend-token-studio login                    # interactive login
- *   blend-token-studio login --token <id-token> # login with Firebase ID token
+ *   blend-token-studio login --token <token>    # login with Studio token (JWT)
  *   blend-token-studio logout                   # clear authentication
  */
 
@@ -48,13 +48,13 @@ export async function loginCommand(options: LoginOptions = {}): Promise<void> {
     }
 
     console.log(`
-  To authenticate, you need a Firebase ID token.
+  To authenticate, you need a Studio API token (JWT).
 
   Option 1: Get token from the dashboard
-    1. Open https://studio.blend.juspay.design
+    1. Open the Studio UI
     2. Sign in with Google
-    3. Go to Account Settings > API Tokens
-    4. Copy your ID token
+    3. Open the user menu (top right) → "API Token (for CLI)"
+    4. Copy the token
 
   Option 2: Use environment variable
     export BLEND_STUDIO_API_TOKEN=<your-token>
@@ -64,7 +64,7 @@ export async function loginCommand(options: LoginOptions = {}): Promise<void> {
     const { token } = await prompts({
         type: 'password',
         name: 'token',
-        message: 'Paste your Firebase ID token:',
+        message: 'Paste your Studio API token:',
     })
 
     if (!token) {
@@ -88,7 +88,7 @@ async function loginWithToken(token: string): Promise<void> {
         )
 
         const email = payload.email
-        const uid = payload.user_id || payload.sub
+        const uid = payload.user_id || payload.sub || payload.userId
         const expiresAt = payload.exp * 1000
 
         if (!email || !uid) {

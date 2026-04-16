@@ -124,7 +124,7 @@ export function TokenPreview({ brand, theme }: TokenPreviewProps) {
             theme === 'dark' && brand.darkModeOverrides?.colors
                 ? { ...brand.colors, ...brand.darkModeOverrides.colors }
                 : brand.colors,
-        typography: brand.typography,
+        font: brand.font,
         radius:
             theme === 'dark' && brand.darkModeOverrides?.radius
                 ? { ...brand.radius, ...brand.darkModeOverrides.radius }
