@@ -140,7 +140,6 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
 
         const smallScreenLarge = isSmallScreenWithLargeSize(isSmallScreen, size)
 
-        const paddingX = inputContainerTokens.paddingLeft[size]
         const paddingY =
             toPixels(inputContainerTokens.paddingTop[size]) +
             (smallScreenLarge ? 0.5 : 1)
@@ -200,7 +199,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                     ? toPixels(inputContainerTokens.slot.left.width[size])
                     : 0
             )
-        }, [slot.left])
+        }, [slot.left, size, inputContainerTokens])
 
         useLayoutEffect(() => {
             setMeasuredRightSlotWidth(
@@ -208,7 +207,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                     ? toPixels(inputContainerTokens.slot.right.width[size])
                     : 0
             )
-        }, [slot.right])
+        }, [slot.right, size, inputContainerTokens])
 
         const updateValue = (newValue: number): void => {
             if (rawNumericValue === newValue) return
@@ -375,6 +374,9 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             ]
         )
 
+        /** Matches input text inset so the floating label aligns with the value, not the field edge (avoids unit / left slot). */
+        const floatingLabelLeftPadding = toPixels(inputPaddingLeft)
+
         return (
             <Block
                 data-numberinput={label.text || 'numberinput'}
@@ -411,7 +413,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                             inputId={inputId}
                             isInputFocusedOrWithValue={inputFocusedOrWithValue}
                             topPadding={paddingY}
-                            leftPadding={toPixels(paddingX)}
+                            leftPadding={floatingLabelLeftPadding}
                             tokens={{
                                 placeholder: inputContainerTokens.placeholder,
                                 required:

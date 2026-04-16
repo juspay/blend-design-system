@@ -5,6 +5,11 @@ import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { NumberInputV2Direction } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.types'
+import {
+    getNumberInputV2PaddingLeft,
+    getNumberInputV2PaddingRight,
+} from '../../../lib/components/InputsV2/NumberInputV2/utils'
+import type { NumberInputV2TokensType } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.tokens'
 
 const noop = () => {}
 
@@ -841,6 +846,81 @@ describe('NumberInputV2 Component', () => {
             expect(
                 screen.getByText(/Value must be at most 100/i)
             ).toBeInTheDocument()
+        })
+    })
+
+    describe('getNumberInputV2PaddingLeft / getNumberInputV2PaddingRight', () => {
+        const ic = {
+            paddingLeft: { sm: 10, md: 12, lg: 12 },
+            paddingRight: { sm: 10, md: 8, lg: 8 },
+            slot: {
+                left: {
+                    margin: { sm: 4, md: 4, lg: 4 },
+                },
+                right: {
+                    margin: { sm: 4, md: 4, lg: 4 },
+                },
+            },
+        } as NumberInputV2TokensType['inputContainer']
+
+        const unitW = 40
+        const leftSlotW = 16
+        const rightSlotW = 14
+
+        it('left padding with trailing unit uses paddingLeft, left slot margin, and left slot width (not right-side tokens)', () => {
+            expect(
+                getNumberInputV2PaddingLeft(
+                    ic,
+                    InputSizeV2.MD,
+                    true,
+                    NumberInputV2Direction.RIGHT,
+                    unitW,
+                    leftSlotW,
+                    rightSlotW
+                )
+            ).toBe(`${4 + leftSlotW + 12}px`)
+        })
+
+        it('left padding with leading unit includes unit width and left slot margin', () => {
+            expect(
+                getNumberInputV2PaddingLeft(
+                    ic,
+                    InputSizeV2.MD,
+                    true,
+                    NumberInputV2Direction.LEFT,
+                    unitW,
+                    leftSlotW,
+                    rightSlotW
+                )
+            ).toBe(`${unitW + 4 + leftSlotW + 12}px`)
+        })
+
+        it('right padding with trailing unit uses unit width, paddingRight, and right slot width', () => {
+            expect(
+                getNumberInputV2PaddingRight(
+                    ic,
+                    InputSizeV2.MD,
+                    true,
+                    NumberInputV2Direction.RIGHT,
+                    unitW,
+                    leftSlotW,
+                    rightSlotW
+                )
+            ).toBe(`${unitW + 8 + rightSlotW}px`)
+        })
+
+        it('right padding with leading unit uses right slot margin, slot width, and paddingRight', () => {
+            expect(
+                getNumberInputV2PaddingRight(
+                    ic,
+                    InputSizeV2.MD,
+                    true,
+                    NumberInputV2Direction.LEFT,
+                    unitW,
+                    leftSlotW,
+                    rightSlotW
+                )
+            ).toBe(`${4 + rightSlotW + 8}px`)
         })
     })
 })

@@ -154,9 +154,9 @@ const darkInputContainer = (foundationToken: FoundationTokenType) => ({
                 lg: foundationToken.unit[14],
             },
             margin: {
-                sm: foundationToken.unit[8],
-                md: foundationToken.unit[8],
-                lg: foundationToken.unit[8],
+                sm: foundationToken.unit[14],
+                md: foundationToken.unit[14],
+                lg: foundationToken.unit[14],
             },
         },
         right: {
@@ -171,9 +171,9 @@ const darkInputContainer = (foundationToken: FoundationTokenType) => ({
                 lg: foundationToken.unit[14],
             },
             margin: {
-                sm: foundationToken.unit[9],
-                md: foundationToken.unit[9],
-                lg: foundationToken.unit[9],
+                sm: foundationToken.unit[14],
+                md: foundationToken.unit[14],
+                lg: foundationToken.unit[14],
             },
         },
     },

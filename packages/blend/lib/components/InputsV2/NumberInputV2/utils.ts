@@ -327,6 +327,12 @@ export const subscribeElementOffsetWidth = (
     }
 }
 
+/**
+ * Horizontal padding so input text clears absolutely positioned adornments on the **left**:
+ * - **Unit left**: unit width + left-slot margin + left-slot width + `paddingLeft` token.
+ * - **Unit right**: left-slot margin + left-slot width + `paddingLeft` only (unit and right
+ *   adornments do not affect left inset).
+ */
 export const getNumberInputV2PaddingLeft = (
     inputContainerTokens: NumberInputV2InputContainerTokens,
     size: InputSizeV2,
@@ -334,35 +340,41 @@ export const getNumberInputV2PaddingLeft = (
     unitDirection: NumberInputV2Direction,
     measuredUnitWidth: number,
     measuredLeftSlotWidth: number,
-    measuredRightSlotWidth: number
+    _measuredRightSlotWidth: number
 ): string => {
     const pl = inputContainerTokens.paddingLeft[size]
-    const pr = inputContainerTokens.paddingRight[size]
+    const ml = toPixels(inputContainerTokens.slot.left.margin[size] ?? 0)
     if (showUnit && unitDirection === NumberInputV2Direction.LEFT) {
-        return `${measuredUnitWidth + toPixels(pl) + measuredLeftSlotWidth}px`
+        return `${measuredUnitWidth + ml + measuredLeftSlotWidth + toPixels(pl)}px`
     }
     if (showUnit && unitDirection === NumberInputV2Direction.RIGHT) {
-        return `${toPixels(pr) + measuredRightSlotWidth}px`
+        return `${ml + measuredLeftSlotWidth + toPixels(pl)}px`
     }
     return pl as string
 }
 
+/**
+ * Horizontal padding so input text clears absolutely positioned adornments on the **right**:
+ * - **Unit right**: unit width + `paddingRight` + right-slot width (matches slot `marginRight`
+ *   layout: unit + padding strip, then the right slot).
+ * - **Unit left**: right-slot margin + right-slot width + `paddingRight` only.
+ */
 export const getNumberInputV2PaddingRight = (
     inputContainerTokens: NumberInputV2InputContainerTokens,
     size: InputSizeV2,
     showUnit: boolean,
     unitDirection: NumberInputV2Direction,
     measuredUnitWidth: number,
-    measuredLeftSlotWidth: number,
+    _measuredLeftSlotWidth: number,
     measuredRightSlotWidth: number
 ): string => {
-    const pl = inputContainerTokens.paddingLeft[size]
     const pr = inputContainerTokens.paddingRight[size]
+    const mr = toPixels(inputContainerTokens.slot.right.margin[size] ?? 0)
     if (showUnit && unitDirection === NumberInputV2Direction.RIGHT) {
-        return `${measuredUnitWidth + toPixels(pl) + measuredLeftSlotWidth}px`
+        return `${measuredUnitWidth + toPixels(pr) + measuredRightSlotWidth}px`
     }
     if (showUnit && unitDirection === NumberInputV2Direction.LEFT) {
-        return `${toPixels(pr) + measuredRightSlotWidth}px`
+        return `${mr + measuredRightSlotWidth + toPixels(pr)}px`
     }
     return pr as string
 }

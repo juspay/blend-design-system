@@ -7,8 +7,8 @@ export enum NumberInputV2Direction {
 
 export type NumberInputV2Props = {
     slot?: {
-        left: React.ReactNode
-        right: React.ReactNode
+        left?: React.ReactNode
+        right?: React.ReactNode
     }
     value: number | null
     unit?: string
