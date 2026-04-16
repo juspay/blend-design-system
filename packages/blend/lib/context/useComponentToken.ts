@@ -69,6 +69,7 @@ import { ResponsiveNumberInputV2Tokens } from '../components/InputsV2/NumberInpu
 import { ResponsiveOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import { ResponsiveTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
 import { ResponsiveSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+import { ResponsiveChatInputV2TokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -143,6 +144,7 @@ export const useComponentToken = (
     | ResponsiveOTPInputV2Tokens
     | ResponsiveTextAreaV2Tokens
     | ResponsiveSearchInputV2Tokens
+    | ResponsiveChatInputV2TokensType
     | ResponsiveCodeEditorV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -236,6 +238,8 @@ export const useComponentToken = (
             return componentTokens.DIRECTORY
         case 'CHAT_INPUT':
             return componentTokens.CHAT_INPUT
+        case 'CHAT_INPUTV2':
+            return componentTokens.CHAT_INPUTV2
         case 'BUTTONV2':
             return componentTokens.BUTTONV2
         case 'TAGV2':

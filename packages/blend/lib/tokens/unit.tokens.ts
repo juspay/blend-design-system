@@ -31,6 +31,7 @@ export type UnitTokensType = Readonly<{
     22: UnitType
     24: UnitType
     28: UnitType
+    30: UnitType
     32: UnitType
     36: UnitType
     40: UnitType
@@ -73,6 +74,7 @@ const unitTokens: UnitTokensType = {
     22: '22px',
     24: '24px',
     28: '28px',
+    30: '30px',
     32: '32px',
     36: '36px',
     40: '40px',
