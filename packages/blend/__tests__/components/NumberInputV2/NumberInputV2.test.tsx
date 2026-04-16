@@ -6,6 +6,7 @@ import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/Number
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { NumberInputV2Direction } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.types'
 import {
+    getNumberInputDisplayValue,
     getNumberInputV2PaddingLeft,
     getNumberInputV2PaddingRight,
 } from '../../../lib/components/InputsV2/NumberInputV2/utils'
@@ -71,6 +72,20 @@ describe('NumberInputV2 Component', () => {
                 />
             )
             expect(screen.getByText('Between 0 and 100')).toBeInTheDocument()
+        })
+
+        it('renders help icon when helpIconText is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'With help', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    helpIconText="Additional context for this field"
+                />
+            )
+            expect(
+                document.querySelector('[data-element="icon"]')
+            ).toBeInTheDocument()
         })
 
         it('renders required indicator', () => {
@@ -846,6 +861,45 @@ describe('NumberInputV2 Component', () => {
             expect(
                 screen.getByText(/Value must be at most 100/i)
             ).toBeInTheDocument()
+        })
+
+        it('shows at-least message when only min is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={-5}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            expect(
+                screen.getByText(/Value must be at least 0/i)
+            ).toBeInTheDocument()
+        })
+    })
+
+    describe('getNumberInputDisplayValue', () => {
+        it('returns internal string while focused', () => {
+            expect(getNumberInputDisplayValue(true, '1.', 10, 10)).toBe('1.')
+        })
+
+        it('returns empty when controlled value is null', () => {
+            expect(getNumberInputDisplayValue(false, '', null, null)).toBe('')
+        })
+
+        it('returns effective numeric string when blurred and value is set', () => {
+            expect(getNumberInputDisplayValue(false, '', 7, 7)).toBe('7')
+        })
+
+        it('returns empty when value is NaN (effective numeric is null)', () => {
+            expect(
+                getNumberInputDisplayValue(
+                    false,
+                    '',
+                    Number.NaN as unknown as number,
+                    null
+                )
+            ).toBe('')
         })
     })
 

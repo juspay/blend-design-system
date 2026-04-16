@@ -8,14 +8,14 @@ Create a numeric field that supports:
 - **Labels**: `label: { text, subtext? }`, optional help tooltip string (`helpIconText`)
 - **Sizes**: Small (`sm`), Medium (`md`), Large (`lg`) via `InputSizeV2`
 - **States**: Default, hover, focus, error, disabled — borders and backgrounds from tokens
-- **Validation**: External `error: { show, message? }` for footer + label error styling when **both** `show` and `message` are set; internal range errors while typing (min/max)
+- **Validation**: **External** `error: { show, message? }` contributes a visible error only when **both** `show` and `message` are set. **Internal range** feedback uses `min` / `max` (`getRangeErrorMessage()` — “between”, “at least …”, or “at most …” depending on which bounds exist). Label chrome, footer text, and `aria-invalid` / `aria-describedby` follow the combined pipeline in `utils.ts` (`getNumberInputHasError`, `getNumberInputDisplayErrorMessage`).
 - **Help**: `hintText` under the field; optional label help icon tooltip
 - **Numeric behavior**: `min`, `max`, `step`; integrated **stepper** (up/down); **Arrow Up/Down** on the field; `preventNegative` to disallow negatives
 - **Optional unit**: `unit` string (e.g. `kg`, `%`) shown in a **unit strip** (`NumberInputV2Unit`). When a non-empty unit is present, **steppers are hidden** and keyboard arrows still adjust the value. **Whitespace-only** `unit` is treated as empty (steppers show; no strip).
 - **Unit placement**: `unitDirection` — `NumberInputV2Direction.LEFT` | `.RIGHT` (default **right**), controlling whether the strip leads or trails the value.
-- **Optional slots**: `slot={{ left, right }}` — extra **React nodes** (often icons) inside the field edges when **`unit` is set**; horizontal padding is measured (`ResizeObserver` + layout) so text does not overlap adornments.
+- **Optional slots**: `slot={{ left?, right? }}` — extra **React nodes** (often icons) inside the field edges when **`unit` is set**; horizontal padding is measured (`ResizeObserver` + layout) so text does not overlap adornments.
 - **Responsive labels**: On small viewports with large size, static labels hide and a **floating label** is used (same breakpoint pattern as TextInputV2)
-- **Accessibility**: Native `<input type="text" inputMode="decimal">` with `role="spinbutton"`, `aria-valuenow` / `aria-valuemin` / `aria-valuemax`, `aria-required`, `aria-invalid`, `aria-describedby` for hint/error
+- **Accessibility**: Native `<input type="text" inputMode="decimal">` with `role="spinbutton"`, `aria-valuenow` / `aria-valuemin` / `aria-valuemax`, `aria-required`, `aria-invalid` (driven by `hasError`), `aria-describedby` for hint/error
 - **Ref forwarding**: Consumer `ref` targets the underlying `<input>` via `setExternalRef` (shared with TextInputV2)
 - **Theme**: Light/dark tokens via `useResponsiveTokens('NUMBER_INPUT_V2')`
 
@@ -60,8 +60,8 @@ enum NumberInputV2Direction {
 
 type NumberInputV2Props = {
     slot?: {
-        left: React.ReactNode
-        right: React.ReactNode
+        left?: React.ReactNode
+        right?: React.ReactNode
     }
     value: number | null
     unit?: string
@@ -91,11 +91,12 @@ type NumberInputV2Props = {
 >
 ```
 
-- **`value` / `onChange`**: `onChange` receives a synthetic event; `e.target.value` is a string (empty string when cleared). Callers typically parse to `number | null`.
+- **`value` / `onChange`**: `onChange` receives a synthetic event; `e.target.value` is a string (empty string when cleared). Callers typically parse to `number | null`. Duplicate emissions are skipped when the committed string matches the current controlled value (`shouldSkipControlledChange` in `utils.ts`).
 - **`unit` / `unitDirection`**: Visual unit strip; direction controls DOM order and which horizontal padding side includes the measured unit width.
 - **`slot`**: Adornments **only render when `unit` is non-empty** (after trim). The HTML attribute `slot` is **omitted** from `InputHTMLAttributes` so it does not collide with this object prop (native `slot` is a string).
 - **Omit `size` | `style` | `className`**: Size is design-system `InputSizeV2`; `filterBlockedProps` strips `className` / `style` on the primitive input.
 - **`helpIconText`**: Plain string for the label tooltip (TextInputV2 uses `{ text, onClick? }`; NumberInputV2 keeps a string for parity with simpler use cases).
+- **Spread HTML attributes**: `id`, `placeholder`, `disabled`, `required`, `autoComplete`, etc. are supported where not omitted above.
 
 ## Token overview
 
@@ -103,7 +104,7 @@ Tokens are loaded with `useResponsiveTokens<NumberInputV2TokensType>('NUMBER_INP
 
 - **`gap`**: Vertical stack gap
 - **`topContainer`**: `InputLabelsV2` tokens (label, sublabel, required, help icon)
-- **`inputContainer`**: Placeholder, typography, padding (`x` / `y`), border, background, line height, **`stepperButton`** (width, backgrounds, icon colors), **`unit`** (padding, borders, typography for the strip), **`slot`** (margins / sizing hooks for left and right adornments)
+- **`inputContainer`**: Placeholder, typography, **per-edge padding** (`paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` per size), border, background, line height, **`stepperButton`** (width, backgrounds, icon colors), **`unit`** (padding, borders, typography for the strip), **`slot`** (margins / sizing hooks for left and right adornments)
 - **`bottomContainer`**: Hint and error message typography
 
 Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberInputV2.dark.tokens.ts`.
@@ -116,11 +117,18 @@ Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberIn
 
 **Rationale**: Consistent control over formatting, minus sign handling, and blur clamping; avoids browser-specific spinner UI duplicating the custom stepper.
 
-### 2. External error styling requires `show` **and** `message`
+### 2. Error state: external vs range (`getNumberInputHasError`)
 
-**Decision**: `hasError` for label and field chrome is `internalError || Boolean(error?.show && error?.message)`.
+**Decision**:
 
-**Rationale**: Avoid treating the default `error` object as truthy (objects are always truthy in boolean checks). Footer can still use `error.show` for layout; invalid styling follows the same rule as the message pipeline.
+- **`hasError`** (label chrome, border, `aria-invalid`):  
+  `(Boolean(error?.show && error?.message)) || Boolean(rangeErrorMessage)`  
+  where `rangeErrorMessage` comes from `getRangeErrorMessageIfOutside()` when the controlled numeric value is outside `min` / `max`.
+- **`displayErrorMessage`** (footer, `aria-describedby` error target):  
+  `(error?.show && error?.message) || rangeErrorMessage`  
+  (same string sources; empty external message does not display).
+
+**Rationale**: `error: { show: true }` without `message` must not flip the field into an error state (objects are truthy; the pipeline keys off `show` **and** `message`). Range violations still surface immediately without replacing parent-level validation.
 
 ### 3. Effective value when `preventNegative` is true
 
@@ -130,7 +138,7 @@ Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberIn
 
 ### 4. Ref forwarding
 
-**Decision**: `forwardRef<HTMLInputElement>` with a ref callback that calls `setExternalRef` from `TextInputV2/utils` (same helper as TextInputV2).
+**Decision**: `forwardRef<HTMLInputElement>` with a ref callback that calls `setExternalRef` from `InputsV2/utils/utils.ts` (same helper as TextInputV2).
 
 **Rationale**: One shared pattern for callback refs and object refs; consumer focuses or measures the real DOM input.
 
@@ -148,7 +156,7 @@ Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberIn
 
 ### 7. Internal vs external range errors
 
-**Decision**: While typing, values outside `min`/`max` set internal error state and `getRangeErrorMessage()`; external `error` is for form-level messages. `aria-describedby` includes the error region when there is a message to show (external or internal).
+**Decision**: Values outside `min`/`max` produce `rangeErrorMessage` via `getRangeErrorMessage()` / `getRangeErrorMessageIfOutside()`. External `error` is for form-level messages. `aria-describedby` includes the error region when `displayErrorMessage` is set (external or range). Hint is omitted from `aria-describedby` when `hasError` is true (`buildNumberInputAriaDescribedBy`).
 
 **Rationale**: Immediate feedback on out-of-range input without replacing parent validation.
 
@@ -158,7 +166,7 @@ Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberIn
 
 ### 9. Unit strip and measured padding
 
-**Decision**: The unit `Block` and slot wrappers use `ResizeObserver` (via `subscribeElementOffsetWidth` in `utils.ts`) so padding updates when copy, theme, or breakpoint changes size.
+**Decision**: The unit `Block` and slot wrappers use `ResizeObserver` (via `subscribeElementOffsetWidth` in `utils.ts`) so padding updates when copy, theme, **size**, or breakpoint changes layout.
 
 **Rationale**: Avoids stale layout when `unit` text or slot content width changes without a full prop identity change.
 
@@ -175,3 +183,4 @@ Light/dark implementations live in `NumberInputV2.light.tokens.ts` and `NumberIn
 - Implementation: `packages/blend/lib/components/InputsV2/NumberInputV2/`
 - Storybook: `Components/Inputs/NumberInputV2`
 - Tests: `packages/blend/__tests__/components/NumberInputV2/`
+- Legacy numeric input (v1): `packages/blend/lib/components/Inputs/NumberInput/` — Storybook `Components/Inputs/NumberInput`

@@ -125,6 +125,45 @@ describe('NumberInputV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards when value violates min-only bound (range message)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Floor', subtext: '' }}
+                    value={-5}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when value violates max-only bound (range message)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Ceiling', subtext: '' }}
+                    value={150}
+                    onChange={noop}
+                    max={100}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with help icon only (supplementary)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Tax rate', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    helpIconText="Shown on your last return."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {
@@ -203,6 +242,55 @@ describe('NumberInputV2 Accessibility', () => {
             const input = screen.getByRole('spinbutton')
             expect(input).toHaveAttribute('aria-describedby')
             expect(screen.getByText('Invalid value')).toBeInTheDocument()
+        })
+
+        it('shows min-only range error when value is below minimum', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={-2}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            expect(
+                screen.getByText(/Value must be at least 0/i)
+            ).toBeInTheDocument()
+        })
+
+        it('associates min-only range error with input via aria-describedby', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={-1}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            const describedBy = input.getAttribute('aria-describedby')
+            expect(describedBy).toBeTruthy()
+            const errorId = describedBy!
+                .split(/\s+/)
+                .find((id) => id.endsWith('-error'))
+            expect(errorId).toBeTruthy()
+            expect(document.getElementById(errorId!)).toHaveTextContent(
+                /Value must be at least 0/i
+            )
+        })
+
+        it('shows max-only range error when value is above maximum', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={200}
+                    onChange={noop}
+                    max={100}
+                />
+            )
+            expect(
+                screen.getByText(/Value must be at most 100/i)
+            ).toBeInTheDocument()
         })
     })
 

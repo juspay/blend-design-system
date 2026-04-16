@@ -340,8 +340,9 @@ export const getNumberInputV2PaddingLeft = (
     unitDirection: NumberInputV2Direction,
     measuredUnitWidth: number,
     measuredLeftSlotWidth: number,
-    _measuredRightSlotWidth: number
+    measuredRightSlotWidth: number
 ): string => {
+    void measuredRightSlotWidth
     const pl = inputContainerTokens.paddingLeft[size]
     const ml = toPixels(inputContainerTokens.slot.left.margin[size] ?? 0)
     if (showUnit && unitDirection === NumberInputV2Direction.LEFT) {
@@ -365,9 +366,10 @@ export const getNumberInputV2PaddingRight = (
     showUnit: boolean,
     unitDirection: NumberInputV2Direction,
     measuredUnitWidth: number,
-    _measuredLeftSlotWidth: number,
+    measuredLeftSlotWidth: number,
     measuredRightSlotWidth: number
 ): string => {
+    void measuredLeftSlotWidth
     const pr = inputContainerTokens.paddingRight[size]
     const mr = toPixels(inputContainerTokens.slot.right.margin[size] ?? 0)
     if (showUnit && unitDirection === NumberInputV2Direction.RIGHT) {

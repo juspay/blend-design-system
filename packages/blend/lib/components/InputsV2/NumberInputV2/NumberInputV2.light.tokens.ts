@@ -160,9 +160,9 @@ export const getNumberInputV2LightTokens = (
                             lg: foundationToken.unit[14],
                         },
                         margin: {
-                            sm: foundationToken.unit[14],
-                            md: foundationToken.unit[14],
-                            lg: foundationToken.unit[14],
+                            sm: foundationToken.unit[15],
+                            md: foundationToken.unit[15],
+                            lg: foundationToken.unit[15],
                         },
                     },
                     right: {
@@ -352,9 +352,9 @@ export const getNumberInputV2LightTokens = (
                             lg: foundationToken.unit[14],
                         },
                         margin: {
-                            sm: foundationToken.unit[14],
-                            md: foundationToken.unit[14],
-                            lg: foundationToken.unit[14],
+                            sm: foundationToken.unit[15],
+                            md: foundationToken.unit[15],
+                            lg: foundationToken.unit[15],
                         },
                     },
                     right: {
