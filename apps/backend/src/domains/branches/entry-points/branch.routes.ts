@@ -1,56 +1,22 @@
 import { Router, type IRouter, type Request, type Response } from 'express'
 import { authenticate } from '@/middlewares/auth.js'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
+import {
+    validate,
+    createBranchSchema,
+    updateBranchSchema,
+    publishBranchSchema,
+    resolveTokensSchema,
+    createSnapshotSchema,
+    forkBranchSchema,
+} from '@/middlewares/validate.js'
 import * as branchService from '../domain/branch.service.js'
 
 const router: IRouter = Router()
 
-/**
- * @openapi
- * /api/branches:
- *   get:
- *     summary: List all branches
- *     description: Get paginated list of branches with optional filtering
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           default: 20
- *           maximum: 100
- *         description: Number of results to return
- *       - in: query
- *         name: cursor
- *         schema:
- *           type: string
- *         description: Pagination cursor from previous response
- *     responses:
- *       200:
- *         description: List of branches
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
- *                   properties:
- *                     branches:
- *                       type: array
- *                       items:
- *                         $ref: '#/components/schemas/Branch'
- *                     nextCursor:
- *                       type: string
- *                       nullable: true
- *       401:
- *         description: Unauthorized
- */
+// ---------------------------------------------------------------------------
+// List Branches
+// ---------------------------------------------------------------------------
 router.get(
     '/',
     authenticate,
@@ -59,6 +25,11 @@ router.get(
             limit: parseInt(req.query.limit as string) || 20,
             cursor: req.query.cursor as string,
             createdBy: req.query.createdBy as string,
+            organizationId: req.query.organizationId as string,
+            status: req.query.status as string,
+            visibility: req.query.visibility as string,
+            search: req.query.search as string,
+            tag: req.query.tag as string,
         })
 
         res.json({
@@ -68,47 +39,20 @@ router.get(
     })
 )
 
-/**
- * @openapi
- * /api/branches:
- *   post:
- *     summary: Create a new branch
- *     description: Create a new token branch with default configuration
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *             properties:
- *               name:
- *                 type: string
- *                 description: Branch name
- *               parentBranch:
- *                 type: string
- *                 description: ID of parent branch to fork from
- *               brandConfig:
- *                 type: object
- *                 description: Initial brand configuration
- *     responses:
- *       201:
- *         description: Branch created successfully
- *       400:
- *         description: Validation error
- *       401:
- *         description: Unauthorized
- */
+// ---------------------------------------------------------------------------
+// Create Branch
+// ---------------------------------------------------------------------------
 router.post(
     '/',
     authenticate,
+    validate({ body: createBranchSchema }),
     asyncHandler(async (req: Request, res: Response) => {
-        const branch = await branchService.createBranch(req.body, req.user!.id)
+        const branch = await branchService.createBranch(
+            req.body,
+            req.user!.id,
+            req.user!.displayName || req.user!.email,
+            req.user!.organizationId || req.body.organizationId
+        )
         res.status(201).json({
             success: true,
             data: { branch },
@@ -116,29 +60,9 @@ router.post(
     })
 )
 
-/**
- * @openapi
- * /api/branches/{branchId}:
- *   get:
- *     summary: Get branch by ID
- *     description: Retrieve detailed information about a specific branch
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: branchId
- *         required: true
- *         schema:
- *           type: string
- *         description: Branch UUID
- *     responses:
- *       200:
- *         description: Branch details
- *       404:
- *         description: Branch not found
- */
+// ---------------------------------------------------------------------------
+// Get Branch
+// ---------------------------------------------------------------------------
 router.get(
     '/:branchId',
     authenticate,
@@ -151,43 +75,13 @@ router.get(
     })
 )
 
-/**
- * @openapi
- * /api/branches/{branchId}:
- *   patch:
- *     summary: Update branch
- *     description: Update branch name or brand configuration
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: branchId
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               brandConfig:
- *                 type: object
- *     responses:
- *       200:
- *         description: Branch updated
- *       403:
- *         description: Not authorized to update
- *       404:
- *         description: Branch not found
- */
+// ---------------------------------------------------------------------------
+// Update Branch
+// ---------------------------------------------------------------------------
 router.patch(
     '/:branchId',
     authenticate,
+    validate({ body: updateBranchSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const branch = await branchService.updateBranch(
             req.params.branchId,
@@ -201,30 +95,9 @@ router.patch(
     })
 )
 
-/**
- * @openapi
- * /api/branches/{branchId}:
- *   delete:
- *     summary: Delete branch
- *     description: Permanently delete a branch and all its data
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: branchId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Branch deleted
- *       403:
- *         description: Not authorized to delete
- *       404:
- *         description: Branch not found
- */
+// ---------------------------------------------------------------------------
+// Delete Branch
+// ---------------------------------------------------------------------------
 router.delete(
     '/:branchId',
     authenticate,
@@ -237,48 +110,20 @@ router.delete(
     })
 )
 
-/**
- * @openapi
- * /api/branches/{branchId}/fork:
- *   post:
- *     summary: Fork a branch
- *     description: Create a copy of an existing branch
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: branchId
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *             properties:
- *               name:
- *                 type: string
- *                 description: Name for the new forked branch
- *     responses:
- *       201:
- *         description: Branch forked successfully
- *       404:
- *         description: Source branch not found
- */
+// ---------------------------------------------------------------------------
+// Fork Branch
+// ---------------------------------------------------------------------------
 router.post(
     '/:branchId/fork',
     authenticate,
+    validate({ body: forkBranchSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const branch = await branchService.forkBranch(
             req.params.branchId,
             req.body.name,
-            req.user!.id
+            req.user!.id,
+            req.user!.displayName || req.user!.email,
+            req.user!.organizationId || req.body.organizationId
         )
         res.status(201).json({
             success: true,
@@ -287,54 +132,19 @@ router.post(
     })
 )
 
-/**
- * @openapi
- * /api/branches/{branchId}/publish:
- *   post:
- *     summary: Publish branch
- *     description: Create a new version of the branch
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: branchId
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - version
- *             properties:
- *               version:
- *                 type: string
- *                 pattern: '^\\d+\\.\\d+\\.\\d+$'
- *                 description: Version number (e.g., 1.0.0)
- *               notes:
- *                 type: string
- *                 description: Release notes
- *     responses:
- *       200:
- *         description: Branch published
- *       400:
- *         description: Invalid version format
- *       403:
- *         description: Not authorized
- */
+// ---------------------------------------------------------------------------
+// Publish Branch
+// ---------------------------------------------------------------------------
 router.post(
     '/:branchId/publish',
     authenticate,
+    validate({ body: publishBranchSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         await branchService.publishBranch(
             req.params.branchId,
             req.body,
-            req.user!.id
+            req.user!.id,
+            req.user!.displayName || req.user!.email
         )
         res.json({
             success: true,
@@ -343,26 +153,9 @@ router.post(
     })
 )
 
-/**
- * @openapi
- * /api/branches/{branchId}/versions:
- *   get:
- *     summary: List branch versions
- *     description: Get all published versions of a branch
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: branchId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: List of versions
- */
+// ---------------------------------------------------------------------------
+// List Versions
+// ---------------------------------------------------------------------------
 router.get(
     '/:branchId/versions',
     authenticate,
@@ -375,55 +168,13 @@ router.get(
     })
 )
 
-/**
- * @openapi
- * /api/branches/{branchId}/resolve:
- *   post:
- *     summary: Resolve branch tokens
- *     description: Convert brand config to component tokens for a theme
- *     tags:
- *       - Branches
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: branchId
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               theme:
- *                 type: string
- *                 enum: [light, dark]
- *                 default: light
- *     responses:
- *       200:
- *         description: Resolved component tokens
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
- *                   properties:
- *                     branchId:
- *                       type: string
- *                     theme:
- *                       type: string
- *                     componentTokens:
- *                       type: object
- */
+// ---------------------------------------------------------------------------
+// Resolve Tokens
+// ---------------------------------------------------------------------------
 router.post(
     '/:branchId/resolve',
     authenticate,
+    validate({ body: resolveTokensSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const { branch, theme, tokens } = await branchService.resolveTokens(
             req.params.branchId,
@@ -436,6 +187,86 @@ router.post(
                 theme,
                 componentTokens: tokens,
             },
+        })
+    })
+)
+
+// ---------------------------------------------------------------------------
+// List Snapshots
+// ---------------------------------------------------------------------------
+router.get(
+    '/:branchId/snapshots',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response) => {
+        const { getBranch } = await import('../domain/branch.service.js')
+        await getBranch(req.params.branchId)
+        const { listSnapshots } =
+            await import('../data-access/branch.repository.js')
+        const snapshots = await listSnapshots(req.params.branchId)
+        res.json({
+            success: true,
+            data: { snapshots },
+        })
+    })
+)
+
+// ---------------------------------------------------------------------------
+// Create Snapshot
+// ---------------------------------------------------------------------------
+router.post(
+    '/:branchId/snapshots',
+    authenticate,
+    validate({ body: createSnapshotSchema }),
+    asyncHandler(async (req: Request, res: Response) => {
+        const { getBranch } = await import('../domain/branch.service.js')
+        const branch = await getBranch(req.params.branchId)
+        const { createSnapshot } =
+            await import('../data-access/branch.repository.js')
+        const snapshot = await createSnapshot(req.params.branchId, {
+            brandConfig: req.body.brandConfig || branch.brandConfig,
+            label: req.body.label || null,
+            isAutoSave: req.body.isAutoSave || false,
+            savedBy: req.user!.id,
+            savedByName: req.user!.displayName || req.user!.email,
+        })
+        res.status(201).json({
+            success: true,
+            data: { snapshot },
+        })
+    })
+)
+
+// ---------------------------------------------------------------------------
+// Add / Remove Tags
+// ---------------------------------------------------------------------------
+router.post(
+    '/:branchId/tags/:tagId',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response) => {
+        await branchService.addTag(
+            req.params.branchId,
+            req.params.tagId,
+            req.user!.id
+        )
+        res.json({
+            success: true,
+            message: 'Tag added to branch',
+        })
+    })
+)
+
+router.delete(
+    '/:branchId/tags/:tagId',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response) => {
+        await branchService.removeTag(
+            req.params.branchId,
+            req.params.tagId,
+            req.user!.id
+        )
+        res.json({
+            success: true,
+            message: 'Tag removed from branch',
         })
     })
 )

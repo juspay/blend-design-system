@@ -39,16 +39,47 @@ export interface FontOverrides {
 }
 
 /**
+ * Per-component token overrides.
+ *
+ * When a user wants a specific component to use different colors
+ * than the global brand (e.g. a red destructive button while the
+ * global primary is blue), they can specify overrides per component.
+ *
+ * The token engine merges these on top of the globally resolved tokens:
+ *   global brand tokens → component overrides → final tokens
+ *
+ * @example
+ * ```json
+ * {
+ *   "Button": {
+ *     "colors": { "primary": { "500": "#DC2626" } }
+ *   },
+ *   "Alert": {
+ *     "radius": { "8": "0px" }
+ *   }
+ * }
+ * ```
+ */
+export interface ComponentOverrides {
+    [componentName: string]: {
+        colors?: BrandColors
+        radius?: RadiusOverrides
+        shadows?: ShadowOverrides
+        font?: FontOverrides
+    }
+}
+
+/**
  * The brand configuration document.
  *
  * This is the source of truth that flows through the entire system:
  *   Dashboard edits → Firestore stores → CLI pulls → Token engine resolves
  */
 export interface BrandConfig {
-    /** Unique identifier, e.g. "hdfc/retail" or "neobank/light" */
+    /** Unique identifier, e.g. "my-brand/default" */
     brandId: string
 
-    /** Human-readable name, e.g. "HDFC Bank Retail" */
+    /** Human-readable name, e.g. "My Brand" */
     name: string
 
     /** Semver version, e.g. "1.0.0" */
@@ -65,6 +96,43 @@ export interface BrandConfig {
 
     /** Font overrides applied to FOUNDATION_THEME.font */
     font?: FontOverrides
+
+    /**
+     * Per-component token overrides.
+     *
+     * Allows specific components to deviate from the global brand tokens.
+     * For example, a "destructive" button variant with red primary while
+     * the global primary is blue.
+     *
+     * Keys are V2 component names (e.g. "Button", "Alert", "Input").
+     * Values follow the same shape as the top-level overrides.
+     */
+    componentOverrides?: ComponentOverrides
+
+    /**
+     * Dark mode overrides — applied on top of the light theme when
+     * resolving tokens with theme='dark'.
+     *
+     * If not set, the token engine auto-generates dark variants from
+     * the light palette (e.g. lighter primary for dark backgrounds).
+     * Set this to customize dark mode independently.
+     *
+     * @example
+     * ```json
+     * {
+     *   "colors": {
+     *     "primary": { "500": "#60A5FA" },
+     *     "gray": { "500": "#9CA3AF" }
+     *   }
+     * }
+     * ```
+     */
+    darkModeOverrides?: {
+        colors?: BrandColors
+        radius?: RadiusOverrides
+        shadows?: ShadowOverrides
+        font?: FontOverrides
+    }
 }
 
 // ---------------------------------------------------------------------------

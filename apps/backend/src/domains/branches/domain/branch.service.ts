@@ -1,4 +1,8 @@
-import { NotFoundError, ValidationError } from '@/errors/AppError.js'
+import {
+    NotFoundError,
+    ValidationError,
+    ForbiddenError,
+} from '@/errors/AppError.js'
 import type {
     Branch,
     CreateBranchDTO,
@@ -7,17 +11,30 @@ import type {
     BrandConfig,
 } from './branch.types.js'
 import * as branchRepo from '../data-access/branch.repository.js'
+import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
+import * as tagRepo from '@/domains/tags/data-access/tag.repository.js'
+import * as userRepo from '@/domains/users/data-access/user.repository.js'
 
 export const createBranch = async (
     dto: CreateBranchDTO,
-    userId: string
+    userId: string,
+    userName: string,
+    organizationId?: string | null
 ): Promise<Branch> => {
     if (!dto.name?.trim()) {
         throw new ValidationError('Branch name is required')
     }
 
+    let orgId: string | null = organizationId || dto.organizationId || null
+    if (!orgId) {
+        const membership = await userRepo.findUserMembership(userId)
+        orgId = membership?.organizationId || null
+    }
+
+    const brandId = dto.brandId || dto.name.toLowerCase().replace(/\s+/g, '-')
+
     const defaultConfig: BrandConfig = {
-        brandId: dto.name.toLowerCase().replace(/\s+/g, '-'),
+        brandId,
         name: dto.name,
         version: '1.0.0',
         colors: {
@@ -43,19 +60,39 @@ export const createBranch = async (
         },
     }
 
-    const parentBranch = dto.parentBranch || null
-
-    return branchRepo.createBranch({
-        brandId: defaultConfig.brandId,
+    const branch = await branchRepo.createBranch({
+        organizationId: orgId,
+        brandId,
         name: dto.name,
-        parentBranch,
+        description: dto.description || null,
+        parentBranchId: dto.parentBranchId || null,
         status: 'draft',
+        visibility: dto.visibility || 'private',
         brandConfig: { ...defaultConfig, ...dto.brandConfig },
         createdBy: userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        publishedVersions: 0,
+        createdByName: userName,
     })
+
+    if (dto.tags && dto.tags.length > 0) {
+        for (const tagName of dto.tags) {
+            const tag = await tagRepo.createTag(tagName)
+            await branchRepo.addTagToBranch(branch.id, tag.id)
+        }
+    }
+
+    if (orgId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: orgId,
+            action: 'branch_created',
+            actorId: userId,
+            actorEmail: '',
+            targetType: 'branch',
+            targetId: branch.id,
+            metadata: { name: dto.name, brandId },
+        })
+    }
+
+    return branch as unknown as Branch
 }
 
 export const getBranch = async (branchId: string): Promise<Branch> => {
@@ -63,14 +100,19 @@ export const getBranch = async (branchId: string): Promise<Branch> => {
     if (!branch) {
         throw new NotFoundError('Branch')
     }
-    return branch
+    return branch as unknown as Branch
 }
 
 export const listBranches = async (
     options: {
+        organizationId?: string
         limit?: number
         cursor?: string
         createdBy?: string
+        status?: string
+        visibility?: string
+        search?: string
+        tag?: string
     } = {}
 ) => {
     return branchRepo.listBranches(options)
@@ -84,14 +126,14 @@ export const updateBranch = async (
     const branch = await getBranch(branchId)
 
     if (branch.createdBy !== userId) {
-        throw new ValidationError('Only the creator can update this branch')
+        throw new ForbiddenError('Only the creator can update this branch')
     }
 
-    const updates: Partial<Branch> = {}
+    const updates: any = {}
 
-    if (dto.name) {
-        updates.name = dto.name
-    }
+    if (dto.name) updates.name = dto.name
+    if (dto.description !== undefined) updates.description = dto.description
+    if (dto.visibility) updates.visibility = dto.visibility
 
     if (dto.brandConfig) {
         updates.brandConfig = {
@@ -121,7 +163,19 @@ export const updateBranch = async (
         throw new NotFoundError('Branch')
     }
 
-    return updated
+    if (branch.organizationId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: branch.organizationId,
+            action: 'branch_updated',
+            actorId: userId,
+            actorEmail: '',
+            targetType: 'branch',
+            targetId: branchId,
+            metadata: { fieldsChanged: Object.keys(dto) },
+        })
+    }
+
+    return updated as unknown as Branch
 }
 
 export const deleteBranch = async (
@@ -131,38 +185,82 @@ export const deleteBranch = async (
     const branch = await getBranch(branchId)
 
     if (branch.createdBy !== userId) {
-        throw new ValidationError('Only the creator can delete this branch')
+        throw new ForbiddenError('Only the creator can delete this branch')
     }
 
-    await branchRepo.deleteBranch(branchId)
+    await branchRepo.softDeleteBranch(branchId)
+
+    if (branch.organizationId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: branch.organizationId,
+            action: 'branch_deleted',
+            actorId: userId,
+            actorEmail: '',
+            targetType: 'branch',
+            targetId: branchId,
+            metadata: {},
+        })
+    }
 }
 
 export const forkBranch = async (
     sourceBranchId: string,
     newName: string,
-    userId: string
+    userId: string,
+    userName: string,
+    organizationId?: string | null
 ): Promise<Branch> => {
     if (!newName?.trim()) {
         throw new ValidationError('New branch name is required')
     }
 
-    const forked = await branchRepo.forkBranch(sourceBranchId, newName, userId)
+    const source = await branchRepo.getBranchById(sourceBranchId)
+    if (!source) {
+        throw new NotFoundError('Source branch')
+    }
+
+    let orgId: string | null = organizationId || null
+    if (!orgId) {
+        const membership = await userRepo.findUserMembership(userId)
+        orgId = membership?.organizationId || null
+    }
+
+    const forked = await branchRepo.forkBranch(sourceBranchId, {
+        name: newName,
+        brandId: newName.toLowerCase().replace(/\s+/g, '-'),
+        organizationId: orgId,
+        createdBy: userId,
+        createdByName: userName,
+    })
     if (!forked) {
         throw new NotFoundError('Source branch')
     }
 
-    return forked
+    if (orgId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: orgId,
+            action: 'branch_forked',
+            actorId: userId,
+            actorEmail: '',
+            targetType: 'branch',
+            targetId: forked.id,
+            metadata: { sourceBranchId },
+        })
+    }
+
+    return forked as unknown as Branch
 }
 
 export const publishBranch = async (
     branchId: string,
     dto: PublishBranchDTO,
-    userId: string
+    userId: string,
+    userName: string
 ): Promise<void> => {
     const branch = await getBranch(branchId)
 
     if (branch.createdBy !== userId) {
-        throw new ValidationError('Only the creator can publish this branch')
+        throw new ForbiddenError('Only the creator can publish this branch')
     }
 
     if (!dto.version?.match(/^\d+\.\d+\.\d+$/)) {
@@ -174,10 +272,24 @@ export const publishBranch = async (
     await branchRepo.createVersion(branchId, {
         version: dto.version,
         brandConfig: branch.brandConfig,
+        changelog: dto.changelog || null,
+        isBreaking: dto.isBreaking || false,
+        isPrerelease: dto.isPrerelease || false,
         publishedBy: userId,
-        publishedAt: new Date(),
-        notes: dto.notes || '',
+        publishedByName: userName,
     })
+
+    if (branch.organizationId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: branch.organizationId,
+            action: 'branch_published',
+            actorId: userId,
+            actorEmail: '',
+            targetType: 'branch',
+            targetId: branchId,
+            metadata: { version: dto.version, isBreaking: dto.isBreaking },
+        })
+    }
 }
 
 export const listVersions = async (branchId: string) => {
@@ -190,11 +302,6 @@ export const resolveTokens = async (
     theme: 'light' | 'dark' = 'light'
 ): Promise<{ branch: Branch; theme: string; tokens: unknown }> => {
     const branch = await getBranch(branchId)
-
-    // Mock token resolution until @blend-design/token-engine is fully built
-    // TODO: Re-enable actual token engine when DTS issues are resolved
-    // const { resolveBrandTokens } = await import('@blend-design/token-engine')
-    // const componentTokens = resolveBrandTokens(branch.brandConfig, theme)
 
     const primaryColor =
         branch.brandConfig.colors?.primary?.['500'] ?? '#3B82F6'
@@ -216,4 +323,22 @@ export const resolveTokens = async (
             mockData: true,
         },
     }
+}
+
+export const addTag = async (
+    branchId: string,
+    tagId: string,
+    _userId: string
+): Promise<void> => {
+    await getBranch(branchId)
+    await branchRepo.addTagToBranch(branchId, tagId)
+}
+
+export const removeTag = async (
+    branchId: string,
+    tagId: string,
+    _userId: string
+): Promise<void> => {
+    await getBranch(branchId)
+    await branchRepo.removeTagFromBranch(branchId, tagId)
 }

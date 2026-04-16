@@ -11,9 +11,10 @@ export { generateColorScale, isValidHexColor } from './color-scale'
 export { getPreset, listPresets, PRESETS } from './presets'
 export {
     PRESET_BLEND_DEFAULT,
-    PRESET_HDFC,
-    PRESET_NEOBANK,
-    PRESET_FINTECH,
+    PRESET_JUSPAY,
+    PRESET_PURPLE,
+    PRESET_GREEN,
+    PRESET_ORANGE,
 } from './presets'
 
 export type {
@@ -23,6 +24,7 @@ export type {
     RadiusOverrides,
     ShadowOverrides,
     FontOverrides,
+    ComponentOverrides,
     RadiusPreset,
     ValidationResult,
     ValidationError,

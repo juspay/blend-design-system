@@ -13,7 +13,7 @@ import {
     findUserByEmail,
     findUserByGoogleId,
     findUserById,
-    createUser,
+    findOrCreateUser,
     updateUserLogin,
     storeRefreshToken,
     findRefreshToken,
@@ -45,7 +45,12 @@ export const googleCallback = async (req: Request, res: Response) => {
             if (existingUser) {
                 user = existingUser
             } else {
-                user = await createUser(googleUser)
+                user = await findOrCreateUser({
+                    email: googleUser.email,
+                    displayName: googleUser.displayName,
+                    photoUrl: googleUser.photoUrl,
+                    googleId: googleUser.googleId,
+                })
                 isNewUser = true
                 logger.info(
                     { userId: user.id, email: user.email },
@@ -53,7 +58,14 @@ export const googleCallback = async (req: Request, res: Response) => {
                 )
             }
         } else {
-            user = await updateUserLogin(user.id)
+            const updated = await updateUserLogin(user.id)
+            if (updated) user = updated
+        }
+
+        if (!user) {
+            return res.redirect(
+                `${env.FRONTEND_URL}/login?error=user_creation_failed`
+            )
         }
 
         const tokens = generateTokens({
@@ -73,6 +85,19 @@ export const googleCallback = async (req: Request, res: Response) => {
             sameSite: 'lax',
             maxAge: REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60 * 1000,
             path: '/api/auth',
+        })
+
+        // Set access token as httpOnly cookie for secure browser requests.
+        // The redirect still passes the token in the URL for the frontend
+        // auth-callback page to do the initial setup, but subsequent requests
+        // use the cookie automatically via credentials: 'include'.
+        const accessTokenMaxDays = 7
+        res.cookie('accessToken', tokens.accessToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: accessTokenMaxDays * 24 * 60 * 60 * 1000,
+            path: '/api',
         })
 
         res.redirect(
@@ -129,6 +154,14 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
             path: '/api/auth',
         })
 
+        res.cookie('accessToken', newTokens.accessToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            path: '/api',
+        })
+
         res.json({
             success: true,
             data: {
@@ -157,6 +190,13 @@ export const logout = async (req: Request, res: Response) => {
         })
     }
 
+    res.clearCookie('accessToken', {
+        httpOnly: true,
+        secure: env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/api',
+    })
+
     res.json({ success: true, message: 'Logged out successfully' })
 }
 
@@ -172,6 +212,13 @@ export const logoutAllDevices = async (req: Request, res: Response) => {
         secure: env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/api/auth',
+    })
+
+    res.clearCookie('accessToken', {
+        httpOnly: true,
+        secure: env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/api',
     })
 
     res.json({ success: true, message: 'Logged out from all devices' })
@@ -190,6 +237,10 @@ export const getCurrentUser = async (req: Request, res: Response) => {
         throw new NotFoundError('User')
     }
 
+    const { findUserMemberships } =
+        await import('@/domains/users/data-access/user.repository.js')
+    const memberships = await findUserMemberships(userId)
+
     res.json({
         success: true,
         data: {
@@ -200,6 +251,10 @@ export const getCurrentUser = async (req: Request, res: Response) => {
                 photoUrl: user.photoUrl,
                 role: user.role,
                 isActive: user.isActive,
+                organizations: memberships.map((m: any) => ({
+                    organizationId: m.organizationId,
+                    role: m.role,
+                })),
             },
         },
     })

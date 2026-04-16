@@ -7,7 +7,7 @@
  * - branches/{branchId}/snapshots/{snapshotId} - Auto-saved drafts
  *
  * This model supports:
- * - Multi-tenant branching (hdfc/retail, hdfc/corporate)
+ * - Multi-tenant branching (e.g. my-brand/default, my-brand/dark)
  * - Version history with immutable snapshots
  * - Auto-save drafts before publish
  * - Fork/merge workflows

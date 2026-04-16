@@ -19,10 +19,10 @@
  * import { resolveBrandTokens } from '@blend-design/token-engine'
  *
  * const tokens = resolveBrandTokens({
- *     brandId: 'hdfc/retail',
- *     name: 'HDFC Bank',
+ *     brandId: 'my-brand/default',
+ *     name: 'My Brand',
  *     version: '1.0.0',
- *     colors: { primary: { '500': '#E31837' } },
+ *     colors: { primary: { '500': '#3B82F6' } },
  * })
  *
  * <ThemeProvider componentTokens={tokens}>
@@ -33,14 +33,127 @@
 
 import type { BrandConfig } from './types'
 import { buildBrandFoundation } from './build-brand-foundation'
-import { resolveAllTokens } from './resolve-all-tokens'
+import { resolveAllTokens, resolveComponentTokens } from './resolve-all-tokens'
 
+/**
+ * Resolves a BrandConfig into the full ComponentTokenType object.
+ *
+ * If the config has `componentOverrides`, those overrides are applied
+ * per-component on top of the global brand tokens. This allows specific
+ * components to use different colors/radius/shadows than the global brand.
+ *
+ * @example
+ * ```ts
+ * const tokens = resolveBrandTokens({
+ *   brandId: 'my-brand/default',
+ *   name: 'My Brand',
+ *   version: '1.0.0',
+ *   colors: { primary: { '500': '#3B82F6' } },
+ *   componentOverrides: {
+ *     BUTTONV2: {
+ *       colors: { primary: { '500': '#DC2626' } },
+ *     },
+ *   },
+ * })
+ * ```
+ */
 export function resolveBrandTokens(
     brandConfig: BrandConfig,
     theme: 'light' | 'dark' = 'light'
 ): Record<string, unknown> {
-    const foundation = buildBrandFoundation(brandConfig)
-    return resolveAllTokens(foundation, theme)
+    // For dark mode, merge darkModeOverrides on top of the base config
+    let effectiveConfig = brandConfig
+    if (theme === 'dark' && brandConfig.darkModeOverrides) {
+        effectiveConfig = {
+            ...brandConfig,
+            colors: deepMerge(
+                brandConfig.colors ?? {},
+                brandConfig.darkModeOverrides.colors ?? {}
+            ),
+            radius: {
+                ...brandConfig.radius,
+                ...brandConfig.darkModeOverrides.radius,
+            },
+            shadows: {
+                ...brandConfig.shadows,
+                ...brandConfig.darkModeOverrides.shadows,
+            },
+            font: {
+                ...brandConfig.font,
+                ...brandConfig.darkModeOverrides.font,
+            },
+        }
+    }
+
+    const foundation = buildBrandFoundation(effectiveConfig)
+    const tokens = resolveAllTokens(foundation, theme)
+
+    // Apply per-component overrides if any
+    if (effectiveConfig.componentOverrides) {
+        applyComponentOverrides(tokens, effectiveConfig, theme)
+    }
+
+    return tokens
+}
+
+/**
+ * For each component override, build a modified foundation with the
+ * component-specific overrides merged on top of the brand config,
+ * then re-resolve just that component's tokens.
+ */
+function applyComponentOverrides(
+    tokens: Record<string, unknown>,
+    brandConfig: BrandConfig,
+    theme: 'light' | 'dark'
+): void {
+    const overrides = brandConfig.componentOverrides!
+
+    for (const [componentKey, overrideConfig] of Object.entries(overrides)) {
+        // Build a merged brand config for this component
+        const mergedConfig: BrandConfig = {
+            ...brandConfig,
+            colors: deepMerge(
+                brandConfig.colors ?? {},
+                overrideConfig.colors ?? {}
+            ),
+            radius: { ...brandConfig.radius, ...overrideConfig.radius },
+            shadows: { ...brandConfig.shadows, ...overrideConfig.shadows },
+            font: { ...brandConfig.font, ...overrideConfig.font },
+        }
+
+        const componentFoundation = buildBrandFoundation(mergedConfig)
+        const componentTokens = resolveComponentTokens(
+            componentKey,
+            componentFoundation,
+            theme
+        )
+
+        if (componentTokens !== undefined) {
+            tokens[componentKey] = componentTokens
+        }
+    }
+}
+
+/** Deep merge for nested color objects. */
+function deepMerge(
+    base: Record<string, any>,
+    override: Record<string, any>
+): Record<string, any> {
+    const result = { ...base }
+    for (const [key, value] of Object.entries(override)) {
+        if (
+            value &&
+            typeof value === 'object' &&
+            !Array.isArray(value) &&
+            base[key] &&
+            typeof base[key] === 'object'
+        ) {
+            result[key] = deepMerge(base[key], value)
+        } else {
+            result[key] = value
+        }
+    }
+    return result
 }
 
 export { buildBrandFoundation } from './build-brand-foundation'
@@ -55,9 +168,10 @@ export { generateColorScale, isValidHexColor } from './color-scale'
 export { getPreset, listPresets, PRESETS } from './presets'
 export {
     PRESET_BLEND_DEFAULT,
-    PRESET_HDFC,
-    PRESET_NEOBANK,
-    PRESET_FINTECH,
+    PRESET_JUSPAY,
+    PRESET_PURPLE,
+    PRESET_GREEN,
+    PRESET_ORANGE,
 } from './presets'
 
 export type {
@@ -67,6 +181,7 @@ export type {
     RadiusOverrides,
     ShadowOverrides,
     FontOverrides,
+    ComponentOverrides,
     RadiusPreset,
     ValidationResult,
     ValidationError,

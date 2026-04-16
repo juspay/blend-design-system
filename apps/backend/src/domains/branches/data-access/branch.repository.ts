@@ -1,217 +1,342 @@
-import { firestoreCollections } from '@/config/firebase.js'
-import { FieldValue } from 'firebase-admin/firestore'
+import { prisma } from '@/config/database.js'
 import { logger } from '@/utils/logger.js'
 import type {
-    Branch,
-    BranchVersion,
-    BranchSnapshot,
+    BrandConfig,
+    TagRow,
+    BranchStatus,
+    BranchVisibility,
 } from '../domain/branch.types.js'
 
-export const createBranch = async (
-    branch: Omit<Branch, 'id'>
-): Promise<Branch> => {
-    const docRef = firestoreCollections.branches().doc()
-    const newBranch: Branch = {
-        ...branch,
-        id: docRef.id,
-    }
+export interface BranchRow {
+    id: string
+    organizationId: string | null
+    brandId: string
+    name: string
+    description: string | null
+    parentBranchId: string | null
+    status: BranchStatus
+    visibility: BranchVisibility
+    brandConfig: BrandConfig
+    publishedVersions: number
+    latestVersion: string | null
+    createdBy: string
+    createdByName: string
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
+    tags?: TagRow[]
+}
 
-    await docRef.set({
-        ...newBranch,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+export interface BranchVersionRow {
+    id: string
+    branchId: string
+    version: string
+    brandConfig: BrandConfig
+    changelog: string | null
+    isBreaking: boolean
+    isPrerelease: boolean
+    publishedBy: string
+    publishedByName: string
+    publishedAt: Date
+}
+
+export interface BranchSnapshotRow {
+    id: string
+    branchId: string
+    brandConfig: BrandConfig
+    label: string | null
+    isAutoSave: boolean
+    savedBy: string
+    savedByName: string
+    savedAt: Date
+}
+
+export const createBranch = async (
+    data: Omit<
+        BranchRow,
+        | 'id'
+        | 'createdAt'
+        | 'updatedAt'
+        | 'publishedVersions'
+        | 'latestVersion'
+        | 'deletedAt'
+        | 'tags'
+    > & { organizationId: string | null }
+): Promise<BranchRow> => {
+    const branch = await prisma.branch.create({
+        data: {
+            organizationId: data.organizationId,
+            brandId: data.brandId,
+            name: data.name,
+            description: data.description,
+            parentBranchId: data.parentBranchId,
+            status: data.status || 'draft',
+            visibility: data.visibility || 'private',
+            brandConfig: data.brandConfig as any,
+            createdBy: data.createdBy,
+            createdByName: data.createdByName,
+        },
     })
 
-    logger.info({ branchId: newBranch.id }, 'Branch created')
-    return newBranch
+    logger.info({ branchId: branch.id }, 'Branch created')
+    return branch as unknown as BranchRow
 }
 
 export const getBranchById = async (
     branchId: string
-): Promise<Branch | null> => {
-    logger.debug({ branchId }, 'Getting branch by ID')
+): Promise<BranchRow | null> => {
+    const branch = await prisma.branch.findUnique({
+        where: { id: branchId, deletedAt: null },
+        include: { tags: { include: { tag: true } } },
+    })
 
-    const docRef = firestoreCollections.branch(branchId)
-    logger.debug({ path: docRef.path }, 'Document reference path')
-
-    const doc = await docRef.get()
-
-    logger.debug({ exists: doc.exists, branchId }, 'Branch lookup result')
-
-    if (!doc.exists) return null
+    if (!branch) return null
 
     return {
-        id: doc.id,
-        ...doc.data(),
-    } as Branch
+        ...(branch as any),
+        tags: branch.tags?.map((bt: any) => bt.tag) ?? [],
+    } as unknown as BranchRow
 }
 
 export const listBranches = async (
     options: {
+        organizationId?: string
         limit?: number
         cursor?: string
         createdBy?: string
+        status?: string
+        visibility?: string
+        search?: string
+        tag?: string
     } = {}
-): Promise<{ branches: Branch[]; nextCursor?: string }> => {
-    let query = firestoreCollections
-        .branches()
-        .orderBy('createdAt', 'desc')
-        .limit(options.limit || 20)
+): Promise<{ branches: BranchRow[]; nextCursor?: string }> => {
+    const limit = options.limit || 20
 
+    const where: any = { deletedAt: null }
+
+    if (options.organizationId) where.organizationId = options.organizationId
+    if (options.createdBy) where.createdBy = options.createdBy
+    if (options.status) where.status = options.status
+    if (options.visibility) where.visibility = options.visibility
+    if (options.search) {
+        where.OR = [
+            { name: { contains: options.search, mode: 'insensitive' } },
+            { brandId: { contains: options.search, mode: 'insensitive' } },
+            { description: { contains: options.search, mode: 'insensitive' } },
+        ]
+    }
+    if (options.tag) {
+        where.tags = { some: { tag: { name: options.tag } } }
+    }
     if (options.cursor) {
-        const cursorDoc = await firestoreCollections
-            .branch(options.cursor)
-            .get()
-        if (cursorDoc.exists) {
-            query = query.startAfter(cursorDoc)
-        }
+        where.id = { lt: options.cursor }
     }
 
-    if (options.createdBy) {
-        query = query.where('createdBy', '==', options.createdBy)
+    const branches = await prisma.branch.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: limit + 1,
+        include: { tags: { include: { tag: true } } },
+    })
+
+    let nextCursor: string | undefined
+    if (branches.length > limit) {
+        nextCursor = branches[limit - 1].id
+        branches.pop()
     }
 
-    const snapshot = await query.get()
-    const branches = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-    })) as Branch[]
-
-    const nextCursor =
-        branches.length === (options.limit || 20)
-            ? branches[branches.length - 1].id
-            : undefined
-
-    return { branches, nextCursor }
+    return {
+        branches: branches.map((b: any) => ({
+            ...b,
+            tags: b.tags?.map((bt: any) => bt.tag) ?? [],
+        })) as unknown as BranchRow[],
+        nextCursor,
+    }
 }
 
 export const updateBranch = async (
     branchId: string,
-    updates: Partial<Omit<Branch, 'id' | 'createdAt'>>
-): Promise<Branch | null> => {
-    const docRef = firestoreCollections.branch(branchId)
-    const doc = await docRef.get()
-
-    if (!doc.exists) return null
-
-    await docRef.update({
-        ...updates,
-        updatedAt: new Date(),
+    updates: Partial<
+        Pick<
+            BranchRow,
+            | 'name'
+            | 'description'
+            | 'brandConfig'
+            | 'status'
+            | 'visibility'
+            | 'latestVersion'
+        >
+    >
+): Promise<BranchRow | null> => {
+    const branch = await prisma.branch.update({
+        where: { id: branchId },
+        data: updates as any,
     })
 
-    return getBranchById(branchId)
+    return branch ? (branch as unknown as BranchRow) : null
 }
 
-export const deleteBranch = async (branchId: string): Promise<boolean> => {
-    await firestoreCollections.branch(branchId).delete()
-    logger.info({ branchId }, 'Branch deleted')
+export const softDeleteBranch = async (branchId: string): Promise<boolean> => {
+    await prisma.branch.update({
+        where: { id: branchId },
+        data: { deletedAt: new Date() },
+    })
+    logger.info({ branchId }, 'Branch soft-deleted')
     return true
 }
 
 export const forkBranch = async (
     sourceBranchId: string,
-    newName: string,
-    createdBy: string
-): Promise<Branch | null> => {
-    const sourceBranch = await getBranchById(sourceBranchId)
-    if (!sourceBranch) return null
+    data: {
+        name: string
+        brandId: string
+        organizationId: string | null
+        createdBy: string
+        createdByName: string
+        description?: string
+        visibility?: BranchVisibility
+    }
+): Promise<BranchRow | null> => {
+    const source = await getBranchById(sourceBranchId)
+    if (!source) return null
 
     return createBranch({
-        brandId: `${sourceBranch.brandId}-fork-${Date.now()}`,
-        name: newName,
-        parentBranch: sourceBranchId,
+        organizationId: data.organizationId,
+        brandId: data.brandId,
+        name: data.name,
+        description: data.description || null,
+        parentBranchId: sourceBranchId,
         status: 'draft',
-        brandConfig: sourceBranch.brandConfig,
-        createdBy,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        publishedVersions: 0,
+        visibility: data.visibility || 'private',
+        brandConfig: source.brandConfig,
+        createdBy: data.createdBy,
+        createdByName: data.createdByName,
+    })
+}
+
+export const addTagToBranch = async (
+    branchId: string,
+    tagId: string
+): Promise<void> => {
+    await prisma.branchTag.upsert({
+        where: { branchId_tagId: { branchId, tagId } },
+        update: {},
+        create: { branchId, tagId },
+    })
+}
+
+export const removeTagFromBranch = async (
+    branchId: string,
+    tagId: string
+): Promise<void> => {
+    await prisma.branchTag.deleteMany({
+        where: { branchId, tagId },
     })
 }
 
 export const createVersion = async (
     branchId: string,
-    version: Omit<BranchVersion, 'id'>
-): Promise<BranchVersion> => {
-    const docRef = firestoreCollections.versions(branchId).doc()
-    const newVersion: BranchVersion = {
-        ...version,
-        id: docRef.id,
-    }
-
-    await docRef.set(newVersion)
-
-    await firestoreCollections.branch(branchId).update({
-        status: 'published',
-        publishedVersions: FieldValue.increment(1),
-        updatedAt: new Date(),
+    data: Omit<BranchVersionRow, 'id' | 'branchId' | 'publishedAt'>
+): Promise<BranchVersionRow> => {
+    const version = await prisma.branchVersion.create({
+        data: {
+            branchId,
+            version: data.version,
+            brandConfig: data.brandConfig as any,
+            changelog: data.changelog,
+            isBreaking: data.isBreaking,
+            isPrerelease: data.isPrerelease,
+            publishedBy: data.publishedBy,
+            publishedByName: data.publishedByName,
+        },
     })
 
-    logger.info({ branchId, version: version.version }, 'Branch published')
-    return newVersion
+    await prisma.branch.update({
+        where: { id: branchId },
+        data: {
+            status: 'published',
+            publishedVersions: { increment: 1 },
+            latestVersion: data.version,
+        },
+    })
+
+    logger.info({ branchId, version: data.version }, 'Branch published')
+    return version as unknown as BranchVersionRow
 }
 
 export const listVersions = async (
     branchId: string,
     limit: number = 20
-): Promise<BranchVersion[]> => {
-    const snapshot = await firestoreCollections
-        .versions(branchId)
-        .orderBy('publishedAt', 'desc')
-        .limit(limit)
-        .get()
+): Promise<BranchVersionRow[]> => {
+    const versions = await prisma.branchVersion.findMany({
+        where: { branchId },
+        orderBy: { publishedAt: 'desc' },
+        take: limit,
+    })
 
-    return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-    })) as BranchVersion[]
+    return versions as unknown as BranchVersionRow[]
 }
 
 export const getVersion = async (
     branchId: string,
     versionId: string
-): Promise<BranchVersion | null> => {
-    const doc = await firestoreCollections
-        .versions(branchId)
-        .doc(versionId)
-        .get()
+): Promise<BranchVersionRow | null> => {
+    const version = await prisma.branchVersion.findFirst({
+        where: { id: versionId, branchId },
+    })
 
-    if (!doc.exists) return null
+    return version ? (version as unknown as BranchVersionRow) : null
+}
 
-    return {
-        id: doc.id,
-        ...doc.data(),
-    } as BranchVersion
+export const getVersionByNumber = async (
+    branchId: string,
+    versionNumber: string
+): Promise<BranchVersionRow | null> => {
+    const version = await prisma.branchVersion.findUnique({
+        where: { branchId_version: { branchId, version: versionNumber } },
+    })
+
+    return version ? (version as unknown as BranchVersionRow) : null
 }
 
 export const createSnapshot = async (
     branchId: string,
-    snapshot: Omit<BranchSnapshot, 'id'>
-): Promise<BranchSnapshot> => {
-    const docRef = firestoreCollections.snapshots(branchId).doc()
-    const newSnapshot: BranchSnapshot = {
-        ...snapshot,
-        id: docRef.id,
-    }
+    data: Omit<BranchSnapshotRow, 'id' | 'branchId' | 'savedAt'>
+): Promise<BranchSnapshotRow> => {
+    const snapshot = await prisma.branchSnapshot.create({
+        data: {
+            branchId,
+            brandConfig: data.brandConfig as any,
+            label: data.label,
+            isAutoSave: data.isAutoSave,
+            savedBy: data.savedBy,
+            savedByName: data.savedByName,
+        },
+    })
 
-    await docRef.set(newSnapshot)
-    return newSnapshot
+    return snapshot as unknown as BranchSnapshotRow
+}
+
+export const listSnapshots = async (
+    branchId: string,
+    limit: number = 20
+): Promise<BranchSnapshotRow[]> => {
+    const snapshots = await prisma.branchSnapshot.findMany({
+        where: { branchId },
+        orderBy: { savedAt: 'desc' },
+        take: limit,
+    })
+
+    return snapshots as unknown as BranchSnapshotRow[]
 }
 
 export const getLatestSnapshot = async (
     branchId: string
-): Promise<BranchSnapshot | null> => {
-    const snapshot = await firestoreCollections
-        .snapshots(branchId)
-        .orderBy('savedAt', 'desc')
-        .limit(1)
-        .get()
+): Promise<BranchSnapshotRow | null> => {
+    const snapshot = await prisma.branchSnapshot.findFirst({
+        where: { branchId },
+        orderBy: { savedAt: 'desc' },
+    })
 
-    if (snapshot.empty) return null
-
-    const doc = snapshot.docs[0]
-    return {
-        id: doc.id,
-        ...doc.data(),
-    } as BranchSnapshot
+    return snapshot ? (snapshot as unknown as BranchSnapshotRow) : null
 }

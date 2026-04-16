@@ -1,3 +1,6 @@
+export type BranchStatus = 'draft' | 'published' | 'archived'
+export type BranchVisibility = 'private' | 'team' | 'public'
+
 export interface BrandConfig {
     brandId: string
     name: string
@@ -21,47 +24,77 @@ export interface BrandConfig {
 
 export interface Branch {
     id: string
+    organizationId: string | null
     brandId: string
     name: string
-    parentBranch: string | null
-    status: 'draft' | 'published'
+    description: string | null
+    parentBranchId: string | null
+    status: BranchStatus
+    visibility: BranchVisibility
     brandConfig: BrandConfig
+    publishedVersions: number
+    latestVersion: string | null
     createdBy: string
+    createdByName: string
     createdAt: Date
     updatedAt: Date
-    publishedVersions: number
+    deletedAt: Date | null
+    tags?: TagRow[]
 }
 
 export interface BranchVersion {
     id: string
+    branchId: string
     version: string
     brandConfig: BrandConfig
+    changelog: string | null
+    isBreaking: boolean
+    isPrerelease: boolean
     publishedBy: string
+    publishedByName: string
     publishedAt: Date
-    notes: string
 }
 
 export interface BranchSnapshot {
     id: string
+    branchId: string
     brandConfig: BrandConfig
-    savedAt: Date
+    label: string | null
+    isAutoSave: boolean
     savedBy: string
+    savedByName: string
+    savedAt: Date
+}
+
+export interface TagRow {
+    id: string
+    name: string
 }
 
 export interface CreateBranchDTO {
     name: string
-    parentBranch?: string
+    brandId?: string
+    description?: string
+    parentBranchId?: string
     brandConfig?: Partial<BrandConfig>
+    visibility?: BranchVisibility
+    tags?: string[]
+    organizationId?: string
 }
 
 export interface UpdateBranchDTO {
     name?: string
+    description?: string
     brandConfig?: Partial<BrandConfig>
+    status?: BranchStatus
+    visibility?: BranchVisibility
 }
 
 export interface PublishBranchDTO {
     version: string
-    notes?: string
+    changelog?: string
+    isBreaking?: boolean
+    isPrerelease?: boolean
 }
 
 export interface ResolvedTokensResponse {

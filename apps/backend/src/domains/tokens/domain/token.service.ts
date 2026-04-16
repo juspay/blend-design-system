@@ -1,19 +1,44 @@
-// Token Upload Service - Handles business logic for token uploads
-
-import { promises as fs } from 'fs'
-import path from 'path'
-import { firestoreCollections } from '@/config/firebase.js'
+import { prisma } from '@/config/database.js'
 import { logger } from '@/utils/logger.js'
 import { NotFoundError, ValidationError } from '@/errors/AppError.js'
-import type {
-    TokenUploadInput,
-    TokenUploadResult,
-    StoredToken,
-} from './token.types.js'
 
-const UPLOADS_DIR = process.env.TOKEN_UPLOADS_DIR || './uploads/tokens'
+export interface TokenUploadMetadata {
+    branchId: string
+    uploadedBy: string
+    uploadedByName: string
+    uploadedAt: Date
+    fileName: string
+    fileSize: number
+    description?: string
+}
 
-// Simple JSON validation (we don't have token-engine yet)
+export interface TokenUploadResult {
+    success: boolean
+    id: string
+    message?: string
+    brandConfig?: Record<string, unknown>
+    validationErrors?: string[]
+}
+
+export interface StoredToken {
+    id: string
+    branchId: string
+    metadata: TokenUploadMetadata
+    parsedConfig?: Record<string, unknown>
+    status: 'pending' | 'processing' | 'valid' | 'invalid'
+    createdAt: Date
+    updatedAt: Date
+}
+
+export interface TokenUploadInput {
+    branchId: string
+    fileBuffer: Buffer
+    fileName: string
+    description?: string
+    uploadedBy: string
+    uploadedByName: string
+}
+
 function validateJson(data: unknown): { valid: boolean; errors: string[] } {
     const errors: string[] = []
 
@@ -24,7 +49,6 @@ function validateJson(data: unknown): { valid: boolean; errors: string[] } {
 
     const obj = data as Record<string, unknown>
 
-    // Basic validation - check for required fields
     if (!obj.brandId || typeof obj.brandId !== 'string') {
         errors.push('Missing or invalid brandId')
     }
@@ -33,12 +57,9 @@ function validateJson(data: unknown): { valid: boolean; errors: string[] } {
         errors.push('Missing or invalid name')
     }
 
-    // Colors validation
     if (obj.colors && typeof obj.colors === 'object') {
         const colors = obj.colors as Record<string, unknown>
-        if (colors.primary && typeof colors.primary === 'object') {
-            // Valid
-        } else {
+        if (!colors.primary || typeof colors.primary !== 'object') {
             errors.push('Missing colors.primary configuration')
         }
     } else {
@@ -51,12 +72,10 @@ function validateJson(data: unknown): { valid: boolean; errors: string[] } {
 export const uploadToken = async (
     input: TokenUploadInput
 ): Promise<TokenUploadResult> => {
-    // Validate file type
     if (!input.fileName.endsWith('.json')) {
         throw new ValidationError('Only JSON files are supported')
     }
 
-    // Parse JSON
     let parsed: unknown
     try {
         parsed = JSON.parse(input.fileBuffer.toString('utf-8'))
@@ -64,7 +83,6 @@ export const uploadToken = async (
         throw new ValidationError('Failed to parse JSON file')
     }
 
-    // Validate as BrandConfig
     const validation = validateJson(parsed)
     if (!validation.valid) {
         throw new ValidationError(
@@ -74,47 +92,22 @@ export const uploadToken = async (
 
     const brandConfig = parsed as Record<string, unknown>
 
-    // Ensure upload directory exists
-    try {
-        await fs.access(UPLOADS_DIR)
-    } catch {
-        await fs.mkdir(UPLOADS_DIR, { recursive: true })
-    }
-
-    // Generate unique filename
-    const timestamp = Date.now()
-    const safeFileName = input.fileName.replace(/[^a-zA-Z0-9.-]/g, '_')
-    const fileName = `${input.branchId}_${timestamp}_${safeFileName}`
-    const filePath = path.join(UPLOADS_DIR, fileName)
-
-    // Write file to disk
-    await fs.writeFile(filePath, input.fileBuffer)
-
-    // Save metadata to Firestore
-    const docRef = firestoreCollections
-        .branch(input.branchId)
-        .collection('tokens')
-        .doc()
-    const tokenData = {
-        id: docRef.id,
-        branchId: input.branchId,
-        filePath,
-        fileName: input.fileName,
-        fileSize: input.fileBuffer.length,
-        uploadedBy: input.uploadedBy,
-        uploadedByName: input.uploadedByName,
-        description: input.description || null,
-        parsedConfig: brandConfig,
-        status: 'valid',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    }
-
-    await docRef.set(tokenData)
+    const upload = await prisma.tokenUpload.create({
+        data: {
+            branchId: input.branchId,
+            fileName: input.fileName,
+            fileSize: input.fileBuffer.length,
+            description: input.description || null,
+            parsedConfig: brandConfig as any,
+            status: 'valid',
+            uploadedBy: input.uploadedBy,
+            uploadedByName: input.uploadedByName,
+        },
+    })
 
     logger.info(
         {
-            tokenId: docRef.id,
+            tokenId: upload.id,
             branchId: input.branchId,
             fileName: input.fileName,
         },
@@ -123,7 +116,7 @@ export const uploadToken = async (
 
     return {
         success: true,
-        id: docRef.id,
+        id: upload.id,
         message: 'Token file uploaded successfully',
         brandConfig: brandConfig as any,
     }
@@ -132,65 +125,58 @@ export const uploadToken = async (
 export const listTokensByBranch = async (
     branchId: string
 ): Promise<StoredToken[]> => {
-    const snapshot = await firestoreCollections
-        .branch(branchId)
-        .collection('tokens')
-        .orderBy('createdAt', 'desc')
-        .get()
-
-    return snapshot.docs.map((doc) => {
-        const data = doc.data()
-        return {
-            id: doc.id,
-            branchId: data.branchId,
-            filePath: data.filePath,
-            metadata: {
-                branchId: data.branchId,
-                uploadedBy: data.uploadedBy,
-                uploadedByName: data.uploadedByName,
-                uploadedAt: data.createdAt?.toDate() || new Date(),
-                fileName: data.fileName,
-                fileSize: data.fileSize,
-                description: data.description || undefined,
-            },
-            parsedConfig: data.parsedConfig,
-            status: data.status,
-            createdAt: data.createdAt?.toDate() || new Date(),
-            updatedAt: data.updatedAt?.toDate() || new Date(),
-        }
+    const uploads = await prisma.tokenUpload.findMany({
+        where: { branchId },
+        orderBy: { createdAt: 'desc' },
     })
+
+    return uploads.map((u: any) => ({
+        id: u.id,
+        branchId: u.branchId,
+        metadata: {
+            branchId: u.branchId,
+            uploadedBy: u.uploadedBy,
+            uploadedByName: u.uploadedByName,
+            uploadedAt: u.createdAt,
+            fileName: u.fileName,
+            fileSize: u.fileSize,
+            description: u.description || undefined,
+        },
+        parsedConfig: u.parsedConfig as Record<string, unknown> | undefined,
+        status: u.status as 'pending' | 'processing' | 'valid' | 'invalid',
+        createdAt: u.createdAt,
+        updatedAt: u.updatedAt,
+    }))
 }
 
 export const getTokenById = async (
     branchId: string,
     tokenId: string
 ): Promise<StoredToken | null> => {
-    const doc = await firestoreCollections
-        .branch(branchId)
-        .collection('tokens')
-        .doc(tokenId)
-        .get()
+    const upload = await prisma.tokenUpload.findFirst({
+        where: { id: tokenId, branchId },
+    })
 
-    if (!doc.exists) return null
+    if (!upload) return null
 
-    const data = doc.data()!
     return {
-        id: doc.id,
-        branchId: data.branchId,
-        filePath: data.filePath,
+        id: upload.id,
+        branchId: upload.branchId,
         metadata: {
-            branchId: data.branchId,
-            uploadedBy: data.uploadedBy,
-            uploadedByName: data.uploadedByName,
-            uploadedAt: data.createdAt?.toDate() || new Date(),
-            fileName: data.fileName,
-            fileSize: data.fileSize,
-            description: data.description || undefined,
+            branchId: upload.branchId,
+            uploadedBy: upload.uploadedBy,
+            uploadedByName: upload.uploadedByName,
+            uploadedAt: upload.createdAt,
+            fileName: upload.fileName,
+            fileSize: upload.fileSize,
+            description: upload.description || undefined,
         },
-        parsedConfig: data.parsedConfig,
-        status: data.status,
-        createdAt: data.createdAt?.toDate() || new Date(),
-        updatedAt: data.updatedAt?.toDate() || new Date(),
+        parsedConfig: upload.parsedConfig as
+            | Record<string, unknown>
+            | undefined,
+        status: upload.status as 'pending' | 'processing' | 'valid' | 'invalid',
+        createdAt: upload.createdAt,
+        updatedAt: upload.updatedAt,
     }
 }
 
@@ -203,22 +189,7 @@ export const deleteToken = async (
         throw new NotFoundError('Token')
     }
 
-    // Delete file from disk
-    try {
-        await fs.unlink(token.filePath)
-    } catch (err) {
-        logger.warn(
-            { filePath: token.filePath, error: err },
-            'Failed to delete token file from disk'
-        )
-    }
-
-    // Delete from Firestore
-    await firestoreCollections
-        .branch(branchId)
-        .collection('tokens')
-        .doc(tokenId)
-        .delete()
+    await prisma.tokenUpload.delete({ where: { id: tokenId } })
 
     logger.info({ tokenId, branchId }, 'Token deleted')
 }
@@ -232,9 +203,10 @@ export const readTokenFile = async (
         throw new NotFoundError('Token')
     }
 
-    try {
-        return await fs.readFile(token.filePath)
-    } catch {
-        throw new NotFoundError('Token file')
+    const config = token.parsedConfig
+    if (!config) {
+        throw new NotFoundError('Token file content')
     }
+
+    return Buffer.from(JSON.stringify(config, null, 2))
 }

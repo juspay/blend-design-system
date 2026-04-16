@@ -77,7 +77,7 @@ export function validateBrandConfig(config: unknown): ValidationResult {
         errors.push({
             path: 'brandId',
             message:
-                'brandId must be alphanumeric with optional hyphens, underscores, and slashes (e.g. "hdfc/retail")',
+                'brandId must be alphanumeric with optional hyphens, underscores, and slashes (e.g. "my-brand/default")',
         })
     }
 
@@ -190,6 +190,91 @@ export function validateBrandConfig(config: unknown): ValidationResult {
                     errors.push({
                         path: `shadows.${key}`,
                         message: 'Shadow value must be a CSS string',
+                    })
+                }
+            }
+        }
+    }
+
+    // --- Component overrides validation ---
+
+    if (c.componentOverrides !== undefined) {
+        if (
+            typeof c.componentOverrides !== 'object' ||
+            c.componentOverrides === null
+        ) {
+            errors.push({
+                path: 'componentOverrides',
+                message: 'componentOverrides must be an object',
+            })
+        } else {
+            const compOverrides = c.componentOverrides as Record<
+                string,
+                unknown
+            >
+            for (const [compKey, compConfig] of Object.entries(compOverrides)) {
+                if (typeof compConfig !== 'object' || compConfig === null) {
+                    errors.push({
+                        path: `componentOverrides.${compKey}`,
+                        message: 'Component override must be an object',
+                    })
+                    continue
+                }
+
+                const cc = compConfig as Record<string, unknown>
+
+                if (cc.colors !== undefined) {
+                    if (typeof cc.colors !== 'object' || cc.colors === null) {
+                        errors.push({
+                            path: `componentOverrides.${compKey}.colors`,
+                            message: 'colors must be an object',
+                        })
+                    } else {
+                        const colors = cc.colors as Record<string, unknown>
+                        for (const [group, shades] of Object.entries(colors)) {
+                            if (!VALID_COLOR_GROUPS.includes(group)) {
+                                warnings.push({
+                                    path: `componentOverrides.${compKey}.colors.${group}`,
+                                    message: `Unknown color group "${group}"`,
+                                })
+                                continue
+                            }
+                            if (typeof shades === 'object' && shades !== null) {
+                                for (const [shade, value] of Object.entries(
+                                    shades as Record<string, unknown>
+                                )) {
+                                    if (
+                                        typeof value === 'string' &&
+                                        !isValidHexColor(value)
+                                    ) {
+                                        errors.push({
+                                            path: `componentOverrides.${compKey}.colors.${group}.${shade}`,
+                                            message: `Invalid hex color "${value}"`,
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (
+                    cc.radius !== undefined &&
+                    (typeof cc.radius !== 'object' || cc.radius === null)
+                ) {
+                    errors.push({
+                        path: `componentOverrides.${compKey}.radius`,
+                        message: 'radius must be an object',
+                    })
+                }
+
+                if (
+                    cc.shadows !== undefined &&
+                    (typeof cc.shadows !== 'object' || cc.shadows === null)
+                ) {
+                    errors.push({
+                        path: `componentOverrides.${compKey}.shadows`,
+                        message: 'shadows must be an object',
                     })
                 }
             }

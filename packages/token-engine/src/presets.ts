@@ -3,10 +3,14 @@
  *
  * Ready-to-use brand configurations for common use cases.
  * Used by the CLI `brand --preset` command and the dashboard preset selector.
+ *
+ * The default preset is "blend" (Juspay Blend Design System).
+ * Users can create their own custom presets via the Token Studio dashboard.
  */
 
 import type { BrandConfig } from './types'
 
+/** Default Blend theme — no overrides, uses Blend foundation as-is. */
 export const PRESET_BLEND_DEFAULT: BrandConfig = {
     brandId: 'blend/default',
     name: 'Blend Default',
@@ -14,36 +18,32 @@ export const PRESET_BLEND_DEFAULT: BrandConfig = {
     // No overrides — use Blend foundation as-is
 }
 
-export const PRESET_HDFC: BrandConfig = {
-    brandId: 'hdfc/retail',
-    name: 'HDFC Bank',
+/** Juspay brand theme — blue primary, default radius. */
+export const PRESET_JUSPAY: BrandConfig = {
+    brandId: 'juspay/default',
+    name: 'Juspay',
     version: '1.0.0',
     colors: {
         primary: {
-            '50': '#FEF2F2',
-            '100': '#FFE2E2',
-            '200': '#FFC9C9',
-            '300': '#FFA2A2',
-            '400': '#FF6467',
-            '500': '#E31837',
-            '600': '#C01530',
-            '700': '#A01228',
-            '800': '#801020',
-            '900': '#600D18',
-            '950': '#400810',
+            '50': '#EFF6FF',
+            '100': '#DBEAFE',
+            '200': '#BFDBFE',
+            '300': '#93C5FD',
+            '400': '#60A5FA',
+            '500': '#3B82F6',
+            '600': '#2563EB',
+            '700': '#1D4ED8',
+            '800': '#1E40AF',
+            '900': '#1E3A8A',
+            '950': '#172554',
         },
-    },
-    radius: {
-        '6': '4px',
-        '8': '4px',
-        '10': '4px',
-        '12': '6px',
     },
 }
 
-export const PRESET_NEOBANK: BrandConfig = {
-    brandId: 'neobank/light',
-    name: 'NeoBank',
+/** Purple SaaS theme — ideal for dashboards and admin panels. */
+export const PRESET_PURPLE: BrandConfig = {
+    brandId: 'starter/purple',
+    name: 'Purple',
     version: '1.0.0',
     colors: {
         primary: {
@@ -66,9 +66,10 @@ export const PRESET_NEOBANK: BrandConfig = {
     },
 }
 
-export const PRESET_FINTECH: BrandConfig = {
-    brandId: 'fintech/app',
-    name: 'FinTech Green',
+/** Green theme — works well for fintech, sustainability, and health apps. */
+export const PRESET_GREEN: BrandConfig = {
+    brandId: 'starter/green',
+    name: 'Green',
     version: '1.0.0',
     colors: {
         primary: {
@@ -87,14 +88,38 @@ export const PRESET_FINTECH: BrandConfig = {
     },
 }
 
+/** Warm orange theme — great for e-commerce and consumer brands. */
+export const PRESET_ORANGE: BrandConfig = {
+    brandId: 'starter/orange',
+    name: 'Orange',
+    version: '1.0.0',
+    colors: {
+        primary: {
+            '50': '#FFF7ED',
+            '100': '#FFEDD5',
+            '200': '#FED7AA',
+            '300': '#FDBA74',
+            '400': '#FB923C',
+            '500': '#F97316',
+            '600': '#EA580C',
+            '700': '#C2410C',
+            '800': '#9A3412',
+            '900': '#7C2D12',
+            '950': '#431407',
+        },
+    },
+}
+
 /**
  * All built-in presets indexed by short name.
+ * Users can select these from the CLI or dashboard.
  */
 export const PRESETS: Record<string, BrandConfig> = {
     blend: PRESET_BLEND_DEFAULT,
-    hdfc: PRESET_HDFC,
-    neobank: PRESET_NEOBANK,
-    fintech: PRESET_FINTECH,
+    juspay: PRESET_JUSPAY,
+    purple: PRESET_PURPLE,
+    green: PRESET_GREEN,
+    orange: PRESET_ORANGE,
 }
 
 /**

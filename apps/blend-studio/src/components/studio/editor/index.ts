@@ -20,6 +20,8 @@ export { ColorsTab } from './ColorsTab'
 export { TypographyTab } from './TypographyTab'
 export { RadiusTab } from './RadiusTab'
 export { ShadowsTab } from './ShadowsTab'
+export { DarkModeTab } from './DarkModeTab'
+export { ComponentOverridesTab } from './ComponentOverridesTab'
 export { JsonTab } from './JsonTab'
 
 // Panels

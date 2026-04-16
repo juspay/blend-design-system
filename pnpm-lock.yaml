@@ -124,7 +124,7 @@ importers:
                 version: 12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             next:
                 specifier: 15.3.6
-                version: 15.3.6(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+                version: 15.3.6(@opentelemetry/api@1.9.0)(@playwright/test@1.59.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             next-mdx-remote:
                 specifier: ^5.0.0
                 version: 5.0.0(@types/react@19.2.7)(react@19.2.3)
@@ -198,9 +198,6 @@ importers:
             express:
                 specifier: ^4.21.2
                 version: 4.22.1
-            firebase-admin:
-                specifier: ^12.7.0
-                version: 12.7.0
             google-auth-library:
                 specifier: ^9.15.1
                 version: 9.15.1
@@ -329,6 +326,9 @@ importers:
                 specifier: ^6.1.17
                 version: 6.1.19(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
         devDependencies:
+            '@playwright/test':
+                specifier: ^1.59.1
+                version: 1.59.1
             '@tanstack/router-plugin':
                 specifier: ^1.114.0
                 version: 1.167.12(@tanstack/react-router@1.168.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@6.4.1(@types/node@20.19.27)(jiti@1.21.7)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))
@@ -365,6 +365,9 @@ importers:
             postcss:
                 specifier: ^8.4.49
                 version: 8.5.6
+            react-resizable-panels:
+                specifier: ^4.10.0
+                version: 4.10.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             swagger-ui-react:
                 specifier: ^5.32.2
                 version: 5.32.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -3379,6 +3382,14 @@ packages:
                 integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==,
             }
         engines: { node: '>=14' }
+
+    '@playwright/test@1.59.1':
+        resolution:
+            {
+                integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==,
+            }
+        engines: { node: '>=18' }
+        hasBin: true
 
     '@polka/url@1.0.0-next.29':
         resolution:
@@ -9058,6 +9069,14 @@ packages:
                 integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==,
             }
 
+    fsevents@2.3.2:
+        resolution:
+            {
+                integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==,
+            }
+        engines: { node: ^8.16.0 || ^10.6.0 || >=11.0.0 }
+        os: [darwin]
+
     fsevents@2.3.3:
         resolution:
             {
@@ -12287,6 +12306,22 @@ packages:
                 integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==,
             }
 
+    playwright-core@1.59.1:
+        resolution:
+            {
+                integrity: sha512-HBV/RJg81z5BiiZ9yPzIiClYV/QMsDCKUyogwH9p3MCP6IYjUFu/MActgYAvK0oWyV9NlwM3GLBjADyWgydVyg==,
+            }
+        engines: { node: '>=18' }
+        hasBin: true
+
+    playwright@1.59.1:
+        resolution:
+            {
+                integrity: sha512-C8oWjPR3F81yljW9o5OxcWzfh6avkVwDD2VYdwIGqTkl+OGFISgypqzfu7dOe4QNLL2aqcWBmI3PMtLIK233lw==,
+            }
+        engines: { node: '>=18' }
+        hasBin: true
+
     pluralize@8.0.0:
         resolution:
             {
@@ -12892,6 +12927,15 @@ packages:
         peerDependenciesMeta:
             '@types/react':
                 optional: true
+
+    react-resizable-panels@4.10.0:
+        resolution:
+            {
+                integrity: sha512-frjewRQt7TCv/vCH1pJfjZ7RxAhr5pKuqVQtVgzFq/vherxBFOWyC3xMbryx5Ti2wylViGUFc93Etg4rB3E0UA==,
+            }
+        peerDependencies:
+            react: ^18.0.0 || ^19.0.0
+            react-dom: ^18.0.0 || ^19.0.0
 
     react-router-dom@7.11.0:
         resolution:
@@ -17184,6 +17228,10 @@ snapshots:
 
     '@pkgjs/parseargs@0.11.0':
         optional: true
+
+    '@playwright/test@1.59.1':
+        dependencies:
+            playwright: 1.59.1
 
     '@polka/url@1.0.0-next.29': {}
 
@@ -21612,6 +21660,9 @@ snapshots:
 
     fs.realpath@1.0.0: {}
 
+    fsevents@2.3.2:
+        optional: true
+
     fsevents@2.3.3:
         optional: true
 
@@ -23360,7 +23411,7 @@ snapshots:
             react: 19.2.3
             react-dom: 19.2.3(react@19.2.3)
 
-    next@15.3.6(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+    next@15.3.6(@opentelemetry/api@1.9.0)(@playwright/test@1.59.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
         dependencies:
             '@next/env': 15.3.6
             '@swc/counter': 0.1.3
@@ -23381,6 +23432,7 @@ snapshots:
             '@next/swc-win32-arm64-msvc': 15.3.5
             '@next/swc-win32-x64-msvc': 15.3.5
             '@opentelemetry/api': 1.9.0
+            '@playwright/test': 1.59.1
             sharp: 0.34.5
         transitivePeerDependencies:
             - '@babel/core'
@@ -23744,6 +23796,14 @@ snapshots:
             confbox: 0.2.2
             exsolve: 1.0.8
             pathe: 2.0.3
+
+    playwright-core@1.59.1: {}
+
+    playwright@1.59.1:
+        dependencies:
+            playwright-core: 1.59.1
+        optionalDependencies:
+            fsevents: 2.3.2
 
     pluralize@8.0.0: {}
 
@@ -24180,6 +24240,11 @@ snapshots:
             use-sidecar: 1.1.3(@types/react@19.2.7)(react@19.2.3)
         optionalDependencies:
             '@types/react': 19.2.7
+
+    react-resizable-panels@4.10.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+        dependencies:
+            react: 19.2.3
+            react-dom: 19.2.3(react@19.2.3)
 
     react-router-dom@7.11.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
         dependencies:

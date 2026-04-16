@@ -112,38 +112,38 @@ function StudioPage() {
 
     return (
         <RequireAuth>
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
                 {!onboardingComplete && (
                     <WelcomeOnboarding onComplete={completeOnboarding} />
                 )}
 
                 {/* Header */}
-                <div className="bg-white border-b border-gray-200">
+                <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors">
                     <div className="max-w-7xl mx-auto px-6 py-5">
                         <div className="flex items-center justify-between">
                             <div>
                                 <div className="flex items-center gap-3 mb-1">
                                     <Link
                                         to="/"
-                                        className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                                        className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                         title="Back to home"
                                     >
                                         <Home className="w-4 h-4" />
                                     </Link>
-                                    <div className="w-px h-5 bg-gray-200" />
+                                    <div className="w-px h-5 bg-gray-200 dark:bg-gray-600" />
                                     <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                                         <Zap className="w-4 h-4 text-white" />
                                     </div>
-                                    <h1 className="text-xl font-bold text-gray-900">
+                                    <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                                         Branches
                                     </h1>
                                     {flags.useMockData && (
-                                        <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+                                        <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium rounded-full">
                                             Demo Mode
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-500 ml-[72px]">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 ml-[72px]">
                                     Each branch is a versioned brand
                                     configuration. Edit tokens, preview live,
                                     publish, then pull into your project.
@@ -391,7 +391,7 @@ function QuickGuidePanel({ onClose }: { onClose: () => void }) {
                     step={1}
                     icon={GitBranch}
                     title="Create a Branch"
-                    description="Start from a preset (HDFC, NeoBank, FinTech) or blank. Each branch holds a complete brand config."
+                    description="Start from a preset or blank. Each branch holds a complete brand config."
                 />
                 <GuideStep
                     step={2}
@@ -428,7 +428,7 @@ function QuickGuidePanel({ onClose }: { onClose: () => void }) {
                         # Switch to a different branch/brand anytime
                     </div>
                     <div className="text-green-400">
-                        npx blend-token-studio pull neobank/light
+                        npx blend-token-studio pull acme/light
                     </div>
                 </div>
             </div>
@@ -602,15 +602,21 @@ function BranchCard({
 
                 {branch.tags && branch.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-4">
-                        {branch.tags.slice(0, 3).map((tag) => (
-                            <span
-                                key={tag}
-                                className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs"
-                            >
-                                <Tag className="w-2.5 h-2.5" />
-                                {tag}
-                            </span>
-                        ))}
+                        {branch.tags.slice(0, 3).map((tag: any, i: number) => {
+                            const tagKey =
+                                typeof tag === 'string' ? tag : tag.id
+                            const tagName =
+                                typeof tag === 'string' ? tag : tag.name
+                            return (
+                                <span
+                                    key={tagKey || i}
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs"
+                                >
+                                    <Tag className="w-2.5 h-2.5" />
+                                    {tagName}
+                                </span>
+                            )
+                        })}
                     </div>
                 )}
 
@@ -681,8 +687,7 @@ function EmptyState({
                         Create Branch
                     </button>
                     <p className="text-xs text-gray-400">
-                        Start from a preset (HDFC, NeoBank, FinTech) or
-                        customize from scratch
+                        Start from a preset or customize from scratch
                     </p>
                 </div>
             )}
@@ -847,7 +852,7 @@ function CreateBranchModal({
                             type="text"
                             value={form.name}
                             onChange={(e) => handleNameChange(e.target.value)}
-                            placeholder="e.g. HDFC Retail"
+                            placeholder="e.g. My Brand"
                             className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                 errors.name
                                     ? 'border-red-400'
@@ -875,7 +880,7 @@ function CreateBranchModal({
                                         brandId: e.target.value,
                                     }))
                                 }
-                                placeholder="hdfc"
+                                placeholder="my-brand"
                                 className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                     errors.brandId
                                         ? 'border-red-400'
@@ -901,7 +906,7 @@ function CreateBranchModal({
                                         slug: e.target.value,
                                     }))
                                 }
-                                placeholder="hdfc-retail"
+                                placeholder="my-brand-default"
                                 className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                                     errors.slug
                                         ? 'border-red-400'

@@ -7,58 +7,359 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ===========================================================================
+// Enums — PostgreSQL-native, enforced at the DB level
+// ===========================================================================
+
+/// User roles. Admin can manage users and see Monitor. Editor can create/edit
+/// branches. Viewer can only view published branches.
+enum UserRole {
+  admin
+  editor
+  viewer
+}
+
+/// Branch lifecycle: draft → published → archived. Only published branches
+/// can be pulled via CLI.
+enum BranchStatus {
+  draft
+  published
+  archived
+}
+
+/// Controls who can see a branch. Private = creator only. Team = organization
+/// members. Public = anyone with the branch ID.
+enum BranchVisibility {
+  private
+  team
+  public
+}
+
+/// Token upload processing state.
+enum UploadStatus {
+  pending
+  processing
+  valid
+  invalid
+}
+
+/// Audit log action types — every mutation in the system is tracked.
+enum AuditAction {
+  branch_created
+  branch_updated
+  branch_deleted
+  branch_published
+  branch_archived
+  branch_forked
+  version_created
+  snapshot_created
+  token_uploaded
+  user_created
+  user_role_changed
+  api_key_created
+  api_key_revoked
+}
+
+// ===========================================================================
+// Organizations — multi-tenant isolation from day one
+// ===========================================================================
+
+/// An organization (company, team). All resources belong to an org.
+/// For now, users can be in one org. Later, support multi-org.
+model Organization {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  slug        String   @unique @db.VarChar(100)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  members     Member[]
+  branches    Branch[]
+  apiKeys     ApiKey[]
+  auditLogs   AuditLog[]
+
+  @@map("organizations")
+}
+
+/// Links a user to an organization with a role within that org.
+model Member {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+   role           UserRole @default(viewer)
+  joinedAt       DateTime @default(now()) @map("joined_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@map("members")
+}
+
+// ===========================================================================
+// Users & Auth
+// ===========================================================================
+
 model User {
-  id            String    @id @default(uuid()) @db.Uuid
-  firebaseUid   String?   @unique @map("firebase_uid") @db.VarChar(255)
-  googleId      String?   @unique @map("google_id") @db.VarChar(255)
-  email         String    @unique @db.VarChar(255)
-  displayName   String?   @map("display_name") @db.VarChar(255)
-  photoUrl      String?   @map("photo_url") @db.Text
-  role          String    @default("viewer") @db.VarChar(50)
-  isActive      Boolean   @default(true) @map("is_active")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  lastLogin     DateTime? @map("last_login")
+  id          String    @id @default(uuid()) @db.Uuid
+  googleId    String?   @unique @map("google_id") @db.VarChar(255)
+  email       String    @unique @db.VarChar(255)
+  displayName String?   @map("display_name") @db.VarChar(255)
+  photoUrl    String?   @map("photo_url") @db.Text
+   role        UserRole  @default(viewer)
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  lastLogin   DateTime? @map("last_login")
+  deletedAt   DateTime? @map("deleted_at")
 
-  refreshTokens   RefreshToken[]
-  tokenUploads    TokenUpload[]
+   refreshTokens  RefreshToken[]
+   tokenUploads   TokenUpload[]
+   memberships    Member[]
+   apiKeys        ApiKey[]
+   createdBranches Branch[]       @relation("BranchCreator")
+   auditLogs      AuditLog[]
 
+  @@index([email])
+  @@index([deletedAt])
   @@map("users")
 }
 
 model RefreshToken {
-  id          String    @id @default(uuid()) @db.Uuid
-  userId      String    @map("user_id") @db.Uuid
-  tokenHash   String    @unique @map("token_hash") @db.VarChar(255)
-  expiresAt   DateTime  @map("expires_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @unique @map("token_hash") @db.VarChar(255)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tokenHash])
+  @@index([expiresAt])
   @@map("refresh_tokens")
 }
 
-model TokenUpload {
-  id            String    @id @default(uuid()) @db.Uuid
-  branchId      String    @map("branch_id") @db.VarChar(255)
-  filePath      String    @map("file_path") @db.Text
-  fileName      String    @map("file_name") @db.VarChar(255)
-  fileSize      Int       @map("file_size")
-  description   String?   @db.Text
-  parsedConfig  Json?     @map("parsed_config") @db.JsonB
-  status        String    @default("pending") @db.VarChar(50)
-  uploadedBy    String    @map("uploaded_by") @db.Uuid
-  uploadedByName String   @map("uploaded_by_name") @db.VarChar(255)
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+/// API keys for CLI access. Users run `blend-token-studio login` to create one.
+/// This avoids passing user JWTs through the terminal.
+model ApiKey {
+  id             String      @id @default(uuid()) @db.Uuid
+  organizationId String      @map("organization_id") @db.Uuid
+  userId         String      @map("user_id") @db.Uuid
+  name           String      @db.VarChar(255)
+  keyHash        String      @unique @map("key_hash") @db.VarChar(255)
+  keyPrefix      String      @map("key_prefix") @db.VarChar(8)
+  lastUsedAt     DateTime?   @map("last_used_at")
+  expiresAt      DateTime?   @map("expires_at")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  revokedAt      DateTime?   @map("revoked_at")
 
-  user User @relation(fields: [uploadedBy], references: [id], onDelete: SetNull)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([keyHash])
+  @@index([organizationId])
+  @@index([userId])
+  @@index([revokedAt])
+  @@map("api_keys")
+}
+
+// ===========================================================================
+// Branches — core token data
+// ===========================================================================
+
+/// A branch is a versioned brand configuration. It holds the full BrandConfig
+/// as JSONB and tracks its lifecycle (draft → published → archived).
+///
+/// BrandConfig JSONB shape (enforced at application level):
+/// {
+///   "brandId": string,          // e.g. "my-brand/default"
+///   "name": string,             // e.g. "My Brand"
+///   "version": string,          // e.g. "1.0.0"
+///   "colors": {                 // optional color groups
+///     "primary": { "50": "#EFF6FF", ..., "950": "#172554" },
+///     "gray":    { ... },
+///     "red":     { ... },
+///     "green":   { ... },
+///     "yellow":  { ... },
+///     "orange":  { ... },
+///     "purple":  { ... }
+///   },
+///   "radius":  { "8": "8px", ... },  // optional border radius overrides
+///   "shadows": { "md": "...", ... },  // optional shadow overrides
+///   "font":    { "family": "Inter" }, // optional font override
+///   "componentOverrides": {           // optional per-component overrides
+///     "BUTTONV2": {
+///       "colors": { "primary": { "500": "#DC2626" } }
+///     }
+///   }
+/// }
+model Branch {
+  id                String           @id @default(uuid()) @db.Uuid
+   organizationId    String?          @map("organization_id") @db.Uuid
+  brandId           String           @map("brand_id") @db.VarChar(255)
+  name              String           @db.VarChar(255)
+  description       String?          @db.Text
+  parentBranchId    String?          @map("parent_branch_id") @db.Uuid
+   status            BranchStatus     @default(draft)
+   visibility        BranchVisibility @default(private)
+  brandConfig       Json             @map("brand_config") @db.JsonB
+  publishedVersions Int              @default(0) @map("published_versions")
+  latestVersion     String?          @map("latest_version") @db.VarChar(50)
+  createdBy         String           @map("created_by") @db.Uuid
+  createdByName     String           @map("created_by_name") @db.VarChar(255)
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+  deletedAt         DateTime?        @map("deleted_at")
+
+   organization Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+   creator      User            @relation("BranchCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  versions     BranchVersion[]
+  snapshots    BranchSnapshot[]
+  tokenUploads TokenUpload[]
+   tags         BranchTag[]
+
+   @@unique([brandId])
+  @@index([organizationId])
+  @@index([createdBy])
+  @@index([status])
+  @@index([visibility])
+  @@index([updatedAt])
+  @@index([deletedAt])
+  @@index([brandId])
+  @@map("branches")
+}
+
+/// A published snapshot of a branch's brand config. Immutable once created.
+/// Used by `npx blend-token-studio pull <branchId>@<version>`.
+model BranchVersion {
+  id              String      @id @default(uuid()) @db.Uuid
+  branchId        String      @map("branch_id") @db.Uuid
+  version         String      @db.VarChar(50)
+  brandConfig     Json        @map("brand_config") @db.JsonB
+  changelog       String?     @db.Text
+  isBreaking      Boolean     @default(false) @map("is_breaking")
+  isPrerelease    Boolean     @default(false) @map("is_prerelease")
+  publishedBy     String      @map("published_by") @db.Uuid
+  publishedByName String      @map("published_by_name") @db.VarChar(255)
+  publishedAt     DateTime    @default(now()) @map("published_at")
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, version])
+  @@index([branchId])
+  @@index([publishedAt])
+  @@index([branchId, publishedAt])
+  @@map("branch_versions")
+}
+
+/// A save point (manual or auto). Used for undo/restore in the editor.
+/// Auto-saves are created on every edit (debounced). Manual saves have labels.
+model BranchSnapshot {
+  id            String   @id @default(uuid()) @db.Uuid
+  branchId      String   @map("branch_id") @db.Uuid
+  brandConfig   Json     @map("brand_config") @db.JsonB
+  label         String?  @db.VarChar(255)
+  isAutoSave    Boolean  @default(false) @map("is_auto_save")
+  savedBy       String   @map("saved_by") @db.Uuid
+  savedByName   String   @map("saved_by_name") @db.VarChar(255)
+  savedAt       DateTime @default(now()) @map("saved_at")
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@index([branchId])
+  @@index([savedAt])
+  @@index([branchId, savedAt])
+  @@map("branch_snapshots")
+}
+
+// ===========================================================================
+// Tags — for organizing and filtering branches
+// ===========================================================================
+
+/// A tag that can be applied to branches (e.g. "banking", "dark-mode", "v2").
+model Tag {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  branches BranchTag[]
+
+  @@map("tags")
+}
+
+/// Many-to-many join between branches and tags.
+model BranchTag {
+  branchId String @map("branch_id") @db.Uuid
+  tagId    String @map("tag_id") @db.Uuid
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([branchId, tagId])
+  @@index([tagId])
+  @@map("branch_tags")
+}
+
+// ===========================================================================
+// Token Uploads
+// ===========================================================================
+
+/// Uploaded brand.json files. Parsed, validated, and linked to a branch.
+model TokenUpload {
+  id             String      @id @default(uuid()) @db.Uuid
+  branchId       String      @map("branch_id") @db.Uuid
+  fileName       String      @map("file_name") @db.VarChar(255)
+  fileSize       Int         @map("file_size")
+  description    String?     @db.Text
+  parsedConfig   Json?       @map("parsed_config") @db.JsonB
+   status         UploadStatus @default(pending)
+  uploadedBy     String      @map("uploaded_by") @db.Uuid
+  uploadedByName String      @map("uploaded_by_name") @db.VarChar(255)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [uploadedBy], references: [id], onDelete: SetNull)
 
   @@index([branchId])
   @@index([uploadedBy])
   @@index([status])
   @@index([createdAt])
   @@map("token_uploads")
+}
+
+// ===========================================================================
+// Audit Log — immutable record of every mutation
+// ===========================================================================
+
+/// Tracks every create/update/delete action in the system. Required for
+/// compliance (banking clients), debugging, and analytics.
+///
+/// The `metadata` JSONB stores action-specific data, e.g.:
+/// - branch_published: { version: "1.0.0", isBreaking: false }
+/// - user_role_changed: { from: "viewer", to: "editor" }
+/// - branch_updated: { fieldsChanged: ["colors.primary.500"] }
+model AuditLog {
+  id             String      @id @default(uuid()) @db.Uuid
+  organizationId String      @map("organization_id") @db.Uuid
+  action         AuditAction
+  actorId        String      @map("actor_id") @db.Uuid
+  actorEmail     String      @map("actor_email") @db.VarChar(255)
+  targetType     String      @map("target_type") @db.VarChar(50)
+  targetId       String      @map("target_id") @db.Uuid
+  metadata       Json?       @db.JsonB
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  actor        User         @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([action])
+  @@index([actorId])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+  @@index([organizationId, createdAt])
+  @@map("audit_logs")
 }

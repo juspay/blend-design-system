@@ -1,41 +1,17 @@
 import { Router, type IRouter, type Request, type Response } from 'express'
 import { authenticate, requireRole } from '@/middlewares/auth.js'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
-import { prisma } from '@/config/database.js'
+import { validate, updateUserSchema } from '@/middlewares/validate.js'
+import {
+    listUsers,
+    findUserById,
+    updateUserProfile,
+    updateUserRole,
+    softDeleteUser,
+} from '../data-access/user.repository.js'
 
 const router: IRouter = Router()
 
-/**
- * @openapi
- * /api/users:
- *   get:
- *     summary: List all users
- *     description: Get paginated list of users (admin only)
- *     tags:
- *       - Users
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           default: 1
- *         description: Page number
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           default: 20
- *         description: Items per page
- *     responses:
- *       200:
- *         description: List of users
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden - Admin only
- */
 router.get(
     '/',
     authenticate,
@@ -43,26 +19,13 @@ router.get(
     asyncHandler(async (req: Request, res: Response) => {
         const page = parseInt(req.query.page as string) || 1
         const limit = Math.min(parseInt(req.query.limit as string) || 20, 100)
-        const skip = (page - 1) * limit
+        const organizationId = req.query.organizationId as string
 
-        const [users, total] = await Promise.all([
-            prisma.user.findMany({
-                skip,
-                take: limit,
-                select: {
-                    id: true,
-                    email: true,
-                    displayName: true,
-                    photoUrl: true,
-                    role: true,
-                    isActive: true,
-                    createdAt: true,
-                    lastLogin: true,
-                },
-                orderBy: { createdAt: 'desc' },
-            }),
-            prisma.user.count(),
-        ])
+        const { users, total } = await listUsers({
+            page,
+            limit,
+            organizationId,
+        })
 
         res.json({
             success: true,
@@ -79,37 +42,13 @@ router.get(
     })
 )
 
-/**
- * @openapi
- * /api/users/{id}:
- *   get:
- *     summary: Get user by ID
- *     description: Get detailed user information
- *     tags:
- *       - Users
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: User UUID
- *     responses:
- *       200:
- *         description: User details
- *       404:
- *         description: User not found
- */
 router.get(
     '/:id',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
         const { id } = req.params
-        const requestingUserId = req.user?.id
 
-        if (id !== requestingUserId && req.user?.role !== 'admin') {
+        if (id !== req.user?.id && req.user?.role !== 'admin') {
             res.status(403).json({
                 success: false,
                 error: {
@@ -120,9 +59,7 @@ router.get(
             return
         }
 
-        const user = await prisma.user.findUnique({
-            where: { id },
-        })
+        const user = await findUserById(id)
 
         if (!user) {
             res.status(404).json({
@@ -132,49 +69,14 @@ router.get(
             return
         }
 
-        res.json({
-            success: true,
-            data: { user },
-        })
+        res.json({ success: true, data: { user } })
     })
 )
 
-/**
- * @openapi
- * /api/users/{id}:
- *   patch:
- *     summary: Update user profile
- *     description: Update user information
- *     tags:
- *       - Users
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               displayName:
- *                 type: string
- *               photoUrl:
- *                 type: string
- *     responses:
- *       200:
- *         description: User updated
- *       403:
- *         description: Cannot update other users
- */
 router.patch(
     '/:id',
     authenticate,
+    validate({ body: updateUserSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const { id } = req.params
 
@@ -189,20 +91,37 @@ router.patch(
             return
         }
 
-        const { displayName, photoUrl } = req.body
+        const { displayName, photoUrl, role } = req.body
 
-        const user = await prisma.user.update({
-            where: { id },
-            data: {
-                displayName: displayName || undefined,
-                photoUrl: photoUrl || undefined,
-            },
-        })
+        if (role && req.user?.role !== 'admin') {
+            res.status(403).json({
+                success: false,
+                error: {
+                    code: 'FORBIDDEN',
+                    message: 'Only admins can change roles',
+                },
+            })
+            return
+        }
 
-        res.json({
-            success: true,
-            data: { user },
-        })
+        let user
+        if (role && req.user?.role === 'admin') {
+            user = await updateUserRole(id, role)
+        } else {
+            user = await updateUserProfile(id, { displayName, photoUrl })
+        }
+
+        res.json({ success: true, data: { user } })
+    })
+)
+
+router.delete(
+    '/:id',
+    authenticate,
+    requireRole('admin'),
+    asyncHandler(async (req: Request, res: Response) => {
+        await softDeleteUser(req.params.id)
+        res.json({ success: true, message: 'User deactivated' })
     })
 )
 

@@ -130,7 +130,8 @@ async function fetchWithAuth<T>(
 /** Create a new branch. */
 export async function createBranchBackend(
     token: string,
-    input: CreateBranchInput
+    input: CreateBranchInput,
+    organizationId?: string
 ): Promise<Branch> {
     const data = await fetchWithAuth<BranchResponse>(
         '/api/branches',
@@ -142,9 +143,12 @@ export async function createBranchBackend(
                 description: input.description,
                 visibility: input.visibility,
                 brandConfig: input.brandConfig,
-                parentBranch: input.parentBranch,
-                forkFrom: input.forkFrom,
+                parentBranchId:
+                    input.parentBranch?.branchId ||
+                    input.forkFrom?.branchId ||
+                    undefined,
                 tags: input.tags,
+                organizationId,
             }),
         },
         token
@@ -159,12 +163,15 @@ export async function listBranchesBackend(
         limit?: number
         cursor?: string
         createdBy?: string
+        organizationId?: string
     }
 ): Promise<{ branches: Branch[]; nextCursor?: string }> {
     const params = new URLSearchParams()
     if (options?.limit) params.append('limit', String(options.limit))
     if (options?.cursor) params.append('cursor', options.cursor)
     if (options?.createdBy) params.append('createdBy', options.createdBy)
+    if (options?.organizationId)
+        params.append('organizationId', options.organizationId)
 
     const query = params.toString() ? `?${params.toString()}` : ''
 

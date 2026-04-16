@@ -102,22 +102,22 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
             content: (
                 <div className="mt-6 space-y-3">
                     <BranchExample
-                        name="HDFC Retail"
-                        detail="Blue primary, sharp corners"
+                        name="Juspay Default"
+                        detail="Blue primary, default radius"
                         status="Published v2.1.0"
-                        color="#0047AB"
+                        color="#3B82F6"
                     />
                     <BranchExample
-                        name="NeoBank Dark"
+                        name="Starter Purple"
                         detail="Purple accent, rounded"
                         status="Draft"
-                        color="#AD46FF"
+                        color="#8B5CF6"
                     />
                     <BranchExample
-                        name="FinTech Pro"
-                        detail="Green accent, default radius"
-                        status="Published v1.0.0"
-                        color="#00C951"
+                        name="Acme Light"
+                        detail="Orange accent, warm palette"
+                        status="Published v1.2.0"
+                        color="#EA580C"
                     />
                 </div>
             ),
@@ -132,7 +132,7 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
                     <StepGuide
                         step={1}
                         title="Create a Branch"
-                        description="Start from a preset (HDFC, NeoBank, FinTech) or blank. Each branch is isolated."
+                        description="Start from a preset or blank. Each branch is isolated."
                     />
                     <StepGuide
                         step={2}
@@ -149,10 +149,10 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
                             # In your project:
                         </div>
                         <div className="text-xs font-mono text-green-400">
-                            npx blend-token-studio pull hdfc/retail
+                            npx blend-token-studio pull juspay/default
                         </div>
                         <div className="text-xs font-mono text-gray-500 mt-1">
-                            # Done. All components render with HDFC branding.
+                            # Done. All components render with your branding.
                         </div>
                     </div>
                 </div>

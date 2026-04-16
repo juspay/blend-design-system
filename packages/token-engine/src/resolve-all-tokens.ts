@@ -88,4 +88,20 @@ export function resolveAllTokens(
     return tokens
 }
 
+/**
+ * Resolve tokens for a single component.
+ * Used by component-level overrides to re-resolve just the affected component.
+ *
+ * @returns The resolved tokens for the component, or undefined if the key is not found.
+ */
+export function resolveComponentTokens(
+    componentKey: string,
+    foundation: FoundationTokenType,
+    theme: Theme | string = Theme.LIGHT
+): unknown | undefined {
+    const resolver = V2_RESOLVERS[componentKey]
+    if (!resolver) return undefined
+    return resolver(foundation, theme)
+}
+
 export const V2_COMPONENT_KEYS = Object.keys(V2_RESOLVERS)

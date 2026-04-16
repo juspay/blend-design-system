@@ -12,15 +12,16 @@ function AuthCallbackPage() {
         const error = params.get('error')
 
         if (token) {
-            // Send token back to parent window
+            // Send token back to parent window (popup flow)
             if (window.opener) {
                 window.opener.postMessage(
                     { type: 'AUTH_SUCCESS', token },
                     window.location.origin
                 )
             } else {
-                // Direct navigation - store token and redirect
-                localStorage.setItem('token', token)
+                // Direct navigation — store token in sessionStorage
+                // as fallback; the httpOnly cookie is the primary auth
+                sessionStorage.setItem('blend_auth_token', token)
                 window.location.href = '/studio'
             }
         } else if (error) {

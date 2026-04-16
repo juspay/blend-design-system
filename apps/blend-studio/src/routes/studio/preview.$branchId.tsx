@@ -4,11 +4,11 @@ import { ThemeProvider } from '@juspay/blend-design-system'
 import { resolveBrandTokens } from '@blend-design/token-engine'
 import { useBranchWithMock } from '@/frontend/hooks/use-studio'
 import { ComponentShowcase } from '@/components/studio/ComponentShowcase'
+import { ThemeToggle } from '@/components/shared/ThemeToggle'
+import { useTheme } from '@/contexts/ThemeContext'
 import { useState, useMemo } from 'react'
 import {
     ArrowLeft,
-    Sun,
-    Moon,
     Edit3,
     Copy,
     Check,
@@ -23,17 +23,17 @@ export const Route = createFileRoute('/studio/preview/$branchId')({
 function PreviewPage() {
     const { branchId } = Route.useParams()
     const { branch, loading, error } = useBranchWithMock(branchId)
-    const [theme, setTheme] = useState<'light' | 'dark'>('light')
+    const { theme: globalTheme } = useTheme()
     const [copied, setCopied] = useState(false)
 
     const componentTokens = useMemo(() => {
         if (!branch?.brandConfig) return null
         try {
-            return resolveBrandTokens(branch.brandConfig, theme)
+            return resolveBrandTokens(branch.brandConfig, globalTheme)
         } catch {
             return null
         }
-    }, [branch, theme])
+    }, [branch, globalTheme])
 
     const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
 
@@ -116,22 +116,7 @@ function PreviewPage() {
 
                     <div className="flex items-center gap-2">
                         {/* Theme toggle */}
-                        <div className="flex items-center bg-gray-100 rounded-lg p-1">
-                            <button
-                                onClick={() => setTheme('light')}
-                                className={`p-1.5 rounded-md transition-colors ${theme === 'light' ? 'bg-white shadow-sm text-yellow-500' : 'text-gray-400 hover:text-gray-600'}`}
-                                title="Light mode"
-                            >
-                                <Sun className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={() => setTheme('dark')}
-                                className={`p-1.5 rounded-md transition-colors ${theme === 'dark' ? 'bg-white shadow-sm text-blue-500' : 'text-gray-400 hover:text-gray-600'}`}
-                                title="Dark mode"
-                            >
-                                <Moon className="w-4 h-4" />
-                            </button>
-                        </div>
+                        <ThemeToggle />
 
                         <button
                             onClick={handleCopyLink}
@@ -156,76 +141,17 @@ function PreviewPage() {
                     </div>
                 </header>
 
-                {/* ── Brand Info Bar ── */}
-                <div className="shrink-0 px-6 py-3 border-b border-gray-100 bg-gray-50 flex items-center gap-6 overflow-x-auto">
-                    <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs text-gray-400">Brand ID</span>
-                        <span className="text-xs font-mono text-gray-700">
-                            {branch.brandConfig?.brandId}
-                        </span>
-                    </div>
-                    {branch.brandConfig?.font?.family && (
-                        <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-xs text-gray-400">Font</span>
-                            <span className="text-xs font-mono text-gray-700">
-                                {branch.brandConfig.font.family}
-                            </span>
-                        </div>
-                    )}
-                    {branch.brandConfig?.radius?.['8'] && (
-                        <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-xs text-gray-400">
-                                Radius (8)
-                            </span>
-                            <span className="text-xs font-mono text-gray-700">
-                                {branch.brandConfig.radius['8']}
-                            </span>
-                        </div>
-                    )}
-
-                    {/* Color swatches */}
-                    <div className="flex items-center gap-1.5 shrink-0 ml-auto">
-                        <span className="text-xs text-gray-400 mr-1">
-                            Primary
-                        </span>
-                        {[
-                            '50',
-                            '100',
-                            '200',
-                            '300',
-                            '400',
-                            '500',
-                            '600',
-                            '700',
-                            '800',
-                            '900',
-                            '950',
-                        ].map((shade) => {
-                            const c =
-                                branch.brandConfig?.colors?.primary?.[shade]
-                            return c ? (
-                                <div
-                                    key={shade}
-                                    className="w-5 h-5 rounded border border-black/10"
-                                    style={{ backgroundColor: c }}
-                                    title={`${shade}: ${c}`}
-                                />
-                            ) : null
-                        })}
-                    </div>
-                </div>
-
                 {/* ── Preview Area ── */}
                 <div
-                    className={`flex-1 overflow-y-auto ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}
+                    className={`flex-1 overflow-y-auto ${globalTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}
                 >
                     {componentTokens ? (
                         <ThemeProvider
-                            theme={theme}
+                            theme={globalTheme}
                             componentTokens={componentTokens}
                         >
                             <div className="max-w-5xl mx-auto p-6">
-                                <ComponentShowcase theme={theme} />
+                                <ComponentShowcase theme={globalTheme} />
                             </div>
                         </ThemeProvider>
                     ) : (

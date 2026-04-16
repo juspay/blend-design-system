@@ -22,6 +22,8 @@ export type EditorTabId =
     | 'typography'
     | 'radius'
     | 'shadows'
+    | 'darkmode'
+    | 'components'
     | 'json'
 
 /** Identifies which panel is active on the right side. */

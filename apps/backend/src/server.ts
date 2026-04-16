@@ -5,10 +5,16 @@ import cookieParser from 'cookie-parser'
 import { env, isDevelopment } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
+import { rateLimit } from '@/middlewares/rateLimit.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
+import { connectDatabase } from '@/config/database.js'
 import authRoutes from '@/domains/auth/entry-points/auth.routes.js'
 import branchRoutes from '@/domains/branches/entry-points/branch.routes.js'
 import tokenRoutes from '@/domains/tokens/entry-points/token.routes.js'
+import userRoutes from '@/domains/users/entry-points/users.routes.js'
+import orgRoutes from '@/domains/organizations/entry-points/organization.routes.js'
+import tagRoutes from '@/domains/tags/entry-points/tag.routes.js'
+import apiKeyRoutes from '@/domains/apikeys/entry-points/apikey.routes.js'
 import { googleCallback } from '@/domains/auth/entry-points/auth.controller.js'
 
 const app = express()
@@ -19,7 +25,6 @@ app.use(
     })
 )
 
-// CORS configuration - allow multiple origins in development
 const allowedOrigins = isDevelopment
     ? [
           'http://localhost:5173',
@@ -32,7 +37,6 @@ const allowedOrigins = isDevelopment
 app.use(
     cors({
         origin: (origin, callback) => {
-            // Allow requests with no origin (mobile apps, curl, etc.)
             if (!origin) return callback(null, true)
 
             if (allowedOrigins.indexOf(origin) !== -1 || isDevelopment) {
@@ -50,6 +54,14 @@ app.use(
 app.use(express.json({ limit: '1mb' }))
 app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 app.use(cookieParser())
+
+// ---------------------------------------------------------------------------
+// Rate Limiting — prevent abuse and brute-force attacks
+// ---------------------------------------------------------------------------
+// Auth endpoints get stricter limits (20/min) to prevent credential brute-force
+app.use('/api/auth', rateLimit({ windowMs: 60_000, max: 20 }))
+// General API endpoints get standard limits (100/min per IP)
+app.use('/api', rateLimit({ windowMs: 60_000, max: 100 }))
 
 app.use((req, _res, next) => {
     logger.debug(
@@ -81,11 +93,14 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/docs', swaggerUiHandler, swaggerUiSetup)
 
-// Mount Google callback at root level (required by Google OAuth)
 app.get('/auth/google/callback', googleCallback)
 
 app.use('/api/auth', authRoutes)
 app.use('/api/branches', branchRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/organizations', orgRoutes)
+app.use('/api/tags', tagRoutes)
+app.use('/api/api-keys', apiKeyRoutes)
 app.use('/api', tokenRoutes)
 
 app.use(notFoundHandler)
@@ -93,8 +108,16 @@ app.use(errorHandler)
 
 const PORT = parseInt(env.PORT, 10)
 
-app.listen(PORT, () => {
-    logger.info(`Server running on http://localhost:${PORT}`)
-    logger.info(`Swagger docs available at http://localhost:${PORT}/docs`)
-    logger.info(`Environment: ${env.NODE_ENV}`)
+const start = async () => {
+    await connectDatabase()
+    app.listen(PORT, () => {
+        logger.info(`Server running on http://localhost:${PORT}`)
+        logger.info(`Swagger docs available at http://localhost:${PORT}/docs`)
+        logger.info(`Environment: ${env.NODE_ENV}`)
+    })
+}
+
+start().catch((err) => {
+    logger.error(err, 'Failed to start server')
+    process.exit(1)
 })

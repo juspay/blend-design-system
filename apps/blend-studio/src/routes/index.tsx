@@ -303,7 +303,7 @@ function WorkflowSection() {
                             <WorkflowStep
                                 step={1}
                                 title="Create a Branch"
-                                description="Start from a preset (HDFC, NeoBank, FinTech) or create a blank branch."
+                                description="Start from a preset or create a blank branch."
                             />
                             <WorkflowStep
                                 step={2}
@@ -319,7 +319,7 @@ function WorkflowSection() {
                                 step={4}
                                 title="Developer Pulls"
                                 description="Developer runs one CLI command to pull the tokens into their project."
-                                code="npx blend-token-studio pull hdfc/retail"
+                                code="npx blend-token-studio pull juspay/default"
                             />
                         </div>
                     </div>
@@ -401,7 +401,7 @@ function CliSection() {
                     description="Scaffold project (provider + tokens + config)"
                 />
                 <CliCommand
-                    command="brand --preset hdfc"
+                    command="brand --preset blend"
                     description="Apply a brand preset"
                 />
                 <CliCommand
@@ -409,7 +409,7 @@ function CliSection() {
                     description="Generate tokens from a single hex color"
                 />
                 <CliCommand
-                    command="pull hdfc/retail"
+                    command="pull juspay/default"
                     description="Pull published tokens from studio into your project"
                 />
                 <CliCommand
@@ -475,7 +475,7 @@ function UsageSection() {
                                 # 2. Pull a published branch
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio pull hdfc/retail
+                                npx blend-token-studio pull juspay/default
                             </div>
                             <div className="text-gray-500 mt-3">
                                 # 3. Wrap your app
@@ -505,16 +505,16 @@ function UsageSection() {
                         </p>
                         <div className="bg-gray-900 rounded-xl p-5 text-xs font-mono space-y-2">
                             <div className="text-gray-500">
-                                # Switch to HDFC brand
+                                # Switch to default brand
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio pull hdfc/retail
+                                npx blend-token-studio pull juspay/default
                             </div>
                             <div className="text-gray-500 mt-3">
-                                # Switch to NeoBank brand
+                                # Switch to a custom brand
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio pull neobank/light
+                                npx blend-token-studio pull acme/light
                             </div>
                             <div className="text-gray-500 mt-3">
                                 # Your app code stays the same!

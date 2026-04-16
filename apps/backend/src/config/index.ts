@@ -22,11 +22,6 @@ const envSchema = z.object({
     JWT_REFRESH_EXPIRES_IN: z.string().default('30d'),
 
     FRONTEND_URL: z.string().default('http://localhost:5173'),
-
-    FIREBASE_PROJECT_ID: z.string().optional(),
-    FIREBASE_CLIENT_EMAIL: z.string().optional(),
-    FIREBASE_PRIVATE_KEY: z.string().optional(),
-    FIRESTORE_DATABASE_ID: z.string().optional(),
 })
 
 const parsedEnv = envSchema.safeParse(process.env)

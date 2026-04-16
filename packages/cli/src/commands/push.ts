@@ -5,8 +5,8 @@
  *
  * Usage:
  *   blend-token-studio push                        # push to current branch (from studio.json)
- *   blend-token-studio push hdfc/retail            # push to specific branch
- *   blend-token-studio push hdfc/retail --new      # create branch if not exists
+ *   blend-token-studio push my-brand/default       # push to specific branch
+ *   blend-token-studio push my-brand/default --new # create branch if not exists
  *   blend-token-studio push --publish              # push and publish a version
  *   blend-token-studio push --publish --minor      # push and publish with version bump
  */

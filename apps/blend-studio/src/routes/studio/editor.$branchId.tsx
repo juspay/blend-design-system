@@ -12,6 +12,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 import { ThemeProvider } from '@juspay/blend-design-system'
+import { Panel, Group, Separator } from 'react-resizable-panels'
 import {
     resolveBrandTokens,
     diffBrandConfigs,
@@ -31,11 +32,14 @@ import {
     validateVersion,
 } from '@/frontend/hooks/use-studio'
 import { ComponentShowcase } from '@/components/studio/ComponentShowcase'
+import { SingleComponentShowcase } from '@/components/studio/SingleComponentShowcase'
 import {
     ColorsTab,
     TypographyTab,
     RadiusTab,
     ShadowsTab,
+    DarkModeTab,
+    ComponentOverridesTab,
     JsonTab,
     DiffPanel,
     HistoryPanel,
@@ -104,6 +108,8 @@ const EDITOR_TABS: TabConfig[] = [
     { id: 'typography', icon: Type, label: 'Type' },
     { id: 'radius', icon: Sliders, label: 'Radius' },
     { id: 'shadows', icon: Layers, label: 'Shadows' },
+    { id: 'darkmode', icon: Moon, label: 'Dark' },
+    { id: 'components', icon: Repeat, label: 'Components' },
     { id: 'json', icon: Code, label: 'JSON' },
 ]
 
@@ -133,8 +139,8 @@ function EditorPage() {
         useSnapshotsWithMock(branchId)
 
     // Editor state
+    const [previewTheme, setPreviewTheme] = useState<'light' | 'dark'>('light')
     const [brand, setBrand] = useState<BrandConfig | null>(null)
-    const [theme, setTheme] = useState<'light' | 'dark'>('light')
     const [hasChanges, setHasChanges] = useState(false)
     const [saving, setSaving] = useState(false)
     const [saveSuccess, setSaveSuccess] = useState(false)
@@ -142,6 +148,9 @@ function EditorPage() {
     const [activePanel, setActivePanel] = useState<EditorPanelId>('preview')
     const [showPublishModal, setShowPublishModal] = useState(false)
     const [showImportWizard, setShowImportWizard] = useState(false)
+    const [selectedComponent, setSelectedComponent] = useState<string | null>(
+        null
+    )
     const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     // Sync brand from branch on load
@@ -170,11 +179,11 @@ function EditorPage() {
     const componentTokens = useMemo(() => {
         if (!brand) return null
         try {
-            return resolveBrandTokens(brand, theme)
+            return resolveBrandTokens(brand, previewTheme)
         } catch {
             return null
         }
-    }, [brand, theme])
+    }, [brand, previewTheme])
 
     const diffs = useMemo<TokenDiff[]>(() => {
         if (!brand) return []
@@ -300,8 +309,6 @@ function EditorPage() {
                     branchId={branchId}
                     branchName={branch.name}
                     latestVersion={branch.latestVersion}
-                    theme={theme}
-                    onThemeChange={setTheme}
                     hasChanges={hasChanges}
                     saveSuccess={saveSuccess}
                     saving={saving}
@@ -312,136 +319,221 @@ function EditorPage() {
                     validation={validation}
                 />
 
-                {/* Body: Editor + Preview */}
+                {/* Body: Three Panel Layout */}
                 <div className="flex-1 flex overflow-hidden">
-                    {/* Left: Editor Tabs */}
-                    <div className="w-[420px] shrink-0 bg-white border-r border-gray-200 flex flex-col overflow-hidden">
-                        {/* Tab bar */}
-                        <div className="flex border-b border-gray-200 shrink-0 overflow-x-auto">
-                            {EDITOR_TABS.map(({ id, icon: Icon, label }) => (
-                                <button
-                                    key={id}
-                                    onClick={() => setActiveTab(id)}
-                                    className={`flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
-                                        activeTab === id
-                                            ? 'border-blue-600 text-blue-600'
-                                            : 'border-transparent text-gray-500 hover:text-gray-700'
-                                    }`}
-                                >
-                                    <Icon className="w-3.5 h-3.5" />
-                                    {label}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Tab Content */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-6">
-                            {activeTab === 'colors' && (
-                                <ColorsTab
-                                    brand={brand}
-                                    onChange={handleBrandChange}
-                                />
-                            )}
-                            {activeTab === 'typography' && (
-                                <TypographyTab
-                                    brand={brand}
-                                    onChange={handleBrandChange}
-                                />
-                            )}
-                            {activeTab === 'radius' && (
-                                <RadiusTab
-                                    brand={brand}
-                                    onChange={handleBrandChange}
-                                />
-                            )}
-                            {activeTab === 'shadows' && (
-                                <ShadowsTab
-                                    brand={brand}
-                                    onChange={handleBrandChange}
-                                />
-                            )}
-                            {activeTab === 'json' && (
-                                <JsonTab
-                                    brand={brand}
-                                    onChange={handleBrandChange}
-                                />
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Right: Panels */}
-                    <div className="flex-1 flex flex-col overflow-hidden">
-                        {/* Panel switcher */}
-                        <div className="flex items-center gap-1 px-4 py-2 bg-white border-b border-gray-200 shrink-0">
-                            {editorPanels.map(({ id, icon: Icon, label }) => (
-                                <button
-                                    key={id}
-                                    onClick={() => setActivePanel(id)}
-                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                                        activePanel === id
-                                            ? 'bg-blue-50 text-blue-700'
-                                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-                                    }`}
-                                >
-                                    <Icon className="w-3.5 h-3.5" />
-                                    {label}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Panel content */}
-                        <div className="flex-1 overflow-y-auto">
-                            {activePanel === 'preview' && componentTokens && (
-                                <ThemeProvider
-                                    theme={theme}
-                                    componentTokens={componentTokens}
-                                >
-                                    <div
-                                        className={`min-h-full ${
-                                            theme === 'dark'
-                                                ? 'bg-gray-900'
-                                                : 'bg-gray-50'
-                                        } p-6`}
-                                    >
-                                        <ComponentShowcase theme={theme} />
-                                    </div>
-                                </ThemeProvider>
-                            )}
-                            {activePanel === 'preview' && !componentTokens && (
-                                <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-                                    Resolving tokens...
+                    <Group direction="horizontal" style={{ height: '100%' }}>
+                        {/* Left Panel: Editor Tabs (30%) */}
+                        <Panel minSize={20} defaultSize={30}>
+                            <div className="h-full bg-white border-r border-gray-200 flex flex-col overflow-hidden">
+                                {/* Tab bar */}
+                                <div className="flex border-b border-gray-200 shrink-0 overflow-x-auto">
+                                    {EDITOR_TABS.map(
+                                        ({ id, icon: Icon, label }) => (
+                                            <button
+                                                key={id}
+                                                onClick={() => setActiveTab(id)}
+                                                className={`flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
+                                                    activeTab === id
+                                                        ? 'border-blue-600 text-blue-600'
+                                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                                }`}
+                                            >
+                                                <Icon className="w-3.5 h-3.5" />
+                                                {label}
+                                            </button>
+                                        )
+                                    )}
                                 </div>
-                            )}
-                            {activePanel === 'diff' && (
-                                <DiffPanel diffs={diffs} />
-                            )}
-                            {activePanel === 'history' && (
-                                <HistoryPanel
-                                    versions={versions}
-                                    snapshots={snapshots}
-                                    onRestore={handleRestoreSnapshot}
-                                />
-                            )}
-                            {activePanel === 'export' && (
-                                <ExportPanel
-                                    brand={brand}
-                                    branchId={branchId}
-                                />
-                            )}
-                            {activePanel === 'accessibility' && (
-                                <AccessibilityPanel brand={brand} />
-                            )}
-                            {activePanel === 'multi-export' && (
-                                <MultiExportPanel
-                                    brand={brand}
-                                    branchId={branchId}
-                                />
-                            )}
-                            {activePanel === 'analytics' && (
-                                <TokenAnalyticsPanel brand={brand} />
-                            )}
-                        </div>
-                    </div>
+
+                                {/* Tab Content */}
+                                <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                                    {activeTab === 'colors' && (
+                                        <ColorsTab
+                                            brand={brand}
+                                            onChange={handleBrandChange}
+                                        />
+                                    )}
+                                    {activeTab === 'typography' && (
+                                        <TypographyTab
+                                            brand={brand}
+                                            onChange={handleBrandChange}
+                                        />
+                                    )}
+                                    {activeTab === 'radius' && (
+                                        <RadiusTab
+                                            brand={brand}
+                                            onChange={handleBrandChange}
+                                        />
+                                    )}
+                                    {activeTab === 'shadows' && (
+                                        <ShadowsTab
+                                            brand={brand}
+                                            onChange={handleBrandChange}
+                                        />
+                                    )}
+                                    {activeTab === 'darkmode' && (
+                                        <DarkModeTab
+                                            brand={brand}
+                                            onChange={handleBrandChange}
+                                        />
+                                    )}
+                                    {activeTab === 'components' && (
+                                        <ComponentOverridesTab
+                                            brand={brand}
+                                            onChange={handleBrandChange}
+                                            onSelectComponent={
+                                                setSelectedComponent
+                                            }
+                                        />
+                                    )}
+                                    {activeTab === 'json' && (
+                                        <JsonTab
+                                            brand={brand}
+                                            onChange={handleBrandChange}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </Panel>
+
+                        <Separator className="w-1 bg-gray-200 hover:bg-blue-400 transition-colors cursor-col-resize" />
+
+                        {/* Right Panel: Preview (70%) */}
+                        <Panel minSize={30} defaultSize={70}>
+                            <div className="h-full flex flex-col overflow-hidden bg-white">
+                                {/* Panel switcher */}
+                                <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shrink-0">
+                                    <div className="flex items-center gap-1">
+                                        {editorPanels.map(
+                                            ({ id, icon: Icon, label }) => (
+                                                <button
+                                                    key={id}
+                                                    onClick={() =>
+                                                        setActivePanel(id)
+                                                    }
+                                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                                                        activePanel === id
+                                                            ? 'bg-blue-50 text-blue-700'
+                                                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                                                    }`}
+                                                >
+                                                    <Icon className="w-3.5 h-3.5" />
+                                                    {label}
+                                                </button>
+                                            )
+                                        )}
+                                    </div>
+
+                                    {/* Preview theme toggle - only shown when preview is active */}
+                                    {activePanel === 'preview' && (
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-gray-400">
+                                                Preview:
+                                            </span>
+                                            <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
+                                                <button
+                                                    onClick={() =>
+                                                        setPreviewTheme('light')
+                                                    }
+                                                    className={`p-1.5 rounded transition-colors ${
+                                                        previewTheme === 'light'
+                                                            ? 'bg-white shadow-sm text-yellow-500'
+                                                            : 'text-gray-400 hover:text-gray-600'
+                                                    }`}
+                                                    title="Light preview"
+                                                >
+                                                    <Sun className="w-3.5 h-3.5" />
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        setPreviewTheme('dark')
+                                                    }
+                                                    className={`p-1.5 rounded transition-colors ${
+                                                        previewTheme === 'dark'
+                                                            ? 'bg-white shadow-sm text-blue-500'
+                                                            : 'text-gray-400 hover:text-gray-600'
+                                                    }`}
+                                                    title="Dark preview"
+                                                >
+                                                    <Moon className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Panel content */}
+                                <div className="flex-1 overflow-y-auto">
+                                    {activePanel === 'preview' &&
+                                        componentTokens && (
+                                            <ThemeProvider
+                                                theme={previewTheme}
+                                                componentTokens={
+                                                    componentTokens
+                                                }
+                                            >
+                                                <div
+                                                    className={`min-h-full ${
+                                                        previewTheme === 'dark'
+                                                            ? 'bg-gray-900'
+                                                            : 'bg-gray-50'
+                                                    } p-6`}
+                                                >
+                                                    {activeTab ===
+                                                        'components' &&
+                                                    selectedComponent ? (
+                                                        <SingleComponentShowcase
+                                                            componentKey={
+                                                                selectedComponent
+                                                            }
+                                                            theme={previewTheme}
+                                                        />
+                                                    ) : (
+                                                        <ComponentShowcase
+                                                            theme={previewTheme}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </ThemeProvider>
+                                        )}
+                                    {activePanel === 'preview' &&
+                                        !componentTokens && (
+                                            <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                                                Resolving tokens...
+                                            </div>
+                                        )}
+                                    {activePanel === 'diff' && (
+                                        <DiffPanel diffs={diffs} />
+                                    )}
+                                    {activePanel === 'history' && (
+                                        <HistoryPanel
+                                            versions={versions}
+                                            snapshots={snapshots}
+                                            onRestore={handleRestoreSnapshot}
+                                        />
+                                    )}
+                                    {activePanel === 'export' && (
+                                        <ExportPanel
+                                            brand={brand}
+                                            branchId={branchId}
+                                        />
+                                    )}
+                                    {activePanel === 'accessibility' && (
+                                        <AccessibilityPanel brand={brand} />
+                                    )}
+                                    {activePanel === 'multi-export' && (
+                                        <MultiExportPanel
+                                            brand={brand}
+                                            branchId={branchId}
+                                        />
+                                    )}
+                                    {activePanel === 'analytics' && (
+                                        <TokenAnalyticsPanel brand={brand} />
+                                    )}
+                                </div>
+                            </div>
+                        </Panel>
+                    </Group>
                 </div>
 
                 {/* Import Wizard Modal */}
@@ -491,8 +583,6 @@ interface EditorHeaderProps {
     branchId: string
     branchName: string
     latestVersion: string | null | undefined
-    theme: 'light' | 'dark'
-    onThemeChange: (theme: 'light' | 'dark') => void
     hasChanges: boolean
     saveSuccess: boolean
     saving: boolean
@@ -507,8 +597,6 @@ function EditorHeader({
     branchId,
     branchName,
     latestVersion,
-    theme,
-    onThemeChange,
     hasChanges,
     saveSuccess,
     saving,
@@ -562,9 +650,6 @@ function EditorHeader({
             </div>
 
             <div className="flex items-center gap-2">
-                {/* Theme toggle */}
-                <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
-
                 <Link
                     to="/studio/preview/$branchId"
                     params={{ branchId }}
@@ -615,45 +700,6 @@ function EditorHeader({
                 <UserMenu />
             </div>
         </header>
-    )
-}
-
-// ---------------------------------------------------------------------------
-// Theme Toggle
-// ---------------------------------------------------------------------------
-
-function ThemeToggle({
-    theme,
-    onThemeChange,
-}: {
-    theme: 'light' | 'dark'
-    onThemeChange: (theme: 'light' | 'dark') => void
-}) {
-    return (
-        <div className="flex items-center bg-gray-100 rounded-lg p-1">
-            <button
-                onClick={() => onThemeChange('light')}
-                className={`p-1.5 rounded-md transition-colors ${
-                    theme === 'light'
-                        ? 'bg-white shadow-sm text-yellow-500'
-                        : 'text-gray-400 hover:text-gray-600'
-                }`}
-                title="Light mode"
-            >
-                <Sun className="w-4 h-4" />
-            </button>
-            <button
-                onClick={() => onThemeChange('dark')}
-                className={`p-1.5 rounded-md transition-colors ${
-                    theme === 'dark'
-                        ? 'bg-white shadow-sm text-blue-500'
-                        : 'text-gray-400 hover:text-gray-600'
-                }`}
-                title="Dark mode"
-            >
-                <Moon className="w-4 h-4" />
-            </button>
-        </div>
     )
 }
 

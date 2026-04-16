@@ -10,8 +10,8 @@
  * Usage:
  *   npx blend-token-studio init                    # scaffold project
  *   npx blend-token-studio brand                   # interactive branding
- *   npx blend-token-studio brand --preset hdfc     # use a preset
- *   npx blend-token-studio pull hdfc/retail        # pull from studio
+ *   npx blend-token-studio brand --preset juspay   # use a preset
+ *   npx blend-token-studio pull juspay/default     # pull from studio
  *   npx blend-token-studio push                    # push to studio
  *   npx blend-token-studio list                    # list branches
  *   npx blend-token-studio diff                    # see overrides
@@ -51,7 +51,7 @@ program
     .description('Apply a brand to your project')
     .option(
         '-p, --preset <name>',
-        'Use a built-in preset (blend, hdfc, neobank, fintech)'
+        'Use a built-in preset (blend, juspay, purple, green, orange)'
     )
     .option('--primary <hex>', 'Primary brand color (hex)')
     .option(

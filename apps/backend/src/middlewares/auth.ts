@@ -1,34 +1,82 @@
-import type { Request, Response, NextFunction } from 'express'
 import { verifyJwtToken } from '@/domains/auth/domain/auth.service.js'
 import { UnauthorizedError, ForbiddenError } from '@/errors/AppError.js'
+import * as apiKeyRepo from '@/domains/apikeys/data-access/apikey.repository.js'
+import * as userRepo from '@/domains/users/data-access/user.repository.js'
 
-interface AuthenticatedRequest extends Request {
-    user?: {
-        id: string
-        email: string
-        role: string
+declare global {
+    namespace Express {
+        interface Request {
+            user?: {
+                id: string
+                email: string
+                role: string
+                displayName: string
+                organizationId?: string
+                authMethod: 'jwt' | 'api_key'
+            }
+        }
     }
 }
 
 export const authenticate = async (
-    req: AuthenticatedRequest,
-    _res: Response,
-    next: NextFunction
+    req: any,
+    _res: any,
+    next: any
 ): Promise<void> => {
     try {
+        // 1. Check Authorization header (Bearer token or API key)
         const authHeader = req.headers.authorization
+        let token: string | undefined
 
-        if (!authHeader?.startsWith('Bearer ')) {
+        if (authHeader?.startsWith('Bearer ')) {
+            token = authHeader.substring(7)
+        }
+
+        // 2. Fallback to httpOnly cookie for browser requests
+        if (!token && req.cookies?.accessToken) {
+            token = req.cookies.accessToken
+        }
+
+        if (!token) {
             throw new UnauthorizedError('No token provided')
         }
 
-        const token = authHeader.substring(7)
+        // 3. API key path
+        if (token.startsWith('bts_')) {
+            const apiKey = await apiKeyRepo.validateApiKey(token)
+            if (!apiKey) {
+                throw new UnauthorizedError('Invalid or revoked API key')
+            }
+
+            const user = await userRepo.findUserById(apiKey.userId)
+            if (!user) {
+                throw new UnauthorizedError('API key user not found')
+            }
+
+            const membership = await userRepo.findUserMembership(apiKey.userId)
+
+            req.user = {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+                displayName: user.displayName || '',
+                organizationId: membership?.organizationId,
+                authMethod: 'api_key',
+            }
+
+            next()
+            return
+        }
+
+        // 4. JWT path
         const decoded = verifyJwtToken(token)
 
         req.user = {
             id: decoded.userId,
             email: decoded.email,
             role: decoded.role,
+            displayName: (decoded as any).displayName || '',
+            authMethod: 'jwt',
         }
 
         next()
@@ -38,11 +86,7 @@ export const authenticate = async (
 }
 
 export const requireRole = (...allowedRoles: string[]) => {
-    return (
-        req: AuthenticatedRequest,
-        _res: Response,
-        next: NextFunction
-    ): void => {
+    return (req: any, _res: any, next: any): void => {
         if (!req.user) {
             next(new UnauthorizedError('Authentication required'))
             return
@@ -62,21 +106,31 @@ export const requireRole = (...allowedRoles: string[]) => {
 }
 
 export const optionalAuth = async (
-    req: AuthenticatedRequest,
-    _res: Response,
-    next: NextFunction
+    req: any,
+    _res: any,
+    next: any
 ): Promise<void> => {
     try {
-        const authHeader = req.headers.authorization
+        let token: string | undefined
 
+        const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
-            const token = authHeader.substring(7)
+            token = authHeader.substring(7)
+        }
+
+        if (!token && req.cookies?.accessToken) {
+            token = req.cookies.accessToken
+        }
+
+        if (token && !token.startsWith('bts_')) {
             const decoded = verifyJwtToken(token)
 
             req.user = {
                 id: decoded.userId,
                 email: decoded.email,
                 role: decoded.role,
+                displayName: (decoded as any).displayName || '',
+                authMethod: 'jwt',
             }
         }
 
@@ -85,5 +139,3 @@ export const optionalAuth = async (
         next()
     }
 }
-
-export { AuthenticatedRequest }

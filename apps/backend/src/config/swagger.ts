@@ -12,10 +12,11 @@ const options: swaggerJsdoc.Options = {
                 'Production-ready Backend API for Blend Token Studio with Google OAuth, RBAC, Teams, and Token Management',
             contact: {
                 name: 'Blend Team',
-                email: 'support@blend.juspay.design',
+                url: 'https://github.com/juspay/blend-design-system',
             },
             license: {
-                name: 'Private',
+                name: 'Apache-2.0',
+                url: 'https://opensource.org/licenses/Apache-2.0',
             },
         },
         servers: [
@@ -24,8 +25,8 @@ const options: swaggerJsdoc.Options = {
                 description: 'Local Development',
             },
             {
-                url: 'https://api.blend.juspay.design',
-                description: 'Production',
+                url: 'https://api.blend.example.com',
+                description: 'Production (configure via FRONTEND_URL env)',
             },
         ],
         components: {
