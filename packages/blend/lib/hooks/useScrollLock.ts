@@ -7,7 +7,6 @@ const useScrollLock = (shouldLock?: boolean) => {
         const scrollY = window.scrollY
         const scrollX = window.scrollX
 
-        // ---------- HELPERS ----------
         const isElement = (target: EventTarget | null): target is Element =>
             target instanceof Element
 
