@@ -16,7 +16,7 @@ pnpm add https://pkg.pr.new/@juspay/blend-design-system@<commit-sha>
 
 These previews are **not** real npm releases. They are tied to the PR's HEAD commit, are ephemeral by design, and **must not be used in production**. Real releases continue to go through the changesets → beta / stable flow described below.
 
-The workflow lives at `.github/workflows/pkg-pr-new.yml` and uses the [pkg.pr.new GitHub App](https://github.com/apps/pkg-pr-new) — no `NPM_TOKEN` or secrets required.
+The preview is published by the `preview` job in `.github/workflows/ci.yml`, gated on a successful build (`needs: lint-build`), and uses the [pkg.pr.new GitHub App](https://github.com/apps/pkg-pr-new) — no `NPM_TOKEN` or secrets required.
 
 ## Package Information
 
