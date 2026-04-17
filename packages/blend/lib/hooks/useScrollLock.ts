@@ -1,5 +1,37 @@
 import { useEffect } from 'react'
 
+type ScrollLockEventTarget = EventTarget & {
+    closest?: (selector: string) => Element | null
+    tagName?: string
+}
+
+const isElement = (
+    target: EventTarget | null
+): target is ScrollLockEventTarget => {
+    if (!target) return false
+    try {
+        return (
+            target instanceof Element ||
+            (typeof (target as ScrollLockEventTarget).closest === 'function' &&
+                typeof (target as ScrollLockEventTarget).tagName === 'string')
+        )
+    } catch {
+        return false
+    }
+}
+
+const safeClosest = (
+    el: ScrollLockEventTarget,
+    selector: string
+): Element | null => {
+    if (typeof el.closest !== 'function') return null
+    try {
+        return el.closest(selector) ?? null
+    } catch {
+        return null
+    }
+}
+
 const useScrollLock = (shouldLock?: boolean) => {
     useEffect(() => {
         if (!shouldLock) return
@@ -7,20 +39,18 @@ const useScrollLock = (shouldLock?: boolean) => {
         const scrollY = window.scrollY
         const scrollX = window.scrollX
 
-        const isElement = (target: EventTarget | null): target is Element =>
-            target instanceof Element
+        const isInsideDropdown = (el: ScrollLockEventTarget) =>
+            safeClosest(el, '[data-radix-popper-content-wrapper]') ||
+            safeClosest(el, '[data-radix-dropdown-menu-content]') ||
+            safeClosest(el, '[role="menu"]')
 
-        const isInsideDropdown = (el: Element) =>
-            el.closest('[data-radix-popper-content-wrapper]') ||
-            el.closest('[data-radix-dropdown-menu-content]') ||
-            el.closest('[role="menu"]')
-
-        const isInsideModal = (el: Element) =>
-            el.closest('[role="dialog"]') ||
-            el.closest('[data-modal]') ||
-            el.closest('[data-element="body"]')
+        const isInsideModal = (el: ScrollLockEventTarget) =>
+            safeClosest(el, '[role="dialog"]') ||
+            safeClosest(el, '[data-modal]') ||
+            safeClosest(el, '[data-element="body"]')
 
         let dropdownCache: boolean | null = null
+
         const hasOpenDropdown = () => {
             if (dropdownCache !== null) return dropdownCache
             dropdownCache = !!document.querySelector(
@@ -63,8 +93,6 @@ const useScrollLock = (shouldLock?: boolean) => {
             const scrollKeys = [
                 'ArrowUp',
                 'ArrowDown',
-                'ArrowLeft',
-                'ArrowRight',
                 'PageUp',
                 'PageDown',
                 'Home',
@@ -85,9 +113,10 @@ const useScrollLock = (shouldLock?: boolean) => {
 
             if (isInsideDropdown(target)) return
 
-            if (target.closest('input, textarea, [contenteditable="true"]')) {
+            if (
+                safeClosest(target, 'input, textarea, [contenteditable="true"]')
+            )
                 return
-            }
 
             const dropdownOpen = hasOpenDropdown()
 
