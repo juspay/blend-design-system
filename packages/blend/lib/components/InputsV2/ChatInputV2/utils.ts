@@ -211,3 +211,44 @@ export function assignForwardedRef<T>(
         ;(ref as MutableRefObject<T | null>).current = node
     }
 }
+export const truncatePlaceholder = (
+    textarea: HTMLTextAreaElement | null,
+    placeholder: string | undefined
+): string | undefined => {
+    if (!textarea || !placeholder) return placeholder
+
+    const style = window.getComputedStyle(textarea)
+    const padding =
+        parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
+    const availableWidth = textarea.clientWidth - padding
+
+    if (availableWidth <= 0) return placeholder
+
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return placeholder
+
+    ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
+
+    if (ctx.measureText(placeholder).width <= availableWidth) {
+        return placeholder
+    }
+
+    // Simple truncation: find max length that fits
+    const ellipsis = '...'
+    let maxLength = placeholder.length
+
+    while (
+        maxLength > 0 &&
+        ctx.measureText(placeholder.slice(0, maxLength) + ellipsis).width >
+            availableWidth
+    ) {
+        maxLength--
+    }
+
+    return maxLength > 0 ? placeholder.slice(0, maxLength) + ellipsis : ellipsis
+}
+
+export const removePxFromValue = (value: number | string): number => {
+    return parseFloat(String(value).replace('px', ''))
+}

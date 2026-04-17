@@ -29,6 +29,9 @@ import {
     handleChatInputV2FileInputChange,
     resolveChatInputV2TextareaMaxHeightPx,
 } from './utils'
+import MobileChatInputV2 from './MobileChatInputV2'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
 
 const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
     (
@@ -38,6 +41,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
             onSlot2Click = () => {},
             placeholder = 'Type a message...',
             onChange,
+            onEnter = () => {},
             onAttachFiles = () => {},
             onFileRemove = () => {},
             attachedFiles = [],
@@ -47,6 +51,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
             topQueriesMaxHeight = 200,
             textareaMaxHeight,
             disabled = false,
+            ...textareaRest
         },
         ref
     ) => {
@@ -61,6 +66,9 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
             InputStateV2.DEFAULT
         )
         const showTopQueries = inputState === InputStateV2.FOCUS
+        const { innerWidth } = useBreakpoints()
+        const isMobile = innerWidth < BREAKPOINTS.lg
+
         const handleAttachClick = useCallback(() => {
             if (disabled) return
             fileInputRef.current?.click()
@@ -94,6 +102,51 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
             syncTextareaHeight()
         }, [value, syncTextareaHeight])
 
+        const hiddenFileInput = useMemo(
+            () => (
+                <PrimitiveInput
+                    type="file"
+                    style={{ display: 'none' }}
+                    ref={fileInputRef}
+                    onChange={(e) =>
+                        handleChatInputV2FileInputChange(
+                            e,
+                            attachedFiles,
+                            onAttachFiles
+                        )
+                    }
+                    multiple
+                    accept="image/*,.pdf,.csv,.txt,.doc,.docx"
+                    aria-label="Attach files"
+                />
+            ),
+            [attachedFiles, onAttachFiles]
+        )
+
+        if (isMobile) {
+            return (
+                <>
+                    {hiddenFileInput}
+                    <MobileChatInputV2
+                        ref={ref}
+                        webTokens={chatInputV2Tokens}
+                        id={chatInputId}
+                        value={value}
+                        onChange={onChange || (() => {})}
+                        slot1={slot1}
+                        slot2={slot2}
+                        placeholder={placeholder}
+                        attachedFiles={attachedFiles}
+                        handleAttachClick={handleAttachClick}
+                        onFileRemove={onFileRemove}
+                        onSlot2Click={onSlot2Click}
+                        disabled={disabled}
+                        onEnter={onEnter}
+                    />
+                </>
+            )
+        }
+
         return (
             <Block
                 ref={setContainerNode}
@@ -126,22 +179,8 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                             .gap ?? 8
                     }
                 />
-                <Block width="100%">{slot1}</Block>
-                <PrimitiveInput
-                    type="file"
-                    style={{ display: 'none' }}
-                    ref={fileInputRef}
-                    onChange={(e) =>
-                        handleChatInputV2FileInputChange(
-                            e,
-                            attachedFiles,
-                            onAttachFiles
-                        )
-                    }
-                    multiple
-                    accept="image/*,.pdf,.csv,.txt,.doc,.docx"
-                    aria-label="Attach files"
-                />
+                {slot1 && <Block width="100%">{slot1}</Block>}
+                {hiddenFileInput}
                 {/* Input Container */}
                 <Block
                     backgroundColor={
@@ -165,6 +204,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                 >
                     {/* Input */}
                     <PrimitiveTextarea
+                        {...textareaRest}
                         placeholderStyles={{
                             color: chatInputV2Tokens.container.inputContainer
                                 .input.placeholder as string,
@@ -183,6 +223,12 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                         placeholder={placeholder}
                         onChange={(e) => {
                             onChange(e.target.value)
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault()
+                                onEnter()
+                            }
                         }}
                         paddingTop={
                             chatInputV2Tokens.container.inputContainer.input
@@ -204,6 +250,9 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                             chatInputV2Tokens.container.inputContainer.input
                                 .maxHeight
                         }
+                        _disabled={{
+                            cursor: 'not-allowed',
+                        }}
                         overflowY="auto"
                         width="100%"
                         onFocus={() => {
@@ -239,6 +288,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                             leftSlot={{ slot: <PaperclipIcon size={16} /> }}
                             onClick={handleAttachClick}
                             disabled={disabled}
+                            aria-label="Attach files"
                         />
 
                         <ButtonV2
@@ -250,128 +300,147 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                                 onSlot2Click()
                             }}
                             disabled={disabled}
+                            aria-label="Secondary action"
                         />
                     </Block>
 
                     {/* Top Queries container */}
-                    <Block
-                        width="100%"
-                        maxHeight={
-                            showTopQueries ? `${topQueriesMaxHeight}px` : '0'
-                        }
-                        opacity={showTopQueries ? 1 : 0}
-                        overflow="hidden"
-                        pointerEvents={showTopQueries ? 'auto' : 'none'}
-                        aria-hidden={!showTopQueries}
-                        transition="max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s ease"
-                        overflowY="auto"
-                    >
+                    {topQueries.length > 0 && (
                         <Block
-                            position="sticky"
-                            top={0}
-                            borderTop={
-                                chatInputV2Tokens.container.inputContainer
-                                    .topQueriesContainer.borderTop
+                            width="100%"
+                            maxHeight={
+                                showTopQueries
+                                    ? `${topQueriesMaxHeight}px`
+                                    : '0'
                             }
-                            backgroundColor={
-                                chatInputV2Tokens.container.inputContainer
-                                    .topQueriesContainer.header.backgroundColor
-                            }
-                            paddingTop={
-                                chatInputV2Tokens.container.inputContainer
-                                    .topQueriesContainer.header.paddingTop
-                            }
-                            paddingRight={
-                                chatInputV2Tokens.container.inputContainer
-                                    .topQueriesContainer.header.paddingRight
-                            }
-                            paddingBottom={
-                                chatInputV2Tokens.container.inputContainer
-                                    .topQueriesContainer.header.paddingBottom
-                            }
-                            paddingLeft={
-                                chatInputV2Tokens.container.inputContainer
-                                    .topQueriesContainer.header.paddingLeft
-                            }
+                            opacity={showTopQueries ? 1 : 0}
+                            overflow="hidden"
+                            pointerEvents={showTopQueries ? 'auto' : 'none'}
+                            aria-hidden={!showTopQueries}
+                            transition="max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s ease"
+                            overflowY="auto"
                         >
-                            <Text
-                                color={
+                            <Block
+                                position="sticky"
+                                top={0}
+                                borderTop={
                                     chatInputV2Tokens.container.inputContainer
-                                        .topQueriesContainer.header.color
+                                        .topQueriesContainer.borderTop
                                 }
-                                fontSize={
-                                    chatInputV2Tokens.container.inputContainer
-                                        .topQueriesContainer.header.fontSize
-                                }
-                                fontWeight={
-                                    chatInputV2Tokens.container.inputContainer
-                                        .topQueriesContainer.header.fontWeight
-                                }
-                                textTransform={
+                                backgroundColor={
                                     chatInputV2Tokens.container.inputContainer
                                         .topQueriesContainer.header
-                                        .textTransform
+                                        .backgroundColor
                                 }
-                            >
-                                Top Queries
-                            </Text>
-                        </Block>
-
-                        {topQueries.map((query) => (
-                            <Block
-                                key={query.id}
-                                _hover={{
-                                    backgroundColor: chatInputV2Tokens.container
-                                        .inputContainer.topQueriesContainer.item
-                                        .backgroundColor.hover as string,
-                                }}
                                 paddingTop={
                                     chatInputV2Tokens.container.inputContainer
-                                        .topQueriesContainer.item.paddingTop
-                                }
-                                paddingBottom={
-                                    chatInputV2Tokens.container.inputContainer
-                                        .topQueriesContainer.item.paddingBottom
+                                        .topQueriesContainer.header.paddingTop
                                 }
                                 paddingRight={
                                     chatInputV2Tokens.container.inputContainer
-                                        .topQueriesContainer.item.paddingRight
+                                        .topQueriesContainer.header.paddingRight
+                                }
+                                paddingBottom={
+                                    chatInputV2Tokens.container.inputContainer
+                                        .topQueriesContainer.header
+                                        .paddingBottom
                                 }
                                 paddingLeft={
                                     chatInputV2Tokens.container.inputContainer
-                                        .topQueriesContainer.item.paddingLeft
+                                        .topQueriesContainer.header.paddingLeft
                                 }
                             >
                                 <Text
-                                    style={{ cursor: 'pointer' }}
                                     color={
                                         chatInputV2Tokens.container
                                             .inputContainer.topQueriesContainer
-                                            .item.color[inputState]
+                                            .header.color
                                     }
                                     fontSize={
                                         chatInputV2Tokens.container
                                             .inputContainer.topQueriesContainer
-                                            .item.fontSize
+                                            .header.fontSize
                                     }
                                     fontWeight={
                                         chatInputV2Tokens.container
                                             .inputContainer.topQueriesContainer
-                                            .item.fontWeight
+                                            .header.fontWeight
                                     }
-                                    onMouseDown={(e) => {
-                                        e.preventDefault()
-                                    }}
-                                    onClick={() => {
-                                        onTopQuerySelect(query)
-                                        setInputState(InputStateV2.DEFAULT)
-                                    }}
+                                    textTransform={
+                                        chatInputV2Tokens.container
+                                            .inputContainer.topQueriesContainer
+                                            .header.textTransform
+                                    }
                                 >
-                                    {query.text}
+                                    Top Queries
                                 </Text>
                             </Block>
-                        ))}
-                    </Block>
+
+                            {topQueries.map((query) => (
+                                <Block
+                                    key={query.id}
+                                    _hover={{
+                                        backgroundColor: chatInputV2Tokens
+                                            .container.inputContainer
+                                            .topQueriesContainer.item
+                                            .backgroundColor.hover as string,
+                                    }}
+                                    paddingTop={
+                                        chatInputV2Tokens.container
+                                            .inputContainer.topQueriesContainer
+                                            .item.paddingTop
+                                    }
+                                    paddingBottom={
+                                        chatInputV2Tokens.container
+                                            .inputContainer.topQueriesContainer
+                                            .item.paddingBottom
+                                    }
+                                    paddingRight={
+                                        chatInputV2Tokens.container
+                                            .inputContainer.topQueriesContainer
+                                            .item.paddingRight
+                                    }
+                                    paddingLeft={
+                                        chatInputV2Tokens.container
+                                            .inputContainer.topQueriesContainer
+                                            .item.paddingLeft
+                                    }
+                                >
+                                    <Text
+                                        style={{ cursor: 'pointer' }}
+                                        color={
+                                            chatInputV2Tokens.container
+                                                .inputContainer
+                                                .topQueriesContainer.item.color[
+                                                inputState
+                                            ]
+                                        }
+                                        fontSize={
+                                            chatInputV2Tokens.container
+                                                .inputContainer
+                                                .topQueriesContainer.item
+                                                .fontSize
+                                        }
+                                        fontWeight={
+                                            chatInputV2Tokens.container
+                                                .inputContainer
+                                                .topQueriesContainer.item
+                                                .fontWeight
+                                        }
+                                        onMouseDown={(e) => {
+                                            e.preventDefault()
+                                        }}
+                                        onClick={() => {
+                                            onTopQuerySelect(query)
+                                            setInputState(InputStateV2.DEFAULT)
+                                        }}
+                                    >
+                                        {query.text}
+                                    </Text>
+                                </Block>
+                            ))}
+                        </Block>
+                    )}
                 </Block>
             </Block>
         )

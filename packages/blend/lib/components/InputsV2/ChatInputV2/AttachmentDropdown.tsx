@@ -35,8 +35,13 @@ const AttachmentDropdownV2 = ({
             flexDirection="column"
             gap={tokens.container.attachedFilesContainer.overflowMenu.gap}
             position="absolute"
+            zIndex={1000}
             top={tokens.container.attachedFilesContainer.overflowMenu.top}
             right={tokens.container.attachedFilesContainer.overflowMenu.right}
+            maxHeight={
+                tokens.container.attachedFilesContainer.overflowMenu.maxHeight
+            }
+            overflowY="auto"
         >
             {tags.map((tag) => (
                 <TagV2

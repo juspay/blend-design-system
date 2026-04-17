@@ -20,10 +20,6 @@ export type ChatInputV2TokensType = {
         paddingRight: CSSObject['paddingRight']
         paddingBottom: CSSObject['paddingBottom']
         paddingLeft: CSSObject['paddingLeft']
-        attachmentContainer: {
-            gap: CSSObject['gap']
-            width: CSSObject['width']
-        }
         slot: {
             backgroundColor: CSSObject['backgroundColor']
             borderRadius: CSSObject['borderRadius']
@@ -40,6 +36,7 @@ export type ChatInputV2TokensType = {
                 padding: CSSObject['padding']
                 top: CSSObject['top']
                 right: CSSObject['right']
+                maxHeight: CSSObject['maxHeight']
             }
         }
         inputContainer: {

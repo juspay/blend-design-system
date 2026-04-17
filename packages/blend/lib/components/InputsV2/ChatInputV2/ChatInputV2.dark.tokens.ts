@@ -36,6 +36,7 @@ export const getChatInputV2DarkTokens = (
                         padding: foundationToken.unit[5],
                         top: foundationToken.unit[30],
                         right: 0,
+                        maxHeight: '200px',
                     },
                 },
                 backgroundColor: {
@@ -58,10 +59,7 @@ export const getChatInputV2DarkTokens = (
                 paddingRight: foundationToken.unit[5],
                 paddingBottom: foundationToken.unit[5],
                 paddingLeft: foundationToken.unit[5],
-                attachmentContainer: {
-                    gap: foundationToken.unit[8],
-                    width: foundationToken.unit[100],
-                },
+
                 slot: {
                     backgroundColor: foundationToken.colors.gray[900],
                     borderRadius: foundationToken.unit[100],
@@ -114,9 +112,8 @@ export const getChatInputV2DarkTokens = (
                         borderTop: borderTopQueries,
                         header: {
                             color: foundationToken.colors.gray[400],
-                            fontSize:
-                                foundationToken.font.size.body.md.fontSize,
-                            fontWeight: '500',
+                            fontSize: foundationToken.unit[12],
+                            fontWeight: '400',
                             textTransform: 'uppercase',
                             paddingTop: foundationToken.unit[6],
                             paddingRight: foundationToken.unit[6],
@@ -191,6 +188,7 @@ export const getChatInputV2DarkTokens = (
                         padding: foundationToken.unit[5],
                         top: foundationToken.unit[30],
                         right: 0,
+                        maxHeight: '200px',
                     },
                 },
                 backgroundColor: {
@@ -213,10 +211,7 @@ export const getChatInputV2DarkTokens = (
                 paddingRight: foundationToken.unit[4],
                 paddingBottom: foundationToken.unit[4],
                 paddingLeft: foundationToken.unit[4],
-                attachmentContainer: {
-                    gap: foundationToken.unit[8],
-                    width: foundationToken.unit[100],
-                },
+
                 slot: {
                     backgroundColor: foundationToken.colors.gray[900],
                     borderRadius: foundationToken.unit[100],
@@ -269,9 +264,8 @@ export const getChatInputV2DarkTokens = (
                         borderTop: borderTopQueries,
                         header: {
                             color: foundationToken.colors.gray[400],
-                            fontSize:
-                                foundationToken.font.size.body.md.fontSize,
-                            fontWeight: '500',
+                            fontSize: foundationToken.unit[12],
+                            fontWeight: '400',
                             textTransform: 'uppercase',
                             paddingTop: foundationToken.unit[6],
                             paddingRight: foundationToken.unit[16],

@@ -1,4 +1,6 @@
 import { ReactNode } from 'react'
+import { ChatInputV2TokensType } from './ChatInputV2.tokens'
+import { MenuProps } from '../../../main'
 export type AttachedFile = {
     id: string
     name: string
@@ -29,4 +31,29 @@ export type ChatInputV2Props = {
     onAttachFiles?: (files: File[]) => void
     /** Remove by id — use this for chip dismiss; do not use `onAttachFiles` to “replace” the list. */
     onFileRemove?: (fileId: string) => void
-}
+    onEnter?: () => void
+} & Omit<
+    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    'size' | 'style' | 'className' | 'onFocus' | 'onBlur' | 'cols' | 'onChange'
+>
+
+export type MobileChatInputV2Props = {
+    disabled?: boolean
+    value: string
+    onChange?: (value: string) => void
+    slot1?: React.ReactNode
+    slot2?: React.ReactNode
+    placeholder?: string
+    attachedFiles?: AttachedFile[]
+    handleAttachClick?: () => void
+    onFileRemove?: (fileId: string) => void
+    onFileClick?: (file: AttachedFile) => void
+    overflowMenuProps?: Partial<MenuProps>
+    onSlot2Click?: () => void
+    id?: string
+    webTokens: ChatInputV2TokensType
+    onEnter?: () => void
+} & Omit<
+    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    'size' | 'style' | 'className' | 'onFocus' | 'onBlur' | 'cols' | 'onChange'
+>

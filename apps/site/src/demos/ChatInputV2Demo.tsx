@@ -3,15 +3,10 @@ import { AttachedFile } from '../../../../packages/blend/lib/components/ChatInpu
 import { ChatInputV2 } from '../../../../packages/blend/lib/components/InputsV2/ChatInputV2'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import { Camera, Upload, Hash, AudioLines } from 'lucide-react'
+import { AudioLines } from 'lucide-react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
-import {
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
-    Button,
-} from '../../../../packages/blend/lib/components/Button'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
+import { FOUNDATION_THEME } from '@juspay/blend-design-system'
 
 const ChatInputV2Demo = () => {
     // Playground state
@@ -23,6 +18,7 @@ const ChatInputV2Demo = () => {
     >(undefined)
     const [playgroundFiles, setPlaygroundFiles] = useState<AttachedFile[]>([])
     const [playgroundWidth, setPlaygroundWidth] = useState<string>('100%')
+    const [staticExampleMessage, setStaticExampleMessage] = useState('')
 
     // File type utilities
     const getFileType = (file: File): AttachedFile['type'] => {
@@ -96,12 +92,12 @@ const ChatInputV2Demo = () => {
         setPlaygroundFiles((prev) => prev.filter((f) => f.id !== fileId))
     }
 
-    const handlePlaygroundFileClick = (file: AttachedFile) => {
-        addSnackbar({
-            header: 'File Clicked',
-            description: `${file.name} (${file.type})`,
-        })
-    }
+    // const handlePlaygroundFileClick = (file: AttachedFile) => {
+    //     addSnackbar({
+    //         header: 'File Clicked',
+    //         description: `${file.name} (${file.type})`,
+    //     })
+    // }
 
     const handlePlaygroundVoiceRecord = () => {
         addSnackbar({
@@ -208,13 +204,21 @@ const ChatInputV2Demo = () => {
                             onChange={(value) => {
                                 setPlaygroundMessage(value)
                             }}
+                            onEnter={() => {
+                                handlePlaygroundSend(
+                                    playgroundMessage,
+                                    playgroundFiles
+                                )
+                            }}
                             slot1={
                                 <Block
-                                    backgroundColor={'white'}
+                                    backgroundColor={
+                                        FOUNDATION_THEME.colors.gray[200]
+                                    }
                                     padding={10}
                                     borderRadius={10}
                                 >
-                                    Slot 2
+                                    Slot 1
                                     <ul>
                                         <li>Item 1</li>
                                         <li>Item 2</li>
@@ -273,6 +277,31 @@ const ChatInputV2Demo = () => {
                             attachedFiles={playgroundFiles}
                         />
                     </div>
+                </div>
+
+                <div className="space-y-4 pt-8 border-t border-gray-200">
+                    <div className="space-y-2">
+                        <h2 className="text-2xl font-bold">Static example</h2>
+                        <p className="text-gray-600 text-sm max-w-3xl">
+                            Fixed configuration: default slots, no top queries
+                            or attachments. Use for a minimal compose bar.
+                        </p>
+                    </div>
+                    <Block width="100%" maxWidth="720px">
+                        <ChatInputV2
+                            value={staticExampleMessage}
+                            onChange={setStaticExampleMessage}
+                            placeholder="Ask anything…"
+                            slot2={<AudioLines size={16} />}
+                            onSlot2Click={() =>
+                                addSnackbar({
+                                    header: 'Static example',
+                                    description:
+                                        'Secondary action slot clicked.',
+                                })
+                            }
+                        />
+                    </Block>
                 </div>
             </div>
         </Block>
