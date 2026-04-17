@@ -35,6 +35,12 @@ const NumberInputV2Demo = () => {
         NumberInputV2Direction.RIGHT
     )
 
+    const [unitDemoKgValue, setUnitDemoKgValue] = useState<number | null>(72.5)
+    const [unitDemoMsValue, setUnitDemoMsValue] = useState<number | null>(240)
+    const [unitDemoTooLongValue, setUnitDemoTooLongValue] = useState<
+        number | null
+    >(0)
+
     // Options for selects
     const sizeOptions = [
         { value: InputSizeV2.SM, label: 'Small' },
@@ -478,6 +484,97 @@ const NumberInputV2Demo = () => {
                                 placeholder="Click outside the input"
                             />
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Unit examples */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Unit examples</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 max-w-3xl">
+                    Use <code className="font-mono text-xs">unit</code> with{' '}
+                    <code className="font-mono text-xs">unitDirection</code> to
+                    show a suffix or prefix. When a unit is present, the numeric
+                    stepper is hidden. Trimmed units longer than 7 characters
+                    show a validation error and the unit strip is not rendered.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Unit on the right (kg)
+                        </h3>
+                        <NumberInputV2
+                            slot={{
+                                left: <Weight size={46} />,
+                                right: <Ruler size={46} />,
+                            }}
+                            label={{ text: 'Weight', subtext: '' }}
+                            value={unitDemoKgValue}
+                            onChange={(e) =>
+                                setUnitDemoKgValue(
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                )
+                            }
+                            unit="kg"
+                            unitDirection={NumberInputV2Direction.RIGHT}
+                            placeholder="0"
+                            min={0}
+                            step={0.1}
+                            hintText="Typical suffix unit."
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Unit on the left (ms)
+                        </h3>
+                        <NumberInputV2
+                            slot={{
+                                left: <Weight size={46} />,
+                                right: <Ruler size={46} />,
+                            }}
+                            label={{ text: 'Latency', subtext: '' }}
+                            value={unitDemoMsValue}
+                            onChange={(e) =>
+                                setUnitDemoMsValue(
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                )
+                            }
+                            unit="ms"
+                            unitDirection={NumberInputV2Direction.LEFT}
+                            placeholder="0"
+                            min={0}
+                            step={1}
+                            hintText="Prefix unit before the value."
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Unit too long (&gt; 7 chars)
+                        </h3>
+                        <NumberInputV2
+                            label={{
+                                text: 'Invalid unit string',
+                                subtext: '',
+                            }}
+                            value={unitDemoTooLongValue}
+                            onChange={(e) =>
+                                setUnitDemoTooLongValue(
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                )
+                            }
+                            unit="millibar"
+                            unitDirection={NumberInputV2Direction.RIGHT}
+                            placeholder="0"
+                            hintText="millibar is 8 characters after trim — footer error, no unit chip."
+                        />
                     </div>
                 </div>
             </div>
