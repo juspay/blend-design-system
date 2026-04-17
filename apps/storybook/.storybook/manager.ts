@@ -3,9 +3,9 @@ import { create } from '@storybook/theming/create'
 
 const theme = create({
     base: 'light',
-    brandTitle: 'Blend',
+    brandTitle:
+        '<div style="display: flex; align-items: center; gap: 10px;"><img src="/icon.png" style="height: 12px; width: auto;" /><span style="font-size: 16px; font-weight: 600;">Blend</span></div>',
     brandUrl: 'https://blend.juspay.design/',
-    brandImage: undefined,
     brandTarget: '_self',
 
     colorPrimary: '#3b82f6',

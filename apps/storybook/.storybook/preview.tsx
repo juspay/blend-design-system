@@ -45,8 +45,8 @@ const preview: Preview = {
                             )}
 
                             <Primary />
-                            <Description />
                             <Controls />
+                            <Description />
                             <Stories includePrimary={false} title="Use Cases" />
                         </>
                     )
