@@ -15,6 +15,8 @@ import userRoutes from '@/domains/users/entry-points/users.routes.js'
 import orgRoutes from '@/domains/organizations/entry-points/organization.routes.js'
 import tagRoutes from '@/domains/tags/entry-points/tag.routes.js'
 import apiKeyRoutes from '@/domains/apikeys/entry-points/apikey.routes.js'
+import lockRoutes from '@/domains/locks/entry-points/lock.routes.js'
+import mergeRequestRoutes from '@/domains/mergerequests/entry-points/merge-request.routes.js'
 import { googleCallback } from '@/domains/auth/entry-points/auth.controller.js'
 
 const app = express()
@@ -98,6 +100,8 @@ app.use('/api/auth', authRoutes)
 app.use('/api/branches', branchRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/organizations', orgRoutes)
+app.use('/api/organizations', lockRoutes)
+app.use('/api/merge-requests', mergeRequestRoutes)
 app.use('/api/tags', tagRoutes)
 app.use('/api/api-keys', apiKeyRoutes)
 app.use('/api', tokenRoutes)

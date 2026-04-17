@@ -27,6 +27,28 @@
 
 export type TeamRole = 'owner' | 'admin' | 'editor' | 'viewer'
 
+export interface TeamPermissions {
+    canManageTeam: boolean
+    canDeleteTeam: boolean
+    canManageMembers: boolean
+    canInviteMembers: boolean
+    canCreateBranches: boolean
+    canEditBranches: boolean
+    canPublishBranches: boolean
+    canDeleteBranches: boolean
+    canViewBranches: boolean
+    /** Can approve/reject merge requests to the default branch */
+    canApproveMerge: boolean
+    /** Can lock/unlock token paths as non-negotiable brand rules */
+    canLockTokens: boolean
+    /** Can merge directly to default without approval */
+    canMergeToDefault: boolean
+    /** Can create merge requests for review */
+    canCreateMergeRequest: boolean
+    /** Can manage org-level settings (WCAG enforcement, blend version, etc.) */
+    canManageOrgSettings: boolean
+}
+
 export const TEAM_ROLE_PERMISSIONS: Record<TeamRole, TeamPermissions> = {
     owner: {
         canManageTeam: true,
@@ -38,6 +60,11 @@ export const TEAM_ROLE_PERMISSIONS: Record<TeamRole, TeamPermissions> = {
         canPublishBranches: true,
         canDeleteBranches: true,
         canViewBranches: true,
+        canApproveMerge: true,
+        canLockTokens: true,
+        canMergeToDefault: true,
+        canCreateMergeRequest: true,
+        canManageOrgSettings: true,
     },
     admin: {
         canManageTeam: true,
@@ -49,6 +76,11 @@ export const TEAM_ROLE_PERMISSIONS: Record<TeamRole, TeamPermissions> = {
         canPublishBranches: true,
         canDeleteBranches: true,
         canViewBranches: true,
+        canApproveMerge: true,
+        canLockTokens: true,
+        canMergeToDefault: true,
+        canCreateMergeRequest: true,
+        canManageOrgSettings: true,
     },
     editor: {
         canManageTeam: false,
@@ -60,6 +92,11 @@ export const TEAM_ROLE_PERMISSIONS: Record<TeamRole, TeamPermissions> = {
         canPublishBranches: true,
         canDeleteBranches: false,
         canViewBranches: true,
+        canApproveMerge: false,
+        canLockTokens: false,
+        canMergeToDefault: false,
+        canCreateMergeRequest: true,
+        canManageOrgSettings: false,
     },
     viewer: {
         canManageTeam: false,
@@ -71,19 +108,12 @@ export const TEAM_ROLE_PERMISSIONS: Record<TeamRole, TeamPermissions> = {
         canPublishBranches: false,
         canDeleteBranches: false,
         canViewBranches: true,
+        canApproveMerge: false,
+        canLockTokens: false,
+        canMergeToDefault: false,
+        canCreateMergeRequest: false,
+        canManageOrgSettings: false,
     },
-}
-
-export interface TeamPermissions {
-    canManageTeam: boolean
-    canDeleteTeam: boolean
-    canManageMembers: boolean
-    canInviteMembers: boolean
-    canCreateBranches: boolean
-    canEditBranches: boolean
-    canPublishBranches: boolean
-    canDeleteBranches: boolean
-    canViewBranches: boolean
 }
 
 // ---------------------------------------------------------------------------

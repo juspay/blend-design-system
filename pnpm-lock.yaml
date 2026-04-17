@@ -283,6 +283,9 @@ importers:
             '@prisma/client':
                 specifier: ^7.7.0
                 version: 7.7.0(prisma@7.7.0(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(magicast@0.3.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.8.3))(typescript@5.8.3)
+            '@tanstack/react-query':
+                specifier: ^5.99.0
+                version: 5.99.0(react@19.2.3)
             '@tanstack/react-router':
                 specifier: ^1.114.0
                 version: 1.168.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -328,6 +331,9 @@ importers:
             styled-components:
                 specifier: ^6.1.17
                 version: 6.1.19(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+            zod:
+                specifier: ^3.25.76
+                version: 3.25.76
         devDependencies:
             '@playwright/test':
                 specifier: ^1.59.1
@@ -5654,6 +5660,20 @@ packages:
                 integrity: sha512-NaOGLRrddszbQj9upGat6HG/4TKvXLvu+osAIgfxPYA+eIvYKv8GKDJOrY2D3/U9MRnKfMWD7bU4jeD4xmqyIg==,
             }
         engines: { node: '>=20.19' }
+
+    '@tanstack/query-core@5.99.0':
+        resolution:
+            {
+                integrity: sha512-3Jv3WQG0BCcH7G+7lf/bP8QyBfJOXeY+T08Rin3GZ1bshvwlbPt7NrDHMEzGdKIOmOzvIQmxjk28YEQX60k7pQ==,
+            }
+
+    '@tanstack/react-query@5.99.0':
+        resolution:
+            {
+                integrity: sha512-OY2bCqPemT1LlqJ8Y2CUau4KELnIhhG9Ol3ZndPbdnB095pRbPo1cHuXTndg8iIwtoHTgwZjyaDnQ0xD0mYwAw==,
+            }
+        peerDependencies:
+            react: ^18 || ^19
 
     '@tanstack/react-router@1.168.10':
         resolution:
@@ -19253,6 +19273,13 @@ snapshots:
             tailwindcss: 4.1.18
 
     '@tanstack/history@1.161.6': {}
+
+    '@tanstack/query-core@5.99.0': {}
+
+    '@tanstack/react-query@5.99.0(react@19.2.3)':
+        dependencies:
+            '@tanstack/query-core': 5.99.0
+            react: 19.2.3
 
     '@tanstack/react-router@1.168.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
         dependencies:

@@ -131,6 +131,9 @@ export const updateOrgSchema = z.object({
         .max(100)
         .regex(/^[a-z0-9-]+$/)
         .optional(),
+    defaultBranchId: z.string().max(255).nullable().optional(),
+    blendVersion: z.string().max(50).nullable().optional(),
+    wcagEnforcement: z.enum(['none', 'warn', 'block']).optional(),
 })
 
 export const addMemberSchema = z.object({
@@ -245,4 +248,32 @@ export const createApiKeySchema = z.object({
 export const forkBranchSchema = z.object({
     name: z.string().min(1, 'Name is required').max(255),
     slug: z.string().min(1).max(100).optional(),
+})
+
+// ---------------------------------------------------------------------------
+// Token Lock Schemas
+// ---------------------------------------------------------------------------
+
+export const createTokenLockSchema = z.object({
+    tokenPath: z
+        .string()
+        .min(1, 'Token path is required')
+        .max(500, 'Token path must be 500 characters or fewer'),
+    reason: z.string().max(1000).optional(),
+})
+
+// ---------------------------------------------------------------------------
+// Merge Request Schemas
+// ---------------------------------------------------------------------------
+
+export const createMergeRequestSchema = z.object({
+    sourceBranchId: z.string().uuid('Invalid source branch ID'),
+    targetBranchId: z.string().uuid('Invalid target branch ID'),
+    title: z.string().min(1, 'Title is required').max(255),
+    description: z.string().max(5000).optional(),
+    organizationId: z.string().uuid().optional(),
+})
+
+export const reviewMergeRequestSchema = z.object({
+    reviewComment: z.string().max(5000).optional(),
 })

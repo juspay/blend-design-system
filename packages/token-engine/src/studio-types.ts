@@ -88,6 +88,11 @@ export interface Branch {
     lockedBy: string | null
     lockedAt: Date | null
     lockReason?: string
+
+    /** Whether this is the org's master/default branch */
+    isDefault?: boolean
+    /** Organization ID this branch belongs to (if org-scoped) */
+    organizationId?: string
 }
 
 export interface CreateBranchInput {

@@ -8,6 +8,24 @@
 export { validateBrandConfig } from './validate'
 export { diffBrandConfigs } from './diff'
 export { generateColorScale, isValidHexColor } from './color-scale'
+
+export {
+    getContrastRatio,
+    getContrastRatioHex,
+    analyzeContrast,
+    validatePaletteContrast,
+    suggestForeground,
+    hexToRgb,
+    relativeLuminance,
+    meetsWCAG,
+} from './contrast'
+
+export type {
+    ContrastResult,
+    ContrastViolation,
+    WCAGLevel,
+    WCAGContext,
+} from './contrast'
 export { getPreset, listPresets, PRESETS } from './presets'
 export {
     PRESET_BLEND_DEFAULT,
@@ -16,6 +34,18 @@ export {
     PRESET_GREEN,
     PRESET_ORANGE,
 } from './presets'
+
+export {
+    resolveWithInheritance,
+    validateAgainstLocks,
+    extractOverridePaths,
+} from './inheritance'
+
+export type {
+    LockViolation,
+    InheritanceResult,
+    TokenLockEntry,
+} from './inheritance'
 
 export type {
     BrandConfig,

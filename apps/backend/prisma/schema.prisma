@@ -62,6 +62,12 @@ enum AuditAction {
   api_key_revoked
   member_invited
   member_removed
+  token_locked
+  token_unlocked
+  merge_request_created
+  merge_request_approved
+  merge_request_rejected
+  merge_request_merged
 }
 
 // ===========================================================================
@@ -71,16 +77,24 @@ enum AuditAction {
 /// An organization (company, team). All resources belong to an org.
 /// For now, users can be in one org. Later, support multi-org.
 model Organization {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(255)
-  slug        String   @unique @db.VarChar(100)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String   @db.VarChar(255)
+  slug              String   @unique @db.VarChar(100)
+  /// Firestore branch ID of the org's master theme (e.g. "acme/default")
+  defaultBranchId   String?  @map("default_branch_id") @db.VarChar(255)
+  /// Blend component library version the org is currently using
+  blendVersion      String?  @map("blend_version") @db.VarChar(50)
+  /// WCAG enforcement policy: none = no checks, warn = show warnings, block = prevent saving
+  wcagEnforcement   String   @default("warn") @map("wcag_enforcement") @db.VarChar(20)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 
-  members     Member[]
-  branches    Branch[]
-  apiKeys     ApiKey[]
-  auditLogs   AuditLog[]
+  members           Member[]
+  branches          Branch[]
+  apiKeys           ApiKey[]
+  auditLogs         AuditLog[]
+  tokenLocks        TokenLock[]
+  mergeRequests     MergeRequest[]
 
   @@map("organizations")
 }
@@ -332,6 +346,70 @@ model TokenUpload {
   @@index([status])
   @@index([createdAt])
   @@map("token_uploads")
+}
+
+// ===========================================================================
+// Token Governance — locked tokens that downstream branches cannot override
+// ===========================================================================
+
+/// A token path locked by org admin as a non-negotiable brand rule.
+/// Child branches cannot override these paths when resolving tokens.
+model TokenLock {
+  id               String   @id @default(uuid()) @db.Uuid
+  organizationId   String   @map("organization_id") @db.Uuid
+  /// Dot-path to the locked token, e.g. "colors.primary.500", "radius.8"
+  tokenPath        String   @map("token_path") @db.VarChar(500)
+  /// Human-readable reason for locking (shown to editors who try to change it)
+  reason           String?  @db.Text
+  lockedBy         String   @map("locked_by") @db.Uuid
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, tokenPath])
+  @@index([organizationId])
+  @@map("token_locks")
+}
+
+// ===========================================================================
+// Merge Requests — approval workflow for promoting branch changes
+// ===========================================================================
+
+/// A merge request (change request) to promote a branch's config into
+/// the default branch. Editors must submit one; admins can self-merge.
+model MergeRequest {
+  id               String    @id @default(uuid()) @db.Uuid
+  organizationId   String    @map("organization_id") @db.Uuid
+  /// Source branch ID (the branch with changes)
+  sourceBranchId   String    @map("source_branch_id") @db.Uuid
+  sourceBranchName String    @map("source_branch_name") @db.VarChar(255)
+  /// Target branch ID (usually the org default)
+  targetBranchId   String    @map("target_branch_id") @db.Uuid
+  targetBranchName String    @map("target_branch_name") @db.VarChar(255)
+  title            String    @db.VarChar(255)
+  description      String?   @db.Text
+  /// pending | approved | rejected | merged | cancelled
+  status           String    @default("pending") @db.VarChar(50)
+  /// Computed diff between source and target brand configs
+  diff             Json      @db.JsonB
+  /// Any token lock violations found during diff
+  lockViolations   Json?     @map("lock_violations") @db.JsonB
+  requestedBy      String    @map("requested_by") @db.Uuid
+  reviewedBy       String?   @map("reviewed_by") @db.Uuid
+  reviewedAt       DateTime? @map("reviewed_at")
+  reviewComment    String?   @map("review_comment") @db.Text
+  mergedAt         DateTime? @map("merged_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([sourceBranchId])
+  @@index([targetBranchId])
+  @@index([requestedBy])
+  @@map("merge_requests")
 }
 
 // ===========================================================================

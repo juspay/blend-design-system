@@ -1,5 +1,6 @@
 // Prisma schema for Blend Studio
-// Defines the database models for user management, audit logs, and analytics
+// Defines the database models for user management, organizations,
+// token governance, approval workflows, audit logs, and analytics
 
 generator client {
   provider = "prisma-client-js"
@@ -36,6 +37,10 @@ model User {
   deploymentApprovalsRejected  DeploymentApproval[] @relation("RejectedBy")
   auditLogs     AuditLog[]
   teamMemberships TeamMember[]
+  organizationMemberships OrganizationMember[]
+  mergeRequestsCreated    MergeRequest[]       @relation("MergeRequestedBy")
+  mergeRequestsReviewed   MergeRequest[]       @relation("MergeReviewedBy")
+  tokenLocksCreated       TokenLock[]
 
   @@index([firebaseUid])
   @@index([email])
@@ -113,6 +118,134 @@ model TeamInvite {
   @@index([status])
   @@map("team_invites")
 }
+
+// ---------------------------------------------------------------------------
+// Organization — top-level entity that owns branches and enforces brand rules
+// ---------------------------------------------------------------------------
+
+// Organization (tenant that owns branches and sets brand governance)
+model Organization {
+  id                String    @id @default(uuid()) @db.Uuid
+  name              String    @db.VarChar(255)
+  slug              String    @unique @db.VarChar(100)
+  description       String?   @db.Text
+  logoUrl           String?   @map("logo_url") @db.Text
+  websiteUrl        String?   @map("website_url") @db.Text
+
+  /// Firestore branch ID of the org's master theme (e.g. "acme/default")
+  defaultBranchId   String?   @map("default_branch_id") @db.VarChar(255)
+
+  /// Blend component library version the org is currently using
+  blendVersion      String?   @map("blend_version") @db.VarChar(50)
+
+  /// WCAG enforcement policy: none = no checks, warn = show warnings, block = prevent saving
+  wcagEnforcement   String    @default("warn") @map("wcag_enforcement") @db.VarChar(20)
+
+  ownerId           String    @map("owner_id") @db.Uuid
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  members           OrganizationMember[]
+  tokenLocks        TokenLock[]
+  mergeRequests     MergeRequest[]
+
+  @@index([slug])
+  @@index([ownerId])
+  @@map("organizations")
+}
+
+// Organization membership (users belonging to an organization)
+model OrganizationMember {
+  id               String    @id @default(uuid()) @db.Uuid
+  organizationId   String    @map("organization_id") @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  role             String    @default("viewer") @db.VarChar(50) // owner, admin, editor, viewer
+  isActive         Boolean   @default(true) @map("is_active")
+  joinedAt         DateTime  @default(now()) @map("joined_at")
+  lastActiveAt     DateTime? @map("last_active_at")
+
+  // Relations
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+  @@index([role])
+  @@map("organization_members")
+}
+
+// ---------------------------------------------------------------------------
+// Token Governance — locked tokens that downstream branches cannot override
+// ---------------------------------------------------------------------------
+
+// Token lock (org admin marks specific token paths as non-negotiable brand rules)
+model TokenLock {
+  id               String    @id @default(uuid()) @db.Uuid
+  organizationId   String    @map("organization_id") @db.Uuid
+  /// Dot-path to the locked token, e.g. "colors.primary.500", "radius.8"
+  tokenPath        String    @map("token_path") @db.VarChar(500)
+  /// Human-readable reason for locking (shown to editors who try to change it)
+  reason           String?   @db.Text
+  lockedBy         String    @map("locked_by") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user             User         @relation(fields: [lockedBy], references: [id])
+
+  @@unique([organizationId, tokenPath])
+  @@index([organizationId])
+  @@map("token_locks")
+}
+
+// ---------------------------------------------------------------------------
+// Merge Requests — approval workflow for promoting branch changes to default
+// ---------------------------------------------------------------------------
+
+// Merge request (change request to promote a branch's config into the default branch)
+model MergeRequest {
+  id               String    @id @default(uuid()) @db.Uuid
+  organizationId   String    @map("organization_id") @db.Uuid
+  /// Firestore branch ID of the source branch
+  sourceBranchId   String    @map("source_branch_id") @db.VarChar(255)
+  sourceBranchName String    @map("source_branch_name") @db.VarChar(255)
+  /// Firestore branch ID of the target branch (usually the org default)
+  targetBranchId   String    @map("target_branch_id") @db.VarChar(255)
+  targetBranchName String    @map("target_branch_name") @db.VarChar(255)
+  title            String    @db.VarChar(255)
+  description      String?   @db.Text
+  /// pending | approved | rejected | merged | cancelled
+  status           String    @default("pending") @db.VarChar(50)
+  /// Computed diff between source and target brand configs
+  diff             Json      @db.JsonB
+  /// Any token lock violations found during diff
+  lockViolations   Json?     @map("lock_violations") @db.JsonB
+  requestedBy      String    @map("requested_by") @db.Uuid
+  reviewedBy       String?   @map("reviewed_by") @db.Uuid
+  reviewedAt       DateTime? @map("reviewed_at")
+  reviewComment    String?   @map("review_comment") @db.Text
+  mergedAt         DateTime? @map("merged_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requester        User         @relation("MergeRequestedBy", fields: [requestedBy], references: [id])
+  reviewer         User?        @relation("MergeReviewedBy", fields: [reviewedBy], references: [id])
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([sourceBranchId])
+  @@index([targetBranchId])
+  @@index([requestedBy])
+  @@map("merge_requests")
+}
+
+// ---------------------------------------------------------------------------
+// Existing models below
+// ---------------------------------------------------------------------------
 
 // Role-based access control
 model Role {

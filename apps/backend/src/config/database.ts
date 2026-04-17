@@ -6,15 +6,17 @@
  * JWT handles authentication. Google OAuth handles login.
  */
 
-import { PrismaClient } from '@prisma/client'
+import prismaClientModule from '@prisma/client'
 import { logger } from '@/utils/logger.js'
+
+const { PrismaClient } = prismaClientModule
 
 // ---------------------------------------------------------------------------
 // PostgreSQL (Prisma)
 // ---------------------------------------------------------------------------
 
 const globalForPrisma = globalThis as unknown as {
-    prisma: PrismaClient | undefined
+    prisma: InstanceType<typeof PrismaClient> | undefined
 }
 
 export const prisma = globalForPrisma.prisma ?? new PrismaClient()

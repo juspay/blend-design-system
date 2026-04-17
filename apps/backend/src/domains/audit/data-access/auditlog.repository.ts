@@ -24,6 +24,12 @@ export type AuditAction =
     | 'api_key_revoked'
     | 'member_invited'
     | 'member_removed'
+    | 'token_locked'
+    | 'token_unlocked'
+    | 'merge_request_created'
+    | 'merge_request_approved'
+    | 'merge_request_rejected'
+    | 'merge_request_merged'
 
 // ===========================================================================
 // Structured Metadata — typed per action so callers can't pass random shapes
@@ -120,6 +126,31 @@ export interface MemberRemovedMeta {
     previousRole: string
 }
 
+export interface TokenLockedMeta {
+    tokenPath: string
+    reason: string | null
+}
+
+export interface TokenUnlockedMeta {
+    tokenPath: string
+}
+
+export interface MergeRequestCreatedMeta {
+    sourceBranchId: string
+    sourceBranchName: string
+    targetBranchId: string
+    targetBranchName: string
+}
+
+export interface MergeRequestReviewedMeta {
+    reviewComment: string | null
+}
+
+export interface MergeRequestMergedMeta {
+    sourceBranchId: string
+    targetBranchId: string
+}
+
 export type AuditMetadata =
     | BranchCreatedMeta
     | BranchUpdatedMeta
@@ -138,6 +169,11 @@ export type AuditMetadata =
     | ApiKeyRevokedMeta
     | MemberInvitedMeta
     | MemberRemovedMeta
+    | TokenLockedMeta
+    | TokenUnlockedMeta
+    | MergeRequestCreatedMeta
+    | MergeRequestReviewedMeta
+    | MergeRequestMergedMeta
 
 // ===========================================================================
 // Target types — constrained set of entities that can be audit-logged
@@ -152,6 +188,8 @@ export type AuditTargetType =
     | 'api_key'
     | 'member'
     | 'organization'
+    | 'token_lock'
+    | 'merge_request'
 
 // ===========================================================================
 // Create input — typed, no `any` leaks

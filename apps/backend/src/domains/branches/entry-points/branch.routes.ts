@@ -96,7 +96,11 @@ router.get(
             ? await branchRepo.getVersionByNumber(branch.id, versionParam)
             : null
 
-        const brandConfig = version?.brandConfig ?? branch.brandConfig
+        const baseBrandConfig = version?.brandConfig ?? branch.brandConfig
+        const brandConfig = await branchService.resolveEffectiveBrandConfig(
+            branch,
+            baseBrandConfig
+        )
 
         res.json({
             success: true,

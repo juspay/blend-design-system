@@ -28,6 +28,7 @@
         "@phosphor-icons/react": "^2.1.10",
         "@prisma/adapter-pg": "^7.7.0",
         "@prisma/client": "^7.7.0",
+        "@tanstack/react-query": "^5.99.0",
         "@tanstack/react-router": "^1.114.0",
         "cors": "^2.8.5",
         "dotenv": "^17.4.1",
@@ -42,7 +43,8 @@
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-firebase-hooks": "^5.1.1",
-        "styled-components": "^6.1.17"
+        "styled-components": "^6.1.17",
+        "zod": "^3.25.76"
     },
     "devDependencies": {
         "@playwright/test": "^1.59.1",

@@ -58,6 +58,21 @@ export const findUserMembership = async (
     return membership as unknown as MembershipRow | null
 }
 
+export const findUserMembershipInOrganization = async (
+    userId: string,
+    organizationId: string
+): Promise<MembershipRow | null> => {
+    const membership = await prisma.member.findUnique({
+        where: {
+            organizationId_userId: {
+                organizationId,
+                userId,
+            },
+        },
+    })
+    return membership as unknown as MembershipRow | null
+}
+
 export const findUserMemberships = async (
     userId: string
 ): Promise<MembershipRow[]> => {

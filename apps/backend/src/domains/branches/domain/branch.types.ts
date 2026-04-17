@@ -20,6 +20,16 @@ export interface BrandConfig {
         family?: string
         weight?: Record<string, number>
     }
+    componentOverrides?: Record<string, unknown>
+    darkModeOverrides?: {
+        colors?: Record<string, unknown>
+        radius?: Record<string, string>
+        shadows?: Record<string, string>
+        font?: {
+            family?: string
+            weight?: Record<string, number>
+        }
+    }
 }
 
 export interface Branch {

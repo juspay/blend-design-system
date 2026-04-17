@@ -14,6 +14,221 @@ import * as branchRepo from '../data-access/branch.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import * as tagRepo from '@/domains/tags/data-access/tag.repository.js'
 import * as userRepo from '@/domains/users/data-access/user.repository.js'
+import * as lockRepo from '@/domains/locks/data-access/lock.repository.js'
+import * as orgRepo from '@/domains/organizations/data-access/organization.repository.js'
+import {
+    resolveWithInheritance,
+    validateAgainstLocks,
+    type TokenLockEntry,
+} from './inheritance.js'
+
+function deepMergeRecords(
+    base: Record<string, unknown>,
+    override: Record<string, unknown>
+): Record<string, unknown> {
+    const result: Record<string, unknown> = { ...base }
+    for (const [key, value] of Object.entries(override)) {
+        const baseValue = result[key]
+        if (
+            value &&
+            typeof value === 'object' &&
+            !Array.isArray(value) &&
+            baseValue &&
+            typeof baseValue === 'object' &&
+            !Array.isArray(baseValue)
+        ) {
+            result[key] = deepMergeRecords(
+                baseValue as Record<string, unknown>,
+                value as Record<string, unknown>
+            )
+        } else {
+            result[key] = value
+        }
+    }
+    return result
+}
+
+function mergeBrandConfig(
+    base: BrandConfig,
+    override?: Partial<BrandConfig>
+): BrandConfig {
+    if (!override) {
+        return base
+    }
+
+    return {
+        ...base,
+        ...override,
+        colors: {
+            ...(base.colors ?? {}),
+            ...(override.colors ?? {}),
+        },
+        radius: {
+            ...(base.radius ?? {}),
+            ...(override.radius ?? {}),
+        },
+        shadows: {
+            ...(base.shadows ?? {}),
+            ...(override.shadows ?? {}),
+        },
+        font: {
+            ...(base.font ?? {}),
+            ...(override.font ?? {}),
+            ...(base.font?.weight || override.font?.weight
+                ? {
+                      weight: {
+                          ...(base.font?.weight ?? {}),
+                          ...(override.font?.weight ?? {}),
+                      },
+                  }
+                : {}),
+        },
+        componentOverrides: deepMergeRecords(
+            (base.componentOverrides ?? {}) as Record<string, unknown>,
+            (override.componentOverrides ?? {}) as Record<string, unknown>
+        ),
+        darkModeOverrides:
+            base.darkModeOverrides || override.darkModeOverrides
+                ? {
+                      colors: deepMergeRecords(
+                          (base.darkModeOverrides?.colors ?? {}) as Record<
+                              string,
+                              unknown
+                          >,
+                          (override.darkModeOverrides?.colors ?? {}) as Record<
+                              string,
+                              unknown
+                          >
+                      ),
+                      radius: {
+                          ...(base.darkModeOverrides?.radius ?? {}),
+                          ...(override.darkModeOverrides?.radius ?? {}),
+                      },
+                      shadows: {
+                          ...(base.darkModeOverrides?.shadows ?? {}),
+                          ...(override.darkModeOverrides?.shadows ?? {}),
+                      },
+                      font: {
+                          ...(base.darkModeOverrides?.font ?? {}),
+                          ...(override.darkModeOverrides?.font ?? {}),
+                          ...(base.darkModeOverrides?.font?.weight ||
+                          override.darkModeOverrides?.font?.weight
+                              ? {
+                                    weight: {
+                                        ...(base.darkModeOverrides?.font
+                                            ?.weight ?? {}),
+                                        ...(override.darkModeOverrides?.font
+                                            ?.weight ?? {}),
+                                    },
+                                }
+                              : {}),
+                      },
+                  }
+                : undefined,
+    }
+}
+
+const validateLocksAgainstParent = (
+    parentConfig: BrandConfig,
+    candidateConfig: BrandConfig,
+    lockedPaths: TokenLockEntry[]
+) => {
+    const violations = validateAgainstLocks(
+        parentConfig,
+        candidateConfig,
+        lockedPaths
+    )
+
+    if (violations.length > 0) {
+        throw new ValidationError(
+            `Token lock violations: ${violations
+                .map(
+                    (violation) =>
+                        `${violation.path} (${violation.reason || 'locked by org'})`
+                )
+                .join(', ')}`
+        )
+    }
+}
+
+const getOrgInheritanceContext = async (branch: Branch) => {
+    if (!branch.organizationId) {
+        return null
+    }
+
+    const organization = await orgRepo.getOrganizationById(
+        branch.organizationId
+    )
+    const resolvedParentBranchId =
+        branch.parentBranchId || organization?.defaultBranchId || null
+    if (!resolvedParentBranchId) {
+        return null
+    }
+
+    if (resolvedParentBranchId === branch.id) {
+        return null
+    }
+
+    const parentBranch = await branchRepo.getBranchById(resolvedParentBranchId)
+    if (!parentBranch) {
+        return null
+    }
+
+    const locks = await lockRepo.listLocks(branch.organizationId)
+    const lockedPaths: TokenLockEntry[] = locks.map((lock) => ({
+        path: lock.tokenPath,
+        reason: lock.reason || undefined,
+    }))
+
+    return { parentBranch, lockedPaths }
+}
+
+const getOrgParentContext = async (
+    organizationId: string,
+    parentBranchId?: string
+) => {
+    const organization = await orgRepo.getOrganizationById(organizationId)
+    const resolvedParentBranchId =
+        parentBranchId || organization?.defaultBranchId
+    if (!resolvedParentBranchId) {
+        return null
+    }
+
+    const parentBranch = await branchRepo.getBranchById(resolvedParentBranchId)
+    if (!parentBranch) {
+        throw new NotFoundError('Parent branch')
+    }
+
+    const locks = await lockRepo.listLocks(organizationId)
+    const lockedPaths: TokenLockEntry[] = locks.map((lock) => ({
+        path: lock.tokenPath,
+        reason: lock.reason || undefined,
+    }))
+
+    return {
+        parentBranchId: resolvedParentBranchId,
+        parentBranch,
+        lockedPaths,
+    }
+}
+
+export const resolveEffectiveBrandConfig = async (
+    branch: Branch,
+    baseConfig: BrandConfig
+): Promise<BrandConfig> => {
+    const inheritanceContext = await getOrgInheritanceContext(branch)
+    if (!inheritanceContext) {
+        return baseConfig
+    }
+
+    const inheritanceResult = resolveWithInheritance(
+        inheritanceContext.parentBranch.brandConfig,
+        baseConfig,
+        inheritanceContext.lockedPaths
+    )
+
+    return inheritanceResult.mergedConfig
+}
 
 export const createBranch = async (
     dto: CreateBranchDTO,
@@ -61,15 +276,35 @@ export const createBranch = async (
         },
     }
 
+    const branchConfig = mergeBrandConfig(defaultConfig, dto.brandConfig)
+    let resolvedParentBranchId = dto.parentBranchId || null
+
+    if (orgId) {
+        const parentContext = await getOrgParentContext(
+            orgId,
+            dto.parentBranchId
+        )
+        if (parentContext) {
+            resolvedParentBranchId = parentContext.parentBranchId
+            if (parentContext.lockedPaths.length > 0) {
+                validateLocksAgainstParent(
+                    parentContext.parentBranch.brandConfig,
+                    branchConfig,
+                    parentContext.lockedPaths
+                )
+            }
+        }
+    }
+
     const branch = await branchRepo.createBranch({
         organizationId: orgId,
         brandId,
         name: dto.name,
         description: dto.description || null,
-        parentBranchId: dto.parentBranchId || null,
+        parentBranchId: resolvedParentBranchId,
         status: 'draft',
         visibility: dto.visibility || 'private',
-        brandConfig: { ...defaultConfig, ...dto.brandConfig },
+        brandConfig: branchConfig,
         createdBy: userId,
         createdByName: userName,
     })
@@ -135,33 +370,30 @@ export const updateBranch = async (
         throw new ForbiddenError('Only the creator can update this branch')
     }
 
+    const mergedBrandConfig = dto.brandConfig
+        ? mergeBrandConfig(branch.brandConfig, dto.brandConfig)
+        : undefined
+
+    // Validate against org token locks when brandConfig changes
+    if (dto.brandConfig && branch.organizationId) {
+        const inheritanceContext = await getOrgInheritanceContext(branch)
+        if (inheritanceContext && inheritanceContext.lockedPaths.length > 0) {
+            validateLocksAgainstParent(
+                inheritanceContext.parentBranch.brandConfig,
+                mergedBrandConfig!,
+                inheritanceContext.lockedPaths
+            )
+        }
+    }
+
     const updates: any = {}
 
     if (dto.name) updates.name = dto.name
     if (dto.description !== undefined) updates.description = dto.description
     if (dto.visibility) updates.visibility = dto.visibility
 
-    if (dto.brandConfig) {
-        updates.brandConfig = {
-            ...branch.brandConfig,
-            ...dto.brandConfig,
-            colors: {
-                ...branch.brandConfig.colors,
-                ...dto.brandConfig.colors,
-            },
-            radius: {
-                ...branch.brandConfig.radius,
-                ...dto.brandConfig.radius,
-            },
-            shadows: {
-                ...branch.brandConfig.shadows,
-                ...dto.brandConfig.shadows,
-            },
-            font: {
-                ...branch.brandConfig.font,
-                ...dto.brandConfig.font,
-            },
-        }
+    if (mergedBrandConfig) {
+        updates.brandConfig = mergedBrandConfig
     }
 
     const previousValues: Record<string, unknown> = {}
@@ -332,11 +564,15 @@ export const resolveTokens = async (
     theme: 'light' | 'dark' = 'light'
 ): Promise<{ branch: Branch; theme: string; brandConfig: BrandConfig }> => {
     const branch = await getBranch(branchId)
+    const effectiveBrandConfig = await resolveEffectiveBrandConfig(
+        branch,
+        branch.brandConfig
+    )
 
     return {
         branch,
         theme,
-        brandConfig: branch.brandConfig as BrandConfig,
+        brandConfig: effectiveBrandConfig,
     }
 }
 

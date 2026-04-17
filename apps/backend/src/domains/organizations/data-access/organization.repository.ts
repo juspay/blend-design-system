@@ -5,6 +5,9 @@ export interface OrganizationRow {
     id: string
     name: string
     slug: string
+    defaultBranchId: string | null
+    blendVersion: string | null
+    wcagEnforcement: string
     createdAt: Date
     updatedAt: Date
 }
@@ -69,7 +72,13 @@ export const listOrganizations = async (
 
 export const updateOrganization = async (
     id: string,
-    data: { name?: string; slug?: string }
+    data: {
+        name?: string
+        slug?: string
+        defaultBranchId?: string | null
+        blendVersion?: string | null
+        wcagEnforcement?: string
+    }
 ): Promise<OrganizationRow | null> => {
     const org = await prisma.organization.update({
         where: { id },
