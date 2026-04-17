@@ -54,6 +54,7 @@ const NumberInputV2Demo = () => {
         { value: 'mcg', label: 'mcg' },
         { value: 'iu', label: 'iu' },
         { value: 'pascal', label: 'pascal' },
+        { value: 'long_unit', label: 'long_unit' },
     ]
 
     const stepOptions = [

@@ -42,6 +42,7 @@ import {
     subscribeElementOffsetWidth,
     getNumberInputV2PaddingLeft,
     getNumberInputV2PaddingRight,
+    getNumberInputV2UnitLengthErrorMessage,
 } from './utils'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
@@ -109,7 +110,9 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             value !== null && value !== undefined ? Number(value) : null
         /** Whitespace-only `unit` is treated as empty: show steppers, not an empty strip. */
         const unitText = unit?.trim() ?? ''
-        const showUnit = Boolean(unitText)
+        const unitLengthErrorMessage =
+            getNumberInputV2UnitLengthErrorMessage(unit)
+        const showUnit = Boolean(unitText) && unitLengthErrorMessage == null
         const steppingBaseValue = useMemo(
             () => getSteppingBaseValue(rawNumericValue, preventNegative),
             [rawNumericValue, preventNegative]
@@ -154,17 +157,21 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             [rawNumericValue, numericMin, numericMax]
         )
 
-        const hasError = getNumberInputHasError(
-            error?.show,
-            error?.message,
-            rangeErrorMessage
-        )
+        const hasError =
+            Boolean(unitLengthErrorMessage) ||
+            getNumberInputHasError(
+                error?.show,
+                error?.message,
+                rangeErrorMessage
+            )
 
-        const displayErrorMessage = getNumberInputDisplayErrorMessage(
-            error?.show,
-            error?.message,
-            rangeErrorMessage
-        )
+        const displayErrorMessage =
+            unitLengthErrorMessage ??
+            getNumberInputDisplayErrorMessage(
+                error?.show,
+                error?.message,
+                rangeErrorMessage
+            )
 
         const ariaDescribedBy = buildNumberInputAriaDescribedBy(
             hintText,

@@ -3,6 +3,21 @@ import { InputSizeV2, InputStateV2 } from '../inputV2.types'
 import type { NumberInputV2TokensType } from './numberInputV2.tokens'
 import { NumberInputV2Direction } from './numberInputV2.types'
 
+/** Max length for `unit` after trim; longer values are invalid (error + unit hidden). */
+export const NUMBER_INPUT_V2_UNIT_MAX_LENGTH = 7
+
+/** When non-empty `unit` exceeds the max length, returns a footer error message. */
+export const getNumberInputV2UnitLengthErrorMessage = (
+    unit: string | undefined
+): string | undefined => {
+    const t = unit?.trim() ?? ''
+    if (t.length === 0) return undefined
+    if (t.length > NUMBER_INPUT_V2_UNIT_MAX_LENGTH) {
+        return `Unit must be ${NUMBER_INPUT_V2_UNIT_MAX_LENGTH} characters or fewer.`
+    }
+    return undefined
+}
+
 export const sanitizeNumberInput = (
     inputValue: string,
     allowNegative: boolean = true
