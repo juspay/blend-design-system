@@ -69,7 +69,9 @@ import { getCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.t
 import { getProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
 import { getMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
 import { getNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import { getTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
 
+import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
@@ -189,6 +191,9 @@ const initTokens = (
         TEXT_INPUTV2:
             componentTokens.TEXT_INPUTV2 ??
             getTextInputV2Tokens(foundationTokens, theme),
+        TEXT_AREA_V2:
+            componentTokens.TEXT_AREA_V2 ??
+            getTextAreaV2Tokens(foundationTokens, theme),
         CHARTSV2:
             componentTokens.CHARTSV2 ??
             getChartV2Tokens(foundationTokens, theme),
@@ -227,6 +232,9 @@ const initTokens = (
         NUMBER_INPUT_V2:
             componentTokens.NUMBER_INPUT_V2 ??
             getNumberInputV2Tokens(foundationTokens, theme),
+        OTP_INPUTV2:
+            componentTokens.OTP_INPUTV2 ??
+            getOTPInputV2Tokens(foundationTokens, theme),
     }
 }
 

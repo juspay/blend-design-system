@@ -1,4 +1,4 @@
-import { AnyRef, InputStateV2 } from '../inputV2.types'
+import { InputStateV2 } from '../inputV2.types'
 
 export const FOCUS_RING_STYLES = {
     boxShadow: '0 0 0 3px #EFF6FF',
@@ -56,14 +56,4 @@ export const getVerticalInputPadding = ({
             : paddingBottom
 
     return { top, bottom }
-}
-
-export const setExternalRef = <T>(ref: AnyRef<T>, value: T | null): void => {
-    if (!ref) return
-
-    if (typeof ref === 'function') {
-        ref(value)
-    } else {
-        ref.current = value
-    }
 }
