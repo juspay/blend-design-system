@@ -18,7 +18,7 @@ export default defineConfig({
         },
     ],
     webServer: {
-        command: 'pnpm dev',
+        command: 'VITE_USE_MOCK_DATA=true pnpm dev',
         url: 'http://localhost:5173',
         reuseExistingServer: !process.env.CI,
         timeout: 30_000,

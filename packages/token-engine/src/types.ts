@@ -48,14 +48,24 @@ export interface FontOverrides {
  * The token engine merges these on top of the globally resolved tokens:
  *   global brand tokens → component overrides → final tokens
  *
+ * Two levels of override:
+ *   1. Foundation overrides (colors, radius, shadows, font) — re-resolve the
+ *      component with a modified foundation
+ *   2. Direct token overrides (tokenOverrides) — deep-merge arbitrary
+ *      resolved token values (padding, gap, height, borderRadius, fontSize, etc.)
+ *      directly onto the component's resolved token object
+ *
  * @example
  * ```json
  * {
- *   "Button": {
- *     "colors": { "primary": { "500": "#DC2626" } }
- *   },
- *   "Alert": {
- *     "radius": { "8": "0px" }
+ *   "BUTTONV2": {
+ *     "colors": { "primary": { "500": "#DC2626" } },
+ *     "tokenOverrides": {
+ *       "sm": {
+ *         "padding": { "top": { "primary": { "default": "8px" } } },
+ *         "gap": "8px"
+ *       }
+ *     }
  *   }
  * }
  * ```
@@ -66,6 +76,18 @@ export interface ComponentOverrides {
         radius?: RadiusOverrides
         shadows?: ShadowOverrides
         font?: FontOverrides
+        /**
+         * Direct overrides on the resolved component tokens.
+         *
+         * This is a deep-partial object that matches the shape of the
+         * component's resolved token output. Values specified here are
+         * deep-merged on top of the normally resolved tokens.
+         *
+         * Allows editing properties like padding, gap, height, borderRadius,
+         * fontSize, fontWeight, lineHeight, etc. without going through
+         * the foundation → resolve pipeline.
+         */
+        tokenOverrides?: Record<string, unknown>
     }
 }
 

@@ -41,6 +41,12 @@ import {
 } from '@/components/studio/WelcomeOnboarding'
 import { featureFlags } from '@/lib/feature-flags'
 import { UserMenu } from '@/components/layout/UserMenu'
+import {
+    TabsV2,
+    TabsV2List,
+    TabsV2Trigger,
+    TabsV2Variant,
+} from '@juspay/blend-design-system'
 
 export const Route = createFileRoute('/studio/')({
     component: StudioPage,
@@ -73,22 +79,27 @@ function StudioPage() {
         useOnboarding()
     const flags = featureFlags.get()
 
-    const { branches, loading, error, refetch } = useBranchesWithMock(
-        searchQuery || statusFilter !== 'all'
+    // Fetch ALL branches (unfiltered) for counting
+    const {
+        branches: allBranches,
+        loading,
+        error,
+        refetch,
+    } = useBranchesWithMock(
+        searchQuery
             ? {
                   filters: {
                       search: searchQuery || undefined,
-                      status:
-                          statusFilter !== 'all'
-                              ? (statusFilter as
-                                    | 'draft'
-                                    | 'published'
-                                    | 'archived')
-                              : undefined,
                   },
               }
             : undefined
     )
+
+    // Apply status filter client-side so tab counts remain correct
+    const branches =
+        statusFilter === 'all'
+            ? allBranches
+            : allBranches.filter((b) => b.status === statusFilter)
 
     const { createBranch, loading: creating } = useCreateBranchWithMock()
     const { deleteBranch, loading: deleting } = useDeleteBranchWithMock()
@@ -104,10 +115,10 @@ function StudioPage() {
     )
 
     const statusCounts = {
-        all: branches.length,
-        draft: branches.filter((b) => b.status === 'draft').length,
-        published: branches.filter((b) => b.status === 'published').length,
-        archived: branches.filter((b) => b.status === 'archived').length,
+        all: allBranches.length,
+        draft: allBranches.filter((b) => b.status === 'draft').length,
+        published: allBranches.filter((b) => b.status === 'published').length,
+        archived: allBranches.filter((b) => b.status === 'archived').length,
     }
 
     return (
@@ -203,31 +214,28 @@ function StudioPage() {
                                 )}
                             </div>
 
-                            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                                {(
-                                    [
-                                        'all',
-                                        'draft',
-                                        'published',
-                                        'archived',
-                                    ] as StatusFilter[]
-                                ).map((s) => (
-                                    <button
-                                        key={s}
-                                        onClick={() => setStatusFilter(s)}
-                                        className={`px-3 py-1.5 text-xs font-medium rounded-md capitalize transition-colors ${
-                                            statusFilter === s
-                                                ? 'bg-white text-gray-900 shadow-sm'
-                                                : 'text-gray-500 hover:text-gray-700'
-                                        }`}
-                                    >
-                                        {s}
-                                        <span className="ml-1.5 text-gray-400">
-                                            {statusCounts[s]}
-                                        </span>
-                                    </button>
-                                ))}
-                            </div>
+                            <TabsV2
+                                value={statusFilter}
+                                onValueChange={(v) =>
+                                    setStatusFilter(v as StatusFilter)
+                                }
+                                variant={TabsV2Variant.BOXED}
+                            >
+                                <TabsV2List>
+                                    {(
+                                        [
+                                            'all',
+                                            'draft',
+                                            'published',
+                                            'archived',
+                                        ] as StatusFilter[]
+                                    ).map((s) => (
+                                        <TabsV2Trigger key={s} value={s}>
+                                            {`${s} (${statusCounts[s]})`}
+                                        </TabsV2Trigger>
+                                    ))}
+                                </TabsV2List>
+                            </TabsV2>
                         </div>
                     </div>
                 </div>
@@ -368,6 +376,10 @@ function StudioPage() {
 // ---------------------------------------------------------------------------
 
 function QuickGuidePanel({ onClose }: { onClose: () => void }) {
+    const [activeGuide, setActiveGuide] = useState<
+        'getting-started' | 'dark-theme'
+    >('getting-started')
+
     return (
         <div className="mt-4 p-5 bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 rounded-xl">
             <div className="flex items-start justify-between mb-4">
@@ -386,52 +398,150 @@ function QuickGuidePanel({ onClose }: { onClose: () => void }) {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
-                <GuideStep
-                    step={1}
-                    icon={GitBranch}
-                    title="Create a Branch"
-                    description="Start from a preset or blank. Each branch holds a complete brand config."
-                />
-                <GuideStep
-                    step={2}
-                    icon={Palette}
-                    title="Edit Tokens Visually"
-                    description="Pick colors, adjust radius, shadows, and fonts. See all 26 V2 components update live."
-                />
-                <GuideStep
-                    step={3}
-                    icon={Terminal}
-                    title="Publish & Pull"
-                    description="Publish a version, then run the CLI command below to pull tokens into your app."
-                />
-            </div>
+            {/* Guide Section Tabs */}
+            <TabsV2
+                value={activeGuide}
+                onValueChange={(v) =>
+                    setActiveGuide(v as 'getting-started' | 'dark-theme')
+                }
+                variant={TabsV2Variant.PILLS}
+            >
+                <TabsV2List>
+                    <TabsV2Trigger value="getting-started">
+                        Getting Started
+                    </TabsV2Trigger>
+                    <TabsV2Trigger value="dark-theme">
+                        Dark Theme Usage
+                    </TabsV2Trigger>
+                </TabsV2List>
+            </TabsV2>
 
-            <div className="bg-gray-900 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-gray-500 font-medium">
-                        Use in your project:
-                    </span>
-                </div>
-                <div className="text-xs font-mono space-y-1">
-                    <div className="text-gray-500"># One-time setup</div>
-                    <div className="text-green-400">
-                        npx blend-token-studio init
+            {activeGuide === 'getting-started' && (
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+                        <GuideStep
+                            step={1}
+                            icon={GitBranch}
+                            title="Create a Branch"
+                            description="Start from a preset or blank. Each branch holds a complete brand config."
+                        />
+                        <GuideStep
+                            step={2}
+                            icon={Palette}
+                            title="Edit Tokens Visually"
+                            description="Pick colors, adjust radius, shadows, and fonts. See all 26 V2 components update live."
+                        />
+                        <GuideStep
+                            step={3}
+                            icon={Terminal}
+                            title="Publish & Pull"
+                            description="Publish a version, then run the CLI command below to pull tokens into your app."
+                        />
                     </div>
-                    <div className="text-gray-500 mt-2">
-                        # Pull a published branch
+
+                    <div className="bg-gray-900 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs text-gray-500 font-medium">
+                                Use in your project:
+                            </span>
+                        </div>
+                        <div className="text-xs font-mono space-y-1">
+                            <div className="text-gray-500">
+                                # One-time setup
+                            </div>
+                            <div className="text-green-400">
+                                npx blend-token-studio init
+                            </div>
+                            <div className="text-gray-500 mt-2">
+                                # Pull a published branch
+                            </div>
+                            <div className="text-green-400">
+                                npx blend-token-studio pull {'<branchId>'}
+                            </div>
+                            <div className="text-gray-500 mt-2">
+                                # Switch to a different branch/brand anytime
+                            </div>
+                            <div className="text-green-400">
+                                npx blend-token-studio pull acme/light
+                            </div>
+                        </div>
                     </div>
-                    <div className="text-green-400">
-                        npx blend-token-studio pull {'<branchId>'}
+                </>
+            )}
+
+            {activeGuide === 'dark-theme' && (
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                        <GuideStep
+                            step={1}
+                            icon={Palette}
+                            title="Auto-Generated Dark Palette"
+                            description="By default, dark mode colors are auto-generated from your light palette. No setup needed - just switch the preview toggle."
+                        />
+                        <GuideStep
+                            step={2}
+                            icon={Palette}
+                            title="Custom Dark Overrides"
+                            description='Go to the "Dark" tab in the editor to customize specific dark mode colors, radius, shadows, or fonts independently.'
+                        />
                     </div>
-                    <div className="text-gray-500 mt-2">
-                        # Switch to a different branch/brand anytime
+
+                    <div className="bg-gray-900 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs text-gray-500 font-medium">
+                                Using dark theme in your app:
+                            </span>
+                        </div>
+                        <div className="text-xs font-mono space-y-1">
+                            <div className="text-gray-500">
+                                {'// Import the resolved tokens'}
+                            </div>
+                            <div className="text-blue-300">
+                                {
+                                    "import { resolveBrandTokens } from '@blend-design/token-engine'"
+                                }
+                            </div>
+                            <div className="text-gray-500 mt-2">
+                                {'// Resolve tokens for dark theme'}
+                            </div>
+                            <div className="text-green-400">
+                                {
+                                    "const darkTokens = resolveBrandTokens(brandConfig, 'dark')"
+                                }
+                            </div>
+                            <div className="text-gray-500 mt-2">
+                                {'// Use in ThemeProvider'}
+                            </div>
+                            <div className="text-purple-300">
+                                {
+                                    '<ThemeProvider theme="dark" componentTokens={darkTokens}>'
+                                }
+                            </div>
+                            <div className="text-purple-300">{'  <App />'}</div>
+                            <div className="text-purple-300">
+                                {'</ThemeProvider>'}
+                            </div>
+                            <div className="text-gray-500 mt-2">
+                                {'// Or pull dark tokens via CLI'}
+                            </div>
+                            <div className="text-green-400">
+                                {
+                                    'npx blend-token-studio pull <branchId> --theme dark'
+                                }
+                            </div>
+                        </div>
                     </div>
-                    <div className="text-green-400">
-                        npx blend-token-studio pull acme/light
+
+                    <div className="mt-3 p-3 bg-white/60 rounded-lg border border-blue-100">
+                        <p className="text-xs text-blue-800">
+                            <strong>Tip:</strong> Use the sun/moon toggle in the
+                            editor preview panel to switch between light and
+                            dark mode preview. Your dark mode overrides will be
+                            applied on top of the auto-generated dark palette.
+                        </p>
                     </div>
-                </div>
-            </div>
+                </>
+            )}
         </div>
     )
 }

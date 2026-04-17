@@ -71,12 +71,12 @@ export const mockApi = {
             forkedFrom: input.forkFrom || null,
             owner: {
                 uid: 'current-user',
-                email: 'user@example.com',
-                displayName: 'Current User',
+                email: 'vinit.khandal@juspay.in',
+                displayName: 'Vinit Khandal',
             },
             meta: {
-                createdByName: 'Current User',
-                createdByEmail: 'user@example.com',
+                createdByName: 'Vinit Khandal',
+                createdByEmail: 'vinit.khandal@juspay.in',
             },
             tags: input.tags || [],
             clientName: input.clientName,

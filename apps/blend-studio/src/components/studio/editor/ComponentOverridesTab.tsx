@@ -1,19 +1,22 @@
-/**
- * ComponentOverridesTab
- *
- * Editor tab for per-component token overrides. When a user wants a
- * specific component to use different colors/radius than the global brand,
- * they can add overrides here.
- *
- * Example: A "destructive" Button variant that uses red instead of the
- * global primary blue.
- */
-
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
 import { type EditorTabProps, type ColorGroupKey, COLOR_GROUPS } from './types'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
-import type { ComponentOverrides } from '@blend-design/token-engine'
+import {
+    resolveBrandTokens,
+    type ComponentOverrides,
+} from '@blend-design/token-engine'
+import { ComponentTokenEditor } from './token-editor'
+import {
+    removeNestedValue,
+    setNestedValueForAllVariants,
+} from './token-editor/utils'
+import {
+    TabsV2,
+    TabsV2List,
+    TabsV2Trigger,
+    TabsV2Variant,
+} from '@juspay/blend-design-system'
 
 const V2_COMPONENTS = [
     'BUTTONV2',
@@ -67,6 +70,8 @@ const COMPONENT_LABELS: Record<string, string> = {
     SIDEBARV2: 'Sidebar',
 }
 
+type SectionTab = 'colors' | 'tokens'
+
 export function ComponentOverridesTab({
     brand,
     onChange,
@@ -80,43 +85,45 @@ export function ComponentOverridesTab({
     )
     const [showAddMenu, setShowAddMenu] = useState(false)
 
-    const handleSelectComponent = (componentKey: string | null) => {
-        setSelectedComponent(componentKey)
-        onSelectComponent?.(componentKey)
-    }
+    const resolvedTokens = useMemo(() => {
+        try {
+            return resolveBrandTokens(brand, 'light')
+        } catch {
+            return null
+        }
+    }, [brand])
 
-    const addOverride = (componentKey: string) => {
+    const addOverride = (key: string) => {
         onChange((prev) => ({
             ...prev,
             componentOverrides: {
                 ...prev.componentOverrides,
-                [componentKey]: { colors: {} },
+                [key]: {},
             },
         }))
-        handleSelectComponent(componentKey)
+        setSelectedComponent(key)
+        onSelectComponent?.(key)
         setShowAddMenu(false)
     }
 
-    const removeOverride = (componentKey: string) => {
+    const removeOverride = (key: string) => {
         onChange((prev) => {
             const next = { ...prev.componentOverrides }
-            delete next[componentKey]
+            delete next[key]
             return {
                 ...prev,
                 componentOverrides:
                     Object.keys(next).length > 0 ? next : undefined,
             }
         })
-        if (selectedComponent === componentKey) {
-            const remaining = Object.keys(overrides).filter(
-                (k) => k !== componentKey
-            )
-            handleSelectComponent(remaining[0] ?? null)
+        if (selectedComponent === key) {
+            const remaining = Object.keys(overrides).filter((k) => k !== key)
+            setSelectedComponent(remaining[0] ?? null)
         }
     }
 
-    const updateComponentColor = (
-        componentKey: string,
+    const updateColor = (
+        key: string,
         group: ColorGroupKey,
         shades: Record<string, string>
     ) => {
@@ -124,10 +131,10 @@ export function ComponentOverridesTab({
             ...prev,
             componentOverrides: {
                 ...prev.componentOverrides,
-                [componentKey]: {
-                    ...prev.componentOverrides?.[componentKey],
+                [key]: {
+                    ...prev.componentOverrides?.[key],
                     colors: {
-                        ...prev.componentOverrides?.[componentKey]?.colors,
+                        ...prev.componentOverrides?.[key]?.colors,
                         [group]: shades,
                     },
                 },
@@ -135,23 +142,73 @@ export function ComponentOverridesTab({
         }))
     }
 
-    const overrideEntries = Object.entries(overrides)
+    const updateTokenOverride = (
+        componentKey: string,
+        path: string,
+        value: string
+    ) => {
+        onChange((prev) => {
+            const existing =
+                prev.componentOverrides?.[componentKey]?.tokenOverrides ?? {}
+            const resolvedCompTokens = resolvedTokens?.[componentKey] as
+                | Record<string, unknown>
+                | undefined
+            const updated = setNestedValueForAllVariants(
+                existing,
+                path,
+                value,
+                resolvedCompTokens ?? {}
+            )
+            return {
+                ...prev,
+                componentOverrides: {
+                    ...prev.componentOverrides,
+                    [componentKey]: {
+                        ...prev.componentOverrides?.[componentKey],
+                        tokenOverrides: updated,
+                    },
+                },
+            }
+        })
+    }
+
+    const removeTokenOverride = (componentKey: string, path: string) => {
+        onChange((prev) => {
+            const existing =
+                prev.componentOverrides?.[componentKey]?.tokenOverrides ?? {}
+            const updated = removeNestedValue(existing, path)
+            return {
+                ...prev,
+                componentOverrides: {
+                    ...prev.componentOverrides,
+                    [componentKey]: {
+                        ...prev.componentOverrides?.[componentKey],
+                        tokenOverrides:
+                            Object.keys(updated).length > 0
+                                ? updated
+                                : undefined,
+                    },
+                },
+            }
+        })
+    }
+
     const availableComponents = V2_COMPONENTS.filter((c) => !overrides[c])
+    const overrideEntries = Object.entries(overrides)
 
     return (
-        <div className="space-y-5">
-            {/* Header */}
+        <div className="space-y-4">
             <div>
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                     Component Overrides
                 </h3>
                 <p className="text-xs text-gray-400 mb-3">
-                    Override tokens for specific components. E.g., make a Button
-                    red while the global primary is blue.
+                    Override tokens for specific components — edit colors,
+                    padding, gap, borderRadius, fontSize, and more per
+                    component.
                 </p>
             </div>
 
-            {/* Add Component Override */}
             <div className="relative">
                 <button
                     onClick={() => setShowAddMenu(!showAddMenu)}
@@ -160,7 +217,6 @@ export function ComponentOverridesTab({
                     <Plus className="w-4 h-4" />
                     Add Component Override
                 </button>
-
                 {showAddMenu && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
                         {availableComponents.length === 0 ? (
@@ -196,9 +252,8 @@ export function ComponentOverridesTab({
                 </div>
             )}
 
-            {/* Override List */}
             {overrideEntries.map(([compKey, compConfig]) => (
-                <ComponentOverrideCard
+                <ComponentCard
                     key={compKey}
                     componentKey={compKey}
                     label={COMPONENT_LABELS[compKey] ?? compKey}
@@ -210,10 +265,15 @@ export function ComponentOverridesTab({
                         )
                     }
                     onRemove={() => removeOverride(compKey)}
-                    onUpdateColor={(group, shades) =>
-                        updateComponentColor(compKey, group, shades)
-                    }
                     globalColors={brand.colors}
+                    resolvedTokens={resolvedTokens?.[compKey]}
+                    onUpdateColor={(group, shades) =>
+                        updateColor(compKey, group, shades)
+                    }
+                    onUpdateToken={(path, value) =>
+                        updateTokenOverride(compKey, path, value)
+                    }
+                    onRemoveToken={(path) => removeTokenOverride(compKey, path)}
                 />
             ))}
         </div>
@@ -221,18 +281,21 @@ export function ComponentOverridesTab({
 }
 
 // ---------------------------------------------------------------------------
-// Sub-components
+// Component Card
 // ---------------------------------------------------------------------------
 
-function ComponentOverrideCard({
+function ComponentCard({
     componentKey,
     label,
     config,
     isExpanded,
     onToggle,
     onRemove,
-    onUpdateColor,
     globalColors,
+    resolvedTokens,
+    onUpdateColor,
+    onUpdateToken,
+    onRemoveToken,
 }: {
     componentKey: string
     label: string
@@ -240,13 +303,22 @@ function ComponentOverrideCard({
     isExpanded: boolean
     onToggle: () => void
     onRemove: () => void
+    globalColors?: Record<string, any>
+    resolvedTokens?: unknown
     onUpdateColor: (
         group: ColorGroupKey,
         shades: Record<string, string>
     ) => void
-    globalColors?: Record<string, any>
+    onUpdateToken: (path: string, value: string) => void
+    onRemoveToken: (path: string) => void
 }) {
-    const hasOverrides = config.colors && Object.keys(config.colors).length > 0
+    const [activeTab, setActiveTab] = useState<SectionTab>('tokens')
+    const hasColors = config.colors && Object.keys(config.colors).length > 0
+    const hasTokenOverrides =
+        config.tokenOverrides && Object.keys(config.tokenOverrides).length > 0
+    const badge = [hasColors && 'colors', hasTokenOverrides && 'tokens']
+        .filter(Boolean)
+        .join(' + ')
 
     return (
         <div className="border border-gray-200 rounded-xl overflow-hidden">
@@ -266,9 +338,9 @@ function ComponentOverrideCard({
                     <span className="text-xs text-gray-400 font-mono">
                         {componentKey}
                     </span>
-                    {hasOverrides && (
+                    {badge && (
                         <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-medium rounded">
-                            Custom
+                            {badge}
                         </span>
                     )}
                 </button>
@@ -282,72 +354,113 @@ function ComponentOverrideCard({
             </div>
 
             {isExpanded && (
-                <div className="p-3 border-t border-gray-100 space-y-3">
-                    <p className="text-xs text-gray-400">
-                        Override colors for this component. Only the groups you
-                        set here will differ from the global brand.
-                    </p>
-
-                    {COLOR_GROUPS.map((group) => {
-                        const currentShades =
-                            (config.colors?.[group] as Record<
-                                string,
-                                string
-                            >) ?? {}
-                        const globalShades =
-                            (globalColors?.[group] as Record<string, string>) ??
-                            {}
-
-                        return (
-                            <div
-                                key={group}
-                                className="border border-gray-100 rounded-lg overflow-hidden"
-                            >
-                                <div className="flex items-center gap-2 p-2 bg-gray-50">
-                                    <div
-                                        className="w-4 h-4 rounded border border-black/10"
-                                        style={{
-                                            backgroundColor:
-                                                currentShades['500'] ??
-                                                globalShades['500'] ??
-                                                '#E5E7EB',
-                                        }}
-                                    />
-                                    <span className="text-xs font-medium text-gray-600 capitalize">
-                                        {group}
-                                    </span>
-                                    {currentShades['500'] && (
-                                        <span className="text-[10px] text-gray-400 font-mono ml-auto">
-                                            Override: {currentShades['500']}
-                                        </span>
-                                    )}
-                                    {!currentShades['500'] &&
-                                        globalShades['500'] && (
-                                            <span className="text-[10px] text-gray-300 font-mono ml-auto">
-                                                Using global:{' '}
-                                                {globalShades['500']}
-                                            </span>
-                                        )}
-                                </div>
-                                <div className="p-2">
-                                    <ColorPaletteGenerator
-                                        label=""
-                                        value={
-                                            Object.keys(currentShades).length >
-                                            0
-                                                ? currentShades
-                                                : globalShades
-                                        }
-                                        onChange={(shades) =>
-                                            onUpdateColor(group, shades)
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        )
-                    })}
+                <div className="border-t border-gray-100">
+                    <TabsV2
+                        value={activeTab}
+                        onValueChange={(v) => setActiveTab(v as SectionTab)}
+                        variant={TabsV2Variant.BOXED}
+                    >
+                        <TabsV2List>
+                            <TabsV2Trigger value="tokens">Tokens</TabsV2Trigger>
+                            <TabsV2Trigger value="colors">Colors</TabsV2Trigger>
+                        </TabsV2List>
+                    </TabsV2>
+                    <div className="p-3">
+                        {activeTab === 'tokens' && (
+                            <ComponentTokenEditor
+                                componentKey={componentKey}
+                                resolvedTokens={resolvedTokens}
+                                tokenOverrides={config.tokenOverrides}
+                                onUpdate={onUpdateToken}
+                                onRemove={onRemoveToken}
+                            />
+                        )}
+                        {activeTab === 'colors' && (
+                            <ColorOverridesSection
+                                config={config}
+                                globalColors={globalColors}
+                                onUpdateColor={onUpdateColor}
+                            />
+                        )}
+                    </div>
                 </div>
             )}
+        </div>
+    )
+}
+
+// ---------------------------------------------------------------------------
+// Color Overrides Section
+// ---------------------------------------------------------------------------
+
+function ColorOverridesSection({
+    config,
+    globalColors,
+    onUpdateColor,
+}: {
+    config: NonNullable<ComponentOverrides[string]>
+    globalColors?: Record<string, any>
+    onUpdateColor: (
+        group: ColorGroupKey,
+        shades: Record<string, string>
+    ) => void
+}) {
+    return (
+        <div className="space-y-3">
+            <p className="text-xs text-gray-400">
+                Override color groups for this component. Only the groups you
+                set will differ from the global brand.
+            </p>
+            {COLOR_GROUPS.map((group) => {
+                const currentShades =
+                    (config.colors?.[group] as Record<string, string>) ?? {}
+                const globalShades =
+                    (globalColors?.[group] as Record<string, string>) ?? {}
+                return (
+                    <div
+                        key={group}
+                        className="border border-gray-100 rounded-lg overflow-hidden"
+                    >
+                        <div className="flex items-center gap-2 p-2 bg-gray-50">
+                            <div
+                                className="w-4 h-4 rounded border border-black/10"
+                                style={{
+                                    backgroundColor:
+                                        currentShades['500'] ??
+                                        globalShades['500'] ??
+                                        '#E5E7EB',
+                                }}
+                            />
+                            <span className="text-xs font-medium text-gray-600 capitalize">
+                                {group}
+                            </span>
+                            {currentShades['500'] && (
+                                <span className="text-[10px] text-gray-400 font-mono ml-auto">
+                                    Override: {currentShades['500']}
+                                </span>
+                            )}
+                            {!currentShades['500'] && globalShades['500'] && (
+                                <span className="text-[10px] text-gray-300 font-mono ml-auto">
+                                    Global: {globalShades['500']}
+                                </span>
+                            )}
+                        </div>
+                        <div className="p-2">
+                            <ColorPaletteGenerator
+                                label=""
+                                value={
+                                    Object.keys(currentShades).length > 0
+                                        ? currentShades
+                                        : globalShades
+                                }
+                                onChange={(shades) =>
+                                    onUpdateColor(group, shades)
+                                }
+                            />
+                        </div>
+                    </div>
+                )
+            })}
         </div>
     )
 }

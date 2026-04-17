@@ -1,9 +1,5 @@
 import type { BrandConfig } from '@blend-design/token-engine'
 
-/**
- * Default Juspay theme — the built-in brand preset for Blend.
- * This is the default theme shipped with the open-source design system.
- */
 export const JuspayDefaultConfig: BrandConfig = {
     brandId: 'juspay-default',
     name: 'Juspay Default',
@@ -23,6 +19,8 @@ export const JuspayDefaultConfig: BrandConfig = {
             '950': '#172554',
         },
         gray: {
+            '0': '#FFFFFF',
+            '25': '#FCFCFD',
             '50': '#F9FAFB',
             '100': '#F3F4F6',
             '200': '#E5E7EB',
@@ -35,17 +33,88 @@ export const JuspayDefaultConfig: BrandConfig = {
             '900': '#111827',
             '950': '#030712',
         },
-        red: { '500': '#EF4444' },
-        green: { '500': '#10B981' },
+        red: {
+            '50': '#FEF2F2',
+            '100': '#FEE2E2',
+            '200': '#FECACA',
+            '300': '#FCA5A5',
+            '400': '#F87171',
+            '500': '#EF4444',
+            '600': '#DC2626',
+            '700': '#B91C1C',
+            '800': '#991B1B',
+            '900': '#7F1D1D',
+        },
+        green: {
+            '50': '#ECFDF5',
+            '100': '#D1FAE5',
+            '200': '#A7F3D0',
+            '300': '#6EE7B7',
+            '400': '#34D399',
+            '500': '#10B981',
+            '600': '#059669',
+            '700': '#047857',
+            '800': '#065F46',
+            '900': '#064E3B',
+        },
+        yellow: {
+            '50': '#FFFBEB',
+            '100': '#FEF3C7',
+            '200': '#FDE68A',
+            '300': '#FCD34D',
+            '400': '#FBBF24',
+            '500': '#F59E0B',
+            '600': '#D97706',
+            '700': '#B45309',
+            '800': '#92400E',
+            '900': '#78350F',
+        },
+        purple: {
+            '50': '#F5F3FF',
+            '100': '#EDE9FE',
+            '200': '#DDD6FE',
+            '300': '#C4B5FD',
+            '400': '#A78BFA',
+            '500': '#8B5CF6',
+            '600': '#7C3AED',
+            '700': '#6D28D9',
+            '800': '#5B21B6',
+            '900': '#4C1D95',
+        },
+        orange: {
+            '50': '#FFF7ED',
+            '100': '#FFEDD5',
+            '200': '#FED7AA',
+            '300': '#FDBA74',
+            '400': '#FB923C',
+            '500': '#F97316',
+            '600': '#EA580C',
+            '700': '#C2410C',
+            '800': '#9A3412',
+            '900': '#7C2D12',
+        },
     },
     font: { family: 'Inter' },
     radius: { '6': '6px', '8': '8px' },
+    componentOverrides: {
+        BUTTONV2: {
+            tokenOverrides: {},
+        },
+        ALERTV2: {
+            tokenOverrides: {},
+        },
+        TAGV2: {
+            tokenOverrides: {},
+        },
+        SNACKBARV2: {
+            tokenOverrides: {},
+        },
+        TEXT_INPUTV2: {
+            tokenOverrides: {},
+        },
+    },
 }
 
-/**
- * Example "Starter" theme — a purple-accented theme to demonstrate
- * how a custom brand config looks. Good for SaaS / dashboard apps.
- */
 export const StarterPurpleConfig: BrandConfig = {
     brandId: 'starter-purple',
     name: 'Starter Purple',
@@ -65,6 +134,8 @@ export const StarterPurpleConfig: BrandConfig = {
             '950': '#2E1065',
         },
         gray: {
+            '0': '#FFFFFF',
+            '25': '#FCFCFD',
             '50': '#F9FAFB',
             '100': '#F3F4F6',
             '200': '#E5E7EB',
@@ -77,17 +148,71 @@ export const StarterPurpleConfig: BrandConfig = {
             '900': '#111827',
             '950': '#030712',
         },
-        red: { '500': '#DC2626' },
-        green: { '500': '#059669' },
+        red: {
+            '50': '#FEF2F2',
+            '100': '#FEE2E2',
+            '500': '#DC2626',
+            '600': '#DC2626',
+            '700': '#B91C1C',
+        },
+        green: {
+            '50': '#ECFDF5',
+            '500': '#059669',
+            '600': '#059669',
+            '700': '#047857',
+        },
+        yellow: {
+            '50': '#FFFBEB',
+            '500': '#D97706',
+        },
+        purple: {
+            '50': '#F5F3FF',
+            '500': '#8B5CF6',
+            '600': '#7C3AED',
+            '700': '#6D28D9',
+        },
+        orange: {
+            '50': '#FFF7ED',
+            '500': '#EA580C',
+        },
     },
     font: { family: 'Roboto' },
     radius: { '6': '6px', '8': '4px' },
+    componentOverrides: {
+        BUTTONV2: {
+            tokenOverrides: {
+                sm: {
+                    borderRadius: {
+                        primary: {
+                            default: '8px',
+                            iconOnly: '8px',
+                            inline: '8px',
+                        },
+                        secondary: {
+                            default: '8px',
+                            iconOnly: '8px',
+                            inline: '8px',
+                        },
+                        danger: {
+                            default: '8px',
+                            iconOnly: '8px',
+                            inline: '8px',
+                        },
+                        success: {
+                            default: '8px',
+                            iconOnly: '8px',
+                            inline: '8px',
+                        },
+                    },
+                },
+            },
+        },
+        TAGV2: {
+            tokenOverrides: {},
+        },
+    },
 }
 
-/**
- * Example "Acme" theme — an orange-accented theme showing a warm brand.
- * Good for e-commerce / consumer-facing apps.
- */
 export const AcmeLightConfig: BrandConfig = {
     brandId: 'acme-light',
     name: 'Acme Light',
@@ -107,6 +232,8 @@ export const AcmeLightConfig: BrandConfig = {
             '950': '#3D1604',
         },
         gray: {
+            '0': '#FFFFFF',
+            '25': '#FCFCFD',
             '50': '#F9FAFB',
             '100': '#F3F4F6',
             '200': '#E5E7EB',
@@ -119,9 +246,72 @@ export const AcmeLightConfig: BrandConfig = {
             '900': '#111827',
             '950': '#030712',
         },
-        red: { '500': '#B91C1C' },
-        green: { '500': '#15803D' },
+        red: {
+            '50': '#FEF2F2',
+            '100': '#FEE2E2',
+            '500': '#B91C1C',
+            '600': '#B91C1C',
+            '700': '#991B1B',
+        },
+        green: {
+            '50': '#ECFDF5',
+            '500': '#15803D',
+            '600': '#15803D',
+            '700': '#166534',
+        },
+        yellow: {
+            '50': '#FFFBEB',
+            '500': '#A16207',
+        },
+        purple: {
+            '50': '#F5F3FF',
+            '500': '#7C3AED',
+            '600': '#6D28D9',
+            '700': '#5B21B6',
+        },
+        orange: {
+            '50': '#FFF7ED',
+            '500': '#EA580C',
+            '600': '#C2410C',
+            '700': '#9A3412',
+        },
     },
     font: { family: 'Open Sans' },
     radius: { '6': '6px', '8': '16px' },
+    componentOverrides: {
+        BUTTONV2: {
+            tokenOverrides: {
+                sm: {
+                    borderRadius: {
+                        primary: {
+                            default: '16px',
+                            iconOnly: '16px',
+                            inline: '16px',
+                        },
+                        secondary: {
+                            default: '16px',
+                            iconOnly: '16px',
+                            inline: '16px',
+                        },
+                        danger: {
+                            default: '16px',
+                            iconOnly: '16px',
+                            inline: '16px',
+                        },
+                        success: {
+                            default: '16px',
+                            iconOnly: '16px',
+                            inline: '16px',
+                        },
+                    },
+                },
+            },
+        },
+        ALERTV2: {
+            tokenOverrides: {},
+        },
+        SNACKBARV2: {
+            tokenOverrides: {},
+        },
+    },
 }

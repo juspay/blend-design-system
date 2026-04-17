@@ -1,6 +1,10 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router'
 import { useBackendAuth } from '@/contexts/BackendAuthContext'
-import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system'
+import {
+    ButtonV2,
+    ButtonV2Type,
+    ButtonV2Size,
+} from '@juspay/blend-design-system'
 import { Zap, Palette, Code, GitBranch, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { featureFlags } from '@/lib/feature-flags'
@@ -89,18 +93,20 @@ function LoginPage() {
                                 <Navigate to="/studio" replace />
                             </div>
                         ) : (
-                            <Button
-                                text={
-                                    isSubmitting
-                                        ? 'Signing in...'
-                                        : 'Sign in with Google'
-                                }
-                                buttonType={ButtonType.PRIMARY}
-                                size={ButtonSize.LARGE}
-                                fullWidth
-                                onClick={handleLogin}
-                                disabled={isSubmitting}
-                            />
+                            <div className="w-full flex justify-center">
+                                <ButtonV2
+                                    text={
+                                        isSubmitting
+                                            ? 'Signing in...'
+                                            : 'Sign in with Google'
+                                    }
+                                    buttonType={ButtonV2Type.PRIMARY}
+                                    size={ButtonV2Size.LARGE}
+                                    onClick={handleLogin}
+                                    disabled={isSubmitting}
+                                    loading={isSubmitting}
+                                />
+                            </div>
                         )}
 
                         <p className="text-xs text-gray-400 text-center mt-6">

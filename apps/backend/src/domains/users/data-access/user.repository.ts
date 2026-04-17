@@ -1,5 +1,6 @@
 import { prisma } from '@/config/database.js'
 import { logger } from '@/utils/logger.js'
+import { maskEmail } from '@/utils/crypto.js'
 
 export interface UserRow {
     id: string
@@ -85,7 +86,10 @@ export const createUser = async (data: {
         },
     })
 
-    logger.info({ userId: user.id, email: user.email }, 'User created')
+    logger.info(
+        { userId: user.id, email: maskEmail(user.email) },
+        'User created'
+    )
     return user as unknown as UserRow
 }
 

@@ -1,5 +1,6 @@
 import { prisma } from '@/config/database.js'
 import { logger } from '@/utils/logger.js'
+import { hashPII } from '@/utils/crypto.js'
 
 export type AuditAction =
     | 'branch_created'
@@ -31,12 +32,15 @@ export interface AuditLogRow {
 export const createAuditLog = async (
     data: Omit<AuditLogRow, 'id' | 'createdAt'>
 ): Promise<AuditLogRow> => {
+    // Hash the actor email before storing — PII should not be in plaintext in audit logs
+    const hashedEmail = data.actorEmail ? hashPII(data.actorEmail) : ''
+
     const log = await prisma.auditLog.create({
         data: {
             organizationId: data.organizationId,
             action: data.action as any,
             actorId: data.actorId,
-            actorEmail: data.actorEmail,
+            actorEmail: hashedEmail,
             targetType: data.targetType,
             targetId: data.targetId,
             metadata: data.metadata as any,

@@ -35,6 +35,14 @@ import type { BrandConfig } from './types'
 import { buildBrandFoundation } from './build-brand-foundation'
 import { resolveAllTokens, resolveComponentTokens } from './resolve-all-tokens'
 
+function safeClone<T>(obj: T): T {
+    try {
+        return structuredClone(obj)
+    } catch {
+        return JSON.parse(JSON.stringify(obj))
+    }
+}
+
 /**
  * Resolves a BrandConfig into the full ComponentTokenType object.
  *
@@ -86,7 +94,15 @@ export function resolveBrandTokens(
     }
 
     const foundation = buildBrandFoundation(effectiveConfig)
-    const tokens = resolveAllTokens(foundation, theme)
+    const hasComponentOverrides =
+        effectiveConfig.componentOverrides &&
+        Object.keys(effectiveConfig.componentOverrides).length > 0
+
+    // When component overrides exist, we mutate the tokens object per-component,
+    // so we must get a fresh copy from resolveAllTokens (not a cached reference).
+    // Otherwise, mutating a cached object would corrupt the cache for future calls.
+    const rawTokens = resolveAllTokens(foundation, theme)
+    const tokens = hasComponentOverrides ? safeClone(rawTokens) : rawTokens
 
     // Apply per-component overrides if any
     if (effectiveConfig.componentOverrides) {
@@ -100,6 +116,10 @@ export function resolveBrandTokens(
  * For each component override, build a modified foundation with the
  * component-specific overrides merged on top of the brand config,
  * then re-resolve just that component's tokens.
+ *
+ * If `tokenOverrides` is present, deep-merge those values directly
+ * onto the resolved component tokens. This allows editing individual
+ * token values like padding, gap, height, borderRadius, fontSize, etc.
  */
 function applyComponentOverrides(
     tokens: Record<string, unknown>,
@@ -122,13 +142,20 @@ function applyComponentOverrides(
         }
 
         const componentFoundation = buildBrandFoundation(mergedConfig)
-        const componentTokens = resolveComponentTokens(
+        let componentTokens = resolveComponentTokens(
             componentKey,
             componentFoundation,
             theme
         )
 
         if (componentTokens !== undefined) {
+            // Apply direct token overrides (padding, gap, height, etc.)
+            if (overrideConfig.tokenOverrides) {
+                componentTokens = deepMerge(
+                    componentTokens as Record<string, unknown>,
+                    overrideConfig.tokenOverrides
+                )
+            }
             tokens[componentKey] = componentTokens
         }
     }
@@ -157,7 +184,12 @@ function deepMerge(
 }
 
 export { buildBrandFoundation } from './build-brand-foundation'
-export { resolveAllTokens, V2_COMPONENT_KEYS } from './resolve-all-tokens'
+export {
+    resolveAllTokens,
+    V2_COMPONENT_KEYS,
+    clearTokenCache,
+    registerResolver,
+} from './resolve-all-tokens'
 
 export { validateBrandConfig } from './validate'
 

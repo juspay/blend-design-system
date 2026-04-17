@@ -12,6 +12,13 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 import { ThemeProvider } from '@juspay/blend-design-system'
+import {
+    TabsV2,
+    TabsV2List,
+    TabsV2Trigger,
+    TabsV2Content,
+    TabsV2Variant,
+} from '@juspay/blend-design-system'
 import { Panel, Group, Separator } from 'react-resizable-panels'
 import {
     resolveBrandTokens,
@@ -325,74 +332,107 @@ function EditorPage() {
                         {/* Left Panel: Editor Tabs (30%) */}
                         <Panel minSize={20} defaultSize={30}>
                             <div className="h-full bg-white border-r border-gray-200 flex flex-col overflow-hidden">
-                                {/* Tab bar */}
-                                <div className="flex border-b border-gray-200 shrink-0 overflow-x-auto">
-                                    {EDITOR_TABS.map(
-                                        ({ id, icon: Icon, label }) => (
-                                            <button
-                                                key={id}
-                                                onClick={() => setActiveTab(id)}
-                                                className={`flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
-                                                    activeTab === id
-                                                        ? 'border-blue-600 text-blue-600'
-                                                        : 'border-transparent text-gray-500 hover:text-gray-700'
-                                                }`}
-                                            >
-                                                <Icon className="w-3.5 h-3.5" />
-                                                {label}
-                                            </button>
-                                        )
-                                    )}
-                                </div>
+                                <TabsV2
+                                    value={activeTab}
+                                    onValueChange={(v: string) =>
+                                        setActiveTab(v as EditorTabId)
+                                    }
+                                    variant={TabsV2Variant.UNDERLINE}
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        height: '100%',
+                                    }}
+                                >
+                                    <TabsV2List>
+                                        {EDITOR_TABS.map(
+                                            ({ id, icon: Icon, label }) => (
+                                                <TabsV2Trigger
+                                                    key={id}
+                                                    value={id}
+                                                    leftSlot={
+                                                        <Icon className="w-3.5 h-3.5" />
+                                                    }
+                                                >
+                                                    {label}
+                                                </TabsV2Trigger>
+                                            )
+                                        )}
+                                    </TabsV2List>
 
-                                {/* Tab Content */}
-                                <div className="flex-1 overflow-y-auto p-4 space-y-6">
-                                    {activeTab === 'colors' && (
-                                        <ColorsTab
-                                            brand={brand}
-                                            onChange={handleBrandChange}
-                                        />
-                                    )}
-                                    {activeTab === 'typography' && (
-                                        <TypographyTab
-                                            brand={brand}
-                                            onChange={handleBrandChange}
-                                        />
-                                    )}
-                                    {activeTab === 'radius' && (
-                                        <RadiusTab
-                                            brand={brand}
-                                            onChange={handleBrandChange}
-                                        />
-                                    )}
-                                    {activeTab === 'shadows' && (
-                                        <ShadowsTab
-                                            brand={brand}
-                                            onChange={handleBrandChange}
-                                        />
-                                    )}
-                                    {activeTab === 'darkmode' && (
-                                        <DarkModeTab
-                                            brand={brand}
-                                            onChange={handleBrandChange}
-                                        />
-                                    )}
-                                    {activeTab === 'components' && (
-                                        <ComponentOverridesTab
-                                            brand={brand}
-                                            onChange={handleBrandChange}
-                                            onSelectComponent={
-                                                setSelectedComponent
-                                            }
-                                        />
-                                    )}
-                                    {activeTab === 'json' && (
-                                        <JsonTab
-                                            brand={brand}
-                                            onChange={handleBrandChange}
-                                        />
-                                    )}
-                                </div>
+                                    {EDITOR_TABS.map(({ id }) => (
+                                        <TabsV2Content
+                                            key={id}
+                                            value={id}
+                                            style={{
+                                                flex: 1,
+                                                overflow: 'auto',
+                                            }}
+                                        >
+                                            <div className="p-4 space-y-6">
+                                                {id === 'colors' && (
+                                                    <ColorsTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {id === 'typography' && (
+                                                    <TypographyTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {id === 'radius' && (
+                                                    <RadiusTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {id === 'shadows' && (
+                                                    <ShadowsTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {id === 'darkmode' && (
+                                                    <DarkModeTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {id === 'components' && (
+                                                    <ComponentOverridesTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                        onSelectComponent={
+                                                            setSelectedComponent
+                                                        }
+                                                    />
+                                                )}
+                                                {id === 'json' && (
+                                                    <JsonTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                            </div>
+                                        </TabsV2Content>
+                                    ))}
+                                </TabsV2>
                             </div>
                         </Panel>
 
@@ -403,28 +443,31 @@ function EditorPage() {
                             <div className="h-full flex flex-col overflow-hidden bg-white">
                                 {/* Panel switcher */}
                                 <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shrink-0">
-                                    <div className="flex items-center gap-1">
-                                        {editorPanels.map(
-                                            ({ id, icon: Icon, label }) => (
-                                                <button
-                                                    key={id}
-                                                    onClick={() =>
-                                                        setActivePanel(id)
-                                                    }
-                                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                                                        activePanel === id
-                                                            ? 'bg-blue-50 text-blue-700'
-                                                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-                                                    }`}
-                                                >
-                                                    <Icon className="w-3.5 h-3.5" />
-                                                    {label}
-                                                </button>
-                                            )
-                                        )}
-                                    </div>
+                                    <TabsV2
+                                        value={activePanel}
+                                        onValueChange={(v: string) =>
+                                            setActivePanel(v as EditorPanelId)
+                                        }
+                                        variant={TabsV2Variant.PILLS}
+                                    >
+                                        <TabsV2List>
+                                            {editorPanels.map(
+                                                ({ id, icon: Icon, label }) => (
+                                                    <TabsV2Trigger
+                                                        key={id}
+                                                        value={id}
+                                                        leftSlot={
+                                                            <Icon className="w-3.5 h-3.5" />
+                                                        }
+                                                    >
+                                                        {label}
+                                                    </TabsV2Trigger>
+                                                )
+                                            )}
+                                        </TabsV2List>
+                                    </TabsV2>
 
-                                    {/* Preview theme toggle - only shown when preview is active */}
+                                    {/* Preview theme toggle */}
                                     {activePanel === 'preview' && (
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs text-gray-400">

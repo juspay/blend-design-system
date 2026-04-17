@@ -17,8 +17,11 @@ import {
 import type { BrandConfig } from './types'
 
 export function buildBrandFoundation(brand: BrandConfig): FoundationTokenType {
-    const foundation = JSON.parse(
-        JSON.stringify(FOUNDATION_THEME)
+    // Use structuredClone (ES2021+) for safer deep-clone; fallback for older runtimes
+    const foundation = (
+        typeof structuredClone === 'function'
+            ? structuredClone(FOUNDATION_THEME)
+            : JSON.parse(JSON.stringify(FOUNDATION_THEME))
     ) as FoundationTokenType
 
     applyColorOverrides(foundation, brand)

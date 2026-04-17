@@ -9,16 +9,14 @@ import { useState } from 'react'
 import { Package, Clock, RefreshCw } from 'lucide-react'
 import type { BrandConfig, Version, Snapshot } from '@blend-design/token-engine'
 import type { HistoryPanelProps } from './types'
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+import {
+    TabsV2,
+    TabsV2List,
+    TabsV2Trigger,
+    TabsV2Variant,
+} from '@juspay/blend-design-system'
 
 type HistoryTab = 'versions' | 'snapshots'
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 export function HistoryPanel({
     versions,
@@ -29,21 +27,21 @@ export function HistoryPanel({
 
     return (
         <div className="flex flex-col h-full">
-            {/* Tab Switcher */}
-            <div className="flex border-b border-gray-200 shrink-0">
-                <TabButton
-                    label={`Published (${versions.length})`}
-                    isActive={activeTab === 'versions'}
-                    onClick={() => setActiveTab('versions')}
-                />
-                <TabButton
-                    label={`Snapshots (${snapshots.length})`}
-                    isActive={activeTab === 'snapshots'}
-                    onClick={() => setActiveTab('snapshots')}
-                />
-            </div>
+            <TabsV2
+                value={activeTab}
+                onValueChange={(v) => setActiveTab(v as HistoryTab)}
+                variant={TabsV2Variant.UNDERLINE}
+            >
+                <TabsV2List>
+                    <TabsV2Trigger value="versions">
+                        {`Published (${versions.length})`}
+                    </TabsV2Trigger>
+                    <TabsV2Trigger value="snapshots">
+                        {`Snapshots (${snapshots.length})`}
+                    </TabsV2Trigger>
+                </TabsV2List>
+            </TabsV2>
 
-            {/* Content */}
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
                 {activeTab === 'versions' && (
                     <VersionsList versions={versions} onRestore={onRestore} />
@@ -56,33 +54,6 @@ export function HistoryPanel({
                 )}
             </div>
         </div>
-    )
-}
-
-// ---------------------------------------------------------------------------
-// Tab Button
-// ---------------------------------------------------------------------------
-
-function TabButton({
-    label,
-    isActive,
-    onClick,
-}: {
-    label: string
-    isActive: boolean
-    onClick: () => void
-}) {
-    return (
-        <button
-            onClick={onClick}
-            className={`flex-1 py-2.5 text-xs font-medium transition-colors ${
-                isActive
-                    ? 'text-blue-600 border-b-2 border-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
-            }`}
-        >
-            {label}
-        </button>
     )
 }
 

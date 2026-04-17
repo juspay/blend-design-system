@@ -1,17 +1,23 @@
 import { createFileRoute } from '@tanstack/react-router'
 import {
     ThemeProvider,
-    Button,
-    ButtonType,
-    ButtonSize,
-    Alert,
-    AlertVariant,
-    TextInput,
-    Checkbox,
-    Switch,
-    Tag,
-    StatCard,
-    StatCardVariant,
+    ButtonV2,
+    ButtonV2Type,
+    ButtonV2Size,
+    AlertV2,
+    AlertV2Type,
+    AlertV2SubType,
+    TextInputV2,
+    CheckboxV2,
+    SwitchV2,
+    TagV2,
+    TagV2Color,
+    StatCardV2,
+    StatCardV2ChangeType,
+    StatCardV2ArrowDirection,
+    Slider,
+    SliderSize,
+    SliderVariant,
 } from '@juspay/blend-design-system'
 import {
     resolveBrandTokens,
@@ -440,15 +446,17 @@ function TokenEditorTab({
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Base Radius: {radius}
                             </label>
-                            <input
-                                type="range"
-                                min="0"
-                                max="32"
-                                value={parseInt(radius)}
-                                onChange={(e) =>
-                                    onRadiusChange(`${e.target.value}px`)
-                                }
-                                className="w-full"
+                            <Slider
+                                variant={SliderVariant.PRIMARY}
+                                size={SliderSize.MEDIUM}
+                                value={[parseInt(radius)]}
+                                min={0}
+                                max={32}
+                                step={1}
+                                onValueChange={(vals) => {
+                                    if (vals.length > 0)
+                                        onRadiusChange(`${vals[0]}px`)
+                                }}
                             />
                             <div className="flex justify-between text-xs text-gray-500 mt-1">
                                 <span>0px (Sharp)</span>
@@ -514,28 +522,31 @@ function LivePreviewTab({ tokenKeys }: { tokenKeys: string[] }) {
                     </h3>
                     <div className="space-y-3">
                         <div className="flex flex-wrap gap-2">
-                            <Button text="Primary" />
-                            <Button
+                            <ButtonV2 text="Primary" />
+                            <ButtonV2
                                 text="Secondary"
-                                buttonType={ButtonType.SECONDARY}
+                                buttonType={ButtonV2Type.SECONDARY}
                             />
-                            <Button
+                            <ButtonV2
                                 text="Danger"
-                                buttonType={ButtonType.DANGER}
+                                buttonType={ButtonV2Type.DANGER}
                             />
-                            <Button
+                            <ButtonV2
                                 text="Success"
-                                buttonType={ButtonType.SUCCESS}
+                                buttonType={ButtonV2Type.SUCCESS}
                             />
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <Button text="Small" size={ButtonSize.SMALL} />
-                            <Button text="Medium" size={ButtonSize.MEDIUM} />
-                            <Button text="Large" size={ButtonSize.LARGE} />
+                            <ButtonV2 text="Small" size={ButtonV2Size.SMALL} />
+                            <ButtonV2
+                                text="Medium"
+                                size={ButtonV2Size.MEDIUM}
+                            />
+                            <ButtonV2 text="Large" size={ButtonV2Size.LARGE} />
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <Button text="Disabled" disabled />
-                            <Button text="Loading" loading />
+                            <ButtonV2 text="Disabled" disabled />
+                            <ButtonV2 text="Loading" loading />
                         </div>
                     </div>
                 </div>
@@ -546,15 +557,17 @@ function LivePreviewTab({ tokenKeys }: { tokenKeys: string[] }) {
                         Alerts
                     </h3>
                     <div className="space-y-3">
-                        <Alert
+                        <AlertV2
+                            type={AlertV2Type.PRIMARY}
+                            subType={AlertV2SubType.SUBTLE}
                             heading="Primary Alert"
                             description="This uses your primary brand color."
-                            variant={AlertVariant.PRIMARY}
                         />
-                        <Alert
+                        <AlertV2
+                            type={AlertV2Type.SUCCESS}
+                            subType={AlertV2SubType.SUBTLE}
                             heading="Success"
                             description="Your brand tokens are working!"
-                            variant={AlertVariant.SUCCESS}
                         />
                     </div>
                 </div>
@@ -565,17 +578,22 @@ function LivePreviewTab({ tokenKeys }: { tokenKeys: string[] }) {
                         Form Inputs
                     </h3>
                     <div className="space-y-4">
-                        <TextInput
+                        <TextInputV2
                             label="Text Input"
                             placeholder="Enter text..."
                             value="Sample text"
                             onChange={() => {}}
                         />
-                        <Checkbox
+                        <CheckboxV2
                             label="Subscribe to newsletter"
                             checked={false}
+                            onCheckedChange={() => {}}
                         />
-                        <Switch label="Enable notifications" checked={true} />
+                        <SwitchV2
+                            label="Enable notifications"
+                            checked={true}
+                            onCheckedChange={() => {}}
+                        />
                     </div>
                 </div>
 
@@ -586,14 +604,18 @@ function LivePreviewTab({ tokenKeys }: { tokenKeys: string[] }) {
                     </h3>
                     <div className="space-y-4">
                         <div className="flex flex-wrap gap-2">
-                            <Tag text="Default" />
-                            <Tag text="Primary" />
-                            <Tag text="Success" />
+                            <TagV2 text="Default" />
+                            <TagV2 text="Primary" color={TagV2Color.PRIMARY} />
+                            <TagV2 text="Success" color={TagV2Color.SUCCESS} />
                         </div>
-                        <StatCard
+                        <StatCardV2
                             title="Total Revenue"
-                            value="₹2.4M"
-                            variant={StatCardVariant.NUMBER}
+                            value="2.4M"
+                            change={{
+                                value: '12',
+                                changeType: StatCardV2ChangeType.INCREASE,
+                                arrowDirection: StatCardV2ArrowDirection.UP,
+                            }}
                         />
                     </div>
                 </div>

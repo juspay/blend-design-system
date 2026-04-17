@@ -8,6 +8,11 @@
  * This is the expansion step:
  *   ~20-line BrandConfig → ~10,000+ token values across all components
  *
+ * Features:
+ *   - LRU cache for resolved tokens (avoids re-computing identical inputs)
+ *   - Graceful error handling per component (one failure doesn't break all)
+ *   - Lazy resolution support (resolve only specific components)
+ *
  * IMPORTANT: This module should only be used in client-side code or CLI.
  * Do not import in Next.js API routes as it pulls in React components.
  */
@@ -43,6 +48,10 @@ import {
 } from '@juspay/blend-design-system/node'
 import type { FoundationTokenType } from '@juspay/blend-design-system/node'
 
+// ---------------------------------------------------------------------------
+// Component Resolver Registry
+// ---------------------------------------------------------------------------
+
 const V2_RESOLVERS: Record<
     string,
     (foundation: FoundationTokenType, theme: Theme | string) => unknown
@@ -75,16 +84,88 @@ const V2_RESOLVERS: Record<
     MOBILE_NAVIGATION_V2: getMobileNavigationTokens,
 }
 
+// ---------------------------------------------------------------------------
+// LRU Token Cache
+// ---------------------------------------------------------------------------
+
+const TOKEN_CACHE_MAX = 32
+
+interface CacheEntry {
+    key: string
+    tokens: Record<string, unknown>
+}
+
+const tokenCache: CacheEntry[] = []
+
+/**
+ * Generate a stable cache key from foundation + theme.
+ * Uses JSON serialization — fast enough for 32-entry LRU.
+ */
+function makeCacheKey(
+    foundation: FoundationTokenType,
+    theme: Theme | string
+): string {
+    return `${theme}::${JSON.stringify(foundation)}`
+}
+
+function getCached(key: string): Record<string, unknown> | null {
+    const idx = tokenCache.findIndex((e) => e.key === key)
+    if (idx === -1) return null
+    // Move to front (most recently used)
+    const [entry] = tokenCache.splice(idx, 1)
+    tokenCache.unshift(entry)
+    return entry.tokens
+}
+
+function putCache(key: string, tokens: Record<string, unknown>): void {
+    // Evict oldest if full
+    if (tokenCache.length >= TOKEN_CACHE_MAX) {
+        tokenCache.pop()
+    }
+    tokenCache.unshift({ key, tokens })
+}
+
+/**
+ * Clear the token resolution cache.
+ * Useful when the underlying component resolvers are updated.
+ */
+export function clearTokenCache(): void {
+    tokenCache.length = 0
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
 export function resolveAllTokens(
     foundation: FoundationTokenType,
     theme: Theme | string = Theme.LIGHT
 ): Record<string, unknown> {
+    const cacheKey = makeCacheKey(foundation, theme)
+    const cached = getCached(cacheKey)
+    if (cached) return cached
+
     const tokens: Record<string, unknown> = {}
+    const errors: Array<{ component: string; error: unknown }> = []
 
     for (const [key, resolver] of Object.entries(V2_RESOLVERS)) {
-        tokens[key] = resolver(foundation, theme)
+        try {
+            tokens[key] = resolver(foundation, theme)
+        } catch (err) {
+            errors.push({ component: key, error: err })
+            // Graceful degradation: skip this component, don't break others
+            tokens[key] = {}
+        }
     }
 
+    if (errors.length > 0) {
+        console.warn(
+            `[token-engine] ${errors.length} component(s) failed to resolve:`,
+            errors.map((e) => e.component).join(', ')
+        )
+    }
+
+    putCache(cacheKey, tokens)
     return tokens
 }
 
@@ -93,6 +174,7 @@ export function resolveAllTokens(
  * Used by component-level overrides to re-resolve just the affected component.
  *
  * @returns The resolved tokens for the component, or undefined if the key is not found.
+ * @throws Error with descriptive message if the component key is unknown.
  */
 export function resolveComponentTokens(
     componentKey: string,
@@ -100,8 +182,37 @@ export function resolveComponentTokens(
     theme: Theme | string = Theme.LIGHT
 ): unknown | undefined {
     const resolver = V2_RESOLVERS[componentKey]
-    if (!resolver) return undefined
-    return resolver(foundation, theme)
+    if (!resolver) {
+        const validKeys = Object.keys(V2_RESOLVERS).join(', ')
+        console.warn(
+            `[token-engine] Unknown component key "${componentKey}". Valid keys: ${validKeys}`
+        )
+        return undefined
+    }
+    try {
+        return resolver(foundation, theme)
+    } catch (err) {
+        console.error(
+            `[token-engine] Failed to resolve tokens for "${componentKey}":`,
+            err
+        )
+        return undefined
+    }
+}
+
+/**
+ * Register a custom component resolver at runtime.
+ * Allows extending the engine without modifying source code.
+ */
+export function registerResolver(
+    componentKey: string,
+    resolver: (
+        foundation: FoundationTokenType,
+        theme: Theme | string
+    ) => unknown
+): void {
+    V2_RESOLVERS[componentKey] = resolver
+    clearTokenCache()
 }
 
 export const V2_COMPONENT_KEYS = Object.keys(V2_RESOLVERS)

@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express'
 import { env } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
+import { maskEmail } from '@/utils/crypto.js'
 import { UnauthorizedError, NotFoundError } from '@/errors/AppError.js'
 import {
     generateAuthUrl,
@@ -53,7 +54,7 @@ export const googleCallback = async (req: Request, res: Response) => {
                 })
                 isNewUser = true
                 logger.info(
-                    { userId: user.id, email: user.email },
+                    { userId: user.id, email: maskEmail(user.email) },
                     'New user registered'
                 )
             }

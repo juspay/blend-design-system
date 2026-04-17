@@ -165,4 +165,25 @@ program
         })
     })
 
+// ---------------------------------------------------------------------------
+// Global Error Handling
+// ---------------------------------------------------------------------------
+
+process.on('uncaughtException', (error) => {
+    console.error('\n\x1b[31mUnexpected error:\x1b[0m', error.message)
+    if (process.env.DEBUG) {
+        console.error(error.stack)
+    }
+    process.exit(1)
+})
+
+process.on('unhandledRejection', (reason) => {
+    const message = reason instanceof Error ? reason.message : String(reason)
+    console.error('\n\x1b[31mUnhandled rejection:\x1b[0m', message)
+    if (process.env.DEBUG && reason instanceof Error) {
+        console.error(reason.stack)
+    }
+    process.exit(1)
+})
+
 program.parse()

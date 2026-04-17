@@ -3,6 +3,12 @@
  *
  * Handles communication between the CLI and the Studio API.
  * Supports authentication via Studio API tokens (JWT).
+ *
+ * Features:
+ *   - Automatic retry with exponential backoff for transient failures
+ *   - Input sanitization for branch IDs and paths
+ *   - Graceful error handling with descriptive messages
+ *   - Request timeout support
  */
 
 import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs'
@@ -22,6 +28,44 @@ import type {
 const DEFAULT_API_URL = 'https://studio.blend.juspay.design'
 const CONFIG_DIR = join(homedir(), '.blend-token-studio')
 const AUTH_FILE = join(CONFIG_DIR, 'auth.json')
+
+// ---------------------------------------------------------------------------
+// Retry & Timeout Constants
+// ---------------------------------------------------------------------------
+
+const MAX_RETRIES = 3
+const INITIAL_RETRY_DELAY_MS = 500
+const REQUEST_TIMEOUT_MS = 30_000
+
+/** HTTP status codes that are safe to retry. */
+const RETRYABLE_STATUS_CODES = new Set([408, 429, 500, 502, 503, 504])
+
+// ---------------------------------------------------------------------------
+// Input Sanitization
+// ---------------------------------------------------------------------------
+
+/**
+ * Sanitize a branch ID to prevent path-traversal attacks.
+ * Allows only alphanumeric, hyphens, underscores, slashes, and dots.
+ */
+function sanitizeBranchId(branchId: string): string {
+    // Remove path traversal sequences
+    const cleaned = branchId
+        .replace(/\.\./g, '')
+        .replace(/[^a-zA-Z0-9\-_./]/g, '')
+        .replace(/\/+/g, '/')
+    if (!cleaned) {
+        throw new Error(`Invalid branch ID: "${branchId}"`)
+    }
+    return cleaned
+}
+
+/**
+ * Sleep for a given number of milliseconds.
+ */
+function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 interface AuthData {
     idToken: string
@@ -148,54 +192,108 @@ export class ApiClient {
             headers['Authorization'] = `Bearer ${this.authData.idToken}`
         }
 
-        try {
-            const response = await fetch(url, {
-                method,
-                headers,
-                body: body ? JSON.stringify(body) : undefined,
-            })
+        let lastError: ApiResponse<T> | null = null
 
-            const raw = (await response.json()) as any
+        for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                // Add timeout via AbortController
+                const controller = new AbortController()
+                const timeoutId = setTimeout(
+                    () => controller.abort(),
+                    REQUEST_TIMEOUT_MS
+                )
 
-            if (!response.ok) {
+                const response = await fetch(url, {
+                    method,
+                    headers,
+                    body: body ? JSON.stringify(body) : undefined,
+                    signal: controller.signal,
+                })
+
+                clearTimeout(timeoutId)
+
+                const raw = (await response.json()) as any
+
+                if (!response.ok) {
+                    const errorResponse: ApiResponse<T> = {
+                        success: false,
+                        error: (
+                            raw as {
+                                error?: { code: string; message: string }
+                            }
+                        ).error || {
+                            code: 'UNKNOWN_ERROR',
+                            message:
+                                raw?.message ||
+                                raw?.error?.message ||
+                                `HTTP ${response.status}: ${response.statusText}`,
+                        },
+                    }
+
+                    // Retry on transient errors
+                    if (
+                        RETRYABLE_STATUS_CODES.has(response.status) &&
+                        attempt < MAX_RETRIES
+                    ) {
+                        lastError = errorResponse
+                        const delay =
+                            INITIAL_RETRY_DELAY_MS * Math.pow(2, attempt)
+                        await sleep(delay)
+                        continue
+                    }
+
+                    return errorResponse
+                }
+
+                // Support both response shapes:
+                // - "studio backend": { success: true, data: <T> }
+                // - "raw backend": <T>
+                const data =
+                    raw?.success === true && raw?.data !== undefined
+                        ? raw.data
+                        : raw
+
                 return {
+                    success: true,
+                    data: data as T,
+                }
+            } catch (error) {
+                const isTimeout =
+                    error instanceof Error && error.name === 'AbortError'
+                const networkError: ApiResponse<T> = {
                     success: false,
-                    error: (
-                        raw as { error?: { code: string; message: string } }
-                    ).error || {
-                        code: 'UNKNOWN_ERROR',
-                        message:
-                            raw?.message ||
-                            raw?.error?.message ||
-                            `HTTP ${response.status}: ${response.statusText}`,
+                    error: {
+                        code: isTimeout ? 'TIMEOUT_ERROR' : 'NETWORK_ERROR',
+                        message: isTimeout
+                            ? `Request timed out after ${REQUEST_TIMEOUT_MS}ms`
+                            : error instanceof Error
+                              ? error.message
+                              : 'Network request failed',
                     },
                 }
-            }
 
-            // Support both response shapes:
-            // - "studio backend": { success: true, data: <T> }
-            // - "raw backend": <T>
-            const data =
-                raw?.success === true && raw?.data !== undefined
-                    ? raw.data
-                    : raw
+                // Retry on network errors (transient)
+                if (attempt < MAX_RETRIES) {
+                    lastError = networkError
+                    const delay = INITIAL_RETRY_DELAY_MS * Math.pow(2, attempt)
+                    await sleep(delay)
+                    continue
+                }
 
-            return {
-                success: true,
-                data: data as T,
-            }
-        } catch (error) {
-            return {
-                success: false,
-                error: {
-                    code: 'NETWORK_ERROR',
-                    message:
-                        error instanceof Error
-                            ? error.message
-                            : 'Network request failed',
-                },
+                return networkError
             }
         }
+
+        // Should not reach here, but return last error as safety net
+        return (
+            lastError || {
+                success: false,
+                error: {
+                    code: 'UNKNOWN_ERROR',
+                    message: 'Request failed after all retries',
+                },
+            }
+        )
     }
 
     async listBranches(
@@ -233,9 +331,10 @@ export class ApiClient {
     }
 
     async getBranch(branchId: string): Promise<ApiResponse<Branch>> {
+        const safeBranchId = sanitizeBranchId(branchId)
         return this.request<Branch>(
             'GET',
-            `/branches/${encodeURIComponent(branchId)}`
+            `/branches/${encodeURIComponent(safeBranchId)}`
         )
     }
 
@@ -247,9 +346,10 @@ export class ApiClient {
         branchId: string,
         config: BrandConfig
     ): Promise<ApiResponse<Branch>> {
+        const safeBranchId = sanitizeBranchId(branchId)
         return this.request<Branch>(
             'PATCH',
-            `/branches/${encodeURIComponent(branchId)}`,
+            `/branches/${encodeURIComponent(safeBranchId)}`,
             {
                 brandConfig: config,
             }
@@ -257,9 +357,10 @@ export class ApiClient {
     }
 
     async deleteBranch(branchId: string): Promise<ApiResponse<void>> {
+        const safeBranchId = sanitizeBranchId(branchId)
         return this.request<void>(
             'DELETE',
-            `/branches/${encodeURIComponent(branchId)}`
+            `/branches/${encodeURIComponent(safeBranchId)}`
         )
     }
 
@@ -268,9 +369,10 @@ export class ApiClient {
         name: string,
         slug?: string
     ): Promise<ApiResponse<Branch>> {
+        const safeBranchId = sanitizeBranchId(branchId)
         return this.request<Branch>(
             'POST',
-            `/branches/${encodeURIComponent(branchId)}/fork`,
+            `/branches/${encodeURIComponent(safeBranchId)}/fork`,
             {
                 name,
                 slug,
@@ -282,17 +384,19 @@ export class ApiClient {
         branchId: string,
         input: CreateVersionInput
     ): Promise<ApiResponse<Version>> {
+        const safeBranchId = sanitizeBranchId(branchId)
         return this.request<Version>(
             'POST',
-            `/branches/${encodeURIComponent(branchId)}/publish`,
+            `/branches/${encodeURIComponent(safeBranchId)}/publish`,
             input
         )
     }
 
     async listVersions(branchId: string): Promise<ApiResponse<Version[]>> {
+        const safeBranchId = sanitizeBranchId(branchId)
         return this.request<Version[]>(
             'GET',
-            `/branches/${encodeURIComponent(branchId)}/versions`
+            `/branches/${encodeURIComponent(safeBranchId)}/versions`
         )
     }
 
@@ -300,9 +404,10 @@ export class ApiClient {
         branchId: string,
         version: string
     ): Promise<ApiResponse<Version>> {
+        const safeBranchId = sanitizeBranchId(branchId)
         return this.request<Version>(
             'GET',
-            `/branches/${encodeURIComponent(branchId)}/versions/${encodeURIComponent(version)}`
+            `/branches/${encodeURIComponent(safeBranchId)}/versions/${encodeURIComponent(version)}`
         )
     }
 
@@ -311,13 +416,14 @@ export class ApiClient {
         theme: 'light' | 'dark',
         version?: string
     ): Promise<ApiResponse<ResolvedTokensResponse>> {
+        const safeBranchId = sanitizeBranchId(branchId)
         const params = new URLSearchParams({ theme })
         if (version) {
             params.set('version', version)
         }
         return this.request<ResolvedTokensResponse>(
             'POST',
-            `/branches/${encodeURIComponent(branchId)}/resolve?${params.toString()}`
+            `/branches/${encodeURIComponent(safeBranchId)}/resolve?${params.toString()}`
         )
     }
 
@@ -331,12 +437,13 @@ export class ApiClient {
             brandConfig: BrandConfig
         }>
     > {
+        const safeBranchId = sanitizeBranchId(branchId)
         const params = version ? `?version=${encodeURIComponent(version)}` : ''
         return this.request<{
             branch: Branch
             version: Version | null
             brandConfig: BrandConfig
-        }>('GET', `/branches/${encodeURIComponent(branchId)}/pull${params}`)
+        }>('GET', `/branches/${encodeURIComponent(safeBranchId)}/pull${params}`)
     }
 }
 

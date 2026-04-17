@@ -2,11 +2,14 @@
  * DiffPanel
  *
  * Displays a visual diff between the current brand config and Blend defaults.
- * Groups changes by category (colors, radius, shadows) and shows old/new values
- * with color swatches for hex values.
+ * Groups changes by category and clearly shows:
+ *   - What the Blend default was (left, muted)
+ *   - What your brand changed it to (right, highlighted)
+ *   - Color swatches for hex values
+ *   - Human-readable path labels
  */
 
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, ArrowRight } from 'lucide-react'
 import type { TokenDiff } from '@blend-design/token-engine'
 import type { DiffPanelProps } from './types'
 
@@ -14,12 +17,10 @@ import type { DiffPanelProps } from './types'
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Check if a string looks like a hex color. */
 function isHexColor(value: string): boolean {
     return /^#[0-9A-Fa-f]{3,6}$/.test(value)
 }
 
-/** Group diffs by the first segment of their path (e.g., "colors", "radius"). */
 function groupDiffsByCategory(diffs: TokenDiff[]): Record<string, TokenDiff[]> {
     return diffs.reduce<Record<string, TokenDiff[]>>((acc, d) => {
         const group = d.path.split('.')[0]
@@ -27,6 +28,31 @@ function groupDiffsByCategory(diffs: TokenDiff[]): Record<string, TokenDiff[]> {
         acc[group].push(d)
         return acc
     }, {})
+}
+
+function formatPath(path: string): string {
+    return path
+        .split('.')
+        .map((seg) =>
+            seg.match(/^\d+$/)
+                ? `Shade ${seg}`
+                : seg.charAt(0).toUpperCase() + seg.slice(1)
+        )
+        .join(' › ')
+}
+
+const GROUP_LABELS: Record<string, string> = {
+    colors: 'Colors',
+    radius: 'Border Radius',
+    shadows: 'Shadows',
+    font: 'Font',
+}
+
+const GROUP_ICONS: Record<string, string> = {
+    colors: '🎨',
+    radius: '⬜',
+    shadows: '🔲',
+    font: '🔤',
 }
 
 // ---------------------------------------------------------------------------
@@ -57,9 +83,24 @@ export function DiffPanel({ diffs }: DiffPanelProps) {
                 <h3 className="text-sm font-semibold text-gray-900">
                     Changes from Default
                 </h3>
-                <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+                <span className="px-2.5 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
                     {diffs.length} change{diffs.length !== 1 ? 's' : ''}
                 </span>
+            </div>
+
+            {/* Legend */}
+            <div className="flex items-center gap-4 px-3 py-2 bg-gray-50 rounded-lg text-[11px]">
+                <div className="flex items-center gap-1.5">
+                    <span className="inline-block w-3 h-3 rounded-sm bg-gray-200 border border-gray-300" />
+                    <span className="text-gray-500">Blend Default</span>
+                </div>
+                <ArrowRight className="w-3 h-3 text-gray-300" />
+                <div className="flex items-center gap-1.5">
+                    <span className="inline-block w-3 h-3 rounded-sm bg-blue-500 border border-blue-600" />
+                    <span className="text-gray-700 font-medium">
+                        Your Brand
+                    </span>
+                </div>
             </div>
 
             {/* Grouped diffs */}
@@ -77,11 +118,12 @@ export function DiffPanel({ diffs }: DiffPanelProps) {
 function DiffGroup({ group, diffs }: { group: string; diffs: TokenDiff[] }) {
     return (
         <div className="border border-gray-200 rounded-xl overflow-hidden">
-            <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-200">
-                <span className="text-xs font-semibold text-gray-600 capitalize">
-                    {group}
+            <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-200 flex items-center gap-2">
+                <span className="text-sm">{GROUP_ICONS[group] ?? '•'}</span>
+                <span className="text-xs font-semibold text-gray-700">
+                    {GROUP_LABELS[group] ?? group}
                 </span>
-                <span className="ml-2 text-xs text-gray-400">
+                <span className="ml-auto text-xs text-gray-400">
                     {diffs.length} change{diffs.length !== 1 ? 's' : ''}
                 </span>
             </div>
@@ -99,35 +141,70 @@ function DiffGroup({ group, diffs }: { group: string; diffs: TokenDiff[] }) {
 // ---------------------------------------------------------------------------
 
 function DiffRow({ diff }: { diff: TokenDiff }) {
+    const isColorChange = isHexColor(diff.oldValue) || isHexColor(diff.newValue)
+
     return (
-        <div className="px-4 py-2.5 text-xs">
-            <div className="font-mono text-gray-500 mb-1.5">{diff.path}</div>
-            <div className="flex items-center gap-2">
-                <DiffValue value={diff.oldValue} type="old" />
-                <span className="text-gray-400">-&gt;</span>
-                <DiffValue value={diff.newValue} type="new" />
+        <div className="px-4 py-3">
+            {/* Path label */}
+            <div className="text-[11px] font-mono text-gray-400 mb-2">
+                {formatPath(diff.path)}
             </div>
-        </div>
-    )
-}
 
-// ---------------------------------------------------------------------------
-// Diff Value
-// ---------------------------------------------------------------------------
+            {/* Value comparison */}
+            <div className="flex items-center gap-2">
+                {/* Old value (Blend Default) */}
+                <div className="flex items-center gap-1.5 min-w-0">
+                    {isHexColor(diff.oldValue) && (
+                        <div
+                            className="w-5 h-5 rounded border border-black/10 shrink-0"
+                            style={{ backgroundColor: diff.oldValue }}
+                        />
+                    )}
+                    <span className="font-mono text-xs text-gray-400 line-through truncate">
+                        {diff.oldValue}
+                    </span>
+                    <span className="text-[9px] text-gray-300 font-medium shrink-0">
+                        DEFAULT
+                    </span>
+                </div>
 
-function DiffValue({ value, type }: { value: string; type: 'old' | 'new' }) {
-    const colorClass =
-        type === 'old' ? 'line-through text-red-500' : 'text-green-600'
+                {/* Arrow */}
+                <ArrowRight className="w-3.5 h-3.5 text-gray-300 shrink-0" />
 
-    return (
-        <div className="flex items-center gap-1.5">
-            {isHexColor(value) && (
-                <div
-                    className="w-3.5 h-3.5 rounded border border-black/10"
-                    style={{ backgroundColor: value }}
-                />
-            )}
-            <span className={`font-mono ${colorClass}`}>{value}</span>
+                {/* New value (Your Brand) */}
+                <div className="flex items-center gap-1.5 min-w-0">
+                    {isHexColor(diff.newValue) && (
+                        <div
+                            className="w-5 h-5 rounded border border-black/10 shrink-0"
+                            style={{ backgroundColor: diff.newValue }}
+                        />
+                    )}
+                    <span className="font-mono text-xs text-green-700 font-semibold truncate">
+                        {diff.newValue}
+                    </span>
+                    <span className="text-[9px] text-blue-500 font-medium shrink-0">
+                        YOURS
+                    </span>
+                </div>
+            </div>
+
+            {/* Color comparison bar for hex values */}
+            {isColorChange &&
+                isHexColor(diff.oldValue) &&
+                isHexColor(diff.newValue) && (
+                    <div className="flex mt-2 rounded overflow-hidden h-2">
+                        <div
+                            className="flex-1"
+                            style={{ backgroundColor: diff.oldValue }}
+                            title={`Default: ${diff.oldValue}`}
+                        />
+                        <div
+                            className="flex-1"
+                            style={{ backgroundColor: diff.newValue }}
+                            title={`Yours: ${diff.newValue}`}
+                        />
+                    </div>
+                )}
         </div>
     )
 }

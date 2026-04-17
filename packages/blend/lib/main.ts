@@ -127,6 +127,14 @@ export {
     type DrawerV2NestedRootProps,
     type DrawerV2NestedRootRef,
 } from './components/DrawerV2'
+export {
+    TabsV2,
+    TabsV2List,
+    TabsV2Trigger,
+    TabsV2Content,
+    TabsV2Variant,
+    TabsV2Size,
+} from './components/TabsV2'
 
 // ---------------------------------------------------------------------------
 // Token Factory Exports (for Token Studio engine)
