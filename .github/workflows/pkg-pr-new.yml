@@ -1,4 +1,4 @@
-name: Preview Release (pkg.pr.new)
+name: Preview Release
 
 on:
     pull_request:
