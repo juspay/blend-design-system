@@ -12,6 +12,7 @@ import {
 } from '@/middlewares/validate.js'
 import * as branchService from '../domain/branch.service.js'
 import * as branchRepo from '../data-access/branch.repository.js'
+import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 
 const router: IRouter = Router()
 
@@ -52,6 +53,7 @@ router.post(
             req.body,
             req.user!.id,
             req.user!.displayName || req.user!.email,
+            req.user!.email,
             req.user!.organizationId || req.body.organizationId
         )
         res.status(201).json({
@@ -130,7 +132,8 @@ router.patch(
         const branch = await branchService.updateBranch(
             req.params.branchId,
             req.body,
-            req.user!.id
+            req.user!.id,
+            req.user!.email
         )
         res.json({
             success: true,
@@ -146,7 +149,11 @@ router.delete(
     '/:branchId',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
-        await branchService.deleteBranch(req.params.branchId, req.user!.id)
+        await branchService.deleteBranch(
+            req.params.branchId,
+            req.user!.id,
+            req.user!.email
+        )
         res.json({
             success: true,
             message: 'Branch deleted successfully',
@@ -167,6 +174,7 @@ router.post(
             req.body.name,
             req.user!.id,
             req.user!.displayName || req.user!.email,
+            req.user!.email,
             req.user!.organizationId || req.body.organizationId
         )
         res.status(201).json({
@@ -188,7 +196,8 @@ router.post(
             req.params.branchId,
             req.body,
             req.user!.id,
-            req.user!.displayName || req.user!.email
+            req.user!.displayName || req.user!.email,
+            req.user!.email
         )
         res.json({
             success: true,
@@ -220,16 +229,17 @@ router.post(
     authenticate,
     validate({ body: resolveTokensSchema }),
     asyncHandler(async (req: Request, res: Response) => {
-        const { branch, theme, tokens } = await branchService.resolveTokens(
-            req.params.branchId,
-            req.body.theme || 'light'
-        )
+        const { branch, theme, brandConfig } =
+            await branchService.resolveTokens(
+                req.params.branchId,
+                req.body.theme || 'light'
+            )
         res.json({
             success: true,
             data: {
                 branchId: branch.id,
                 theme,
-                componentTokens: tokens,
+                brandConfig,
             },
         })
     })
@@ -273,6 +283,21 @@ router.post(
             savedBy: req.user!.id,
             savedByName: req.user!.displayName || req.user!.email,
         })
+
+        if (branch.organizationId) {
+            await auditLogRepo.createAuditLog({
+                organizationId: branch.organizationId,
+                action: 'snapshot_created',
+                actorId: req.user!.id,
+                actorEmail: req.user!.email,
+                targetType: 'snapshot',
+                targetId: snapshot.id,
+                metadata: {
+                    label: req.body.label || null,
+                    isAutoSave: req.body.isAutoSave || false,
+                },
+            })
+        }
         res.status(201).json({
             success: true,
             data: { snapshot },

@@ -76,6 +76,19 @@ router.delete(
             })
             return
         }
+
+        await auditLogRepo.createAuditLog({
+            organizationId: revoked.organizationId,
+            action: 'api_key_revoked',
+            actorId: req.user!.id,
+            actorEmail: req.user!.email,
+            targetType: 'api_key',
+            targetId: revoked.id,
+            metadata: {
+                name: revoked.name,
+                prefix: revoked.keyPrefix,
+            },
+        })
         res.json({ success: true, message: 'API key revoked' })
     })
 )

@@ -19,6 +19,7 @@ export const createBranch = async (
     dto: CreateBranchDTO,
     userId: string,
     userName: string,
+    userEmail: string,
     organizationId?: string | null
 ): Promise<Branch> => {
     if (!dto.name?.trim()) {
@@ -85,10 +86,14 @@ export const createBranch = async (
             organizationId: orgId,
             action: 'branch_created',
             actorId: userId,
-            actorEmail: '',
+            actorEmail: userEmail,
             targetType: 'branch',
             targetId: branch.id,
-            metadata: { name: dto.name, brandId },
+            metadata: {
+                name: dto.name,
+                brandId,
+                visibility: dto.visibility || 'private',
+            },
         })
     }
 
@@ -121,7 +126,8 @@ export const listBranches = async (
 export const updateBranch = async (
     branchId: string,
     dto: UpdateBranchDTO,
-    userId: string
+    userId: string,
+    userEmail: string
 ): Promise<Branch> => {
     const branch = await getBranch(branchId)
 
@@ -158,6 +164,13 @@ export const updateBranch = async (
         }
     }
 
+    const previousValues: Record<string, unknown> = {}
+    const fieldsChanged = Object.keys(dto)
+    if (dto.name) previousValues.name = branch.name
+    if (dto.description !== undefined)
+        previousValues.description = branch.description
+    if (dto.visibility) previousValues.visibility = branch.visibility
+
     const updated = await branchRepo.updateBranch(branchId, updates)
     if (!updated) {
         throw new NotFoundError('Branch')
@@ -168,10 +181,13 @@ export const updateBranch = async (
             organizationId: branch.organizationId,
             action: 'branch_updated',
             actorId: userId,
-            actorEmail: '',
+            actorEmail: userEmail,
             targetType: 'branch',
             targetId: branchId,
-            metadata: { fieldsChanged: Object.keys(dto) },
+            metadata: {
+                fieldsChanged,
+                previousValues,
+            },
         })
     }
 
@@ -180,7 +196,8 @@ export const updateBranch = async (
 
 export const deleteBranch = async (
     branchId: string,
-    userId: string
+    userId: string,
+    userEmail: string
 ): Promise<void> => {
     const branch = await getBranch(branchId)
 
@@ -195,10 +212,14 @@ export const deleteBranch = async (
             organizationId: branch.organizationId,
             action: 'branch_deleted',
             actorId: userId,
-            actorEmail: '',
+            actorEmail: userEmail,
             targetType: 'branch',
             targetId: branchId,
-            metadata: {},
+            metadata: {
+                name: branch.name,
+                brandId: branch.brandId,
+                softDelete: true,
+            },
         })
     }
 }
@@ -208,6 +229,7 @@ export const forkBranch = async (
     newName: string,
     userId: string,
     userName: string,
+    userEmail: string,
     organizationId?: string | null
 ): Promise<Branch> => {
     if (!newName?.trim()) {
@@ -241,10 +263,13 @@ export const forkBranch = async (
             organizationId: orgId,
             action: 'branch_forked',
             actorId: userId,
-            actorEmail: '',
+            actorEmail: userEmail,
             targetType: 'branch',
             targetId: forked.id,
-            metadata: { sourceBranchId },
+            metadata: {
+                sourceBranchId,
+                sourceBranchName: source.name,
+            },
         })
     }
 
@@ -255,7 +280,8 @@ export const publishBranch = async (
     branchId: string,
     dto: PublishBranchDTO,
     userId: string,
-    userName: string
+    userName: string,
+    userEmail: string
 ): Promise<void> => {
     const branch = await getBranch(branchId)
 
@@ -284,10 +310,14 @@ export const publishBranch = async (
             organizationId: branch.organizationId,
             action: 'branch_published',
             actorId: userId,
-            actorEmail: '',
+            actorEmail: userEmail,
             targetType: 'branch',
             targetId: branchId,
-            metadata: { version: dto.version, isBreaking: dto.isBreaking },
+            metadata: {
+                version: dto.version,
+                isBreaking: dto.isBreaking || false,
+                isPrerelease: dto.isPrerelease || false,
+            },
         })
     }
 }
@@ -300,28 +330,13 @@ export const listVersions = async (branchId: string) => {
 export const resolveTokens = async (
     branchId: string,
     theme: 'light' | 'dark' = 'light'
-): Promise<{ branch: Branch; theme: string; tokens: unknown }> => {
+): Promise<{ branch: Branch; theme: string; brandConfig: BrandConfig }> => {
     const branch = await getBranch(branchId)
-
-    const primaryColor =
-        branch.brandConfig.colors?.primary?.['500'] ?? '#3B82F6'
-    const borderRadius = branch.brandConfig.radius?.['8'] ?? '8px'
 
     return {
         branch,
         theme,
-        tokens: {
-            Button: {
-                backgroundColor: primaryColor,
-                color: '#FFFFFF',
-            },
-            Card: {
-                borderRadius: borderRadius,
-                backgroundColor: '#FFFFFF',
-            },
-            theme,
-            mockData: true,
-        },
+        brandConfig: branch.brandConfig as BrandConfig,
     }
 }
 

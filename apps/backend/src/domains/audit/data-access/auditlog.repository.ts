@@ -2,6 +2,10 @@ import { prisma } from '@/config/database.js'
 import { logger } from '@/utils/logger.js'
 import { hashPII } from '@/utils/crypto.js'
 
+// ===========================================================================
+// Audit Actions — every mutation tracked, enum enforced at DB level
+// ===========================================================================
+
 export type AuditAction =
     | 'branch_created'
     | 'branch_updated'
@@ -11,11 +15,173 @@ export type AuditAction =
     | 'branch_forked'
     | 'version_created'
     | 'snapshot_created'
+    | 'snapshot_restored'
     | 'token_uploaded'
     | 'user_created'
     | 'user_role_changed'
+    | 'user_deactivated'
     | 'api_key_created'
     | 'api_key_revoked'
+    | 'member_invited'
+    | 'member_removed'
+
+// ===========================================================================
+// Structured Metadata — typed per action so callers can't pass random shapes
+// ===========================================================================
+
+export interface BranchCreatedMeta {
+    name: string
+    brandId: string
+    visibility: string
+}
+
+export interface BranchUpdatedMeta {
+    fieldsChanged: string[]
+    previousValues?: Record<string, unknown>
+}
+
+export interface BranchDeletedMeta {
+    name: string
+    brandId: string
+    softDelete: true
+}
+
+export interface BranchPublishedMeta {
+    version: string
+    isBreaking: boolean
+    isPrerelease: boolean
+}
+
+export interface BranchArchivedMeta {
+    previousStatus: string
+}
+
+export interface BranchForkedMeta {
+    sourceBranchId: string
+    sourceBranchName: string
+}
+
+export interface VersionCreatedMeta {
+    version: string
+    isBreaking: boolean
+    isPrerelease: boolean
+}
+
+export interface SnapshotCreatedMeta {
+    label: string | null
+    isAutoSave: boolean
+}
+
+export interface SnapshotRestoredMeta {
+    snapshotId: string
+    snapshotLabel: string | null
+}
+
+export interface TokenUploadedMeta {
+    fileName: string
+    fileSize: number
+    status: string
+}
+
+export interface UserCreatedMeta {
+    emailHash: string
+    role: string
+    provider: string
+}
+
+export interface UserRoleChangedMeta {
+    previousRole: string
+    newRole: string
+    changedBy: string
+}
+
+export interface UserDeactivatedMeta {
+    previousRole: string
+}
+
+export interface ApiKeyCreatedMeta {
+    name: string
+    prefix: string
+    expiresAt: string | null
+}
+
+export interface ApiKeyRevokedMeta {
+    name: string
+    prefix: string
+}
+
+export interface MemberInvitedMeta {
+    emailHash: string
+    role: string
+}
+
+export interface MemberRemovedMeta {
+    emailHash: string
+    previousRole: string
+}
+
+export type AuditMetadata =
+    | BranchCreatedMeta
+    | BranchUpdatedMeta
+    | BranchDeletedMeta
+    | BranchPublishedMeta
+    | BranchArchivedMeta
+    | BranchForkedMeta
+    | VersionCreatedMeta
+    | SnapshotCreatedMeta
+    | SnapshotRestoredMeta
+    | TokenUploadedMeta
+    | UserCreatedMeta
+    | UserRoleChangedMeta
+    | UserDeactivatedMeta
+    | ApiKeyCreatedMeta
+    | ApiKeyRevokedMeta
+    | MemberInvitedMeta
+    | MemberRemovedMeta
+
+// ===========================================================================
+// Target types — constrained set of entities that can be audit-logged
+// ===========================================================================
+
+export type AuditTargetType =
+    | 'branch'
+    | 'version'
+    | 'snapshot'
+    | 'token_upload'
+    | 'user'
+    | 'api_key'
+    | 'member'
+    | 'organization'
+
+// ===========================================================================
+// Create input — typed, no `any` leaks
+// ===========================================================================
+
+export interface CreateAuditLogInput {
+    organizationId: string
+    action: AuditAction
+    actorId: string
+    actorEmail: string
+    targetType: AuditTargetType
+    targetId: string
+    metadata: AuditMetadata
+}
+
+export interface AuditLogRow {
+    id: string
+    organizationId: string
+    action: AuditAction
+    actorId: string
+    actorEmailHash: string
+    targetType: string
+    targetId: string
+    metadata: AuditMetadata | null
+    createdAt: Date
+}
+
+// ===========================================================================
+// Row shape from DB
+// ===========================================================================
 
 export interface AuditLogRow {
     id: string
@@ -25,22 +191,25 @@ export interface AuditLogRow {
     actorEmail: string
     targetType: string
     targetId: string
-    metadata: Record<string, unknown> | null
+    metadata: AuditMetadata | null
     createdAt: Date
 }
 
+// ===========================================================================
+// Repository functions
+// ===========================================================================
+
 export const createAuditLog = async (
-    data: Omit<AuditLogRow, 'id' | 'createdAt'>
+    data: CreateAuditLogInput
 ): Promise<AuditLogRow> => {
-    // Hash the actor email before storing — PII should not be in plaintext in audit logs
-    const hashedEmail = data.actorEmail ? hashPII(data.actorEmail) : ''
+    const emailHash = data.actorEmail ? hashPII(data.actorEmail) : ''
 
     const log = await prisma.auditLog.create({
         data: {
             organizationId: data.organizationId,
             action: data.action as any,
             actorId: data.actorId,
-            actorEmail: hashedEmail,
+            actorEmailHash: emailHash,
             targetType: data.targetType,
             targetId: data.targetId,
             metadata: data.metadata as any,
@@ -48,7 +217,11 @@ export const createAuditLog = async (
     })
 
     logger.debug(
-        { auditLogId: log.id, action: data.action },
+        {
+            auditLogId: log.id,
+            action: data.action,
+            targetType: data.targetType,
+        },
         'Audit log created'
     )
     return log as unknown as AuditLogRow
@@ -57,7 +230,7 @@ export const createAuditLog = async (
 export const listAuditLogs = async (options: {
     organizationId: string
     action?: AuditAction
-    targetType?: string
+    targetType?: AuditTargetType
     targetId?: string
     actorId?: string
     limit?: number

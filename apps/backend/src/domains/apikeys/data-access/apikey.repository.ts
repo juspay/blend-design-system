@@ -85,20 +85,20 @@ export const validateApiKey = async (
 export const revokeApiKey = async (
     id: string,
     userId: string
-): Promise<boolean> => {
+): Promise<ApiKeyRow | null> => {
     const apiKey = await prisma.apiKey.findFirst({
         where: { id, userId, revokedAt: null },
     })
 
-    if (!apiKey) return false
+    if (!apiKey) return null
 
-    await prisma.apiKey.update({
+    const revoked = await prisma.apiKey.update({
         where: { id },
         data: { revokedAt: new Date() },
     })
 
     logger.info({ apiKeyId: id }, 'API key revoked')
-    return true
+    return revoked as unknown as ApiKeyRow
 }
 
 export const listApiKeys = async (

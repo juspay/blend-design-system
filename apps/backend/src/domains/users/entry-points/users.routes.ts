@@ -9,6 +9,8 @@ import {
     updateUserRole,
     softDeleteUser,
 } from '../data-access/user.repository.js'
+import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
+import { maskEmail, maskDisplayName } from '@/utils/crypto.js'
 
 const router: IRouter = Router()
 
@@ -27,10 +29,16 @@ router.get(
             organizationId,
         })
 
+        const maskedUsers = users.map((u: any) => ({
+            ...u,
+            email: maskEmail(u.email),
+            displayName: maskDisplayName(u.displayName),
+        }))
+
         res.json({
             success: true,
             data: {
-                users,
+                users: maskedUsers,
                 pagination: {
                     page,
                     limit,
@@ -106,7 +114,24 @@ router.patch(
 
         let user
         if (role && req.user?.role === 'admin') {
+            const previousUser = await findUserById(id)
             user = await updateUserRole(id, role)
+
+            if (previousUser && req.user!.organizationId) {
+                await auditLogRepo.createAuditLog({
+                    organizationId: req.user!.organizationId,
+                    action: 'user_role_changed',
+                    actorId: req.user!.id,
+                    actorEmail: req.user!.email,
+                    targetType: 'user',
+                    targetId: id,
+                    metadata: {
+                        previousRole: previousUser.role,
+                        newRole: role,
+                        changedBy: req.user!.id,
+                    },
+                })
+            }
         } else {
             user = await updateUserProfile(id, { displayName, photoUrl })
         }
@@ -120,7 +145,23 @@ router.delete(
     authenticate,
     requireRole('admin'),
     asyncHandler(async (req: Request, res: Response) => {
+        const previousUser = await findUserById(req.params.id)
         await softDeleteUser(req.params.id)
+
+        if (previousUser && req.user!.organizationId) {
+            await auditLogRepo.createAuditLog({
+                organizationId: req.user!.organizationId,
+                action: 'user_deactivated',
+                actorId: req.user!.id,
+                actorEmail: req.user!.email,
+                targetType: 'user',
+                targetId: req.params.id,
+                metadata: {
+                    previousRole: previousUser.role,
+                },
+            })
+        }
+
         res.json({ success: true, message: 'User deactivated' })
     })
 )

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import { env } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
-import { maskEmail } from '@/utils/crypto.js'
+import { maskEmail, hashPII } from '@/utils/crypto.js'
 import { UnauthorizedError, NotFoundError } from '@/errors/AppError.js'
 import {
     generateAuthUrl,
@@ -21,6 +21,7 @@ import {
     revokeRefreshToken,
     revokeAllUserRefreshTokens,
 } from '../data-access/auth.repository.js'
+import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 
 const REFRESH_TOKEN_EXPIRES_DAYS = 30
 
@@ -57,6 +58,26 @@ export const googleCallback = async (req: Request, res: Response) => {
                     { userId: user.id, email: maskEmail(user.email) },
                     'New user registered'
                 )
+
+                const memberships = await (
+                    await import('@/domains/users/data-access/user.repository.js')
+                ).findUserMemberships(user.id)
+                const orgId = memberships?.[0]?.organizationId
+                if (orgId) {
+                    await auditLogRepo.createAuditLog({
+                        organizationId: orgId,
+                        action: 'user_created',
+                        actorId: user.id,
+                        actorEmail: user.email,
+                        targetType: 'user',
+                        targetId: user.id,
+                        metadata: {
+                            emailHash: hashPII(user.email),
+                            role: user.role,
+                            provider: 'google',
+                        },
+                    })
+                }
             }
         } else {
             const updated = await updateUserLogin(user.id)

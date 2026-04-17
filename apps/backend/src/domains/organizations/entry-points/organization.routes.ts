@@ -10,6 +10,7 @@ import {
 } from '@/middlewares/validate.js'
 import * as orgRepo from '../data-access/organization.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
+import { maskEmail, maskDisplayName } from '@/utils/crypto.js'
 
 const router: IRouter = Router()
 
@@ -142,7 +143,17 @@ router.get(
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
         const members = await orgRepo.listMembers(req.params.id)
-        res.json({ success: true, data: { members } })
+        const maskedMembers = members.map((m: any) => ({
+            ...m,
+            user: m.user
+                ? {
+                      ...m.user,
+                      email: maskEmail(m.user.email),
+                      displayName: maskDisplayName(m.user.displayName),
+                  }
+                : m.user,
+        }))
+        res.json({ success: true, data: { members: maskedMembers } })
     })
 )
 
@@ -205,7 +216,9 @@ router.get(
         const { logs, nextCursor } = await auditLogRepo.listAuditLogs({
             organizationId: req.params.id,
             action: req.query.action as any,
-            targetType: req.query.targetType as string,
+            targetType: req.query.targetType as
+                | auditLogRepo.AuditTargetType
+                | undefined,
             targetId: req.query.targetId as string,
             actorId: req.query.actorId as string,
             limit: parseInt(req.query.limit as string) || 50,

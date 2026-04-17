@@ -68,7 +68,6 @@ app.use((req, _res, next) => {
         {
             method: req.method,
             path: req.path,
-            ip: req.ip,
         },
         'Incoming request'
     )

@@ -53,11 +53,15 @@ enum AuditAction {
   branch_forked
   version_created
   snapshot_created
+  snapshot_restored
   token_uploaded
   user_created
   user_role_changed
+  user_deactivated
   api_key_created
   api_key_revoked
+  member_invited
+  member_removed
 }
 
 // ===========================================================================
@@ -341,16 +345,20 @@ model TokenUpload {
 /// - branch_published: { version: "1.0.0", isBreaking: false }
 /// - user_role_changed: { from: "viewer", to: "editor" }
 /// - branch_updated: { fieldsChanged: ["colors.primary.500"] }
+///
+/// IMPORTANT: `actorEmailHash` stores the SHA-256 hash of the actor's email,
+/// NOT the plaintext email. Use hashPII() before writing. The same applies
+/// to any PII in `metadata` — emails must be hashed, names masked.
 model AuditLog {
-  id             String      @id @default(uuid()) @db.Uuid
-  organizationId String      @map("organization_id") @db.Uuid
-  action         AuditAction
-  actorId        String      @map("actor_id") @db.Uuid
-  actorEmail     String      @map("actor_email") @db.VarChar(255)
-  targetType     String      @map("target_type") @db.VarChar(50)
-  targetId       String      @map("target_id") @db.Uuid
-  metadata       Json?       @db.JsonB
-  createdAt      DateTime    @default(now()) @map("created_at")
+  id              String      @id @default(uuid()) @db.Uuid
+  organizationId  String      @map("organization_id") @db.Uuid
+  action          AuditAction
+  actorId         String      @map("actor_id") @db.Uuid
+  actorEmailHash  String      @map("actor_email_hash") @db.VarChar(64)
+  targetType      String      @map("target_type") @db.VarChar(50)
+  targetId        String      @map("target_id") @db.Uuid
+  metadata        Json?       @db.JsonB
+  createdAt       DateTime    @default(now()) @map("created_at")
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   actor        User         @relation(fields: [actorId], references: [id], onDelete: SetNull)
