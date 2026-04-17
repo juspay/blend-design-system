@@ -203,6 +203,20 @@ Closes #[issue_number] or Related to #[issue_number]
 
 ---
 
+## Testing an Open PR
+
+Every pull request to `main` or `dev` automatically publishes an ephemeral preview build of `@juspay/blend-design-system` via [pkg.pr.new](https://pkg.pr.new). You do **not** need to clone the repo, run a local build, or use `yalc` to test someone else's PR.
+
+Look for the sticky comment from the `pkg-pr-new` bot near the top of the PR. It contains a one-line install command you can paste into any consumer app:
+
+```bash
+pnpm add https://pkg.pr.new/@juspay/blend-design-system@<commit-sha>
+```
+
+The URL is immutable and tied to the exact commit. Force-pushing the PR branch updates the sticky comment in place with a new URL.
+
+---
+
 ## Release Process
 
 ### Versioning & Changesets
