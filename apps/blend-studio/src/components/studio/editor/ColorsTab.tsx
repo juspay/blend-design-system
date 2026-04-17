@@ -7,7 +7,7 @@
 
 import { useState } from 'react'
 import { listPresets, getPreset } from '@blend-design/token-engine'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { CaretDown, CaretRight } from '@phosphor-icons/react'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 import { COLOR_GROUPS, type EditorTabProps, type ColorGroupKey } from './types'
 
@@ -121,9 +121,9 @@ function ColorGroupEditor({
                     )}
                 </div>
                 {isExpanded ? (
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                    <CaretDown className="w-4 h-4 text-gray-400" />
                 ) : (
-                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                    <CaretRight className="w-4 h-4 text-gray-400" />
                 )}
             </button>
 

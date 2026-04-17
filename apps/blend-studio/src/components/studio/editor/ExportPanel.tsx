@@ -6,7 +6,7 @@
  */
 
 import { useState } from 'react'
-import { Download, Copy, Check, CheckCircle } from 'lucide-react'
+import { Download, Copy, Check, CheckCircle } from '@phosphor-icons/react'
 import type { ExportPanelProps } from './types'
 
 // ---------------------------------------------------------------------------

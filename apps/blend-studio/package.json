@@ -25,6 +25,7 @@
     "dependencies": {
         "@blend-design/token-engine": "workspace:*",
         "@juspay/blend-design-system": "workspace:*",
+        "@phosphor-icons/react": "^2.1.10",
         "@prisma/adapter-pg": "^7.7.0",
         "@prisma/client": "^7.7.0",
         "@tanstack/react-router": "^1.114.0",

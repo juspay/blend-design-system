@@ -7,7 +7,7 @@
  */
 
 import { useMemo } from 'react'
-import { BarChart3, CheckCircle, AlertTriangle, Package } from 'lucide-react'
+import { ChartBar, CheckCircle, Warning, Package } from '@phosphor-icons/react'
 import type { BrandConfig } from '@blend-design/token-engine'
 
 // ---------------------------------------------------------------------------
@@ -160,7 +160,7 @@ export function TokenAnalyticsPanel({ brand }: TokenAnalyticsPanelProps) {
                     Token Usage Analytics
                 </h3>
                 <div className="flex items-center gap-1.5">
-                    <BarChart3 className="w-4 h-4 text-purple-600" />
+                    <ChartBar className="w-4 h-4 text-purple-600" />
                     <span className="text-xs font-medium text-purple-600">
                         {analysis.customTokenCount} custom
                     </span>
@@ -180,7 +180,7 @@ export function TokenAnalyticsPanel({ brand }: TokenAnalyticsPanelProps) {
                     value={String(analysis.affectedComponents)}
                 />
                 <SummaryCard
-                    icon={AlertTriangle}
+                    icon={Warning}
                     label="Unused Tokens"
                     value={String(analysis.unusedTokens.length)}
                 />
@@ -202,7 +202,7 @@ export function TokenAnalyticsPanel({ brand }: TokenAnalyticsPanelProps) {
             {analysis.unusedTokens.length > 0 && (
                 <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
                     <div className="flex items-center gap-2 mb-2">
-                        <AlertTriangle className="w-4 h-4 text-amber-600" />
+                        <Warning className="w-4 h-4 text-amber-600" />
                         <h4 className="text-sm font-semibold text-amber-900">
                             Unused Custom Tokens
                         </h4>

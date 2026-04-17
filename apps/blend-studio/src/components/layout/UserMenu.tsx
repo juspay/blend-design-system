@@ -1,37 +1,31 @@
-/**
- * UserMenu
- *
- * User dropdown menu with avatar, role badge, and actions.
- * Shows admin toggle for Monitor Dashboard (admin-only) and logout button.
- */
-
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import {
-    LogOut,
-    ChevronDown,
-    LayoutDashboard,
+    SignOut,
+    CaretDown,
+    ChartBar,
     User,
-    Shield,
-    KeyRound,
+    ShieldCheck,
+    Key,
     Copy,
-} from 'lucide-react'
+    Check,
+} from '@phosphor-icons/react'
 import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import { usePermissions } from '@/frontend/components/auth/PermissionGuard'
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+import {
+    Modal,
+    ButtonV2,
+    ButtonV2Type,
+    ButtonV2Size,
+    ButtonType,
+    ButtonSubType,
+} from '@juspay/blend-design-system'
 
 interface UserMenuProps {
     showAdminToggle?: boolean
     onAdminToggle?: () => void
     isAdminMode?: boolean
 }
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 export function UserMenu({
     showAdminToggle = false,
@@ -46,7 +40,6 @@ export function UserMenu({
     const [copied, setCopied] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
 
-    // Close menu on click outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (
@@ -66,7 +59,6 @@ export function UserMenu({
         }
     }, [isOpen])
 
-    // Close menu on escape key
     useEffect(() => {
         function handleEscape(event: KeyboardEvent) {
             if (event.key === 'Escape') {
@@ -104,7 +96,6 @@ export function UserMenu({
             setCopied(true)
             window.setTimeout(() => setCopied(false), 1200)
         } catch {
-            // Fallback for older browsers / restricted clipboard permissions
             const textarea = document.createElement('textarea')
             textarea.value = apiToken
             textarea.style.position = 'fixed'
@@ -125,15 +116,15 @@ export function UserMenu({
 
     if (!user) {
         return (
-            <button
+            <ButtonV2
+                buttonType={ButtonV2Type.SECONDARY}
+                size={ButtonV2Size.SMALL}
+                leftSlot={{ slot: <User className="w-4 h-4" /> }}
+                text="Sign In"
                 onClick={() =>
                     navigate({ to: '/login', search: { from: undefined } })
                 }
-                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-                <User className="w-4 h-4" />
-                Sign In
-            </button>
+            />
         )
     }
 
@@ -142,14 +133,12 @@ export function UserMenu({
 
     return (
         <div className="relative" ref={menuRef}>
-            {/* Trigger Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
                 aria-expanded={isOpen}
                 aria-haspopup="true"
             >
-                {/* Avatar */}
                 {user.photoUrl ? (
                     <img
                         src={user.photoUrl}
@@ -164,7 +153,6 @@ export function UserMenu({
                     </div>
                 )}
 
-                {/* Name & Role */}
                 <div className="hidden sm:block text-left">
                     <p className="text-sm font-medium text-gray-900 truncate max-w-[120px]">
                         {user.displayName || user.email.split('@')[0]}
@@ -172,17 +160,15 @@ export function UserMenu({
                     <p className="text-xs text-gray-500">{roleDisplay.label}</p>
                 </div>
 
-                <ChevronDown
+                <CaretDown
                     className={`w-4 h-4 text-gray-400 transition-transform ${
                         isOpen ? 'rotate-180' : ''
                     }`}
                 />
             </button>
 
-            {/* Dropdown Menu */}
             {isOpen && (
                 <div className="absolute right-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
-                    {/* User Info Header */}
                     <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
                         <div className="flex items-center gap-3">
                             {user.photoUrl ? (
@@ -209,11 +195,11 @@ export function UserMenu({
                         </div>
                     </div>
 
-                    {/* Menu Items */}
                     <div className="py-1">
-                        {/* Role Badge */}
                         <div className="px-4 py-2 flex items-center gap-2">
-                            <Shield className={`w-4 h-4 ${roleDisplay.text}`} />
+                            <ShieldCheck
+                                className={`w-4 h-4 ${roleDisplay.text}`}
+                            />
                             <span
                                 className={`text-xs font-medium ${roleDisplay.text}`}
                             >
@@ -221,17 +207,15 @@ export function UserMenu({
                             </span>
                         </div>
 
-                        {/* Admin Toggle (admin only) */}
                         {isAdmin && showAdminToggle && (
                             <button
                                 onClick={handleAdminToggle}
                                 className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                             >
                                 <div className="flex items-center gap-2">
-                                    <LayoutDashboard className="w-4 h-4 text-gray-400" />
+                                    <ChartBar className="w-4 h-4 text-gray-400" />
                                     <span>Monitor Dashboard</span>
                                 </div>
-                                {/* Toggle Switch */}
                                 <div
                                     className={`w-9 h-5 rounded-full transition-colors ${
                                         isAdminMode
@@ -250,102 +234,78 @@ export function UserMenu({
                             </button>
                         )}
 
-                        {/* API Token (for CLI) */}
                         <button
                             onClick={handleOpenToken}
                             className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         >
-                            <KeyRound className="w-4 h-4 text-gray-400" />
+                            <Key className="w-4 h-4 text-gray-400" />
                             <span>API Token (for CLI)</span>
                         </button>
 
-                        {/* Divider */}
                         <div className="my-1 h-px bg-gray-100" />
 
-                        {/* Logout */}
                         <button
                             onClick={handleLogout}
                             className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                         >
-                            <LogOut className="w-4 h-4" />
+                            <SignOut className="w-4 h-4" />
                             Sign Out
                         </button>
                     </div>
                 </div>
             )}
 
-            {/* Token Modal */}
-            {showTokenModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div
-                        className="absolute inset-0 bg-black/40"
-                        onClick={() => setShowTokenModal(false)}
-                    />
-                    <div className="relative w-full max-w-xl rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden">
-                        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                            <div>
-                                <div className="text-sm font-semibold text-gray-900">
-                                    API Token (for CLI)
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                    Use this for{' '}
-                                    <span className="font-mono">
-                                        blend-token-studio login --token
-                                    </span>
-                                </div>
-                            </div>
-                            <button
-                                className="text-sm text-gray-500 hover:text-gray-800"
-                                onClick={() => setShowTokenModal(false)}
-                            >
-                                Close
-                            </button>
+            <Modal
+                isOpen={showTokenModal}
+                onClose={() => setShowTokenModal(false)}
+                title="API Token (for CLI)"
+                subtitle="Use this for blend-token-studio login --token"
+                primaryAction={{
+                    text: copied ? 'Copied!' : 'Copy token',
+                    buttonType: ButtonType.PRIMARY,
+                    subType: ButtonSubType.DEFAULT,
+                    leadingIcon: copied ? (
+                        <Check className="w-4 h-4" />
+                    ) : (
+                        <Copy className="w-4 h-4" />
+                    ),
+                    onClick: handleCopyToken,
+                }}
+                secondaryAction={{
+                    text: 'Close',
+                    buttonType: ButtonType.SECONDARY,
+                    subType: ButtonSubType.DEFAULT,
+                    onClick: () => setShowTokenModal(false),
+                }}
+                minWidth="480px"
+            >
+                {!apiToken ? (
+                    <div className="text-sm text-red-600">
+                        Token not found. Please sign in again.
+                    </div>
+                ) : (
+                    <div className="space-y-3">
+                        <div className="text-xs text-gray-600">
+                            Copy and paste into your terminal:
                         </div>
-
-                        <div className="p-5 space-y-3">
-                            {!apiToken ? (
-                                <div className="text-sm text-red-600">
-                                    Token not found. Please sign in again.
-                                </div>
-                            ) : (
-                                <>
-                                    <div className="text-xs text-gray-600">
-                                        Copy and paste into your terminal:
-                                    </div>
-                                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                                        <code className="block text-xs font-mono text-gray-800 break-all">
-                                            {apiToken}
-                                        </code>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={handleCopyToken}
-                                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
-                                        >
-                                            <Copy className="w-4 h-4" />
-                                            {copied ? 'Copied' : 'Copy token'}
-                                        </button>
-                                        <div className="text-xs text-gray-500">
-                                            Example:{' '}
-                                            <span className="font-mono">
-                                                blend-token-studio login --token
-                                                &nbsp;&lt;TOKEN&gt;
-                                            </span>
-                                        </div>
-                                    </div>
-                                </>
-                            )}
+                        <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+                            <code className="block text-xs font-mono text-gray-800 break-all">
+                                {apiToken}
+                            </code>
+                        </div>
+                        <div className="text-xs text-gray-500">
+                            Example:{' '}
+                            <span className="font-mono">
+                                blend-token-studio login --token
+                                &nbsp;&lt;TOKEN&gt;
+                            </span>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </Modal>
         </div>
     )
 }
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
 function getInitials(name: string): string {
     return name

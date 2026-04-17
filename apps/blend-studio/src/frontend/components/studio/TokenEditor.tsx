@@ -1,5 +1,11 @@
 import React, { useState, useCallback } from 'react'
-import { Palette, Radius, Type, Save, RotateCcw } from 'lucide-react'
+import {
+    PaintBrush,
+    CircleDashed,
+    TextAa,
+    FloppyDisk,
+    ArrowCounterClockwise,
+} from '@phosphor-icons/react'
 import type { BrandConfig } from '@blend-design/token-engine'
 import { generateColorScale } from '@blend-design/token-engine'
 
@@ -84,7 +90,7 @@ export function TokenEditor({
                         onClick={onReset}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-md hover:bg-gray-100"
                     >
-                        <RotateCcw className="w-4 h-4" />
+                        <ArrowCounterClockwise className="w-4 h-4" />
                         Reset
                     </button>
                     <button
@@ -92,7 +98,7 @@ export function TokenEditor({
                         disabled={saving}
                         className="inline-flex items-center gap-1.5 px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
                     >
-                        <Save className="w-4 h-4" />
+                        <FloppyDisk className="w-4 h-4" />
                         {saving ? 'Saving...' : 'Save'}
                     </button>
                 </div>
@@ -107,7 +113,7 @@ export function TokenEditor({
                             : 'text-gray-500 hover:text-gray-700'
                     }`}
                 >
-                    <Palette className="w-4 h-4" />
+                    <PaintBrush className="w-4 h-4" />
                     Colors
                 </button>
                 <button
@@ -118,7 +124,7 @@ export function TokenEditor({
                             : 'text-gray-500 hover:text-gray-700'
                     }`}
                 >
-                    <Radius className="w-4 h-4" />
+                    <CircleDashed className="w-4 h-4" />
                     Radius
                 </button>
                 <button
@@ -129,7 +135,7 @@ export function TokenEditor({
                             : 'text-gray-500 hover:text-gray-700'
                     }`}
                 >
-                    <Type className="w-4 h-4" />
+                    <TextAa className="w-4 h-4" />
                     Font
                 </button>
             </div>

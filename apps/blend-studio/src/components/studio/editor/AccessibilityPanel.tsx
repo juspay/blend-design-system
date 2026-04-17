@@ -7,7 +7,7 @@
  */
 
 import { useMemo } from 'react'
-import { CheckCircle, XCircle, Eye, Shield } from 'lucide-react'
+import { CheckCircle, XCircle, Eye, ShieldCheck } from '@phosphor-icons/react'
 import type { BrandConfig } from '@blend-design/token-engine'
 
 // ---------------------------------------------------------------------------
@@ -240,7 +240,7 @@ export function AccessibilityPanel({ brand }: AccessibilityPanelProps) {
                     WCAG Contrast Check
                 </h3>
                 <div className="flex items-center gap-1.5">
-                    <Shield className="w-4 h-4" />
+                    <ShieldCheck className="w-4 h-4" />
                     <span
                         className={`text-xs font-bold ${
                             overallScore >= 80

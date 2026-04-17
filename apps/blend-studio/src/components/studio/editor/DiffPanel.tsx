@@ -9,7 +9,7 @@
  *   - Human-readable path labels
  */
 
-import { CheckCircle, ArrowRight } from 'lucide-react'
+import { CheckCircle, ArrowRight } from '@phosphor-icons/react'
 import type { TokenDiff } from '@blend-design/token-engine'
 import type { DiffPanelProps } from './types'
 

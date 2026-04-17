@@ -5,7 +5,7 @@
  */
 
 import { useState } from 'react'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { CaretDown, CaretRight } from '@phosphor-icons/react'
 import type { BrandConfig } from '@blend-design/token-engine'
 
 interface TokenPreviewProps {
@@ -93,9 +93,9 @@ function TokenTree({ data, depth = 0 }: { data: unknown; depth?: number }) {
                                     className="inline-flex items-center text-[10px] text-gray-400 hover:text-blue-600"
                                 >
                                     {isExpanded ? (
-                                        <ChevronDown className="w-3 h-3" />
+                                        <CaretDown className="w-3 h-3" />
                                     ) : (
-                                        <ChevronRight className="w-3 h-3" />
+                                        <CaretRight className="w-3 h-3" />
                                     )}
                                 </button>
                             ) : null}

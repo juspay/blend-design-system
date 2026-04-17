@@ -9,12 +9,12 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { useState, useMemo } from 'react'
 import {
     ArrowLeft,
-    Edit3,
+    PencilSimple,
     Copy,
     Check,
-    Loader2,
-    AlertCircle,
-} from 'lucide-react'
+    Spinner,
+    WarningCircle,
+} from '@phosphor-icons/react'
 
 export const Route = createFileRoute('/studio/preview/$branchId')({
     component: PreviewPage,
@@ -47,7 +47,7 @@ function PreviewPage() {
         return (
             <div className="h-screen flex items-center justify-center bg-gray-50">
                 <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                    <Spinner className="w-8 h-8 animate-spin text-blue-600" />
                     <p className="text-sm text-gray-500">Loading preview…</p>
                 </div>
             </div>
@@ -58,7 +58,7 @@ function PreviewPage() {
         return (
             <div className="h-screen flex items-center justify-center bg-gray-50">
                 <div className="text-center">
-                    <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+                    <WarningCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
                     <p className="font-medium text-gray-900 mb-1">
                         Branch not found
                     </p>
@@ -135,7 +135,7 @@ function PreviewPage() {
                             params={{ branchId }}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
                         >
-                            <Edit3 className="w-4 h-4" />
+                            <PencilSimple className="w-4 h-4" />
                             Edit Tokens
                         </Link>
                     </div>
@@ -157,7 +157,7 @@ function PreviewPage() {
                     ) : (
                         <div className="flex items-center justify-center h-full">
                             <div className="flex flex-col items-center gap-3">
-                                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                                <Spinner className="w-8 h-8 animate-spin text-blue-600" />
                                 <p className="text-sm text-gray-500">
                                     Resolving tokens…
                                 </p>

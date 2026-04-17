@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import {
-    Zap,
-    Palette,
+    Lightning,
     GitBranch,
     ArrowRight,
     X,
-    Sparkles,
+    Sparkle,
     Terminal,
-} from 'lucide-react'
+    Palette,
+} from '@phosphor-icons/react'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -64,7 +64,7 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
             title: 'Welcome to Token Studio',
             description:
                 'A visual dashboard for creating and managing design tokens. Customize Blend components for your brand without writing code.',
-            icon: Sparkles,
+            icon: Sparkle,
             content: (
                 <div className="grid grid-cols-3 gap-4 mt-6">
                     <InfoCard
@@ -126,7 +126,7 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
             title: 'Create, Customize, Use',
             description:
                 'Three steps from design to code. No more manual token wiring.',
-            icon: Zap,
+            icon: Lightning,
             content: (
                 <div className="mt-6 space-y-5">
                     <StepGuide

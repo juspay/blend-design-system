@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Copy, Check, FileJson, Sun, Moon } from 'lucide-react'
+import { Copy, Check, FileCode, Sun, Moon } from '@phosphor-icons/react'
 import type { EditorTabProps } from './types'
 
 // Simple token tree component for displaying tokens
@@ -214,7 +214,7 @@ export function JsonTab({ brand, onChange }: EditorTabProps) {
             {/* Toolbar */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <FileJson className="w-4 h-4 text-gray-500" />
+                    <FileCode className="w-4 h-4 text-gray-500" />
                     <span
                         className={`text-xs font-medium ${
                             isValid ? 'text-green-600' : 'text-red-600'

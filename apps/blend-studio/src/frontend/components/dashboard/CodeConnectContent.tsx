@@ -20,7 +20,7 @@ import {
     TabsContent,
     TabsVariant,
 } from '@juspay/blend-design-system'
-import { Package, Check, X, RefreshCw } from 'lucide-react'
+import { Package, Check, X, ArrowsClockwise } from '@phosphor-icons/react'
 
 export default function CodeConnectContent() {
     const { components, loading } = useComponents()
@@ -162,7 +162,7 @@ export default function CodeConnectContent() {
                     <Button
                         text="Refresh"
                         leadingIcon={
-                            <RefreshCw
+                            <ArrowsClockwise
                                 className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
                             />
                         }

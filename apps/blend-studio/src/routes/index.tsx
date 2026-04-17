@@ -3,16 +3,21 @@ import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import { featureFlags } from '@/lib/feature-flags'
 import { UserMenu } from '@/components/layout/UserMenu'
 import {
-    Zap,
-    Palette,
+    ButtonV2,
+    ButtonV2Type,
+    ButtonV2Size,
+} from '@juspay/blend-design-system'
+import {
+    Lightning,
+    PaintBrush,
     GitBranch,
     ArrowRight,
     Terminal,
     Eye,
-    Layers,
+    Stack,
     CheckCircle,
     Package,
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 
 export const Route = createFileRoute('/')({
     component: HomePage,
@@ -105,7 +110,7 @@ function TopHeader() {
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                        <Zap className="w-4 h-4 text-white" />
+                        <Lightning className="w-4 h-4 text-white" />
                     </div>
                     <span className="text-sm font-semibold text-gray-900">
                         Blend
@@ -139,7 +144,7 @@ function HeroSection() {
                     <div className="max-w-2xl">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                                <Zap className="w-5 h-5 text-white" />
+                                <Lightning className="w-5 h-5 text-white" />
                             </div>
                             <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
                                 Token Studio
@@ -158,19 +163,27 @@ function HeroSection() {
                         </p>
 
                         <div className="flex items-center gap-3">
-                            <Link
-                                to="/studio"
-                                className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-                            >
-                                <GitBranch className="w-4 h-4" />
-                                Go to Branches
+                            <Link to="/studio" className="inline-block">
+                                <ButtonV2
+                                    buttonType={ButtonV2Type.PRIMARY}
+                                    size={ButtonV2Size.MEDIUM}
+                                    leftSlot={{
+                                        slot: <GitBranch className="w-4 h-4" />,
+                                    }}
+                                    text="Go to Branches"
+                                />
                             </Link>
-                            <a
-                                href="#how-it-works"
-                                className="inline-flex items-center gap-2 px-5 py-2.5 text-gray-700 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                            >
-                                Learn How It Works
-                                <ArrowRight className="w-4 h-4" />
+                            <a href="#how-it-works" className="inline-block">
+                                <ButtonV2
+                                    buttonType={ButtonV2Type.SECONDARY}
+                                    size={ButtonV2Size.MEDIUM}
+                                    text="Learn How It Works"
+                                    rightSlot={{
+                                        slot: (
+                                            <ArrowRight className="w-4 h-4" />
+                                        ),
+                                    }}
+                                />
                             </a>
                         </div>
                     </div>
@@ -178,12 +191,12 @@ function HeroSection() {
                     {/* Quick stats */}
                     <div className="hidden lg:flex flex-col gap-3">
                         <QuickStat
-                            icon={Layers}
+                            icon={Stack}
                             label="26 Components"
                             sublabel="All V2 components supported"
                         />
                         <QuickStat
-                            icon={Palette}
+                            icon={PaintBrush}
                             label="Visual Editor"
                             sublabel="Colors, radius, shadows, fonts"
                         />
@@ -240,7 +253,7 @@ function WhatIsSection() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <FeatureCard
-                    icon={Palette}
+                    icon={PaintBrush}
                     title="Visual Token Editor"
                     description="Pick a primary color, and the system generates a full 50-950 color scale. Adjust border radius, shadows, and fonts with live preview of all components."
                 />
@@ -576,13 +589,14 @@ function CtaSection() {
                 Create your first branch and see live previews of all Blend
                 components with your brand colors.
             </p>
-            <Link
-                to="/studio"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-            >
-                <GitBranch className="w-4 h-4" />
-                Open Token Studio
-                <ArrowRight className="w-4 h-4" />
+            <Link to="/studio" className="inline-block">
+                <ButtonV2
+                    buttonType={ButtonV2Type.PRIMARY}
+                    size={ButtonV2Size.LARGE}
+                    leftSlot={{ slot: <GitBranch className="w-4 h-4" /> }}
+                    text="Open Token Studio"
+                    rightSlot={{ slot: <ArrowRight className="w-4 h-4" /> }}
+                />
             </Link>
         </div>
     )

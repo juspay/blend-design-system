@@ -10,7 +10,7 @@
  */
 
 import { useState } from 'react'
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun } from '@phosphor-icons/react'
 import { type EditorTabProps, type ColorGroupKey, COLOR_GROUPS } from './types'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 

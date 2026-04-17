@@ -274,6 +274,9 @@ importers:
             '@juspay/blend-design-system':
                 specifier: workspace:*
                 version: link:../../packages/blend
+            '@phosphor-icons/react':
+                specifier: ^2.1.10
+                version: 2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             '@prisma/adapter-pg':
                 specifier: ^7.7.0
                 version: 7.7.0

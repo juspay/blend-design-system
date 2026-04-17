@@ -14,7 +14,7 @@
  */
 
 import { useState, useMemo } from 'react'
-import { Copy, Check, Download, Code, Palette } from 'lucide-react'
+import { Copy, Check, Download, Code, PaintBrush } from '@phosphor-icons/react'
 import type { BrandConfig } from '@blend-design/token-engine'
 
 // ---------------------------------------------------------------------------
@@ -474,7 +474,7 @@ function FormatIcon({
         case 'tailwind':
             return <Code className={`w-3.5 h-3.5 ${color}`} />
         case 'material-ui':
-            return <Palette className={`w-3.5 h-3.5 ${color}`} />
+            return <PaintBrush className={`w-3.5 h-3.5 ${color}`} />
         case 'chakra':
             return <Code className={`w-3.5 h-3.5 ${color}`} />
         case 'css-vars':
@@ -482,6 +482,6 @@ function FormatIcon({
         case 'style-dictionary':
             return <Code className={`w-3.5 h-3.5 ${color}`} />
         case 'figma':
-            return <Palette className={`w-3.5 h-3.5 ${color}`} />
+            return <PaintBrush className={`w-3.5 h-3.5 ${color}`} />
     }
 }

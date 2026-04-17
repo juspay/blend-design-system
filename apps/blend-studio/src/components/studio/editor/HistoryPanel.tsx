@@ -6,7 +6,7 @@
  */
 
 import { useState } from 'react'
-import { Package, Clock, RefreshCw } from 'lucide-react'
+import { Package, Clock, ArrowsClockwise } from '@phosphor-icons/react'
 import type { BrandConfig, Version, Snapshot } from '@blend-design/token-engine'
 import type { HistoryPanelProps } from './types'
 import {
@@ -173,7 +173,7 @@ function RestoreButton({ onClick }: { onClick: () => void }) {
             className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
             title="Restore this version"
         >
-            <RefreshCw className="w-4 h-4" />
+            <ArrowsClockwise className="w-4 h-4" />
         </button>
     )
 }

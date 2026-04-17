@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X } from 'lucide-react'
+import { X } from '@phosphor-icons/react'
 
 interface CreateBranchModalProps {
     onClose: () => void

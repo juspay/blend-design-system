@@ -5,7 +5,13 @@ import {
     ButtonV2Type,
     ButtonV2Size,
 } from '@juspay/blend-design-system'
-import { Zap, Palette, Code, GitBranch, ArrowRight } from 'lucide-react'
+import {
+    Lightning,
+    Code,
+    GitBranch,
+    ArrowRight,
+    Palette,
+} from '@phosphor-icons/react'
 import { useState } from 'react'
 import { featureFlags } from '@/lib/feature-flags'
 
@@ -63,7 +69,7 @@ function LoginPage() {
                     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
                         <div className="text-center mb-8">
                             <div className="mx-auto h-14 w-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg mb-4">
-                                <Zap className="w-7 h-7" />
+                                <Lightning className="w-7 h-7" />
                             </div>
                             <h1 className="text-2xl font-bold text-gray-900">
                                 Blend Token Studio

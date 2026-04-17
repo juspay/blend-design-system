@@ -8,7 +8,12 @@
  */
 
 import { useMemo } from 'react'
-import { AlertCircle, CheckCircle, AlertTriangle, Info } from 'lucide-react'
+import {
+    CheckCircle,
+    Info,
+    Warning,
+    WarningCircle,
+} from '@phosphor-icons/react'
 import type { BrandConfig } from '@blend-design/token-engine'
 
 // ---------------------------------------------------------------------------
@@ -156,13 +161,13 @@ export function ContrastCheckerPanel({ brand }: ContrastCheckerPanelProps) {
                     color="green"
                 />
                 <SummaryCard
-                    icon={AlertTriangle}
+                    icon={Warning}
                     label="AA Only"
                     count={warningResults.length}
                     color="yellow"
                 />
                 <SummaryCard
-                    icon={AlertCircle}
+                    icon={WarningCircle}
                     label="Fails AA"
                     count={failingResults.length}
                     color="red"

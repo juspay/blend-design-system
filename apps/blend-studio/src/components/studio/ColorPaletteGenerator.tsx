@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Copy, RefreshCw, Check, Pipette } from 'lucide-react'
+import { Copy, ArrowsClockwise, Check, Eyedropper } from '@phosphor-icons/react'
 import { generateColorScale } from '@blend-design/token-engine'
 
 // ---------------------------------------------------------------------------
@@ -189,7 +189,7 @@ export function ColorPaletteGenerator({
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                         title="Reset all shades to generated values"
                     >
-                        <RefreshCw className="w-3.5 h-3.5" />
+                        <ArrowsClockwise className="w-3.5 h-3.5" />
                         Reset
                     </button>
                     <button
@@ -217,7 +217,7 @@ export function ColorPaletteGenerator({
                         onChange={(e) => handleBaseColorChange(e.target.value)}
                         className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200 bg-transparent p-0.5"
                     />
-                    <Pipette className="pointer-events-none absolute bottom-0.5 right-0.5 w-3 h-3 text-gray-400" />
+                    <Eyedropper className="pointer-events-none absolute bottom-0.5 right-0.5 w-3 h-3 text-gray-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                     <label className="block text-[11px] font-medium text-gray-500 mb-1 uppercase tracking-wider">

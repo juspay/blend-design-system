@@ -1,6 +1,6 @@
 'use client'
 
-import { Sun, Moon } from 'lucide-react'
+import { Sun, Moon } from '@phosphor-icons/react'
 import { useTheme } from '@/contexts/ThemeContext'
 
 interface ThemeToggleProps {

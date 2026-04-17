@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from '@tanstack/react-router'
-import { GitBranch, Plus, Eye, Clock, Tag } from 'lucide-react'
+import { GitBranch, Plus, Eye, Clock, Tag } from '@phosphor-icons/react'
 import type { Branch } from '@blend-design/token-engine'
 
 interface BranchListProps {

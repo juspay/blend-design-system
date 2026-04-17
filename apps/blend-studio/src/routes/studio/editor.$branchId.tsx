@@ -64,27 +64,27 @@ import {
     ArrowLeft,
     Sun,
     Moon,
-    Save,
+    FloppyDisk,
     Play,
-    History,
-    Loader2,
-    GitCompare,
+    ClockCounterClockwise,
+    Spinner,
     Download,
-    Layers,
     Eye,
     Code,
-    Palette,
-    Type,
+    TextAa,
     Sliders,
     CheckCircle,
-    AlertCircle,
+    WarningCircle,
     X,
     GitBranch,
-    Shield,
     Upload,
-    BarChart3,
     Repeat,
-} from 'lucide-react'
+    Palette,
+    Stack,
+    GitDiff,
+    ShieldCheck,
+    ChartBar,
+} from '@phosphor-icons/react'
 
 export const Route = createFileRoute('/studio/editor/$branchId')({
     component: EditorPage,
@@ -112,9 +112,9 @@ interface PanelConfig {
 
 const EDITOR_TABS: TabConfig[] = [
     { id: 'colors', icon: Palette, label: 'Colors' },
-    { id: 'typography', icon: Type, label: 'Type' },
+    { id: 'typography', icon: TextAa, label: 'Type' },
     { id: 'radius', icon: Sliders, label: 'Radius' },
-    { id: 'shadows', icon: Layers, label: 'Shadows' },
+    { id: 'shadows', icon: Stack, label: 'Shadows' },
     { id: 'darkmode', icon: Moon, label: 'Dark' },
     { id: 'components', icon: Repeat, label: 'Components' },
     { id: 'json', icon: Code, label: 'JSON' },
@@ -216,14 +216,14 @@ function EditorPage() {
             { id: 'preview', icon: Eye, label: 'Preview' },
             {
                 id: 'diff',
-                icon: GitCompare,
+                icon: GitDiff,
                 label: `Diff${diffs.length > 0 ? ` (${diffs.length})` : ''}`,
             },
-            { id: 'history', icon: History, label: 'History' },
+            { id: 'history', icon: ClockCounterClockwise, label: 'History' },
             { id: 'export', icon: Download, label: 'Export' },
-            { id: 'accessibility', icon: Shield, label: 'A11y' },
+            { id: 'accessibility', icon: ShieldCheck, label: 'A11y' },
             { id: 'multi-export', icon: Repeat, label: 'Multi-Export' },
-            { id: 'analytics', icon: BarChart3, label: 'Analytics' },
+            { id: 'analytics', icon: ChartBar, label: 'Analytics' },
         ],
         [diffs.length]
     )
@@ -685,7 +685,7 @@ function EditorHeader({
                 )}
                 {validation && !validation.valid && (
                     <span className="flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded-full">
-                        <AlertCircle className="w-3 h-3" />
+                        <WarningCircle className="w-3 h-3" />
                         {validation.errors.length} error
                         {validation.errors.length !== 1 ? 's' : ''}
                     </span>
@@ -717,9 +717,9 @@ function EditorHeader({
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors"
                 >
                     {saving ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Spinner className="w-4 h-4 animate-spin" />
                     ) : (
-                        <Save className="w-4 h-4" />
+                        <FloppyDisk className="w-4 h-4" />
                     )}
                     Save
                 </button>
@@ -733,7 +733,7 @@ function EditorHeader({
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-40 transition-colors"
                 >
                     {publishLoading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Spinner className="w-4 h-4 animate-spin" />
                     ) : (
                         <Play className="w-4 h-4" />
                     )}
@@ -917,7 +917,7 @@ function PublishModal({
                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                     >
                         {loading ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <Spinner className="w-4 h-4 animate-spin" />
                         ) : (
                             <Play className="w-4 h-4" />
                         )}
@@ -954,7 +954,7 @@ function ErrorScreen({
     return (
         <div className="h-screen flex items-center justify-center bg-gray-50">
             <div className="text-center">
-                <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+                <WarningCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
                 <p className="font-medium text-gray-900 mb-1">
                     Failed to load branch
                 </p>

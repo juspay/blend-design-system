@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { CaretDown, CaretRight } from '@phosphor-icons/react'
 
 export function TokenSection({
     title,
@@ -19,9 +19,9 @@ export function TokenSection({
                 className="w-full flex items-center gap-2 px-3 py-2.5 bg-gray-50 hover:bg-gray-100 text-left transition-colors"
             >
                 {open ? (
-                    <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                    <CaretDown className="w-3.5 h-3.5 text-gray-400" />
                 ) : (
-                    <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                    <CaretRight className="w-3.5 h-3.5 text-gray-400" />
                 )}
                 <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     {title}

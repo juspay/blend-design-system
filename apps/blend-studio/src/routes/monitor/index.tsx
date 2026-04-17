@@ -13,12 +13,12 @@ import {
     ArrowLeft,
     Package,
     Users,
-    BarChart3,
-    Activity,
+    ChartBar,
+    Pulse,
     Download,
     Clock,
-    AlertCircle,
-} from 'lucide-react'
+    WarningCircle,
+} from '@phosphor-icons/react'
 
 export const Route = createFileRoute('/monitor/')({
     component: MonitorPage,
@@ -48,7 +48,7 @@ function MonitorPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="text-center">
-                    <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+                    <WarningCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
                     <p className="font-medium text-gray-900 mb-1">
                         Access Denied
                     </p>
@@ -82,7 +82,7 @@ function MonitorPage() {
                                 </Link>
                                 <div className="w-px h-5 bg-gray-200" />
                                 <div className="w-8 h-8 bg-gradient-to-br from-green-600 to-teal-600 rounded-lg flex items-center justify-center">
-                                    <Activity className="w-4 h-4 text-white" />
+                                    <Pulse className="w-4 h-4 text-white" />
                                 </div>
                                 <h1 className="text-xl font-bold text-gray-900">
                                     Monitor Dashboard
@@ -132,7 +132,7 @@ function MonitorPage() {
                             trend="up"
                         />
                         <StatCard
-                            icon={Activity}
+                            icon={Pulse}
                             label="API Requests (24h)"
                             value="8,234"
                             change="-2.1%"
@@ -186,12 +186,12 @@ function MonitorPage() {
                                     description="View download trends and versions"
                                 />
                                 <QuickAction
-                                    icon={BarChart3}
+                                    icon={ChartBar}
                                     label="Analytics"
                                     description="Branch usage and API metrics"
                                 />
                                 <QuickAction
-                                    icon={Activity}
+                                    icon={Pulse}
                                     label="System Health"
                                     description="API status and error logs"
                                 />
@@ -202,7 +202,7 @@ function MonitorPage() {
                     {/* Placeholder Notice */}
                     <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-xl">
                         <div className="flex items-start gap-3">
-                            <Activity className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                            <Pulse className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
                             <div>
                                 <h3 className="text-sm font-semibold text-blue-900 mb-1">
                                     Monitor Dashboard (Coming Soon)

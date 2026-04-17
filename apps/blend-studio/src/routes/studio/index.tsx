@@ -17,24 +17,23 @@ import {
     GitBranch,
     Plus,
     Eye,
-    Search,
-    Edit3,
-    Trash2,
+    MagnifyingGlass,
+    PencilSimple,
+    Trash,
     GitFork,
-    MoreVertical,
+    DotsThreeVertical,
     Clock,
     Tag,
     CheckCircle,
-    AlertCircle,
+    WarningCircle,
     Package,
     X,
-    Zap,
-    HelpCircle,
-    Palette,
-    Sparkles,
+    Question,
     Terminal,
-    Home,
-} from 'lucide-react'
+    House,
+    Palette,
+    Sparkle,
+} from '@phosphor-icons/react'
 import {
     useOnboarding,
     WelcomeOnboarding,
@@ -46,6 +45,10 @@ import {
     TabsV2List,
     TabsV2Trigger,
     TabsV2Variant,
+    ButtonV2,
+    ButtonV2Type,
+    ButtonV2Size,
+    SearchInput,
 } from '@juspay/blend-design-system'
 
 export const Route = createFileRoute('/studio/')({
@@ -139,12 +142,9 @@ function StudioPage() {
                                         className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                         title="Back to home"
                                     >
-                                        <Home className="w-4 h-4" />
+                                        <House className="w-4 h-4" />
                                     </Link>
                                     <div className="w-px h-5 bg-gray-200 dark:bg-gray-600" />
-                                    <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                                        <Zap className="w-4 h-4 text-white" />
-                                    </div>
                                     <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                                         Branches
                                     </h1>
@@ -162,24 +162,24 @@ function StudioPage() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <button
+                                <ButtonV2
+                                    buttonType={ButtonV2Type.SECONDARY}
+                                    size={ButtonV2Size.SMALL}
+                                    leftSlot={{
+                                        slot: <Question className="w-4 h-4" />,
+                                    }}
+                                    text="Quick Guide"
                                     onClick={() => setShowGuide(!showGuide)}
-                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border rounded-lg transition-colors ${
-                                        showGuide
-                                            ? 'bg-blue-50 text-blue-700 border-blue-300'
-                                            : 'text-gray-600 border-gray-300 hover:bg-gray-50'
-                                    }`}
-                                >
-                                    <HelpCircle className="w-4 h-4" />
-                                    Quick Guide
-                                </button>
-                                <button
+                                />
+                                <ButtonV2
+                                    buttonType={ButtonV2Type.PRIMARY}
+                                    size={ButtonV2Size.SMALL}
+                                    leftSlot={{
+                                        slot: <Plus className="w-4 h-4" />,
+                                    }}
+                                    text="New Branch"
                                     onClick={() => setModal({ type: 'create' })}
-                                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-                                >
-                                    <Plus className="w-4 h-4" />
-                                    New Branch
-                                </button>
+                                />
                                 <UserMenu />
                             </div>
                         </div>
@@ -193,25 +193,18 @@ function StudioPage() {
 
                         {/* Search & Filter Bar */}
                         <div className="mt-4 flex items-center gap-3">
-                            <div className="relative flex-1 max-w-md">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                <input
-                                    type="text"
+                            <div className="flex-1">
+                                <SearchInput
                                     value={searchQuery}
                                     onChange={(e) =>
                                         setSearchQuery(e.target.value)
                                     }
+                                    onClear={() => setSearchQuery('')}
                                     placeholder="Search branches by name..."
-                                    className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    leftSlot={
+                                        <MagnifyingGlass className="w-4 h-4" />
+                                    }
                                 />
-                                {searchQuery && (
-                                    <button
-                                        onClick={() => setSearchQuery('')}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                                    >
-                                        <X className="w-3.5 h-3.5" />
-                                    </button>
-                                )}
                             </div>
 
                             <TabsV2
@@ -243,7 +236,7 @@ function StudioPage() {
                 <div className="max-w-7xl mx-auto px-6 py-6">
                     {error && (
                         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                            <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                            <WarningCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                             <div>
                                 <p className="text-sm font-medium text-red-800">
                                     Error loading branches
@@ -384,7 +377,7 @@ function QuickGuidePanel({ onClose }: { onClose: () => void }) {
         <div className="mt-4 p-5 bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-200 rounded-xl">
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-blue-600" />
+                    <Sparkle className="w-5 h-5 text-blue-600" />
                     <h3 className="text-sm font-semibold text-blue-900">
                         How Token Studio Works
                     </h3>
@@ -603,7 +596,7 @@ function BranchCard({
         draft: {
             label: 'Draft',
             cls: 'bg-yellow-100 text-yellow-800',
-            icon: AlertCircle,
+            icon: WarningCircle,
         },
         published: {
             label: 'Published',
@@ -664,7 +657,7 @@ function BranchCard({
                             }}
                             className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                         >
-                            <MoreVertical className="w-4 h-4" />
+                            <DotsThreeVertical className="w-4 h-4" />
                         </button>
 
                         {menuOpen && (
@@ -673,7 +666,7 @@ function BranchCard({
                                     onClick={onEdit}
                                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                 >
-                                    <Edit3 className="w-3.5 h-3.5 text-gray-400" />
+                                    <PencilSimple className="w-3.5 h-3.5 text-gray-400" />
                                     Edit Tokens
                                 </button>
                                 <button
@@ -688,7 +681,7 @@ function BranchCard({
                                     onClick={onDelete}
                                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                                 >
-                                    <Trash2 className="w-3.5 h-3.5" />
+                                    <Trash className="w-3.5 h-3.5" />
                                     Delete
                                 </button>
                             </div>
@@ -757,7 +750,7 @@ function BranchCard({
                             params={{ branchId: branch.id }}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors"
                         >
-                            <Edit3 className="w-3 h-3" />
+                            <PencilSimple className="w-3 h-3" />
                             Edit
                         </Link>
                     </div>
@@ -789,13 +782,13 @@ function EmptyState({
             </p>
             {!hasSearch && (
                 <div className="flex flex-col items-center gap-4">
-                    <button
+                    <ButtonV2
+                        buttonType={ButtonV2Type.PRIMARY}
+                        size={ButtonV2Size.MEDIUM}
+                        leftSlot={{ slot: <Plus className="w-4 h-4" /> }}
+                        text="Create Branch"
                         onClick={onCreate}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Create Branch
-                    </button>
+                    />
                     <p className="text-xs text-gray-400">
                         Start from a preset or customize from scratch
                     </p>
@@ -1186,7 +1179,7 @@ function DeleteConfirmModal({
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
                 <div className="p-6">
                     <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                        <Trash2 className="w-6 h-6 text-red-600" />
+                        <Trash className="w-6 h-6 text-red-600" />
                     </div>
                     <h2 className="text-lg font-semibold text-gray-900 text-center mb-2">
                         Delete Branch?

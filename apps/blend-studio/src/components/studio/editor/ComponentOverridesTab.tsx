@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus, Trash, CaretDown, CaretRight } from '@phosphor-icons/react'
 import { type EditorTabProps, type ColorGroupKey, COLOR_GROUPS } from './types'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 import {
@@ -328,9 +328,9 @@ function ComponentCard({
                     className="flex-1 flex items-center gap-2.5 text-left"
                 >
                     {isExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-gray-400" />
+                        <CaretDown className="w-4 h-4 text-gray-400" />
                     ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                        <CaretRight className="w-4 h-4 text-gray-400" />
                     )}
                     <span className="text-sm font-medium text-gray-700">
                         {label}
@@ -349,7 +349,7 @@ function ComponentCard({
                     className="p-1 text-gray-400 hover:text-red-500 rounded transition-colors ml-2"
                     title="Remove override"
                 >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash className="w-3.5 h-3.5" />
                 </button>
             </div>
 
