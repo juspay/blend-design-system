@@ -92,12 +92,12 @@ const ChatInputV2Demo = () => {
         setPlaygroundFiles((prev) => prev.filter((f) => f.id !== fileId))
     }
 
-    // const handlePlaygroundFileClick = (file: AttachedFile) => {
-    //     addSnackbar({
-    //         header: 'File Clicked',
-    //         description: `${file.name} (${file.type})`,
-    //     })
-    // }
+    const handlePlaygroundFileClick = (file: AttachedFile) => {
+        addSnackbar({
+            header: 'File Clicked',
+            description: `${file.name} (${file.type})`,
+        })
+    }
 
     const handlePlaygroundVoiceRecord = () => {
         addSnackbar({
@@ -274,6 +274,7 @@ const ChatInputV2Demo = () => {
                                 handlePlaygroundAttachFiles(files)
                             }}
                             onFileRemove={handlePlaygroundFileRemove}
+                            onFileClick={handlePlaygroundFileClick}
                             attachedFiles={playgroundFiles}
                         />
                     </div>

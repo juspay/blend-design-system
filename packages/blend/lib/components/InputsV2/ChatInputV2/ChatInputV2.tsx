@@ -43,6 +43,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
             onChange,
             onEnter = () => {},
             onAttachFiles = () => {},
+            onFileClick = () => {},
             onFileRemove = () => {},
             attachedFiles = [],
             value = '',
@@ -139,6 +140,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                         attachedFiles={attachedFiles}
                         handleAttachClick={handleAttachClick}
                         onFileRemove={onFileRemove}
+                        onFileClick={onFileClick}
                         onSlot2Click={onSlot2Click}
                         disabled={disabled}
                         onEnter={onEnter}
@@ -178,6 +180,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                         chatInputV2Tokens.container.attachedFilesContainer
                             .gap ?? 8
                     }
+                    onFileClick={onFileClick}
                 />
                 {slot1 && <Block width="100%">{slot1}</Block>}
                 {hiddenFileInput}

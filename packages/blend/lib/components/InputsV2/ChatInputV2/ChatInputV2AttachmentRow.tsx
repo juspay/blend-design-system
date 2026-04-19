@@ -9,16 +9,14 @@ import {
     type RefObject,
 } from 'react'
 import Block from '../../Primitives/Block/Block'
-import TagV2 from '../../TagV2/TagV2'
 import TooltipV2 from '../../TooltipV2/TooltipV2'
 import Text from '../../Text/Text'
-import { TagV2Color, TagV2Size } from '../../TagV2/TagV2.types'
-import { XIcon } from '@phosphor-icons/react'
 import type { AttachedFile } from './ChatInputV2.types'
 import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import type { CSSObject } from 'styled-components'
 import AttachmentDropdownV2 from './AttachmentDropdown'
 import type { ChatInputV2TokensType } from './ChatInputV2.tokens'
+import ChatInputTagV2 from './ChatInputTagV2'
 import {
     computeAttachmentRowCutoff,
     isOuterWidthExpanding,
@@ -34,6 +32,7 @@ import {
 export type ChatInputV2AttachmentRowProps = {
     attachedFiles: AttachedFile[]
     onFileRemove: (fileId: string) => void
+    onFileClick: (file: AttachedFile) => void
     outerContainerRef: RefObject<HTMLElement | null>
     gap: NonNullable<CSSObject['gap']>
     tokens: ChatInputV2TokensType
@@ -43,6 +42,7 @@ export default function ChatInputV2AttachmentRow({
     tokens,
     attachedFiles,
     onFileRemove,
+    onFileClick,
     outerContainerRef,
     gap,
 }: ChatInputV2AttachmentRowProps) {
@@ -162,17 +162,17 @@ export default function ChatInputV2AttachmentRow({
         >
             {visibleFiles.map((file) => (
                 <TooltipV2 key={file.id} content={file.name}>
-                    <TagV2
-                        color={TagV2Color.NEUTRAL}
+                    <ChatInputTagV2
+                        key={file.id}
                         text={truncateFileNameForTag(file.name)}
-                        size={TagV2Size.LG}
-                        rightSlot={{
-                            slot: <XIcon size={12} />,
-                            maxHeight: '100%',
-                        }}
-                        onClick={(e) => {
+                        tokens={tokens.container.tagContainer}
+                        onRemove={(e) => {
                             e.stopPropagation()
                             onFileRemove(file.id)
+                        }}
+                        onFileClick={(e) => {
+                            e.stopPropagation()
+                            onFileClick(file)
                         }}
                     />
                 </TooltipV2>
@@ -189,6 +189,13 @@ export default function ChatInputV2AttachmentRow({
                         onClick={() =>
                             setOverflowMenuOpen((prevOpen) => !prevOpen)
                         }
+                        color={tokens.container.attachedFilesContainer.color}
+                        fontSize={
+                            tokens.container.attachedFilesContainer.fontSize
+                        }
+                        fontWeight={
+                            tokens.container.attachedFilesContainer.fontWeight
+                        }
                     >
                         +{hiddenFiles.length} more
                     </Text>
@@ -197,6 +204,8 @@ export default function ChatInputV2AttachmentRow({
                             tokens={tokens}
                             tags={hiddenFiles}
                             onFileRemove={onFileRemove}
+                            onFileClick={onFileClick}
+                            key={filesRegionId}
                         />
                     )}
                 </Block>

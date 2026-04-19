@@ -47,6 +47,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
             attachedFiles,
             handleAttachClick,
             onFileRemove,
+            onFileClick = () => {},
             disabled = false,
             onSlot2Click,
             id,
@@ -141,6 +142,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                         <ChatInputV2AttachmentRow
                             attachedFiles={attachedFiles}
                             onFileRemove={onFileRemove || (() => {})}
+                            onFileClick={onFileClick}
                             outerContainerRef={containerRef}
                             gap={`${mobileTokens.gap}`}
                             tokens={webTokens}

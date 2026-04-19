@@ -31,6 +31,7 @@ export type ChatInputV2Props = {
     onAttachFiles?: (files: File[]) => void
     /** Remove by id — use this for chip dismiss; do not use `onAttachFiles` to “replace” the list. */
     onFileRemove?: (fileId: string) => void
+    onFileClick?: (file: AttachedFile) => void
     onEnter?: () => void
 } & Omit<
     React.TextareaHTMLAttributes<HTMLTextAreaElement>,

@@ -16,7 +16,22 @@ export const getChatInputV2DarkTokens = (
     return {
         sm: {
             container: {
+                tagContainer: {
+                    gap: foundationToken.unit[5],
+                    borderRadius: foundationToken.unit[6],
+                    padding: foundationToken.unit[6],
+                    backgroundColor: foundationToken.colors.gray[800],
+                    border: `1px solid ${foundationToken.colors.gray[200]}`,
+                    text: {
+                        color: foundationToken.colors.gray[100],
+                        fontSize: foundationToken.unit[12],
+                        fontWeight: '500',
+                    },
+                },
                 attachedFilesContainer: {
+                    fontSize: foundationToken.unit[12],
+                    fontWeight: '500',
+                    color: foundationToken.colors.gray[100],
                     gap: foundationToken.unit[5],
                     overflowMenu: {
                         gap: foundationToken.unit[5],
@@ -168,7 +183,22 @@ export const getChatInputV2DarkTokens = (
 
         lg: {
             container: {
+                tagContainer: {
+                    gap: foundationToken.unit[5],
+                    borderRadius: foundationToken.unit[6],
+                    padding: foundationToken.unit[6],
+                    backgroundColor: foundationToken.colors.gray[800],
+                    border: `1px solid ${foundationToken.colors.gray[200]}`,
+                    text: {
+                        color: foundationToken.colors.gray[100],
+                        fontSize: foundationToken.unit[12],
+                        fontWeight: '500',
+                    },
+                },
                 attachedFilesContainer: {
+                    fontSize: foundationToken.unit[12],
+                    fontWeight: '500',
+                    color: foundationToken.colors.gray[100],
                     gap: foundationToken.unit[5],
                     overflowMenu: {
                         gap: foundationToken.unit[5],

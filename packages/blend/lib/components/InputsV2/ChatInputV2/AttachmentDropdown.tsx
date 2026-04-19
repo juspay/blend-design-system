@@ -1,21 +1,21 @@
 import Block from '../../Primitives/Block/Block'
-import TagV2 from '../../TagV2/TagV2'
-import { TagV2Color, TagV2Size } from '../../TagV2/TagV2.types'
 import { InputStateV2 } from '../inputV2.types'
+import ChatInputTagV2 from './ChatInputTagV2'
 import { ChatInputV2TokensType } from './ChatInputV2.tokens'
 import { AttachedFile } from './ChatInputV2.types'
 import { truncateFileNameForTag } from './utils'
-import { XIcon } from '@phosphor-icons/react'
 
 type AttachmentDropdownV2Props = {
     tags: AttachedFile[]
-    onFileRemove?: (fileId: string) => void
+    onFileRemove: (fileId: string) => void
     tokens: ChatInputV2TokensType
+    onFileClick: (file: AttachedFile) => void
 }
 
 const AttachmentDropdownV2 = ({
     tags,
     onFileRemove,
+    onFileClick,
     tokens,
 }: AttachmentDropdownV2Props) => {
     return (
@@ -43,22 +43,22 @@ const AttachmentDropdownV2 = ({
             }
             overflowY="auto"
         >
-            {tags.map((tag) => (
-                <TagV2
-                    key={tag.id}
-                    color={TagV2Color.NEUTRAL}
-                    size={TagV2Size.LG}
-                    text={truncateFileNameForTag(tag.name)}
-                    rightSlot={{
-                        slot: <XIcon size={12} />,
-                        maxHeight: '100%',
-                    }}
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        onFileRemove?.(tag.id)
-                    }}
-                />
-            ))}
+            {tags &&
+                tags.map((tag) => (
+                    <ChatInputTagV2
+                        key={tag.id}
+                        text={truncateFileNameForTag(tag.name)}
+                        tokens={tokens.container.tagContainer}
+                        onRemove={(e) => {
+                            e.stopPropagation()
+                            onFileRemove(tag.id)
+                        }}
+                        onFileClick={(e) => {
+                            e.stopPropagation()
+                            onFileClick(tag)
+                        }}
+                    />
+                ))}
         </Block>
     )
 }

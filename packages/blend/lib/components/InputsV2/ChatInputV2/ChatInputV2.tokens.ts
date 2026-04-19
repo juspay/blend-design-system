@@ -38,6 +38,21 @@ export type ChatInputV2TokensType = {
                 right: CSSObject['right']
                 maxHeight: CSSObject['maxHeight']
             }
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: CSSObject['color']
+        }
+        tagContainer: {
+            gap: CSSObject['gap']
+            borderRadius: CSSObject['borderRadius']
+            padding: CSSObject['padding']
+            border: CSSObject['border']
+            backgroundColor: CSSObject['backgroundColor']
+            text: {
+                color: CSSObject['color']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
         }
         inputContainer: {
             outline: {
