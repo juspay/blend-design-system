@@ -261,6 +261,20 @@ export const getNumberInputLabelState = (
     return InputStateV2.DEFAULT
 }
 
+/** Visual state for the unit strip (borders/color); includes hover so it matches `PrimitiveInput` `_hover` chrome. */
+export const getNumberInputUnitState = (
+    disabled: boolean | undefined,
+    hasError: boolean,
+    isFocused: boolean,
+    isHovered: boolean
+): InputStateV2 => {
+    if (disabled) return InputStateV2.DISABLED
+    if (hasError) return InputStateV2.ERROR
+    if (isFocused) return InputStateV2.FOCUS
+    if (isHovered) return InputStateV2.HOVER
+    return InputStateV2.DEFAULT
+}
+
 export const computeIsUpButtonDisabled = (
     numericMax: number | undefined,
     steppingBaseValue: number | null,

@@ -33,6 +33,7 @@ import {
     getNumberInputDisplayErrorMessage,
     buildNumberInputAriaDescribedBy,
     getNumberInputLabelState,
+    getNumberInputUnitState,
     computeIsUpButtonDisabled,
     computeIsDownButtonDisabled,
     sanitizedToCommittedValueString,
@@ -99,6 +100,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         const { errorId, hintId } = generateAccessibilityIds(inputId)
 
         const [isFocused, setIsFocused] = useState(false)
+        const [isHovered, setIsHovered] = useState(false)
         const [internalValue, setInternalValue] = useState('')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
@@ -186,6 +188,16 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             hasError,
             isFocused
         )
+        const unitState = useMemo(
+            () =>
+                getNumberInputUnitState(
+                    disabled,
+                    hasError,
+                    isFocused,
+                    isHovered
+                ),
+            [disabled, hasError, isFocused, isHovered]
+        )
 
         useLayoutEffect(() => {
             if (!showUnit) {
@@ -198,7 +210,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                 return
             }
             return subscribeElementOffsetWidth(el, setMeasuredUnitWidth)
-        }, [showUnit, unitDirection, unitText, size, labelState, disabled])
+        }, [showUnit, unitDirection, unitText, size, unitState, disabled])
 
         useLayoutEffect(() => {
             setMeasuredLeftSlotWidth(
@@ -411,6 +423,8 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                     width="100%"
                     display="flex"
                     borderRadius={inputContainerTokens.borderRadius[size]}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
                 >
                     {Boolean(label.text?.trim()) && smallScreenLarge && (
                         <FloatingLabelsV2
@@ -434,11 +448,10 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         unitDirection === NumberInputV2Direction.LEFT && (
                             <NumberInputV2Unit
                                 ref={unitRef}
-                                unit={unit}
-                                inputState={labelState}
+                                unit={unitText}
+                                inputState={unitState}
                                 inputContainerTokens={numberInputTokens}
                                 size={size}
-                                disabled={disabled}
                                 unitDirection={unitDirection}
                             />
                         )}
@@ -646,11 +659,10 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         unitDirection === NumberInputV2Direction.RIGHT && (
                             <NumberInputV2Unit
                                 ref={unitRef}
-                                unit={unit}
-                                inputState={labelState}
+                                unit={unitText}
+                                inputState={unitState}
                                 inputContainerTokens={numberInputTokens}
                                 size={size}
-                                disabled={disabled}
                                 unitDirection={unitDirection}
                             />
                         )}
