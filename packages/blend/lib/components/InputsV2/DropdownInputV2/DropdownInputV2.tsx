@@ -1,4 +1,11 @@
-import { forwardRef, useEffect, useId, useMemo, useRef, useState } from 'react'
+import {
+    forwardRef,
+    useId,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react'
 import Block from '../../Primitives/Block/Block'
 import InputFooterV2 from '../utils/InputFooter/InputFooterV2'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
@@ -158,13 +165,22 @@ const DropdownInputV2 = forwardRef<HTMLInputElement, DropdownInputV2Props>(
             inputState
         )
 
-        useEffect(() => {
-            if (dropdownRef.current) {
-                setDropdownWidth(dropdownRef.current.offsetWidth)
-            } else {
+        useLayoutEffect(() => {
+            const el = dropdownRef.current
+            if (!el) {
                 setDropdownWidth(0)
+                return
             }
-        }, [dropDown.value, dropDown.items, selectSize])
+            const measure = (): void => {
+                setDropdownWidth(el.offsetWidth)
+            }
+            measure()
+            const ro = new ResizeObserver(measure)
+            ro.observe(el)
+            return () => {
+                ro.disconnect()
+            }
+        }, [dropdownPosition, breakPointLabel])
 
         const setInputRef = (node: HTMLInputElement | null) => {
             inputRef.current = node
@@ -211,10 +227,11 @@ const DropdownInputV2 = forwardRef<HTMLInputElement, DropdownInputV2Props>(
                     maxWidth: maxMenuWidth,
                 }}
                 menuPosition={menuPosition}
-                onFocus={() => {
-                    onDropdownOpen?.()
-                }}
-                onBlur={() => {
+                onOpenChange={(isOpen) => {
+                    if (isOpen) {
+                        onDropdownOpen?.()
+                        return
+                    }
                     onDropdownClose?.()
                 }}
             />

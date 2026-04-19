@@ -76,6 +76,27 @@ describe('DropdownInputV2 Accessibility', () => {
             }
         })
 
+        it('meets WCAG standards with dropdown on the right (resize-aware layout)', async () => {
+            const { container } = render(
+                <DropdownInputV2
+                    label="Country and City"
+                    dropdownPosition={DropdownPosition.RIGHT}
+                    input={{
+                        value: '',
+                        onChange: noop,
+                        placeholder: 'Enter city',
+                    }}
+                    dropDown={defaultDropDown}
+                />
+            )
+            const results = await axe(container, {
+                rules: {
+                    'button-name': { enabled: false },
+                },
+            })
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <DropdownInputV2
@@ -387,6 +408,7 @@ describe('DropdownInputV2 Accessibility', () => {
                 <form>
                     <DropdownInputV2
                         label="First Field"
+                        dropdownPosition={DropdownPosition.LEFT}
                         input={{
                             value: '',
                             onChange: noop,
@@ -396,6 +418,7 @@ describe('DropdownInputV2 Accessibility', () => {
                     />
                     <DropdownInputV2
                         label="Second Field"
+                        dropdownPosition={DropdownPosition.LEFT}
                         input={{
                             value: '',
                             onChange: noop,
@@ -421,6 +444,49 @@ describe('DropdownInputV2 Accessibility', () => {
             expect(document.activeElement).toBe(regionButtons[1])
             await user.tab()
             expect(document.activeElement).toBe(textboxes[1])
+        })
+
+        it('tabs through text field then dropdown trigger for each composite (right position)', async () => {
+            const { user } = render(
+                <form>
+                    <DropdownInputV2
+                        label="First Field"
+                        dropdownPosition={DropdownPosition.RIGHT}
+                        input={{
+                            value: '',
+                            onChange: noop,
+                            placeholder: 'A',
+                        }}
+                        dropDown={defaultDropDown}
+                    />
+                    <DropdownInputV2
+                        label="Second Field"
+                        dropdownPosition={DropdownPosition.RIGHT}
+                        input={{
+                            value: '',
+                            onChange: noop,
+                            placeholder: 'B',
+                        }}
+                        dropDown={defaultDropDown}
+                    />
+                    <button type="submit">Submit</button>
+                </form>
+            )
+            const textboxes = screen.getAllByRole('textbox')
+            const regionButtons = screen.getAllByRole('button', {
+                name: /region/i,
+            })
+            expect(textboxes).toHaveLength(2)
+            expect(regionButtons).toHaveLength(2)
+
+            await user.tab()
+            expect(document.activeElement).toBe(textboxes[0])
+            await user.tab()
+            expect(document.activeElement).toBe(regionButtons[0])
+            await user.tab()
+            expect(document.activeElement).toBe(textboxes[1])
+            await user.tab()
+            expect(document.activeElement).toBe(regionButtons[1])
         })
     })
 
@@ -497,11 +563,30 @@ describe('DropdownInputV2 Accessibility', () => {
     })
 
     describe('WCAG 2.5.8 Target Size (Minimum) - Level AA (WCAG 2.2)', () => {
-        it('renders the composite text field and dropdown trigger', () => {
+        it('renders the composite text field and dropdown trigger (left position)', () => {
             render(
                 <DropdownInputV2
                     label="Accessible DropdownInputV2"
                     dropdownPosition={DropdownPosition.LEFT}
+                    input={{
+                        value: '',
+                        onChange: noop,
+                        placeholder: 'City',
+                    }}
+                    dropDown={defaultDropDown}
+                />
+            )
+            expect(screen.getByRole('textbox')).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: /region/i })
+            ).toBeInTheDocument()
+        })
+
+        it('renders the composite text field and dropdown trigger (right position)', () => {
+            render(
+                <DropdownInputV2
+                    label="Accessible DropdownInputV2"
+                    dropdownPosition={DropdownPosition.RIGHT}
                     input={{
                         value: '',
                         onChange: noop,

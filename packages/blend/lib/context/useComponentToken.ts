@@ -139,7 +139,6 @@ export const useComponentToken = (
     | ResponsiveBreadcrumbV2Tokens
     | ResponsiveProgressBarV2Tokens
     | ResponsiveMultiValueInputV2Tokens
-    | ResponsiveNumberInputV2Tokens
     | ResponsiveOTPInputV2Tokens
     | ResponsiveTextAreaV2Tokens
     | ResponsiveCodeEditorV2Tokens

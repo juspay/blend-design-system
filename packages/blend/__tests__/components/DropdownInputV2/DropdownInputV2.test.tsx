@@ -221,6 +221,30 @@ describe('DropdownInputV2', () => {
             )
             expect(screen.getByRole('textbox')).toBeInTheDocument()
         })
+
+        it('updates inline-start padding when switching dropdownPosition via rerender', () => {
+            const { rerender } = render(
+                <DropdownInputV2
+                    {...defaultProps}
+                    dropdownPosition={DropdownPosition.LEFT}
+                />
+            )
+            const startWhenLeft = parseFloat(
+                getComputedStyle(screen.getByRole('textbox')).paddingInlineStart
+            )
+
+            rerender(
+                <DropdownInputV2
+                    {...defaultProps}
+                    dropdownPosition={DropdownPosition.RIGHT}
+                />
+            )
+            const startWhenRight = parseFloat(
+                getComputedStyle(screen.getByRole('textbox')).paddingInlineStart
+            )
+
+            expect(startWhenLeft).toBeGreaterThan(startWhenRight)
+        })
     })
 
     describe('Size variants', () => {
@@ -258,10 +282,10 @@ describe('DropdownInputV2', () => {
             expect(onBlur).toHaveBeenCalledTimes(1)
         })
 
-        it('calls onDropdownOpen and onDropdownClose when the dropdown trigger is focused and blurred', () => {
+        it('calls onDropdownOpen and onDropdownClose when the menu opens and closes', async () => {
             const onDropdownOpen = vi.fn()
             const onDropdownClose = vi.fn()
-            render(
+            const { user } = render(
                 <DropdownInputV2
                     {...defaultProps}
                     onDropdownOpen={onDropdownOpen}
@@ -271,13 +295,9 @@ describe('DropdownInputV2', () => {
             const trigger = screen.getByRole('button', {
                 name: /region|location/i,
             })
-            act(() => {
-                trigger.focus()
-            })
+            await user.click(trigger)
             expect(onDropdownOpen).toHaveBeenCalledTimes(1)
-            act(() => {
-                trigger.blur()
-            })
+            await user.keyboard('{Escape}')
             expect(onDropdownClose).toHaveBeenCalledTimes(1)
         })
     })
