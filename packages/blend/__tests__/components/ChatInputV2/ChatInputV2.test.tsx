@@ -56,6 +56,28 @@ describe('ChatInputV2', () => {
             ).toHaveAttribute('type', 'file')
         })
 
+        it('exposes attach and secondary icon buttons with aria-label', () => {
+            render(
+                <ChatInputV2
+                    {...defaultProps}
+                    slot2={<span data-testid="slot2">S</span>}
+                />
+            )
+            expect(
+                screen.getByRole('button', { name: 'Attach files' })
+            ).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: 'Secondary action' })
+            ).toBeInTheDocument()
+        })
+
+        it('forwards native textarea attributes such as aria-label', () => {
+            render(<ChatInputV2 {...defaultProps} aria-label="Composer" />)
+            expect(
+                screen.getByRole('textbox', { name: 'Composer' })
+            ).toBeInTheDocument()
+        })
+
         it('forwards ref to outer container element', () => {
             const ref = vi.fn()
             render(<ChatInputV2 {...defaultProps} ref={ref} />)
@@ -141,7 +163,31 @@ describe('ChatInputV2', () => {
             expect(screen.getByText('note.txt')).toBeInTheDocument()
         })
 
-        it('calls onFileRemove when a chip is clicked', async () => {
+        it('calls onFileClick when the chip label is clicked', async () => {
+            const onFileClick = vi.fn()
+            const { user } = render(
+                <ChatInputV2
+                    {...defaultProps}
+                    attachedFiles={[
+                        {
+                            id: 'chip-1',
+                            name: 'a.txt',
+                            type: 'text',
+                        },
+                    ]}
+                    onFileRemove={() => {}}
+                    onFileClick={onFileClick}
+                />
+            )
+            await user.click(screen.getByText('a.txt'))
+            expect(onFileClick).toHaveBeenCalledWith({
+                id: 'chip-1',
+                name: 'a.txt',
+                type: 'text',
+            })
+        })
+
+        it('calls onFileRemove when the chip dismiss control is clicked', async () => {
             const onFileRemove = vi.fn()
             const { user } = render(
                 <ChatInputV2
@@ -156,7 +202,12 @@ describe('ChatInputV2', () => {
                     onFileRemove={onFileRemove}
                 />
             )
-            await user.click(screen.getByText('a.txt'))
+            const region = screen.getByRole('region', {
+                name: /1 file attached/i,
+            })
+            const dismissIcon = region.querySelector('svg')
+            expect(dismissIcon).toBeTruthy()
+            await user.click(dismissIcon!)
             expect(onFileRemove).toHaveBeenCalledWith('chip-1')
         })
 
@@ -221,7 +272,6 @@ describe('ChatInputV2', () => {
             await user.click(ta)
             expect(region).toHaveAttribute('aria-hidden', 'false')
 
-            await user.tab({ shift: true })
             fireEvent.blur(ta)
             expect(region).toHaveAttribute('aria-hidden', 'true')
         })
@@ -262,6 +312,24 @@ describe('ChatInputV2', () => {
             expect(
                 screen.getByRole('button', { name: /attach files/i })
             ).toBeInTheDocument()
+        })
+
+        it('passes onFileClick through to attachment chips', async () => {
+            const onFileClick = vi.fn()
+            const { user } = render(
+                <ChatInputV2
+                    {...defaultProps}
+                    attachedFiles={[
+                        { id: 'm1', name: 'mob.txt', type: 'text', size: 1 },
+                    ]}
+                    onFileRemove={() => {}}
+                    onFileClick={onFileClick}
+                />
+            )
+            await user.click(screen.getByText('mob.txt'))
+            expect(onFileClick).toHaveBeenCalledWith(
+                expect.objectContaining({ id: 'm1', name: 'mob.txt' })
+            )
         })
     })
 })

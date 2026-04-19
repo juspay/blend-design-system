@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { fn } from '@storybook/test'
 import { AudioLines } from 'lucide-react'
 import {
     getA11yConfig,
@@ -70,6 +71,8 @@ Uses \`CHAT_INPUTV2\` / \`CHAT_INPUTV2_MOBILE\` tokens. Below **lg** breakpoint 
 
 - **Textarea**: native \`<textarea>\` with stable \`id\` / \`name\`; \`aria-disabled\` when disabled
 - **Attach control**: \`aria-label="Attach files"\` on the paperclip control (desktop); keyboard reachable where enabled
+- **Secondary slot**: icon button uses \`aria-label="Secondary action"\` when \`slot2\` is present
+- **Attachment chips**: \`onFileClick(file)\` when the user activates the chip label (including overflow dropdown)
 - **Top queries**: region toggles \`aria-hidden\` when collapsed; focus the field to surface suggestions
 - **Keyboard**: **Enter** submits via \`onEnter\` (when wired); **Shift+Enter** inserts a newline
 - **WCAG target**: 2.1 Level AA (supports 2.2)
@@ -108,6 +111,12 @@ Use **VisualStates** (light) and **VisualStatesDark** (dark theme) with Chromati
         onEnter: { action: 'enter' },
         onAttachFiles: { action: 'attachFiles' },
         onFileRemove: { action: 'fileRemove' },
+        onFileClick: {
+            action: 'fileClick',
+            description:
+                'Chip label / overflow item — open preview, focus detail, etc.',
+            table: { category: 'Attachments' },
+        },
         onTopQuerySelect: { action: 'topQuerySelect' },
         onSlot2Click: { action: 'slot2Click' },
     },
@@ -126,8 +135,9 @@ export const Default: Story = {
                 disabled={args.disabled}
                 value={value}
                 onChange={setValue}
-                slot2={<AudioLines size={18} aria-hidden />}
+                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
                 onSlot2Click={() => args.onSlot2Click?.()}
+                onFileClick={args.onFileClick}
             />
         )
     },
@@ -155,7 +165,7 @@ export const WithSlots: Story = {
                         Optional slot (e.g. filters)
                     </Block>
                 }
-                slot2={<AudioLines size={18} />}
+                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
                 onSlot2Click={() => undefined}
             />
         )
@@ -205,14 +215,15 @@ export const WithAttachments: Story = {
                 onFileRemove={(id) =>
                     setFiles((prev) => prev.filter((f) => f.id !== id))
                 }
-                slot2={<AudioLines size={18} />}
+                onFileClick={fn()}
+                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
             />
         )
     },
     parameters: {
         docs: {
             description: {
-                story: 'Starts with one chip; use the paperclip to add more (same as product flow).',
+                story: 'Starts with one chip; use the paperclip to add more (same as product flow). Click a chip label to trigger **onFileClick** (e.g. preview).',
             },
         },
     },
@@ -229,7 +240,7 @@ export const WithTopQueries: Story = {
                 topQueries={SAMPLE_TOP_QUERIES}
                 topQueriesMaxHeight={160}
                 onTopQuerySelect={(q) => setValue(q.text)}
-                slot2={<AudioLines size={18} />}
+                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
             />
         )
     },
@@ -251,7 +262,7 @@ export const Disabled: Story = {
                 onChange={setValue}
                 disabled
                 placeholder="Disabled"
-                slot2={<AudioLines size={18} />}
+                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
             />
         )
     },
@@ -314,6 +325,7 @@ export const VisualStates: Story = {
                         ]}
                         onAttachFiles={() => undefined}
                         onFileRemove={() => undefined}
+                        onFileClick={() => undefined}
                         slot2={slotIcon}
                     />
                 </figure>
@@ -472,6 +484,7 @@ export const Variants: Story = {
                         onFileRemove={(id) =>
                             setFiles((prev) => prev.filter((f) => f.id !== id))
                         }
+                        onFileClick={fn()}
                         slot1={
                             <Block
                                 padding={8}
@@ -611,6 +624,7 @@ export const Accessibility: Story = {
                         onFileRemove={(id) =>
                             setFiles((prev) => prev.filter((f) => f.id !== id))
                         }
+                        onFileClick={fn()}
                         slot2={slotIcon}
                     />
                 </section>
@@ -625,7 +639,7 @@ Reference layout for accessibility review of **ChatInputV2**:
 
 - **Textarea**: native control; verify focus ring and \`aria-disabled\` when disabled
 - **Attach**: \`aria-label="Attach files"\` on the attach control (desktop layout)
-- **Chips**: dismiss buttons should be focusable and have discernible names
+- **Chips**: dismiss controls and chip label activation (\`onFileClick\`) should be keyboard-accessible with clear names
 - **Top queries**: optional region — focus the field to open (see **WithTopQueries**)
 
 **Verification**

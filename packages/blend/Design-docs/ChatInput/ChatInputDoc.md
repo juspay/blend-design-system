@@ -6,7 +6,7 @@ Deliver a **chat composer** (Inputs V2) that supports:
 
 - **Value API**: Single string via **`value`** and **`onChange(value: string)`** (not a raw DOM `ChangeEvent`). The field is a **`PrimitiveTextarea`** with **`resize="none"`**, **`rows={1}`**, and **auto-height** clamped by **`textareaMaxHeight`** (prop) or the token **`input.maxHeight`** (`resolveChatInputV2TextareaMaxHeightPx`, `applyChatInputV2TextareaAutoHeight` in `utils.ts`).
 - **Submit vs newline**: **`onEnter`** runs when the user presses **Enter** without **Shift** (`preventDefault` on that keydown). **Shift+Enter** keeps default behavior so a newline can be inserted.
-- **Attachments**: Optional **`attachedFiles`** rendered as chips in **`ChatInputV2AttachmentRow`** (overflow + “+ N more” menu). New files come from a **hidden** `<input type="file" multiple />` (`PrimitiveInput`); **`onAttachFiles(files: File[])`** receives **new** files only. **`onFileRemove(fileId)`** removes a chip. Duplicates (same **name + size** as an existing attachment) are filtered in **`handleChatInputV2FileInputChange`** via **`filterDuplicateFiles`** (shared with legacy ChatInput); duplicates trigger **`notifyChatInputV2DuplicateFiles`** (**`addSnackbarV2`**).
+- **Attachments**: Optional **`attachedFiles`** rendered as **`ChatInputTagV2`** chips inside **`ChatInputV2AttachmentRow`** (measurement-based inline chips + **“+ N more”** opening **`AttachmentDropdownV2`** for overflow). New files come from a **hidden** `<input type="file" multiple />` (`PrimitiveInput`); **`onAttachFiles(files: File[])`** receives **new** files only. **`onFileRemove(fileId)`** runs when the user dismisses a chip (X). **`onFileClick(file)`** runs when the user activates the **chip label** (preview / open detail) — same callback for inline chips and overflow dropdown rows. Duplicates (same **name + size** as an existing attachment) are filtered in **`handleChatInputV2FileInputChange`** via **`filterDuplicateFiles`** (shared with legacy ChatInput); duplicates trigger **`notifyChatInputV2DuplicateFiles`** (**`addSnackbarV2`**).
 - **Slots**: **`slot1`** — block above the input row (e.g. context). **`slot2`** — icon/content for the **primary** trailing **`ButtonV2`**; **`onSlot2Click`** fires on click.
 - **Top queries**: Optional **`topQueries`**; the list sits under the input and expands when the textarea is **focused** (`InputStateV2.FOCUS`). Container uses **`aria-hidden`** when collapsed. **`onTopQuerySelect(query)`** runs when a row is chosen; **`topQueriesMaxHeight`** caps the panel height.
 - **States**: **Disabled** maps to native **`disabled`** on the textarea and **`aria-disabled`**. Attach and secondary buttons respect **`disabled`**.
@@ -19,7 +19,7 @@ Deliver a **chat composer** (Inputs V2) that supports:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  [Optional: ChatInputV2AttachmentRow — chips, overflow menu]          │
+│  [Optional: ChatInputV2AttachmentRow — ChatInputTagV2 chips, overflow] │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  [Optional: slot1 — full width]                                         │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -70,6 +70,7 @@ type ChatInputV2Props = {
     attachedFiles?: AttachedFile[]
     onAttachFiles?: (files: File[]) => void
     onFileRemove?: (fileId: string) => void
+    onFileClick?: (file: AttachedFile) => void
     onEnter?: () => void
 } & Omit<
     React.TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -80,7 +81,8 @@ type ChatInputV2Props = {
 **Notable points**
 
 - **`onChange`** is the string value, not a `ChangeEvent`.
-- **`onAttachFiles`** / **`onFileRemove`** — parent owns **`attachedFiles`**; do not “replace” the full list through **`onAttachFiles`** for removals (use **`onFileRemove`**).
+- **`onAttachFiles`** / **`onFileRemove`** / **`onFileClick`** — parent owns **`attachedFiles`**. Removals and chip-label actions never go through **`onAttachFiles`**; use **`onFileRemove`** and **`onFileClick`** respectively.
+- **`MobileChatInputV2Props`** includes **`onFileClick`**, **`onFileRemove`**, and **`handleAttachClick`** for the mobile attachment flow. The type also lists **`overflowMenuProps?: Partial<MenuProps>`** for forward compatibility with menu customization.
 - **`className`**, **`style`**, **`onFocus`**, **`onBlur`**, **`cols`** are omitted from the public type; other textarea attributes (including **`aria-label`**, **`id`**, **`name`** where allowed) are merged via **`...textareaRest`** in the implementation, with component-controlled props taking precedence where set explicitly.
 
 ## Token type (desktop)
@@ -101,7 +103,7 @@ Resolution: **`getChatInputV2LightTokens` / `getChatInputV2DarkTokens`** keyed b
 | `notifyChatInputV2DuplicateFiles`               | **`addSnackbarV2`** when duplicates are skipped                 |
 | `assignForwardedRef`                            | Merge forwarded ref with internal container ref                 |
 | `computeAttachmentRowCutoff` / overflow helpers | Chip row measurement and “+ N more”                             |
-| `truncateFileNameForTag`                        | Short label for **`TagV2`** text                                |
+| `truncateFileNameForTag`                        | Short label text on **`ChatInputTagV2`** chips                  |
 
 Shared with legacy ChatInput: **`filterDuplicateFiles`** (`components/ChatInput/utils.ts`).
 
@@ -123,7 +125,11 @@ Shared with legacy ChatInput: **`filterDuplicateFiles`** (`components/ChatInput/
 
 ### 4. File input **`accept`**
 
-**Decision**: **`accept="image/*,.pdf,.csv,.txt,.doc,.docx"`** on the hidden input (desktop and mobile use the same hidden input pattern on desktop; mobile triggers the same handler path via **`handleAttachClick`**).
+**Decision**: **`accept="image/*,.pdf,.csv,.txt,.doc,.docx"`** on the hidden input. Desktop wires **`onChange`** on that input to **`handleChatInputV2FileInputChange`**. Mobile uses **`handleAttachClick`** to **`click()`** the same hidden input from **`ChatInputV2`** (fragment next to **`MobileChatInputV2`**).
+
+### 5. Chip interactions
+
+**Decision**: Each chip is **`ChatInputTagV2`**: label **`Block`** → **`onFileClick`**, dismiss **`Block`** with **`XIcon`** → **`onFileRemove`**. **`AttachmentDropdownV2`** repeats the same handlers for overflow files.
 
 ## Testing & Storybook
 
@@ -134,5 +140,5 @@ Shared with legacy ChatInput: **`filterDuplicateFiles`** (`components/ChatInput/
 ## Related
 
 - **Legacy `ChatInput`** (non-V2): `components/ChatInput` — different API and UI; prefer **`ChatInputV2`** for new work in the Inputs V2 system.
-- **Primitives**: **`PrimitiveTextarea`**, **`PrimitiveInput`**, **`Block`**, **`ButtonV2`**, **`TagV2`**, **`Text`**
-- **Attachment overflow**: **`AttachmentDropdownV2`**, **`ChatInputV2AttachmentRow`**
+- **Primitives / building blocks**: **`PrimitiveTextarea`**, **`PrimitiveInput`**, **`PrimitiveButton`** (mobile attach), **`Block`**, **`ButtonV2`**, **`Text`**, **`TooltipV2`**
+- **Attachment UI**: **`ChatInputTagV2`**, **`AttachmentDropdownV2`**, **`ChatInputV2AttachmentRow`**

@@ -7,6 +7,10 @@ import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 import * as SnackbarV2 from '../../../lib/components/SnackbarV2'
 
 const noopChange = () => {}
+const noopAttachmentHandlers = {
+    onFileRemove: () => {},
+    onFileClick: () => {},
+}
 
 describe('ChatInputV2 Accessibility', () => {
     beforeEach(() => {
@@ -62,7 +66,7 @@ describe('ChatInputV2 Accessibility', () => {
                             size: 12,
                         },
                     ]}
-                    onFileRemove={() => {}}
+                    {...noopAttachmentHandlers}
                     slot2={<MockIcon />}
                 />
             )
@@ -94,7 +98,7 @@ describe('ChatInputV2 Accessibility', () => {
                     attachedFiles={[
                         { id: 'p1', name: 'file.pdf', type: 'pdf', size: 100 },
                     ]}
-                    onFileRemove={() => {}}
+                    {...noopAttachmentHandlers}
                     slot2={<MockIcon />}
                 />
             )
@@ -161,6 +165,16 @@ describe('ChatInputV2 Accessibility', () => {
             ).toHaveAttribute('type', 'file')
         })
 
+        it('exposes visible attach and secondary controls with accessible names (desktop)', () => {
+            render(<ChatInputV2 {...baseProps} slot2={<MockIcon />} />)
+            expect(
+                screen.getByRole('button', { name: 'Attach files' })
+            ).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: 'Secondary action' })
+            ).toBeInTheDocument()
+        })
+
         it('exposes attachment row as a named region when files exist', () => {
             render(
                 <ChatInputV2
@@ -168,7 +182,7 @@ describe('ChatInputV2 Accessibility', () => {
                     attachedFiles={[
                         { id: 'f1', name: 'a.txt', type: 'text', size: 1 },
                     ]}
-                    onFileRemove={() => {}}
+                    {...noopAttachmentHandlers}
                 />
             )
             expect(
@@ -204,6 +218,23 @@ describe('ChatInputV2 Accessibility', () => {
             const heading = screen.getByText('Top Queries')
             const panel = heading.closest('[aria-hidden]')
             expect(panel).toHaveAttribute('aria-hidden', 'false')
+        })
+
+        it('restores aria-hidden when the textarea loses focus', async () => {
+            const { user } = render(
+                <ChatInputV2
+                    {...baseProps}
+                    topQueries={[{ id: '1', text: 'Suggestion' }]}
+                    onTopQuerySelect={() => {}}
+                />
+            )
+            const ta = screen.getByRole('textbox')
+            const heading = screen.getByText('Top Queries')
+            const panel = heading.closest('[aria-hidden]')
+            await user.click(ta)
+            expect(panel).toHaveAttribute('aria-hidden', 'false')
+            fireEvent.blur(ta)
+            expect(panel).toHaveAttribute('aria-hidden', 'true')
         })
     })
 
@@ -254,6 +285,29 @@ describe('ChatInputV2 Accessibility', () => {
             render(<ChatInputV2 {...baseProps} />)
             expect(
                 screen.getByRole('button', { name: /attach files/i })
+            ).toBeInTheDocument()
+        })
+
+        it('keeps attachment region and handlers without axe regressions', async () => {
+            const { container } = render(
+                <ChatInputV2
+                    {...baseProps}
+                    attachedFiles={[
+                        {
+                            id: 'm1',
+                            name: 'mobile.txt',
+                            type: 'text',
+                            size: 10,
+                        },
+                    ]}
+                    {...noopAttachmentHandlers}
+                    slot2={<MockIcon />}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+            expect(
+                screen.getByRole('region', { name: /1 file attached/i })
             ).toBeInTheDocument()
         })
     })
