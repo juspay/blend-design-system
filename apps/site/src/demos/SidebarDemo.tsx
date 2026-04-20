@@ -143,6 +143,7 @@ import MultiValueInputV2Demo from './MultiValueInputV2Demo'
 import NumberInputV2Demo from './NumberInputV2Demo'
 import OTPInputV2Demo from './OTPInputV2Demo'
 import TextAreaV2Demo from './TextAreaV2Demo'
+import SearchInputV2Demo from './SearchInputV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -241,7 +242,8 @@ const SidebarDemo = () => {
         | 'numberInputV2'
         | 'otpInputV2'
         | 'textAreaV2'
-    >('numberInputV2')
+        | 'searchInputV2'
+    >('searchInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -462,6 +464,8 @@ const SidebarDemo = () => {
                 return <InputDemo />
             case 'searchInput':
                 return <SearchInputDemo />
+            case 'searchInputV2':
+                return <SearchInputV2Demo />
             case 'unitInput':
                 return <UnitInputDemo />
             case 'numberInput':
@@ -952,6 +956,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'searchInput',
                     onClick: () => setActiveComponent('searchInput'),
+                },
+                {
+                    label: 'Search Input V2',
+                    leftSlot: (
+                        <Search style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'searchInputV2',
+                    onClick: () => setActiveComponent('searchInputV2'),
                 },
                 {
                     label: 'OTP Input',
