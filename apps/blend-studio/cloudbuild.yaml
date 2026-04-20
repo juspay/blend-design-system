@@ -1,54 +1,77 @@
 steps:
-    # Build the container image with build arguments
+    # ── Build Backend ─────────────────────────────────────────────────────
     - name: 'gcr.io/cloud-builders/docker'
+      id: 'build-backend'
       args:
           - 'build'
           - '-t'
-          - 'gcr.io/$PROJECT_ID/blend-monitor:$BUILD_ID'
+          - 'gcr.io/$PROJECT_ID/blend-backend:$BUILD_ID'
           - '-t'
-          - 'gcr.io/$PROJECT_ID/blend-monitor:latest'
+          - 'gcr.io/$PROJECT_ID/blend-backend:latest'
           - '-f'
-          - 'apps/blend-monitor/Dockerfile'
-          - '--build-arg'
-          - 'NEXT_PUBLIC_FIREBASE_API_KEY=$_FIREBASE_API_KEY'
-          - '--build-arg'
-          - 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=$_FIREBASE_AUTH_DOMAIN'
-          - '--build-arg'
-          - 'NEXT_PUBLIC_FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID'
-          - '--build-arg'
-          - 'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=$_FIREBASE_STORAGE_BUCKET'
-          - '--build-arg'
-          - 'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=$_FIREBASE_MESSAGING_SENDER_ID'
-          - '--build-arg'
-          - 'NEXT_PUBLIC_FIREBASE_APP_ID=$_FIREBASE_APP_ID'
-          - '--build-arg'
-          - 'NEXT_PUBLIC_FIREBASE_DATABASE_URL=$_FIREBASE_DATABASE_URL'
+          - 'apps/backend/Dockerfile'
           - '.'
 
-    # Push the container image to Container Registry
     - name: 'gcr.io/cloud-builders/docker'
-      args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/blend-monitor']
+      id: 'push-backend'
+      args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/blend-backend']
+      waitFor: ['build-backend']
 
-    # Deploy container image to Cloud Run
+    # ── Build Studio Frontend ────────────────────────────────────────────
+    - name: 'gcr.io/cloud-builders/docker'
+      id: 'build-studio'
+      args:
+          - 'build'
+          - '-t'
+          - 'gcr.io/$PROJECT_ID/blend-studio:$BUILD_ID'
+          - '-t'
+          - 'gcr.io/$PROJECT_ID/blend-studio:latest'
+          - '-f'
+          - 'apps/blend-studio/Dockerfile'
+          - '--build-arg'
+          - 'VITE_FIREBASE_API_KEY=$_FIREBASE_API_KEY'
+          - '--build-arg'
+          - 'VITE_FIREBASE_AUTH_DOMAIN=$_FIREBASE_AUTH_DOMAIN'
+          - '--build-arg'
+          - 'VITE_FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID'
+          - '--build-arg'
+          - 'VITE_FIREBASE_STORAGE_BUCKET=$_FIREBASE_STORAGE_BUCKET'
+          - '--build-arg'
+          - 'VITE_FIREBASE_MESSAGING_SENDER_ID=$_FIREBASE_MESSAGING_SENDER_ID'
+          - '--build-arg'
+          - 'VITE_FIREBASE_APP_ID=$_FIREBASE_APP_ID'
+          - '--build-arg'
+          - 'VITE_FIREBASE_DATABASE_URL=$_FIREBASE_DATABASE_URL'
+          - '--build-arg'
+          - 'VITE_API_BASE_URL=$_API_BASE_URL'
+          - '.'
+
+    - name: 'gcr.io/cloud-builders/docker'
+      id: 'push-studio'
+      args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/blend-studio']
+      waitFor: ['build-studio']
+
+    # ── Deploy Backend to Cloud Run ──────────────────────────────────────
     - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+      id: 'deploy-backend'
       entrypoint: gcloud
       args:
           - 'run'
           - 'deploy'
-          - 'blend-monitor'
+          - 'blend-backend'
           - '--image'
-          - 'gcr.io/$PROJECT_ID/blend-monitor:$BUILD_ID'
+          - 'gcr.io/$PROJECT_ID/blend-backend:$BUILD_ID'
           - '--region'
           - 'us-central1'
           - '--platform'
           - 'managed'
-          - '--allow-unauthenticated'
+          - '--no-allow-unauthenticated'
           - '--add-cloudsql-instances'
           - '$_INSTANCE_CONNECTION_NAME'
           - '--set-env-vars'
-          - 'NODE_ENV=production,INSTANCE_CONNECTION_NAME=$_INSTANCE_CONNECTION_NAME,DATABASE_NAME=$_DATABASE_NAME,DATABASE_USER=$_DATABASE_USER,NEXT_PUBLIC_FIREBASE_API_KEY=$_FIREBASE_API_KEY,NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=$_FIREBASE_AUTH_DOMAIN,NEXT_PUBLIC_FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID,NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=$_FIREBASE_STORAGE_BUCKET,NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=$_FIREBASE_MESSAGING_SENDER_ID,NEXT_PUBLIC_FIREBASE_APP_ID=$_FIREBASE_APP_ID,NEXT_PUBLIC_FIREBASE_DATABASE_URL=$_FIREBASE_DATABASE_URL,FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID,FIREBASE_CLIENT_EMAIL=$_FIREBASE_CLIENT_EMAIL'
+          - 'NODE_ENV=production,PORT=3001,FRONTEND_URL=$_FRONTEND_URL,INSTANCE_CONNECTION_NAME=$_INSTANCE_CONNECTION_NAME,DATABASE_NAME=$_DATABASE_NAME,DATABASE_USER=$_DATABASE_USER,GOOGLE_CLIENT_ID=$_GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET=$_GOOGLE_CLIENT_SECRET,FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID,FIREBASE_CLIENT_EMAIL=$_FIREBASE_CLIENT_EMAIL'
           - '--set-secrets'
-          - 'DATABASE_PASSWORD=blend-monitor-db-password:latest,FIREBASE_PRIVATE_KEY=blend-monitor-firebase-key:latest'
+          - 'DATABASE_PASSWORD=blend-backend-db-password:latest,JWT_SECRET=blend-backend-jwt-secret:latest,JWT_REFRESH_SECRET=blend-backend-jwt-refresh-secret:latest,FIREBASE_PRIVATE_KEY=blend-backend-firebase-key:latest'
           - '--memory'
           - '512Mi'
           - '--cpu'
@@ -58,26 +81,60 @@ steps:
           - '--min-instances'
           - '0'
           - '--max-instances'
-          - '10'
+          - '5'
           - '--service-account'
-          - 'blend-monitor-sa@storybook-452807.iam.gserviceaccount.com'
+          - 'blend-backend-sa@$PROJECT_ID.iam.gserviceaccount.com'
+      waitFor: ['push-backend']
+
+    # ── Deploy Studio to Cloud Run ───────────────────────────────────────
+    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+      id: 'deploy-studio'
+      entrypoint: gcloud
+      args:
+          - 'run'
+          - 'deploy'
+          - 'blend-studio'
+          - '--image'
+          - 'gcr.io/$PROJECT_ID/blend-studio:$BUILD_ID'
+          - '--region'
+          - 'us-central1'
+          - '--platform'
+          - 'managed'
+          - '--allow-unauthenticated'
+          - '--memory'
+          - '256Mi'
+          - '--cpu'
+          - '1'
+          - '--timeout'
+          - '60'
+          - '--min-instances'
+          - '0'
+          - '--max-instances'
+          - '3'
+      waitFor: ['push-studio']
 
 images:
-    - 'gcr.io/$PROJECT_ID/blend-monitor:$BUILD_ID'
-    - 'gcr.io/$PROJECT_ID/blend-monitor:latest'
+    - 'gcr.io/$PROJECT_ID/blend-backend:$BUILD_ID'
+    - 'gcr.io/$PROJECT_ID/blend-backend:latest'
+    - 'gcr.io/$PROJECT_ID/blend-studio:$BUILD_ID'
+    - 'gcr.io/$PROJECT_ID/blend-studio:latest'
 
 substitutions:
-    _INSTANCE_CONNECTION_NAME: 'storybook-452807:us-central1:blend-dashboard'
-    _DATABASE_NAME: 'blend_monitor'
+    _INSTANCE_CONNECTION_NAME: 'YOUR_PROJECT_ID:us-central1:blend-db'
+    _DATABASE_NAME: 'blend_studio'
     _DATABASE_USER: 'admin'
-    _FIREBASE_API_KEY: 'AIzaSyD2aRkOI4iCwiZOW5kEejrL9jv9JvytKpo'
-    _FIREBASE_AUTH_DOMAIN: 'storybook-452807.firebaseapp.com'
-    _FIREBASE_PROJECT_ID: 'storybook-452807'
-    _FIREBASE_STORAGE_BUCKET: 'storybook-452807.firebasestorage.app'
-    _FIREBASE_MESSAGING_SENDER_ID: '567047894553'
-    _FIREBASE_APP_ID: '1:567047894553:web:f2e38d23fbc9bdbbff5c88'
-    _FIREBASE_DATABASE_URL: 'https://storybook-452807-default-rtdb.asia-southeast1.firebasedatabase.app'
-    _FIREBASE_CLIENT_EMAIL: 'blend-firebase-10281134@storybook-452807.iam.gserviceaccount.com'
+    _FRONTEND_URL: 'https://studio.blend.juspay.design'
+    _API_BASE_URL: 'https://api.blend.juspay.design'
+    _GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID'
+    _GOOGLE_CLIENT_SECRET: 'YOUR_GOOGLE_CLIENT_SECRET'
+    _FIREBASE_API_KEY: 'YOUR_FIREBASE_API_KEY'
+    _FIREBASE_AUTH_DOMAIN: 'YOUR_PROJECT.firebaseapp.com'
+    _FIREBASE_PROJECT_ID: 'YOUR_PROJECT_ID'
+    _FIREBASE_STORAGE_BUCKET: 'YOUR_PROJECT.firebasestorage.app'
+    _FIREBASE_MESSAGING_SENDER_ID: 'YOUR_SENDER_ID'
+    _FIREBASE_APP_ID: 'YOUR_APP_ID'
+    _FIREBASE_DATABASE_URL: 'https://YOUR_PROJECT-default-rtdb.firebaseio.com'
+    _FIREBASE_CLIENT_EMAIL: 'blend-firebase@YOUR_PROJECT.iam.gserviceaccount.com'
 
 options:
     logging: CLOUD_LOGGING_ONLY

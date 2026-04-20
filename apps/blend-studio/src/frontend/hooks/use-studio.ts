@@ -64,7 +64,6 @@ const BranchSchema = z.custom<Branch>(
         typeof (value as Branch).id === 'string' &&
         typeof (value as Branch).name === 'string' &&
         typeof (value as Branch).brandId === 'string' &&
-        typeof (value as Branch).slug === 'string' &&
         typeof (value as Branch).status === 'string' &&
         typeof (value as Branch).visibility === 'string' &&
         !!(value as Branch).brandConfig,
@@ -191,6 +190,7 @@ export function useBranchesWithMock(options?: BranchListOptions) {
 
     const query = useQuery({
         queryKey: branchKeys.list(source, optionsKey, orgId),
+        enabled: source.type !== 'none',
         queryFn: async () => {
             const result = await executeQueryWithDefault<BranchListResult>(
                 source,

@@ -16,6 +16,12 @@ import { join } from 'node:path'
 import ora from 'ora'
 import prompts from 'prompts'
 import { logger } from '../utils/logger'
+import {
+    isCiMode,
+    parseCliFormat,
+    reportCommandFailure,
+    reportCommandSuccess,
+} from '../utils/cli-output'
 import { apiClient } from '../utils/api-client'
 import type { BrandConfig } from '@blend-design/token-engine'
 import {
@@ -30,6 +36,9 @@ interface PushOptions {
     patch?: boolean
     changelog?: string
     new?: boolean
+    format?: string
+    json?: boolean
+    ci?: boolean
 }
 
 interface StudioMeta {
@@ -44,28 +53,47 @@ export async function pushCommand(
     branchId?: string,
     options: PushOptions = {}
 ): Promise<void> {
+    const format = parseCliFormat(options)
     const cwd = process.cwd()
 
     if (!apiClient.isAuthenticated()) {
-        logger.error(
+        const message =
             'Not authenticated. Run `npx blend-token-studio login` first.'
-        )
+        reportCommandFailure({
+            format,
+            command: 'push',
+            message,
+            ci: options.ci,
+            logPretty: (m) => logger.error(m),
+        })
         return
     }
 
     const outputDir = findOutputDir(cwd)
     if (!outputDir) {
-        logger.error(
+        const message =
             'blend.config.json not found. Run `npx blend-token-studio init` first.'
-        )
+        reportCommandFailure({
+            format,
+            command: 'push',
+            message,
+            ci: options.ci,
+            logPretty: (m) => logger.error(m),
+        })
         return
     }
 
     const brandPath = join(outputDir, 'brand.json')
     if (!existsSync(brandPath)) {
-        logger.error(
+        const message =
             'brand.json not found. Run `npx blend-token-studio brand` first.'
-        )
+        reportCommandFailure({
+            format,
+            command: 'push',
+            message,
+            ci: options.ci,
+            logPretty: (m) => logger.error(m),
+        })
         return
     }
 
@@ -75,10 +103,20 @@ export async function pushCommand(
 
     const validation = validateBrandConfig(brandConfig)
     if (!validation.valid) {
-        logger.error('Brand config validation failed:')
-        validation.errors.forEach((e) =>
-            logger.error(`  ${e.path}: ${e.message}`)
-        )
+        const message = 'Brand config validation failed'
+        if (format === 'pretty') {
+            logger.error(`${message}:`)
+            validation.errors.forEach((e) =>
+                logger.error(`  ${e.path}: ${e.message}`)
+            )
+        }
+        reportCommandFailure({
+            format,
+            command: 'push',
+            message,
+            ci: options.ci,
+        })
+        process.exitCode = 1
         return
     }
 
@@ -99,21 +137,32 @@ export async function pushCommand(
     }
 
     if (!targetBranchId) {
-        logger.error(
+        const message =
             'No branch ID specified. Provide a branch ID or run `pull` first.'
-        )
+        reportCommandFailure({
+            format,
+            command: 'push',
+            message,
+            ci: options.ci,
+            logPretty: (m) => logger.error(m),
+        })
         return
     }
 
-    logger.header('Blend Token Studio — Push')
+    if (format === 'pretty') {
+        logger.header('Blend Token Studio — Push')
+    }
 
-    let spinner = ora(`Checking branch ${targetBranchId}...`).start()
+    let spinner =
+        format === 'pretty'
+            ? ora(`Checking branch ${targetBranchId}...`).start()
+            : null
 
     const existingResponse = await apiClient.getBranch(targetBranchId)
 
     if (!existingResponse.success) {
         if (options.new) {
-            spinner.text = `Creating branch ${targetBranchId}...`
+            if (spinner) spinner.text = `Creating branch ${targetBranchId}...`
             const createResponse = await apiClient.createBranch({
                 brandId: brandConfig.brandId,
                 name: brandConfig.name,
@@ -121,37 +170,70 @@ export async function pushCommand(
             })
 
             if (!createResponse.success) {
-                spinner.fail('Failed to create branch')
-                logger.error(createResponse.error?.message || 'Unknown error')
+                if (spinner) spinner.fail('Failed to create branch')
+                const message = createResponse.error?.message || 'Unknown error'
+                reportCommandFailure({
+                    format,
+                    command: 'push',
+                    message,
+                    ci: options.ci,
+                    logPretty: (m) => logger.error(m),
+                })
                 return
             }
 
-            spinner.succeed(`Created branch: ${targetBranchId}`)
+            if (spinner) spinner.succeed(`Created branch: ${targetBranchId}`)
         } else {
-            spinner.fail(`Branch ${targetBranchId} not found`)
-            logger.detail('Use --new to create a new branch')
+            if (spinner) spinner.fail(`Branch ${targetBranchId} not found`)
+            const message = `Branch ${targetBranchId} not found`
+            reportCommandFailure({
+                format,
+                command: 'push',
+                message,
+                ci: options.ci,
+                logPretty: (m) => {
+                    logger.error(m)
+                    logger.detail('Use --new to create a new branch')
+                },
+            })
             return
         }
     } else {
-        spinner.text = `Pushing to ${targetBranchId}...`
+        if (spinner) spinner.text = `Pushing to ${targetBranchId}...`
         const updateResponse = await apiClient.updateBranch(
             targetBranchId,
             brandConfig
         )
 
         if (!updateResponse.success) {
-            spinner.fail('Failed to push brand config')
-            logger.error(updateResponse.error?.message || 'Unknown error')
+            if (spinner) spinner.fail('Failed to push brand config')
+            const message = updateResponse.error?.message || 'Unknown error'
+            reportCommandFailure({
+                format,
+                command: 'push',
+                message,
+                ci: options.ci,
+                logPretty: (m) => logger.error(m),
+            })
             return
         }
 
-        spinner.succeed(`Pushed to ${targetBranchId}`)
+        if (spinner) spinner.succeed(`Pushed to ${targetBranchId}`)
     }
+
+    let publishedVersion: string | undefined
 
     if (options.publish) {
         const branchResponse = await apiClient.getBranch(targetBranchId)
         if (!branchResponse.success || !branchResponse.data) {
-            logger.error('Failed to fetch branch for publishing')
+            const message = 'Failed to fetch branch for publishing'
+            reportCommandFailure({
+                format,
+                command: 'push',
+                message,
+                ci: options.ci,
+                logPretty: (m) => logger.error(m),
+            })
             return
         }
 
@@ -163,6 +245,8 @@ export async function pushCommand(
         } else if (options.minor) {
             newVersion = incrementVersion(currentVersion, 'minor')
         } else if (options.patch) {
+            newVersion = incrementVersion(currentVersion, 'patch')
+        } else if (isCiMode(options.ci)) {
             newVersion = incrementVersion(currentVersion, 'patch')
         } else {
             const { version } = await prompts({
@@ -177,16 +261,21 @@ export async function pushCommand(
         }
 
         let changelog = options.changelog
-        if (!changelog) {
+        if (changelog === undefined && !isCiMode(options.ci)) {
             const { input } = await prompts({
                 type: 'text',
                 name: 'input',
                 message: 'Changelog (optional):',
             })
             changelog = input || undefined
+        } else if (changelog === undefined && isCiMode(options.ci)) {
+            changelog = ''
         }
 
-        spinner = ora(`Publishing version ${newVersion}...`).start()
+        spinner =
+            format === 'pretty'
+                ? ora(`Publishing version ${newVersion}...`).start()
+                : null
 
         const publishResponse = await apiClient.publishVersion(targetBranchId, {
             branchId: targetBranchId,
@@ -197,17 +286,33 @@ export async function pushCommand(
         })
 
         if (!publishResponse.success) {
-            spinner.fail('Failed to publish version')
-            logger.error(publishResponse.error?.message || 'Unknown error')
+            if (spinner) spinner.fail('Failed to publish version')
+            const message = publishResponse.error?.message || 'Unknown error'
+            reportCommandFailure({
+                format,
+                command: 'push',
+                message,
+                ci: options.ci,
+                logPretty: (m) => logger.error(m),
+            })
             return
         }
 
-        spinner.succeed(`Published version ${newVersion}`)
+        if (spinner) spinner.succeed(`Published version ${newVersion}`)
+        publishedVersion = newVersion
     }
 
-    logger.newline()
-    logger.success('Push complete!')
-    logger.newline()
+    if (format === 'pretty') {
+        logger.newline()
+        logger.success('Push complete!')
+        logger.newline()
+    }
+
+    reportCommandSuccess(format, 'push', {
+        branchId: targetBranchId,
+        published: Boolean(options.publish),
+        publishedVersion: publishedVersion ?? null,
+    })
 }
 
 function findOutputDir(cwd: string): string | null {

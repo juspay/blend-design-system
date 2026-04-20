@@ -9,14 +9,17 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 export interface ProjectInfo {
-    /** Project type: nextjs, vite, cra, unknown */
-    type: 'nextjs' | 'vite' | 'cra' | 'unknown'
+    /** Project type: nextjs, vite, cra, rescript, unknown */
+    type: 'nextjs' | 'vite' | 'cra' | 'rescript' | 'unknown'
 
     /** Package manager: pnpm, yarn, npm */
     packageManager: 'pnpm' | 'yarn' | 'npm'
 
     /** Whether TypeScript is used */
     typescript: boolean
+
+    /** Whether ReScript is used */
+    rescript: boolean
 
     /** Whether blend is already installed */
     hasBlend: boolean
@@ -36,6 +39,7 @@ export function detectProject(cwd: string): ProjectInfo {
             type: 'unknown',
             packageManager: 'npm',
             typescript: false,
+            rescript: false,
             hasBlend: false,
             hasStyledComponents: false,
             srcDir: 'src',
@@ -45,9 +49,17 @@ export function detectProject(cwd: string): ProjectInfo {
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'))
     const allDeps = { ...pkg.dependencies, ...pkg.devDependencies }
 
+    // Detect ReScript (check for bsconfig.json or rescript.json or rescript dep)
+    const hasRescript =
+        existsSync(join(cwd, 'rescript.json')) ||
+        existsSync(join(cwd, 'bsconfig.json')) ||
+        !!allDeps['rescript'] ||
+        !!allDeps['@rescript/core']
+
     // Detect framework
     let type: ProjectInfo['type'] = 'unknown'
-    if (allDeps['next']) type = 'nextjs'
+    if (hasRescript) type = 'rescript'
+    else if (allDeps['next']) type = 'nextjs'
     else if (allDeps['vite']) type = 'vite'
     else if (allDeps['react-scripts']) type = 'cra'
 
@@ -73,6 +85,7 @@ export function detectProject(cwd: string): ProjectInfo {
         type,
         packageManager,
         typescript,
+        rescript: hasRescript,
         hasBlend,
         hasStyledComponents,
         srcDir,

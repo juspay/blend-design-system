@@ -42,6 +42,7 @@
         "test:a11y": "cd packages/blend && pnpm test:a11y",
         "test:a11y:watch": "cd packages/blend && pnpm test:a11y:watch",
         "test:a11y:file": "cd packages/blend && pnpm test:file",
+        "token-studio": "blend-token-studio",
         "test:token-studio:npm-smoke": "node ./scripts/token-studio-npm-smoke.mjs",
         "test:token-studio:release-gate": "pnpm --filter @juspay/blend-design-system build && pnpm --filter @blend-design/token-engine build && pnpm --filter blend-token-studio build && pnpm --filter @blend-design/token-engine typecheck && pnpm --filter blend-token-studio typecheck",
         "chromatic": "cd apps/storybook && pnpm chromatic",
@@ -63,7 +64,8 @@
         "husky": "^9.1.7",
         "prettier": "^3.6.2",
         "turbo": "^2.5.4",
-        "typescript-eslint": "^8.37.0"
+        "typescript-eslint": "^8.37.0",
+        "blend-token-studio": "workspace:*"
     },
     "dependencies": {
         "react-hook-form": "^7.62.0",

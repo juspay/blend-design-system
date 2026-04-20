@@ -16,10 +16,14 @@
  *   npx blend-token-studio list                    # list branches
  *   npx blend-token-studio diff                    # see overrides
  *   npx blend-token-studio validate                # validate brand.json
- *   npx blend-token-studio generate ./brand.json   # offline generation
+ *   npx blend-token-studio generate ./brand.json   # offline generation (TypeScript)
+ *   npx blend-token-studio generate ./brand.json --language rescript  # ReScript module
+ *
+ * From monorepo root (after pnpm install): use a real brand path or the sample fixture, e.g.
+ *   pnpm exec blend-token-studio generate packages/cli/fixtures/sample-brand.json --language rescript -o ./out/blend
  */
 
-import { Command } from 'commander'
+import { Command, Option } from 'commander'
 import { initCommand } from './commands/init'
 import { brandCommand } from './commands/brand'
 import { diffCommand } from './commands/diff'
@@ -68,6 +72,17 @@ program
     .option('-v, --version <version>', 'Specific version to pull')
     .option('-t, --theme <theme>', 'Theme to resolve (light or dark)', 'light')
     .option('-o, --output <dir>', 'Output directory')
+    .option(
+        '-l, --language <lang>',
+        'Output language (typescript, rescript)',
+        'typescript'
+    )
+    .option('--ci', 'CI mode (no prompts, non-zero exit on failure)')
+    .option(
+        '--skip-init',
+        'Fail if blend.config.json is missing instead of creating a minimal default'
+    )
+    .option('--format <format>', 'Output format (pretty, json)', 'pretty')
     .action(async (branchId, options) => {
         await pullCommand(branchId, options)
     })
@@ -81,6 +96,8 @@ program
     .option('--minor', 'Bump minor version')
     .option('--patch', 'Bump patch version')
     .option('-c, --changelog <text>', 'Changelog for the version')
+    .option('--ci', 'CI mode (no prompts; default patch bump when publishing)')
+    .option('--format <format>', 'Output format (pretty, json)', 'pretty')
     .action(async (branchId, options) => {
         await pushCommand(branchId, options)
     })
@@ -98,7 +115,9 @@ program
         'Filter by visibility (private, team, public)'
     )
     .option('-s, --search <query>', 'Search by name')
-    .option('--json', 'Output as JSON')
+    .option('--json', 'Output as JSON (same as --format json)')
+    .option('--format <format>', 'Output format (pretty, json)', 'pretty')
+    .option('--ci', 'CI mode (non-zero exit on failure)')
     .option('-l, --limit <number>', 'Limit number of results', '50')
     .action(async (options) => {
         await listCommand({
@@ -139,14 +158,25 @@ program
 program
     .command('validate')
     .description('Validate your brand.json configuration')
-    .action(async () => {
-        await validateCommand()
+    .option('--json', 'Output as JSON (same as --format json)')
+    .option('--format <format>', 'Output format (pretty, json)', 'pretty')
+    .option('--ci', 'CI mode (non-zero exit on validation failure)')
+    .action(async (options) => {
+        await validateCommand(options)
     })
 
 program
     .command('generate <input>')
     .description('Generate tokens from a local brand.json file')
     .option('-o, --output <dir>', 'Output directory', 'src/blend')
+    .addOption(
+        new Option(
+            '-l, --language <lang>',
+            'Output language (typescript, rescript)'
+        )
+            .choices(['typescript', 'ts', 'rescript', 're'])
+            .default('typescript')
+    )
     .action(async (input, options) => {
         await generateCommand(input, options)
     })

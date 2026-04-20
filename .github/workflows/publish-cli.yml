@@ -1,0 +1,152 @@
+name: Publish CLI (blend-token-studio)
+
+on:
+    workflow_dispatch:
+        inputs:
+            version_bump:
+                description: 'Version bump type'
+                required: true
+                type: choice
+                options:
+                    - patch
+                    - minor
+                    - major
+            tag:
+                description: 'NPM dist-tag (latest or beta)'
+                required: true
+                type: choice
+                options:
+                    - latest
+                    - beta
+                default: latest
+            confirm_publish:
+                description: 'Type "PUBLISH" to confirm'
+                required: true
+                type: string
+
+concurrency:
+    group: publish-cli-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    publish-cli:
+        name: Publish blend-token-studio to NPM
+        runs-on: ubuntu-latest
+        environment: npm
+        if: github.event.inputs.confirm_publish == 'PUBLISH'
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Verify NPM Token
+              run: |
+                  if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+                    echo "ERROR: NPM_TOKEN secret is not set!"
+                    echo "Go to Settings > Secrets > Actions > Environments > npm"
+                    exit 1
+                  fi
+                  echo "NPM_TOKEN is configured"
+                  npm whoami || (echo "NPM auth failed" && exit 1)
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            # Build token-engine first (CLI depends on it)
+            - name: Build token-engine
+              run: pnpm --filter @blend-design/token-engine build
+
+            # Bump version
+            - name: Bump CLI version
+              id: bump
+              run: |
+                  cd packages/cli
+                  OLD_VERSION=$(node -p "require('./package.json').version")
+                  npm version ${{ github.event.inputs.version_bump }} --no-git-tag-version
+                  NEW_VERSION=$(node -p "require('./package.json').version")
+
+                  # If beta tag, append beta suffix
+                  if [ "${{ github.event.inputs.tag }}" = "beta" ]; then
+                    BETA_VERSION="${NEW_VERSION}-beta.$(date +%Y%m%d%H%M)"
+                    npm version "$BETA_VERSION" --no-git-tag-version --allow-same-version
+                    NEW_VERSION="$BETA_VERSION"
+                  fi
+
+                  echo "old_version=$OLD_VERSION" >> $GITHUB_OUTPUT
+                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+                  echo "Bumped: $OLD_VERSION -> $NEW_VERSION"
+
+            # Build CLI
+            - name: Build CLI
+              run: pnpm --filter blend-token-studio build
+
+            # Verify the build
+            - name: Verify build output
+              run: |
+                  cd packages/cli
+                  if [ ! -f dist/index.js ]; then
+                    echo "ERROR: dist/index.js not found after build!"
+                    exit 1
+                  fi
+                  echo "Build output verified: dist/index.js exists"
+                  ls -la dist/
+
+            # Publish to NPM
+            - name: Publish to NPM
+              run: |
+                  cd packages/cli
+                  npm publish --tag ${{ github.event.inputs.tag }} --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            # Verify publish
+            - name: Verify published version
+              run: |
+                  sleep 10
+                  PUBLISHED=$(npm view blend-token-studio@${{ github.event.inputs.tag }} version 2>/dev/null || echo "NOT_FOUND")
+                  EXPECTED="${{ steps.bump.outputs.new_version }}"
+                  echo "Published: $PUBLISHED | Expected: $EXPECTED"
+                  if [ "$PUBLISHED" != "$EXPECTED" ]; then
+                    echo "WARNING: Published version ($PUBLISHED) does not match expected ($EXPECTED)"
+                    echo "NPM registry may take a moment to update."
+                  fi
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            # Commit version bump
+            - name: Commit version bump
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add packages/cli/package.json
+                  git commit -m "chore(cli): release blend-token-studio@${{ steps.bump.outputs.new_version }}" || true
+                  git push || true
+
+            - name: Summary
+              run: |
+                  echo "## CLI Published" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+                  echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+                  echo "| Package | blend-token-studio |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Version | ${{ steps.bump.outputs.new_version }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Tag | ${{ github.event.inputs.tag }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Previous | ${{ steps.bump.outputs.old_version }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "Install with:" >> $GITHUB_STEP_SUMMARY
+                  echo '```' >> $GITHUB_STEP_SUMMARY
+                  echo "npx blend-token-studio@${{ github.event.inputs.tag }} --version" >> $GITHUB_STEP_SUMMARY
+                  echo '```' >> $GITHUB_STEP_SUMMARY

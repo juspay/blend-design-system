@@ -6,6 +6,10 @@
  *
  * Usage:
  *   blend-token-studio generate ./my-brand.json --output ./src/blend
+ *   blend-token-studio generate ./my-brand.json --language rescript
+ *
+ * Monorepo smoke test (repo root):
+ *   pnpm exec blend-token-studio generate packages/cli/fixtures/sample-brand.json --language rescript -o ./out/blend
  */
 
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs'
@@ -15,9 +19,13 @@ import { logger } from '../utils/logger'
 import type { BrandConfig } from '@blend-design/token-engine'
 import { validateBrandConfig } from '@blend-design/token-engine/server'
 import { generateBrandTokensCode } from '../generators/tokens-generator'
+import { generateBrandTokensRescriptCode } from '../generators/tokens-rescript-generator'
+
+export type GenerateLanguage = 'typescript' | 'rescript'
 
 interface GenerateOptions {
     output?: string
+    language?: GenerateLanguage
 }
 
 export async function generateCommand(
@@ -26,6 +34,23 @@ export async function generateCommand(
 ): Promise<void> {
     const cwd = process.cwd()
     const fullPath = resolve(cwd, inputPath)
+    const languageRaw = (options.language ?? 'typescript').toLowerCase()
+    const isRescript = languageRaw === 'rescript' || languageRaw === 're'
+    const isTypescript =
+        languageRaw === 'typescript' ||
+        languageRaw === 'ts' ||
+        languageRaw === ''
+
+    if (!isRescript && !isTypescript) {
+        logger.error(
+            `Unknown --language "${options.language ?? ''}". Use typescript or rescript.`
+        )
+        return
+    }
+
+    const languageResolved: GenerateLanguage = isRescript
+        ? 'rescript'
+        : 'typescript'
 
     logger.header('Blend Token Studio — Generate')
 
@@ -68,16 +93,29 @@ export async function generateCommand(
     const outputDir = resolve(cwd, options.output ?? 'src/blend')
     mkdirSync(outputDir, { recursive: true })
 
-    const tokensPath = join(outputDir, 'tokens.ts')
-    writeFileSync(
-        tokensPath,
-        generateBrandTokensCode(
-            brandConfig,
-            lightTokens as unknown as Record<string, unknown>,
-            darkTokens as unknown as Record<string, unknown>
+    if (languageResolved === 'rescript') {
+        const resPath = join(outputDir, 'BlendTokens.res')
+        writeFileSync(
+            resPath,
+            generateBrandTokensRescriptCode(
+                brandConfig,
+                lightTokens as unknown as Record<string, unknown>,
+                darkTokens as unknown as Record<string, unknown>
+            )
         )
-    )
-    logger.fileWritten(tokensPath)
+        logger.fileWritten(resPath)
+    } else {
+        const tokensPath = join(outputDir, 'tokens.ts')
+        writeFileSync(
+            tokensPath,
+            generateBrandTokensCode(
+                brandConfig,
+                lightTokens as unknown as Record<string, unknown>,
+                darkTokens as unknown as Record<string, unknown>
+            )
+        )
+        logger.fileWritten(tokensPath)
+    }
 
     const brandPath = join(outputDir, 'brand.json')
     writeFileSync(brandPath, JSON.stringify(brandConfig, null, 4) + '\n')

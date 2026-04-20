@@ -7,11 +7,16 @@
  *   blend-token-studio list                    # list all branches
  *   blend-token-studio list --status published # filter by status
  *   blend-token-studio list --search hdfc      # search by name
- *   blend-token-studio list --json             # output as JSON
+ *   blend-token-studio list --json             # output as JSON (envelope)
  */
 
 import ora from 'ora'
 import { logger } from '../utils/logger'
+import {
+    parseCliFormat,
+    reportCommandFailure,
+    reportCommandSuccess,
+} from '../utils/cli-output'
 import { apiClient } from '../utils/api-client'
 import type {
     BranchListOptions,
@@ -24,20 +29,33 @@ interface ListOptions {
     visibility?: BranchVisibility
     search?: string
     json?: boolean
+    format?: string
+    ci?: boolean
     limit?: number
 }
 
 export async function listCommand(options: ListOptions = {}): Promise<void> {
+    const format = parseCliFormat(options)
+
     if (!apiClient.isAuthenticated()) {
-        logger.error(
+        const message =
             'Not authenticated. Run `npx blend-token-studio login` first.'
-        )
+        reportCommandFailure({
+            format,
+            command: 'list',
+            message,
+            ci: options.ci,
+            logPretty: (m) => logger.error(m),
+        })
         return
     }
 
-    logger.header('Blend Token Studio — Branches')
+    if (format === 'pretty') {
+        logger.header('Blend Token Studio — Branches')
+    }
 
-    const spinner = ora('Fetching branches...').start()
+    const spinner =
+        format === 'pretty' ? ora('Fetching branches...').start() : null
 
     const listOptions: BranchListOptions = {
         filters: {
@@ -53,17 +71,31 @@ export async function listCommand(options: ListOptions = {}): Promise<void> {
     const response = await apiClient.listBranches(listOptions)
 
     if (!response.success || !response.data) {
-        spinner.fail('Failed to fetch branches')
-        logger.error(response.error?.message || 'Unknown error')
+        if (spinner) spinner.fail('Failed to fetch branches')
+        const message = response.error?.message || 'Unknown error'
+        reportCommandFailure({
+            format,
+            command: 'list',
+            message,
+            ci: options.ci,
+            logPretty: (m) => logger.error(m),
+        })
         return
     }
 
     const { branches, total, hasMore } = response.data
 
-    spinner.succeed(`Found ${total} branch${total !== 1 ? 'es' : ''}`)
+    if (spinner) {
+        spinner.succeed(`Found ${total} branch${total !== 1 ? 'es' : ''}`)
+    }
 
-    if (options.json) {
-        console.log(JSON.stringify(branches, null, 2))
+    reportCommandSuccess(format, 'list', {
+        branches,
+        total,
+        hasMore,
+    })
+
+    if (format === 'json') {
         return
     }
 

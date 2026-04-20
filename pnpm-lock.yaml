@@ -35,6 +35,9 @@ importers:
             '@typescript-eslint/parser':
                 specifier: ^8.37.0
                 version: 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+            blend-token-studio:
+                specifier: workspace:*
+                version: link:packages/cli
             eslint:
                 specifier: ^9.31.0
                 version: 9.39.2(jiti@2.6.1)

@@ -69,8 +69,8 @@ interface BranchListResponse {
 }
 
 interface ResolveTokensResponse {
-    branch: Branch
-    componentTokens: Record<string, unknown>
+    branchId: string
+    brandConfig: BrandConfig
     theme: string
 }
 

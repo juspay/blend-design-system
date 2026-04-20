@@ -5,6 +5,15 @@ import {
     useCreateBranchWithMock,
     useDeleteBranchWithMock,
     useForkBranchWithMock,
+    useOrganization,
+    useTokenLocks,
+    useLockToken,
+    useUnlockToken,
+    useMergeRequests,
+    useCreateMergeRequest,
+    useApproveMergeRequest,
+    useRejectMergeRequest,
+    useMergeMergeRequest,
 } from '@/frontend/hooks/use-studio'
 import { type Branch } from '@blend-design/token-engine'
 import { memo, useState, useCallback, useEffect } from 'react'
@@ -28,7 +37,9 @@ import {
     HouseIcon,
     PaletteIcon,
     SparkleIcon,
+    ShieldCheckIcon,
 } from '@phosphor-icons/react'
+import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import {
     useOnboarding,
     WelcomeOnboarding,
@@ -50,6 +61,7 @@ import {
     ButtonV2Size,
     SearchInput,
 } from '@juspay/blend-design-system'
+import type { MergeRequest, TokenLock } from '@/api/backend'
 
 export const Route = createFileRoute('/studio/')({
     component: StudioPage,
@@ -73,15 +85,28 @@ type ModalState =
 
 function StudioPage() {
     const navigate = useNavigate()
+    const { user } = useBackendAuth()
     const [searchInput, setSearchInput] = useState('')
     const [searchQuery, setSearchQuery] = useState('')
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
     const [modal, setModal] = useState<ModalState>({ type: 'none' })
     const [openMenu, setOpenMenu] = useState<string | null>(null)
     const [showGuide, setShowGuide] = useState(false)
+    const [tokenPathInput, setTokenPathInput] = useState('')
+    const [tokenReasonInput, setTokenReasonInput] = useState('')
+    const [mrSourceBranchId, setMrSourceBranchId] = useState('')
+    const [mrTitle, setMrTitle] = useState('')
+    const [mrDescription, setMrDescription] = useState('')
+    const [mrReviewComment, setMrReviewComment] = useState('')
     const { isComplete: onboardingComplete, complete: completeOnboarding } =
         useOnboarding()
     const flags = featureFlags.get()
+
+    const orgMembership = user?.organizations?.[0] ?? null
+    const organizationId = orgMembership?.organizationId ?? null
+    const orgRole = orgMembership?.role ?? 'viewer'
+    const isOrgAdmin = orgRole === 'admin'
+    const canCreateChangeRequest = orgRole === 'admin' || orgRole === 'editor'
 
     useEffect(() => {
         const timer = window.setTimeout(() => {
@@ -115,6 +140,52 @@ function StudioPage() {
     const { createBranch, loading: creating } = useCreateBranchWithMock()
     const { deleteBranch, loading: deleting } = useDeleteBranchWithMock()
     const { forkBranch, loading: forking } = useForkBranchWithMock()
+    const { organization } = useOrganization(organizationId)
+    const {
+        locks,
+        loading: locksLoading,
+        error: locksError,
+    } = useTokenLocks(organizationId)
+    const {
+        lockToken,
+        loading: lockingToken,
+        error: lockTokenError,
+    } = useLockToken()
+    const {
+        unlockToken,
+        loading: unlockingToken,
+        error: unlockTokenError,
+    } = useUnlockToken()
+    const {
+        mergeRequests,
+        loading: mergeRequestsLoading,
+        error: mergeRequestsError,
+    } = useMergeRequests({ organizationId: organizationId ?? undefined })
+    const {
+        createMergeRequest,
+        loading: creatingMergeRequest,
+        error: createMergeRequestError,
+    } = useCreateMergeRequest()
+    const {
+        approveMergeRequest,
+        loading: approvingMergeRequest,
+        error: approveMergeRequestError,
+    } = useApproveMergeRequest()
+    const {
+        rejectMergeRequest,
+        loading: rejectingMergeRequest,
+        error: rejectMergeRequestError,
+    } = useRejectMergeRequest()
+    const {
+        mergeMergeRequest,
+        loading: mergingMergeRequest,
+        error: mergeMergeRequestError,
+    } = useMergeMergeRequest()
+
+    const defaultBranchId = organization?.defaultBranchId ?? null
+    const sourceBranchOptions = allBranches.filter(
+        (branch) => branch.id !== defaultBranchId
+    )
 
     const handleDelete = useCallback(
         async (branch: Branch) => {
@@ -158,6 +229,75 @@ function StudioPage() {
         published: allBranches.filter((b) => b.status === 'published').length,
         archived: allBranches.filter((b) => b.status === 'archived').length,
     }
+
+    const handleLockToken = useCallback(async () => {
+        if (!organizationId || !tokenPathInput.trim()) return
+        await lockToken({
+            orgId: organizationId,
+            tokenPath: tokenPathInput.trim(),
+            reason: tokenReasonInput.trim() || undefined,
+        })
+        setTokenPathInput('')
+        setTokenReasonInput('')
+    }, [lockToken, organizationId, tokenPathInput, tokenReasonInput])
+
+    const handleUnlockToken = useCallback(
+        async (tokenPath: string) => {
+            if (!organizationId) return
+            await unlockToken({ orgId: organizationId, tokenPath })
+        },
+        [organizationId, unlockToken]
+    )
+
+    const handleCreateMergeRequest = useCallback(async () => {
+        if (
+            !organizationId ||
+            !defaultBranchId ||
+            !mrSourceBranchId ||
+            !mrTitle.trim()
+        ) {
+            return
+        }
+        await createMergeRequest({
+            organizationId,
+            sourceBranchId: mrSourceBranchId,
+            targetBranchId: defaultBranchId,
+            title: mrTitle.trim(),
+            description: mrDescription.trim() || undefined,
+        })
+        setMrSourceBranchId('')
+        setMrTitle('')
+        setMrDescription('')
+    }, [
+        createMergeRequest,
+        defaultBranchId,
+        mrDescription,
+        mrSourceBranchId,
+        mrTitle,
+        organizationId,
+    ])
+
+    const handleApproveMergeRequest = useCallback(
+        async (mrId: string) => {
+            await approveMergeRequest({
+                mrId,
+                reviewComment: mrReviewComment.trim() || undefined,
+            })
+            setMrReviewComment('')
+        },
+        [approveMergeRequest, mrReviewComment]
+    )
+
+    const handleRejectMergeRequest = useCallback(
+        async (mrId: string) => {
+            await rejectMergeRequest({
+                mrId,
+                reviewComment: mrReviewComment.trim() || undefined,
+            })
+            setMrReviewComment('')
+        },
+        [mrReviewComment, rejectMergeRequest]
+    )
 
     return (
         <RequireAuth>
@@ -318,6 +458,65 @@ function StudioPage() {
                                     onDelete={handleDeleteBranch}
                                 />
                             ))}
+                        </div>
+                    )}
+
+                    {organizationId && (
+                        <div className="mt-8">
+                            <GovernanceSection
+                                organizationName={
+                                    organization?.name ?? 'Organization'
+                                }
+                                defaultBranchId={defaultBranchId}
+                                orgRole={orgRole}
+                                isOrgAdmin={isOrgAdmin}
+                                canCreateChangeRequest={canCreateChangeRequest}
+                                locks={locks}
+                                locksLoading={locksLoading}
+                                locksError={locksError}
+                                tokenPathInput={tokenPathInput}
+                                tokenReasonInput={tokenReasonInput}
+                                onTokenPathChange={setTokenPathInput}
+                                onTokenReasonChange={setTokenReasonInput}
+                                onLockToken={handleLockToken}
+                                onUnlockToken={handleUnlockToken}
+                                lockingToken={lockingToken}
+                                unlockingToken={unlockingToken}
+                                lockTokenError={lockTokenError}
+                                unlockTokenError={unlockTokenError}
+                                mergeRequests={mergeRequests}
+                                mergeRequestsLoading={mergeRequestsLoading}
+                                mergeRequestsError={mergeRequestsError}
+                                sourceBranchOptions={sourceBranchOptions}
+                                mrSourceBranchId={mrSourceBranchId}
+                                mrTitle={mrTitle}
+                                mrDescription={mrDescription}
+                                onMrSourceChange={setMrSourceBranchId}
+                                onMrTitleChange={setMrTitle}
+                                onMrDescriptionChange={setMrDescription}
+                                onCreateMergeRequest={handleCreateMergeRequest}
+                                creatingMergeRequest={creatingMergeRequest}
+                                createMergeRequestError={
+                                    createMergeRequestError
+                                }
+                                mrReviewComment={mrReviewComment}
+                                onMrReviewCommentChange={setMrReviewComment}
+                                onApproveMergeRequest={
+                                    handleApproveMergeRequest
+                                }
+                                onRejectMergeRequest={handleRejectMergeRequest}
+                                onMergeMergeRequest={mergeMergeRequest}
+                                approvingMergeRequest={approvingMergeRequest}
+                                rejectingMergeRequest={rejectingMergeRequest}
+                                mergingMergeRequest={mergingMergeRequest}
+                                approveMergeRequestError={
+                                    approveMergeRequestError
+                                }
+                                rejectMergeRequestError={
+                                    rejectMergeRequestError
+                                }
+                                mergeMergeRequestError={mergeMergeRequestError}
+                            />
                         </div>
                     )}
                 </div>
@@ -583,6 +782,428 @@ function GuideStep({
                     </span>
                 </div>
                 <p className="text-xs text-gray-600">{description}</p>
+            </div>
+        </div>
+    )
+}
+
+function GovernanceSection({
+    organizationName,
+    defaultBranchId,
+    orgRole,
+    isOrgAdmin,
+    canCreateChangeRequest,
+    locks,
+    locksLoading,
+    locksError,
+    tokenPathInput,
+    tokenReasonInput,
+    onTokenPathChange,
+    onTokenReasonChange,
+    onLockToken,
+    onUnlockToken,
+    lockingToken,
+    unlockingToken,
+    lockTokenError,
+    unlockTokenError,
+    mergeRequests,
+    mergeRequestsLoading,
+    mergeRequestsError,
+    sourceBranchOptions,
+    mrSourceBranchId,
+    mrTitle,
+    mrDescription,
+    onMrSourceChange,
+    onMrTitleChange,
+    onMrDescriptionChange,
+    onCreateMergeRequest,
+    creatingMergeRequest,
+    createMergeRequestError,
+    mrReviewComment,
+    onMrReviewCommentChange,
+    onApproveMergeRequest,
+    onRejectMergeRequest,
+    onMergeMergeRequest,
+    approvingMergeRequest,
+    rejectingMergeRequest,
+    mergingMergeRequest,
+    approveMergeRequestError,
+    rejectMergeRequestError,
+    mergeMergeRequestError,
+}: {
+    organizationName: string
+    defaultBranchId: string | null
+    orgRole: string
+    isOrgAdmin: boolean
+    canCreateChangeRequest: boolean
+    locks: TokenLock[]
+    locksLoading: boolean
+    locksError: string | null
+    tokenPathInput: string
+    tokenReasonInput: string
+    onTokenPathChange: (value: string) => void
+    onTokenReasonChange: (value: string) => void
+    onLockToken: () => Promise<void>
+    onUnlockToken: (tokenPath: string) => Promise<void>
+    lockingToken: boolean
+    unlockingToken: boolean
+    lockTokenError: string | null
+    unlockTokenError: string | null
+    mergeRequests: MergeRequest[]
+    mergeRequestsLoading: boolean
+    mergeRequestsError: string | null
+    sourceBranchOptions: Branch[]
+    mrSourceBranchId: string
+    mrTitle: string
+    mrDescription: string
+    onMrSourceChange: (value: string) => void
+    onMrTitleChange: (value: string) => void
+    onMrDescriptionChange: (value: string) => void
+    onCreateMergeRequest: () => Promise<void>
+    creatingMergeRequest: boolean
+    createMergeRequestError: string | null
+    mrReviewComment: string
+    onMrReviewCommentChange: (value: string) => void
+    onApproveMergeRequest: (mrId: string) => Promise<void>
+    onRejectMergeRequest: (mrId: string) => Promise<void>
+    onMergeMergeRequest: (mrId: string) => Promise<unknown>
+    approvingMergeRequest: boolean
+    rejectingMergeRequest: boolean
+    mergingMergeRequest: boolean
+    approveMergeRequestError: string | null
+    rejectMergeRequestError: string | null
+    mergeMergeRequestError: string | null
+}) {
+    return (
+        <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <div className="mb-4 flex items-center justify-between">
+                <div>
+                    <div className="mb-1 flex items-center gap-2">
+                        <ShieldCheckIcon className="h-4 w-4 text-blue-600" />
+                        <h2 className="text-sm font-semibold text-gray-900">
+                            Governance
+                        </h2>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                        {organizationName} · role: {orgRole}
+                        {defaultBranchId
+                            ? ` · default branch: ${defaultBranchId}`
+                            : ' · default branch not configured'}
+                    </p>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="rounded-lg border border-gray-200 p-4">
+                    <h3 className="mb-3 text-sm font-medium text-gray-900">
+                        Token Locks
+                    </h3>
+                    <p className="mb-3 text-xs text-gray-500">
+                        Lock token paths that downstream branches cannot
+                        override.
+                    </p>
+
+                    {isOrgAdmin && (
+                        <div className="mb-3 space-y-2">
+                            <input
+                                value={tokenPathInput}
+                                onChange={(event) =>
+                                    onTokenPathChange(event.target.value)
+                                }
+                                placeholder="colors.primary.500"
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                            />
+                            <input
+                                value={tokenReasonInput}
+                                onChange={(event) =>
+                                    onTokenReasonChange(event.target.value)
+                                }
+                                placeholder="Reason (optional)"
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                            />
+                            <ButtonV2
+                                buttonType={ButtonV2Type.PRIMARY}
+                                size={ButtonV2Size.SMALL}
+                                text={
+                                    lockingToken ? 'Locking...' : 'Lock Token'
+                                }
+                                onClick={() => {
+                                    void onLockToken()
+                                }}
+                                disabled={
+                                    lockingToken || !tokenPathInput.trim()
+                                }
+                            />
+                        </div>
+                    )}
+
+                    {!isOrgAdmin && (
+                        <p className="mb-3 text-xs text-amber-700">
+                            Only organization admins can create or remove locks.
+                        </p>
+                    )}
+
+                    {(locksError || lockTokenError || unlockTokenError) && (
+                        <p className="mb-2 text-xs text-red-600">
+                            {locksError || lockTokenError || unlockTokenError}
+                        </p>
+                    )}
+
+                    <div className="space-y-2">
+                        {locksLoading ? (
+                            <p className="text-xs text-gray-500">
+                                Loading locks...
+                            </p>
+                        ) : locks.length === 0 ? (
+                            <p className="text-xs text-gray-500">
+                                No locked token paths.
+                            </p>
+                        ) : (
+                            locks.map((lock) => (
+                                <div
+                                    key={lock.id}
+                                    className="flex items-center justify-between rounded-md border border-gray-100 bg-gray-50 px-3 py-2"
+                                >
+                                    <div className="min-w-0">
+                                        <p className="truncate text-xs font-mono text-gray-800">
+                                            {lock.tokenPath}
+                                        </p>
+                                        {lock.reason && (
+                                            <p className="truncate text-xs text-gray-500">
+                                                {lock.reason}
+                                            </p>
+                                        )}
+                                    </div>
+                                    {isOrgAdmin && (
+                                        <ButtonV2
+                                            buttonType={ButtonV2Type.SECONDARY}
+                                            size={ButtonV2Size.SMALL}
+                                            text={
+                                                unlockingToken
+                                                    ? 'Removing...'
+                                                    : 'Unlock'
+                                            }
+                                            onClick={() => {
+                                                void onUnlockToken(
+                                                    lock.tokenPath
+                                                )
+                                            }}
+                                            disabled={unlockingToken}
+                                        />
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 p-4">
+                    <h3 className="mb-3 text-sm font-medium text-gray-900">
+                        Change Requests
+                    </h3>
+                    <p className="mb-3 text-xs text-gray-500">
+                        Promote branch updates to the default branch through
+                        review.
+                    </p>
+
+                    {canCreateChangeRequest && defaultBranchId && (
+                        <div className="mb-4 space-y-2">
+                            <select
+                                value={mrSourceBranchId}
+                                onChange={(event) =>
+                                    onMrSourceChange(event.target.value)
+                                }
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                            >
+                                <option value="">Select source branch</option>
+                                {sourceBranchOptions.map((branch) => (
+                                    <option key={branch.id} value={branch.id}>
+                                        {branch.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <input
+                                value={mrTitle}
+                                onChange={(event) =>
+                                    onMrTitleChange(event.target.value)
+                                }
+                                placeholder="Change request title"
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                            />
+                            <textarea
+                                value={mrDescription}
+                                onChange={(event) =>
+                                    onMrDescriptionChange(event.target.value)
+                                }
+                                placeholder="Description (optional)"
+                                rows={3}
+                                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                            />
+                            <ButtonV2
+                                buttonType={ButtonV2Type.PRIMARY}
+                                size={ButtonV2Size.SMALL}
+                                text={
+                                    creatingMergeRequest
+                                        ? 'Creating...'
+                                        : 'Create Change Request'
+                                }
+                                onClick={() => {
+                                    void onCreateMergeRequest()
+                                }}
+                                disabled={
+                                    creatingMergeRequest ||
+                                    !mrSourceBranchId ||
+                                    !mrTitle.trim()
+                                }
+                            />
+                        </div>
+                    )}
+
+                    {!canCreateChangeRequest && (
+                        <p className="mb-3 text-xs text-amber-700">
+                            Editors and admins can create change requests.
+                        </p>
+                    )}
+
+                    {!defaultBranchId && (
+                        <p className="mb-3 text-xs text-amber-700">
+                            Configure a default branch before creating change
+                            requests.
+                        </p>
+                    )}
+
+                    {(createMergeRequestError ||
+                        mergeRequestsError ||
+                        approveMergeRequestError ||
+                        rejectMergeRequestError ||
+                        mergeMergeRequestError) && (
+                        <p className="mb-2 text-xs text-red-600">
+                            {createMergeRequestError ||
+                                mergeRequestsError ||
+                                approveMergeRequestError ||
+                                rejectMergeRequestError ||
+                                mergeMergeRequestError}
+                        </p>
+                    )}
+
+                    {isOrgAdmin && (
+                        <textarea
+                            value={mrReviewComment}
+                            onChange={(event) =>
+                                onMrReviewCommentChange(event.target.value)
+                            }
+                            placeholder="Review comment for approve/reject (optional)"
+                            rows={2}
+                            className="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                        />
+                    )}
+
+                    <div className="space-y-2">
+                        {mergeRequestsLoading ? (
+                            <p className="text-xs text-gray-500">
+                                Loading change requests...
+                            </p>
+                        ) : mergeRequests.length === 0 ? (
+                            <p className="text-xs text-gray-500">
+                                No change requests yet.
+                            </p>
+                        ) : (
+                            mergeRequests.map((mergeRequest) => (
+                                <div
+                                    key={mergeRequest.id}
+                                    className="rounded-md border border-gray-100 bg-gray-50 px-3 py-2"
+                                >
+                                    <div className="mb-1 flex items-center justify-between gap-2">
+                                        <p className="truncate text-sm font-medium text-gray-800">
+                                            {mergeRequest.title}
+                                        </p>
+                                        <span className="rounded-full bg-gray-200 px-2 py-0.5 text-[11px] uppercase text-gray-700">
+                                            {mergeRequest.status}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-500">
+                                        {mergeRequest.sourceBranchName} →{' '}
+                                        {mergeRequest.targetBranchName}
+                                    </p>
+
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {isOrgAdmin &&
+                                            mergeRequest.status ===
+                                                'pending' && (
+                                                <>
+                                                    <ButtonV2
+                                                        buttonType={
+                                                            ButtonV2Type.SECONDARY
+                                                        }
+                                                        size={
+                                                            ButtonV2Size.SMALL
+                                                        }
+                                                        text={
+                                                            approvingMergeRequest
+                                                                ? 'Approving...'
+                                                                : 'Approve'
+                                                        }
+                                                        onClick={() => {
+                                                            void onApproveMergeRequest(
+                                                                mergeRequest.id
+                                                            )
+                                                        }}
+                                                        disabled={
+                                                            approvingMergeRequest
+                                                        }
+                                                    />
+                                                    <ButtonV2
+                                                        buttonType={
+                                                            ButtonV2Type.SECONDARY
+                                                        }
+                                                        size={
+                                                            ButtonV2Size.SMALL
+                                                        }
+                                                        text={
+                                                            rejectingMergeRequest
+                                                                ? 'Rejecting...'
+                                                                : 'Reject'
+                                                        }
+                                                        onClick={() => {
+                                                            void onRejectMergeRequest(
+                                                                mergeRequest.id
+                                                            )
+                                                        }}
+                                                        disabled={
+                                                            rejectingMergeRequest
+                                                        }
+                                                    />
+                                                </>
+                                            )}
+                                        {isOrgAdmin &&
+                                            mergeRequest.status ===
+                                                'approved' && (
+                                                <ButtonV2
+                                                    buttonType={
+                                                        ButtonV2Type.PRIMARY
+                                                    }
+                                                    size={ButtonV2Size.SMALL}
+                                                    text={
+                                                        mergingMergeRequest
+                                                            ? 'Promoting...'
+                                                            : 'Promote to Master'
+                                                    }
+                                                    onClick={() => {
+                                                        void onMergeMergeRequest(
+                                                            mergeRequest.id
+                                                        )
+                                                    }}
+                                                    disabled={
+                                                        mergingMergeRequest
+                                                    }
+                                                />
+                                            )}
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     )

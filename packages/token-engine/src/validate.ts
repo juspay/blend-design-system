@@ -7,6 +7,7 @@
  */
 
 import { isValidHexColor } from './color-scale'
+import { validatePaletteContrast } from './contrast'
 import type {
     ValidationResult,
     ValidationError,
@@ -133,6 +134,27 @@ export function validateBrandConfig(config: unknown): ValidationResult {
                         errors.push({
                             path: `colors.${group}.${shade}`,
                             message: `Invalid hex color "${value}". Expected #RGB or #RRGGBB format`,
+                        })
+                    }
+                }
+
+                // WCAG contrast check for complete color scales
+                const validShades: Record<string, string> = {}
+                for (const [shade, value] of Object.entries(
+                    shades as Record<string, unknown>
+                )) {
+                    if (typeof value === 'string' && isValidHexColor(value)) {
+                        validShades[shade] = value
+                    }
+                }
+                if (Object.keys(validShades).length > 0) {
+                    const violations = validatePaletteContrast(validShades, {
+                        level: 'AA',
+                    })
+                    for (const v of violations) {
+                        warnings.push({
+                            path: `colors.${group}.${v.path}`,
+                            message: `Contrast ratio ${v.ratio.toFixed(2)}:1 is below WCAG ${v.level} minimum of ${v.required}:1`,
                         })
                     }
                 }
