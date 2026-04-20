@@ -1,7 +1,7 @@
-import { SearchInput } from '../../../../packages/blend/lib/components/Inputs/SearchInput'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
+import { SearchInputV2 } from '../../../../packages/blend/lib/components/InputsV2/SearchInputV2'
 import {
     Search,
     X,
@@ -17,8 +17,11 @@ import {
     Star,
 } from 'lucide-react'
 import { useState } from 'react'
+import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
+import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 
 const SearchInputV2Demo = () => {
+    const { theme } = useTheme()
     const [playgroundValue, setPlaygroundValue] = useState('')
     const [showLeftSlot, setShowLeftSlot] = useState(true)
     const [showRightSlot, setShowRightSlot] = useState(false)
@@ -127,9 +130,15 @@ const SearchInputV2Demo = () => {
                         />
                     </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
+                    <div
+                        className={`min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 p-8 ${
+                            theme === Theme.DARK
+                                ? 'outline-gray-700 bg-gray-900'
+                                : 'outline-gray-200 bg-gray-50'
+                        }`}
+                    >
                         <div className="w-full max-w-md">
-                            <SearchInput
+                            <SearchInputV2
                                 data-id={'Enter search query'}
                                 data-input-name={playgroundValue}
                                 name={playgroundValue}
@@ -162,7 +171,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Default Search
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search..."
@@ -174,7 +183,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Search with Clear
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Type to search"
@@ -185,7 +194,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Filter Search</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Filter items..."
@@ -195,7 +204,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">User Search</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search users..."
@@ -211,7 +220,7 @@ const SearchInputV2Demo = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Default</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Default state"
@@ -221,7 +230,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Disabled</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value="Disabled search"
                             onChange={() => {}}
                             placeholder="Disabled state"
@@ -232,7 +241,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Error</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Error state"
@@ -243,7 +252,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">With Value</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value="Search query"
                             onChange={() => {}}
                             placeholder="Search..."
@@ -255,7 +264,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Disabled with Value
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value="Disabled search value"
                             onChange={() => {}}
                             placeholder="Search..."
@@ -268,7 +277,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Error with Value
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value="Invalid search"
                             onChange={() => {}}
                             placeholder="Search..."
@@ -287,7 +296,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Left Icon Only
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search..."
@@ -299,7 +308,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Right Icon Only
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Type here..."
@@ -309,7 +318,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Both Icons</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search and filter"
@@ -320,7 +329,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">No Icons</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Plain search"
@@ -329,7 +338,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Email Search</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search emails..."
@@ -341,7 +350,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Location Search
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search location..."
@@ -362,7 +371,7 @@ const SearchInputV2Demo = () => {
                         <p className="text-sm text-gray-600">
                             Value: {searchValue1 || '(empty)'}
                         </p>
-                        <SearchInput
+                        <SearchInputV2
                             value={searchValue1}
                             onChange={(e) => setSearchValue1(e.target.value)}
                             placeholder="Type to search..."
@@ -389,7 +398,7 @@ const SearchInputV2Demo = () => {
                         <p className="text-sm text-gray-600">
                             Value: {searchValue2 || '(empty)'}
                         </p>
-                        <SearchInput
+                        <SearchInputV2
                             value={searchValue2}
                             onChange={(e) => setSearchValue2(e.target.value)}
                             placeholder="Search and filter..."
@@ -416,7 +425,7 @@ const SearchInputV2Demo = () => {
                         <p className="text-sm text-gray-600">
                             Value: {searchValue3 || '(empty)'}
                         </p>
-                        <SearchInput
+                        <SearchInputV2
                             value={searchValue3}
                             onChange={(e) => setSearchValue3(e.target.value)}
                             placeholder="Search dates..."
@@ -446,7 +455,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Global Navigation Search
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search across the app..."
@@ -456,7 +465,7 @@ const SearchInputV2Demo = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Table Filter</h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Filter table data..."
@@ -469,7 +478,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             User Directory
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Find a user..."
@@ -481,7 +490,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Phone Number Lookup
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search phone numbers..."
@@ -493,7 +502,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Address Finder
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Enter address..."
@@ -505,7 +514,7 @@ const SearchInputV2Demo = () => {
                         <h3 className="text-lg font-semibold">
                             Time-based Search
                         </h3>
-                        <SearchInput
+                        <SearchInputV2
                             value=""
                             onChange={() => {}}
                             placeholder="Search by time..."
@@ -522,7 +531,7 @@ const SearchInputV2Demo = () => {
                     <div className="grid grid-cols-1 gap-4">
                         <div>
                             <p className="text-sm font-medium mb-2">Default</p>
-                            <SearchInput
+                            <SearchInputV2
                                 value=""
                                 onChange={() => {}}
                                 placeholder="Default state"
@@ -535,7 +544,7 @@ const SearchInputV2Demo = () => {
                             <p className="text-sm font-medium mb-2">
                                 With Value
                             </p>
-                            <SearchInput
+                            <SearchInputV2
                                 value="Search query text"
                                 onChange={() => {}}
                                 placeholder="Default state"
@@ -546,7 +555,7 @@ const SearchInputV2Demo = () => {
 
                         <div>
                             <p className="text-sm font-medium mb-2">Disabled</p>
-                            <SearchInput
+                            <SearchInputV2
                                 value="Disabled search"
                                 onChange={() => {}}
                                 placeholder="Disabled state"
@@ -558,7 +567,7 @@ const SearchInputV2Demo = () => {
 
                         <div>
                             <p className="text-sm font-medium mb-2">Error</p>
-                            <SearchInput
+                            <SearchInputV2
                                 value="Invalid search query"
                                 onChange={() => {}}
                                 placeholder="Error state"
