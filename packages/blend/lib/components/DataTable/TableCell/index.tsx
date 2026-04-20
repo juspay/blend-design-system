@@ -59,13 +59,14 @@ const isEmptyValue = (value: unknown, columnType?: ColumnType): boolean => {
     }
 
     if (columnType === ColumnType.DATE) {
-        const dateData = value as DateColumnProps
+        const dateValue =
+            typeof value === 'object' && value !== null && 'date' in value
+                ? (value as DateColumnProps).date
+                : value
         if (
-            !dateData ||
-            !dateData.date ||
-            (typeof dateData.date === 'string' &&
-                dateData.date.trim() === '') ||
-            isNaN(new Date(dateData.date).getTime())
+            !dateValue ||
+            (typeof dateValue === 'string' && dateValue.trim() === '') ||
+            isNaN(new Date(String(dateValue)).getTime())
         ) {
             return true
         }
@@ -226,16 +227,27 @@ const TableCell = forwardRef<
                 attrs['data-numeric'] = String(valueToCheck || 0)
             } else if (column.type === ColumnType.DATE) {
                 attrs['data-type'] = 'date'
-                const dateData = valueToCheck as DateColumnProps
-                if (dateData && dateData.date) {
-                    const date = new Date(dateData.date)
+                const dateValue =
+                    typeof valueToCheck === 'object' &&
+                    valueToCheck !== null &&
+                    'date' in valueToCheck
+                        ? (valueToCheck as DateColumnProps).date
+                        : valueToCheck
+                const showTime =
+                    typeof valueToCheck === 'object' &&
+                    valueToCheck !== null &&
+                    'showTime' in valueToCheck
+                        ? Boolean((valueToCheck as DateColumnProps).showTime)
+                        : false
+                if (dateValue) {
+                    const date = new Date(String(dateValue))
                     if (!isNaN(date.getTime())) {
                         attrs['data-date'] = date.toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'short',
                             day: '2-digit',
-                            hour: dateData.showTime ? '2-digit' : undefined,
-                            minute: dateData.showTime ? '2-digit' : undefined,
+                            hour: showTime ? '2-digit' : undefined,
+                            minute: showTime ? '2-digit' : undefined,
                         })
                     }
                 }
@@ -412,7 +424,15 @@ const TableCell = forwardRef<
             }
 
             if (column.type === ColumnType.DATE && !isEditing) {
-                const dateData = displayValue as DateColumnProps
+                const dateData =
+                    typeof displayValue === 'object' &&
+                    displayValue !== null &&
+                    'date' in displayValue
+                        ? (displayValue as DateColumnProps)
+                        : ({
+                              date: displayValue as Date | string,
+                              showTime: false,
+                          } as DateColumnProps)
 
                 if (isEmptyValue(dateData, ColumnType.DATE)) {
                     return (

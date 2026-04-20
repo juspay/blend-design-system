@@ -41,6 +41,8 @@ import {
     DrawerContent,
     DrawerBody,
 } from '../../Drawer'
+import DateRangePicker from '../../DateRangePicker/DateRangePicker'
+import { DateRange } from '../../DateRangePicker/types'
 
 type MobileFilterDrawerProps = {
     column: ColumnDefinition<Record<string, unknown>>
@@ -596,6 +598,76 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
 
                                 {columnConfig.filterComponent === 'slider' && (
                                     <SliderFilter />
+                                )}
+
+                                {columnConfig.filterComponent ===
+                                    'dateRange' && (
+                                    <Block
+                                        display="flex"
+                                        flexDirection="column"
+                                        padding="14px 20px"
+                                    >
+                                        <DateRangePicker
+                                            value={(():
+                                                | DateRange
+                                                | undefined => {
+                                                const selectedValue =
+                                                    filterState
+                                                        .columnSelectedValues[
+                                                        fieldKey
+                                                    ]
+                                                const selectedRange =
+                                                    Array.isArray(selectedValue)
+                                                        ? selectedValue
+                                                        : typeof selectedValue ===
+                                                                'string' &&
+                                                            selectedValue
+                                                          ? [
+                                                                selectedValue,
+                                                                selectedValue,
+                                                            ]
+                                                          : []
+                                                if (
+                                                    selectedRange.length ===
+                                                        0 ||
+                                                    !selectedRange[0]
+                                                ) {
+                                                    return undefined
+                                                }
+
+                                                return {
+                                                    startDate: new Date(
+                                                        selectedRange[0]
+                                                    ),
+                                                    endDate: selectedRange[1]
+                                                        ? new Date(
+                                                              selectedRange[1]
+                                                          )
+                                                        : new Date(
+                                                              selectedRange[0]
+                                                          ),
+                                                }
+                                            })()}
+                                            onChange={(range) => {
+                                                const start =
+                                                    range.startDate.toISOString()
+                                                const end = (
+                                                    range.endDate ||
+                                                    range.startDate
+                                                ).toISOString()
+                                                onColumnFilter?.(
+                                                    fieldKey,
+                                                    FilterType.DATE,
+                                                    [start, end],
+                                                    'range'
+                                                )
+                                            }}
+                                            showDateTimePicker={false}
+                                            showPresets={false}
+                                            allowSingleDateSelection={false}
+                                            useDrawerOnMobile={false}
+                                        />
+                                    </Block>
                                 )}
 
                                 {!columnConfig.filterComponent && (

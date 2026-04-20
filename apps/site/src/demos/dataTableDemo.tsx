@@ -1662,50 +1662,43 @@ const DataTableDemo = () => {
 
         const statuses = ['Active', 'Inactive', 'Pending', 'Suspended']
 
+        const joinDates = [
+            '2014-08-01',
+            '2015-09-01',
+            '2016-03-01',
+            '2017-11-01',
+            '2018-07-01',
+            '2019-01-01',
+            '2020-04-01',
+            '2021-06-01',
+            '2022-10-01',
+            '2023-02-01',
+            '2020-05-01',
+            '2021-12-01',
+            '2022-03-01',
+            '2023-08-01',
+            '2019-11-01',
+        ]
+
+        const formatJoinMonth = (dateString: string) =>
+            new Date(dateString).toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric',
+            })
+
         return Array.from({ length: count }, (_, index) => {
             const userName = names[index % names.length]
             const userStatus = statuses[index % statuses.length]
+            const joinDate = joinDates[index % joinDates.length]
 
             return {
                 id: index + 1,
                 name: {
                     label: userName,
-                    sublabel: [
-                        'August 2014',
-                        'September 2015',
-                        'March 2016',
-                        'November 2017',
-                        'July 2018',
-                        'January 2019',
-                        'April 2020',
-                        'June 2021',
-                        'October 2022',
-                        'February 2023',
-                        'May 2020',
-                        'December 2021',
-                        'March 2022',
-                        'August 2023',
-                        'November 2019',
-                    ][index % 15],
+                    sublabel: formatJoinMonth(joinDate),
                     imageUrl: `https://randomuser.me/api/portraits/${index % 2 ? 'men' : 'women'}/${index % 70}.jpg`,
                 } as AvatarColumnProps,
-                joinDate: [
-                    'August 2014',
-                    'September 2015',
-                    'March 2016',
-                    'November 2017',
-                    'July 2018',
-                    'January 2019',
-                    'April 2020',
-                    'June 2021',
-                    'October 2022',
-                    'February 2023',
-                    'May 2020',
-                    'December 2021',
-                    'March 2022',
-                    'August 2023',
-                    'November 2019',
-                ][index % 15],
+                joinDate,
                 number: `${300 + index}`,
                 gateway: [
                     'Gateway A',
@@ -1911,6 +1904,25 @@ const DataTableDemo = () => {
             isEditable: true,
             minWidth: '150px',
             maxWidth: '250px',
+        },
+        {
+            field: 'joinDate',
+            header: 'Join Date',
+            headerSubtext: 'Date user joined',
+            type: ColumnType.DATE,
+            isSortable: true,
+            isEditable: false,
+            renderCell: (value: unknown): React.ReactNode => {
+                const parsedDate = new Date(String(value))
+                if (isNaN(parsedDate.getTime())) return '-'
+                return parsedDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                })
+            },
+            minWidth: '130px',
+            maxWidth: '170px',
         },
         {
             field: 'role',
@@ -2517,7 +2529,7 @@ const DataTableDemo = () => {
                 `Last login: ${statusText === 'Active' ? '2 hours ago' : '1 week ago'}`,
                 `Profile updated: ${user.role === 'Admin' ? '1 day ago' : '3 days ago'}`,
                 `Password changed: ${user.gateway === 'Gateway A' ? '1 week ago' : '2 weeks ago'}`,
-                `Role assigned: ${user.joinDate}`,
+                `Role assigned: ${new Date(user.joinDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`,
             ]
             return activities
         }
@@ -2672,7 +2684,13 @@ const DataTableDemo = () => {
                             </div>
                             <div>
                                 <strong>Member Since:</strong>{' '}
-                                {userRow.joinDate}
+                                {new Date(userRow.joinDate).toLocaleDateString(
+                                    'en-US',
+                                    {
+                                        month: 'short',
+                                        year: 'numeric',
+                                    }
+                                )}
                             </div>
                         </div>
                     </div>
@@ -2926,7 +2944,7 @@ const DataTableDemo = () => {
         }
 
         // Priority 3: Recently joined users - New members (2023+)
-        const joinYear = parseInt(userData.joinDate.split(' ')[1] || '2020')
+        const joinYear = new Date(userData.joinDate).getFullYear() || Number.NaN
         if (joinYear >= 2023) {
             return {
                 backgroundColor: '#f0fdf4', // Light green background

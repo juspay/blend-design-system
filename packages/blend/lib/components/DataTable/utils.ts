@@ -300,6 +300,15 @@ export const applyColumnFilters = <T extends Record<string, unknown>>(
                 }
 
                 case FilterType.DATE:
+                    if (operator === 'range' && Array.isArray(filterValue)) {
+                        const [startDate, endDate] = filterValue
+                        if (!startDate || !endDate) return true
+                        return applyDateRangeFilter(
+                            cellValue,
+                            startDate,
+                            endDate
+                        )
+                    }
                     return applyDateFilter(
                         cellValue,
                         new Date(String(filterValue)),
@@ -380,11 +389,27 @@ const applyDateFilter = (
     filterValue: Date,
     operator: string
 ): boolean => {
-    const cellDate = new Date(String(cellValue))
+    if (isNaN(filterValue.getTime())) return false
+
+    let cellDate: Date
+    if (
+        typeof cellValue === 'object' &&
+        cellValue !== null &&
+        'date' in cellValue
+    ) {
+        const dateCellValue = cellValue as { date: Date | string }
+        cellDate = new Date(dateCellValue.date)
+    } else {
+        cellDate = new Date(String(cellValue))
+    }
+
     if (isNaN(cellDate.getTime())) return false
 
-    const cellTime = cellDate.getTime()
-    const filterTime = filterValue.getTime()
+    const normalizeToDateOnly = (date: Date): number =>
+        new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
+
+    const cellTime = normalizeToDateOnly(cellDate)
+    const filterTime = normalizeToDateOnly(filterValue)
 
     switch (operator) {
         case 'equals':
@@ -400,6 +425,42 @@ const applyDateFilter = (
         default:
             return cellTime === filterTime
     }
+}
+
+const applyDateRangeFilter = (
+    cellValue: unknown,
+    startValue: string,
+    endValue: string
+): boolean => {
+    const startDate = new Date(startValue)
+    const endDate = new Date(endValue)
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return false
+
+    let cellDate: Date
+    if (
+        typeof cellValue === 'object' &&
+        cellValue !== null &&
+        'date' in cellValue
+    ) {
+        const dateCellValue = cellValue as { date: Date | string }
+        cellDate = new Date(dateCellValue.date)
+    } else {
+        cellDate = new Date(String(cellValue))
+    }
+
+    if (isNaN(cellDate.getTime())) return false
+
+    const normalizeToDateOnly = (date: Date): number =>
+        new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
+
+    const cellTime = normalizeToDateOnly(cellDate)
+    const startTime = normalizeToDateOnly(startDate)
+    const endTime = normalizeToDateOnly(endDate)
+
+    return (
+        cellTime >= Math.min(startTime, endTime) &&
+        cellTime <= Math.max(startTime, endTime)
+    )
 }
 
 export const getUniqueColumnValues = <T extends Record<string, unknown>>(
