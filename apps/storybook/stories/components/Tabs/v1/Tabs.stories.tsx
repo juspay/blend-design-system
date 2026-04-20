@@ -63,7 +63,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/b
 
 ## Features
 - Multiple variants (Boxed, Floating, Underline, Pills)
-- Two sizes (Medium, Large)
+- Three sizes (Small, Medium, Large)
 - Support for icons in tab triggers
 - Expandable tab lists
 - Fit content option for tab lists
@@ -965,7 +965,7 @@ export const TabVariants: Story = {
 }
 
 /**
- * Different tab sizes: medium and large
+ * Different tab sizes: small, medium, and large
  */
 export const TabSizes: Story = {
     args: {
@@ -975,6 +975,65 @@ export const TabSizes: Story = {
     },
     render: (args: any) => (
         <div className="flex flex-col gap-8 w-125">
+            <div>
+                <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
+                    Small Size
+                </h4>
+                <Tabs
+                    defaultValue={args.defaultValue}
+                    value={args.value}
+                    onValueChange={args.onValueChange}
+                >
+                    <TabsList variant={args.variant} size={TabsSize.SM}>
+                        <TabsTrigger
+                            value="tab1"
+                            variant={args.variant}
+                            size={TabsSize.SM}
+                        >
+                            Dashboard
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="tab2"
+                            variant={args.variant}
+                            size={TabsSize.SM}
+                        >
+                            Projects
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="tab3"
+                            variant={args.variant}
+                            size={TabsSize.SM}
+                        >
+                            Team
+                        </TabsTrigger>
+                    </TabsList>
+                    <TabsContent
+                        value="tab1"
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
+                    >
+                        <p className="m-0 text-slate-500">
+                            Dashboard content in small size tabs.
+                        </p>
+                    </TabsContent>
+                    <TabsContent
+                        value="tab2"
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
+                    >
+                        <p className="m-0 text-slate-500">
+                            Projects content in small size tabs.
+                        </p>
+                    </TabsContent>
+                    <TabsContent
+                        value="tab3"
+                        className="p-4 border border-slate-200 rounded-lg mt-2"
+                    >
+                        <p className="m-0 text-slate-500">
+                            Team content in small size tabs.
+                        </p>
+                    </TabsContent>
+                </Tabs>
+            </div>
+
             <div>
                 <h4 className="m-0 mb-4 text-sm font-semibold text-gray-700">
                     Medium Size
@@ -1097,7 +1156,7 @@ export const TabSizes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Different tab sizes: medium and large for various use cases. All sizes maintain proper touch target sizes and accessibility.',
+                story: 'Different tab sizes: small, medium, and large for various use cases. All sizes maintain proper touch target sizes and accessibility.',
             },
         },
         a11y: getA11yConfig('interactive'),

@@ -44,7 +44,7 @@ Tabs component for organizing content into separate views.
 
 ## Features
 - Multiple variants: UNDERLINE, BOXED, FLOATING, PILLS
-- Two sizes: MD and LG
+- Three sizes: SM, MD, and LG
 - Sticky header support with theme-aware background
 - Closeable tabs with X button
 - Left/right icon slots
@@ -211,7 +211,13 @@ export const Sizes: Story = {
             {Object.values(TabsV2Size).map((size) => (
                 <div key={size}>
                     <h3 className="mb-3 text-sm font-semibold">
-                        Size: {size.toUpperCase()}
+                        Size: {size.toUpperCase()} (
+                        {size === 'sm'
+                            ? 'Small'
+                            : size === 'md'
+                              ? 'Medium'
+                              : 'Large'}
+                        )
                     </h3>
                     <TabsV2 defaultValue="tab1" size={size}>
                         <TabsV2List>
@@ -236,7 +242,7 @@ export const Sizes: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Comparison of MD and LG tab sizes.',
+                story: 'Comparison of SM (Small), MD (Medium), and LG (Large) tab sizes.',
             },
         },
         chromatic: {
