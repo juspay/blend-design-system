@@ -1,0 +1,251 @@
+---
+title: Avatar
+description: The Avatar component displays user profile images, initials, or fallback icons with various sizes and styling options for user identification and personalization.
+category: components
+tags:
+    - avatar
+    - component
+    - user
+    - profile
+    - image
+RepoFolderName: Avatar
+StorybookLink: components-avatar--docs
+---
+
+<AvatarPreview />
+
+## Usage
+
+```tsx
+import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <Avatar
+            src="https://example.com/user-avatar.jpg"
+            alt="John Doe"
+            size={AvatarSize.MD}
+            shape={AvatarShape.CIRCULAR}
+            online={true}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'src',
+                hintText:
+                    'Optional URL string pointing to the avatar image source. If provided and the image loads successfully, it will be displayed. If the image fails to load or src is not provided, the component falls back to initials or custom fallback content.',
+            },
+            {
+                content: 'string',
+                hintText: 'URL path to the image file to display as the avatar',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alt',
+                hintText:
+                    'Optional alternative text for accessibility and fallback purposes. Used as the image alt attribute for screen readers. If no image is available or image loading fails, the alt text is parsed to extract initials (first letters of each word) as a fallback display. Defaults to empty string.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Accessibility text and source for generating initials fallback',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'fallback',
+                hintText:
+                    'Optional custom React element or string to display when the image fails to load or src is not provided. If provided, this takes precedence over auto-generated initials. Can be a string (truncated to 2 characters), icon, or any custom React component.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Custom content to display when image is unavailable or fails to load',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Controls the dimensions of the avatar. Options range from SM (small) to XL (extra large), with MD (medium) as the default. Size affects both the avatar container and any text/initials displayed within.',
+            },
+            {
+                content: 'AvatarSize',
+                hintText:
+                    'Enum that determines the width and height dimensions of the avatar',
+            },
+            { content: 'SM, REGULAR, MD, LG, XL' },
+        ],
+        [
+            {
+                content: 'shape',
+                hintText:
+                    'Defines the border radius shape of the avatar. CIRCULAR creates a perfect circle (100% border-radius), while ROUNDED uses a moderate border-radius for rounded rectangles. Defaults to CIRCULAR.',
+            },
+            {
+                content: 'AvatarShape',
+                hintText:
+                    'Enum that controls the border-radius styling of the avatar',
+            },
+            { content: 'CIRCULAR, ROUNDED' },
+        ],
+        [
+            {
+                content: 'online',
+                hintText:
+                    'When true, displays a small status indicator (typically a colored dot or ring) on the avatar to show online/active status. The indicator appears in a corner position and uses variant-specific styling. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows online status indicator, false hides it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onlinePosition',
+                hintText:
+                    'Controls the position of the online status indicator dot. TOP places the indicator at the top-right corner, BOTTOM places it at the bottom-right corner. Defaults to TOP.',
+            },
+            {
+                content: 'AvatarOnlinePosition',
+                hintText:
+                    'Enum that determines the position of the online indicator',
+            },
+            { content: 'TOP, BOTTOM' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Configuration object for showing a skeleton loading state. When show is true, displays a skeleton loader instead of the avatar content. Optionally customize the skeleton variant.',
+            },
+            {
+                content: '{ show: boolean, variant?: SkeletonVariant }',
+                hintText:
+                    'Object with show (required boolean) and optional variant (pulse, shimmer, etc.)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText:
+                    'Optional click handler that makes the avatar interactive. When provided, the avatar becomes focusable and responds to keyboard events (Enter/Space). Also inherits all standard HTML div attributes like onMouseEnter, onFocus, style, className, etc.',
+            },
+            {
+                content: '(e: MouseEvent) => void',
+                hintText:
+                    'Function called when the avatar is clicked or activated via keyboard',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leadingSlot',
+                hintText:
+                    'Optional React element displayed before (to the left of) the avatar. Useful for adding icons, badges, or other elements that should appear before the avatar in the layout. When provided, the avatar is wrapped in a container with proper spacing.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Any React element to display before the avatar element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'trailingSlot',
+                hintText:
+                    'Optional React element displayed after (to the right of) the avatar. Useful for adding icons, badges, labels, or other elements that should appear after the avatar in the layout. When provided, the avatar is wrapped in a container with proper spacing.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Any React element to display after the avatar element',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the avatar component using the following tokens:
+
+```tsx
+export type AvatarTokensType = {
+    gap: CSSObject['gap']
+    container: {
+        size: {
+            [key in AvatarSize]: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+            }
+        }
+        backgroundColor: {
+            [key in 'withImage' | 'withoutImage']: {
+                [key in 'default' | 'online']: CSSObject['backgroundColor']
+            }
+        }
+        border: {
+            [key in 'withImage' | 'withoutImage']: {
+                [key in 'default' | 'online']: CSSObject['border']
+            }
+        }
+        borderRadius: {
+            [key in AvatarShape]: CSSObject['borderRadius']
+        }
+    }
+    text: {
+        color: {
+            [key in 'default' | 'online']: CSSObject['color']
+        }
+        fontSize: {
+            [key in AvatarSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in AvatarSize]: CSSObject['fontWeight']
+        }
+    }
+    indicator: {
+        backgroundColor: {
+            [key in 'default' | 'online']: CSSObject['backgroundColor']
+        }
+        border: {
+            [key in 'default' | 'online']: {
+                color: CSSObject['borderColor']
+                width: CSSObject['borderWidth']
+            }
+        }
+        size: {
+            [key in AvatarSize]: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+            }
+        }
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: CSSObject['boxShadow']
+    }
+    slot: {
+        spacing: CSSObject['margin']
+        color: {
+            [key in 'default' | 'online']: CSSObject['color']
+        }
+    }
+}
+```

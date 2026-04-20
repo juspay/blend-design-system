@@ -1,0 +1,43 @@
+{
+    "compilerOptions": {
+        "target": "ES2017",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "paths": {
+            "@/*": ["./*"],
+            "@/lib": ["./lib"],
+            "@/lib/*": ["./lib/*"],
+            "@/components": ["./components"],
+            "@/components/*": ["./components/*"],
+            "@/hooks": ["./hooks"],
+            "@/constants": ["./lib/constants"],
+            "@/types": ["./lib/types"],
+            "@/config": ["./lib/config"],
+            "@/styles": ["./lib/styles"],
+            "@/docs": ["./app/docs"],
+            "@/docs/*": ["./app/docs/*"],
+            "@/blog": ["./app/blog"],
+            "@/blog/*": ["./app/blog/*"],
+            "@/changelog": ["./app/changelog"],
+            "@/changelog/*": ["./app/changelog/*"],
+            "@/mdx-components": ["./mdx-components"]
+        }
+    },
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    "exclude": ["node_modules"]
+}

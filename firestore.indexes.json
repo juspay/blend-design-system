@@ -1,0 +1,84 @@
+{
+    "indexes": [
+        {
+            "comment": "Per-repo time-series: fetch run history for one repo ordered by time",
+            "collectionGroup": "runs",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "repoId",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "generatedAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "comment": "Per-repo + branch filter: trend for a specific branch",
+            "collectionGroup": "runs",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "repoId",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "branch",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "generatedAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "comment": "Adoption filter: find repos below a threshold (dashboard alerting)",
+            "collectionGroup": "runs",
+            "queryScope": "COLLECTION_GROUP",
+            "fields": [
+                {
+                    "fieldPath": "adoptionRate",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "generatedAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "comment": "Deduplication check: find recent run for same commit in a repo",
+            "collectionGroup": "runs",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "commitSha",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "generatedAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "comment": "Version segmentation: runs by tool version",
+            "collectionGroup": "runs",
+            "queryScope": "COLLECTION_GROUP",
+            "fields": [
+                {
+                    "fieldPath": "toolVersion",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "generatedAt",
+                    "order": "DESCENDING"
+                }
+            ]
+        }
+    ],
+    "fieldOverrides": []
+}

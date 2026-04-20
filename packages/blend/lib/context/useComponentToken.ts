@@ -1,0 +1,294 @@
+import type { ResponsiveSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
+import type { ResponsiveTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
+import type { ResponsiveTagTokens } from '../components/Tags/tag.tokens'
+import type { ResponsiveRadioTokens } from '../components/Radio/radio.token'
+import type { ResponsiveSwitchTokens } from '../components/Switch/switch.token'
+import type { ResponsiveCheckboxTokens } from '../components/Checkbox/checkbox.token'
+import type { ResponsiveTabsTokens } from '../components/Tabs/tabs.token'
+import { type ComponentTokenType, useTheme } from './ThemeContext'
+import type { ResponsiveTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
+import type { ResponsiveNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
+import type { ResponsiveAlertTokens } from '../components/Alert/alert.tokens'
+import type { ResponsiveOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
+import type { ResponsiveTooltipTokens } from '../components/Tooltip/tooltip.tokens'
+import type { ResponsiveUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
+import type { ResponsiveMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
+import type { ResponsiveDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import type { ResponsiveButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
+import type { ResponsiveButtonTokens } from '../components/Button/button.tokens'
+import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
+import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
+import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
+import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
+import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tokens'
+import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
+import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
+import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
+import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
+import type { ResponsiveProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
+import type { ResponsiveDrawerTokens } from '../components/Drawer/drawer.tokens'
+import { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
+import { ResponsiveChartTokens } from '../components/Charts/chart.tokens'
+import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { ResponsiveStepperTokens } from '../components/Stepper/stepper.tokens'
+import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
+import { ResponsiveCardTokens } from '../components/Card/card.tokens'
+import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
+import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
+import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
+import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
+import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
+import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
+import { ResponsiveChatInputTokensType } from '../components/ChatInput/chatInput.tokens'
+import { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
+import { ResponsiveAlertV2Tokens } from '../components/AlertV2'
+import { ResponsiveAccordionV2Tokens } from '../components/AccordionV2'
+import { ResponsiveSnackbarV2Tokens } from '../components/SnackbarV2'
+import { ResponsiveSwitchV2Tokens } from '../components/SelectorV2/SwitchV2/switchV2.tokens'
+import { ResponsiveSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
+import type { ResponsiveMultiSelectV2Tokens } from '../components/MultiSelectV2/multiSelectV2.tokens'
+import { ResponsiveAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
+import { ResponsiveTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
+import { ResponsiveChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
+import { ResponsiveTimelineTokens } from '../components/Timeline/timeline.token'
+import { ResponsiveCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
+import { ResponsiveStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
+import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
+import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
+import { ResponsiveTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
+import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
+import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import { ResponsiveProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
+import { ResponsiveMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import { ResponsiveNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import { ResponsiveOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import { ResponsiveTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import { ResponsiveSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+
+export const useComponentToken = (
+    component: keyof ComponentTokenType
+):
+    | ResponsiveSearchInputTokens
+    | ResponsiveTagTokens
+    | ResponsiveTextAreaTokens
+    | ResponsiveTextInputTokens
+    | ResponsiveNumberInputTokens
+    | ResponsiveAlertTokens
+    | ResponsiveRadioTokens
+    | ResponsiveOTPInputTokens
+    | ResponsiveUnitInputTokens
+    | ResponsiveMultiValueInputTokens
+    | ResponsiveSwitchTokens
+    | ResponsiveCheckboxTokens
+    | ResponsiveTabsTokens
+    | ResponsiveTooltipTokens
+    | ResponsiveDropdownInputTokens
+    | ResponsiveModalTokens
+    | ResponsiveBreadcrumbTokens
+    | ResponsivePopoverTokens
+    | ResponsiveMenuTokensType
+    | ResponsiveMenuV2TokensType
+    | ResponsiveMultiSelectTokens
+    | ResponsiveSingleSelectTokens
+    | ResponsiveTableTokens
+    | ResponsiveCalendarTokens
+    | ResponsiveAccordionTokens
+    | ResponsiveStatCardTokens
+    | ResponsiveProgressBarTokens
+    | ResponsiveDrawerTokens
+    | ResponsiveChartTokens
+    | ResponsiveSnackbarTokens
+    | ResponsiveStepperTokens
+    | ResponsiveKeyValuePairTokens
+    | ResponsiveCardTokens
+    | ResponsiveSkeletonTokens
+    | ResponsiveTopbarTokens
+    | ResponsiveAvatarTokens
+    | ResponsiveAvatarGroupTokens
+    | ResponsiveSidebarTokens
+    | ResponsiveUploadTokens
+    | ResponsiveCodeBlockTokens
+    | ResponsiveMobileNavigationTokens
+    | ResponsiveDirectoryTokens
+    | ResponsiveChatInputTokensType
+    | ResponsiveButtonTokens
+    | ResponsiveButtonV2Tokens
+    | ResponsiveChatInputTokensType
+    | ResponsiveTagV2Tokens
+    | ResponsiveAlertV2Tokens
+    | ResponsiveAccordionV2Tokens
+    | ResponsiveSnackbarV2Tokens
+    | ResponsiveSwitchV2Tokens
+    | ResponsiveSingleSelectV2Tokens
+    | ResponsiveMultiSelectV2Tokens
+    | ResponsiveChartV2Tokens
+    | ResponsiveAvatarV2Tokens
+    | ResponsiveTextInputV2Tokens
+    | ResponsiveTimelineTokens
+    | ResponsiveCheckboxV2Tokens
+    | ResponsiveKeyValuePairV2Tokens
+    | ResponsiveStatCardV2Tokens
+    | ResponsiveRadioV2Tokens
+    | ResponsivePopoverV2Tokens
+    | ResponsiveTabsV2Tokens
+    | ResponsiveBreadcrumbV2Tokens
+    | ResponsiveProgressBarV2Tokens
+    | ResponsiveMultiValueInputV2Tokens
+    | ResponsiveNumberInputV2Tokens
+    | ResponsiveOTPInputV2Tokens
+    | ResponsiveTextAreaV2Tokens
+    | ResponsiveSearchInputV2Tokens
+    | ResponsiveCodeEditorV2Tokens => {
+    const { componentTokens } = useTheme()
+    switch (component) {
+        case 'TOOLTIP':
+            return componentTokens.TOOLTIP
+        case 'TEXT_INPUT':
+            return componentTokens.TEXT_INPUT
+        case 'NUMBER_INPUT':
+            return componentTokens.NUMBER_INPUT
+        case 'ALERT':
+            return componentTokens.ALERT
+        case 'OTP_INPUT':
+            return componentTokens.OTP_INPUT
+        case 'TAGS':
+            return componentTokens.TAGS
+        case 'SEARCH_INPUT':
+            return componentTokens.SEARCH_INPUT
+        case 'TEXT_AREA':
+            return componentTokens.TEXT_AREA
+        case 'RADIO':
+            return componentTokens.RADIO
+        case 'SWITCH':
+            return componentTokens.SWITCH
+        case 'CHECKBOX':
+            return componentTokens.CHECKBOX
+        case 'TABS':
+            return componentTokens.TABS
+        case 'DROPDOWN_INPUT':
+            return componentTokens.DROPDOWN_INPUT
+        case 'BUTTON':
+            return componentTokens.BUTTON
+        case 'MODAL':
+            return componentTokens.MODAL
+        case 'BREADCRUMB':
+            return componentTokens.BREADCRUMB
+        case 'POPOVER':
+            return componentTokens.POPOVER
+        case 'POPOVERV2':
+            return componentTokens.POPOVERV2
+        case 'MENU':
+            return componentTokens.MENU
+        case 'MENU_V2':
+            return componentTokens.MENU_V2
+        case 'MULTI_SELECT':
+            return componentTokens.MULTI_SELECT
+        case 'TABLE':
+            return componentTokens.TABLE
+        case 'CALENDAR':
+            return componentTokens.CALENDAR
+        case 'ACCORDION':
+            return componentTokens.ACCORDION
+        case 'UNIT_INPUT':
+            return componentTokens.UNIT_INPUT
+        case 'MULTI_VALUE_INPUT':
+            return componentTokens.MULTI_VALUE_INPUT
+        case 'STAT_CARD':
+            return componentTokens.STAT_CARD
+        case 'PROGRESS_BAR':
+            return componentTokens.PROGRESS_BAR
+        case 'DRAWER':
+            return componentTokens.DRAWER
+        case 'SINGLE_SELECT':
+            return componentTokens.SINGLE_SELECT
+        case 'CHARTS':
+            return componentTokens.CHARTS
+        case 'SNACKBAR':
+            return componentTokens.SNACKBAR
+        case 'STEPPER':
+            return componentTokens.STEPPER
+        case 'KEYVALUEPAIR':
+            return componentTokens.KEYVALUEPAIR
+        case 'CARD':
+            return componentTokens.CARD
+        case 'SKELETON':
+            return componentTokens.SKELETON
+        case 'TOPBAR':
+            return componentTokens.TOPBAR
+        case 'AVATAR':
+            return componentTokens.AVATAR
+        case 'AVATAR_GROUP':
+            return componentTokens.AVATAR_GROUP
+        case 'SIDEBAR':
+            return componentTokens.SIDEBAR
+        case 'UPLOAD':
+            return componentTokens.UPLOAD
+        case 'CODE_BLOCK':
+            return componentTokens.CODE_BLOCK
+        case 'MOBILE_NAVIGATION':
+            return componentTokens.MOBILE_NAVIGATION
+        case 'DIRECTORY':
+            return componentTokens.DIRECTORY
+        case 'CHAT_INPUT':
+            return componentTokens.CHAT_INPUT
+        case 'BUTTONV2':
+            return componentTokens.BUTTONV2
+        case 'TAGV2':
+            return componentTokens.TAGV2
+        case 'ALERTV2':
+            return componentTokens.ALERTV2
+        case 'ACCORDIONV2':
+            return componentTokens.ACCORDIONV2
+        case 'SNACKBARV2':
+            return componentTokens.SNACKBARV2
+        case 'SWITCHV2':
+            return componentTokens.SWITCHV2
+        case 'SINGLE_SELECT_V2':
+            return componentTokens.SINGLE_SELECT_V2
+        case 'MULTI_SELECT_V2':
+            return componentTokens.MULTI_SELECT_V2
+        case 'AVATARV2':
+            return componentTokens.AVATARV2
+        case 'TEXT_INPUTV2':
+            return componentTokens.TEXT_INPUTV2
+        case 'TEXT_AREA_V2':
+            return componentTokens.TEXT_AREA_V2
+        case 'CHARTSV2':
+            return componentTokens.CHARTSV2
+        case 'TIMELINE':
+            return componentTokens.TIMELINE
+        case 'CHECKBOXV2':
+            return componentTokens.CHECKBOXV2
+        case 'KEYVALUEPAIRV2':
+            return componentTokens.KEYVALUEPAIRV2
+        case 'STATCARDV2':
+            return componentTokens.STATCARDV2
+        case 'TOOLTIPV2':
+            return componentTokens.TOOLTIPV2
+        case 'RADIOV2':
+            return componentTokens.RADIOV2
+        case 'TABSV2':
+            return componentTokens.TABSV2
+        case 'BREADCRUMBV2':
+            return componentTokens.BREADCRUMBV2
+        case 'CODEEDITORV2':
+            return componentTokens.CODEEDITORV2
+        case 'PROGRESS_BARV2':
+            return componentTokens.PROGRESS_BARV2
+        case 'MULTI_VALUE_INPUT_V2':
+            return componentTokens.MULTI_VALUE_INPUT_V2
+        case 'NUMBER_INPUT_V2':
+            return componentTokens.NUMBER_INPUT_V2
+        case 'OTP_INPUTV2':
+            return componentTokens.OTP_INPUTV2
+        case 'SEARCH_INPUT_V2':
+            return componentTokens.SEARCH_INPUT_V2
+        default:
+            throw new Error(`Unknown component token: ${component}`)
+    }
+}

@@ -1,0 +1,50 @@
+{
+    "componentDescription": "NumberInput is a text input specialized for numeric values with optional increment/decrement stepper buttons. Use it for quantities, prices, ages, counts, and any field requiring a precise numeric value. For ranges with a visual slider, use Slider instead.",
+    "features": [
+        "Increment and decrement buttons",
+        "Min and max value constraints",
+        "Configurable step size",
+        "Error state with error message",
+        "Multiple size variants",
+        "Label and disabled support"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Quantity selector",
+            "description": "Order quantity input with min 1 and max based on stock.",
+            "code": "<NumberInput\n  label=\"Quantity\"\n  value={quantity}\n  onChange={setQuantity}\n  min={1}\n  max={product.stockCount}\n  step={1}\n  size={TextInputSize.MEDIUM}\n/>"
+        },
+        {
+            "title": "Price input with decimal step",
+            "description": "Price field accepting decimal values with 0.01 increment.",
+            "code": "<NumberInput\n  label=\"Price (USD)\"\n  value={price}\n  onChange={setPrice}\n  min={0}\n  step={0.01}\n  size={TextInputSize.MEDIUM}\n  error={price <= 0 && submitted}\n  errorMessage=\"Price must be greater than 0\"\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. Current numeric value. Manage with useState. Initialize to a sensible default (not NaN or undefined). For optional fields, use null and handle the null case in onChange.",
+            "propDescription": "Required. Controlled numeric value"
+        },
+        "onChange": {
+            "llmContext": "Required. Callback receiving the new number when the user types or clicks increment/decrement. Validate the value against min/max in your handler if needed.",
+            "propDescription": "Required. Called with new numeric value on change"
+        },
+        "min": {
+            "llmContext": "Minimum allowed value. The decrement button is disabled when value equals min. For quantities, use 1 (not 0 for required items) or 0 for optional counts. For prices, use 0 or a minimum price floor.",
+            "propDescription": "Minimum allowed value"
+        },
+        "max": {
+            "llmContext": "Maximum allowed value. The increment button is disabled when value equals max. Use for stock limits, seat counts, or any field with a hard ceiling.",
+            "propDescription": "Maximum allowed value"
+        },
+        "step": {
+            "llmContext": "Amount added/subtracted per increment/decrement click. Use 1 for whole number values, 0.01 for currency, 0.1 for percentages or measurements with 1 decimal place.",
+            "propDescription": "Increment/decrement step amount"
+        },
+        "error": {
+            "llmContext": "Set to true for validation error state. Pair with errorMessage. Trigger after form submit or on blur. Common errors: value below min, above max, or non-integer when integer is required.",
+            "propDescription": "Shows error styling on the input"
+        }
+    }
+}

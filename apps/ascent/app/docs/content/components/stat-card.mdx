@@ -1,0 +1,543 @@
+---
+title: Stat Card
+description: The StatCard component displays key metrics and statistics in a card format, with support for icons, trends, and various styling options for dashboard and analytics interfaces.
+category: components
+tags:
+    - stat-card
+    - component
+    - metrics
+RepoFolderName: StatCard
+StorybookLink: components-statcard-statcard--docs
+---
+
+<StatCardPreview />
+
+## Usage
+
+```tsx
+import {
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+} from '@juspay/blend-design-system'
+import { TrendingUp, Users, DollarSign } from 'lucide-react'
+
+function MyComponent() {
+    const chartData = [
+        { value: 100, label: 'Jan', date: '2024-01' },
+        { value: 120, label: 'Feb', date: '2024-02' },
+        { value: 110, label: 'Mar', date: '2024-03' },
+        { value: 140, label: 'Apr', date: '2024-04' },
+        { value: 130, label: 'May', date: '2024-05' },
+        { value: 160, label: 'Jun', date: '2024-06' },
+    ]
+
+    return (
+        <div
+            style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: '16px',
+            }}
+        >
+            <StatCard
+                title="Total Revenue"
+                value="$12,345"
+                subtitle="Last 30 days"
+                variant={StatCardVariant.LINE}
+                chartData={chartData}
+                titleIcon={<DollarSign size={20} />}
+                change={{ value: 12.5, type: ChangeType.INCREASE }}
+            />
+
+            <StatCard
+                title="Active Users"
+                value="1,234"
+                subtitle="Current month"
+                variant={StatCardVariant.BAR}
+                chartData={chartData}
+                titleIcon={<Users size={20} />}
+                change={{ value: 8.2, type: ChangeType.INCREASE }}
+            />
+
+            <StatCard
+                title="Conversion Rate"
+                value="85%"
+                subtitle="Target: 90%"
+                variant={StatCardVariant.PROGRESS_BAR}
+                progressValue={85}
+                titleIcon={<TrendingUp size={20} />}
+                change={{ value: 5.3, type: ChangeType.INCREASE }}
+            />
+
+            <StatCard
+                title="Total Orders"
+                value="456"
+                subtitle="This week"
+                variant={StatCardVariant.NUMBER}
+                titleIcon={<Activity size={20} />}
+                change={{ value: 2.1, type: ChangeType.DECREASE }}
+            />
+        </div>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'StatCard.title',
+                hintText:
+                    'Required string representing the title text displayed prominently in the stat card header. Should be concise and descriptive, clearly identifying the metric (e.g., "Total Revenue", "Active Users", "Conversion Rate"). The title appears above the value and is styled prominently.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.value',
+                hintText:
+                    'Required string or number representing the main value displayed prominently in the stat card. This is the primary metric that users see (e.g., "$12,345", "1,234", "85%"). Can be formatted as a string for currency, percentages, or custom formatting, or as a number for numeric values.',
+            },
+            { content: 'string | number', hintText: 'union type' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.variant',
+                hintText:
+                    'Required StatCardVariant enum value that determines the visual variant and chart type displayed in the stat card. LINE displays a line chart, PROGRESS_BAR displays a progress bar, BAR displays a bar chart, NUMBER displays only the numeric value without a chart. Each variant requires specific props (e.g., chartData for LINE/BAR, progressValue for PROGRESS_BAR).',
+            },
+            { content: 'StatCardVariant', hintText: 'enum' },
+            { content: 'LINE, PROGRESS_BAR, BAR, NUMBER' },
+        ],
+        [
+            {
+                content: 'StatCard.valueTooltip',
+                hintText:
+                    'Optional React element displayed as a tooltip when hovering over the main value. Can be used to provide additional context, breakdown, or detailed information about the value. Useful for showing tooltips with rich content (e.g., formatted text, lists, or custom components).',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.change',
+                hintText:
+                    'Optional StatCardChange object that configures a change indicator showing percentage increase or decrease. Displays an arrow icon (up for increase, down for decrease) with the percentage change value. Useful for showing trends and comparisons. Contains: value (required number for percentage), valueType (required ChangeType enum), and tooltip (optional ReactNode).',
+            },
+            {
+                content: 'StatCardChange',
+                hintText:
+                    'Object with change indicator configuration properties (see StatCardChange below)',
+            },
+            {
+                content: 'StatCardChange: see StatCardChange props below',
+            },
+        ],
+        [
+            {
+                content: 'StatCard.subtitle',
+                hintText:
+                    'Optional string representing secondary text displayed below the main value. Provides context, time period, or additional information about the metric (e.g., "Last 30 days", "Current month", "Target: 90%"). Styled with smaller, lighter text than the value.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.chartData',
+                hintText: 'Data points for line and bar chart variants',
+            },
+            { content: 'ChartDataPoint[]', hintText: 'array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.progressValue',
+                hintText:
+                    'Progress percentage for progress bar variant (0-100)',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.titleIcon',
+                hintText: 'Icon element displayed next to the title',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.actionIcon',
+                hintText:
+                    'Icon element displayed on the right side of the header',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.helpIconText',
+                hintText: 'Tooltip text for the help icon',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.dropdownProps',
+                hintText: 'Props for the dropdown select component',
+            },
+            { content: 'SingleSelectProps', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.maxWidth',
+                hintText: 'Maximum width of the stat card',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.minWidth',
+                hintText:
+                    'Optional string for minimum width of the stat card. Defaults to "auto".',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.skeleton',
+                hintText:
+                    'Optional StatCardSkeletonProps for loading state. Contains: variant (required SkeletonVariant), show (required boolean), height (optional), maxWidth (optional), minWidth (optional). Displays a skeleton placeholder while data is loading.',
+            },
+            { content: 'StatCardSkeletonProps', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.dataDisplay',
+                hintText:
+                    'Optional boolean to control whether the data display (charts/progress bar) is shown. When false, hides the chart/progress bar area. Defaults to true.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.xAxis',
+                hintText: 'Configuration for the X-axis',
+            },
+            { content: 'StatCardAxisConfig', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.yAxis',
+                hintText: 'Configuration for the Y-axis',
+            },
+            { content: 'StatCardAxisConfig', hintText: 'object' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.valueFormatter',
+                hintText: 'Axis type for formatting the main value',
+            },
+            { content: 'AxisType', hintText: 'enum' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.height',
+                hintText: 'Height of the stat card',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCard.direction',
+                hintText: 'Layout direction of the stat card',
+            },
+            { content: 'StatCardDirection', hintText: 'enum' },
+            { content: 'VERTICAL, HORIZONTAL' },
+        ],
+        [
+            {
+                content: 'StatCard.showBorder',
+                hintText:
+                    'Optional boolean to control whether the stat card displays a border. When set to false, the card appears without a border. Defaults to true, maintaining backward compatibility with existing implementations.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'true (default), false' },
+        ],
+        [
+            {
+                content: 'StatCardChange.value',
+                hintText: 'The percentage change value',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardChange.valueType',
+                hintText: 'Whether the change is an increase or decrease',
+            },
+            { content: 'ChangeType', hintText: 'enum' },
+            { content: 'INCREASE, DECREASE' },
+        ],
+        [
+            {
+                content: 'StatCardChange.tooltip',
+                hintText: 'Tooltip content for the change indicator',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardChange.arrowDirection',
+                hintText:
+                    'Optional StatCardArrowDirection enum that controls the arrow direction displayed next to the change value. UP shows an upward arrow, DOWN shows a downward arrow. If not provided, the direction is automatically determined based on valueType (INCREASE=UP, DECREASE=DOWN).',
+            },
+            { content: 'StatCardArrowDirection', hintText: 'enum' },
+            { content: 'UP, DOWN' },
+        ],
+        [
+            {
+                content: 'ChartDataPoint.value',
+                hintText: 'The numeric value for the data point',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ChartDataPoint.name',
+                hintText: 'The name/label for the data point',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardAxisConfig.type',
+                hintText: 'Type of axis data (number, date, etc.)',
+            },
+            { content: 'AxisType', hintText: 'enum' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardAxisConfig.tickFormatter',
+                hintText: 'Custom function to format tick labels',
+            },
+            {
+                content: '(value: string | number) => string',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardAxisConfig.dateOnly',
+                hintText: 'Whether to show only date (for date-time type)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardAxisConfig.useUTC',
+                hintText: 'Whether to use UTC timezone',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardAxisConfig.formatString',
+                hintText: 'Custom format string for date formatting',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardAxisConfig.timeOnly',
+                hintText: 'Whether to show only time (for date-time type)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardAxisConfig.showYear',
+                hintText: 'Whether to show year in date formatting',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'StatCardAxisConfig.smartDateTimeFormat',
+                hintText: 'Whether to use smart date-time formatting',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the StatCard component using the following tokens:
+
+```tsx
+export type StatCardTokenType = {
+    height: CSSObject['height']
+    maxWidth: CSSObject['maxWidth']
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    backgroundColor: CSSObject['backgroundColor']
+    boxShadow: CSSObject['boxShadow']
+    padding: {
+        x: CSSObject['padding']
+        y: CSSObject['padding']
+    }
+    textContainer: {
+        gap: CSSObject['gap']
+        header: {
+            gap: CSSObject['gap']
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+            titleIcon: {
+                width: CSSObject['width']
+            }
+            helpIcon: {
+                width: CSSObject['width']
+                color: {
+                    [key in StatCardState]: CSSObject['color']
+                }
+            }
+        }
+        stats: {
+            gap: CSSObject['gap']
+            title: {
+                gap: CSSObject['gap']
+                value: {
+                    [key in StatCardVariant]: {
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                        color: CSSObject['color']
+                    }
+                }
+                change: {
+                    margin: CSSObject['margin']
+                    arrow: {
+                        width: CSSObject['width']
+                    }
+                    text: {
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                        color: {
+                            [key in ChangeType]: CSSObject['color']
+                        }
+                    }
+                }
+            }
+            subtitle: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
+    }
+    chart: {
+        height: CSSObject['height']
+        colors: {
+            line: {
+                increase: CSSObject['color']
+                decrease: CSSObject['color']
+            }
+            area: {
+                increase: CSSObject['color']
+                decrease: CSSObject['color']
+            }
+            gradient: {
+                end: CSSObject['color']
+                startOpacity: number
+                endOpacity: number
+            }
+        }
+        line: {
+            strokeWidth: CSSObject['strokeWidth']
+            activeDot: {
+                width: CSSObject['width']
+                fill: CSSObject['fill']
+            }
+        }
+        bar: {
+            borderTopRightRadius: CSSObject['borderTopRightRadius']
+            borderTopLeftRadius: CSSObject['borderTopLeftRadius']
+            borderBottomRightRadius: CSSObject['borderBottomRightRadius']
+            borderBottomLeftRadius: CSSObject['borderBottomLeftRadius']
+            fill: {
+                [key in StatCardState]: CSSObject['fill']
+            }
+        }
+        progressBar: {
+            height: CSSObject['height']
+            borderRadius: CSSObject['borderRadius']
+            gap: CSSObject['gap']
+            background: {
+                fill: CSSObject['backgroundColor']
+                empty: CSSObject['backgroundColor']
+                pattern: {
+                    color: CSSObject['color']
+                    size: CSSObject['backgroundSize']
+                }
+            }
+            label: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+            }
+        }
+        tooltip: {
+            backgroundColor: CSSObject['backgroundColor']
+            padding: {
+                x: CSSObject['padding']
+                y: CSSObject['padding']
+            }
+            borderRadius: CSSObject['borderRadius']
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
+    }
+}
+
+export type ResponsiveStatCardTokens = {
+    [key in keyof BreakpointType]: StatCardTokenType
+}
+
+export type StatCardState = 'default' | 'hover' | 'loading'
+```

@@ -1,0 +1,1620 @@
+import { useCallback, useMemo, useRef, useState, useId } from 'react'
+import {
+    BarChart,
+    Bar,
+    Cell,
+    ResponsiveContainer,
+    XAxis,
+    YAxis,
+    Tooltip as RechartsTooltip,
+    type TooltipProps,
+    Area,
+    AreaChart,
+} from 'recharts'
+import { ArrowDown, ArrowUp, CircleHelp } from 'lucide-react'
+import { Tooltip } from '../Tooltip'
+import {
+    ProgressBar,
+    ProgressBarVariant,
+    ProgressBarSize,
+} from '../ProgressBar'
+import Block from '../Primitives/Block/Block'
+import Text from '../Text/Text'
+import {
+    ChangeType,
+    StatCardArrowDirection,
+    StatCardDirection,
+    StatCardVariant,
+    type StatCardProps,
+} from './types'
+import type { StatCardTokenType } from './statcard.tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import {
+    SelectMenuSize,
+    SelectMenuVariant,
+    SingleSelect,
+} from '../SingleSelect'
+import { toPixels } from '../../global-utils/GlobalUtils'
+import { getAxisFormatter, createDateTimeFormatter } from '../Charts/ChartUtils'
+import { AxisType } from '../Charts/types'
+import StatCardSkeleton from './StatCardSkeleton'
+import {
+    calculateTrend,
+    getEffectiveChange,
+    shouldShowDecreaseColor,
+} from './utils'
+
+type StatCardHeaderTitleTextProps = {
+    title: string
+    titleId: string
+    statCardToken: StatCardTokenType
+}
+
+const StatCardHeaderTitleText = ({
+    title,
+    titleId,
+    statCardToken,
+}: StatCardHeaderTitleTextProps) => (
+    <Tooltip content={title}>
+        <Text
+            as="span"
+            id={titleId}
+            fontSize={statCardToken.textContainer.header.title.fontSize}
+            fontWeight={statCardToken.textContainer.header.title.fontWeight}
+            color={statCardToken.textContainer.header.title.color}
+            style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 1,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                wordBreak: 'break-word',
+            }}
+            data-element="statcard-header"
+            data-id={title || 'statcard-header'}
+        >
+            {title}
+        </Text>
+    </Tooltip>
+)
+
+type StatCardHelpIconProps = {
+    helpIconText?: string
+    title: string
+    statCardToken: StatCardTokenType
+}
+
+const StatCardHelpIcon = ({
+    helpIconText,
+    title,
+    statCardToken,
+}: StatCardHelpIconProps) => {
+    if (!helpIconText) return null
+
+    return (
+        <Block
+            data-element="help-icon"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            flexShrink={0}
+        >
+            <Tooltip content={helpIconText}>
+                <Block
+                    as="span"
+                    display="inline-flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={helpIconText || `Help for ${title}`}
+                >
+                    <CircleHelp
+                        width={parseInt(
+                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                '16'
+                        )}
+                        height={parseInt(
+                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                '16'
+                        )}
+                        color={
+                            statCardToken.textContainer.header.helpIcon.color
+                                .default
+                        }
+                        aria-hidden="true"
+                    />
+                </Block>
+            </Tooltip>
+        </Block>
+    )
+}
+
+const StatCard = ({
+    title,
+    value,
+    valueTooltip,
+    change,
+    subtitle,
+    variant,
+    chartData,
+    progressValue,
+    titleIcon,
+    actionIcon,
+    helpIconText,
+    dropdownProps,
+    minWidth = 'auto',
+    maxWidth = 'auto',
+    xAxis,
+    yAxis,
+    valueFormatter,
+    height = 'auto',
+    direction = StatCardDirection.VERTICAL,
+    skeleton,
+    dataDisplay = true,
+    showBorder = true,
+    ...props
+}: StatCardProps) => {
+    const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
+
+    const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+    const isSmallScreen = breakPointLabel === 'sm'
+    const titleIconRef = useRef<HTMLDivElement>(null)
+    const titleIconWidth = titleIconRef.current?.offsetWidth || 0
+
+    const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null)
+
+    const baseId = useId()
+    const titleId = `${baseId}-title`
+    const valueId = `${baseId}-value`
+    const changeId = `${baseId}-change`
+    const subtitleId = `${baseId}-subtitle`
+    const chartId = `${baseId}-chart`
+
+    const getCardLabel = useCallback(
+        (formatMainValueFn: (val: string | number) => string) => {
+            const parts: string[] = []
+            if (title) parts.push(title)
+            if (value !== undefined && value !== null && value !== '') {
+                parts.push(formatMainValueFn(value))
+            }
+            if (subtitle) parts.push(subtitle)
+            if (
+                change &&
+                change.value != null &&
+                change.value != undefined &&
+                typeof change.value === 'number' &&
+                change.valueType != null &&
+                change.valueType != undefined
+            ) {
+                const changeText =
+                    change.valueType === ChangeType.INCREASE
+                        ? `increased by ${change.value.toFixed(2)}%`
+                        : `decreased by ${change.value.toFixed(2)}%`
+                parts.push(changeText)
+            }
+            return parts.join(', ')
+        },
+        [title, value, subtitle, change]
+    )
+
+    // Construct accessible description for charts
+    const chartLabel = useMemo(() => {
+        if (!chartData || chartData.length === 0) return undefined
+        const dataPoints = chartData.length
+        const firstValue = chartData[0]?.value
+        const lastValue = chartData[chartData.length - 1]?.value
+        const trend =
+            firstValue && lastValue && lastValue > firstValue
+                ? 'increasing'
+                : firstValue && lastValue && lastValue < firstValue
+                  ? 'decreasing'
+                  : 'stable'
+        return `${title} chart showing ${dataPoints} data points with ${trend} trend`
+    }, [chartData, title])
+
+    const formatTooltipLabel = (label: string | number): string => {
+        if (!xAxis) return String(label)
+        if (xAxis.tickFormatter) return xAxis.tickFormatter(label)
+        if (xAxis.type === AxisType.DATE_TIME) {
+            // For tooltips, always show full date/time with year
+            const tooltipFormatter = createDateTimeFormatter({
+                useUTC: true,
+                smartDateTimeFormat: false,
+                showYear: true,
+            })
+            return tooltipFormatter(label)
+        }
+        if (xAxis.type) {
+            return getAxisFormatter(xAxis)(label)
+        }
+        return String(label)
+    }
+
+    const formatTooltipValue = (val: string | number): string => {
+        if (!yAxis) {
+            return typeof val === 'number' ? val.toLocaleString() : String(val)
+        }
+        if (yAxis.tickFormatter) return yAxis.tickFormatter(val)
+        if (yAxis.type) {
+            return getAxisFormatter(yAxis)(val)
+        }
+        return typeof val === 'number' ? val.toLocaleString() : String(val)
+    }
+
+    const formatMainValue = useCallback(
+        (val: string | number): string => {
+            if (valueFormatter) {
+                return getAxisFormatter({ type: valueFormatter })(val)
+            }
+            return String(val)
+        },
+        [valueFormatter]
+    )
+
+    const cardLabel = useMemo(
+        () => getCardLabel(formatMainValue),
+        [getCardLabel, formatMainValue]
+    )
+
+    const { label, placeholder, items, selected, onSelect } =
+        dropdownProps || {}
+
+    const gradientId = useMemo(
+        () => `colorGradient-${Math.random().toString(36).slice(2, 11)}`,
+        []
+    )
+
+    const normalizedVariant =
+        variant === StatCardVariant.PROGRESS_BAR ? 'progress' : variant
+
+    const isTrendingDown = calculateTrend(chartData)
+    const effectiveChange = getEffectiveChange(change, chartData)
+
+    const arrowDirection =
+        (change && change.arrowDirection) ??
+        (effectiveChange?.valueType === ChangeType.INCREASE
+            ? StatCardArrowDirection.UP
+            : StatCardArrowDirection.DOWN)
+
+    // Only render if effectiveChange is not null/undefined and value is a valid number (including 0)
+    const shouldRenderChange =
+        effectiveChange != null &&
+        effectiveChange.value != undefined &&
+        effectiveChange.value != null &&
+        typeof effectiveChange.value === 'number' &&
+        !Number.isNaN(effectiveChange.value)
+
+    const formattedChange =
+        shouldRenderChange && effectiveChange ? (
+            <Block
+                display="flex"
+                alignItems="center"
+                gap={3}
+                color={
+                    effectiveChange.valueType === ChangeType.INCREASE
+                        ? statCardToken.textContainer.stats.title.change.text
+                              .color.increase
+                        : statCardToken.textContainer.stats.title.change.text
+                              .color.decrease
+                }
+            >
+                {arrowDirection === StatCardArrowDirection.UP ? (
+                    <ArrowUp
+                        size={parseInt(
+                            statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
+                                '14'
+                        )}
+                    />
+                ) : (
+                    <ArrowDown
+                        size={parseInt(
+                            statCardToken.textContainer.stats.title.change.arrow.width?.toString() ||
+                                '14'
+                        )}
+                    />
+                )}
+                <Text
+                    as="span"
+                    fontSize={
+                        statCardToken.textContainer.stats.title.change.text
+                            .fontSize
+                    }
+                    fontWeight={
+                        statCardToken.textContainer.stats.title.change.text
+                            .fontWeight
+                    }
+                    data-numeric={`${effectiveChange.value!.toFixed(2)?.includes('-') ? '' : '+'}${effectiveChange.value!.toFixed(2)}%`}
+                    data-element="statcard-delta"
+                    data-status={
+                        effectiveChange.valueType === ChangeType.INCREASE
+                            ? 'increase'
+                            : 'decrease'
+                    }
+                >
+                    {effectiveChange.value!.toFixed(2)?.includes('-')
+                        ? ''
+                        : '+'}
+                    {effectiveChange.value!.toFixed(2)}%
+                </Text>
+            </Block>
+        ) : null
+
+    const shouldShowDecrease = shouldShowDecreaseColor(
+        effectiveChange,
+        isTrendingDown
+    )
+    const lineColor = shouldShowDecrease
+        ? statCardToken.chart.colors.line.decrease
+        : statCardToken.chart.colors.line.increase
+
+    const baseAreaColor = shouldShowDecrease
+        ? statCardToken.chart.colors.area.decrease
+        : statCardToken.chart.colors.area.increase
+
+    const hexToRgba = (hex: string, alpha: number) => {
+        const r = parseInt(hex.slice(1, 3), 16)
+        const g = parseInt(hex.slice(3, 5), 16)
+        const b = parseInt(hex.slice(5, 7), 16)
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`
+    }
+
+    const areaColor =
+        typeof baseAreaColor === 'string'
+            ? hexToRgba(
+                  baseAreaColor,
+                  statCardToken.chart.colors.gradient.startOpacity
+              )
+            : baseAreaColor
+
+    const CustomTooltip = ({
+        active,
+        payload,
+    }: TooltipProps<number, string>) => {
+        if (!active || !payload || payload.length === 0) return null
+
+        const payloadItem = payload[0]
+        if (!payloadItem) return null
+
+        const currentValue = payloadItem.value as number
+        const name = payloadItem.payload?.name
+
+        return (
+            <Block
+                backgroundColor={statCardToken.chart.tooltip.backgroundColor}
+                padding={`${statCardToken.chart.tooltip.padding.y} ${statCardToken.chart.tooltip.padding.x}`}
+                borderRadius={statCardToken.chart.tooltip.borderRadius}
+            >
+                <Block display="flex" gap={4}>
+                    <Text
+                        as="span"
+                        color={statCardToken.chart.tooltip.color}
+                        fontWeight={statCardToken.chart.tooltip.fontWeight}
+                        fontSize={statCardToken.chart.tooltip.fontSize}
+                    >
+                        {`${formatTooltipLabel(name || '')},`}
+                    </Text>
+
+                    <Text
+                        as="span"
+                        color={statCardToken.chart.tooltip.color}
+                        fontWeight={statCardToken.chart.tooltip.fontWeight}
+                        fontSize={statCardToken.chart.tooltip.fontSize}
+                    >
+                        {formatTooltipValue(currentValue)}
+                    </Text>
+                </Block>
+            </Block>
+        )
+    }
+    const chartFallbackStyle = {
+        paddingLeft:
+            titleIconWidth + toPixels(statCardToken.textContainer.header.gap),
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
+    const indexedChartData = useMemo(() => {
+        return chartData?.map((point, index) => ({
+            ...point,
+            index,
+        }))
+    }, [chartData])
+
+    const handleBarMouseEnter = useCallback(
+        (data: { index: number }) => {
+            if (data.index !== hoveredBarIndex) {
+                setHoveredBarIndex(data.index)
+            }
+        },
+        [hoveredBarIndex]
+    )
+    const handleBarMouseLeave = useCallback(() => {
+        setHoveredBarIndex(null)
+    }, [])
+
+    if (!value && !change && !progressValue && !chartData?.length) {
+        return (
+            <Block
+                height={
+                    height && !isSmallScreen ? height : statCardToken.height
+                }
+                border={showBorder ? statCardToken.border : undefined}
+                borderRadius={statCardToken.borderRadius}
+                overflow="hidden"
+                backgroundColor={statCardToken.backgroundColor}
+                boxShadow={showBorder ? statCardToken.boxShadow : undefined}
+                padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
+                display="flex"
+                flexDirection="column"
+                // gap={statCardToken.gap}
+                justifyContent="space-between"
+                data-statcard-variant={normalizedVariant}
+                maxWidth={maxWidth}
+                minWidth={minWidth}
+                role="region"
+                aria-label={cardLabel || title}
+                aria-labelledby={titleId}
+                {...props}
+            >
+                <Block
+                    display="flex"
+                    flexDirection="column"
+                    height="100%"
+                    alignItems={isSmallScreen ? 'flex-start' : 'center'}
+                    justifyContent="center"
+                    gap={statCardToken.textContainer.gap}
+                >
+                    <Block
+                        display="flex"
+                        flexDirection="column"
+                        alignItems={'center'}
+                        gap={16}
+                    >
+                        {titleIcon && !isSmallScreen && (
+                            <Block
+                                data-element="title-icon"
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                flexShrink={0}
+                            >
+                                {titleIcon}
+                            </Block>
+                        )}
+                        <Block
+                            width="100%"
+                            display="flex"
+                            alignItems="center"
+                            flexGrow={1}
+                            gap={statCardToken.textContainer.header.gap}
+                        >
+                            <StatCardHeaderTitleText
+                                title={title}
+                                titleId={titleId}
+                                statCardToken={statCardToken}
+                            />
+                            <StatCardHelpIcon
+                                helpIconText={helpIconText}
+                                title={title}
+                                statCardToken={statCardToken}
+                            />
+                        </Block>
+                    </Block>
+
+                    <Block
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        gap={8}
+                    >
+                        <Block
+                            width="100%"
+                            display="flex"
+                            alignItems="center"
+                            gap={statCardToken.textContainer.stats.gap}
+                            justifyContent={
+                                formattedChange || isSmallScreen
+                                    ? 'flex-start'
+                                    : 'center'
+                            }
+                        >
+                            {
+                                <Tooltip content={valueTooltip || ''}>
+                                    <Text
+                                        as="span"
+                                        fontSize={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontSize
+                                        }
+                                        fontWeight={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontWeight
+                                        }
+                                        color={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].color
+                                        }
+                                        style={{
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        {'--'}
+                                    </Text>
+                                </Tooltip>
+                            }
+                        </Block>
+                        {!isSmallScreen && (
+                            <Text
+                                as="span"
+                                variant="body.sm"
+                                color={
+                                    statCardToken.textContainer.stats.subtitle
+                                        .color
+                                }
+                                fontWeight={
+                                    statCardToken.textContainer.stats.subtitle
+                                        .fontWeight
+                                }
+                                data-element="statcard-subtitle"
+                                data-id={subtitle || 'statcard-subtitle'}
+                            >
+                                {subtitle}
+                            </Text>
+                        )}
+
+                        {isSmallScreen && items && items.length > 0 && (
+                            <SingleSelect
+                                label={label || ''}
+                                placeholder={placeholder || ''}
+                                items={items || []}
+                                selected={selected || ''}
+                                onSelect={onSelect || (() => {})}
+                                variant={SelectMenuVariant.NO_CONTAINER}
+                                size={SelectMenuSize.SMALL}
+                                inline={true}
+                                minMenuWidth={100}
+                            />
+                        )}
+                    </Block>
+                </Block>
+            </Block>
+        )
+    }
+
+    return (
+        <Block
+            height={height && !isSmallScreen ? height : statCardToken.height}
+            border={showBorder ? statCardToken.border : undefined}
+            borderRadius={statCardToken.borderRadius}
+            overflow="hidden"
+            backgroundColor={statCardToken.backgroundColor}
+            boxShadow={showBorder ? statCardToken.boxShadow : undefined}
+            padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
+            display="flex"
+            flexDirection="column"
+            // gap={statCardToken.gap}
+            justifyContent="space-between"
+            data-statcard-variant={normalizedVariant}
+            data-statcard={title || 'single-stat'}
+            maxWidth={maxWidth}
+            minWidth={minWidth}
+            role="region"
+            aria-label={cardLabel || title}
+            aria-labelledby={titleId}
+            {...props}
+        >
+            {skeleton?.show ? (
+                <StatCardSkeleton
+                    skeleton={skeleton}
+                    maxWidth={maxWidth}
+                    minWidth={minWidth}
+                />
+            ) : (
+                <>
+                    {variant !== StatCardVariant.NUMBER && (
+                        <Block
+                            display="flex"
+                            gap={statCardToken.textContainer.header.gap}
+                            position="relative"
+                        >
+                            {direction === StatCardDirection.VERTICAL && (
+                                <>
+                                    {titleIcon && !isSmallScreen && (
+                                        <Block
+                                            data-element="title-icon"
+                                            width={
+                                                statCardToken.textContainer
+                                                    .header.titleIcon.width
+                                            }
+                                            height={
+                                                statCardToken.textContainer
+                                                    .header.titleIcon.width
+                                            }
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            flexShrink={0}
+                                            ref={titleIconRef}
+                                        >
+                                            {titleIcon}
+                                        </Block>
+                                    )}
+                                </>
+                            )}
+
+                            <Block
+                                display="flex"
+                                flexDirection="column"
+                                width="100%"
+                                gap={statCardToken.textContainer.gap}
+                            >
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent={
+                                        direction === StatCardDirection.VERTICAL
+                                            ? 'space-between'
+                                            : 'flex-end'
+                                    }
+                                    width="100%"
+                                    gap={statCardToken.textContainer.header.gap}
+                                >
+                                    {direction ===
+                                        StatCardDirection.VERTICAL && (
+                                        <Block
+                                            display="flex"
+                                            alignItems="center"
+                                            gap={
+                                                statCardToken.textContainer
+                                                    .header.gap
+                                            }
+                                        >
+                                            <StatCardHeaderTitleText
+                                                title={title}
+                                                titleId={titleId}
+                                                statCardToken={statCardToken}
+                                            />
+                                            <StatCardHelpIcon
+                                                helpIconText={helpIconText}
+                                                title={title}
+                                                statCardToken={statCardToken}
+                                            />
+                                        </Block>
+                                    )}
+                                    {actionIcon &&
+                                        !isSmallScreen &&
+                                        direction !==
+                                            StatCardDirection.HORIZONTAL && (
+                                            <Block
+                                                data-element="view-more"
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="center"
+                                                flexShrink={0}
+                                                position="absolute"
+                                                right={0}
+                                                top={0}
+                                            >
+                                                {actionIcon}
+                                            </Block>
+                                        )}
+                                </Block>
+
+                                <Block
+                                    display="flex"
+                                    flexDirection="column"
+                                    alignItems={
+                                        direction === StatCardDirection.VERTICAL
+                                            ? 'flex-start'
+                                            : 'center'
+                                    }
+                                    gap={statCardToken.textContainer.stats.gap}
+                                >
+                                    {direction ===
+                                        StatCardDirection.HORIZONTAL && (
+                                        <Block
+                                            display="flex"
+                                            alignItems="center"
+                                            width={'100%'}
+                                            gap={
+                                                statCardToken.textContainer
+                                                    .header.gap
+                                            }
+                                        >
+                                            {titleIcon && (
+                                                <Block
+                                                    data-element="title-icon"
+                                                    width={
+                                                        statCardToken
+                                                            .textContainer
+                                                            .header.titleIcon
+                                                            .width
+                                                    }
+                                                    height={
+                                                        statCardToken
+                                                            .textContainer
+                                                            .header.titleIcon
+                                                            .width
+                                                    }
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                    flexShrink={0}
+                                                    ref={titleIconRef}
+                                                >
+                                                    {titleIcon}
+                                                </Block>
+                                            )}
+                                            <Block
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                                gap={
+                                                    statCardToken.textContainer
+                                                        .header.gap
+                                                }
+                                                width="100%"
+                                            >
+                                                <Block
+                                                    display="flex"
+                                                    gap={
+                                                        statCardToken
+                                                            .textContainer
+                                                            .header.gap
+                                                    }
+                                                >
+                                                    <Tooltip content={title}>
+                                                        <Text
+                                                            as="span"
+                                                            id={titleId}
+                                                            fontSize={
+                                                                statCardToken
+                                                                    .textContainer
+                                                                    .header
+                                                                    .title
+                                                                    .fontSize
+                                                            }
+                                                            fontWeight={
+                                                                statCardToken
+                                                                    .textContainer
+                                                                    .header
+                                                                    .title
+                                                                    .fontWeight
+                                                            }
+                                                            color={
+                                                                statCardToken
+                                                                    .textContainer
+                                                                    .header
+                                                                    .title.color
+                                                            }
+                                                            style={{
+                                                                display:
+                                                                    '-webkit-box',
+                                                                WebkitLineClamp: 1,
+                                                                WebkitBoxOrient:
+                                                                    'vertical',
+                                                                overflow:
+                                                                    'hidden',
+                                                                textOverflow:
+                                                                    'ellipsis',
+                                                                wordBreak:
+                                                                    'break-word',
+                                                            }}
+                                                            data-element="statcard-header"
+                                                            data-id={
+                                                                title ||
+                                                                'statcard-header'
+                                                            }
+                                                        >
+                                                            {title}
+                                                        </Text>
+                                                    </Tooltip>
+                                                    {helpIconText && (
+                                                        <Block
+                                                            data-element="help-icon"
+                                                            flexShrink={0}
+                                                            display="flex"
+                                                            alignItems="center"
+                                                            justifyContent="center"
+                                                        >
+                                                            <Tooltip
+                                                                content={
+                                                                    helpIconText
+                                                                }
+                                                            >
+                                                                <Block
+                                                                    as="span"
+                                                                    display="inline-flex"
+                                                                    alignItems="center"
+                                                                    justifyContent="center"
+                                                                    role="button"
+                                                                    tabIndex={0}
+                                                                    aria-label={
+                                                                        helpIconText ||
+                                                                        `Help for ${title}`
+                                                                    }
+                                                                >
+                                                                    <CircleHelp
+                                                                        width={parseInt(
+                                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                                '16'
+                                                                        )}
+                                                                        height={parseInt(
+                                                                            statCardToken.textContainer.header.helpIcon.width?.toString() ||
+                                                                                '16'
+                                                                        )}
+                                                                        color={
+                                                                            statCardToken
+                                                                                .textContainer
+                                                                                .header
+                                                                                .helpIcon
+                                                                                .color
+                                                                                .default
+                                                                        }
+                                                                        aria-hidden="true"
+                                                                    />
+                                                                </Block>
+                                                            </Tooltip>
+                                                        </Block>
+                                                    )}
+                                                </Block>
+                                                {actionIcon &&
+                                                    !isSmallScreen && (
+                                                        <Block
+                                                            data-element="view-more"
+                                                            flexShrink={0}
+                                                        >
+                                                            {actionIcon}
+                                                        </Block>
+                                                    )}
+                                            </Block>
+                                        </Block>
+                                    )}
+
+                                    <Block
+                                        width="100%"
+                                        display="flex"
+                                        justifyContent={
+                                            direction ===
+                                            StatCardDirection.VERTICAL
+                                                ? 'flex-start'
+                                                : 'center'
+                                        }
+                                        alignItems="center"
+                                        gap={4}
+                                    >
+                                        <Tooltip content={valueTooltip || ''}>
+                                            <Text
+                                                as="span"
+                                                id={valueId}
+                                                variant="heading.lg"
+                                                fontWeight={
+                                                    statCardToken.textContainer
+                                                        .stats.title.value[
+                                                        variant
+                                                    ].fontWeight
+                                                }
+                                                color={
+                                                    statCardToken.textContainer
+                                                        .stats.title.value[
+                                                        variant
+                                                    ].color
+                                                }
+                                                style={{
+                                                    cursor: 'pointer',
+                                                }}
+                                                data-numeric={formatMainValue(
+                                                    value || '--'
+                                                )}
+                                                data-element="statcard-data"
+                                            >
+                                                {formatMainValue(value || '--')}
+                                            </Text>
+                                        </Tooltip>
+
+                                        {formattedChange && (
+                                            <Tooltip
+                                                content={change?.tooltip || ''}
+                                            >
+                                                <Block
+                                                    id={changeId}
+                                                    cursor="pointer"
+                                                    data-id={`${effectiveChange?.valueType === ChangeType.DECREASE ? '-' : '+'}${effectiveChange?.value != null && typeof effectiveChange.value === 'number' ? effectiveChange.value.toFixed(2) : '0.00'}%`}
+                                                    data-element="statcard-delta"
+                                                    data-status={
+                                                        effectiveChange?.valueType ===
+                                                        ChangeType.INCREASE
+                                                            ? 'increase'
+                                                            : 'decrease'
+                                                    }
+                                                >
+                                                    {formattedChange}
+                                                </Block>
+                                            </Tooltip>
+                                        )}
+                                    </Block>
+                                    {!isSmallScreen && subtitle && (
+                                        <Text
+                                            as="span"
+                                            id={subtitleId}
+                                            fontSize={
+                                                statCardToken.textContainer
+                                                    .stats.subtitle.fontSize
+                                            }
+                                            color={
+                                                statCardToken.textContainer
+                                                    .stats.subtitle.color
+                                            }
+                                            fontWeight={
+                                                statCardToken.textContainer
+                                                    .stats.subtitle.fontWeight
+                                            }
+                                            data-element="statcard-subtitle"
+                                            data-id={
+                                                subtitle || 'statcard-subtitle'
+                                            }
+                                        >
+                                            {subtitle}
+                                        </Text>
+                                    )}
+                                    {isSmallScreen &&
+                                        items &&
+                                        items.length > 0 && (
+                                            <SingleSelect
+                                                label={label || ''}
+                                                placeholder={placeholder || ''}
+                                                items={items || []}
+                                                selected={selected || ''}
+                                                onSelect={
+                                                    onSelect || (() => {})
+                                                }
+                                                variant={
+                                                    SelectMenuVariant.NO_CONTAINER
+                                                }
+                                                size={SelectMenuSize.SMALL}
+                                                inline={true}
+                                                minMenuWidth={100}
+                                            />
+                                        )}
+                                </Block>
+                            </Block>
+                        </Block>
+                    )}
+                    {variant === StatCardVariant.NUMBER && (
+                        <Block
+                            // ref={numberVariantContainerRef}
+                            //
+                            display="flex"
+                            flexDirection="column"
+                            justifyContent="center"
+                            // alignItems="center"
+                            height="100%"
+                        >
+                            <Block
+                                display="flex"
+                                flexDirection="column"
+                                height="100%"
+                                alignItems={
+                                    isSmallScreen ? 'flex-start' : 'center'
+                                }
+                                justifyContent="center"
+                                gap={statCardToken.textContainer.gap}
+                                style={{ flex: 1 }}
+                                position="relative"
+                            >
+                                {actionIcon && !isSmallScreen && (
+                                    <Block
+                                        data-element="action-icon"
+                                        display="flex"
+                                        alignItems="flex-start"
+                                        justifyContent="center"
+                                        position="absolute"
+                                        right={0}
+                                        top={0}
+                                        flexShrink={0}
+                                    >
+                                        {actionIcon}
+                                    </Block>
+                                )}
+                                <Block
+                                    // ref={numberVariantTitleContainerRef}
+                                    display="flex"
+                                    flexDirection="column"
+                                    alignItems={'center'}
+                                    gap={16}
+                                >
+                                    {titleIcon && !isSmallScreen && (
+                                        <Block
+                                            data-element="title-icon"
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            flexShrink={0}
+                                        >
+                                            {titleIcon}
+                                        </Block>
+                                    )}
+
+                                    <Block
+                                        width="100%"
+                                        display="flex"
+                                        alignItems="center"
+                                        flexGrow={1}
+                                        gap={
+                                            statCardToken.textContainer.header
+                                                .gap
+                                        }
+                                    >
+                                        <StatCardHeaderTitleText
+                                            title={title}
+                                            titleId={titleId}
+                                            statCardToken={statCardToken}
+                                        />
+                                        <StatCardHelpIcon
+                                            helpIconText={helpIconText}
+                                            title={title}
+                                            statCardToken={statCardToken}
+                                        />
+                                    </Block>
+                                </Block>
+
+                                <Block
+                                    // ref={numberVariantStatsContainerRef}
+                                    display="flex"
+                                    flexDirection="column"
+                                    alignItems={
+                                        isSmallScreen ? 'flex-start' : 'center'
+                                    }
+                                    gap={8}
+                                >
+                                    <Block
+                                        width="100%"
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={
+                                            statCardToken.textContainer.stats
+                                                .gap
+                                        }
+                                        justifyContent={
+                                            formattedChange || isSmallScreen
+                                                ? 'flex-start'
+                                                : 'center'
+                                        }
+                                    >
+                                        {
+                                            <Tooltip
+                                                content={valueTooltip || ''}
+                                            >
+                                                <Text
+                                                    as="span"
+                                                    id={valueId}
+                                                    fontSize={
+                                                        statCardToken
+                                                            .textContainer.stats
+                                                            .title.value[
+                                                            variant
+                                                        ].fontSize
+                                                    }
+                                                    fontWeight={
+                                                        statCardToken
+                                                            .textContainer.stats
+                                                            .title.value[
+                                                            variant
+                                                        ].fontWeight
+                                                    }
+                                                    color={
+                                                        statCardToken
+                                                            .textContainer.stats
+                                                            .title.value[
+                                                            variant
+                                                        ].color
+                                                    }
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                    }}
+                                                    data-numeric={formatMainValue(
+                                                        value || '--'
+                                                    )}
+                                                    data-element="statcard-data"
+                                                >
+                                                    {formatMainValue(
+                                                        value || '--'
+                                                    )}
+                                                </Text>
+                                            </Tooltip>
+                                        }
+                                        {formattedChange && (
+                                            <Tooltip
+                                                content={change?.tooltip || ''}
+                                            >
+                                                <Block
+                                                    id={changeId}
+                                                    cursor="pointer"
+                                                >
+                                                    <Text
+                                                        as="span"
+                                                        color={
+                                                            statCardToken
+                                                                .textContainer
+                                                                .stats.title
+                                                                .change.text
+                                                                .color[
+                                                                effectiveChange?.valueType ??
+                                                                    ChangeType.INCREASE
+                                                            ]
+                                                        }
+                                                        fontSize={
+                                                            statCardToken
+                                                                .textContainer
+                                                                .stats.title
+                                                                .change.text
+                                                                .fontSize
+                                                        }
+                                                        fontWeight={
+                                                            statCardToken
+                                                                .textContainer
+                                                                .stats.title
+                                                                .change.text
+                                                                .fontWeight
+                                                        }
+                                                    >
+                                                        {formattedChange}
+                                                    </Text>
+                                                </Block>
+                                            </Tooltip>
+                                        )}
+                                    </Block>
+                                    {!isSmallScreen && subtitle && (
+                                        <Text
+                                            as="span"
+                                            id={subtitleId}
+                                            variant="body.sm"
+                                            color={
+                                                statCardToken.textContainer
+                                                    .stats.subtitle.color
+                                            }
+                                            fontWeight={
+                                                statCardToken.textContainer
+                                                    .stats.subtitle.fontWeight
+                                            }
+                                            data-element="statcard-subtitle"
+                                            data-id={
+                                                subtitle || 'statcard-subtitle'
+                                            }
+                                        >
+                                            {subtitle}
+                                        </Text>
+                                    )}
+
+                                    {isSmallScreen &&
+                                        items &&
+                                        items.length > 0 && (
+                                            <SingleSelect
+                                                label={label || ''}
+                                                placeholder={placeholder || ''}
+                                                items={items || []}
+                                                selected={selected || ''}
+                                                onSelect={
+                                                    onSelect || (() => {})
+                                                }
+                                                variant={
+                                                    SelectMenuVariant.NO_CONTAINER
+                                                }
+                                                size={SelectMenuSize.SMALL}
+                                                inline={true}
+                                                minMenuWidth={100}
+                                            />
+                                        )}
+                                </Block>
+                            </Block>
+
+                            {indexedChartData && (
+                                <Block
+                                    id={chartId}
+                                    height={statCardToken.chart.height}
+                                    width="100%"
+                                    role="img"
+                                    aria-label={chartLabel || `${title} chart`}
+                                >
+                                    {indexedChartData &&
+                                    indexedChartData.length > 0 ? (
+                                        <ResponsiveContainer
+                                            width="100%"
+                                            height="100%"
+                                        >
+                                            <AreaChart
+                                                data-single-stat-graph={title}
+                                                data={indexedChartData}
+                                                aria-label={
+                                                    chartLabel ||
+                                                    `${title} chart`
+                                                }
+                                                margin={{
+                                                    top: 5,
+                                                    right: 0,
+                                                    left: 0,
+                                                    bottom: 5,
+                                                }}
+                                            >
+                                                <XAxis dataKey="name" hide />
+                                                <YAxis hide />
+                                                <RechartsTooltip
+                                                    content={<CustomTooltip />}
+                                                    // cursor={{
+                                                    //     strokeDasharray:
+                                                    //         statCardToken.chart.tooltip
+                                                    //             .cursor.strokeDasharray,
+                                                    //     stroke: statCardToken.chart.tooltip
+                                                    //         .cursor.stroke,
+                                                    // }}
+                                                    position={{ y: 0 }}
+                                                    isAnimationActive={false}
+                                                    animationDuration={350}
+                                                />
+                                                <defs>
+                                                    <linearGradient
+                                                        id={gradientId}
+                                                        x1="0"
+                                                        y1="0"
+                                                        x2="0"
+                                                        y2="1"
+                                                    >
+                                                        <stop
+                                                            offset="0%"
+                                                            stopColor={
+                                                                areaColor
+                                                            }
+                                                            stopOpacity={
+                                                                statCardToken
+                                                                    .chart
+                                                                    .colors
+                                                                    .gradient
+                                                                    .startOpacity
+                                                            }
+                                                        />
+                                                        <stop
+                                                            offset="100%"
+                                                            stopColor={
+                                                                statCardToken
+                                                                    .chart
+                                                                    .colors
+                                                                    .gradient
+                                                                    .end
+                                                            }
+                                                            stopOpacity={
+                                                                statCardToken
+                                                                    .chart
+                                                                    .colors
+                                                                    .gradient
+                                                                    .endOpacity
+                                                            }
+                                                        />
+                                                    </linearGradient>
+                                                </defs>
+
+                                                <Area
+                                                    animationDuration={350}
+                                                    type="monotone"
+                                                    dataKey="value"
+                                                    stroke={lineColor}
+                                                    strokeWidth={
+                                                        statCardToken.chart.line
+                                                            .strokeWidth
+                                                    }
+                                                    fill={`url(#${gradientId})`}
+                                                    activeDot={{
+                                                        r: toPixels(
+                                                            statCardToken.chart
+                                                                .line.activeDot
+                                                                .width
+                                                        ),
+                                                        fill: statCardToken
+                                                            .chart.line
+                                                            .activeDot.fill,
+                                                        stroke: lineColor,
+                                                    }}
+                                                />
+                                            </AreaChart>
+                                        </ResponsiveContainer>
+                                    ) : (
+                                        <Text
+                                            as="span"
+                                            fontSize={
+                                                statCardToken.textContainer
+                                                    .stats.title.value[variant]
+                                                    .fontSize
+                                            }
+                                            fontWeight={
+                                                statCardToken.textContainer
+                                                    .stats.title.value[variant]
+                                                    .fontWeight
+                                            }
+                                            color={
+                                                statCardToken.textContainer
+                                                    .stats.title.value[variant]
+                                                    .color
+                                            }
+                                            style={chartFallbackStyle}
+                                        >
+                                            --
+                                        </Text>
+                                    )}
+                                </Block>
+                            )}
+                        </Block>
+                    )}
+                    {variant !== StatCardVariant.NUMBER && dataDisplay && (
+                        <Block
+                            id={chartId}
+                            height={statCardToken.chart.height}
+                            role="img"
+                            aria-label={chartLabel || `${title} chart`}
+                        >
+                            {variant === StatCardVariant.LINE &&
+                                (indexedChartData &&
+                                indexedChartData.length > 0 ? (
+                                    <ResponsiveContainer
+                                        width="100%"
+                                        height="100%"
+                                    >
+                                        <AreaChart
+                                            data-single-stat-graph={title}
+                                            data={indexedChartData}
+                                            aria-label={
+                                                chartLabel || `${title} chart`
+                                            }
+                                            margin={{
+                                                top: 5,
+                                                right: 0,
+                                                left: 0,
+                                                bottom: 5,
+                                            }}
+                                        >
+                                            <XAxis dataKey="name" hide />
+                                            <YAxis hide />
+                                            <RechartsTooltip
+                                                content={<CustomTooltip />}
+                                                // cursor={{
+                                                //     strokeDasharray:
+                                                //         statCardToken.chart.tooltip
+                                                //             .cursor.strokeDasharray,
+                                                //     stroke: statCardToken.chart.tooltip
+                                                //         .cursor.stroke,
+                                                // }}
+                                                position={{ y: 0 }}
+                                                isAnimationActive={false}
+                                                animationDuration={350}
+                                            />
+                                            <defs>
+                                                <linearGradient
+                                                    id={gradientId}
+                                                    x1="0"
+                                                    y1="0"
+                                                    x2="0"
+                                                    y2="1"
+                                                >
+                                                    <stop
+                                                        offset="0%"
+                                                        stopColor={areaColor}
+                                                        stopOpacity={
+                                                            statCardToken.chart
+                                                                .colors.gradient
+                                                                .startOpacity
+                                                        }
+                                                    />
+                                                    <stop
+                                                        offset="100%"
+                                                        stopColor={
+                                                            statCardToken.chart
+                                                                .colors.gradient
+                                                                .end
+                                                        }
+                                                        stopOpacity={
+                                                            statCardToken.chart
+                                                                .colors.gradient
+                                                                .endOpacity
+                                                        }
+                                                    />
+                                                </linearGradient>
+                                            </defs>
+
+                                            <Area
+                                                animationDuration={350}
+                                                type="monotone"
+                                                dataKey="value"
+                                                stroke={lineColor}
+                                                strokeWidth={
+                                                    statCardToken.chart.line
+                                                        .strokeWidth
+                                                }
+                                                fill={`url(#${gradientId})`}
+                                                activeDot={{
+                                                    r: toPixels(
+                                                        statCardToken.chart.line
+                                                            .activeDot.width
+                                                    ),
+                                                    fill: statCardToken.chart
+                                                        .line.activeDot.fill,
+                                                    stroke: lineColor,
+                                                }}
+                                            />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <Text
+                                        as="span"
+                                        fontSize={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontSize
+                                        }
+                                        fontWeight={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontWeight
+                                        }
+                                        color={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].color
+                                        }
+                                        style={chartFallbackStyle}
+                                    >
+                                        --
+                                    </Text>
+                                ))}
+
+                            {variant === StatCardVariant.BAR &&
+                                (indexedChartData &&
+                                indexedChartData.length > 0 ? (
+                                    <ResponsiveContainer
+                                        width="100%"
+                                        height="100%"
+                                    >
+                                        <BarChart
+                                            data-single-stat-graph={title}
+                                            data={indexedChartData}
+                                            aria-label={
+                                                chartLabel || `${title} chart`
+                                            }
+                                            margin={{
+                                                top: 0,
+                                                right: 0,
+                                                left: 0,
+                                                bottom: 0,
+                                            }}
+                                        >
+                                            <XAxis dataKey="date" hide />
+                                            <YAxis hide />
+                                            <RechartsTooltip
+                                                content={<CustomTooltip />}
+                                                cursor={{
+                                                    fill: 'transparent',
+                                                }}
+                                                position={{ y: 0 }}
+                                                isAnimationActive={false}
+                                            />
+                                            <Bar
+                                                dataKey="value"
+                                                radius={[
+                                                    toPixels(
+                                                        statCardToken.chart.bar
+                                                            .borderTopRightRadius
+                                                    ),
+                                                    toPixels(
+                                                        statCardToken.chart.bar
+                                                            .borderTopLeftRadius
+                                                    ),
+                                                    toPixels(
+                                                        statCardToken.chart.bar
+                                                            .borderBottomRightRadius
+                                                    ),
+                                                    toPixels(
+                                                        statCardToken.chart.bar
+                                                            .borderBottomLeftRadius
+                                                    ),
+                                                ]}
+                                                isAnimationActive={false}
+                                                onMouseEnter={
+                                                    handleBarMouseEnter
+                                                }
+                                                onMouseLeave={
+                                                    handleBarMouseLeave
+                                                }
+                                                fill={
+                                                    statCardToken.chart.bar.fill
+                                                        .default
+                                                }
+                                                activeBar={{
+                                                    fill: statCardToken.chart
+                                                        .bar.fill.default,
+                                                }}
+                                            >
+                                                {indexedChartData?.map(
+                                                    (_, index) => (
+                                                        <Cell
+                                                            key={`cell-${index}`}
+                                                            fill={
+                                                                hoveredBarIndex !==
+                                                                    null &&
+                                                                hoveredBarIndex !==
+                                                                    index
+                                                                    ? statCardToken
+                                                                          .chart
+                                                                          .bar
+                                                                          .fill
+                                                                          .hover
+                                                                    : statCardToken
+                                                                          .chart
+                                                                          .bar
+                                                                          .fill
+                                                                          .default
+                                                            }
+                                                        />
+                                                    )
+                                                )}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <Text
+                                        as="span"
+                                        fontSize={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontSize
+                                        }
+                                        fontWeight={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontWeight
+                                        }
+                                        color={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].color
+                                        }
+                                        style={chartFallbackStyle}
+                                    >
+                                        --
+                                    </Text>
+                                ))}
+
+                            {variant === StatCardVariant.PROGRESS_BAR &&
+                                (progressValue ? (
+                                    <ProgressBar
+                                        value={progressValue}
+                                        size={ProgressBarSize.SMALL}
+                                        variant={ProgressBarVariant.SEGMENTED}
+                                        showLabel={true}
+                                        data-single-stat-progress={title}
+                                    />
+                                ) : (
+                                    <Text
+                                        as="span"
+                                        fontSize={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontSize
+                                        }
+                                        fontWeight={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].fontWeight
+                                        }
+                                        color={
+                                            statCardToken.textContainer.stats
+                                                .title.value[variant].color
+                                        }
+                                        style={chartFallbackStyle}
+                                    >
+                                        --
+                                    </Text>
+                                ))}
+                        </Block>
+                    )}
+                </>
+            )}
+        </Block>
+    )
+}
+
+StatCard.displayName = 'StatCard'
+
+export default StatCard

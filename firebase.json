@@ -1,0 +1,148 @@
+{
+    "storage": {
+        "rules": "storage.rules"
+    },
+    "hosting": [
+        {
+            "target": "blend-prod",
+            "public": "dist",
+            "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+            "rewrites": [
+                {
+                    "source": "/storybook/**",
+                    "destination": "/storybook/index.html"
+                },
+                {
+                    "source": "**",
+                    "destination": "/index.html"
+                }
+            ],
+            "headers": [
+                {
+                    "source": "/storybook/**",
+                    "headers": [
+                        {
+                            "key": "X-Frame-Options",
+                            "value": "SAMEORIGIN"
+                        },
+                        {
+                            "key": "Content-Security-Policy",
+                            "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://vitals.vercel-insights.com https://firebasestorage.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'self';"
+                        }
+                    ]
+                },
+                {
+                    "source": "**",
+                    "headers": [
+                        {
+                            "key": "X-Content-Type-Options",
+                            "value": "nosniff"
+                        },
+                        {
+                            "key": "X-Frame-Options",
+                            "value": "SAMEORIGIN"
+                        },
+                        {
+                            "key": "X-XSS-Protection",
+                            "value": "1; mode=block"
+                        },
+                        {
+                            "key": "Referrer-Policy",
+                            "value": "strict-origin-when-cross-origin"
+                        },
+                        {
+                            "key": "Permissions-Policy",
+                            "value": "camera=(), microphone=(), geolocation=()"
+                        },
+                        {
+                            "key": "Strict-Transport-Security",
+                            "value": "max-age=31536000; includeSubDomains; preload"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(js|css)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=31536000, immutable"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(jpg|jpeg|gif|png|svg|ico)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=86400"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(mp4|webm|mov|avi)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=2592000, immutable"
+                        },
+                        {
+                            "key": "Accept-Ranges",
+                            "value": "bytes"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "target": "blend-staging",
+            "public": "dist",
+            "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+            "rewrites": [
+                {
+                    "source": "/storybook/**",
+                    "destination": "/storybook/index.html"
+                },
+                {
+                    "source": "**",
+                    "destination": "/index.html"
+                }
+            ],
+            "headers": [
+                {
+                    "source": "**",
+                    "headers": [
+                        {
+                            "key": "X-Robots-Tag",
+                            "value": "noindex, nofollow"
+                        },
+                        {
+                            "key": "X-Content-Type-Options",
+                            "value": "nosniff"
+                        },
+                        {
+                            "key": "X-Frame-Options",
+                            "value": "SAMEORIGIN"
+                        },
+                        {
+                            "key": "X-XSS-Protection",
+                            "value": "1; mode=block"
+                        }
+                    ]
+                },
+                {
+                    "source": "**/*.@(js|css)",
+                    "headers": [
+                        {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=3600"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "firestore": {
+        "rules": "firestore.rules",
+        "indexes": "firestore.indexes.json"
+    }
+}

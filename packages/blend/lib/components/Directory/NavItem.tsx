@@ -1,0 +1,490 @@
+import React, {
+    createContext,
+    useContext,
+    useState,
+    useMemo,
+    useCallback,
+} from 'react'
+import type { NavItemProps } from './types'
+import { ChevronDown } from 'lucide-react'
+import Block from '../Primitives/Block/Block'
+import Text from '../Text/Text'
+import styled from 'styled-components'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { DirectoryTokenType } from './directory.tokens'
+import { handleKeyDown } from './utils'
+import { Tooltip, TooltipSide } from '../Tooltip'
+
+const StyledElement = styled(Block)<{
+    $isLink?: boolean
+    $isActive?: boolean
+    $tokens: DirectoryTokenType
+    $iconOnlyMode?: boolean
+}>`
+    background-color: ${({ $isActive, $tokens }) =>
+        $isActive
+            ? $tokens.section.itemList.item.backgroundColor.active
+            : $tokens.section.itemList.item.backgroundColor.default};
+    border: none;
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: ${({ $iconOnlyMode }) =>
+        $iconOnlyMode ? 'center' : 'flex-start'};
+    gap: ${({ $tokens, $iconOnlyMode }) =>
+        $iconOnlyMode ? '0' : $tokens.section.itemList.item.gap};
+    padding: ${({ $tokens, $iconOnlyMode }) =>
+        $iconOnlyMode
+            ? '8px 10px'
+            : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
+    color: ${({ $isActive, $tokens }) =>
+        $isActive
+            ? $tokens.section.itemList.item.color.active
+            : $tokens.section.itemList.item.color.default};
+    font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
+    border-radius: ${({ $tokens }) =>
+        $tokens.section.itemList.item.borderRadius};
+    transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
+    user-select: none;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background-color: ${({ $isActive, $tokens }) =>
+            $isActive
+                ? $tokens.section.itemList.item.backgroundColor.active
+                : $tokens.section.itemList.item.backgroundColor.hover};
+        color: ${({ $isActive, $tokens }) =>
+            $isActive
+                ? $tokens.section.itemList.item.color.active
+                : $tokens.section.itemList.item.color.hover};
+        outline: none;
+        ring: 0;
+    }
+`
+
+const IconWrapper = styled.div<{ $tokens: DirectoryTokenType }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: ${({ $tokens }) => $tokens.section.itemList.item.icon.width};
+    height: ${({ $tokens }) => $tokens.section.itemList.item.icon.width};
+
+    & > svg {
+        width: ${({ $tokens }) =>
+            $tokens.section.itemList.item.icon.width} !important;
+        height: ${({ $tokens }) =>
+            $tokens.section.itemList.item.icon.width} !important;
+    }
+`
+
+const ChevronWrapper = styled(Block)<{
+    $isExpanded: boolean
+    $tokens: DirectoryTokenType
+}>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+
+    & > svg {
+        width: ${({ $tokens }) =>
+            $tokens.section.itemList.item.chevron.width} !important;
+        height: ${({ $tokens }) =>
+            $tokens.section.itemList.item.chevron.width} !important;
+        transition: transform 150ms;
+        transform: ${({ $isExpanded }) =>
+            $isExpanded ? 'rotate(180deg)' : 'rotate(0)'};
+    }
+`
+
+const NestedList = styled(Block)<{ $tokens: DirectoryTokenType }>`
+    width: 100%;
+    padding-left: ${({ $tokens }) =>
+        $tokens.section.itemList.nested.paddingLeft};
+    margin-top: ${({ $tokens }) => $tokens.section.itemList.nested.marginTop};
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: ${({ $tokens }) => $tokens.section.itemList.gap};
+
+    & > div:first-child {
+        position: absolute;
+        left: ${({ $tokens }) =>
+            $tokens.section.itemList.nested.border.leftOffset};
+        top: 0;
+        height: 100%;
+        width: ${({ $tokens }) => $tokens.section.itemList.nested.border.width};
+        background-color: ${({ $tokens }) =>
+            $tokens.section.itemList.nested.border.color};
+    }
+`
+
+type ActiveItemContextValue = {
+    activeItem: string | null
+    setActiveItem: (item: string | null) => void
+    isControlled: boolean
+}
+
+// Create context without default value to force usage within provider
+const ActiveItemContext = createContext<ActiveItemContextValue | null>(null)
+
+// Hook to safely use the context with error handling
+const useActiveItemContext = () => {
+    const context = useContext(ActiveItemContext)
+    if (!context) {
+        throw new Error(
+            'useActiveItemContext must be used within ActiveItemProvider'
+        )
+    }
+    return context
+}
+
+// Improved Provider Props
+type ActiveItemProviderProps = {
+    children: React.ReactNode
+    /**
+     * Controlled mode: Parent controls the active item
+     * If provided, internal state is ignored
+     */
+    activeItem?: string | null
+    /**
+     * Callback when active item changes (for controlled mode)
+     */
+    onActiveItemChange?: (item: string | null) => void
+    /**
+     * Initial active item (for uncontrolled mode)
+     */
+    defaultActiveItem?: string | null
+}
+
+export const ActiveItemProvider: React.FC<ActiveItemProviderProps> = ({
+    children,
+    activeItem: controlledActiveItem,
+    onActiveItemChange,
+    defaultActiveItem = null,
+}) => {
+    const [internalActiveItem, setInternalActiveItem] = useState<string | null>(
+        defaultActiveItem
+    )
+
+    const isControlled = controlledActiveItem !== undefined
+
+    const activeItem = isControlled ? controlledActiveItem! : internalActiveItem
+
+    const setActiveItem = useCallback(
+        (item: string | null) => {
+            if (isControlled) {
+                onActiveItemChange?.(item)
+            } else {
+                setInternalActiveItem(item)
+            }
+        },
+        [isControlled, onActiveItemChange]
+    )
+
+    const contextValue = useMemo<ActiveItemContextValue>(
+        () => ({
+            activeItem,
+            setActiveItem,
+            isControlled,
+        }),
+        [activeItem, setActiveItem, isControlled]
+    )
+
+    return (
+        <ActiveItemContext.Provider value={contextValue}>
+            {children}
+        </ActiveItemContext.Provider>
+    )
+}
+
+const NavItem = ({
+    item,
+    index,
+    onNavigate,
+    itemPath = item.label,
+    iconOnlyMode = false,
+}: NavItemProps) => {
+    const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
+    const [isExpanded, setIsExpanded] = React.useState(false)
+    const { activeItem, setActiveItem } = useActiveItemContext()
+    const hasChildren = item.items && item.items.length > 0
+    const isActive =
+        item.isSelected !== undefined
+            ? item.isSelected && !hasChildren
+            : !hasChildren &&
+              (activeItem === itemPath || activeItem === item.label)
+
+    const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
+
+    const refCallback = React.useCallback(
+        (node: HTMLButtonElement | HTMLAnchorElement | null) => {
+            itemRef.current = node
+        },
+        []
+    )
+
+    const activateItem = () => {
+        if (hasChildren && !iconOnlyMode) {
+            setIsExpanded(!isExpanded)
+        } else {
+            setActiveItem(itemPath)
+            item.onClick?.()
+        }
+    }
+
+    const handleClick = (
+        event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+    ) => {
+        if (
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+        ) {
+            return
+        }
+
+        if (item.href) {
+            event.preventDefault()
+        }
+
+        activateItem()
+    }
+
+    const Element = item.href ? 'a' : 'button'
+    const elementProps = item.href ? { href: item.href } : {}
+
+    const renderContent = () => {
+        if (iconOnlyMode) {
+            if (!item.leftSlot) {
+                // Icon is mandatory in icon-only mode
+                console.warn(
+                    `NavItem "${item.label}" is missing required leftSlot icon in icon-only mode`
+                )
+                return (
+                    <Block
+                        width="20px"
+                        height="20px"
+                        backgroundColor={
+                            isActive
+                                ? tokens.section.itemList.item.backgroundColor
+                                      .active
+                                : tokens.section.itemList.item.backgroundColor
+                                      .default
+                        }
+                        borderRadius={tokens.section.itemList.item.borderRadius}
+                        style={{
+                            opacity: 0.3,
+                        }}
+                    />
+                )
+            }
+            if (React.isValidElement(item.leftSlot)) {
+                return (
+                    <IconWrapper $tokens={tokens}>
+                        {React.cloneElement(
+                            item.leftSlot as React.ReactElement<
+                                React.SVGProps<SVGSVGElement> & {
+                                    size?: number
+                                }
+                            >,
+                            {
+                                color: isActive
+                                    ? tokens.section.itemList.item.color.active
+                                    : tokens.section.itemList.item.color
+                                          .default,
+                            }
+                        )}
+                    </IconWrapper>
+                )
+            }
+            return null
+        }
+
+        return (
+            <>
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                    gap={tokens.section.itemList.item.gap}
+                >
+                    {item.leftSlot && React.isValidElement(item.leftSlot) && (
+                        <IconWrapper aria-hidden="true" $tokens={tokens}>
+                            {React.cloneElement(
+                                item.leftSlot as React.ReactElement<
+                                    React.SVGProps<SVGSVGElement> & {
+                                        size?: number
+                                    }
+                                >,
+                                {
+                                    color: isActive
+                                        ? tokens.section.itemList.item.color
+                                              .active
+                                        : tokens.section.itemList.item.color
+                                              .default,
+                                }
+                            )}
+                        </IconWrapper>
+                    )}
+                    <Text
+                        as="span"
+                        variant="body.md"
+                        fontWeight={tokens.section.itemList.item.fontWeight}
+                        fontSize={tokens.section.itemList.item.fontSize}
+                        color={
+                            isActive
+                                ? tokens.section.itemList.item.color.active
+                                : tokens.section.itemList.item.color.default
+                        }
+                    >
+                        {item.label}
+                    </Text>
+                    {item.rightSlot && React.isValidElement(item.rightSlot) && (
+                        <Block aria-hidden="true">{item.rightSlot}</Block>
+                    )}
+                </Block>
+                {hasChildren && !iconOnlyMode && (
+                    <ChevronWrapper
+                        $isExpanded={isExpanded}
+                        $tokens={tokens}
+                        aria-hidden="true"
+                    >
+                        <ChevronDown
+                            color={tokens.section.itemList.item.chevron.color}
+                        />
+                    </ChevronWrapper>
+                )}
+            </>
+        )
+    }
+
+    const itemElement = (
+        <StyledElement
+            as={Element}
+            $isLink={!!item.href}
+            $isActive={isActive}
+            $tokens={tokens}
+            $iconOnlyMode={iconOnlyMode}
+            {...elementProps}
+            ref={refCallback}
+            onClick={handleClick}
+            onKeyDown={(e: React.KeyboardEvent) =>
+                handleKeyDown(e, {
+                    hasChildren,
+                    isExpanded,
+                    setIsExpanded,
+                    handleClick: activateItem,
+                    index,
+                    onNavigate,
+                })
+            }
+            aria-expanded={
+                hasChildren && !iconOnlyMode
+                    ? isExpanded
+                        ? true
+                        : false
+                    : undefined
+            }
+            aria-label={item.label}
+            tabIndex={0}
+            data-sidebar-expanded={
+                hasChildren && !iconOnlyMode ? isExpanded : undefined
+            }
+            data-element="sidebar-sub-section"
+            data-id={item.label}
+            data-status={isActive ? 'selected' : 'not selected'}
+        >
+            {renderContent()}
+        </StyledElement>
+    )
+
+    return (
+        <li
+            style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'stretch',
+                position: 'relative',
+            }}
+        >
+            {iconOnlyMode && item.leftSlot ? (
+                <Tooltip
+                    content={item.label}
+                    side={TooltipSide.RIGHT}
+                    offset={12}
+                >
+                    {itemElement}
+                </Tooltip>
+            ) : (
+                itemElement
+            )}
+
+            {hasChildren && isExpanded && !iconOnlyMode && (
+                <NestedList
+                    as="ul"
+                    $tokens={tokens}
+                    role="list"
+                    aria-label={`${item.label} submenu`}
+                >
+                    {item.items &&
+                        item.items.map((childItem, childIdx) => (
+                            <NavItem
+                                key={childIdx}
+                                item={childItem}
+                                index={childIdx}
+                                itemPath={`${itemPath}/${childItem.label}`}
+                                iconOnlyMode={iconOnlyMode}
+                                onNavigate={(direction, currentIndex) => {
+                                    if (
+                                        direction === 'up' &&
+                                        currentIndex === 0
+                                    ) {
+                                        itemRef.current?.focus()
+                                    } else if (
+                                        direction === 'down' &&
+                                        currentIndex ===
+                                            (item.items?.length || 0) - 1
+                                    ) {
+                                        onNavigate('down', index)
+                                    } else {
+                                        const nextIndex =
+                                            direction === 'up'
+                                                ? Math.max(0, currentIndex - 1)
+                                                : Math.min(
+                                                      (item.items?.length ||
+                                                          0) - 1,
+                                                      currentIndex + 1
+                                                  )
+                                        const nestedItems =
+                                            itemRef.current?.parentElement
+                                                ?.querySelector('ul')
+                                                ?.querySelectorAll('button, a')
+                                        if (
+                                            nestedItems &&
+                                            nestedItems[nextIndex]
+                                        ) {
+                                            ;(
+                                                nestedItems[
+                                                    nextIndex
+                                                ] as HTMLElement
+                                            ).focus()
+                                        }
+                                    }
+                                }}
+                            />
+                        ))}
+                </NestedList>
+            )}
+        </li>
+    )
+}
+
+export default NavItem

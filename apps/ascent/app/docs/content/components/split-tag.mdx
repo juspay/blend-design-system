@@ -1,0 +1,153 @@
+---
+title: Split Tag
+description: The SplitTag component is a specialized tag variant that can be split into multiple sections, useful for displaying complex labels or status indicators.
+category: components
+tags:
+    - split-tag
+    - component
+    - label
+RepoFolderName: SplitTag
+StorybookLink: components-tags-splittag--docs
+---
+
+<SplitTagPreview />
+
+## Usage
+
+```tsx
+import {
+    SplitTag,
+    TagColor,
+    TagSize,
+    TagShape,
+    TagVariant,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <SplitTag
+            primaryTag={{
+                text: 'Status',
+                variant: TagVariant.NO_FILL,
+                color: TagColor.PRIMARY,
+            }}
+            secondaryTag={{
+                text: 'Active',
+                variant: TagVariant.ATTENTIVE,
+                color: TagColor.SUCCESS,
+            }}
+            size={TagSize.MD}
+            shape={TagShape.ROUNDED}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'SplitTag.primaryTag',
+                hintText:
+                    'Required TagProps object (excluding splitTagPosition, size, and shape) that configures the primary tag displayed on the left side of the split tag. The primary tag typically shows the main label or category (e.g., "Status", "Type"). The splitTagPosition is automatically set to "left" and the variant is set to NO_FILL. Contains: text (required string), variant (optional TagVariant), color (optional TagColor), leftSlot (optional ReactNode), rightSlot (optional ReactNode), and onClick (optional callback).',
+            },
+            {
+                content:
+                    'Omit<TagProps, "splitTagPosition" | "size" | "shape">',
+                hintText:
+                    'Object with tag configuration properties (see TagProps below)',
+            },
+            {
+                content: 'TagProps: see Tag component props',
+            },
+        ],
+        [
+            {
+                content: 'SplitTag.secondaryTag',
+                hintText:
+                    'Optional TagProps object (excluding splitTagPosition, size, and shape) that configures the secondary tag displayed on the right side of the split tag. The secondary tag typically shows a status or value (e.g., "Active", "Pending"). The splitTagPosition is automatically set to "right" and the variant is set to ATTENTIVE. Contains: text (required string), variant (optional TagVariant), color (optional TagColor), leftSlot (optional ReactNode), rightSlot (optional ReactNode), and onClick (optional callback). If not provided, only the primary tag is displayed.',
+            },
+            {
+                content:
+                    'Omit<TagProps, "splitTagPosition" | "size" | "shape">',
+                hintText:
+                    'Object with tag configuration properties (see TagProps below)',
+            },
+            {
+                content: 'TagProps: see Tag component props',
+            },
+        ],
+        [
+            {
+                content: 'SplitTag.size',
+                hintText:
+                    'Optional TagSize enum value that determines the size variant affecting dimensions, padding, and font size of both tags in the split tag. XS creates an extra-small split tag, SM creates a small size, MD creates a medium size, LG creates a large size. The size applies to both primary and secondary tags. If not provided, uses default tag size.',
+            },
+            {
+                content: 'TagSize',
+                hintText:
+                    'Enum that determines the size variant of the split tag',
+            },
+            { content: 'XS, SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'SplitTag.shape',
+                hintText:
+                    'Optional TagShape enum value that determines the border radius shape of both tags in the split tag. ROUNDED creates tags with rounded corners, SQUARICAL creates tags with square corners. The shape applies to both primary and secondary tags, with the split tag automatically adjusting border radius where the tags meet. If not provided, uses default tag shape.',
+            },
+            {
+                content: 'TagShape',
+                hintText:
+                    'Enum that determines the shape variant of the split tag',
+            },
+            { content: 'ROUNDED, SQUARICAL' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the SplitTag component using the following tokens:
+
+```tsx
+export type SplitTagTokenType = {
+    gap: CSSObject['gap']
+    borderRadius: {
+        [key in TagSize]: {
+            [key in TagShape]: CSSObject['borderRadius']
+        }
+    }
+    padding: {
+        [key in TagSize]: CSSObject['padding']
+    }
+    backgroundColor: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['backgroundColor']
+        }
+    }
+    border: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['border']
+        }
+    }
+    text: {
+        color: {
+            [key in TagVariant]: {
+                [key in TagColor]: CSSObject['color']
+            }
+        }
+        fontSize: {
+            [key in TagSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TagSize]: CSSObject['fontWeight']
+        }
+    }
+}
+```

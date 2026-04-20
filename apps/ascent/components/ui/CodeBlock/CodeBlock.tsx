@@ -1,0 +1,96 @@
+'use client'
+import React from 'react'
+import { AnimatePresence, motion } from 'motion/react'
+import { CheckIcon } from '@phosphor-icons/react/dist/ssr'
+import { highlight } from 'sugar-high'
+import { useClipboard } from '@/hooks/useClipboard'
+
+const CodeBlock = ({ code, props }: { code: React.ReactNode; props: any }) => {
+    const codeHTML = highlight(code as string)
+    const { copied, copy } = useClipboard()
+
+    const lineCount = (code as string).split('\n').length
+
+    const copyToClipboard = () => copy(code as string)
+
+    return (
+        <div
+            data-code-block
+            className="relative w-full rounded-xl border border-code-border py-3 px-2 overflow-auto bg-code-background max-h-180"
+        >
+            <AnimatePresence initial={false} mode="wait">
+                <motion.button
+                    key={copied ? 'check' : 'copy'}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-3 right-1 p-1 flex items-center justify-center text-muted-foreground hover:bg-sidebar-item-hover rounded-md cursor-pointer hover:text-foreground z-10 transition-colors duration-200"
+                    onClick={copyToClipboard}
+                    data-nav-content
+                    aria-label={
+                        copied ? 'Code copied' : 'Copy code to clipboard'
+                    }
+                >
+                    {copied ? (
+                        <CheckIcon
+                            size={14}
+                            className="dark:text-green-500 text-green-600"
+                        />
+                    ) : (
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            color="currentColor"
+                            className="w-4 h-4"
+                        >
+                            <path
+                                d="M14.25 5.25H7.25C6.14543 5.25 5.25 6.14543 5.25 7.25V14.25C5.25 15.3546 6.14543 16.25 7.25 16.25H14.25C15.3546 16.25 16.25 15.3546 16.25 14.25V7.25C16.25 6.14543 15.3546 5.25 14.25 5.25Z"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                            <path
+                                d="M2.80103 11.998L1.77203 5.07397C1.61003 3.98097 2.36403 2.96197 3.45603 2.80197L10.38 1.77297C11.313 1.63397 12.19 2.16297 12.528 3.00097"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    )}
+                </motion.button>
+            </AnimatePresence>
+
+            <div className="overflow-x-auto bg-code-background flex">
+                {/* Line numbers column */}
+                <div
+                    aria-hidden="true"
+                    className="select-none pr-4 pl-2 text-right mr-3 shrink-0"
+                >
+                    {Array.from({ length: lineCount }, (_, i) => (
+                        <div
+                            key={i + 1}
+                            className="text-nav-section-text-foreground text-sm leading-6 font-mono opacity-50"
+                        >
+                            {i + 1}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Code column */}
+                <code
+                    dangerouslySetInnerHTML={{ __html: codeHTML }}
+                    {...props}
+                    className="block whitespace-pre-wrap wrap-break-words flex-1 leading-6"
+                />
+            </div>
+        </div>
+    )
+}
+
+export default CodeBlock

@@ -1,0 +1,208 @@
+---
+title: Tag
+description: The Tag component is a versatile UI element used for displaying labels, categories, and status indicators with multiple variants, colors, and interactive options.
+category: components
+tags:
+    - tag
+    - component
+    - label
+RepoFolderName: Tags
+StorybookLink: components-tags-tag--docs
+---
+
+<TagPreview />
+
+## Usage
+
+```tsx
+import { Tag, TagVariant, TagColor, TagSize } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <Tag
+            text="Success"
+            variant={TagVariant.SUBTLE}
+            color={TagColor.SUCCESS}
+            size={TagSize.MD}
+            onClick={() => console.log('tag clicked')}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'Tag.text',
+                hintText:
+                    'Required string representing the text content displayed in the tag. Should be concise and descriptive, clearly identifying the label, category, or status (e.g., "Success", "Pending", "New"). The text is styled based on the variant and color props.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.variant',
+                hintText:
+                    'Optional TagVariant enum value that determines the visual variant of the tag. NO_FILL creates a tag with transparent background and colored border/text, ATTENTIVE creates a tag with solid background and white/bold text, SUBTLE creates a tag with light background and colored text. The variant affects the overall appearance and emphasis. Defaults to SUBTLE.',
+            },
+            { content: 'TagVariant', hintText: 'enum' },
+            { content: 'NO_FILL, ATTENTIVE, SUBTLE' },
+        ],
+        [
+            {
+                content: 'Tag.color',
+                hintText:
+                    'Optional TagColor enum value that determines the color theme of the tag. NEUTRAL creates a gray tag, PRIMARY creates a primary brand color tag, SUCCESS creates a green tag, ERROR creates a red tag, WARNING creates an orange tag, PURPLE creates a purple tag. The color works with the variant to create the final appearance. Defaults to PRIMARY.',
+            },
+            { content: 'TagColor', hintText: 'enum' },
+            { content: 'NEUTRAL, PRIMARY, SUCCESS, ERROR, WARNING, PURPLE' },
+        ],
+        [
+            {
+                content: 'Tag.size',
+                hintText:
+                    'Optional TagSize enum value that determines the size variant affecting dimensions, padding, and font size. XS creates an extra-small tag, SM creates a small tag, MD creates a medium tag, LG creates a large tag. The size affects the overall tag dimensions and text size. Defaults to SM.',
+            },
+            { content: 'TagSize', hintText: 'enum' },
+            { content: 'XS, SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'Tag.shape',
+                hintText:
+                    'Optional TagShape enum value that determines the border radius shape of the tag. ROUNDED creates tags with rounded corners, SQUARICAL creates tags with square/sharp corners. The shape affects the visual style and should be chosen based on design system requirements. Defaults to SQUARICAL.',
+            },
+            { content: 'TagShape', hintText: 'enum' },
+            { content: 'ROUNDED, SQUARICAL' },
+        ],
+        [
+            {
+                content: 'Tag.leftSlot',
+                hintText:
+                    'Optional React element displayed before the text content. Can be used for icons, badges, or other visual elements that provide additional context. The slot maintains proper spacing and alignment with the text.',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.rightSlot',
+                hintText:
+                    'Optional React element displayed after the text content. Can be used for icons, badges, or other visual elements that provide additional context. The slot maintains proper spacing and alignment with the text.',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.onClick',
+                hintText:
+                    'Optional callback function invoked when the tag is clicked. Use this to handle click interactions such as filtering, navigation, or toggling states. When provided, the tag becomes interactive with hover and active states.',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.splitTagPosition',
+                hintText:
+                    'Optional position value used when the tag is part of a SplitTag component. LEFT indicates this tag is the left/primary portion of a split tag, RIGHT indicates this tag is the right/secondary portion. Controls border radius adjustments where the tags meet.',
+            },
+            { content: "'left' | 'right'", hintText: 'string union' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.showSkeleton',
+                hintText:
+                    'When true, displays a skeleton loading placeholder instead of the actual tag content. This provides visual feedback during data loading, preventing layout shifts and improving perceived performance. Defaults to false.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.skeletonVariant',
+                hintText:
+                    'Optional SkeletonVariant enum that determines the animation style for skeleton loading states. PULSE creates a gentle fade in/out effect, WAVE creates a shimmer wave animation, SHIMMER creates a bright shimmer effect. Defaults to PULSE.',
+            },
+            { content: 'SkeletonVariant', hintText: 'enum' },
+            { content: 'PULSE, WAVE, SHIMMER' },
+        ],
+        [
+            {
+                content: 'Tag.maxWidth',
+                hintText:
+                    'Optional CSS max-width value for the tag. Limits the maximum width of the tag, useful for preventing tags from growing too wide with long text. Text overflow is handled with ellipsis.',
+            },
+            { content: 'string | number', hintText: 'CSS max-width value' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.minWidth',
+                hintText:
+                    'Optional CSS min-width value for the tag. Sets a minimum width for the tag, ensuring consistent sizing even with short text content.',
+            },
+            { content: 'string | number', hintText: 'CSS min-width value' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.width',
+                hintText:
+                    'Optional CSS width value for the tag. Sets a fixed width for the tag. If not provided, the tag sizes to fit its content.',
+            },
+            { content: 'string | number', hintText: 'CSS width value' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Tag component using the following tokens:
+
+```tsx
+export type TagTokensType = {
+    gap: CSSObject['gap']
+    backgroundColor: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['backgroundColor']
+        }
+    }
+    borderRadius: {
+        [key in TagSize]: {
+            [key in TagShape]: CSSObject['borderRadius']
+        }
+    }
+    padding: {
+        [key in TagSize]: CSSObject['padding']
+    }
+    border: {
+        [key in TagVariant]: {
+            [key in TagColor]: CSSObject['border']
+        }
+    }
+    text: {
+        color: {
+            [key in TagVariant]: {
+                [key in TagColor]: CSSObject['color']
+            }
+        }
+        fontSize: {
+            [key in TagSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TagSize]: CSSObject['fontWeight']
+        }
+    }
+}
+```

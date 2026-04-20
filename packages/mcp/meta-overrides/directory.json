@@ -1,0 +1,45 @@
+{
+    "componentDescription": "Directory renders a hierarchical tree of items — files and folders, categories and subcategories, navigation trees, and organizational structures. Items can be expanded/collapsed to reveal children. Use it for file explorers, nested navigation, and any tree-structured data.",
+    "features": [
+        "Hierarchical tree with expand/collapse",
+        "Selection state tracking",
+        "Controlled expanded node state",
+        "Icons per item",
+        "Leaf and branch node differentiation"
+    ],
+    "compositionPattern": "Pass a nested items array where each item can have children (making it a branch node). Provide onSelect to handle item selection. Track selectedId and expandedIds externally for controlled behavior.",
+    "usageExamples": [
+        {
+            "title": "File browser tree",
+            "description": "Directory tree for a file system browser.",
+            "code": "<Directory\n  items={[\n    {\n      id: 'src',\n      label: 'src',\n      icon: <FolderIcon />,\n      children: [\n        { id: 'components', label: 'components', icon: <FolderIcon />, children: [\n          { id: 'Button.tsx', label: 'Button.tsx', icon: <FileIcon /> },\n          { id: 'Input.tsx', label: 'Input.tsx', icon: <FileIcon /> },\n        ]},\n        { id: 'index.ts', label: 'index.ts', icon: <FileIcon /> },\n      ]\n    },\n    { id: 'package.json', label: 'package.json', icon: <FileIcon /> },\n  ]}\n  selectedId={selectedFile}\n  onSelect={(item) => setSelectedFile(item.id)}\n  expandedIds={expandedFolders}\n  onExpand={setExpandedFolders}\n/>"
+        },
+        {
+            "title": "Category navigation tree",
+            "description": "Hierarchical category selector for content management.",
+            "code": "<Directory\n  items={categoryTree}\n  selectedId={selectedCategoryId}\n  onSelect={(item) => {\n    setSelectedCategoryId(item.id);\n    loadCategoryContent(item.id);\n  }}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "items": {
+            "llmContext": "Required. Array of DirectoryItemType. Each item: { id: string, label: string, icon?: ReactNode, children?: DirectoryItemType[] }. Items with children are branch nodes (expandable). Items without children are leaf nodes. All ids must be unique across the entire tree.",
+            "propDescription": "Required. Hierarchical array of tree items"
+        },
+        "onSelect": {
+            "llmContext": "Callback fired with the clicked item object when user selects a node. Use to update selectedId state and trigger content loading or navigation.",
+            "propDescription": "Called with item object when user selects a node"
+        },
+        "selectedId": {
+            "llmContext": "The id string of the currently selected/highlighted item. Use to highlight the active item in the tree. For file browsers, this is the currently open file. For navigation trees, this is the current page.",
+            "propDescription": "ID of the currently selected item"
+        },
+        "expandedIds": {
+            "llmContext": "Array of id strings for all currently expanded branch nodes. Manage with useState to control which folders/groups are open. Initialize with the ids of nodes that should be pre-expanded.",
+            "propDescription": "Array of IDs for currently expanded branch nodes"
+        },
+        "onExpand": {
+            "llmContext": "Called with the updated expandedIds array when a branch node is toggled. Update your expandedIds state here.",
+            "propDescription": "Called with updated expanded IDs array when a node is toggled"
+        }
+    }
+}

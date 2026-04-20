@@ -1,0 +1,37 @@
+import { defineConfig } from 'vitest/config'
+import { resolve } from 'path'
+
+export default defineConfig({
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './vitest.setup.ts',
+        css: true,
+        testTimeout: process.env.CI ? 15000 : 5000,
+        hookTimeout: process.env.CI ? 10000 : 5000,
+        coverage: {
+            provider: 'v8',
+            reporter: ['text', 'json', 'html'],
+            reportsDirectory: './coverage',
+            include: ['**/lib/components/**/*.tsx'],
+            exclude: [
+                'node_modules/',
+                'dist/',
+                '**/*.d.ts',
+                '**/*.config.*',
+                '**/mockData.ts',
+                '**/*.stories.tsx',
+                '**/lib/components/ButtonV2/**/accessibility/**',
+                '**/lib/components/**/index.ts',
+                '**/*.dark.tokens.ts',
+            ],
+            // Generate coverage even if tests fail
+            reportOnFailure: true,
+        },
+    },
+    resolve: {
+        alias: {
+            '@': resolve(__dirname, './lib'),
+        },
+    },
+})

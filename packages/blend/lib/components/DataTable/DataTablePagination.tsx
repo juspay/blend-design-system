@@ -1,0 +1,578 @@
+import { useMemo, useRef, useEffect } from 'react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { FOUNDATION_THEME } from '../../tokens'
+import Block from '../Primitives/Block/Block'
+import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { TableTokenType } from './dataTable.tokens'
+import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
+import SingleSelect from '../SingleSelect/SingleSelect'
+import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+
+type DataTablePaginationProps = {
+    currentPage: number
+    pageSize: number
+    totalRows: number
+    pageSizeOptions: number[]
+    isLoading?: boolean
+    hasData?: boolean
+    isNarrowContainer?: boolean
+    onPageChange: (page: number) => void
+    onPageSizeChange: (pageSize: number) => void
+}
+
+export function DataTablePagination({
+    currentPage,
+    pageSize,
+    totalRows,
+    pageSizeOptions,
+    isLoading = false,
+    hasData = true,
+    isNarrowContainer = false,
+    onPageChange,
+    onPageSizeChange,
+}: DataTablePaginationProps) {
+    const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+    const { breakPointLabel } = useBreakpoints()
+    const isMobile = isNarrowContainer || breakPointLabel === 'sm'
+    const PAGINATION_ITEM_HEIGHT = 33
+
+    const totalPages = Math.ceil(totalRows / pageSize)
+
+    const getPageNumbers = () => {
+        const pages = []
+        const maxPagesToShow = 5
+
+        if (totalPages <= maxPagesToShow) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i)
+            }
+        } else {
+            pages.push(1)
+
+            let startPage = Math.max(2, currentPage - 1)
+            let endPage = Math.min(totalPages - 1, currentPage + 1)
+
+            if (currentPage <= 3) {
+                endPage = Math.min(totalPages - 1, 4)
+            }
+
+            if (currentPage >= totalPages - 2) {
+                startPage = Math.max(2, totalPages - 3)
+            }
+
+            if (startPage > 2) {
+                pages.push('...')
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                pages.push(i)
+            }
+
+            if (endPage < totalPages - 1) {
+                pages.push('...')
+            }
+
+            if (totalPages > 1) {
+                pages.push(totalPages)
+            }
+        }
+
+        return pages
+    }
+
+    const pageNumbers = useMemo(getPageNumbers, [currentPage, totalPages])
+
+    const filteredPageSizeOptions = useMemo(() => {
+        const filtered = pageSizeOptions.filter((size) => size <= totalRows)
+        if (!filtered.includes(pageSize) && pageSize > 0) {
+            filtered.push(pageSize)
+            filtered.sort((a, b) => a - b)
+        }
+        if (filtered.length === 0 && pageSizeOptions.length > 0) {
+            filtered.push(Math.min(...pageSizeOptions))
+        }
+
+        return filtered
+    }, [pageSizeOptions, totalRows, pageSize])
+
+    const pageSizeMenuItems = [
+        {
+            groupLabel: '',
+            showSeparator: false,
+            items: filteredPageSizeOptions.map((size) => ({
+                label: `${size}`,
+                value: String(size),
+                onClick: () => onPageSizeChange(size),
+            })),
+        },
+    ]
+
+    const paginationRef = useRef<HTMLDivElement>(null)
+
+    const canNavigate = () => hasData && !isLoading
+
+    const handlePreviousPage = () => {
+        if (canNavigate() && currentPage > 1) {
+            onPageChange(currentPage - 1)
+        }
+    }
+
+    const handleNextPage = () => {
+        if (canNavigate() && currentPage < totalPages) {
+            onPageChange(currentPage + 1)
+        }
+    }
+
+    const handlePageClick = (page: number) => {
+        if (
+            canNavigate() &&
+            page >= 1 &&
+            page <= totalPages &&
+            page !== currentPage
+        ) {
+            onPageChange(page)
+        }
+    }
+
+    useEffect(() => {
+        const handleKeyboardNavigation = (event: KeyboardEvent) => {
+            const target = event.target as HTMLElement
+
+            if (
+                !paginationRef.current?.contains(target) ||
+                target.closest('[role="combobox"]') ||
+                target.tagName === 'INPUT' ||
+                event.key === 'Tab'
+            ) {
+                return
+            }
+
+            if (!canNavigate()) return
+
+            switch (event.key) {
+                case 'ArrowLeft':
+                    event.preventDefault()
+                    if (currentPage > 1) onPageChange(currentPage - 1)
+                    break
+
+                case 'ArrowRight':
+                    event.preventDefault()
+                    if (currentPage < totalPages) onPageChange(currentPage + 1)
+                    break
+
+                case 'Home':
+                    if (event.ctrlKey || event.metaKey) {
+                        event.preventDefault()
+                        if (currentPage !== 1) onPageChange(1)
+                    }
+                    break
+
+                case 'End':
+                    if (event.ctrlKey || event.metaKey) {
+                        event.preventDefault()
+                        if (currentPage !== totalPages) onPageChange(totalPages)
+                    }
+                    break
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyboardNavigation)
+        return () =>
+            document.removeEventListener('keydown', handleKeyboardNavigation)
+    }, [currentPage, totalPages, hasData, isLoading, onPageChange])
+
+    return (
+        <Block
+            ref={paginationRef}
+            data-table-pagination="true"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+            role="navigation"
+            aria-label="Pagination"
+        >
+            <Block
+                data-element="pagesize"
+                display="flex"
+                alignItems="center"
+                gap={FOUNDATION_THEME.unit[8]}
+            >
+                <PrimitiveText
+                    as="span"
+                    fontSize={
+                        tableToken.dataTable.table.footer.pagination.pageText
+                            .fontSize
+                    }
+                    color={
+                        tableToken.dataTable.table.footer.pagination.pageText
+                            .color
+                    }
+                    style={{
+                        // minWidth: isMobile ? '40px' : '108px',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
+                    }}
+                >
+                    {isMobile ? 'Rows' : 'Rows per page'}
+                </PrimitiveText>
+
+                <Block
+                    style={{
+                        cursor:
+                            hasData && !isLoading ? 'pointer' : 'not-allowed',
+                    }}
+                >
+                    <SingleSelect
+                        label="Rows per page"
+                        aria-label="Select number of rows per page"
+                        items={pageSizeMenuItems}
+                        selected={String(pageSize)}
+                        onSelect={(value) => {
+                            if (
+                                typeof value === 'string' &&
+                                hasData &&
+                                !isLoading
+                            ) {
+                                const newSize = Number(value)
+                                if (
+                                    newSize > 0 &&
+                                    Number.isInteger(newSize) &&
+                                    newSize !== pageSize
+                                ) {
+                                    onPageSizeChange(newSize)
+                                }
+                            }
+                        }}
+                        enableSearch={false}
+                        size={SelectMenuSize.SMALL}
+                        variant={SelectMenuVariant.NO_CONTAINER}
+                        placeholder=""
+                        minMenuWidth={80}
+                        disabled={!hasData || isLoading}
+                    />
+                </Block>
+            </Block>
+
+            <Block
+                data-element="pagination"
+                display="flex"
+                alignItems="center"
+                gap={
+                    tableToken.dataTable.table.footer.pagination.pageNavigation
+                        .gap
+                }
+                style={{
+                    opacity: hasData ? 1 : 0.5,
+                    pointerEvents: hasData ? 'auto' : 'none',
+                }}
+            >
+                <PrimitiveButton
+                    data-element="previous-page"
+                    data-status={
+                        currentPage === 1 || !hasData ? 'disabled' : 'enabled'
+                    }
+                    contentCentered
+                    width={FOUNDATION_THEME.unit[32]}
+                    height={FOUNDATION_THEME.unit[32]}
+                    backgroundColor="transparent"
+                    border={
+                        isMobile
+                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                            : 'none'
+                    }
+                    borderRadius={
+                        isMobile
+                            ? FOUNDATION_THEME.border.radius[10]
+                            : FOUNDATION_THEME.border.radius[2]
+                    }
+                    color={
+                        currentPage === 1 || !hasData
+                            ? FOUNDATION_THEME.colors.gray[300]
+                            : FOUNDATION_THEME.colors.gray[600]
+                    }
+                    disabled={currentPage === 1 || isLoading || !hasData}
+                    onClick={handlePreviousPage}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            handlePreviousPage()
+                        }
+                    }}
+                    aria-label={`Previous page${currentPage > 1 ? ` (currently page ${currentPage})` : ''}`}
+                    tabIndex={
+                        currentPage === 1 || isLoading || !hasData ? -1 : 0
+                    }
+                    _hover={{
+                        backgroundColor:
+                            currentPage === 1 || !hasData
+                                ? 'transparent'
+                                : FOUNDATION_THEME.colors.gray[50],
+                    }}
+                    style={{
+                        cursor:
+                            currentPage === 1 || isLoading || !hasData
+                                ? 'not-allowed'
+                                : 'pointer',
+                    }}
+                >
+                    <ArrowLeft size={FOUNDATION_THEME.unit[16]} />
+                </PrimitiveButton>
+
+                {!isMobile && (
+                    <Block
+                        display="flex"
+                        alignItems="center"
+                        gap={FOUNDATION_THEME.unit[4]}
+                    >
+                        {pageNumbers.map((page, index) =>
+                            typeof page === 'number' ? (
+                                <PrimitiveButton
+                                    data-element="page-number"
+                                    data-status={
+                                        currentPage === page
+                                            ? 'selected'
+                                            : 'not selected'
+                                    }
+                                    data-numeric={page}
+                                    key={index}
+                                    contentCentered
+                                    minWidth={FOUNDATION_THEME.unit[32]}
+                                    height={FOUNDATION_THEME.unit[32]}
+                                    backgroundColor={
+                                        currentPage === page
+                                            ? FOUNDATION_THEME.colors.gray[100]
+                                            : 'transparent'
+                                    }
+                                    color={
+                                        currentPage === page
+                                            ? FOUNDATION_THEME.colors.gray[700]
+                                            : isLoading ||
+                                                !hasData ||
+                                                page > totalPages
+                                              ? FOUNDATION_THEME.colors
+                                                    .gray[300]
+                                              : FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                    }
+                                    borderRadius={
+                                        FOUNDATION_THEME.border.radius[8]
+                                    }
+                                    disabled={
+                                        isLoading ||
+                                        !hasData ||
+                                        page > totalPages
+                                    }
+                                    aria-label={`Go to page ${page}${currentPage === page ? ' (current page)' : ''}`}
+                                    aria-current={
+                                        currentPage === page
+                                            ? 'page'
+                                            : undefined
+                                    }
+                                    onClick={() => handlePageClick(page)}
+                                    onKeyDown={(e) => {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
+                                            e.preventDefault()
+                                            handlePageClick(page)
+                                        }
+                                    }}
+                                    tabIndex={
+                                        isLoading ||
+                                        !hasData ||
+                                        page > totalPages
+                                            ? -1
+                                            : currentPage === page
+                                              ? 0
+                                              : -1
+                                    }
+                                    role="button"
+                                    _hover={{
+                                        backgroundColor:
+                                            currentPage === page ||
+                                            isLoading ||
+                                            !hasData ||
+                                            page > totalPages
+                                                ? currentPage === page
+                                                    ? FOUNDATION_THEME.colors
+                                                          .gray[100]
+                                                    : 'transparent'
+                                                : FOUNDATION_THEME.colors
+                                                      .gray[50],
+                                    }}
+                                    style={{
+                                        fontSize:
+                                            FOUNDATION_THEME.font.size.body.sm
+                                                .fontSize,
+                                        cursor:
+                                            isLoading ||
+                                            !hasData ||
+                                            page > totalPages
+                                                ? 'not-allowed'
+                                                : 'pointer',
+                                    }}
+                                >
+                                    {page}
+                                </PrimitiveButton>
+                            ) : (
+                                <SingleSelect
+                                    key={index}
+                                    label="Jump to page"
+                                    aria-label="Jump to page"
+                                    items={[
+                                        {
+                                            groupLabel: 'Go to page',
+                                            showSeparator: false,
+                                            items: (() => {
+                                                const visiblePages =
+                                                    pageNumbers.filter(
+                                                        (p) =>
+                                                            typeof p ===
+                                                            'number'
+                                                    ) as number[]
+
+                                                const hiddenPages = []
+                                                for (
+                                                    let i = 1;
+                                                    i <= totalPages;
+                                                    i++
+                                                ) {
+                                                    if (
+                                                        !visiblePages.includes(
+                                                            i
+                                                        )
+                                                    ) {
+                                                        hiddenPages.push({
+                                                            label: `Page ${i}`,
+                                                            value: String(i),
+                                                        })
+                                                    }
+                                                }
+                                                return hiddenPages
+                                            })(),
+                                        },
+                                    ]}
+                                    selected=""
+                                    onSelect={(value) => {
+                                        if (
+                                            typeof value === 'string' &&
+                                            hasData
+                                        ) {
+                                            onPageChange(Number(value))
+                                        }
+                                    }}
+                                    enableSearch={totalPages > 10}
+                                    searchPlaceholder="Search pages..."
+                                    size={SelectMenuSize.SMALL}
+                                    variant={SelectMenuVariant.NO_CONTAINER}
+                                    placeholder="..."
+                                    minMenuWidth={120}
+                                    maxMenuHeight={300}
+                                    disabled={isLoading || !hasData}
+                                    enableVirtualization={totalPages > 50}
+                                    virtualListItemHeight={
+                                        PAGINATION_ITEM_HEIGHT
+                                    }
+                                    virtualListOverscan={5}
+                                    customTrigger={
+                                        <PrimitiveButton
+                                            contentCentered
+                                            minWidth={FOUNDATION_THEME.unit[32]}
+                                            height={FOUNDATION_THEME.unit[32]}
+                                            backgroundColor="transparent"
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            borderRadius={
+                                                FOUNDATION_THEME.border
+                                                    .radius[8]
+                                            }
+                                            disabled={isLoading || !hasData}
+                                            aria-label={`Jump to page (currently showing page ${currentPage} of ${totalPages})`}
+                                            _hover={{
+                                                backgroundColor:
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[50],
+                                            }}
+                                            style={{
+                                                fontSize:
+                                                    FOUNDATION_THEME.font.size
+                                                        .body.sm.fontSize,
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            ...
+                                        </PrimitiveButton>
+                                    }
+                                />
+                            )
+                        )}
+                    </Block>
+                )}
+
+                <PrimitiveButton
+                    data-element="next-page"
+                    data-status={
+                        currentPage === totalPages || !hasData
+                            ? 'disabled'
+                            : 'enabled'
+                    }
+                    contentCentered
+                    width={FOUNDATION_THEME.unit[32]}
+                    height={FOUNDATION_THEME.unit[32]}
+                    backgroundColor="transparent"
+                    border={
+                        isMobile
+                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                            : 'none'
+                    }
+                    borderRadius={
+                        isMobile
+                            ? FOUNDATION_THEME.border.radius[10]
+                            : FOUNDATION_THEME.border.radius[2]
+                    }
+                    color={
+                        currentPage === totalPages || !hasData
+                            ? FOUNDATION_THEME.colors.gray[300]
+                            : FOUNDATION_THEME.colors.gray[600]
+                    }
+                    disabled={
+                        currentPage === totalPages || isLoading || !hasData
+                    }
+                    onClick={handleNextPage}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            handleNextPage()
+                        }
+                    }}
+                    aria-label={`Next page${currentPage < totalPages ? ` (currently page ${currentPage} of ${totalPages})` : ''}`}
+                    tabIndex={
+                        currentPage === totalPages || isLoading || !hasData
+                            ? -1
+                            : 0
+                    }
+                    _hover={{
+                        backgroundColor:
+                            currentPage === totalPages || !hasData
+                                ? 'transparent'
+                                : FOUNDATION_THEME.colors.gray[50],
+                    }}
+                    style={{
+                        cursor:
+                            currentPage === totalPages || isLoading || !hasData
+                                ? 'not-allowed'
+                                : 'pointer',
+                    }}
+                >
+                    <ArrowRight size={FOUNDATION_THEME.unit[16]} />
+                </PrimitiveButton>
+            </Block>
+        </Block>
+    )
+}

@@ -1,0 +1,2200 @@
+import { useState } from 'react'
+import ButtonDemo from './ButtonDemo'
+import ButtonV2Demo from './ButtonV2Demo'
+import {
+    Tag as TagIcon,
+    Menu as MenuIcon,
+    BarChart2,
+    Type,
+    Code,
+    Calendar as CalendarIcon,
+    ListFilter,
+    User as UserIcon,
+    Info,
+    FormInput,
+    AlertCircle,
+    Bell as BellIcon,
+    Square,
+    Users,
+    Layout,
+    FileText,
+    List,
+    Grid,
+    Box,
+    IndianRupee,
+    Table,
+    Palette,
+    MessageCircle,
+    CircleDot as Radio,
+    Weight,
+    DecimalsArrowRightIcon,
+    Search,
+    Shield,
+    Settings,
+    TrendingUp,
+    Upload,
+    Moon,
+    Sun,
+    HelpCircle,
+    Lightbulb,
+    SearchIcon,
+} from 'lucide-react'
+import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
+import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
+import ButtonGroupDemo from './ButtonGroupDemo'
+import ButtonGroupV2Demo from './ButtonGroupV2Demo'
+import TagDemo from './TagDemo'
+import AvatarDemo from './AvatarDemo'
+import BreadcrumbDemo from './BreadcrumbDemo'
+import InputDemo from './TextInputDemo'
+import UnitInputDemo from './UnitInputDemo'
+import type { DirectoryData } from '../../../../packages/blend/lib/components/Directory/types'
+import NumberInputDemo from './NumberInputDemo'
+import TextAreaDemo from './TextAreaDemo'
+import AlertDemo from './AlertDemo'
+import TabsDemo from './TabsDemo'
+import AccordionDemo from './AccordionDemo'
+import StatCardDemo from './StatCardDemo'
+import SnackbarDemo from './SnackbarDemo'
+import AvatarGroupDemo from './AvatarGroupDemo'
+import TooltipDemo from './TooltipDemo'
+import TooltipV2Demo from './TooltipV2Demo'
+import ModalDemo from './ModalDemo'
+import RadioDemo from './RadioDemo'
+import CheckboxDemo from './CheckboxDemo'
+import SwitchDemo from './SwitchDemo'
+import ProgressBarDemo from './ProgressBarDemo'
+import { ThemeProvider, Theme } from '../../../../packages/blend/lib/context'
+import ALT_FOUNDATION_TOKENS from '../themes/AIT_FOUNDATION_TOKENS'
+import HDFC_COMPONENT_TOKENS from '../themes/HDFC_COMPONENT_TOKENS'
+import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
+import {
+    SelectMenuAlignment,
+    SelectMenuVariant,
+} from '../../../../packages/blend/lib/components/Select'
+import MenuDemo from './MenuDemo'
+import Menu from '../../../../packages/blend/lib/components/Menu/Menu'
+import type { MenuGroupType } from '../../../../packages/blend/lib/components/Menu/types'
+import {
+    MenuSide,
+    MenuAlignment,
+} from '../../../../packages/blend/lib/components/Menu/types'
+import SingleSelectDemo from './SingleSelectDemo'
+import SingleSelectGroupDemo from './SingleSelectGroupDemo'
+import TextInputGroupDemo from './TextInputGroupDemo'
+import MultiSelectGroupDemo from './MultiSelectGroupDemo'
+import MultiSelectDemo from './MultiSelectDemo'
+import DropdownInputDemo from './DropdownInputDemo'
+import DrawerDemo from './DrawerDemo'
+import DrawerV2Demo from './DrawerV2Demo'
+import DateRangePickerDemo from './DateRangePickerDemo'
+import DataTableDemo from './dataTableDemo'
+import ChartsDemo from './ChartsDemo'
+import PopoverDemo from './PopoverDemo'
+import PopoverV2Demo from './PopoverV2Demo'
+import MultiValueInputDemo from './MultiValueInputDemo'
+import TopbarDemo from './TopbarDemo'
+import OTPInputDemo from './OTPInputDemo'
+import CardDemo from './CardDemo'
+import { TextInput, Button } from '../../../../packages/blend/lib/main'
+import {
+    ButtonType,
+    ButtonSize,
+} from '../../../../packages/blend/lib/components/Button/types'
+import StepperDemo from './StepperDemo'
+import KeyValuePairDemo from './KeyValuePairDemo'
+import AllComponentsDemo from './AllComponentsDemo'
+import SearchInputDemo from './SearchInputDemo'
+import VirtualListDemo from './VirtualListDemo'
+import UploadDemo from './UploadDemo'
+import CodeBlockDemo from './CodeBlockDemo'
+import CodeEditorDemo from './CodeEditorDemo'
+import ChatInputDemo from './ChatInputDemo'
+import FormElementsDemo from './FormElementsDemo'
+import SkeletonDemo from './SkeletonDemo'
+import AccessibilityDashboard from '../../../../packages/blend/lib/components/shared/accessibility/AccessibilityDashboard'
+import OutageChartsDemo from './OutageChartsDemo'
+import OutageChartDemoV2 from './OutageChartDemoV2'
+import BlendChartDemo from './BlendChartDemo'
+import TextInputAutofillTest from './TextInputAutofillTest'
+import TagV2Demo from './TagV2Demo'
+import TagGroupV2Demo from './TagGroupV2Demo'
+import AlertV2Demo from './AlertV2Demo'
+import AccordionV2Demo from './AccordionV2Demo'
+import SnackbarV2Demo from './SnackbarV2Demo'
+import SwitchV2Demo from './SwitchV2Demo'
+import SingleSelectDemoV2 from './SingleSelectDemoV2'
+import MultiSelectDemoV2 from './MultiSelectDemoV2'
+import MenuV2Demo from './MenuV2Demo'
+import KeyValuePairV2Demo from './KeyValuePairV2Demo'
+import AvatarV2Demo from './AvatarV2Demo'
+import TextInputV2Demo from './TextInputV2Demo'
+import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
+import ChartV2Demo from './ChartV2Demo'
+import TimelineDemo from './TimelineDemo'
+import CheckboxV2Demo from './CheckboxV2Demo'
+import StatCardV2Demo from './StatCardV2Demo'
+import RadioV2Demo from './RadioV2Demo'
+import TabsV2Demo from './TabsV2Demo'
+import BreadcrumbV2Demo from './BreadcrumbV2Demo'
+import CodeEditorV2Demo from './CodeEditorV2Demo'
+import ProgressBarV2Demo from './ProgressBarV2Demo'
+import MultiValueInputV2Demo from './MultiValueInputV2Demo'
+import NumberInputV2Demo from './NumberInputV2Demo'
+import OTPInputV2Demo from './OTPInputV2Demo'
+import TextAreaV2Demo from './TextAreaV2Demo'
+import SearchInputV2Demo from './SearchInputV2Demo'
+
+const SidebarDemo = () => {
+    const [activeComponent, setActiveComponent] = useState<
+        | 'buttons'
+        | 'buttonV2'
+        | 'accessibility'
+        | 'tooltips'
+        | 'tags'
+        | 'tagV2'
+        | 'tagGroupV2'
+        | 'breadcrumb'
+        | 'tabs'
+        | 'tabsV2'
+        | 'checkbox'
+        | 'checkboxV2'
+        | 'radio'
+        | 'radioV2'
+        | 'switch'
+        | 'textInput'
+        | 'alerts'
+        | 'avatarGroup'
+        | 'charts'
+        | 'blendChart'
+        | 'chartV2'
+        | 'fonts'
+        | 'datePicker'
+        | 'selectors'
+        | 'buttonGroups'
+        | 'buttonGroupV2'
+        | 'avatars'
+        | 'avatarV2'
+        | 'menu'
+        | 'menuV2'
+        | 'dropdown'
+        | 'accordion'
+        | 'statCard'
+        | 'modal'
+        | 'input'
+        | 'searchInput'
+        | 'unitInput'
+        | 'numberInput'
+        | 'textArea'
+        | 'chatInput'
+        | 'snackbar'
+        | 'dataTable'
+        | 'drawer'
+        | 'drawerV2'
+        | 'colorPalette'
+        | 'popover'
+        | 'progressBar'
+        | 'theme'
+        | 'salesKpiDashboard'
+        | 'transactionAnalyticsDashboard'
+        | 'singleSelect'
+        | 'singleSelectGroup'
+        | 'multiSelectGroup'
+        | 'multiSelect'
+        | 'multiSelectV2'
+        | 'dropdownInput'
+        | 'dataRangePicker'
+        | 'multiValueInput'
+        | 'topbar'
+        | 'otpInput'
+        | 'stepper'
+        | 'keyValuePair'
+        | 'card'
+        | 'dataRangePicker'
+        | 'allComponents'
+        | 'virtualList'
+        | 'skeleton'
+        | 'upload'
+        | 'codeBlock'
+        | 'codeEditor'
+        | 'formElements'
+        | 'outageCharts'
+        | 'outageChartV2'
+        | 'chartDemoV2'
+        | 'textInputAutofillTest'
+        | 'alertV2'
+        | 'accordionV2'
+        | 'snackbarV2'
+        | 'switchV2'
+        | 'textInputV2'
+        | 'textInputAutofillTestV2'
+        | 'keyValuePairV2'
+        | 'textInputGroup'
+        | 'singleSelectV2'
+        | 'timeline'
+        | 'statCardV2'
+        | 'tooltipV2'
+        | 'breadcrumbV2'
+        | 'codeEditorV2'
+        | 'popoverV2'
+        | 'progressBarV2'
+        | 'multiValueInputV2'
+        | 'numberInputV2'
+        | 'otpInputV2'
+        | 'textAreaV2'
+        | 'searchInputV2'
+    >('searchInputV2')
+
+    const [activeTenant, setActiveTenant] = useState<string>('Juspay')
+    const [activeMerchant, setActiveMerchant] =
+        useState<string>('design-system')
+
+    // Topbar visibility control states
+    const [isTopbarControlled, setIsTopbarControlled] = useState<boolean>(true)
+    const [topbarVisible, setTopbarVisible] = useState<boolean>(true)
+
+    const [panelOnlyMode, setPanelOnlyMode] = useState<boolean>(false)
+    const [iconOnlyMode, setIconOnlyMode] = useState<boolean>(false)
+    const [hideOnIconOnlyToggle, setHideOnIconOnlyToggle] =
+        useState<boolean>(false)
+    const [isExpanded, setIsExpanded] = useState<boolean>(true)
+    const [, setSidebarState] = useState('expanded')
+    // const [sidebarTopMenuOpen, setSidebarTopMenuOpen] = useState<boolean>(false)
+
+    const tenants = [
+        {
+            label: 'Juspay',
+            icon: (
+                <IndianRupee
+                    style={{ width: '24px', height: '24px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'juspay',
+            showInPanel: true, // Visible in panel
+        },
+        {
+            label: 'Razorpay',
+            icon: (
+                <UserIcon
+                    style={{ width: '24px', height: '24px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'razorpay',
+            showInPanel: true, // Visible in panel
+        },
+        {
+            label: 'Stripe',
+            icon: (
+                <IndianRupee
+                    style={{ width: '24px', height: '24px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'stripe',
+            showInPanel: true, // Visible in panel
+        },
+        {
+            label: 'PayPal',
+            icon: (
+                <UserIcon
+                    style={{ width: '24px', height: '24px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'paypal',
+            showInPanel: true, // Visible in panel
+        },
+        {
+            label: 'Square',
+            icon: (
+                <Square
+                    style={{ width: '24px', height: '24px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'square',
+            showInPanel: true, // Visible in panel
+        },
+        {
+            label: 'Adyen',
+            icon: (
+                <IndianRupee
+                    style={{ width: '24px', height: '24px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'adyen',
+            showInPanel: true, // Visible in panel
+        },
+        {
+            label: 'Braintree',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'braintree',
+            showInPanel: false, // This will appear in overflow menu
+        },
+        {
+            label: 'Worldpay',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'worldpay',
+            showInPanel: false, // This will appear in overflow menu
+        },
+        // Additional tenants to demonstrate the three dot menu
+        {
+            label: 'Klarna',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'klarna',
+        },
+        {
+            label: 'Affirm',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'affirm',
+        },
+        {
+            label: 'Afterpay',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'afterpay',
+        },
+        {
+            label: 'Sezzle',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'sezzle',
+        },
+        {
+            label: 'Zip',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'zip',
+        },
+        {
+            label: 'Paymi',
+            icon: (
+                <IndianRupee
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'paymi',
+        },
+        {
+            label: 'Mollie',
+            icon: (
+                <UserIcon
+                    style={{ width: '16px', height: '16px' }}
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                />
+            ),
+            value: 'mollie',
+        },
+    ]
+
+    const merchants = [
+        {
+            label: 'Design System',
+            // icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
+            value: 'design-system',
+        },
+        {
+            label: 'Design System 2',
+            icon: <UserIcon style={{ width: '14px', height: '14px' }} />,
+            value: 'design-system-2',
+        },
+    ]
+
+    const renderContent = () => {
+        switch (activeComponent) {
+            case 'buttons':
+                return <ButtonDemo />
+            case 'buttonV2':
+                return <ButtonV2Demo />
+            case 'accessibility':
+                return <AccessibilityDashboard />
+            case 'buttonGroups':
+                return <ButtonGroupDemo />
+            case 'buttonGroupV2':
+                return <ButtonGroupV2Demo />
+            case 'tags':
+                return <TagDemo />
+            case 'tagV2':
+                return <TagV2Demo />
+            case 'tagGroupV2':
+                return <TagGroupV2Demo />
+            case 'avatars':
+                return <AvatarDemo />
+            case 'avatarV2':
+                return <AvatarV2Demo />
+            case 'breadcrumb':
+                return <BreadcrumbDemo />
+            case 'input':
+                return <InputDemo />
+            case 'searchInput':
+                return <SearchInputDemo />
+            case 'searchInputV2':
+                return <SearchInputV2Demo />
+            case 'unitInput':
+                return <UnitInputDemo />
+            case 'numberInput':
+                return <NumberInputDemo />
+            case 'numberInputV2':
+                return <NumberInputV2Demo />
+            case 'textArea':
+                return <TextAreaDemo />
+            case 'chatInput':
+                return <ChatInputDemo />
+            case 'otpInput':
+                return <OTPInputDemo />
+            case 'alerts':
+                return <AlertDemo />
+            case 'alertV2':
+                return <AlertV2Demo />
+            case 'accordionV2':
+                return <AccordionV2Demo />
+            case 'snackbarV2':
+                return <SnackbarV2Demo />
+            case 'tabs':
+                return <TabsDemo />
+            case 'tabsV2':
+                return <TabsV2Demo />
+            case 'accordion':
+                return <AccordionDemo />
+            case 'statCard':
+                return <StatCardDemo />
+            case 'avatarGroup':
+                return <AvatarGroupDemo />
+            case 'snackbar':
+                return <SnackbarDemo />
+            case 'tooltips':
+                return <TooltipDemo />
+            case 'modal':
+                return <ModalDemo />
+            case 'radio':
+                return <RadioDemo />
+            case 'radioV2':
+                return <RadioV2Demo />
+            case 'checkbox':
+                return <CheckboxDemo />
+            case 'switch':
+                return <SwitchDemo />
+            case 'switchV2':
+                return <SwitchV2Demo />
+            case 'singleSelectV2':
+                return <SingleSelectDemoV2 />
+            case 'checkboxV2':
+                return <CheckboxV2Demo />
+            case 'menu':
+                return <MenuDemo />
+            case 'menuV2':
+                return <MenuV2Demo />
+            case 'singleSelect':
+                return <SingleSelectDemo />
+            case 'singleSelectGroup':
+                return <SingleSelectGroupDemo />
+            case 'textInputGroup':
+                return <TextInputGroupDemo />
+            case 'multiSelectGroup':
+                return <MultiSelectGroupDemo />
+            case 'multiSelect':
+                return <MultiSelectDemo />
+            case 'multiSelectV2':
+                return <MultiSelectDemoV2 />
+            case 'progressBar':
+                return <ProgressBarDemo />
+            case 'drawer':
+                return <DrawerDemo />
+            case 'drawerV2':
+                return <DrawerV2Demo />
+            case 'dropdownInput':
+                return <DropdownInputDemo />
+            case 'dataRangePicker':
+                return <DateRangePickerDemo />
+            case 'dataTable':
+                return <DataTableDemo />
+            case 'charts':
+                return <ChartsDemo />
+            case 'outageCharts':
+                return <OutageChartsDemo />
+            case 'outageChartV2':
+                return <OutageChartDemoV2 />
+            case 'popover':
+                return <PopoverDemo />
+            case 'popoverV2':
+                return <PopoverV2Demo />
+            case 'multiValueInput':
+                return <MultiValueInputDemo />
+            case 'multiValueInputV2':
+                return <MultiValueInputV2Demo />
+            case 'stepper':
+                return <StepperDemo />
+            case 'topbar':
+                return <TopbarDemo />
+            case 'keyValuePair':
+                return <KeyValuePairDemo />
+            case 'card':
+                return <CardDemo />
+            case 'skeleton':
+                return <SkeletonDemo />
+            case 'allComponents':
+                return <AllComponentsDemo />
+            case 'virtualList':
+                return <VirtualListDemo />
+            case 'upload':
+                return <UploadDemo />
+            case 'codeBlock':
+                return <CodeBlockDemo />
+            case 'codeEditor':
+                return <CodeEditorDemo />
+            case 'formElements':
+                return <FormElementsDemo />
+            case 'blendChart':
+                return <BlendChartDemo />
+            case 'textInputAutofillTest':
+                return <TextInputAutofillTest />
+            case 'textInputV2':
+                return <TextInputV2Demo />
+            case 'textInputAutofillTestV2':
+                return <TextInputAutofillTestV2 />
+            case 'chartV2':
+                return <ChartV2Demo />
+            case 'timeline':
+                return <TimelineDemo />
+            case 'keyValuePairV2':
+                return <KeyValuePairV2Demo />
+            case 'statCardV2':
+                return <StatCardV2Demo />
+            case 'tooltipV2':
+                return <TooltipV2Demo />
+            case 'breadcrumbV2':
+                return <BreadcrumbV2Demo />
+            case 'codeEditorV2':
+                return <CodeEditorV2Demo />
+            case 'progressBarV2':
+                return <ProgressBarV2Demo />
+            case 'otpInputV2':
+                return <OTPInputV2Demo />
+            case 'textAreaV2':
+                return <TextAreaV2Demo />
+            default:
+                return (
+                    <div className="p-8">
+                        <h2 className="text-2xl font-bold mb-6">
+                            Topbar Controlled/Uncontrolled Demo
+                        </h2>
+                        <div className="space-y-6">
+                            <div className="p-6 border-2 border-blue-200 rounded-lg bg-blue-50">
+                                <h3 className="text-lg font-semibold mb-4">
+                                    Topbar Visibility Controls
+                                </h3>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-sm font-medium mb-2">
+                                            Mode:{' '}
+                                            {isTopbarControlled
+                                                ? 'Controlled'
+                                                : 'Uncontrolled'}
+                                        </p>
+                                        <p className="text-sm text-gray-600 mb-3">
+                                            {isTopbarControlled
+                                                ? 'In controlled mode, the parent component manages topbar visibility state.'
+                                                : 'In uncontrolled mode, the topbar manages its own visibility state internally.'}
+                                        </p>
+                                        <Button
+                                            buttonType={ButtonType.SECONDARY}
+                                            size={ButtonSize.MEDIUM}
+                                            onClick={() =>
+                                                setIsTopbarControlled(
+                                                    !isTopbarControlled
+                                                )
+                                            }
+                                        >
+                                            Switch to{' '}
+                                            {isTopbarControlled
+                                                ? 'Uncontrolled'
+                                                : 'Controlled'}{' '}
+                                            Mode
+                                        </Button>
+                                    </div>
+
+                                    {isTopbarControlled && (
+                                        <div className="pt-4 border-t border-blue-300">
+                                            <p className="text-sm font-medium mb-2">
+                                                Current Topbar State:{' '}
+                                                {topbarVisible
+                                                    ? 'Visible ✓'
+                                                    : 'Hidden ✗'}
+                                            </p>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    buttonType={
+                                                        ButtonType.PRIMARY
+                                                    }
+                                                    size={ButtonSize.MEDIUM}
+                                                    onClick={() =>
+                                                        setTopbarVisible(true)
+                                                    }
+                                                    disabled={topbarVisible}
+                                                >
+                                                    Show Topbar
+                                                </Button>
+                                                <Button
+                                                    buttonType={
+                                                        ButtonType.DANGER
+                                                    }
+                                                    size={ButtonSize.MEDIUM}
+                                                    onClick={() =>
+                                                        setTopbarVisible(false)
+                                                    }
+                                                    disabled={!topbarVisible}
+                                                >
+                                                    Hide Topbar
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="p-6 border border-gray-200 rounded-lg">
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Navigation Item Integration
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Click on "Virtual List" in the sidebar to
+                                    see how navigation items can hide the
+                                    topbar. This is useful for full-screen
+                                    views.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    Scroll Test
+                                </h3>
+                                <p className="text-gray-600 mb-4">
+                                    Scroll down to see the topbar hide
+                                    automatically. Scroll back up to see it
+                                    reappear. The feature is controlled by the
+                                    `enableTopbarAutoHide` prop.
+                                </p>
+                                <TextInput
+                                    placeholder="Type here - shows text cursor"
+                                    value=""
+                                    onChange={() => {}}
+                                    cursor="text"
+                                />
+                            </div>
+                            {/* Add lots of content to make it scrollable */}
+                            {Array.from({ length: 50 }, (_, i) => (
+                                <div
+                                    key={i}
+                                    className="p-4 border border-gray-200 rounded-lg"
+                                >
+                                    <h4 className="font-semibold mb-2">
+                                        Content Block {i + 1}
+                                    </h4>
+                                    <p className="text-gray-600">
+                                        This is content block {i + 1}. Keep
+                                        scrolling to test the topbar auto-hide
+                                        functionality. The topbar should
+                                        disappear when scrolling down and
+                                        reappear when scrolling up.
+                                    </p>
+                                    <div className="mt-2">
+                                        <TextInput
+                                            placeholder={`Input field ${i + 1}`}
+                                            value=""
+                                            onChange={() => {}}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )
+        }
+    }
+
+    const sampleData: DirectoryData[] = [
+        {
+            label: 'Basic Components',
+            isCollapsible: false,
+            items: [
+                {
+                    label: 'Button',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'buttons',
+                    href: 'https://react.dev',
+                    onClick: () => {
+                        setActiveComponent('buttons')
+                        // Show topbar when navigating to regular components (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Button V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'buttonV2',
+                    onClick: () => {
+                        setActiveComponent('buttonV2')
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
+                },
+
+                {
+                    label: 'Button Group',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'buttonGroups',
+                    onClick: () => setActiveComponent('buttonGroups'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Button Group V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'buttonGroupV2',
+                    onClick: () => setActiveComponent('buttonGroupV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Tag',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tags',
+                    onClick: () => setActiveComponent('tags'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Tag V2',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tagV2',
+                    onClick: () => setActiveComponent('tagV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Tag Group V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tagGroupV2',
+                    onClick: () => setActiveComponent('tagGroupV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Avatar',
+                    leftSlot: (
+                        <Users style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'avatars',
+                    onClick: () => setActiveComponent('avatars'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Avatar V2',
+                    leftSlot: (
+                        <UserIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'avatarV2',
+                    onClick: () => {
+                        setActiveComponent('avatarV2')
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Avatar Group',
+                    leftSlot: (
+                        <Users style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'avatarGroup',
+                    onClick: () => setActiveComponent('avatarGroup'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Breadcrumb',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'breadcrumb',
+                    onClick: () => setActiveComponent('breadcrumb'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Breadcrumb V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'breadcrumbV2',
+                    onClick: () => setActiveComponent('breadcrumbV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Virtual List',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'virtualList',
+                    onClick: () => {
+                        setActiveComponent('virtualList')
+                        // Hide topbar when navigating to Virtual List (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(false)
+                        }
+                    },
+                    showOnMobile: true,
+                },
+                {
+                    label: 'File Upload',
+                    leftSlot: (
+                        <Upload style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('upload'),
+                },
+            ],
+        },
+        {
+            label: 'Inputs',
+            isCollapsible: false,
+            items: [
+                {
+                    label: 'Text Input Autofill Test',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputAutofillTest',
+                    onClick: () => setActiveComponent('textInputAutofillTest'),
+                },
+                {
+                    label: 'Text Input Autofill Test V2',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputAutofillTestV2',
+                    onClick: () =>
+                        setActiveComponent('textInputAutofillTestV2'),
+                },
+                {
+                    label: 'Text Input777',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'input',
+                    onClick: () => setActiveComponent('input'),
+                },
+                {
+                    label: 'Text Input V2',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputV2',
+                    onClick: () => setActiveComponent('textInputV2'),
+                },
+                {
+                    label: 'Text Input Group',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textInputGroup',
+                    onClick: () => setActiveComponent('textInputGroup'),
+                },
+                {
+                    label: 'Search Input',
+                    leftSlot: (
+                        <Search style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'searchInput',
+                    onClick: () => setActiveComponent('searchInput'),
+                },
+                {
+                    label: 'Search Input V2',
+                    leftSlot: (
+                        <Search style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'searchInputV2',
+                    onClick: () => setActiveComponent('searchInputV2'),
+                },
+                {
+                    label: 'OTP Input',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'otpInput',
+                    onClick: () => setActiveComponent('otpInput'),
+                },
+                {
+                    label: 'OTP Input V2',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'otpInputV2',
+                    onClick: () => setActiveComponent('otpInputV2'),
+                },
+                {
+                    label: 'Unit Input',
+                    leftSlot: (
+                        <Weight style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'unitInput',
+                    onClick: () => setActiveComponent('unitInput'),
+                },
+                {
+                    label: 'Number Input',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'numberInput',
+                    onClick: () => setActiveComponent('numberInput'),
+                },
+                {
+                    label: 'Number Input V2',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'numberInputV2',
+                    onClick: () => setActiveComponent('numberInputV2'),
+                },
+                {
+                    label: 'Dropdown Input',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'dropdownInput',
+                    onClick: () => setActiveComponent('dropdownInput'),
+                },
+                {
+                    label: 'Text Area',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textArea',
+                    onClick: () => setActiveComponent('textArea'),
+                },
+                {
+                    label: 'Text Area V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textAreaV2',
+                    onClick: () => setActiveComponent('textAreaV2'),
+                },
+                {
+                    label: 'Chat Input',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'chatInput',
+                    onClick: () => setActiveComponent('chatInput'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Multi Value Input',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiValueInput',
+                    onClick: () => setActiveComponent('multiValueInput'),
+                },
+                {
+                    label: 'Multi Value Input V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiValueInputV2',
+                    onClick: () => setActiveComponent('multiValueInputV2'),
+                },
+                {
+                    label: 'Key Value Pair',
+                    isSelected: activeComponent === 'keyValuePair',
+                    onClick: () => setActiveComponent('keyValuePair'),
+                },
+                {
+                    label: 'Key Value Pair V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'keyValuePairV2',
+                    onClick: () => setActiveComponent('keyValuePairV2'),
+                },
+            ],
+        },
+        {
+            label: 'Navigation',
+            items: [
+                {
+                    label: 'Topbar',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'topbar',
+                    onClick: () => setActiveComponent('topbar'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Menu',
+                    leftSlot: (
+                        <MenuIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'menu',
+                    items: [
+                        {
+                            label: 'Item 1',
+                            leftSlot: (
+                                <Square
+                                    style={{ width: '16px', height: '16px' }}
+                                />
+                            ),
+                            isSelected: activeComponent === 'menu',
+                            onClick: () => setActiveComponent('menu'),
+                            items: [
+                                {
+                                    label: 'Item 1.1',
+                                    leftSlot: (
+                                        <Square
+                                            style={{
+                                                width: '16px',
+                                                height: '16px',
+                                            }}
+                                        />
+                                    ),
+                                    isSelected: activeComponent === 'menu',
+                                    onClick: () => setActiveComponent('menu'),
+                                    items: [
+                                        {
+                                            label: 'Item 1.1.1',
+                                            leftSlot: (
+                                                <Square
+                                                    style={{
+                                                        width: '16px',
+                                                        height: '16px',
+                                                    }}
+                                                />
+                                            ),
+                                            isSelected:
+                                                activeComponent === 'menu',
+                                            onClick: () =>
+                                                setActiveComponent('menu'),
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                        {
+                            label: 'Item 2',
+                            leftSlot: (
+                                <Square
+                                    style={{ width: '16px', height: '16px' }}
+                                />
+                            ),
+                        },
+                    ],
+                },
+                {
+                    label: 'Single Select',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelect',
+                    onClick: () => setActiveComponent('singleSelect'),
+                },
+                {
+                    label: 'Single Select V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelectV2',
+                    onClick: () => setActiveComponent('singleSelectV2'),
+                },
+                {
+                    label: 'Menu V2',
+                    leftSlot: (
+                        <MenuIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'menuV2',
+                    onClick: () => setActiveComponent('menuV2'),
+                },
+                {
+                    label: 'Single Select Group',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'singleSelectGroup',
+                    onClick: () => setActiveComponent('singleSelectGroup'),
+                },
+                {
+                    label: 'Multi Select',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelect',
+                    onClick: () => setActiveComponent('multiSelect'),
+                },
+                {
+                    label: 'Multi Select V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelectV2',
+                    onClick: () => setActiveComponent('multiSelectV2'),
+                },
+                {
+                    label: 'Multi Select Group',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiSelectGroup',
+                    onClick: () => setActiveComponent('multiSelectGroup'),
+                },
+                {
+                    label: 'Tabs',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tabs',
+                    onClick: () => setActiveComponent('tabs'),
+                },
+                {
+                    label: 'Tabs V2',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tabsV2',
+                    onClick: () => setActiveComponent('tabsV2'),
+                },
+                {
+                    label: 'Accordion',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'accordion',
+                    onClick: () => setActiveComponent('accordion'),
+                },
+                {
+                    label: 'Accordion V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'accordionV2',
+                    onClick: () => setActiveComponent('accordionV2'),
+                },
+                {
+                    label: 'Stepper',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('stepper'),
+                },
+            ],
+        },
+        {
+            label: 'Feedback',
+            items: [
+                {
+                    label: 'Alert',
+                    leftSlot: (
+                        <AlertCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'alerts',
+                    onClick: () => setActiveComponent('alerts'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Alert V2',
+                    leftSlot: (
+                        <AlertCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'alertV2',
+                    onClick: () => setActiveComponent('alertV2'),
+                },
+                {
+                    label: 'Snackbar',
+                    leftSlot: (
+                        <BellIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'snackbar',
+                    onClick: () => setActiveComponent('snackbar'),
+                },
+                {
+                    label: 'Snackbar V2',
+                    leftSlot: (
+                        <BellIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'snackbarV2',
+                    onClick: () => setActiveComponent('snackbarV2'),
+                },
+                {
+                    label: 'Tooltip',
+                    leftSlot: (
+                        <Info style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tooltips',
+                    onClick: () => setActiveComponent('tooltips'),
+                },
+                {
+                    label: 'Tooltip V2',
+                    leftSlot: (
+                        <Info style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tooltipV2',
+                    onClick: () => setActiveComponent('tooltipV2'),
+                },
+                {
+                    label: 'Modal',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'modal',
+                    onClick: () => setActiveComponent('modal'),
+                },
+                {
+                    label: 'Popover',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'popover',
+                    onClick: () => setActiveComponent('popover'),
+                },
+                {
+                    label: 'Popover V2',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'popoverV2',
+                    onClick: () => setActiveComponent('popoverV2'),
+                },
+                {
+                    label: 'Drawer',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'drawer',
+                    onClick: () => setActiveComponent('drawer'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Drawer V2',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'drawerV2',
+                    onClick: () => setActiveComponent('drawerV2'),
+                    showOnMobile: true,
+                },
+            ],
+        },
+        {
+            label: 'Data Display',
+            isCollapsible: true,
+            defaultOpen: true,
+            items: [
+                {
+                    label: 'Chart',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'charts',
+                    onClick: () => {
+                        setActiveComponent('charts')
+                        // Show topbar when navigating to Chart (controlled mode only)
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Blend Chart V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'blendChart',
+                    onClick: () => setActiveComponent('blendChart'),
+                },
+                {
+                    label: 'Chart V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'chartV2',
+                    onClick: () => setActiveComponent('chartV2'),
+                },
+                {
+                    label: 'Outage Charts',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'outageCharts',
+                    onClick: () => setActiveComponent('outageCharts'),
+                },
+                {
+                    label: 'Outage Charts V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'outageChartV2',
+                    onClick: () => setActiveComponent('outageChartV2'),
+                },
+                {
+                    label: 'Stat Card',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'statCard',
+                    onClick: () => setActiveComponent('statCard'),
+                },
+                {
+                    label: 'Stat Card V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'statCardV2',
+                    onClick: () => setActiveComponent('statCardV2'),
+                },
+                {
+                    label: 'Skeleton',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'skeleton',
+                    onClick: () => setActiveComponent('skeleton'),
+                },
+                {
+                    label: 'Card',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'card',
+                    onClick: () => setActiveComponent('card'),
+                },
+                {
+                    label: 'Progress Bar',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'progressBar',
+                    onClick: () => setActiveComponent('progressBar'),
+                },
+                {
+                    label: 'Progress Bar V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'progressBarV2',
+                    onClick: () => setActiveComponent('progressBarV2'),
+                },
+                {
+                    label: 'Data Table',
+                    leftSlot: (
+                        <Table style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'dataTable',
+                    onClick: () => setActiveComponent('dataTable'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Date Picker',
+                    leftSlot: (
+                        <CalendarIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'dataRangePicker',
+                    onClick: () => setActiveComponent('dataRangePicker'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Code Block',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('codeBlock'),
+                },
+                {
+                    label: 'Code Editor',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'codeEditor',
+                    onClick: () => setActiveComponent('codeEditor'),
+                },
+                {
+                    label: 'Code Editor V2',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'codeEditorV2',
+                    onClick: () => setActiveComponent('codeEditorV2'),
+                },
+                {
+                    label: 'Timeline',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'timeline',
+                    onClick: () => setActiveComponent('timeline'),
+                },
+            ],
+        },
+        {
+            label: 'Form Elements',
+            isCollapsible: true,
+            defaultOpen: true,
+            items: [
+                {
+                    label: 'Form Demo',
+                    leftSlot: (
+                        <FormInput style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'formElements',
+                    onClick: () => setActiveComponent('formElements'),
+                },
+                {
+                    label: 'Radio',
+                    leftSlot: (
+                        <Radio style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'radio',
+                    onClick: () => setActiveComponent('radio'),
+                },
+                {
+                    label: 'Radio V2',
+                    leftSlot: (
+                        <Radio style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'radioV2',
+                    onClick: () => setActiveComponent('radioV2'),
+                },
+                {
+                    label: 'Checkbox',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ), // Using Square as a placeholder icon
+                    isSelected: activeComponent === 'checkbox',
+                    onClick: () => setActiveComponent('checkbox'),
+                },
+                {
+                    label: 'Checkbox V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ), // Using Square as a placeholder icon
+                    isSelected: activeComponent === 'checkboxV2',
+                    onClick: () => setActiveComponent('checkboxV2'),
+                },
+                {
+                    label: 'Switch',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'switch',
+                    onClick: () => setActiveComponent('switch'),
+                },
+                {
+                    label: 'Switch V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'switchV2',
+                    onClick: () => setActiveComponent('switchV2'),
+                },
+                {
+                    label: 'Selectors',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'selectors',
+                    onClick: () => setActiveComponent('selectors'),
+                },
+            ],
+        },
+        {
+            label: 'Typography',
+            items: [
+                {
+                    label: 'Fonts',
+                    leftSlot: (
+                        <Type style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'fonts',
+                    onClick: () => setActiveComponent('fonts'),
+                },
+            ],
+        },
+
+        {
+            label: 'Design System',
+            items: [
+                {
+                    label: 'Color Palette',
+                    leftSlot: (
+                        <Palette style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'colorPalette',
+                    onClick: () => setActiveComponent('colorPalette'),
+                },
+                {
+                    label: '🎨 All Components Demo',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'allComponents',
+                    onClick: () => setActiveComponent('allComponents'),
+                },
+                {
+                    label: 'Accessibility',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'accessibility',
+                    onClick: () => {
+                        setActiveComponent('accessibility')
+                        if (isTopbarControlled) {
+                            setTopbarVisible(true)
+                        }
+                    },
+                    showOnMobile: true,
+                },
+            ],
+        },
+    ]
+
+    const [brandTheme, setBrandTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
+    const [colorTheme, setColorTheme] = useState<Theme>(Theme.LIGHT)
+
+    const breakpoints = {
+        sm: 480,
+        lg: 1440,
+    }
+
+    const themeProps =
+        brandTheme === 'EULER'
+            ? { theme: colorTheme }
+            : {
+                  foundationTokens: ALT_FOUNDATION_TOKENS,
+                  componentTokens: HDFC_COMPONENT_TOKENS,
+                  breakpoints: breakpoints,
+                  theme: colorTheme,
+              }
+
+    return (
+        <div className="w-screen h-screen">
+            <ThemeProvider {...themeProps}>
+                <Sidebar
+                    onSidebarStateChange={(state) => setSidebarState(state)}
+                    // showLeftPanel={false}
+                    // disableIntermediateState={true}
+
+                    enableTopbarAutoHide={true}
+                    panelOnlyMode={panelOnlyMode}
+                    hideOnIconOnlyToggle={hideOnIconOnlyToggle}
+                    isExpanded={isExpanded}
+                    onExpandedChange={setIsExpanded}
+                    {...(isTopbarControlled
+                        ? {
+                              isTopbarVisible: topbarVisible,
+                              onTopbarVisibilityChange: setTopbarVisible,
+                          }
+                        : {
+                              defaultIsTopbarVisible: true,
+                          })}
+                    leftPanel={{
+                        items: tenants,
+                        selected: activeTenant,
+                        onSelect: (value) => setActiveTenant(value),
+                        tenantSlot1: (
+                            <button
+                                onClick={() => alert('Help clicked!')}
+                                className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
+                                style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    backgroundColor:
+                                        FOUNDATION_THEME.colors.gray[100],
+                                }}
+                                title="Help"
+                            >
+                                <HelpCircle
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                        ),
+                        tenantSlot2: (
+                            <button
+                                onClick={() => alert('Tips clicked!')}
+                                className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150"
+                                style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    backgroundColor:
+                                        FOUNDATION_THEME.colors.gray[100],
+                                }}
+                                title="Tips"
+                            >
+                                <Lightbulb
+                                    color={FOUNDATION_THEME.colors.yellow[600]}
+                                    size={20}
+                                />
+                            </button>
+                        ),
+                        tenantFooter: (
+                            <Menu
+                                trigger={
+                                    <button
+                                        className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-gray-200"
+                                        style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            backgroundColor:
+                                                FOUNDATION_THEME.colors
+                                                    .gray[100],
+                                        }}
+                                        title="Tenant Settings"
+                                    >
+                                        <Settings
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    </button>
+                                }
+                                items={
+                                    [
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Tenant Settings',
+                                                    slot1: (
+                                                        <Settings size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Tenant settings clicked!'
+                                                        ),
+                                                },
+                                                {
+                                                    label: 'User Management',
+                                                    slot1: <Users size={16} />,
+                                                    onClick: () =>
+                                                        alert(
+                                                            'User management clicked!'
+                                                        ),
+                                                },
+                                                {
+                                                    label: 'Security',
+                                                    slot1: <Shield size={16} />,
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Security clicked!'
+                                                        ),
+                                                },
+                                            ],
+                                            showSeparator: true,
+                                        },
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Preferences',
+                                                    slot1: (
+                                                        <Settings size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Preferences clicked!'
+                                                        ),
+                                                },
+                                                {
+                                                    label: 'Notifications',
+                                                    slot1: (
+                                                        <BellIcon size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Notifications clicked!'
+                                                        ),
+                                                },
+                                            ],
+                                            showSeparator: true,
+                                        },
+                                        {
+                                            items: [
+                                                {
+                                                    label: 'Help & Support',
+                                                    slot1: (
+                                                        <HelpCircle size={16} />
+                                                    ),
+                                                    onClick: () =>
+                                                        alert(
+                                                            'Help & Support clicked!'
+                                                        ),
+                                                },
+                                            ],
+                                        },
+                                    ] as MenuGroupType[]
+                                }
+                                side={MenuSide.TOP}
+                                alignment={MenuAlignment.END}
+                                sideOffset={8}
+                            />
+                        ),
+                    }}
+                    merchantInfo={{
+                        items: merchants.map((merchant) => ({
+                            label: merchant.label,
+                            value: merchant.value,
+                            icon: merchant.icon,
+                        })),
+                        selected: activeMerchant,
+                        onSelect: (value) => setActiveMerchant(value),
+                    }}
+                    sidebarTopSlot={
+                        <SingleSelect
+                            placeholder="Select Merchant"
+                            variant={SelectMenuVariant.NO_CONTAINER}
+                            items={[
+                                {
+                                    items: merchants,
+                                },
+                            ]}
+                            selected={activeMerchant}
+                            onSelect={(value) => setActiveMerchant(value)}
+                        />
+                        // <Menu
+                        //     open={sidebarTopMenuOpen}
+                        //     onOpenChange={setSidebarTopMenuOpen}
+                        //     trigger={
+                        //         <button
+                        //             className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-gray-200"
+                        //             style={{
+                        //                 width: 32,
+                        //                 height: 32,
+                        //                 backgroundColor:
+                        //                     FOUNDATION_THEME.colors.gray[100],
+                        //             }}
+                        //             title="Sidebar Menu"
+                        //             aria-label="Sidebar top menu"
+                        //         >
+                        //             <MenuIcon
+                        //                 size={18}
+                        //                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                 aria-hidden="true"
+                        //             />
+                        //         </button>
+                        //     }
+                        //     items={
+                        //         [
+                        //             {
+                        //                 items: [
+                        //                     {
+                        //                         label: 'Menu Item 1',
+                        //                         slot1: (
+                        //                             <Square
+                        //                                 size={16}
+                        //                                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                             />
+                        //                         ),
+                        //                         onClick: () =>
+                        //                             alert('Menu item 1 clicked'),
+                        //                     },
+                        //                     {
+                        //                         label: 'Menu Item 2',
+                        //                         slot1: (
+                        //                             <Square
+                        //                                 size={16}
+                        //                                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                             />
+                        //                         ),
+                        //                         onClick: () =>
+                        //                             alert('Menu item 2 clicked'),
+                        //                     },
+                        //                 ],
+                        //             },
+                        //         ] as MenuGroupType[]
+                        //     }
+                        //     side={MenuSide.TOP}
+                        //     alignment={MenuAlignment.END}
+                        //     sideOffset={8}
+                        // />
+                    }
+                    rightActions={
+                        <div className="flex items-center gap-1">
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200">
+                                <BellIcon
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200">
+                                <TrendingUp
+                                    color={FOUNDATION_THEME.colors.green[600]}
+                                    size={20}
+                                />
+                            </button>
+                            <button className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200">
+                                <Settings
+                                    color={FOUNDATION_THEME.colors.gray[600]}
+                                    size={20}
+                                />
+                            </button>
+                        </div>
+                    }
+                    data={sampleData}
+                    topbar={
+                        <div className="flex items-center justify-between gap-2">
+                            <div className=" flex items-center gap-3 ">
+                                {' '}
+                                <div className="text-sm text-gray-400 flex items-center gap-1">
+                                    <SearchIcon
+                                        size={16}
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[600]
+                                        }
+                                    />{' '}
+                                    Search
+                                </div>{' '}
+                                <span
+                                    style={{
+                                        fontSize: 14,
+                                        color: FOUNDATION_THEME.colors
+                                            .gray[400],
+                                    }}
+                                >
+                                    {`(⌘K)`}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() =>
+                                        setPanelOnlyMode(!panelOnlyMode)
+                                    }
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        panelOnlyMode
+                                            ? 'Show Full Sidebar'
+                                            : 'Panel Only Mode'
+                                    }
+                                    style={{
+                                        backgroundColor: panelOnlyMode
+                                            ? FOUNDATION_THEME.colors
+                                                  .primary[100]
+                                            : 'transparent',
+                                    }}
+                                >
+                                    <Users
+                                        color={
+                                            panelOnlyMode
+                                                ? FOUNDATION_THEME.colors
+                                                      .primary[600]
+                                                : FOUNDATION_THEME.colors
+                                                      .gray[600]
+                                        }
+                                        size={20}
+                                    />
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        const newIconOnlyMode = !iconOnlyMode
+                                        setIconOnlyMode(newIconOnlyMode)
+                                        // Auto-collapse when enabling icon-only mode
+                                        if (newIconOnlyMode && isExpanded) {
+                                            setIsExpanded(false)
+                                        }
+                                    }}
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        iconOnlyMode
+                                            ? 'Disable Icon Only Mode'
+                                            : 'Enable Icon Only Mode (52px)'
+                                    }
+                                    style={{
+                                        backgroundColor: iconOnlyMode
+                                            ? FOUNDATION_THEME.colors
+                                                  .primary[100]
+                                            : 'transparent',
+                                    }}
+                                >
+                                    <Grid
+                                        color={
+                                            iconOnlyMode
+                                                ? FOUNDATION_THEME.colors
+                                                      .primary[600]
+                                                : FOUNDATION_THEME.colors
+                                                      .gray[600]
+                                        }
+                                        size={20}
+                                    />
+                                </button>
+                                {iconOnlyMode && (
+                                    <button
+                                        onClick={() =>
+                                            setHideOnIconOnlyToggle(
+                                                !hideOnIconOnlyToggle
+                                            )
+                                        }
+                                        className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200"
+                                        title={
+                                            hideOnIconOnlyToggle
+                                                ? 'Toggle: Expand Sidebar'
+                                                : 'Toggle: Hide Sidebar'
+                                        }
+                                        style={{
+                                            backgroundColor:
+                                                hideOnIconOnlyToggle
+                                                    ? FOUNDATION_THEME.colors
+                                                          .primary[100]
+                                                    : 'transparent',
+                                        }}
+                                    >
+                                        <Layout
+                                            color={
+                                                hideOnIconOnlyToggle
+                                                    ? FOUNDATION_THEME.colors
+                                                          .primary[600]
+                                                    : FOUNDATION_THEME.colors
+                                                          .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() =>
+                                        setColorTheme(
+                                            colorTheme === Theme.LIGHT
+                                                ? Theme.DARK
+                                                : Theme.LIGHT
+                                        )
+                                    }
+                                    className="flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer p-2 transition-colors duration-150 min-w-10 h-10 hover:bg-gray-100 active:bg-gray-200"
+                                    title={
+                                        colorTheme === Theme.DARK
+                                            ? 'Switch to Light Mode'
+                                            : 'Switch to Dark Mode'
+                                    }
+                                    style={{
+                                        backgroundColor:
+                                            colorTheme === Theme.DARK
+                                                ? FOUNDATION_THEME.colors
+                                                      .gray[100]
+                                                : 'transparent',
+                                    }}
+                                >
+                                    {colorTheme === Theme.DARK ? (
+                                        <Sun
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .orange[500]
+                                            }
+                                            size={20}
+                                        />
+                                    ) : (
+                                        <Moon
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[600]
+                                            }
+                                            size={20}
+                                        />
+                                    )}
+                                </button>
+                                <div>
+                                    <SingleSelect
+                                        label="Brand"
+                                        placeholder="Select Brand"
+                                        minMenuWidth={200}
+                                        alignment={SelectMenuAlignment.END}
+                                        selected={brandTheme}
+                                        onSelect={(value) =>
+                                            setBrandTheme(
+                                                value as 'EULER' | 'JUSBIZ'
+                                            )
+                                        }
+                                        variant={SelectMenuVariant.NO_CONTAINER}
+                                        items={[
+                                            {
+                                                items: [
+                                                    {
+                                                        value: 'EULER',
+                                                        label: 'EULER',
+                                                    },
+                                                    {
+                                                        value: 'JUSBIZ',
+                                                        label: 'JUSBIZ',
+                                                    },
+                                                ],
+                                            },
+                                        ]}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    footer={
+                        <Menu
+                            trigger={
+                                <button
+                                    className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-gray-200"
+                                    style={{
+                                        width: '36px',
+                                        height: '36px',
+                                        backgroundColor:
+                                            FOUNDATION_THEME.colors.gray[100],
+                                    }}
+                                    title="Tenant Settings"
+                                >
+                                    <Settings
+                                        color={
+                                            FOUNDATION_THEME.colors.gray[600]
+                                        }
+                                        size={20}
+                                    />
+                                </button>
+                            }
+                            items={
+                                [
+                                    {
+                                        items: [
+                                            {
+                                                label: 'Tenant Settings',
+                                                slot1: <Settings size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'Tenant settings clicked!'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'User Management',
+                                                slot1: <Users size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'User management clicked!'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Security',
+                                                slot1: <Shield size={16} />,
+                                                onClick: () =>
+                                                    alert('Security clicked!'),
+                                            },
+                                        ],
+                                        showSeparator: true,
+                                    },
+                                    {
+                                        items: [
+                                            {
+                                                label: 'Preferences',
+                                                slot1: <Settings size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'Preferences clicked!'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Notifications',
+                                                slot1: <BellIcon size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'Notifications clicked!'
+                                                    ),
+                                            },
+                                        ],
+                                        showSeparator: true,
+                                    },
+                                    {
+                                        items: [
+                                            {
+                                                label: 'Help & Support',
+                                                slot1: <HelpCircle size={16} />,
+                                                onClick: () =>
+                                                    alert(
+                                                        'Help & Support clicked!'
+                                                    ),
+                                            },
+                                        ],
+                                    },
+                                ] as MenuGroupType[]
+                            }
+                            side={MenuSide.TOP}
+                            alignment={MenuAlignment.END}
+                            sideOffset={8}
+                        />
+                    }
+                    showPrimaryActionButton={true}
+                    primaryActionButtonProps={{
+                        onClick: () => {
+                            console.log('Primary action button clicked!')
+                            alert('Primary action button clicked!')
+                        },
+                        'aria-label': 'Create new item',
+                    }}
+                >
+                    {renderContent()}
+                </Sidebar>
+            </ThemeProvider>
+        </div>
+    )
+}
+
+export default SidebarDemo

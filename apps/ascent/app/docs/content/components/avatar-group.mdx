@@ -1,0 +1,185 @@
+---
+title: Avatar Group
+description: The AvatarGroup component displays multiple user profile images in a compact, stacked layout with overflow handling and optional selection functionality.
+category: components
+tags:
+    - avatar-group
+    - component
+    - group
+    - users
+    - selection
+RepoFolderName: AvatarGroup
+StorybookLink: components-avatargroup--docs
+---
+
+<AvatarGroupPreview />
+
+## Usage
+
+```tsx
+import {
+    AvatarGroup,
+    AvatarSize,
+    AvatarShape,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const avatars = [
+        { id: '1', alt: 'John Doe', src: 'https://example.com/john.jpg' },
+        { id: '2', alt: 'Jane Smith', src: 'https://example.com/jane.jpg' },
+        { id: '3', alt: 'Bob Johnson', fallback: 'BJ' },
+        { id: '4', alt: 'Alice Brown', fallback: 'AB' },
+        { id: '5', alt: 'Charlie Wilson', fallback: 'CW' },
+    ]
+
+    return (
+        <AvatarGroup
+            avatars={avatars}
+            maxCount={3}
+            size={AvatarSize.MD}
+            shape={AvatarShape.CIRCULAR}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'avatars',
+                hintText:
+                    'Required array of avatar data objects. Each object should have an id (string or number), alt text for accessibility, and optionally src (image URL) or fallback (custom content). The avatars are displayed in the order provided, with stacking and overflow handling applied automatically.',
+            },
+            {
+                content: 'AvatarData[]',
+                hintText:
+                    'Array of objects with id, alt, and optional src or fallback properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxCount',
+                hintText:
+                    'Maximum number of avatars to display before showing an overflow counter. When the number of avatars exceeds this value, only the first maxCount avatars are shown, and a "+N" counter displays the remaining count. Clicking the counter opens a menu with all avatars. Defaults to 5.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer determining how many avatars to show before overflow',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Sets the size for all avatars in the group. Options range from XS (extra small) to XL (extra large), with consistent sizing applied across all avatars. This ensures uniform appearance regardless of individual avatar content. Defaults to MD (medium).',
+            },
+            {
+                content: 'AvatarSize',
+                hintText:
+                    'Enum that controls the dimensions of all avatars uniformly',
+            },
+            { content: 'XS, SM, MD, LG, XL' },
+        ],
+        [
+            {
+                content: 'shape',
+                hintText:
+                    'Defines the border shape for all avatars in the group. CIRCULAR creates perfect circles, while ROUNDED uses rounded rectangles with moderate border radius. All avatars in the group share the same shape for visual consistency. Defaults to CIRCULAR.',
+            },
+            {
+                content: 'AvatarShape',
+                hintText:
+                    'Enum that determines the border radius shape for all avatars',
+            },
+            { content: 'CIRCULAR, ROUNDED' },
+        ],
+        [
+            {
+                content: 'selectedAvatarIds',
+                hintText:
+                    'Array of avatar IDs that are currently selected, used for controlled selection state. Each ID should match the id property of avatars in the avatars array. When provided, the component works in controlled mode, requiring onSelectionChange to update state.',
+            },
+            {
+                content: '(string | number)[]',
+                hintText:
+                    'Array of IDs matching the id values from the avatars array',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSelectionChange',
+                hintText:
+                    'Callback function invoked whenever the selection changes. Receives an array of selected avatar IDs (string | number)[] as a parameter. Use this for controlled selection behavior to synchronize state with your application.',
+            },
+            {
+                content: '(selectedIds: (string | number)[]) => void',
+                hintText:
+                    'Function that receives the updated array of selected avatar IDs',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the avatar group component using the following tokens:
+
+```tsx
+export type AvatarGroupTokensType = {
+    gap: CSSObject['gap']
+    container: {
+        marginLeft: {
+            [key in AvatarSize]: CSSObject['margin']
+        }
+    }
+    avatar: {
+        selected: {
+            ringColor: CSSObject['borderColor']
+            ringWidth: CSSObject['borderWidth']
+            ringOffset: CSSObject['outlineOffset']
+        }
+        border: {
+            width: CSSObject['borderWidth']
+            color: CSSObject['borderColor']
+        }
+    }
+    overflowCounter: {
+        background: {
+            default: CSSObject['backgroundColor']
+            hover: CSSObject['backgroundColor']
+            active: CSSObject['backgroundColor']
+        }
+        text: {
+            color: CSSObject['color']
+        }
+        border: {
+            width: CSSObject['borderWidth']
+            color: CSSObject['borderColor']
+        }
+        size: {
+            [key in AvatarSize]: {
+                width: CSSObject['width']
+                height: CSSObject['height']
+                fontSize: CSSObject['fontSize']
+            }
+        }
+        borderRadius: {
+            [key in AvatarShape]: CSSObject['borderRadius']
+        }
+    }
+    menu: {
+        marginTop: CSSObject['margin']
+    }
+}
+```

@@ -1,0 +1,1240 @@
+---
+title: Multi Select
+description: The MultiSelect component allows users to select multiple options from a list, with search functionality, selection management, and customizable display options including count badges and text display.
+category: components
+tags:
+    - multi-select
+    - component
+    - form
+    - dropdown
+    - selection
+    - multiple
+    - search
+    - checkbox
+    - tags
+    - keyboard-navigation
+    - positioning
+    - mobile-optimized
+    - accessibility
+RepoFolderName: MultiSelect
+StorybookLink: components-multiselect-multiselect--docs
+---
+
+<MultiSelectPreview />
+
+## Usage
+
+```tsx
+import {
+    MultiSelect,
+    MultiSelectMenuSize,
+    MultiSelectVariant,
+    MultiSelectSelectionTagType,
+} from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [selectedSkills, setSelectedSkills] = useState<string[]>([])
+
+    const skillOptions = [
+        {
+            groupLabel: 'Frontend',
+            items: [
+                {
+                    label: 'React',
+                    value: 'react',
+                    subLabel: 'JavaScript library for building UIs',
+                },
+                {
+                    label: 'Vue.js',
+                    value: 'vue',
+                    subLabel: 'Progressive JavaScript framework',
+                },
+                {
+                    label: 'Angular',
+                    value: 'angular',
+                    subLabel: 'Platform for building mobile and desktop apps',
+                },
+            ],
+        },
+        {
+            groupLabel: 'Backend',
+            items: [
+                {
+                    label: 'Node.js',
+                    value: 'nodejs',
+                    subLabel: 'JavaScript runtime for server-side development',
+                },
+                {
+                    label: 'Python',
+                    value: 'python',
+                    subLabel: 'High-level programming language',
+                },
+            ],
+        },
+    ]
+
+    return (
+        <MultiSelect
+            label="Select your skills"
+            placeholder="Choose technologies you're familiar with"
+            items={skillOptions}
+            selectedValues={selectedSkills}
+            onChange={setSelectedSkills}
+            enableSearch={true}
+            searchPlaceholder="Search technologies..."
+            size={MultiSelectMenuSize.MEDIUM}
+            variant={MultiSelectVariant.CONTAINER}
+            selectionTagType={MultiSelectSelectionTagType.COUNT}
+            required={true}
+            helpIconHintText="Select all technologies you have experience with"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'MultiSelect.label',
+                hintText:
+                    'Required string label displayed above the select field. Provides context and description of what users should select. Should be concise and descriptive. The label is styled prominently and appears above the sublabel (if provided).',
+            },
+            {
+                content: 'string',
+                hintText: 'Primary label text displayed above the select field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.sublabel',
+                hintText:
+                    "Optional secondary label string displayed below the main label. Provides additional context, instructions, or clarification about the select field's purpose. Styled with smaller, lighter text than the label. Useful for explaining complex selection requirements.",
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the main label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.placeholder',
+                hintText:
+                    'Required placeholder text string displayed in the select field when no options are selected. Provides guidance to users about what they can select. Should be concise and action-oriented (e.g., "Choose technologies...").',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder text shown when no selections are made',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.selectedValues',
+                hintText:
+                    'Required array of strings representing the currently selected option values. Each string should match a value from the items array. This array is controlled by your component state and updates when users make selections. Empty array means no selections.',
+            },
+            {
+                content: 'string[]',
+                hintText: 'Array of selected option value strings',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onChange',
+                hintText:
+                    'Required callback function invoked when a selection changes (item is selected or deselected). Receives the value string of the toggled item. Use this to update your selectedValues state. The function is called for both selection and deselection.',
+            },
+            {
+                content: '(selectedValue: string) => void',
+                hintText:
+                    'Function called with the toggled item value when selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.items',
+                hintText:
+                    'Required array of MultiSelectMenuGroupType objects that define the selectable options. Each group can contain multiple items organized under an optional label. Groups can be separated with visual separators. Each MultiSelectMenuGroupType contains: groupLabel (optional), items (required array), and showSeparator (optional). Defaults to empty array.',
+            },
+            {
+                content: 'MultiSelectMenuGroupType[]',
+                hintText:
+                    'Array of menu group objects defining selectable options',
+            },
+            {
+                content:
+                    'MultiSelectMenuGroupType: see MultiSelectMenuGroupType props below',
+            },
+        ],
+        [
+            {
+                content: 'MultiSelect.size',
+                hintText:
+                    'Optional MultiSelectMenuSize enum value that determines the size variant of the select field. Affects padding, height, font size, and overall dimensions. Common values include SMALL, MEDIUM, LARGE. Defaults to MEDIUM.',
+            },
+            {
+                content: 'MultiSelectMenuSize',
+                hintText:
+                    'Enum that determines the size variant of the select field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.variant',
+                hintText:
+                    'Optional MultiSelectVariant enum value that determines the visual styling approach. CONTAINER creates a container-style input with border and background, OUTLINED creates an outlined style. Affects the overall appearance and styling of the trigger. Defaults to CONTAINER.',
+            },
+            {
+                content: 'MultiSelectVariant',
+                hintText: 'Enum that determines the visual variant styling',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.selectionTagType',
+                hintText:
+                    'Optional MultiSelectSelectionTagType enum value that determines how selected items are displayed in the trigger. COUNT shows a badge with the number of selected items, TEXT shows the actual selected item labels. Defaults to COUNT.',
+            },
+            {
+                content: 'MultiSelectSelectionTagType',
+                hintText: 'Enum that determines how selections are displayed',
+            },
+            { content: 'COUNT, TEXT' },
+        ],
+        [
+            {
+                content: 'MultiSelect.required',
+                hintText:
+                    'When true, marks the field as required and displays an asterisk (*) next to the label. Useful for form validation. Required fields should have validation logic to ensure selections are made. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks field as required, false allows optional selection',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.disabled',
+                hintText:
+                    "When true, disables the select field, making it non-interactive and visually muted. Users cannot open the dropdown or make selections. Disabled fields show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables select field, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.helpIconHintText',
+                hintText:
+                    'Optional tooltip text string displayed when hovering over the help icon next to the label. Provides additional context or guidance about the select field. Should be concise and helpful. If not provided, no help icon is shown.',
+            },
+            {
+                content: 'string',
+                hintText: 'Tooltip text shown when hovering over the help icon',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.hintText',
+                hintText:
+                    'Optional helper text string displayed below the select field. Provides guidance, examples, or additional information about the selection. Styled with smaller, lighter text. Useful for clarifying complex selection requirements or providing examples.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper text shown below the select field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.enableSearch',
+                hintText:
+                    'When true, displays a search input at the top of the dropdown menu that allows users to filter options by typing. The search filters items in real-time as the user types. Useful for menus with many items. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows search input, false hides search functionality',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.searchPlaceholder',
+                hintText:
+                    'Optional placeholder text string displayed in the search input when it\'s empty. Provides guidance to users about what they can search for. Should be concise and descriptive. Defaults to "Search options...".',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder text shown when search input is empty',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.enableSelectAll',
+                hintText:
+                    'When true, displays a "Select All" option at the top of the dropdown menu that allows users to select or deselect all items at once. Useful for menus with many items. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows select all option, false hides select all',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.selectAllText',
+                hintText:
+                    'Optional text string displayed for the select all option. Should be concise and action-oriented. Defaults to "Select All".',
+            },
+            {
+                content: 'string',
+                hintText: 'Text displayed for the select all option',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.slot',
+                hintText:
+                    "Optional React element displayed inside the trigger button, typically before the selection display. Commonly used for icons (from lucide-react or other icon libraries) that visually represent the select field's purpose. The slot maintains proper spacing and alignment.",
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed in the trigger',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.name',
+                hintText:
+                    'Optional name attribute string for the select field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Name attribute for form identification and submission',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.customTrigger',
+                hintText:
+                    'Optional custom React element that completely replaces the default trigger button. Provides full control over the trigger appearance and behavior. When provided, the default trigger with label, placeholder, and selection display is not rendered. Useful for custom designs.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Custom React element that replaces the default trigger',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.useDrawerOnMobile',
+                hintText:
+                    'When true, renders the dropdown as a full-screen drawer on mobile devices (typically screen width < 1024px). On desktop, it still appears as a dropdown. Drawers provide better mobile UX with more space and better touch interaction. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true uses drawer on mobile, false uses dropdown on all devices',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.alignment',
+                hintText:
+                    'Optional MultiSelectMenuAlignment enum value that determines how the dropdown menu aligns relative to the trigger element. The alignment direction depends on the side prop. Useful for fine-tuning menu positioning.',
+            },
+            {
+                content: 'MultiSelectMenuAlignment',
+                hintText: 'Enum that determines alignment relative to trigger',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.side',
+                hintText:
+                    "Optional MultiSelectMenuSide enum value that determines which side of the trigger the dropdown appears on. The menu automatically flips if there's not enough space. Useful for controlling dropdown positioning.",
+            },
+            {
+                content: 'MultiSelectMenuSide',
+                hintText:
+                    'Enum that determines which side of trigger the dropdown appears on',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.sideOffset',
+                hintText:
+                    'Optional distance in pixels between the trigger and dropdown along the side axis. Positive values create space, negative values bring them closer. Useful for fine-tuning visual spacing.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Number representing distance in pixels from trigger (can be negative)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.alignOffset',
+                hintText:
+                    'Optional offset in pixels for fine-tuning the alignment along the alignment axis. Positive values shift in one direction, negative values shift in the opposite direction. Useful for precise positioning adjustments.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Number representing alignment offset in pixels (can be negative)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.collisionBoundary',
+                hintText:
+                    'Optional reference to DOM element(s) that define collision boundaries for the dropdown positioning. The dropdown will automatically reposition itself to stay within these boundaries. Can be a single Element, null, or an array of Elements. Useful for keeping dropdowns within specific containers or avoiding overlap with sidebars and other UI elements. When not provided, the viewport is used as the default boundary.',
+            },
+            {
+                content: 'Element | null | Array<Element | null>',
+                hintText:
+                    'Single element, array of elements, or null for collision boundaries',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.minMenuWidth',
+                hintText:
+                    'Optional minimum width in pixels for the dropdown menu. The menu will not shrink below this width, ensuring readability of menu items. Useful for preventing menus from becoming too narrow.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing minimum menu width in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.maxMenuWidth',
+                hintText:
+                    'Optional maximum width in pixels for the dropdown menu. The menu will not grow beyond this width, preventing it from becoming too wide. Useful for maintaining consistent menu sizing.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing maximum menu width in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.maxMenuHeight',
+                hintText:
+                    'Optional maximum height in pixels for the dropdown menu. When the menu content exceeds this height, a scrollbar appears. Useful for controlling the vertical space taken by the menu.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing maximum menu height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.inline',
+                hintText:
+                    'When true, renders the select field inline without a fixed height, allowing it to grow with content. When false, the select has a fixed height. Useful for dynamic content. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true renders inline without fixed height, false uses fixed height',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onBlur',
+                hintText:
+                    'Optional callback function invoked when the select field loses focus. Receives no parameters. Useful for validation, cleanup, or tracking user interaction.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when select loses focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onFocus',
+                hintText:
+                    'Optional callback function invoked when the select field gains focus. Receives no parameters. Useful for tracking user interaction or showing additional UI.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when select gains focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.error',
+                hintText:
+                    'When true, displays the select field in an error state with red border and error styling. Should be used with errorMessage to provide feedback. Useful for form validation. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.errorMessage',
+                hintText:
+                    'Optional error message string displayed below the select field when error is true. Should clearly explain what went wrong and how to fix it. Styled with error colors. Useful for form validation feedback.',
+            },
+            {
+                content: 'string',
+                hintText: 'Error message text displayed when error is true',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.showActionButtons',
+                hintText:
+                    'When true, displays action buttons (primary and/or secondary) in the dropdown footer. Buttons allow users to confirm or cancel selections. Useful for multi-step selection workflows. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows action buttons in footer, false hides action buttons',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.primaryAction',
+                hintText:
+                    'Optional object that configures the primary action button displayed in the dropdown footer. Contains: text (required button label), onClick (required callback receiving selectedValues array), disabled (optional boolean), and loading (optional boolean). Only shown when showActionButtons is true.',
+            },
+            {
+                content:
+                    '{ text: string, onClick: (selectedValues: string[]) => void, disabled?: boolean, loading?: boolean }',
+                hintText: 'Object with button configuration properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.secondaryAction',
+                hintText:
+                    'Optional object that configures the secondary action button displayed in the dropdown footer. Contains: text (required button label), onClick (required callback), disabled (optional boolean), and loading (optional boolean). Only shown when showActionButtons is true.',
+            },
+            {
+                content:
+                    '{ text: string, onClick: () => void, disabled?: boolean, loading?: boolean }',
+                hintText: 'Object with button configuration properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.showItemDividers',
+                hintText:
+                    'When true, displays visual divider lines between menu items. Dividers help visually separate items and create hierarchy. Useful for long lists or grouped items. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows dividers between items, false hides dividers',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.showHeaderBorder',
+                hintText:
+                    'When true, displays a border line below the dropdown header (search input and select all area). Creates visual separation between header and content. Useful for visual hierarchy. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows border below header, false hides border',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.height',
+                hintText:
+                    'Optional height in pixels for the select field. When provided, sets a fixed height for the trigger button. If not provided, height adapts to size variant and content. Useful for precise layout control.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing select field height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.maxSelections',
+                hintText:
+                    'Optional maximum number of items that can be selected. When the limit is reached, users cannot select additional items. Useful for enforcing business rules or API constraints. If not provided, unlimited selections are allowed.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing maximum number of selections',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.fullWidth',
+                hintText:
+                    'When true, the select field takes the full width of its container. When false, the select field only takes as much width as needed. Useful for form layouts. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true takes full width, false takes only needed width',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.enableVirtualization',
+                hintText:
+                    'When true, enables virtual scrolling for large item lists. Virtual scrolling only renders visible items plus an overscan buffer, improving performance for menus with hundreds or thousands of items. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables virtual scrolling, false uses standard rendering',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.virtualListItemHeight',
+                hintText:
+                    'Optional height in pixels for each virtualized list item. Required when enableVirtualization is true. Should match the actual height of your menu items for accurate scrolling. Defaults to 48 pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Positive number representing item height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.virtualListOverscan',
+                hintText:
+                    'Optional number of items to render outside the visible area when using virtual scrolling. Higher values provide smoother scrolling but use more memory. Lower values are more memory-efficient. Defaults to 5 items.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing number of items to render outside viewport',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.itemsToRender',
+                hintText:
+                    'Optional number of items to render initially when using virtualization or infinite scroll. Useful for controlling initial render performance. If not provided, all visible items plus overscan are rendered.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive integer representing initial number of items to render',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onEndReached',
+                hintText:
+                    'Optional callback function invoked when the virtual list reaches the end (or within endReachedThreshold). Useful for infinite scrolling or lazy loading. Receives no parameters. Use with hasMore to control loading.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when list reaches the end',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.endReachedThreshold',
+                hintText:
+                    'Optional distance in pixels from the end of the list to trigger onEndReached. Allows pre-loading before the user reaches the absolute end. Useful for smooth infinite scrolling. If not provided, triggers at the exact end.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Positive number representing distance in pixels from end',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.hasMore',
+                hintText:
+                    'Optional boolean indicating whether there are more items to load. Used with onEndReached for infinite scrolling. When true and onEndReached is called, the loadingComponent is shown. If not provided, infinite scroll is not used.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true indicates more items available, false indicates all items loaded',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.loadingComponent',
+                hintText:
+                    'Optional React element displayed at the bottom of the list while loading more items (when hasMore is true and onEndReached is called). Typically a spinner or loading indicator. Useful for providing visual feedback during infinite scroll.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically a loading indicator) shown while loading',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.skeleton',
+                hintText:
+                    'Optional skeleton loading configuration object. Controls the appearance and behavior of skeleton loading states while data is being fetched. The skeleton provides visual feedback to users during loading. Contains count (number of skeleton items to show), show (boolean to toggle skeleton visibility), and variant (visual style: "pulse" or "wave").',
+            },
+            {
+                content:
+                    '{ count?: number, show?: boolean, variant?: SkeletonVariant }',
+                hintText: 'object',
+            },
+            {
+                content:
+                    'count: number of skeleton items, show: boolean to display skeleton, variant: "pulse" | "wave"',
+            },
+            {
+                content: '{ count: 3, show: false, variant: "pulse" }',
+            },
+        ],
+        [
+            {
+                content: 'MultiSelect.maxTriggerWidth',
+                hintText:
+                    'Optional maximum width constraint for the trigger button in pixels. Prevents the trigger from growing beyond this width even if the content is longer. Useful for maintaining consistent layouts and preventing the select from becoming too wide. Text that exceeds this width will be truncated with ellipsis.',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.minTriggerWidth',
+                hintText:
+                    'Optional minimum width constraint for the trigger button in pixels. Ensures the trigger maintains at least this width even if the content is shorter. Useful for maintaining consistent button sizes across multiple select fields or ensuring adequate click target area.',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.allowCustomValue',
+                hintText:
+                    'When true, allows users to enter custom values that are not in the predefined items list. Enables a special menu option that lets users specify their own value. Useful for scenarios where the list cannot cover all possible options. Defaults to false.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'MultiSelect.customValueLabel',
+                hintText:
+                    'Optional label text for the custom value option in the dropdown menu. This text appears as the label for the menu item that allows users to enter their own custom value. Only visible when allowCustomValue is true. Defaults to "Specify".',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '"Specify"' },
+        ],
+        [
+            {
+                content: 'MultiSelect.showClearButton',
+                hintText:
+                    'Optional boolean that controls the visibility of the X icon (clear button) beside the multi-select trigger. When true, the clear button is shown when items are selected. When false, the clear button is hidden. If not provided, defaults to showing the clear button when variant=CONTAINER and items are selected. Useful for analytics filters where API calls should only happen on explicit actions (Apply/Reset buttons).',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+            { content: 'undefined (defaults based on variant and selection)' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onClearAllClick',
+                hintText:
+                    "Optional callback function invoked when the X icon (clear button) is clicked. Provides a separate callback from onChange, allowing you to handle clear actions differently (e.g., making API calls). If not provided, clicking the clear button calls onChange('') to clear selections. Useful for analytics filters where clearing should trigger API calls.",
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when clear button is clicked',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onOpenChange',
+                hintText:
+                    'Optional callback function invoked when the dropdown menu or mobile drawer opens or closes. Receives a boolean indicating the new open state. Useful for resetting internal state when the menu is dismissed without applying changes.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText:
+                    'Function called with boolean open state when menu visibility changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.multiSelectGroupPosition',
+                hintText:
+                    'Optional positioning string for when MultiSelect is used within a button group. Controls border radius adjustments for proper visual grouping. "left" for the leftmost item, "right" for the rightmost item, "center" for middle items. If not provided, uses default border radius.',
+            },
+            {
+                content: "'center' | 'left' | 'right'",
+                hintText:
+                    'String indicating position within a button group for border radius adjustments',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuGroupType.groupLabel',
+                hintText:
+                    'Optional string label displayed above the menu items in this group. Provides a heading or category name for organizing related items (e.g., "Frontend", "Backend", "Tools"). The label is styled distinctly from menu items.',
+            },
+            {
+                content: 'string',
+                hintText: 'Group heading text displayed above menu items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuGroupType.items',
+                hintText:
+                    'Required array of MultiSelectMenuItemType objects that define the individual selectable items within this group. Each item represents a selectable option with its own label, value, and styling. The items are displayed in order within the group.',
+            },
+            {
+                content: 'MultiSelectMenuItemType[]',
+                hintText:
+                    'Array of menu item objects defining selectable options in this group',
+            },
+            {
+                content:
+                    'MultiSelectMenuItemType: see MultiSelectMenuItemType props below',
+            },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuGroupType.showSeparator',
+                hintText:
+                    'When true, displays a visual separator line after this menu group. Separators help visually distinguish different groups of menu items. Useful for grouping related options. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows separator after group, false shows no separator',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.label',
+                hintText:
+                    'Required string representing the main text label displayed for the menu item. This is the primary text users see. Should be concise and descriptive, clearly identifying the option (e.g., "React", "Node.js", "Python").',
+            },
+            {
+                content: 'string',
+                hintText: 'Primary text label displayed for the menu item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.value',
+                hintText:
+                    "Required unique string value identifier for the menu item. This value is used to track selections and must be unique within the items array. It's returned in the selectedValues array and passed to onChange. Should match the value used in your data.",
+            },
+            {
+                content: 'string',
+                hintText: 'Unique value identifier for the menu item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.checked',
+                hintText:
+                    'Optional boolean that controls whether the item appears checked. When true, the item shows a checked state. When false or undefined, the checked state is determined by whether the value is in selectedValues. Useful for controlled state.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows checked state, false shows unchecked state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.subLabel',
+                hintText:
+                    'Optional string representing secondary text displayed below the main label. Provides additional context, description, or clarification about the menu item. Styled with smaller, lighter text. Useful for explaining options.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the main label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.slot1',
+                hintText:
+                    'Optional React element displayed in the first content slot, typically before the label. Commonly used for icons (from lucide-react or other icon libraries) that visually represent the menu item. The slot maintains proper spacing.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed in the first slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.slot2',
+                hintText:
+                    'Optional React element displayed in the second content slot. Can be used for additional icons, badges, indicators, or other visual elements that complement the menu item. Useful for status indicators or additional actions.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText: 'React element displayed in the second slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.slot3',
+                hintText:
+                    'Optional React element displayed in the third content slot. Provides additional flexibility for custom content placement. Can be used for icons, badges, or other visual elements as needed.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText: 'React element displayed in the third slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.slot4',
+                hintText:
+                    'Optional React element displayed in the fourth content slot, typically for trailing elements. Provides maximum flexibility for custom content placement. Can be used for icons, badges, shortcuts, or other visual elements.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText: 'React element displayed in the fourth slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.disabled',
+                hintText:
+                    "When true, disables the menu item, making it non-selectable and visually muted. Disabled items show reduced opacity and cannot be selected. Useful for preventing selection when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables menu item, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.alwaysSelected',
+                hintText:
+                    'When true, the item is always selected and cannot be deselected by the user. The item remains checked regardless of user interaction. Useful for required default selections or mandatory options. If not provided, items can be toggled normally.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true makes item always selected, false allows normal toggling',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.onClick',
+                hintText:
+                    'Optional custom click handler function for the menu item. Invoked when the item is clicked, in addition to the default selection behavior. Receives no parameters. Useful for custom actions or side effects when selecting an item.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when menu item is clicked',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.subMenu',
+                hintText:
+                    'Optional array of MultiSelectMenuItemType objects that create a nested submenu. When provided, clicking the menu item opens a submenu with these items. Supports nested menus for hierarchical navigation. The submenu appears to the side of the parent menu item.',
+            },
+            {
+                content: 'MultiSelectMenuItemType[]',
+                hintText:
+                    'Recursive array of MultiSelectMenuItemType objects for nested submenu',
+            },
+            {
+                content: 'Recursive: MultiSelectMenuItemType[]',
+            },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.tooltip',
+                hintText:
+                    "Optional tooltip content that appears when users hover over the menu item. Can be a string (simple text) or a React element (for rich content). Useful for providing additional information, shortcuts, or explanations that don't fit in the label.",
+            },
+            {
+                content: 'string | React.ReactNode',
+                hintText: 'String text or React element for tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.tooltipProps',
+                hintText:
+                    'Optional object with additional configuration properties for the tooltip component. Allows customization of tooltip positioning (side, align), size, arrow visibility, delay duration, and offset. Useful for fine-tuning tooltip appearance and behavior.',
+            },
+            {
+                content:
+                    '{ side?: TooltipSide, align?: TooltipAlign, size?: TooltipSize, showArrow?: boolean, delayDuration?: number, offset?: number }',
+                hintText:
+                    'Object with optional tooltip configuration properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelectMenuItemType.disableTruncation',
+                hintText:
+                    'When true, disables text truncation for long labels, allowing them to wrap or overflow. When false, long labels are truncated with ellipsis. Useful for items with very long labels that need full visibility. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables truncation, false truncates long labels',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the MultiSelect component using the following tokens:
+
+```tsx
+export type MultiSelectTokensType = {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiSelectItemStates]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiSelectItemStates]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiSelectItemStates]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    trigger: {
+        height: {
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: CSSObject['height']
+            }
+        }
+        padding: {
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+        }
+        borderRadius: {
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: CSSObject['borderRadius']
+            }
+        }
+        boxShadow: {
+            [key in MultiSelectVariant]: CSSObject['boxShadow']
+        }
+        backgroundColor: {
+            [key in MultiSelectVariant]: {
+                [key in TriggerStates]: CSSObject['backgroundColor']
+            }
+        }
+        outline: {
+            [key in MultiSelectVariant]: {
+                [key in TriggerStates]: CSSObject['outline']
+            }
+        }
+        selectionTag: {
+            [key in MultiSelectVariant]: {
+                [key in MultiSelectSelectionTagType]: {
+                    color: CSSObject['color']
+                    backgroundColor: CSSObject['backgroundColor']
+                    fontWeight: CSSObject['fontWeight']
+                }
+            }
+        }
+        placeholder: {
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+        }
+    }
+    menu: {
+        backgroundColor: CSSObject['backgroundColor']
+        border: CSSObject['border']
+        borderRadius: CSSObject['borderRadius']
+        padding: {
+            [key in MultiSelectMenuSize]: {
+                [key in MultiSelectVariant]: {
+                    x: CSSObject['padding']
+                    y: CSSObject['padding']
+                }
+            }
+        }
+        item: {
+            padding: CSSObject['padding']
+            margin: CSSObject['margin']
+            borderRadius: CSSObject['borderRadius']
+            gap: CSSObject['gap']
+            backgroundColor: {
+                [key in MultiSelectItemStates]: CSSObject['backgroundColor']
+            }
+            optionsLabel: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: {
+                    [key in MultiSelectItemStates]: CSSObject['color']
+                }
+            }
+            option: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: {
+                    [key in MultiSelectItemStates]: CSSObject['color']
+                }
+            }
+            description: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: {
+                    [key in MultiSelectItemStates]: CSSObject['color']
+                }
+            }
+            seperator: {
+                color: CSSObject['color']
+                height: CSSObject['height']
+                margin: CSSObject['margin']
+            }
+        }
+    }
+    drawer: {
+        header: {
+            paddingX: CSSObject['padding']
+            paddingBottom: CSSObject['padding']
+            borderBottom: CSSObject['borderBottom']
+        }
+        search: {
+            paddingX: CSSObject['padding']
+            marginTop: CSSObject['margin']
+            marginBottom: CSSObject['margin']
+        }
+        content: {
+            gap: CSSObject['gap']
+        }
+    }
+}
+
+export type ResponsiveMultiSelectTokens = {
+    [key in keyof BreakpointType]: MultiSelectTokensType
+}
+
+export type MultiSelectItemStates =
+    | 'default'
+    | 'hover'
+    | 'active'
+    | 'focus'
+    | 'focusVisible'
+    | 'disabled'
+    | 'selected'
+export type TriggerStates = 'open' | 'closed' | 'hover' | 'focus' | 'error'
+```

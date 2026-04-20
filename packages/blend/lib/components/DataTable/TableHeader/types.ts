@@ -1,0 +1,84 @@
+import {
+    ColumnDefinition,
+    FilterType,
+    RowActionsConfig,
+    SortConfig,
+} from '../types'
+import { MobileDataTableConfig } from '../hooks/useMobileDataTable'
+
+export type TableHeaderProps<T extends Record<string, unknown>> = {
+    visibleColumns: ColumnDefinition<T>[]
+    allVisibleColumns?: ColumnDefinition<T>[]
+    initialColumns: ColumnDefinition<T>[]
+    selectAll: boolean | 'indeterminate'
+    sortConfig?: SortConfig | null
+    enableInlineEdit?: boolean
+    enableColumnManager?: boolean
+    enableColumnReordering?: boolean
+    showSkeleton?: boolean
+    isLoading?: boolean
+    columnManagerMaxSelections?: number
+    columnManagerAlwaysSelected?: string[]
+    columnManagerPrimaryAction?: {
+        text: string
+        onClick: (selectedColumns: string[]) => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    columnManagerSecondaryAction?: {
+        text: string
+        onClick: () => void
+        disabled?: boolean
+        loading?: boolean
+    }
+    columnManagerWidth?: number
+    enableRowExpansion?: boolean
+    enableRowSelection?: boolean
+    rowActions?: RowActionsConfig<T>
+    data?: T[]
+    columnFreeze?: number
+    columnFreezeRight?: number
+    mobileConfig?: MobileDataTableConfig
+    mobileOverflowColumns?: ColumnDefinition<T>[]
+    onMobileOverflowClick?: (row: T) => void
+    onSort: (field: keyof T, sortType?: string) => void
+    onSortAscending?: (field: keyof T, sortType?: string) => void
+    onSortDescending?: (field: keyof T, sortType?: string) => void
+    onSelectAll: (checked: boolean | 'indeterminate') => void
+    onColumnChange: (columns: ColumnDefinition<T>[]) => void
+    onColumnReorder?: (columns: ColumnDefinition<T>[]) => void
+    onColumnFilter?: (
+        field: string,
+        type: FilterType,
+        value: string | string[] | { min: number; max: number },
+        operator?:
+            | 'equals'
+            | 'contains'
+            | 'startsWith'
+            | 'endsWith'
+            | 'gt'
+            | 'lt'
+            | 'gte'
+            | 'lte'
+            | 'range'
+    ) => void
+    columnFilters?: Array<{
+        field: string
+        type: FilterType
+        value: string | string[] | { min: number; max: number }
+        operator?: string
+    }>
+    onHeaderChange?: (field: keyof T, newHeader: string) => void
+    onOperations?: (field: keyof T) => void
+    onInsertLeft?: (field: keyof T) => void
+    onInsertRight?: (field: keyof T) => void
+    onDeleteColumn?: (field: keyof T) => void
+    getColumnWidth: (
+        column: ColumnDefinition<T>,
+        index: number
+    ) => React.CSSProperties
+    /** Measured pixel widths of frozen columns (from ResizeObserver). Used for sticky left offset. */
+    measuredFrozenWidths?: number[]
+    /** Called when frozen column header cells are measured so left offsets can use content-based widths. */
+    onFrozenWidthsMeasured?: (widths: number[]) => void
+}

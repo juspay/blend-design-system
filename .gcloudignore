@@ -1,0 +1,31 @@
+# Exclude node_modules and build artifacts
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+dist/
+**/dist/
+.turbo/
+**/.turbo/
+storybook-static/
+
+# Exclude git and IDE files
+.git/
+.vscode/
+.idea/
+
+# Exclude other apps source (but keep package.json for dependencies)
+apps/ascent/app/**
+apps/ascent/public/**
+apps/site/src/**
+apps/site/public/**
+apps/storybook/stories/**
+apps/storybook/.storybook/**
+
+# Exclude test and documentation files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+**/README.md
+**/.DS_Store

@@ -1,0 +1,2140 @@
+import React, {
+    forwardRef,
+    useState,
+    useRef,
+    useEffect,
+    useCallback,
+} from 'react'
+import { EllipsisVertical, GripVertical } from 'lucide-react'
+import { styled } from 'styled-components'
+import type { DraggableAttributes } from '@dnd-kit/core'
+import type { useSortable } from '@dnd-kit/sortable'
+
+import Block from '../../Primitives/Block/Block'
+import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
+import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
+import { FOUNDATION_THEME } from '../../../tokens'
+import { Popover } from '../../Popover'
+import { Checkbox } from '../../Checkbox'
+import { CheckboxSize } from '../../Checkbox/types'
+import { ColumnManager } from '../ColumnManager'
+import { TableTokenType } from '../dataTable.tokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip'
+import Skeleton from '../../Skeleton/Skeleton'
+
+import { TableHeaderProps } from './types'
+import { SortDirection } from '../types'
+import {
+    createSortHandlers,
+    createFilterHandlers,
+    SortState,
+    FilterState,
+} from './handlers'
+import {
+    getPopoverAlignment,
+    getFrozenColumnStyles,
+    getFrozenRightColumnStyles,
+} from './utils'
+import { ColumnFilter } from './FilterComponents'
+import { ColumnType } from '../types'
+import { getColumnTypeConfig } from '../columnTypes'
+import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
+import {
+    Drawer,
+    DrawerTrigger,
+    DrawerPortal,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerBody,
+} from '../../Drawer'
+import { DraggableColumnHeader } from './DraggableColumnHeader'
+
+const FilterIcon = styled(EllipsisVertical)<{ $isActive?: boolean }>`
+    cursor: pointer;
+    color: ${({ $isActive }) =>
+        $isActive
+            ? FOUNDATION_THEME.colors.primary[600]
+            : FOUNDATION_THEME.colors.gray[400]};
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: ${({ $isActive }) =>
+            $isActive
+                ? FOUNDATION_THEME.colors.primary[700]
+                : FOUNDATION_THEME.colors.gray[600]};
+    }
+`
+
+const FilterButton = styled(PrimitiveButton)<{ $isActive?: boolean }>`
+    outline: none !important;
+
+    &:focus {
+        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]} !important;
+        outline-offset: 2px !important;
+        border-radius: 4px;
+        box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
+    }
+
+    &:focus-visible {
+        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]} !important;
+        outline-offset: 2px !important;
+        border-radius: 4px;
+        box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
+    }
+`
+
+const TruncatedTextWithTooltip: React.FC<{
+    content: string
+    children: React.ReactNode
+    tooltipProps?: {
+        side?: TooltipSide
+        align?: TooltipAlign
+        size?: TooltipSize
+        delayDuration?: number
+        maxWidth?: string
+    }
+}> = ({ content, children, tooltipProps }) => {
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const [isTruncated, setIsTruncated] = useState(false)
+    const checkTruncation = useCallback(() => {
+        const wrapper = wrapperRef.current
+        if (!wrapper) return
+
+        const textElement =
+            (wrapper.querySelector('p') as HTMLElement) ||
+            (wrapper.firstElementChild as HTMLElement)
+
+        if (!textElement) {
+            setIsTruncated(false)
+            return
+        }
+
+        if (textElement.offsetWidth === 0 || textElement.offsetHeight === 0) {
+            setIsTruncated(false)
+            return
+        }
+
+        const truncated = textElement.scrollWidth > textElement.clientWidth
+        setIsTruncated(truncated)
+    }, [])
+
+    useEffect(() => {
+        const wrapper = wrapperRef.current
+        if (!wrapper) return
+
+        const timeoutId = setTimeout(checkTruncation, 0)
+
+        const resizeObserver = new ResizeObserver(() => {
+            requestAnimationFrame(checkTruncation)
+        })
+        resizeObserver.observe(wrapper)
+
+        const observeTextElement = () => {
+            const textElement = wrapper.querySelector('p') as HTMLElement
+            if (textElement) {
+                resizeObserver.observe(textElement)
+            }
+        }
+
+        const observeTimeoutId = setTimeout(observeTextElement, 100)
+
+        window.addEventListener('resize', checkTruncation, { passive: true })
+
+        return () => {
+            clearTimeout(timeoutId)
+            clearTimeout(observeTimeoutId)
+            resizeObserver.disconnect()
+            window.removeEventListener('resize', checkTruncation)
+        }
+    }, [content, checkTruncation])
+
+    const handleMouseEnter = useCallback(() => {
+        if (!isTruncated) {
+            checkTruncation()
+        }
+    }, [isTruncated, checkTruncation])
+
+    const textContent = (
+        <Block
+            ref={wrapperRef}
+            onMouseEnter={handleMouseEnter}
+            style={{
+                minWidth: 0,
+                width: '100%',
+                overflow: 'hidden',
+            }}
+        >
+            {children}
+        </Block>
+    )
+
+    if (isTruncated && content) {
+        const isVeryLongString = content.length > 50 && !content.includes(' ')
+        const tooltipMaxWidth =
+            tooltipProps?.maxWidth || (isVeryLongString ? '600px' : undefined)
+
+        return (
+            <Tooltip
+                content={content}
+                side={tooltipProps?.side || TooltipSide.TOP}
+                align={tooltipProps?.align || TooltipAlign.START}
+                size={tooltipProps?.size || TooltipSize.SMALL}
+                delayDuration={tooltipProps?.delayDuration || 500}
+                maxWidth={tooltipMaxWidth}
+                fullWidth={true}
+            >
+                {textContent}
+            </Tooltip>
+        )
+    }
+
+    return textContent
+}
+
+const TableHeader = forwardRef<
+    HTMLTableSectionElement,
+    TableHeaderProps<Record<string, unknown>>
+>(
+    (
+        {
+            visibleColumns,
+            allVisibleColumns,
+            initialColumns,
+            selectAll,
+            sortConfig,
+            enableInlineEdit = false,
+            enableColumnManager = true,
+            enableColumnReordering = false,
+            showSkeleton = false,
+            isLoading = false,
+            columnManagerMaxSelections,
+            columnManagerAlwaysSelected,
+            columnManagerPrimaryAction,
+            columnManagerSecondaryAction,
+            columnManagerWidth,
+            enableRowExpansion = false,
+            enableRowSelection = true,
+            rowActions,
+            data,
+            columnFreeze = 0,
+            columnFreezeRight = 0,
+            mobileConfig,
+            mobileOverflowColumns = [],
+            onMobileOverflowClick,
+            onSort,
+            onSortAscending,
+            onSortDescending,
+            onSelectAll,
+            onColumnChange,
+            onHeaderChange,
+            onColumnFilter,
+            columnFilters = [],
+            onOperations,
+            onInsertLeft,
+            onInsertRight,
+            onDeleteColumn,
+            getColumnWidth,
+            measuredFrozenWidths,
+            onFrozenWidthsMeasured,
+        },
+        ref
+    ) => {
+        const isDisabled = showSkeleton || isLoading
+        const [editingField, setEditingField] = useState<string | null>(null)
+        const editableRef = useRef<HTMLDivElement>(null)
+        const headerRowRef = useRef<HTMLTableRowElement>(null)
+        const isRenamingRef = useRef<boolean>(false)
+
+        useEffect(() => {
+            if (
+                columnFreeze <= 0 ||
+                !onFrozenWidthsMeasured ||
+                !headerRowRef.current
+            )
+                return
+            const tr = headerRowRef.current
+            const startIndex =
+                (enableRowExpansion ? 1 : 0) + (enableRowSelection ? 1 : 0)
+            const collectWidths = () => {
+                const cells = tr.querySelectorAll('th')
+                if (cells.length < startIndex + columnFreeze) return
+                const widths: number[] = []
+                for (let i = 0; i < columnFreeze; i++) {
+                    const el = cells[startIndex + i]
+                    if (el) widths.push(el.offsetWidth)
+                }
+                if (widths.length === columnFreeze)
+                    onFrozenWidthsMeasured(widths)
+            }
+            const ro = new ResizeObserver(collectWidths)
+            const observed: Element[] = []
+            const cells = tr.querySelectorAll('th')
+            for (let i = 0; i < columnFreeze && cells[startIndex + i]; i++) {
+                const el = cells[startIndex + i]
+                ro.observe(el)
+                observed.push(el)
+            }
+            collectWidths()
+            return () => {
+                observed.forEach((el) => ro.unobserve(el))
+            }
+        }, [
+            columnFreeze,
+            enableRowExpansion,
+            enableRowSelection,
+            onFrozenWidthsMeasured,
+            visibleColumns.length,
+        ])
+
+        const [sortState, setSortState] = useState<SortState>({
+            currentSortField: sortConfig?.field || null,
+            currentSortDirection: sortConfig?.direction || SortDirection.NONE,
+            currentSortType: sortConfig?.sortType,
+        })
+
+        const extractFilterValues = (
+            filters: typeof columnFilters
+        ): Record<string, string[] | { min: number; max: number }> => {
+            const values: Record<
+                string,
+                string[] | { min: number; max: number }
+            > = {}
+
+            filters.forEach((filter) => {
+                if (!filter.value || filter.value === '') return
+                if (
+                    typeof filter.value === 'object' &&
+                    !Array.isArray(filter.value) &&
+                    'min' in filter.value &&
+                    'max' in filter.value
+                ) {
+                    values[filter.field] = filter.value as {
+                        min: number
+                        max: number
+                    }
+                } else if (
+                    Array.isArray(filter.value) &&
+                    filter.value.length > 0
+                ) {
+                    values[filter.field] = filter.value
+                } else if (typeof filter.value === 'string') {
+                    values[filter.field] = [filter.value]
+                }
+            })
+
+            return values
+        }
+
+        const [filterState, setFilterState] = useState<FilterState>(() => ({
+            columnSearchValues: {},
+            columnSelectedValues: extractFilterValues(columnFilters),
+        }))
+
+        const [openPopovers, setOpenPopovers] = useState<
+            Record<string, boolean>
+        >({})
+        const filterButtonRefs = useRef<
+            Record<string, HTMLButtonElement | null>
+        >({})
+        const justOpenedPopovers = useRef<Record<string, number>>({})
+        const scrollCloseEnabled = useRef<boolean>(false)
+        const openPopoversRef = useRef<Record<string, boolean>>({})
+
+        useEffect(() => {
+            const timer = setTimeout(() => {
+                scrollCloseEnabled.current = true
+            }, 500)
+            return () => clearTimeout(timer)
+        }, [])
+
+        useEffect(() => {
+            const timer = setTimeout(() => {
+                Object.values(filterButtonRefs.current).forEach((button) => {
+                    if (button && button.tabIndex !== 0 && !button.disabled) {
+                        button.tabIndex = 0
+                    }
+                })
+            }, 100)
+            return () => clearTimeout(timer)
+        }, [visibleColumns])
+
+        const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+        const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
+        const isMobile = breakPointLabel === 'sm'
+        const subheaderLineHeight =
+            typeof FOUNDATION_THEME.font.lineHeight[14] === 'number'
+                ? FOUNDATION_THEME.font.lineHeight[14]
+                : 14
+        const subheaderMarginTop = FOUNDATION_THEME.unit[2]
+        const subheaderMarginTopValue = parseInt(
+            String(subheaderMarginTop).replace('px', '') || '2',
+            10
+        )
+        const subheaderAreaHeight = `${subheaderLineHeight + subheaderMarginTopValue}px`
+
+        const hasAnySubtext = visibleColumns.some(
+            (col) => col.headerSubtext && col.headerSubtext.trim() !== ''
+        )
+        const headerAlignment = hasAnySubtext ? 'flex-start' : 'center'
+        const headerHeight = hasAnySubtext ? '56px' : '46px'
+        const cellPadding = `0 ${FOUNDATION_THEME.unit[16]}`
+
+        const sortHandlers = createSortHandlers(
+            sortState,
+            isDisabled ? () => {} : onSort,
+            isDisabled ? () => {} : onSortAscending,
+            isDisabled ? () => {} : onSortDescending
+        )
+        const filterHandlers = createFilterHandlers(
+            isDisabled ? () => {} : setFilterState
+        )
+
+        useEffect(() => {
+            setSortState({
+                currentSortField: sortConfig?.field || null,
+                currentSortDirection:
+                    sortConfig?.direction || SortDirection.NONE,
+                currentSortType: sortConfig?.sortType,
+            })
+        }, [sortConfig])
+
+        useEffect(() => {
+            const newColumnSelectedValues = extractFilterValues(columnFilters)
+
+            setFilterState((prev) => {
+                const currentFields = Object.keys(newColumnSelectedValues)
+                const prevFields = Object.keys(prev.columnSelectedValues)
+
+                const hasChanges =
+                    currentFields.length !== prevFields.length ||
+                    currentFields.some((field) => {
+                        const newValue = newColumnSelectedValues[field]
+                        const oldValue = prev.columnSelectedValues[field]
+                        return (
+                            JSON.stringify(newValue) !==
+                            JSON.stringify(oldValue)
+                        )
+                    }) ||
+                    prevFields.some((field) => !currentFields.includes(field))
+
+                if (hasChanges) {
+                    return {
+                        ...prev,
+                        columnSelectedValues: newColumnSelectedValues,
+                    }
+                }
+
+                return prev
+            })
+        }, [columnFilters])
+
+        useEffect(() => {
+            openPopoversRef.current = openPopovers
+        }, [openPopovers])
+
+        useEffect(() => {
+            const handleScrollOrWheel = (e: Event) => {
+                if (!scrollCloseEnabled.current) return
+
+                const target = e.target as Element
+                if (target) {
+                    const popoverContent =
+                        target.closest('[data-radix-popper-content-wrapper]') ||
+                        target.closest('[role="dialog"]') ||
+                        target.closest('.popover-content')
+
+                    const drawerContent =
+                        target.closest('[data-drawer-content]') ||
+                        target.closest('[data-drawer-overlay]') ||
+                        target.closest('[data-drawer-portal]') ||
+                        target.closest('[role="dialog"][data-drawer]')
+
+                    if (popoverContent || drawerContent) return
+                }
+
+                const now = Date.now()
+                const shouldClose = Object.keys(openPopoversRef.current).filter(
+                    (key) => {
+                        const openedAt = justOpenedPopovers.current[key]
+                        return !openedAt || now - openedAt > 400
+                    }
+                )
+
+                if (!isMobile && shouldClose.length > 0) {
+                    setOpenPopovers((prev) => {
+                        const newState = { ...prev }
+                        shouldClose.forEach((key) => {
+                            delete newState[key]
+                            delete justOpenedPopovers.current[key]
+                        })
+                        return newState
+                    })
+                }
+            }
+
+            const scrollContainers: Element[] = []
+            if (ref && typeof ref === 'object' && ref.current) {
+                const thead = ref.current
+                const table = thead.closest('table')
+                if (table) {
+                    let parent = table.parentElement
+                    while (parent && parent !== document.body) {
+                        const styles = window.getComputedStyle(parent)
+                        if (
+                            styles.overflow === 'auto' ||
+                            styles.overflow === 'scroll' ||
+                            styles.overflowX === 'auto' ||
+                            styles.overflowX === 'scroll' ||
+                            styles.overflowY === 'auto' ||
+                            styles.overflowY === 'scroll'
+                        ) {
+                            scrollContainers.push(parent)
+                        }
+                        parent = parent.parentElement
+                    }
+                }
+            }
+
+            const listeners: (() => void)[] = []
+            scrollContainers.forEach((container) => {
+                container.addEventListener('scroll', handleScrollOrWheel, {
+                    passive: true,
+                })
+                container.addEventListener('wheel', handleScrollOrWheel, {
+                    passive: true,
+                })
+                listeners.push(() => {
+                    container.removeEventListener('scroll', handleScrollOrWheel)
+                    container.removeEventListener('wheel', handleScrollOrWheel)
+                })
+            })
+
+            document.addEventListener('scroll', handleScrollOrWheel, {
+                passive: true,
+            })
+            document.addEventListener('wheel', handleScrollOrWheel, {
+                passive: true,
+            })
+            window.addEventListener('scroll', handleScrollOrWheel, {
+                passive: true,
+            })
+            window.addEventListener('wheel', handleScrollOrWheel, {
+                passive: true,
+            })
+
+            listeners.push(() => {
+                document.removeEventListener('scroll', handleScrollOrWheel)
+                document.removeEventListener('wheel', handleScrollOrWheel)
+                window.removeEventListener('scroll', handleScrollOrWheel)
+                window.removeEventListener('wheel', handleScrollOrWheel)
+            })
+            return () => {
+                listeners.forEach((cleanup) => cleanup())
+            }
+        }, [ref, isMobile])
+
+        useEffect(() => {
+            if (editingField && editableRef.current) {
+                editableRef.current.focus()
+                const range = document.createRange()
+                const selection = window.getSelection()
+                range.selectNodeContents(editableRef.current)
+                range.collapse(false)
+                selection?.removeAllRanges()
+                selection?.addRange(range)
+
+                // Scroll the editable element into view to ensure cursor is visible
+                editableRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'end',
+                })
+
+                const scrollEditableToEnd = () => {
+                    if (!editableRef.current) return
+                    editableRef.current.scrollLeft =
+                        editableRef.current.scrollWidth
+                }
+                scrollEditableToEnd()
+                requestAnimationFrame(scrollEditableToEnd)
+            }
+        }, [editingField])
+
+        const handleHeaderSave = (field: string, newValue?: string) => {
+            const valueToSave =
+                newValue || editableRef.current?.textContent || ''
+            const trimmedValue = valueToSave.trim()
+            const currentColumn = visibleColumns.find(
+                (col) => String(col.field) === field
+            )
+
+            if (currentColumn && trimmedValue !== currentColumn.header) {
+                const updatedColumns = visibleColumns.map((col) =>
+                    String(col.field) === field
+                        ? { ...col, header: trimmedValue }
+                        : col
+                )
+
+                onHeaderChange?.(
+                    field as keyof Record<string, unknown>,
+                    trimmedValue
+                )
+                onColumnChange?.(updatedColumns)
+            }
+            isRenamingRef.current = false
+            setEditingField(null)
+        }
+
+        const handleHeaderRename = (field: string) => {
+            isRenamingRef.current = true
+            setEditingField(field)
+        }
+
+        const handleHeaderKeyDown = (e: React.KeyboardEvent, field: string) => {
+            if (e.key === 'Enter') {
+                e.preventDefault()
+                handleHeaderSave(field, e.currentTarget.textContent || '')
+            } else if (e.key === 'Escape') {
+                setEditingField(null)
+            }
+        }
+
+        const tableHeaderContent = (
+            <thead
+                ref={ref}
+                style={{
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 10,
+                    backgroundColor:
+                        tableToken.dataTable.table.header.backgroundColor,
+                    borderBottom:
+                        tableToken.dataTable.table.header.borderBottom,
+                    height: headerHeight,
+                }}
+            >
+                <tr
+                    ref={headerRowRef}
+                    role="row"
+                    style={{
+                        height: headerHeight,
+                    }}
+                >
+                    {enableRowExpansion && (
+                        <th
+                            role="columnheader"
+                            scope="col"
+                            aria-label="Expand row"
+                            tabIndex={-1}
+                            style={{
+                                ...tableToken.dataTable.table.header.cell,
+                                padding: cellPadding,
+                                width: '50px',
+                                minWidth: '50px',
+                                maxWidth: '50px',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                boxSizing: 'border-box',
+                                height: '100%',
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
+                                borderTopLeftRadius:
+                                    tableToken.dataTable.borderRadius,
+                                ...(columnFreeze > 0 && {
+                                    position: 'sticky',
+                                    left: '0px',
+                                    zIndex: 9,
+                                    backgroundColor:
+                                        tableToken.dataTable.table.header
+                                            .backgroundColor,
+                                }),
+                            }}
+                        >
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                            />
+                        </th>
+                    )}
+
+                    {enableRowSelection &&
+                        data &&
+                        data.length > 0 &&
+                        initialColumns.length > 0 && (
+                            <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="Select all rows"
+                                tabIndex={0}
+                                onClick={(
+                                    e: React.MouseEvent<HTMLDivElement>
+                                ) => {
+                                    e.stopPropagation()
+                                    onSelectAll(
+                                        selectAll === true ? false : true
+                                    )
+                                }}
+                                onKeyDown={(
+                                    e: React.KeyboardEvent<HTMLDivElement>
+                                ) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        onSelectAll(
+                                            selectAll === true ? false : true
+                                        )
+                                    }
+                                }}
+                                style={{
+                                    ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
+                                    width: '60px',
+                                    minWidth: '60px',
+                                    maxWidth: '60px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                    height: '100%',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
+                                    ...(!enableRowExpansion && {
+                                        borderTopLeftRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
+                                    ...(columnFreeze > 0 && {
+                                        position: 'sticky',
+                                        left: enableRowExpansion
+                                            ? '50px'
+                                            : '0px',
+                                        zIndex: 9,
+                                        backgroundColor:
+                                            tableToken.dataTable.table.header
+                                                .backgroundColor,
+                                    }),
+                                }}
+                            >
+                                <Block
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    width={FOUNDATION_THEME.unit[40]}
+                                    style={{
+                                        height: '100%',
+                                        ...(!enableRowExpansion && {
+                                            borderTopLeftRadius:
+                                                tableToken.dataTable
+                                                    .borderRadius,
+                                        }),
+                                        overflow: 'hidden',
+                                    }}
+                                >
+                                    <Checkbox
+                                        checked={selectAll}
+                                        onCheckedChange={onSelectAll}
+                                        size={CheckboxSize.MEDIUM}
+                                        disabled={isDisabled}
+                                        aria-label="Select all rows"
+                                    />
+                                </Block>
+                            </th>
+                        )}
+
+                    {visibleColumns.map((column, index) => {
+                        const columnStyles = getColumnWidth(column, index)
+                        const isEditing = editingField === String(column.field)
+                        const columnConfig = getColumnTypeConfig(
+                            column.type || ColumnType.TEXT
+                        )
+                        const fieldKey = String(column.field)
+
+                        const hasActiveFilter = () => {
+                            const hasFilterFromProps = columnFilters.some(
+                                (filter) =>
+                                    filter.field === fieldKey &&
+                                    filter.value !== '' &&
+                                    filter.value !== null &&
+                                    !(
+                                        Array.isArray(filter.value) &&
+                                        filter.value.length === 0
+                                    )
+                            )
+
+                            if (hasFilterFromProps) return true
+
+                            const selectedValues =
+                                filterState.columnSelectedValues[fieldKey]
+                            if (!selectedValues) return false
+
+                            if (Array.isArray(selectedValues)) {
+                                return selectedValues.length > 0
+                            }
+                            if (
+                                typeof selectedValues === 'object' &&
+                                selectedValues !== null &&
+                                'min' in selectedValues &&
+                                'max' in selectedValues
+                            ) {
+                                return true
+                            }
+                            return false
+                        }
+
+                        const frozenStyles = getFrozenColumnStyles(
+                            index,
+                            columnFreeze,
+                            enableRowExpansion,
+                            enableRowSelection,
+                            visibleColumns,
+                            getColumnWidth,
+                            tableToken.dataTable.table.header.backgroundColor ||
+                                '#ffffff',
+                            measuredFrozenWidths
+                        )
+
+                        const rightStickyOffsetPx = enableColumnManager
+                            ? parseInt(
+                                  String(FOUNDATION_THEME.unit[48]).replace(
+                                      'px',
+                                      ''
+                                  ) || '48',
+                                  10
+                              )
+                            : 0
+                        const rightFrozenStyles = getFrozenRightColumnStyles(
+                            index,
+                            columnFreezeRight,
+                            visibleColumns,
+                            getColumnWidth,
+                            tableToken.dataTable.table.header.backgroundColor ||
+                                '#ffffff',
+                            rightStickyOffsetPx
+                        )
+
+                        const isLastColumn =
+                            !enableColumnManager &&
+                            !(
+                                (enableInlineEdit || rowActions) &&
+                                !(
+                                    mobileConfig?.isMobile &&
+                                    mobileConfig?.enableColumnOverflow
+                                )
+                            ) &&
+                            !(
+                                mobileConfig?.enableColumnOverflow &&
+                                mobileOverflowColumns.length > 0
+                            ) &&
+                            index === visibleColumns.length - 1
+
+                        // Disable dragging for frozen columns
+                        const isDraggable =
+                            enableColumnReordering && index >= columnFreeze
+
+                        const headerStyle = {
+                            ...tableToken.dataTable.table.header.cell,
+                            ...(column.isSortable &&
+                                tableToken.dataTable.table.header.sortable),
+                            ...columnStyles,
+                            ...frozenStyles,
+                            ...rightFrozenStyles,
+                            padding: cellPadding,
+                            // Ensure border bottom is always present
+                            borderBottom:
+                                tableToken.dataTable.table.header.borderBottom,
+                            height: '100%',
+                            boxSizing: 'border-box',
+                            ...(isLastColumn && {
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
+                            }),
+                        }
+
+                        const headerContent = (dragHandleProps?: {
+                            listeners?: ReturnType<
+                                typeof useSortable
+                            >['listeners']
+                            attributes?: DraggableAttributes
+                        }) => (
+                            <Block
+                                display="flex"
+                                alignItems={headerAlignment}
+                                justifyContent="space-between"
+                                gap="4px"
+                                width="100%"
+                                minWidth={0}
+                            >
+                                <Block
+                                    display="flex"
+                                    alignItems={headerAlignment}
+                                    minWidth={0}
+                                    flexGrow={1}
+                                    overflow="hidden"
+                                >
+                                    {isEditing ? (
+                                        <Block
+                                            ref={editableRef}
+                                            contentEditable
+                                            suppressContentEditableWarning
+                                            className="hide-scrollbar"
+                                            onBlur={(e) =>
+                                                handleHeaderSave(
+                                                    String(column.field),
+                                                    e.currentTarget
+                                                        .textContent || ''
+                                                )
+                                            }
+                                            onKeyDown={(e) =>
+                                                handleHeaderKeyDown(
+                                                    e,
+                                                    String(column.field)
+                                                )
+                                            }
+                                            style={{
+                                                minWidth: 0,
+                                                flex: 1,
+                                                outline: 'none',
+                                                cursor: 'text',
+                                                whiteSpace: 'nowrap',
+                                                overflowX: 'auto',
+                                                overflowY: 'hidden',
+                                                scrollbarWidth: 'none',
+                                                msOverflowStyle: 'none',
+                                            }}
+                                        >
+                                            {column.header}
+                                        </Block>
+                                    ) : (
+                                        <Block
+                                            display="flex"
+                                            alignItems={headerAlignment}
+                                            minWidth={0}
+                                            flexGrow={1}
+                                            gap="8px"
+                                            style={{
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            {isDraggable && dragHandleProps && (
+                                                <Block
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                    flexShrink={0}
+                                                    style={{
+                                                        cursor: 'grab',
+                                                    }}
+                                                    {...(dragHandleProps.listeners ||
+                                                        {})}
+                                                >
+                                                    <GripVertical
+                                                        size={14}
+                                                        color={
+                                                            FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[400]
+                                                        }
+                                                    />
+                                                </Block>
+                                            )}
+                                            <Block
+                                                display="flex"
+                                                flexDirection="column"
+                                                alignItems={
+                                                    headerAlignment === 'center'
+                                                        ? 'center'
+                                                        : 'flex-start'
+                                                }
+                                                justifyContent={
+                                                    headerAlignment === 'center'
+                                                        ? 'center'
+                                                        : 'flex-start'
+                                                }
+                                                minWidth={0}
+                                                flexGrow={1}
+                                                flexShrink={1}
+                                                style={{
+                                                    overflow: 'hidden',
+                                                }}
+                                            >
+                                                <Block
+                                                    style={{
+                                                        width: '100%',
+                                                        minHeight: 0,
+                                                    }}
+                                                >
+                                                    {isDisabled ? (
+                                                        <Skeleton
+                                                            variant="pulse"
+                                                            loading
+                                                            width="80%"
+                                                            height="16px"
+                                                            borderRadius="4px"
+                                                        />
+                                                    ) : (
+                                                        <TruncatedTextWithTooltip
+                                                            content={
+                                                                column.header
+                                                            }
+                                                            tooltipProps={{
+                                                                side: TooltipSide.TOP,
+                                                                align: TooltipAlign.START,
+                                                                size: TooltipSize.SMALL,
+                                                                delayDuration: 500,
+                                                            }}
+                                                        >
+                                                            <PrimitiveText
+                                                                style={{
+                                                                    overflow:
+                                                                        'hidden',
+                                                                    textOverflow:
+                                                                        'ellipsis',
+                                                                    whiteSpace:
+                                                                        'nowrap',
+                                                                    minWidth: 0,
+                                                                    width: '100%',
+                                                                    maxWidth:
+                                                                        '100%',
+                                                                    display:
+                                                                        'block',
+                                                                    cursor: 'default',
+                                                                    fontSize:
+                                                                        tableToken
+                                                                            .dataTable
+                                                                            .table
+                                                                            .header
+                                                                            .cell
+                                                                            .fontSize,
+                                                                    fontWeight:
+                                                                        tableToken
+                                                                            .dataTable
+                                                                            .table
+                                                                            .header
+                                                                            .cell
+                                                                            .fontWeight,
+                                                                    lineHeight: 1.2,
+                                                                }}
+                                                            >
+                                                                {column.header}
+                                                            </PrimitiveText>
+                                                        </TruncatedTextWithTooltip>
+                                                    )}
+                                                </Block>
+                                                {(hasAnySubtext ||
+                                                    column.headerSubtext) && (
+                                                    <Block
+                                                        style={{
+                                                            width: '100%',
+                                                            minHeight:
+                                                                subheaderAreaHeight,
+                                                            marginTop:
+                                                                subheaderMarginTop,
+                                                        }}
+                                                    >
+                                                        {column.headerSubtext ? (
+                                                            isDisabled ? (
+                                                                <Skeleton
+                                                                    variant="pulse"
+                                                                    loading
+                                                                    width="60%"
+                                                                    height="12px"
+                                                                    borderRadius="4px"
+                                                                />
+                                                            ) : (
+                                                                <TruncatedTextWithTooltip
+                                                                    content={
+                                                                        column.headerSubtext
+                                                                    }
+                                                                    tooltipProps={{
+                                                                        side: TooltipSide.TOP,
+                                                                        align: TooltipAlign.START,
+                                                                        size: TooltipSize.SMALL,
+                                                                        delayDuration: 500,
+                                                                    }}
+                                                                >
+                                                                    <PrimitiveText
+                                                                        data-element="table-header-sub-title"
+                                                                        data-id={
+                                                                            column.headerSubtext
+                                                                        }
+                                                                        style={{
+                                                                            overflow:
+                                                                                'hidden',
+                                                                            textOverflow:
+                                                                                'ellipsis',
+                                                                            whiteSpace:
+                                                                                'nowrap',
+                                                                            minWidth: 0,
+                                                                            width: '100%',
+                                                                            maxWidth:
+                                                                                '100%',
+                                                                            display:
+                                                                                'block',
+                                                                            cursor: 'default',
+                                                                            fontSize:
+                                                                                tableToken
+                                                                                    .dataTable
+                                                                                    .table
+                                                                                    .header
+                                                                                    .filter
+                                                                                    .groupLabelFontSize,
+                                                                            color: tableToken
+                                                                                .dataTable
+                                                                                .table
+                                                                                .header
+                                                                                .filter
+                                                                                .groupLabelColor,
+                                                                            lineHeight: 1.2,
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            column.headerSubtext
+                                                                        }
+                                                                    </PrimitiveText>
+                                                                </TruncatedTextWithTooltip>
+                                                            )
+                                                        ) : null}
+                                                    </Block>
+                                                )}
+                                            </Block>
+                                        </Block>
+                                    )}
+                                </Block>
+
+                                {((columnConfig.supportsSorting &&
+                                    column.isSortable !== false) ||
+                                    columnConfig.supportsFiltering) &&
+                                    !isDisabled && (
+                                        <Block
+                                            data-element="sorting-icon"
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            flexShrink={0}
+                                            width="16px"
+                                            height="16px"
+                                            onClick={(e) => e.stopPropagation()}
+                                            position="relative"
+                                        >
+                                            {(() => {
+                                                const hasSort =
+                                                    sortState.currentSortField ===
+                                                        fieldKey &&
+                                                    sortState.currentSortDirection !==
+                                                        SortDirection.NONE
+                                                const hasFilter =
+                                                    hasActiveFilter()
+
+                                                return (
+                                                    (hasSort || hasFilter) && (
+                                                        <Block
+                                                            position="absolute"
+                                                            top="-2px"
+                                                            right="-2px"
+                                                            width="6px"
+                                                            height="6px"
+                                                            borderRadius="50%"
+                                                            backgroundColor={
+                                                                FOUNDATION_THEME
+                                                                    .colors
+                                                                    .red[500]
+                                                            }
+                                                            zIndex={1}
+                                                        />
+                                                    )
+                                                )
+                                            })()}
+
+                                            {isMobile ? (
+                                                // Mobile: Use Drawer wrapper
+                                                <Drawer
+                                                    open={
+                                                        openPopovers[
+                                                            String(column.field)
+                                                        ] || false
+                                                    }
+                                                    onOpenChange={(open) => {
+                                                        const fieldKey = String(
+                                                            column.field
+                                                        )
+
+                                                        if (open) {
+                                                            justOpenedPopovers.current[
+                                                                fieldKey
+                                                            ] = Date.now()
+
+                                                            const table =
+                                                                ref &&
+                                                                typeof ref ===
+                                                                    'object' &&
+                                                                ref.current
+                                                                    ? ref.current.closest(
+                                                                          'table'
+                                                                      )
+                                                                    : null
+                                                            const scrollContainer =
+                                                                table?.parentElement
+                                                            const savedScrollLeft =
+                                                                scrollContainer?.scrollLeft ||
+                                                                0
+
+                                                            setOpenPopovers({
+                                                                [fieldKey]: true,
+                                                            })
+                                                            requestAnimationFrame(
+                                                                () => {
+                                                                    if (
+                                                                        scrollContainer &&
+                                                                        savedScrollLeft !==
+                                                                            undefined
+                                                                    ) {
+                                                                        scrollContainer.scrollLeft =
+                                                                            savedScrollLeft
+                                                                    }
+                                                                }
+                                                            )
+                                                        } else {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                            setTimeout(() => {
+                                                                const buttonRef =
+                                                                    filterButtonRefs
+                                                                        .current[
+                                                                        String(
+                                                                            column.field
+                                                                        )
+                                                                    ]
+                                                                if (buttonRef) {
+                                                                    const table =
+                                                                        buttonRef.closest(
+                                                                            'table'
+                                                                        )
+                                                                    const scrollContainer =
+                                                                        table?.parentElement
+                                                                    const savedScrollLeft =
+                                                                        scrollContainer?.scrollLeft ||
+                                                                        0
+
+                                                                    if (
+                                                                        !isRenamingRef.current
+                                                                    ) {
+                                                                        buttonRef.focus()
+                                                                    }
+
+                                                                    requestAnimationFrame(
+                                                                        () => {
+                                                                            if (
+                                                                                scrollContainer &&
+                                                                                savedScrollLeft !==
+                                                                                    undefined
+                                                                            ) {
+                                                                                scrollContainer.scrollLeft =
+                                                                                    savedScrollLeft
+                                                                            }
+                                                                        }
+                                                                    )
+                                                                }
+                                                            }, 100)
+                                                        }
+                                                    }}
+                                                    direction="bottom"
+                                                    modal={true}
+                                                    dismissible={true}
+                                                    showHandle={true}
+                                                >
+                                                    <DrawerTrigger>
+                                                        <FilterButton
+                                                            ref={(el) => {
+                                                                filterButtonRefs.current[
+                                                                    String(
+                                                                        column.field
+                                                                    )
+                                                                ] = el
+                                                            }}
+                                                            type="button"
+                                                            aria-label={`Filter ${column.header}`}
+                                                            tabIndex={0}
+                                                            $isActive={hasActiveFilter()}
+                                                            onKeyDown={(e) => {
+                                                                if (
+                                                                    e.key ===
+                                                                        'Enter' ||
+                                                                    e.key ===
+                                                                        ' '
+                                                                ) {
+                                                                    e.preventDefault()
+                                                                    e.stopPropagation()
+                                                                    setOpenPopovers(
+                                                                        {
+                                                                            [String(
+                                                                                column.field
+                                                                            )]:
+                                                                                true,
+                                                                        }
+                                                                    )
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                background:
+                                                                    'transparent',
+                                                                border: 'none',
+                                                                padding: '4px',
+                                                                cursor: 'pointer',
+                                                                display:
+                                                                    'inline-flex',
+                                                                alignItems:
+                                                                    'center',
+                                                                justifyContent:
+                                                                    'center',
+                                                                outline: 'none',
+                                                            }}
+                                                        >
+                                                            <FilterIcon
+                                                                size={16}
+                                                                aria-hidden="true"
+                                                                $isActive={hasActiveFilter()}
+                                                            />
+                                                        </FilterButton>
+                                                    </DrawerTrigger>
+                                                    <DrawerPortal>
+                                                        <DrawerOverlay />
+                                                        <DrawerContent
+                                                            contentDriven={true}
+                                                        >
+                                                            <DrawerBody
+                                                                noPadding
+                                                            >
+                                                                <ColumnFilter
+                                                                    column={
+                                                                        column
+                                                                    }
+                                                                    data={data}
+                                                                    tableToken={
+                                                                        tableToken
+                                                                    }
+                                                                    sortHandlers={
+                                                                        sortHandlers
+                                                                    }
+                                                                    filterHandlers={
+                                                                        filterHandlers
+                                                                    }
+                                                                    filterState={
+                                                                        filterState
+                                                                    }
+                                                                    sortState={
+                                                                        sortState
+                                                                    }
+                                                                    onColumnFilter={
+                                                                        onColumnFilter
+                                                                    }
+                                                                    onRenameHeader={
+                                                                        enableInlineEdit
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  handleHeaderRename(
+                                                                                      String(
+                                                                                          column.field
+                                                                                      )
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onOperations={
+                                                                        onOperations
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  onOperations(
+                                                                                      column.field
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onInsertLeft={
+                                                                        onInsertLeft
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  onInsertLeft(
+                                                                                      column.field
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onInsertRight={
+                                                                        onInsertRight
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  onInsertRight(
+                                                                                      column.field
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onDeleteColumn={
+                                                                        onDeleteColumn
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  onDeleteColumn(
+                                                                                      column.field
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onPopoverClose={() => {
+                                                                        setOpenPopovers(
+                                                                            (
+                                                                                prev
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [String(
+                                                                                    column.field
+                                                                                )]:
+                                                                                    false,
+                                                                            })
+                                                                        )
+                                                                        setTimeout(
+                                                                            () => {
+                                                                                const buttonRef =
+                                                                                    filterButtonRefs
+                                                                                        .current[
+                                                                                        String(
+                                                                                            column.field
+                                                                                        )
+                                                                                    ]
+                                                                                if (
+                                                                                    buttonRef &&
+                                                                                    !isRenamingRef.current
+                                                                                ) {
+                                                                                    buttonRef.focus()
+                                                                                }
+                                                                            },
+                                                                            100
+                                                                        )
+                                                                    }}
+                                                                    onFilterApplied={() => {
+                                                                        setOpenPopovers(
+                                                                            (
+                                                                                prev
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [String(
+                                                                                    column.field
+                                                                                )]:
+                                                                                    false,
+                                                                            })
+                                                                        )
+                                                                        setTimeout(
+                                                                            () => {
+                                                                                const buttonRef =
+                                                                                    filterButtonRefs
+                                                                                        .current[
+                                                                                        String(
+                                                                                            column.field
+                                                                                        )
+                                                                                    ]
+                                                                                if (
+                                                                                    buttonRef &&
+                                                                                    !isRenamingRef.current
+                                                                                ) {
+                                                                                    buttonRef.focus()
+                                                                                }
+                                                                            },
+                                                                            100
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            </DrawerBody>
+                                                        </DrawerContent>
+                                                    </DrawerPortal>
+                                                </Drawer>
+                                            ) : (
+                                                <Popover
+                                                    trigger={
+                                                        <FilterButton
+                                                            ref={(el) => {
+                                                                filterButtonRefs.current[
+                                                                    String(
+                                                                        column.field
+                                                                    )
+                                                                ] = el
+                                                            }}
+                                                            type="button"
+                                                            aria-label={`Filter ${column.header}`}
+                                                            tabIndex={0}
+                                                            $isActive={hasActiveFilter()}
+                                                            onKeyDown={(e) => {
+                                                                if (
+                                                                    e.key ===
+                                                                        'Enter' ||
+                                                                    e.key ===
+                                                                        ' '
+                                                                ) {
+                                                                    e.preventDefault()
+                                                                    e.stopPropagation()
+                                                                    setOpenPopovers(
+                                                                        {
+                                                                            [String(
+                                                                                column.field
+                                                                            )]:
+                                                                                true,
+                                                                        }
+                                                                    )
+                                                                }
+                                                            }}
+                                                            style={{
+                                                                background:
+                                                                    'transparent',
+                                                                border: 'none',
+                                                                padding: '4px',
+                                                                cursor: 'pointer',
+                                                                display:
+                                                                    'inline-flex',
+                                                                alignItems:
+                                                                    'center',
+                                                                justifyContent:
+                                                                    'center',
+                                                                outline: 'none',
+                                                            }}
+                                                        >
+                                                            <FilterIcon
+                                                                size={16}
+                                                                aria-hidden="true"
+                                                                $isActive={hasActiveFilter()}
+                                                            />
+                                                        </FilterButton>
+                                                    }
+                                                    maxWidth={220}
+                                                    minWidth={220}
+                                                    side="bottom"
+                                                    align={getPopoverAlignment(
+                                                        index,
+                                                        visibleColumns.length
+                                                    )}
+                                                    sideOffset={20}
+                                                    open={
+                                                        openPopovers[
+                                                            String(column.field)
+                                                        ] || false
+                                                    }
+                                                    onOpenChange={(open) => {
+                                                        const fieldKey = String(
+                                                            column.field
+                                                        )
+
+                                                        if (open) {
+                                                            const timestamp =
+                                                                Date.now()
+                                                            justOpenedPopovers.current[
+                                                                fieldKey
+                                                            ] = timestamp
+
+                                                            openPopoversRef.current =
+                                                                {
+                                                                    ...openPopoversRef.current,
+                                                                    [fieldKey]: true,
+                                                                }
+                                                            setOpenPopovers({
+                                                                [fieldKey]: true,
+                                                            })
+                                                        } else {
+                                                            const openedAt =
+                                                                justOpenedPopovers
+                                                                    .current[
+                                                                    fieldKey
+                                                                ]
+                                                            const timeSinceOpen =
+                                                                Date.now() -
+                                                                (openedAt || 0)
+
+                                                            if (
+                                                                timeSinceOpen <
+                                                                300
+                                                            ) {
+                                                                return
+                                                            }
+                                                            openPopoversRef.current =
+                                                                {
+                                                                    ...openPopoversRef.current,
+                                                                    [fieldKey]: false,
+                                                                }
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [fieldKey]: false,
+                                                                })
+                                                            )
+                                                            delete justOpenedPopovers
+                                                                .current[
+                                                                fieldKey
+                                                            ]
+                                                        }
+                                                    }}
+                                                >
+                                                    <ColumnFilter
+                                                        column={column}
+                                                        data={data}
+                                                        tableToken={tableToken}
+                                                        sortHandlers={
+                                                            sortHandlers
+                                                        }
+                                                        filterHandlers={
+                                                            filterHandlers
+                                                        }
+                                                        filterState={
+                                                            filterState
+                                                        }
+                                                        sortState={sortState}
+                                                        onColumnFilter={
+                                                            onColumnFilter
+                                                        }
+                                                        onRenameHeader={
+                                                            enableInlineEdit
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      handleHeaderRename(
+                                                                          String(
+                                                                              column.field
+                                                                          )
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onOperations={
+                                                            onOperations
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      onOperations(
+                                                                          column.field
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onInsertLeft={
+                                                            onInsertLeft
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      onInsertLeft(
+                                                                          column.field
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onInsertRight={
+                                                            onInsertRight
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      onInsertRight(
+                                                                          column.field
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onDeleteColumn={
+                                                            onDeleteColumn
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      onDeleteColumn(
+                                                                          column.field
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onPopoverClose={() => {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                            setTimeout(() => {
+                                                                const buttonRef =
+                                                                    filterButtonRefs
+                                                                        .current[
+                                                                        String(
+                                                                            column.field
+                                                                        )
+                                                                    ]
+                                                                if (
+                                                                    buttonRef &&
+                                                                    !isRenamingRef.current
+                                                                ) {
+                                                                    buttonRef.focus()
+                                                                }
+                                                            }, 100)
+                                                        }}
+                                                        onFilterApplied={() => {
+                                                            setOpenPopovers(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    [String(
+                                                                        column.field
+                                                                    )]: false,
+                                                                })
+                                                            )
+                                                            setTimeout(() => {
+                                                                const buttonRef =
+                                                                    filterButtonRefs
+                                                                        .current[
+                                                                        String(
+                                                                            column.field
+                                                                        )
+                                                                    ]
+                                                                if (
+                                                                    buttonRef &&
+                                                                    !isRenamingRef.current
+                                                                ) {
+                                                                    buttonRef.focus()
+                                                                }
+                                                            }, 100)
+                                                        }}
+                                                    />
+                                                </Popover>
+                                            )}
+                                        </Block>
+                                    )}
+                            </Block>
+                        )
+
+                        if (isDraggable && !isMobile) {
+                            const sortDirection =
+                                sortState.currentSortField ===
+                                String(column.field)
+                                    ? sortState.currentSortDirection
+                                    : SortDirection.NONE
+                            const ariaSortValue =
+                                sortDirection === SortDirection.ASCENDING
+                                    ? 'ascending'
+                                    : sortDirection === SortDirection.DESCENDING
+                                      ? 'descending'
+                                      : 'none'
+
+                            return (
+                                <DraggableColumnHeader
+                                    key={String(column.field)}
+                                    id={String(column.field)}
+                                    role="columnheader"
+                                    scope="col"
+                                    aria-sort={
+                                        column.isSortable !== false
+                                            ? ariaSortValue
+                                            : undefined
+                                    }
+                                    aria-label={column.header}
+                                    style={headerStyle as React.CSSProperties}
+                                    data-element="table-header"
+                                    data-id={column.header}
+                                    disabled={false}
+                                    tabIndex={-1}
+                                >
+                                    {(dragHandleProps) =>
+                                        headerContent(dragHandleProps)
+                                    }
+                                </DraggableColumnHeader>
+                            )
+                        }
+
+                        const sortDirection =
+                            sortState.currentSortField === String(column.field)
+                                ? sortState.currentSortDirection
+                                : SortDirection.NONE
+                        const ariaSortValue =
+                            sortDirection === SortDirection.ASCENDING
+                                ? 'ascending'
+                                : sortDirection === SortDirection.DESCENDING
+                                  ? 'descending'
+                                  : 'none'
+
+                        return (
+                            <th
+                                key={String(column.field)}
+                                role="columnheader"
+                                scope="col"
+                                aria-sort={
+                                    column.isSortable !== false
+                                        ? ariaSortValue
+                                        : undefined
+                                }
+                                aria-label={column.header}
+                                style={headerStyle as React.CSSProperties}
+                                data-element="table-header"
+                                data-id={column.header}
+                                tabIndex={-1}
+                            >
+                                {headerContent()}
+                            </th>
+                        )
+                    })}
+
+                    {(enableInlineEdit || rowActions) &&
+                        !(
+                            mobileConfig?.isMobile &&
+                            mobileConfig?.enableColumnOverflow
+                        ) && (
+                            <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="Actions"
+                                tabIndex={-1}
+                                style={{
+                                    ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
+                                    width: '200px',
+                                    maxWidth: '200px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                    height: '100%',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
+                                    ...(!enableColumnManager &&
+                                        !(
+                                            mobileConfig?.enableColumnOverflow &&
+                                            mobileOverflowColumns.length > 0
+                                        ) && {
+                                            borderTopRightRadius:
+                                                tableToken.dataTable
+                                                    .borderRadius,
+                                        }),
+                                }}
+                            >
+                                <Block
+                                    display="flex"
+                                    alignItems={headerAlignment}
+                                    justifyContent="space-between"
+                                    gap="4px"
+                                    width="100%"
+                                    minWidth={0}
+                                >
+                                    <Block
+                                        display="flex"
+                                        alignItems={headerAlignment}
+                                        minWidth={0}
+                                        flexGrow={1}
+                                        overflow="hidden"
+                                    >
+                                        <Block
+                                            display="flex"
+                                            flexDirection="column"
+                                            alignItems={
+                                                headerAlignment === 'center'
+                                                    ? 'center'
+                                                    : 'flex-start'
+                                            }
+                                            justifyContent={
+                                                headerAlignment === 'center'
+                                                    ? 'center'
+                                                    : 'flex-start'
+                                            }
+                                            minWidth={0}
+                                            flexGrow={1}
+                                            flexShrink={1}
+                                        >
+                                            <Block
+                                                style={{
+                                                    width: '100%',
+                                                    minHeight: 0,
+                                                }}
+                                            >
+                                                <PrimitiveText
+                                                    as="span"
+                                                    style={{
+                                                        fontSize:
+                                                            tableToken.dataTable
+                                                                .table.header
+                                                                .cell.fontSize,
+                                                        fontWeight:
+                                                            tableToken.dataTable
+                                                                .table.header
+                                                                .cell
+                                                                .fontWeight,
+                                                        lineHeight: 1.2,
+                                                    }}
+                                                >
+                                                    Actions
+                                                </PrimitiveText>
+                                            </Block>
+                                            {hasAnySubtext && (
+                                                <Block
+                                                    style={{
+                                                        width: '100%',
+                                                        minHeight:
+                                                            subheaderAreaHeight,
+                                                        marginTop:
+                                                            subheaderMarginTop,
+                                                    }}
+                                                />
+                                            )}
+                                        </Block>
+                                    </Block>
+                                </Block>
+                            </th>
+                        )}
+
+                    {mobileConfig?.enableColumnOverflow &&
+                        mobileOverflowColumns.length > 0 &&
+                        onMobileOverflowClick && (
+                            <th
+                                role="columnheader"
+                                scope="col"
+                                aria-label="View more columns"
+                                tabIndex={-1}
+                                style={{
+                                    ...tableToken.dataTable.table.header.cell,
+                                    padding: cellPadding,
+                                    width: '40px',
+                                    minWidth: '40px',
+                                    maxWidth: '40px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    boxSizing: 'border-box',
+                                    height: '100%',
+                                    borderBottom:
+                                        tableToken.dataTable.table.header
+                                            .borderBottom,
+                                    ...(!enableColumnManager && {
+                                        borderTopRightRadius:
+                                            tableToken.dataTable.borderRadius,
+                                    }),
+                                }}
+                            ></th>
+                        )}
+
+                    {enableColumnManager && visibleColumns.length > 0 && (
+                        <th
+                            role="columnheader"
+                            scope="col"
+                            aria-label="Column manager"
+                            tabIndex={-1}
+                            style={{
+                                ...tableToken.dataTable.table.header.cell,
+                                padding: cellPadding,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                boxSizing: 'border-box',
+                                height: '100%',
+                                position: 'sticky',
+                                right: 0,
+                                backgroundColor:
+                                    tableToken.dataTable.table.header
+                                        .backgroundColor,
+                                width: FOUNDATION_THEME.unit[48],
+                                minWidth: FOUNDATION_THEME.unit[48],
+                                maxWidth: FOUNDATION_THEME.unit[48],
+                                borderBottom:
+                                    tableToken.dataTable.table.header
+                                        .borderBottom,
+                                borderTopRightRadius:
+                                    tableToken.dataTable.borderRadius,
+                            }}
+                        >
+                            <Block
+                                display="flex"
+                                alignItems={headerAlignment}
+                                justifyContent="space-between"
+                                gap="4px"
+                                width="100%"
+                                minWidth={0}
+                            >
+                                <Block
+                                    display="flex"
+                                    alignItems={headerAlignment}
+                                    minWidth={0}
+                                    flexGrow={1}
+                                    overflow="hidden"
+                                >
+                                    <Block
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems={
+                                            headerAlignment === 'center'
+                                                ? 'center'
+                                                : 'flex-start'
+                                        }
+                                        justifyContent={
+                                            headerAlignment === 'center'
+                                                ? 'center'
+                                                : 'flex-start'
+                                        }
+                                        minWidth={0}
+                                        flexGrow={1}
+                                        flexShrink={1}
+                                    >
+                                        <Block
+                                            style={{
+                                                width: '100%',
+                                                minHeight: 0,
+                                            }}
+                                        >
+                                            <Block position="relative">
+                                                <ColumnManager
+                                                    columns={initialColumns}
+                                                    visibleColumns={
+                                                        allVisibleColumns ||
+                                                        visibleColumns
+                                                    }
+                                                    onColumnChange={
+                                                        onColumnChange
+                                                    }
+                                                    maxSelections={
+                                                        columnManagerMaxSelections
+                                                    }
+                                                    alwaysSelectedColumns={
+                                                        columnManagerAlwaysSelected
+                                                    }
+                                                    columnManagerPrimaryAction={
+                                                        columnManagerPrimaryAction
+                                                    }
+                                                    columnManagerSecondaryAction={
+                                                        columnManagerSecondaryAction
+                                                    }
+                                                    multiSelectWidth={
+                                                        columnManagerWidth
+                                                    }
+                                                    disabled={isDisabled}
+                                                />
+                                            </Block>
+                                        </Block>
+                                        {hasAnySubtext && (
+                                            <Block
+                                                style={{
+                                                    width: '100%',
+                                                    minHeight:
+                                                        subheaderAreaHeight,
+                                                    marginTop:
+                                                        subheaderMarginTop,
+                                                }}
+                                            />
+                                        )}
+                                    </Block>
+                                </Block>
+                            </Block>
+                        </th>
+                    )}
+                </tr>
+            </thead>
+        )
+
+        // Return thead (DndContext is now in DataTable)
+        return tableHeaderContent
+    }
+)
+
+TableHeader.displayName = 'TableHeader'
+
+export default TableHeader

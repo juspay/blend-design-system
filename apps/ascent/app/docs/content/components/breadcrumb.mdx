@@ -1,0 +1,228 @@
+---
+title: Breadcrumb
+description: The Breadcrumb component provides navigation context by showing the current page's location within a site hierarchy, helping users understand where they are and navigate back.
+category: components
+tags:
+    - breadcrumb
+    - component
+    - navigation
+    - hierarchy
+    - path
+RepoFolderName: Breadcrumb
+StorybookLink: components-breadcrumb--docs
+---
+
+<BreadcrumbPreview />
+
+## Usage
+
+### Basic Usage
+
+```tsx
+import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const breadcrumbItems: BreadcrumbItemType[] = [
+        { label: 'Home', href: '/' },
+        { label: 'Products', href: '/products' },
+        { label: 'Electronics', href: '/products/electronics' },
+        { label: 'Smartphones', href: '/products/electronics/smartphones' },
+    ]
+
+    return <Breadcrumb items={breadcrumbItems} />
+}
+```
+
+### With Custom Routing (React Router)
+
+```tsx
+import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system'
+import { useNavigate } from 'react-router-dom'
+
+function MyComponent() {
+    const navigate = useNavigate()
+
+    const breadcrumbItems: BreadcrumbItemType[] = [
+        {
+            label: 'Home',
+            href: '/',
+            onClick: (e) => {
+                navigate('/')
+            },
+        },
+        {
+            label: 'Products',
+            href: '/products',
+            onClick: (e) => {
+                navigate('/products')
+            },
+        },
+        {
+            label: 'Electronics',
+            href: '/products/electronics',
+            onClick: (e) => {
+                navigate('/products/electronics')
+            },
+        },
+        {
+            label: 'Smartphones',
+            href: '/products/electronics/smartphones',
+        },
+    ]
+
+    return <Breadcrumb items={breadcrumbItems} />
+}
+```
+
+## Overflow Behavior
+
+When there are more than 4 items, the breadcrumb automatically collapses to save space:
+
+- **First item** is always shown (root)
+- **Middle items** collapse into a `...` menu button
+- **Last 3 items** are always visible (including current page)
+
+This ensures users can always see where they are (last 3 items) and navigate back to the root, while keeping the UI clean.
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'items',
+                hintText:
+                    'Required array of breadcrumb items representing the hierarchical navigation path from root to current page. Each item should have a label (display text), href (navigation URL), and optionally leftSlot/rightSlot for custom content. The component automatically handles overflow by showing the first item, collapsing middle items into a menu when there are more than 4 items, and displaying the last 3 items.',
+            },
+            {
+                content: 'BreadcrumbItemType[]',
+                hintText:
+                    'Array of objects with label, href, and optional leftSlot/rightSlot properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Optional configuration for showing skeleton loading state on all breadcrumb items. When show is true, displays skeleton placeholders instead of the actual content. Useful for loading states while breadcrumb data is being fetched.',
+            },
+            {
+                content: '{ show: boolean, variant?: SkeletonVariant }',
+                hintText:
+                    'Object with show (required boolean) and optional variant (pulse, shimmer, etc.)',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### BreadcrumbItemType
+
+Each item in the `items` array should have the following structure:
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'label',
+                hintText:
+                    'Required text string displayed as the breadcrumb item label. This is the visible text that users see and click to navigate. Should be concise and descriptive of the page or section it represents.',
+            },
+            {
+                content: 'string',
+                hintText: 'Text content displayed as the breadcrumb item label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'href',
+                hintText:
+                    'Required URL string that the breadcrumb item links to. When clicked, users will navigate to this URL. For the active (last) item, this is typically omitted or set to the current page URL, and the item becomes non-clickable.',
+            },
+            {
+                content: 'string',
+                hintText: 'URL path that the breadcrumb item navigates to',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText:
+                    'Optional React element displayed before (to the left of) the label text. Commonly used for icons, badges, or other visual indicators that provide additional context about the breadcrumb item.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText: 'Any React element to display before the label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText:
+                    'Optional React element displayed after (to the right of) the label text. Useful for adding icons, badges, dropdown indicators, or other supplementary content that appears after the label.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText: 'Any React element to display after the label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText:
+                    'Optional click handler function for custom routing without page reloads. When provided, prevents the default link behavior and calls this handler instead. Perfect for integrating with client-side routing libraries like React Router (use navigate()), Next.js router (use router.push()), or other SPA routing solutions. This avoids full page reloads and prevents unnecessary API calls (e.g., session APIs). The handler receives the click event as a parameter.',
+            },
+            {
+                content: '(event: React.MouseEvent<HTMLAnchorElement>) => void',
+                hintText:
+                    'Function called when breadcrumb item is clicked, receives mouse event',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Optional skeleton configuration for this specific breadcrumb item. When provided, overrides the component-level skeleton prop for this item. Useful when individual items need different loading states or variants.',
+            },
+            {
+                content: '{ show: boolean, variant?: SkeletonVariant }',
+                hintText:
+                    'Object with show (required boolean) and optional variant (pulse, shimmer, etc.)',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the breadcrumb component using the following tokens:
+
+```tsx
+export type BreadcrumbTokenType = {
+    gap: CSSObject['gap']
+    item: {
+        padding: CSSObject['padding']
+        gap: CSSObject['gap']
+        text: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [key in 'default' | 'hover' | 'active']: CSSObject['color']
+            }
+        }
+    }
+}
+```

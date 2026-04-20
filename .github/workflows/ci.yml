@@ -1,0 +1,145 @@
+name: CI
+
+on:
+    push:
+        branches: [main, dev]
+    pull_request:
+        branches: [main, dev]
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    lint-build:
+        name: Format & Build
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Check formatting
+              run: pnpm format:check
+
+            - name: Build
+              run: pnpm build
+
+    test:
+        name: Unit Tests & Coverage
+        runs-on: ubuntu-latest
+        needs: lint-build
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - run: pnpm install --frozen-lockfile
+
+            - name: Run tests with coverage
+              run: |
+                  pnpm test:blend:coverage
+              env:
+                  CI: true
+
+            - name: Upload coverage to Codecov
+              uses: codecov/codecov-action@v4
+              with:
+                  files: packages/blend/coverage/coverage-final.json
+                  flags: unittests
+                  fail_ci_if_error: false
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+            - name: Upload coverage artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: coverage-report
+                  path: packages/blend/coverage
+                  retention-days: 30
+
+    a11y:
+        name: Accessibility Tests
+        runs-on: ubuntu-latest
+        needs: lint-build
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - run: pnpm install --frozen-lockfile
+
+            - name: Run accessibility tests
+              run: |
+                  cd packages/blend
+                  pnpm test:a11y
+              env:
+                  CI: true
+
+            - name: Upload a11y results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: accessibility-test-results
+                  path: packages/blend/coverage
+                  retention-days: 30
+
+    preview:
+        name: Publish preview to pkg.pr.new
+        runs-on: ubuntu-latest
+        needs: lint-build
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/dev')
+        permissions:
+            contents: read
+            pull-requests: write
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build @juspay/blend-design-system
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Publish preview
+              run: pnpm dlx pkg-pr-new publish --pnpm './packages/blend'

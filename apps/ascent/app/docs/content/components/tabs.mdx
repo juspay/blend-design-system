@@ -1,0 +1,557 @@
+---
+title: Tabs
+description: The Tabs component provides a way to organize content into multiple sections that can be switched between, with support for different styles and configurations.
+category: components
+tags:
+    - tabs
+    - component
+    - navigation
+RepoFolderName: Tabs
+StorybookLink: components-tabs--docs
+---
+
+<TabsPreview />
+
+## Usage
+
+```tsx
+import {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent,
+    TabsVariant,
+    TabsSize,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <Tabs defaultValue="tab1">
+            <TabsList variant={TabsVariant.UNDERLINE} size={TabsSize.MD}>
+                <TabsTrigger value="tab1">Account</TabsTrigger>
+                <TabsTrigger value="tab2">Password</TabsTrigger>
+                <TabsTrigger value="tab3">Settings</TabsTrigger>
+            </TabsList>
+            <TabsContent value="tab1">Account content goes here</TabsContent>
+            <TabsContent value="tab2">Password content goes here</TabsContent>
+            <TabsContent value="tab3">Settings content goes here</TabsContent>
+        </Tabs>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'Tabs.defaultValue',
+                hintText:
+                    'Optional default selected tab value string for uncontrolled usage. When provided, the Tabs component manages its own state internally. The value should match the value prop of one of the TabsTrigger children. The tab with this value will be initially selected. If not provided, no tab is selected initially.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.value',
+                hintText:
+                    'Optional controlled selected tab value string. When provided, the Tabs component is controlled and selection is managed by your component state. The value should match the value prop of one of the TabsTrigger children. Required for controlled mode. Use this with onValueChange for controlled state management.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.onValueChange',
+                hintText:
+                    'Optional callback function invoked when the tab selection changes. Receives the new selected tab value string as a parameter. Use this to update your state when using controlled mode. The function is called whenever a different tab is selected.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with new selected value when tab selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.variant',
+                hintText:
+                    'Optional TabsVariant enum value that determines the visual style variant of the tabs. UNDERLINE creates tabs with an underline indicator below the active tab, BOXED creates tabs in a boxed container, FLOATING creates tabs in a floating container, PILLS creates rounded pill-style tabs. The variant affects the overall appearance and styling. Defaults to UNDERLINE.',
+            },
+            { content: 'TabsVariant', hintText: 'enum' },
+            { content: 'UNDERLINE, BOXED, FLOATING, PILLS' },
+        ],
+        [
+            {
+                content: 'Tabs.size',
+                hintText:
+                    'Optional TabsSize enum value that determines the size variant affecting dimensions, padding, and font size of the tabs. MD creates a medium-sized tab, LG creates a larger tab. The size applies to all tabs in the list. Defaults to MD.',
+            },
+            { content: 'TabsSize', hintText: 'enum' },
+            { content: 'MD, LG' },
+        ],
+        [
+            {
+                content: 'Tabs.items',
+                hintText:
+                    'Array of tab item objects for programmatic rendering. When provided, the component renders tabs dynamically based on this array instead of using the declarative children API. Each item should have a value, label, and content. This approach is ideal for dynamic tab management, where tabs can be added, removed, or modified programmatically. Supports features like newItem tabs, disabled states, and skeleton loading per tab.',
+            },
+            { content: 'TabItem[]', hintText: 'array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.onTabClose',
+                hintText:
+                    'Callback function invoked when a user closes a tab by clicking its close button. Receives the value of the closed tab as a parameter. Use this to update your tab state, remove the tab from your data structure, save user preferences, or perform cleanup operations. The component automatically handles switching to an appropriate tab when the active tab is closed.',
+            },
+            { content: '(value: string) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.onTabAdd',
+                hintText:
+                    'Callback function invoked when the user clicks the add button to create a new tab. Use this to open a modal, show a form, or trigger any logic needed to create a new tab. After creating the tab, update your items array to include the new tab, and the component will automatically render it. This enables dynamic tab management workflows.',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.showDropdown',
+                hintText:
+                    'When true, displays a dropdown menu button that provides access to all tabs, including those that are scrolled out of view or overflow the visible area. This is essential for managing large numbers of tabs where horizontal scrolling would otherwise hide some tabs. The dropdown allows users to navigate to any tab regardless of scroll position, improving accessibility and usability for complex tab interfaces.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.showAddButton',
+                hintText:
+                    'When true, displays an add button that allows users to create new tabs dynamically. This is useful for interfaces where users need to add tabs on demand, such as multi-document editors, browser-like interfaces, or dynamic content management systems. The button triggers the onTabAdd callback when clicked, allowing you to handle the tab creation logic.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.dropdownTooltip',
+                hintText:
+                    'Custom tooltip text displayed when hovering over the dropdown button. This provides context and guidance to users about what the dropdown does. Useful for accessibility and user education, especially when the dropdown icon alone might not be immediately clear. Defaults to "Navigate to tab" if not provided.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'Navigate to tab' },
+        ],
+        [
+            {
+                content: 'Tabs.addButtonTooltip',
+                hintText:
+                    'Custom tooltip text displayed when hovering over the add button. This provides context and guidance to users about what the add button does. Useful for accessibility and user education, especially when the add icon alone might not be immediately clear. Defaults to "Add new tab" if not provided.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: 'Add new tab' },
+        ],
+        [
+            {
+                content: 'Tabs.disable',
+                hintText:
+                    'When true, disables all tabs in the tab list, preventing user interaction. All tabs will be visually disabled and non-interactive. This is useful for temporarily disabling the entire tab component during loading states or when certain conditions prevent tab navigation. Individual tabs can still override this with their own disable prop.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.expanded',
+                hintText:
+                    'When true, tabs expand to fill the full available width of their container. This is useful for creating evenly distributed tabs across the entire width, ensuring consistent spacing and a balanced visual appearance. When false, tabs only take up the space needed for their content.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.fitContent',
+                hintText:
+                    'When true, tabs automatically size to fit their content width rather than expanding or using default sizing. This is ideal when you want tabs to be compact and only take up the minimum space required. Useful for scenarios with varying tab label lengths where you want each tab to be sized individually based on its content.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.showSkeleton',
+                hintText:
+                    'When true, displays skeleton loading placeholders instead of the actual tab content. This provides visual feedback during data loading, preventing layout shifts and improving perceived performance. The skeleton state maintains the same dimensions and structure as the actual tabs, creating a smooth transition when content loads.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tabs.skeletonVariant',
+                hintText:
+                    'Determines the animation style for skeleton loading states. "pulse" creates a gentle fade in/out effect, "wave" creates a shimmer wave animation that moves across the skeleton, and "shimmer" creates a bright shimmer effect. Use this to match your application\'s loading animation style or to differentiate loading states.',
+            },
+            {
+                content: "'pulse' | 'wave' | 'shimmer'",
+                hintText: 'SkeletonVariant',
+            },
+            { content: 'pulse, wave, shimmer' },
+        ],
+        [
+            {
+                content: 'Tabs.stickyHeader',
+                hintText:
+                    'When true, makes the tab listing header stick to the top of its container when scrolling. This keeps the tab navigation visible while scrolling through long tab content. The header will have position: sticky, top: 0, and a z-index to stay above other content. This is particularly useful for documentation pages, settings panels, and dashboards with lengthy content.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'Tabs.offsetTop',
+                hintText:
+                    'Optional number value that sets the top offset in pixels for the sticky header. This is useful when there are other sticky elements on the page (like a navbar) and the tabs header needs to stick below them. Only applies when stickyHeader is true. Defaults to 0.',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '0' },
+        ],
+        [
+            {
+                content: 'TabsList.variant',
+                hintText:
+                    'Optional TabsVariant enum value that determines the visual style variant of the tabs list. UNDERLINE creates tabs with an underline indicator, BOXED creates tabs in a boxed container, FLOATING creates tabs in a floating container, PILLS creates rounded pill-style tabs. The variant affects the overall appearance and styling. Defaults to UNDERLINE.',
+            },
+            { content: 'TabsVariant', hintText: 'enum' },
+            { content: 'UNDERLINE, BOXED, FLOATING, PILLS' },
+        ],
+        [
+            {
+                content: 'TabsList.size',
+                hintText:
+                    'Optional TabsSize enum value that determines the size variant affecting dimensions, padding, and font size of the tabs list. MD creates a medium-sized tab list, LG creates a larger tab list. The size applies to all tabs in the list. Defaults to MD.',
+            },
+            { content: 'TabsSize', hintText: 'enum' },
+            { content: 'MD, LG' },
+        ],
+        [
+            {
+                content: 'TabsList.expanded',
+                hintText:
+                    'When true, tabs expand to fill the full available width of their container. This is useful for creating evenly distributed tabs across the entire width, ensuring consistent spacing and a balanced visual appearance. When false, tabs only take up the space needed for their content.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.fitContent',
+                hintText:
+                    'When true, tabs automatically size to fit their content width rather than expanding or using default sizing. This is ideal when you want tabs to be compact and only take up the minimum space required. Useful for scenarios with varying tab label lengths where you want each tab to be sized individually based on its content.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.items',
+                hintText:
+                    'Array of tab item objects for programmatic rendering. When provided, the component renders tabs dynamically based on this array instead of using the declarative children API. Each item should have a value, label, and content. This approach is ideal for dynamic tab management, where tabs can be added, removed, or modified programmatically. Supports features like newItem tabs, disabled states, and skeleton loading per tab.',
+            },
+            { content: 'TabItem[]', hintText: 'array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.onTabClose',
+                hintText:
+                    'Callback function invoked when a user closes a tab by clicking its close button. Receives the value of the closed tab as a parameter. Use this to update your tab state, remove the tab from your data structure, save user preferences, or perform cleanup operations. The component automatically handles switching to an appropriate tab when the active tab is closed.',
+            },
+            { content: '(value: string) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.onTabAdd',
+                hintText:
+                    'Callback function invoked when the user clicks the add button to create a new tab. Use this to open a modal, show a form, or trigger any logic needed to create a new tab. After creating the tab, update your items array to include the new tab, and the component will automatically render it. This enables dynamic tab management workflows.',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.showDropdown',
+                hintText:
+                    'When true, displays a dropdown menu button that provides access to all tabs, including those that are scrolled out of view or overflow the visible area. This is essential for managing large numbers of tabs where horizontal scrolling would otherwise hide some tabs. The dropdown allows users to navigate to any tab regardless of scroll position, improving accessibility and usability for complex tab interfaces.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.showAddButton',
+                hintText:
+                    'When true, displays an add button that allows users to create new tabs dynamically. This is useful for interfaces where users need to add tabs on demand, such as multi-document editors, browser-like interfaces, or dynamic content management systems. The button triggers the onTabAdd callback when clicked, allowing you to handle the tab creation logic.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.addButtonTooltip',
+                hintText:
+                    'Custom tooltip text displayed when hovering over the add button. This provides context and guidance to users about what the add button does. Useful for accessibility and user education, especially when the add icon alone might not be immediately clear.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.onTabChange',
+                hintText: 'Callback when tab selection changes (for dropdown)',
+            },
+            { content: '(value: string) => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.activeTab',
+                hintText: 'The currently active tab value',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.disable',
+                hintText:
+                    'When true, disables all tabs in the tab list, preventing user interaction. All tabs will be visually disabled and non-interactive. This is useful for temporarily disabling the entire tab component during loading states or when certain conditions prevent tab navigation. Individual tabs can still override this with their own disable prop.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.showSkeleton',
+                hintText:
+                    'When true, displays skeleton loading placeholders instead of the actual tab content. This provides visual feedback during data loading, preventing layout shifts and improving perceived performance. The skeleton state maintains the same dimensions and structure as the actual tabs, creating a smooth transition when content loads.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsList.skeletonVariant',
+                hintText:
+                    'Determines the animation style for skeleton loading states. "pulse" creates a gentle fade in/out effect, "wave" creates a shimmer wave animation that moves across the skeleton, and "shimmer" creates a bright shimmer effect. Use this to match your application\'s loading animation style or to differentiate loading states.',
+            },
+            {
+                content: "'pulse' | 'wave' | 'shimmer'",
+                hintText: 'SkeletonVariant',
+            },
+            { content: 'pulse, wave, shimmer' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.value',
+                hintText: 'The unique value for this tab trigger',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.variant',
+                hintText:
+                    'Optional TabsVariant enum value that determines the visual style variant of the tab trigger. UNDERLINE creates a tab with an underline indicator, BOXED creates a tab in a boxed container, FLOATING creates a tab in a floating container, PILLS creates a rounded pill-style tab. The variant should match the parent Tabs or TabsList variant. Defaults to UNDERLINE.',
+            },
+            { content: 'TabsVariant', hintText: 'enum' },
+            { content: 'UNDERLINE, BOXED, FLOATING, PILLS' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.size',
+                hintText:
+                    'Optional TabsSize enum value that determines the size variant affecting dimensions, padding, and font size of the tab trigger. MD creates a medium-sized tab, LG creates a larger tab. The size should match the parent Tabs or TabsList size. Defaults to MD.',
+            },
+            { content: 'TabsSize', hintText: 'enum' },
+            { content: 'MD, LG' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.leftSlot',
+                hintText: 'Icon or element to display before the tab text',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.rightSlot',
+                hintText: 'Icon or element to display after the tab text',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.children',
+                hintText: 'The text content of the tab trigger',
+            },
+            { content: 'string | number', hintText: 'string or number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.closable',
+                hintText:
+                    'Whether the tab shows a close button (maps from TabItem.newItem)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.onClose',
+                hintText: 'Callback when close button is clicked',
+            },
+            { content: '() => void', hintText: 'function' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.disable',
+                hintText:
+                    'When true, disables this specific tab trigger, preventing user interaction. The tab will be visually disabled and non-interactive, and keyboard navigation will skip over it. This is useful for conditionally disabling specific tabs based on user permissions, data availability, or application state.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.showSkeleton',
+                hintText:
+                    'When true, displays a skeleton loading placeholder for this specific tab trigger instead of the actual content. This provides visual feedback during data loading for individual tabs, preventing layout shifts and improving perceived performance. The skeleton state maintains the same dimensions and structure as the actual tab.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsTrigger.skeletonVariant',
+                hintText:
+                    'Determines the animation style for skeleton loading state of this specific tab trigger. "pulse" creates a gentle fade in/out effect, "wave" creates a shimmer wave animation that moves across the skeleton, and "shimmer" creates a bright shimmer effect. Use this to match your application\'s loading animation style or to differentiate loading states for individual tabs.',
+            },
+            {
+                content: "'pulse' | 'wave' | 'shimmer'",
+                hintText: 'SkeletonVariant',
+            },
+            { content: 'pulse, wave, shimmer' },
+        ],
+        [
+            {
+                content: 'TabsContent.value',
+                hintText:
+                    'The value that matches the corresponding TabsTrigger',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TabsContent.children',
+                hintText: 'The content to display when this tab is active',
+            },
+            { content: 'React.ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the tabs component using the following tokens:
+
+```tsx
+export type TabsState = 'default' | 'hover' | 'active' | 'disabled'
+
+export type TabsTokensType = {
+    gap: CSSObject['gap']
+    backgroundColor: {
+        [key in TabsVariant]: {
+            [key in TabsState]: CSSObject['backgroundColor']
+        }
+    }
+    borderRadius: {
+        [key in TabsSize]: {
+            [key in TabsVariant]: CSSObject['borderRadius']
+        }
+    }
+    padding: {
+        [key in TabsSize]: {
+            [key in TabsVariant]: {
+                top: CSSObject['paddingTop']
+                right: CSSObject['paddingRight']
+                bottom: CSSObject['paddingBottom']
+                left: CSSObject['paddingLeft']
+            }
+        }
+    }
+    border: {
+        [key in TabsVariant]: CSSObject['border']
+    }
+    borderBottom: {
+        [key in TabsVariant]: CSSObject['borderBottom']
+    }
+    container: {
+        backgroundColor: {
+            [key in TabsVariant]: CSSObject['backgroundColor']
+        }
+        borderRadius: {
+            [key in TabsSize]: {
+                [key in TabsVariant]: CSSObject['borderRadius']
+            }
+        }
+        padding: {
+            [key in TabsSize]: {
+                [key in TabsVariant]: {
+                    top: CSSObject['paddingTop']
+                    right: CSSObject['paddingRight']
+                    bottom: CSSObject['paddingBottom']
+                    left: CSSObject['paddingLeft']
+                }
+            }
+        }
+    }
+    trigger: {
+        gap: CSSObject['gap']
+        activeIndicator: {
+            height: CSSObject['height']
+            color: CSSObject['color']
+        }
+        text: {
+            color: {
+                [key in TabsVariant]: {
+                    [key in TabsState]: CSSObject['color']
+                }
+            }
+            fontSize: {
+                [key in TabsSize]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in TabsSize]: CSSObject['fontWeight']
+            }
+        }
+    }
+}
+```

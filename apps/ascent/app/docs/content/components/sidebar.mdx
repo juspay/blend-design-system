@@ -1,0 +1,674 @@
+---
+title: Sidebar
+description: The Sidebar component provides a comprehensive navigation layout with collapsible sidebar, directory navigation, and integrated topbar, featuring merchant selection, keyboard shortcuts, and responsive design for complex application layouts.
+category: components
+tags:
+    - sidebar
+    - component
+    - navigation
+    - layout
+    - directory
+    - collapsible
+    - responsive
+    - application
+RepoFolderName: Sidebar
+StorybookLink: components-sidebar--docs
+---
+
+<SidebarPreview />
+
+## Usage
+
+```tsx
+import { Sidebar } from '@juspay/blend-design-system'
+import { Dashboard, Projects, Settings } from 'lucide-react'
+
+function MyComponent() {
+    const directoryData = [
+        {
+            id: '1',
+            label: 'Dashboard',
+            href: '/dashboard',
+            icon: <Dashboard size={16} />,
+        },
+        {
+            id: '2',
+            label: 'Projects',
+            href: '/projects',
+            icon: <Projects size={16} />,
+            children: [
+                {
+                    id: '2-1',
+                    label: 'Active Projects',
+                    href: '/projects/active',
+                },
+                {
+                    id: '2-2',
+                    label: 'Completed',
+                    href: '/projects/completed',
+                },
+            ],
+        },
+        {
+            id: '3',
+            label: 'Settings',
+            href: '/settings',
+            icon: <Settings size={16} />,
+        },
+    ]
+
+    return (
+        <Sidebar
+            data={directoryData}
+            topbar={
+                <div className="flex items-center justify-between w-full">
+                    <h1 className="text-lg font-semibold">My Application</h1>
+                    <button className="px-3 py-1 bg-gray-100 rounded">
+                        Profile
+                    </button>
+                </div>
+            }
+            footer={
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                    <span className="text-sm">John Doe</span>
+                </div>
+            }
+        >
+            <div className="p-6">
+                <h2 className="text-xl font-bold mb-4">Main Content</h2>
+                <p>Your main application content goes here.</p>
+            </div>
+        </Sidebar>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'Sidebar.children',
+                hintText:
+                    "Required React elements representing the main content area of the application. This is the primary content displayed next to the sidebar. Can contain any custom components, pages, or layouts. The content area adjusts its width based on the sidebar's expanded/collapsed state.",
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React elements for the main application content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.data',
+                hintText:
+                    'Required array of DirectoryData objects that define the navigation structure for the sidebar. Each DirectoryData represents a navigation item or section with its label, href, icon, and optional nested children. The data is rendered as a hierarchical directory navigation menu.',
+            },
+            {
+                content: 'DirectoryData[]',
+                hintText: 'Array of directory navigation data objects',
+            },
+            {
+                content: 'DirectoryData: see DirectoryData props below',
+            },
+        ],
+        [
+            {
+                content: 'Sidebar.topbar',
+                hintText:
+                    'Required React element representing the content for the top navigation bar. This appears above the main content area and typically contains the application title, user actions, notifications, or other top-level navigation elements. The topbar can auto-hide on scroll if enableTopbarAutoHide is true.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element for the top navigation bar content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.leftPanel',
+                hintText:
+                    'Optional LeftPanelInfo object that configures a secondary sidebar panel (tenant/merchant selection panel). When provided, displays a left panel with selectable items. The panel appears when the sidebar is expanded or hovered. Useful for multi-tenant applications or context switching. Each LeftPanelInfo contains: items (required array), selected (required string), and onSelect (required callback). Items visibility is controlled by the showInPanel property on each item.',
+            },
+            {
+                content: 'LeftPanelInfo',
+                hintText:
+                    'Object with left panel configuration properties (see LeftPanelInfo below)',
+            },
+            {
+                content: 'LeftPanelInfo: see LeftPanelInfo props below',
+            },
+        ],
+        [
+            {
+                content: 'Sidebar.footer',
+                hintText:
+                    'Optional React element displayed at the bottom of the sidebar. Typically used for user profile information, settings links, or logout buttons. The footer remains visible when the sidebar is expanded and is hidden when collapsed. Useful for persistent user actions or information.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed in the sidebar footer',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.sidebarTopSlot',
+                hintText:
+                    'Optional React element displayed in the sidebar header area, above the directory navigation. Can be used for branding, logos, search bars, or other header content. The slot is visible when the sidebar is expanded or hovered. Useful for customizing the sidebar header appearance.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed in the sidebar header area',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.sidebarCollapseKey',
+                hintText:
+                    'Optional keyboard shortcut key string that toggles the sidebar collapse/expand state. When users press this key (or key combination), the sidebar toggles. Should be a single character or key identifier. Useful for power users who prefer keyboard navigation. Defaults to "/".',
+            },
+            {
+                content: 'string',
+                hintText: 'Keyboard key string for toggling sidebar collapse',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.merchantInfo',
+                hintText:
+                    'Optional MerchantInfo object that displays merchant/tenant selection information in the topbar. When provided, shows a merchant selector in the topbar header. Useful for multi-tenant applications where users need to switch between different merchants or organizations. Each MerchantInfo contains merchant selection configuration.',
+            },
+            {
+                content: 'MerchantInfo',
+                hintText:
+                    'Object with merchant selection configuration properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.rightActions',
+                hintText:
+                    'Optional React element displayed on the right side of the topbar. Typically used for action buttons, user menu, notifications, or other right-aligned content. The actions appear in the topbar header alongside the merchant info (if provided). Useful for global application actions.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element displayed on the right side of the topbar',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.enableTopbarAutoHide',
+                hintText:
+                    'When true, automatically hides the topbar when the user scrolls down and shows it when scrolling up. Provides more screen space for content while keeping the topbar accessible. Useful for content-heavy pages. The topbar reappears on scroll up. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables auto-hide on scroll, false keeps topbar always visible',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.isExpanded',
+                hintText:
+                    'Optional boolean that controls whether the sidebar is expanded (controlled mode). When true, the sidebar is fully expanded showing all navigation items. When false, the sidebar is collapsed showing only icons. Use this with onExpandedChange for controlled state management. If not provided, the sidebar manages its own state.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true expands sidebar, false collapses sidebar',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.onExpandedChange',
+                hintText:
+                    'Optional callback function invoked when the sidebar expand/collapse state should change. Receives a boolean indicating the new expanded state. Required when using controlled mode (providing isExpanded prop). Use this to update your isExpanded state. Also called in uncontrolled mode for state change notifications.',
+            },
+            {
+                content: '(isExpanded: boolean) => void',
+                hintText:
+                    'Function called with new expanded state when sidebar state changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.defaultIsExpanded',
+                hintText:
+                    "Optional boolean that sets the initial expanded state for uncontrolled usage. When provided, determines the sidebar's initial state. When true, the sidebar starts expanded. When false, it starts collapsed. Only used when isExpanded is not provided. Defaults to true.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true sets initial expanded state, false sets initial collapsed state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.isTopbarVisible',
+                hintText:
+                    'Optional boolean that controls whether the topbar is visible (controlled mode). When true, the topbar is shown. When false, the topbar is hidden. Use this with onTopbarVisibilityChange for controlled state management. When combined with enableTopbarAutoHide, this prop takes precedence and allows parent components to manage topbar visibility state.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows topbar, false hides topbar',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.onTopbarVisibilityChange',
+                hintText:
+                    'Optional callback function invoked when the topbar visibility should change. Receives a boolean indicating the new visibility state. Required when using controlled mode (providing isTopbarVisible prop). Use this to update your isTopbarVisible state. Also called in uncontrolled mode for visibility change notifications when enableTopbarAutoHide triggers auto-hide behavior.',
+            },
+            {
+                content: '(isVisible: boolean) => void',
+                hintText:
+                    'Function called with new visibility state when topbar visibility changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.defaultIsTopbarVisible',
+                hintText:
+                    'Optional boolean that sets the initial topbar visibility for uncontrolled usage. When provided, determines whether the topbar is initially visible. When true, the topbar starts visible. When false, it starts hidden. Only used when isTopbarVisible is not provided. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true sets initial visible state, false sets initial hidden state',
+            },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'Sidebar.disableIntermediateState',
+                hintText:
+                    'When true, disables the intermediate state that appears on hover. When false or undefined, hovering over the collapsed sidebar will temporarily show it in an intermediate/expanded state. The intermediate state allows users to see the sidebar content without fully expanding it. When disabled, the sidebar can only be expanded by clicking the toggle button or using the keyboard shortcut. Useful for preventing accidental expansion on hover or when you want more explicit user control over sidebar visibility. Defaults to false (intermediate state enabled).',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables intermediate state on hover, false enables it',
+            },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'Sidebar.iconOnlyMode',
+                hintText:
+                    'When true, shows only icons (52px width) with tooltips on hover. In this mode: directory items show only their icons, tooltips appear on hover showing the item label, sections render as horizontal dividers, merchant switcher moves to topbar, and intermediate/hover state expansion is disabled. The toggle button appears at the top of the icon-only panel. Clicking the toggle button expands to full sidebar view (or hides the sidebar if hideOnIconOnlyToggle is true). Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables icon-only mode (52px width), false uses normal sidebar',
+            },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'Sidebar.hideOnIconOnlyToggle',
+                hintText:
+                    'When true, clicking the toggle button in icon-only mode will completely hide the sidebar. When false, clicking the toggle button will expand to full sidebar view with tenant panel (if provided) and directory. Only applies when iconOnlyMode is true. Defaults to false (expands to full sidebar).',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true hides sidebar on toggle, false expands to full sidebar',
+            },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'Sidebar.showPrimaryActionButton',
+                hintText:
+                    'Optional boolean that controls whether to show a primary action button in the mobile navigation. When true, displays a primary action button (typically for CTA actions like "Create", "Add", etc.) in the mobile navigation drawer. The button appearance and behavior are controlled by primaryActionButtonProps. Useful for providing quick access to primary actions on mobile devices.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows primary action button in mobile nav, false hides it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.primaryActionButtonProps',
+                hintText:
+                    'Optional object containing HTML button attributes for the primary action button in mobile navigation. Extends standard button props (onClick, disabled, className, etc.) except for type. Use this to configure the primary action button behavior, styling, and event handlers. Only applies when showPrimaryActionButton is true. Common use cases include onClick for navigation, className for styling, and children for button content.',
+            },
+            {
+                content:
+                    'Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "type">',
+                hintText:
+                    'Standard HTML button attributes excluding type property',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'DirectoryData.id',
+                hintText:
+                    'Required unique identifier string for the navigation item. Used internally for tracking selection, navigation, and rendering. Must be unique within the data array. The ID is used to determine which navigation item is active or selected.',
+            },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for the navigation item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'DirectoryData.label',
+                hintText:
+                    'Required display text string for the navigation item. This is the text users see in the sidebar navigation. Should be concise and descriptive, clearly identifying the navigation destination (e.g., "Dashboard", "Projects", "Settings").',
+            },
+            {
+                content: 'string',
+                hintText: 'Display text for the navigation item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'DirectoryData.href',
+                hintText:
+                    'Required URL or route string for navigation. When the navigation item is clicked, the application navigates to this URL. Can be an absolute URL, relative path, or route identifier depending on your routing setup.',
+            },
+            {
+                content: 'string',
+                hintText: 'URL or route for navigation',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'DirectoryData.icon',
+                hintText:
+                    'Optional React element (typically an icon from lucide-react or other icon libraries) displayed next to the navigation item label. Icons help users quickly identify navigation items. The icon is visible both when expanded and collapsed, making it useful for collapsed sidebar state.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed with the navigation item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'DirectoryData.children',
+                hintText:
+                    'Optional array of DirectoryData objects that create nested navigation items (sub-menu). When provided, the navigation item becomes expandable and shows child items when clicked. Supports nested navigation for hierarchical structures. The children appear indented below the parent item.',
+            },
+            {
+                content: 'DirectoryData[]',
+                hintText:
+                    'Recursive array of DirectoryData objects for nested navigation',
+            },
+            {
+                content: 'Recursive: DirectoryData[]',
+            },
+        ],
+        [
+            {
+                content: 'LeftPanelInfo.items',
+                hintText:
+                    'Required array of LeftPanelItem objects that define the selectable items in the left panel. Each item represents an option (typically a merchant, tenant, or context) that users can select. The items are displayed as a vertical list with icons and labels.',
+            },
+            {
+                content: 'LeftPanelItem[]',
+                hintText:
+                    'Array of panel item objects defining selectable options',
+            },
+            {
+                content: 'LeftPanelItem: see LeftPanelItem props below',
+            },
+        ],
+        [
+            {
+                content: 'LeftPanelInfo.selected',
+                hintText:
+                    'Required string representing the currently selected item identifier. Should match the value prop of one of the items in the items array. The selected item is highlighted visually. Use this for controlled state management of the left panel selection.',
+            },
+            {
+                content: 'string',
+                hintText: 'Value string of the currently selected panel item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelInfo.onSelect',
+                hintText:
+                    "Required callback function invoked when a panel item is selected. Receives the selected item's value string as a parameter. Use this to update your selected state and perform any necessary actions when the selection changes (e.g., switching context, reloading data).",
+            },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with selected item value when selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelInfo.tenantSlot1',
+                hintText:
+                    'Optional React element displayed as the first slot above the tenant footer. The slot is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding custom actions or controls that should be positioned above the footer, such as help buttons, notifications, or quick actions.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed as first tenant slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelInfo.tenantSlot2',
+                hintText:
+                    'Optional React element displayed as the second slot above the tenant footer (and below tenantSlot1 if provided). The slot is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding secondary actions or controls above the footer, providing additional functionality alongside tenantSlot1.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed as second tenant slot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelInfo.tenantFooter',
+                hintText:
+                    'Optional React element displayed at the bottom of the tenant panel. The footer is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding actions or information that should always be accessible at the bottom of the tenant panel, such as settings, help, or additional options.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'React element displayed in the tenant panel footer',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelItem.label',
+                hintText:
+                    'Required display text string for the panel item. This is the text users see for each selectable option. Should be concise and descriptive, clearly identifying the option (e.g., "Merchant A", "Tenant 1", "Organization X").',
+            },
+            {
+                content: 'string',
+                hintText: 'Display text for the panel item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelItem.icon',
+                hintText:
+                    'Required React element (typically an icon from lucide-react or other icon libraries) displayed next to the panel item label. Icons help users quickly identify different options. The icon is always visible and provides visual differentiation between items.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed with the panel item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelItem.value',
+                hintText:
+                    'Optional custom value string for selection. When provided, this value is used for selection tracking instead of the label. If not provided, the label is used as the value. Useful when you need a different identifier than the display label (e.g., IDs, codes).',
+            },
+            {
+                content: 'string',
+                hintText: 'Custom value identifier for the panel item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'LeftPanelItem.showInPanel',
+                hintText:
+                    'Optional boolean that controls whether the item appears directly in the panel or in the overflow menu (three-dot menu). When true, the item is displayed in the main panel. When false or undefined (default), the item appears only in the overflow menu. The selected item is always visible in the panel, regardless of this setting. Useful for managing panel clutter by relegating less frequently used options to the overflow menu.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows item in panel, false/undefined shows in overflow menu',
+            },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'Sidebar.onSidebarStateChange',
+                hintText:
+                    'Optional callback function invoked whenever the sidebar layout state changes. Receives the current sidebar layout state, which can be "collapsed", "expanded", or "intermediate". Useful for tracking sidebar behavior, syncing layout changes with parent components, analytics, or adjusting surrounding content based on sidebar state.',
+            },
+            {
+                content:
+                    '(state: "collapsed" | "expanded" | "intermediate") => void',
+                hintText:
+                    'Function called with the current sidebar layout state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.activeItem',
+                hintText:
+                    'Optional string value representing the currently active/selected navigation item ID. When provided, the component works in controlled mode, highlighting the item with this ID in the directory navigation. Use this with onActiveItemChange for controlled state management. If not provided, the component manages active state internally based on defaultActiveItem.',
+            },
+            {
+                content: 'string | null',
+                hintText: 'ID of the currently active directory item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.onActiveItemChange',
+                hintText:
+                    'Optional callback function invoked when the active navigation item changes. Receives the ID of the newly selected item as a parameter. Required when using controlled mode (providing activeItem prop). Use this to update your activeItem state when users click on navigation items.',
+            },
+            {
+                content: '(item: string | null) => void',
+                hintText:
+                    'Function called with new active item ID when selection changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Sidebar.defaultActiveItem',
+                hintText:
+                    'Optional string value that sets the initial active navigation item for uncontrolled usage. When provided, the item with this ID is initially highlighted. Only used when activeItem is not provided. If not provided, no item is initially active.',
+            },
+            {
+                content: 'string | null',
+                hintText: 'Initial active item ID for uncontrolled mode',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Sidebar component using the following tokens:
+
+```tsx
+export type SidebarTokenType = {
+    maxWidth: {
+        withLeftPanel: CSSObject['maxWidth']
+        withoutLeftPanel: CSSObject['maxWidth']
+        iconOnly: CSSObject['maxWidth']
+    }
+    backgroundColor: CSSObject['backgroundColor']
+    borderRight: CSSObject['border']
+    leftPanel: {
+        width: CSSObject['width']
+        backgroundColor: CSSObject['backgroundColor']
+        borderRight: CSSObject['border']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        gap: CSSObject['gap']
+        item: {
+            width: CSSObject['width']
+            borderRadius: CSSObject['borderTopLeftRadius']
+            border: {
+                [key in SidebarState]: CSSObject['border']
+            }
+            backgroundColor: {
+                [key in SidebarState]: CSSObject['backgroundColor']
+            }
+        }
+    }
+    header: {
+        backgroundColor: CSSObject['backgroundColor']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        gap: CSSObject['gap']
+        borderBottom: CSSObject['border']
+        toggleButton: {
+            backgroundColor: {
+                [key in SidebarState]: CSSObject['backgroundColor']
+            }
+        }
+    }
+    directory: {
+        gap: CSSObject['gap']
+        paddingX: CSSObject['padding']
+        paddingY: CSSObject['padding']
+    }
+    footer: {
+        backgroundColor: CSSObject['backgroundColor']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        borderTop: CSSObject['border']
+    }
+}
+
+export type ResponsiveSidebarTokens = {
+    [key in keyof BreakpointType]: SidebarTokenType
+}
+export type SidebarStateChangeType = 'collapsed' | 'expanded' | 'intermediate'
+```

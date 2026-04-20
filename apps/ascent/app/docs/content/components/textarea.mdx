@@ -1,0 +1,285 @@
+---
+title: TextArea
+description: The TextArea component provides a multi-line text input field with labels, validation, error states, and responsive floating label behavior. It supports customizable rows, resize options, and comprehensive form integration.
+category: components
+tags:
+    - textarea
+    - component
+    - input
+    - multiline
+    - form
+    - textfield
+    - description
+    - comment
+    - message
+    - content
+RepoFolderName: TextArea
+StorybookLink: components-textarea--docs
+---
+
+<TextareaPreview />
+
+## Usage
+
+```tsx
+import { TextArea } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [description, setDescription] = useState('')
+
+    const handleDescriptionChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement>
+    ) => {
+        setDescription(e.target.value)
+    }
+
+    return (
+        <TextArea
+            label="Description"
+            placeholder="Enter your description..."
+            value={description}
+            onChange={handleDescriptionChange}
+            rows={4}
+            hintText="Provide a detailed description"
+            required
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'TextArea.value',
+                hintText: 'Current textarea value as a string',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.placeholder',
+                hintText: 'Placeholder text for the textarea',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.onChange',
+                hintText: 'Callback when textarea value changes',
+            },
+            {
+                content: '(e: React.ChangeEvent<HTMLTextAreaElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.disabled',
+                hintText: 'Whether the textarea is disabled',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.autoFocus',
+                hintText: 'Whether to auto-focus the textarea on mount',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.onFocus',
+                hintText: 'Callback when textarea receives focus',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLTextAreaElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.onBlur',
+                hintText: 'Callback when textarea loses focus',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLTextAreaElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.rows',
+                hintText: 'Number of visible text lines',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.cols',
+                hintText: 'Number of visible character columns',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.label',
+                hintText: 'Primary label for the textarea',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.sublabel',
+                hintText: 'Secondary label or description',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.hintText',
+                hintText: 'Helper text displayed below the textarea',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.helpIconHintText',
+                hintText: 'Tooltip text for the help icon',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.required',
+                hintText: 'Whether the textarea is required',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.error',
+                hintText: 'Whether the textarea is in error state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.errorMessage',
+                hintText: 'Error message to display when in error state',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.resize',
+                hintText: 'Resize behavior for the textarea',
+            },
+            {
+                content:
+                    "'none' | 'both' | 'horizontal' | 'vertical' | 'block' | 'inline'",
+                hintText: 'string',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextArea.wrap',
+                hintText: 'Text wrapping behavior',
+            },
+            { content: "CSSObject['whiteSpace']", hintText: 'string' },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the TextArea component using the following tokens:
+
+```tsx
+export type TextAreaTokensType = {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: CSSObject['boxShadow']
+        border: {
+            [key in TextAreaState]: CSSObject['border']
+        }
+        color: {
+            [key in TextAreaState]: CSSObject['color']
+        }
+        backgroundColor: {
+            [key in TextAreaState]: CSSObject['backgroundColor']
+        }
+    }
+}
+
+export type ResponsiveTextAreaTokens = {
+    [key in keyof BreakpointType]: TextAreaTokensType
+}
+
+export type TextAreaState = 'default' | 'hover' | 'focus' | 'error' | 'disabled'
+```

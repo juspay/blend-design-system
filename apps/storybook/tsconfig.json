@@ -1,0 +1,17 @@
+{
+    "extends": "../../packages/typescript-config/react-app.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "target": "ES2022",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "paths": {
+            "@juspay/blend-design-system": ["../../packages/blend/lib/main.ts"],
+            "@juspay/blend-design-system/*": ["../../packages/blend/lib/*"]
+        }
+    },
+    "include": ["stories/**/*", ".storybook/**/*"],
+    "exclude": ["node_modules", "storybook-static"]
+}

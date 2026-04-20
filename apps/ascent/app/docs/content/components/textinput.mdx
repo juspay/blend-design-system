@@ -1,0 +1,319 @@
+---
+title: TextInput
+description: The TextInput component provides a flexible and accessible text input field with support for labels, hints, error states, slots, and responsive floating labels on mobile devices.
+category: components
+tags:
+    - textinput
+    - component
+    - input
+    - form
+    - text
+    - field
+    - validation
+    - responsive
+RepoFolderName: TextInput
+StorybookLink: components-textinput--docs
+---
+
+<TextInputPreview />
+
+## Usage
+
+```tsx
+import { TextInput } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [value, setValue] = useState('')
+
+    return (
+        <TextInput
+            label="Email Address"
+            placeholder="Enter your email"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            hintText="We'll never share your email"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'TextInput.value',
+                hintText:
+                    'Required string representing the current value of the input field. Use this for controlled input where the value is managed by your component state. The value should be updated via the onChange callback. For uncontrolled usage, omit this prop and use defaultValue instead.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.onChange',
+                hintText:
+                    'Required callback function invoked when the input value changes. Receives a React ChangeEvent with the input element. Use this to update your state when using controlled mode. The function is called on every keystroke, paste, or programmatic change. The event target value contains the new input value.',
+            },
+            {
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.label',
+                hintText:
+                    'Optional primary label string displayed above the input field. Provides context and description of what the input is for (e.g., "Email Address", "Password", "Username"). The label is styled prominently and supports floating label behavior on mobile devices. Should be concise and descriptive.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.sublabel',
+                hintText:
+                    'Optional secondary label string displayed below the primary label. Provides additional context, explanation, or clarification about the input (e.g., "Required for account creation", "Must be at least 8 characters"). Styled with smaller, lighter text than the primary label.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.placeholder',
+                hintText:
+                    'Optional placeholder string shown when the input is empty. Provides a hint about what to enter (e.g., "Enter your email", "Type your message"). The placeholder disappears when the user starts typing or when the input has a value. On mobile devices with floating labels, the placeholder may be hidden when the input is focused. Defaults to "Enter" if not provided.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.size',
+                hintText:
+                    'Optional TextInputSize enum value that determines the size variant affecting dimensions, padding, font size, and border radius. SMALL creates a compact input, MEDIUM creates a standard size, LARGE creates a larger input. The size affects the overall input dimensions and text size. Defaults to MEDIUM.',
+            },
+            { content: 'TextInputSize', hintText: 'enum' },
+            { content: 'SMALL, MEDIUM, LARGE' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.error',
+                hintText:
+                    'When true, displays the input in an error state with red border and error styling. Useful for form validation feedback when the input value is invalid or missing (for required inputs). When true, the errorMessage (if provided) is displayed below the input. Defaults to false.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.errorMessage',
+                hintText:
+                    'Optional error message string displayed below the input when error is true. Provides specific feedback about what went wrong (e.g., "Email is required", "Password must be at least 8 characters"). The error message is styled with red text and appears below the input, replacing the hintText if both are provided.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.hintText',
+                hintText:
+                    'Optional helper text string displayed below the input. Provides guidance, instructions, or additional context about the input (e.g., "We\'ll never share your email", "Minimum 8 characters"). The hint text is styled with lighter text and appears below the input. It is hidden when error is true and errorMessage is provided.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.helpIconHintText',
+                hintText:
+                    'Optional tooltip text string displayed when hovering over the help icon. The help icon appears next to the label when this prop is provided. Useful for providing additional context or explanation about the input field without cluttering the interface. The tooltip appears on hover or focus of the help icon.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.disabled',
+                hintText:
+                    "When true, disables the input, making it non-interactive and visually muted. Users cannot type, select, or interact with the input. Disabled inputs show reduced opacity and cannot receive focus. Useful for preventing interaction when prerequisites aren't met or during form submission. Defaults to false.",
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.required',
+                hintText:
+                    'When true, marks the input as required and displays an asterisk (*) next to the label. Useful for form validation. Required inputs must have a value before form submission. The required indicator is visually distinct and helps users understand which fields are mandatory. Defaults to false.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.leftSlot',
+                hintText:
+                    'Optional React element displayed on the left side of the input field. Can be used for icons, badges, or other content that appears before the input text (e.g., search icon, currency symbol, prefix text). The slot maintains proper spacing and alignment with the input. Useful for adding visual context or additional information.',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.rightSlot',
+                hintText:
+                    'Optional React element displayed on the right side of the input field. Can be used for icons, badges, action buttons, or other content that appears after the input text (e.g., clear button, visibility toggle, suffix text). The slot maintains proper spacing and alignment with the input. Useful for adding actions or visual context.',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.name',
+                hintText:
+                    'Optional name attribute string for the input element. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful when inputs are part of a form that needs to be submitted or when using form libraries. The name is included in form data when the form is submitted.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.onFocus',
+                hintText:
+                    'Optional callback function invoked when the input receives focus. Receives a React FocusEvent with the input element. Use this to perform actions when the user focuses the input (e.g., show additional information, highlight related fields, track analytics). The function is called when the user clicks or tabs into the input.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.onBlur',
+                hintText:
+                    'Optional callback function invoked when the input loses focus. Receives a React FocusEvent with the input element. Use this to perform actions when the user leaves the input (e.g., validate input, save draft, track analytics). The function is called when the user clicks or tabs away from the input.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.cursor',
+                hintText:
+                    'Optional CSS cursor style string that determines the cursor appearance when hovering over the input. TEXT shows a text selection cursor, POINTER shows a pointer hand cursor, DEFAULT shows the default cursor, NOT_ALLOWED shows a disabled cursor. Useful for indicating interactivity or disabled state. Defaults to "text".',
+            },
+            {
+                content: "'text' | 'pointer' | 'default' | 'not-allowed'",
+                hintText: 'union type',
+            },
+            { content: 'text, pointer, default, not-allowed' },
+        ],
+        [
+            {
+                content: 'TextInput.passwordToggle',
+                hintText:
+                    'When true, displays a password visibility toggle button (eye icon) that allows users to show or hide the password text. The button includes proper accessibility attributes (aria-label, aria-pressed) and keyboard support. Useful for password inputs where users may want to verify their entry. Defaults to false.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.textInputGroupPosition',
+                hintText:
+                    'Optional TextInputGroupPosition enum value that determines the border radius styling when this input is part of a text input group. CENTER removes border radius on left and right sides, LEFT removes border radius on the right side only, RIGHT removes border radius on the left side only. Useful for creating connected input groups.',
+            },
+            { content: 'TextInputGroupPosition', hintText: 'enum' },
+            { content: 'CENTER, LEFT, RIGHT' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the TextInput component using the following tokens:
+
+```tsx
+export type TextInputTokensType = {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in TextInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TextInputSize]: CSSObject['fontWeight']
+        }
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+        borderRadius: {
+            [key in TextInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in TextInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in TextInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in TextInputState]: CSSObject['border']
+        }
+        backgroundColor: {
+            [key in TextInputState]: CSSObject['backgroundColor']
+        }
+    }
+}
+
+export type ResponsiveTextInputTokens = {
+    [key in keyof BreakpointType]: TextInputTokensType
+}
+```

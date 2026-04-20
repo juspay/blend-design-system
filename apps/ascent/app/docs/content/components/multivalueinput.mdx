@@ -1,0 +1,410 @@
+---
+title: MultiValueInput
+description: The MultiValueInput component allows users to input multiple values as tags in a single field, perfect for skills, keywords, email addresses, and other multi-value data entry scenarios with intuitive keyboard interactions.
+category: components
+tags:
+    - multivalueinput
+    - component
+    - input
+    - tags
+    - multi-value
+    - chips
+    - keywords
+    - skills
+    - form
+    - interactive
+RepoFolderName: MultiValueInput
+StorybookLink: components-multivalueinput--docs
+---
+
+<MultiValueInputPreview />
+
+## Usage
+
+```tsx
+import { MultiValueInput } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [skills, setSkills] = useState(['JavaScript', 'React'])
+
+    const handleTagAdd = (tag: string) => {
+        setSkills((prev) => [...prev, tag])
+    }
+
+    const handleTagRemove = (tagToRemove: string) => {
+        setSkills((prev) => prev.filter((tag) => tag !== tagToRemove))
+    }
+
+    return (
+        <MultiValueInput
+            label="Technical Skills"
+            placeholder="Type a skill and press Enter"
+            tags={skills}
+            onTagAdd={handleTagAdd}
+            onTagRemove={handleTagRemove}
+            hintText="Add your technical skills"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'MultiValueInput.tags',
+                hintText:
+                    'Optional array of strings representing the current tag values displayed in the input field. Each string becomes a removable tag/chip. The array is controlled by your component state and updates when tags are added or removed. Defaults to empty array if not provided.',
+            },
+            {
+                content: 'string[]',
+                hintText: 'Array of tag value strings displayed as chips',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.value',
+                hintText:
+                    'Optional controlled string value for the input field itself (separate from the tags array). Use with onChange to fully control the input value. Useful for implementing custom validation logic or formatting before tags are added. Defaults to empty string if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Controlled value of the text input field (not the tags)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onChange',
+                hintText:
+                    'Optional callback function invoked when the input value changes (before a tag is added). Receives the new input value string as a parameter. Use with value prop for full control of the input field. Useful for custom validation or formatting.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText:
+                    'Function called with the new input value when it changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onTagAdd',
+                hintText:
+                    'Optional callback function invoked when a new tag is added. Receives the new tag string as a parameter. Use this to update your tags state array. The function is called when the user presses Enter or submits the input value.',
+            },
+            {
+                content: '(tag: string) => void',
+                hintText:
+                    'Function called with the new tag string when a tag is added',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onTagRemove',
+                hintText:
+                    'Optional callback function invoked when a tag is removed. Receives the tag string to remove as a parameter. Use this to update your tags state array by filtering out the removed tag. The function is called when the user clicks the X button on a tag.',
+            },
+            {
+                content: '(tag: string) => void',
+                hintText:
+                    'Function called with the tag string when a tag is removed',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.required',
+                hintText:
+                    'When true, marks the input field as required and displays an asterisk (*) next to the label. Useful for form validation. Required fields should have validation logic to ensure tags are provided. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true marks field as required, false allows optional input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.label',
+                hintText:
+                    'Optional primary label string displayed above the input field. Provides context and description of what users should input. Should be concise and descriptive. The label is styled prominently and appears above the sublabel (if provided).',
+            },
+            {
+                content: 'string',
+                hintText: 'Primary label text displayed above the input field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.sublabel',
+                hintText:
+                    "Optional secondary label string displayed below the main label. Provides additional context, instructions, or clarification about the input field's purpose. Styled with smaller, lighter text than the label. Useful for explaining complex input requirements.",
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Secondary descriptive text shown below the main label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.placeholder',
+                hintText:
+                    'Optional placeholder text string displayed in the input field when it\'s empty. Provides guidance to users about what they can input. Should be concise and action-oriented (e.g., "Type a skill and press Enter").',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder text shown when input is empty',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.size',
+                hintText:
+                    'Optional TextInputSize enum value that determines the size variant of the input field. Affects padding, height, font size, and overall dimensions. Common values include SMALL, MEDIUM, LARGE. Defaults to MEDIUM.',
+            },
+            {
+                content: 'TextInputSize',
+                hintText:
+                    'Enum that determines the size variant of the input field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.error',
+                hintText:
+                    'When true, displays the input field in an error state with red border and error styling. Should be used with errorMessage to provide feedback. Useful for form validation. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.errorMessage',
+                hintText:
+                    'Optional error message string displayed below the input field when error is true. Should clearly explain what went wrong and how to fix it. Styled with error colors. Useful for form validation feedback.',
+            },
+            {
+                content: 'string',
+                hintText: 'Error message text displayed when error is true',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.hintText',
+                hintText:
+                    'Optional helper text string displayed below the input field. Provides guidance, examples, or additional information about the input. Styled with smaller, lighter text. Useful for clarifying complex input requirements or providing examples.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper text shown below the input field',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.helpIconHintText',
+                hintText:
+                    'Optional tooltip text string displayed when hovering over the help icon next to the label. Provides additional context or guidance about the input field. Should be concise and helpful. If not provided, no help icon is shown.',
+            },
+            {
+                content: 'string',
+                hintText: 'Tooltip text shown when hovering over the help icon',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.disabled',
+                hintText:
+                    "When true, disables the input field, making it non-interactive and visually muted. Users cannot add tags, remove tags, or type in the input. Disabled fields show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables input field, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.name',
+                hintText:
+                    'Optional name attribute string for the input field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Name attribute for form identification and submission',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.id',
+                hintText:
+                    'Optional unique identifier string for the input element. Used for accessibility (linking labels, hints, and error messages via aria-describedby) and form handling. If not provided, a unique ID is automatically generated. Useful when you need explicit control over the ID for testing or custom accessibility scenarios.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Unique identifier for the input element for accessibility',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.leftSlot',
+                hintText:
+                    'Optional React node displayed on the left side of the input field. Typically used for icons like Search, User, or Mail that provide visual context about the input type. The slot is positioned before the tags and input.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Icon or content displayed on the left side of the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.rightSlot',
+                hintText:
+                    'Optional React node displayed on the right side of the input field. Typically used for action icons like Plus, Clear, or Dropdown indicators. Positioned absolutely at the right edge of the input container.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Icon or content displayed on the right side of the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onFocus',
+                hintText:
+                    'Optional callback function invoked when the input field receives focus. Receives the focus event as a parameter. Useful for triggering side effects, analytics, or custom focus behaviors.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'Function called when the input receives focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiValueInput.onBlur',
+                hintText:
+                    'Optional callback function invoked when the input field loses focus. Receives the blur event as a parameter. Useful for validation, saving state, or triggering side effects on focus loss.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'Function called when the input loses focus',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the MultiValueInput component using the following tokens:
+
+```tsx
+export type MultiValueInputTokensType = {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in MultiValueInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in MultiValueInputSize]: CSSObject['fontWeight']
+        }
+        gap: CSSObject['gap']
+        borderRadius?: CSSObject['borderRadius']
+        boxShadow: {
+            [key in MultiValueInputState]: CSSObject['boxShadow']
+        }
+        padding: {
+            x: {
+                [key in MultiValueInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in MultiValueInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in MultiValueInputState]: CSSObject['border']
+        }
+        color: {
+            [key in MultiValueInputState]: CSSObject['color']
+        }
+        backgroundColor: {
+            [key in MultiValueInputState]: CSSObject['backgroundColor']
+        }
+    }
+}
+
+export type ResponsiveMultiValueInputTokens = {
+    [key in keyof BreakpointType]: MultiValueInputTokensType
+}
+
+export type MultiValueInputSize = 'sm' | 'md' | 'lg'
+export type MultiValueInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
+```

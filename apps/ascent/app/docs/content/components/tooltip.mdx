@@ -1,0 +1,211 @@
+---
+title: Tooltip
+description: The Tooltip component displays additional information when users hover over or focus on elements, providing contextual help and explanations without cluttering the interface.
+category: components
+tags:
+    - tooltip
+    - component
+    - help
+    - hover
+    - contextual
+RepoFolderName: Tooltip
+StorybookLink: components-tooltip-tooltip--docs
+---
+
+<TooltipPreview />
+
+## Usage
+
+```tsx
+import {
+    Tooltip,
+    TooltipSide,
+    TooltipAlign,
+    TooltipSize,
+    TooltipSlotDirection,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <Tooltip
+            content="This is a helpful tooltip"
+            side={TooltipSide.TOP}
+            align={TooltipAlign.CENTER}
+            size={TooltipSize.SMALL}
+            showArrow={true}
+            delayDuration={300}
+        >
+            <button>Hover me</button>
+        </Tooltip>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'Tooltip.children',
+                hintText:
+                    'The trigger element that will show the tooltip on hover/focus',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tooltip.content',
+                hintText: 'The content to display in the tooltip',
+            },
+            { content: 'ReactNode | string', hintText: 'React node or string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tooltip.side',
+                hintText:
+                    'The side of the trigger element where the tooltip appears',
+            },
+            { content: 'TooltipSide', hintText: 'enum' },
+            { content: 'TOP, RIGHT, LEFT, BOTTOM' },
+        ],
+        [
+            {
+                content: 'Tooltip.align',
+                hintText:
+                    'The alignment of the tooltip relative to the trigger element',
+            },
+            { content: 'TooltipAlign', hintText: 'enum' },
+            { content: 'START, END, CENTER' },
+        ],
+        [
+            {
+                content: 'Tooltip.showArrow',
+                hintText:
+                    'Whether to show the arrow pointing to the trigger element',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tooltip.size',
+                hintText: 'The size variant of the tooltip',
+            },
+            { content: 'TooltipSize', hintText: 'enum' },
+            { content: 'SMALL, LARGE' },
+        ],
+        [
+            {
+                content: 'Tooltip.slot',
+                hintText:
+                    'Optional icon or element to display alongside the tooltip content',
+            },
+            { content: 'ReactNode', hintText: 'React node' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tooltip.slotDirection',
+                hintText:
+                    'The position of the slot relative to the tooltip content',
+            },
+            { content: 'TooltipSlotDirection', hintText: 'enum' },
+            { content: 'LEFT, RIGHT' },
+        ],
+        [
+            {
+                content: 'Tooltip.delayDuration',
+                hintText: 'Delay in milliseconds before showing the tooltip',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tooltip.offset',
+                hintText:
+                    'Distance between the tooltip and the trigger element',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tooltip.open',
+                hintText: 'Controlled state for showing/hiding the tooltip',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tooltip.maxWidth',
+                hintText: 'Maximum width of the tooltip',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tooltip.fullWidth',
+                hintText:
+                    'Whether the trigger wrapper should take full width (useful for menu items)',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'Tooltip.disableInteractive',
+                hintText:
+                    'If true, the tooltip will close when the cursor moves away from the trigger element, even if hovering over the tooltip itself. This prevents the tooltip from blocking interaction with elements below it.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: 'false' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Tooltip component using the following tokens:
+
+```tsx
+export type TooltipTokensType = {
+    background: CSSObject['backgroundColor']
+    borderRadius: {
+        [key in TooltipSize]: CSSObject['borderRadius']
+    }
+    maxWidth: {
+        [key in TooltipSize]: CSSObject['maxWidth']
+    }
+    padding: {
+        [key in TooltipSize]: CSSObject['padding']
+    }
+    gap: {
+        [key in TooltipSize]: CSSObject['gap']
+    }
+    text: {
+        color: CSSObject['color']
+        fontWeight: {
+            [key in TooltipSize]: CSSObject['fontWeight']
+        }
+        fontSize: {
+            [key in TooltipSize]: CSSObject['fontSize']
+        }
+        lineHeight: {
+            [key in TooltipSize]: CSSObject['lineHeight']
+        }
+    }
+}
+
+export type ResponsiveTooltipTokens = {
+    [key in keyof BreakpointType]: TooltipTokensType
+}
+```

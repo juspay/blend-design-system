@@ -1,0 +1,95 @@
+---
+title: Button Group
+description: The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning for cohesive action interfaces.
+category: components
+tags:
+    - button-group
+    - component
+    - layout
+    - container
+    - actions
+RepoFolderName: ButtonGroup
+StorybookLink: components-button-buttonv2--docs
+---
+
+<ButtonGroupPreview />
+
+## Usage
+
+```tsx
+import {
+    ButtonGroup,
+    Button,
+    ButtonType,
+    ButtonSize,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <ButtonGroup stacked={false}>
+            <Button
+                text="Cancel"
+                buttonType={ButtonType.SECONDARY}
+                size={ButtonSize.MEDIUM}
+                onClick={() => console.log('Cancel clicked')}
+            />
+            <Button
+                text="Save Changes"
+                buttonType={ButtonType.PRIMARY}
+                size={ButtonSize.MEDIUM}
+                onClick={() => console.log('Save clicked')}
+            />
+        </ButtonGroup>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'stacked',
+                hintText:
+                    'When true, buttons are arranged vertically in a stacked layout. When false, buttons are arranged horizontally in a row. Horizontal layout is useful for action buttons side-by-side, while stacked layout is better for mobile views or when vertical space is available. Defaults to false (horizontal layout).',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true arranges buttons vertically, false arranges them horizontally',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText:
+                    'Required Button components to be grouped together. Can be a single Button element or an array of Button elements. The ButtonGroup provides consistent spacing, border radius handling (for connected buttons), and layout management for all child buttons.',
+            },
+            {
+                content:
+                    'ReactElement<ButtonProps> | ReactElement<ButtonProps>[]',
+                hintText:
+                    'Single Button element or array of Button elements to group',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ButtonGroup component using the following tokens:
+
+```tsx
+export type ButtonGroupTokenType = {
+    gap: {
+        horizontal: CSSObject['gap']
+        stacked: CSSObject['gap']
+    }
+}
+```

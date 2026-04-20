@@ -1,0 +1,322 @@
+import React, { useRef } from 'react'
+import Block from '../Primitives/Block/Block'
+import { toPixels } from '../../global-utils/GlobalUtils'
+import { MultiSelectTokensType } from './multiSelect.tokens'
+import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
+import Text from '../Text/Text'
+import { FOUNDATION_THEME } from '../../tokens'
+import { ChevronDown, X } from 'lucide-react'
+import {
+    MultiSelectMenuSize,
+    MultiSelectSelectionTagType,
+    MultiSelectVariant,
+} from './types'
+export type MultiSelectTriggerProps = {
+    selectedValues: string[]
+    slot: React.ReactNode
+    variant: MultiSelectVariant
+    size: MultiSelectMenuSize
+    isSmallScreen: boolean
+    onChange: (value: string) => void
+    name: string
+    label: string
+    placeholder: string
+    required: boolean
+    selectionTagType: MultiSelectSelectionTagType
+    valueLabelMap: Record<string, string>
+    open: boolean
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+    multiSelectTokens: MultiSelectTokensType
+    inline?: boolean
+    error?: boolean
+    disabled?: boolean
+    maxTriggerWidth?: number
+    minTriggerWidth?: number
+} & Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    'slot' | 'onClick' | 'name' | 'disabled' | 'onChange'
+>
+const MultiSelectTrigger = ({
+    selectedValues,
+    slot,
+    variant,
+    size,
+    isSmallScreen,
+    onChange,
+    name,
+    label,
+    placeholder,
+    required,
+    open,
+    onClick,
+    multiSelectTokens,
+    inline = false,
+    error,
+    maxTriggerWidth,
+    minTriggerWidth,
+}: MultiSelectTriggerProps) => {
+    const slotRef = useRef<HTMLDivElement>(null)
+    const slotWidth = slotRef.current?.offsetWidth
+    const showCancelButton =
+        variant === MultiSelectVariant.CONTAINER && selectedValues.length > 0
+    const isItemSelected = selectedValues.length > 0
+    const isSmallScreenWithLargeSize =
+        isSmallScreen && size === MultiSelectMenuSize.LARGE
+    const borderRadius = multiSelectTokens.trigger.borderRadius[size][variant]
+    const appliedBorderRadius = showCancelButton
+        ? `${borderRadius} 0px 0px ${borderRadius}`
+        : borderRadius
+    const paddingX = toPixels(
+        multiSelectTokens.trigger.padding[size][variant].x
+    )
+    const paddingY = toPixels(
+        multiSelectTokens.trigger.padding[size][variant].y
+    )
+    const paddingInlineStart =
+        slot && slotWidth ? paddingX + slotWidth + 8 : paddingX
+    return (
+        <Block
+            display="flex"
+            {...((!inline || variant === MultiSelectVariant.CONTAINER) && {
+                height: toPixels(
+                    multiSelectTokens.trigger.height[size][variant]
+                ),
+                maxHeight: toPixels(
+                    multiSelectTokens.trigger.height[size][variant]
+                ),
+            })}
+        >
+            <Block
+                width={
+                    variant === MultiSelectVariant.CONTAINER ? '100%' : 'auto'
+                }
+                maxWidth={
+                    variant === MultiSelectVariant.NO_CONTAINER
+                        ? '100%'
+                        : 'auto'
+                }
+                display="flex"
+                alignItems="center"
+            >
+                <PrimitiveButton
+                    type="button"
+                    maxWidth={maxTriggerWidth}
+                    minWidth={minTriggerWidth}
+                    onClick={onClick}
+                    position="relative"
+                    width={'100%'}
+                    display="flex"
+                    alignItems="center"
+                    overflow="hidden"
+                    justifyContent="space-between"
+                    gap={8}
+                    borderRadius={appliedBorderRadius}
+                    outline={
+                        multiSelectTokens.trigger.outline[variant][
+                            error ? 'error' : open ? 'open' : 'closed'
+                        ]
+                    }
+                    {...((!inline ||
+                        variant === MultiSelectVariant.CONTAINER) && {
+                        height: multiSelectTokens.trigger.height[size][variant],
+
+                        maxHeight:
+                            multiSelectTokens.trigger.height[size][variant],
+
+                        paddingX: paddingX,
+
+                        paddingY: paddingY,
+                        backgroundColor:
+                            multiSelectTokens.trigger.backgroundColor[variant][
+                                error ? 'error' : open ? 'open' : 'closed'
+                            ],
+
+                        _hover: {
+                            outline:
+                                multiSelectTokens.trigger.outline[variant][
+                                    error ? 'error' : 'hover'
+                                ],
+                            backgroundColor:
+                                multiSelectTokens.trigger.backgroundColor[
+                                    variant
+                                ][error ? 'error' : 'hover'],
+                        },
+                        _focus: {
+                            outline:
+                                multiSelectTokens.trigger.outline[variant][
+                                    error ? 'error' : 'focus'
+                                ],
+                            backgroundColor:
+                                multiSelectTokens.trigger.backgroundColor[
+                                    variant
+                                ][error ? 'error' : 'focus'],
+                        },
+                    })}
+                >
+                    {slot && (
+                        <Block
+                            data-element="icon"
+                            as="span"
+                            ref={slotRef}
+                            contentCentered
+                        >
+                            {slot}
+                        </Block>
+                    )}
+                    <Block
+                        as="span"
+                        textAlign="left"
+                        paddingTop={
+                            variant === MultiSelectVariant.CONTAINER &&
+                            isSmallScreenWithLargeSize &&
+                            isItemSelected
+                                ? paddingY * 1.5
+                                : 0
+                        }
+                        style={{
+                            textAlign: 'left',
+                            flexGrow: 1,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {/* NO CONTAINER Label*/}
+                        {variant === MultiSelectVariant.NO_CONTAINER && (
+                            <Text
+                                as="span"
+                                variant="body.md"
+                                color={FOUNDATION_THEME.colors.gray[700]}
+                                fontWeight={500}
+                            >
+                                {label}
+                            </Text>
+                        )}
+
+                        {isSmallScreenWithLargeSize &&
+                            variant === MultiSelectVariant.CONTAINER && (
+                                <Block
+                                    position="absolute"
+                                    top={
+                                        isItemSelected
+                                            ? toPixels(
+                                                  paddingY - paddingY / 1.3
+                                              ) + (!required ? 3 : 0)
+                                            : '50%'
+                                    }
+                                    left={toPixels(paddingInlineStart)}
+                                    height={'max-content'}
+                                    style={{
+                                        transition: 'all 0.2s ease-in-out',
+                                        transform: isItemSelected
+                                            ? 'scale(0.95)'
+                                            : 'translateY(-50%) scale(1)',
+                                        transformOrigin: 'left center',
+                                        pointerEvents: 'none',
+                                        zIndex: 1,
+                                    }}
+                                >
+                                    <FloatingLabels
+                                        label={label}
+                                        required={required || false}
+                                        name={name || ''}
+                                        isFocused={isItemSelected}
+                                    />
+                                </Block>
+                            )}
+                        {variant === MultiSelectVariant.CONTAINER &&
+                            (selectedValues.length > 0 ||
+                                !isSmallScreen ||
+                                size !== MultiSelectMenuSize.LARGE) && (
+                                <Text
+                                    as="span"
+                                    variant="body.md"
+                                    color={FOUNDATION_THEME.colors.gray[700]}
+                                    fontWeight={500}
+                                >
+                                    {placeholder}
+                                </Text>
+                            )}
+                        {selectedValues.length > 0 && (
+                            <Text
+                                as="span"
+                                variant="body.md"
+                                color={
+                                    multiSelectTokens.trigger.selectionTag
+                                        .container[
+                                        MultiSelectSelectionTagType.COUNT
+                                    ].color
+                                }
+                                fontWeight={500}
+                                style={{
+                                    height: '100%',
+                                    marginLeft: 8,
+                                    backgroundColor:
+                                        multiSelectTokens.trigger.selectionTag
+                                            .container[
+                                            MultiSelectSelectionTagType.COUNT
+                                        ].backgroundColor,
+                                    borderRadius: 4,
+                                    padding: '0px 6px',
+                                }}
+                            >
+                                {selectedValues.length}
+                            </Text>
+                        )}
+                    </Block>
+                    <Block
+                        as="span"
+                        display="flex"
+                        alignItems="center"
+                        gap={4}
+                        size={20}
+                        contentCentered
+                        flexShrink={0}
+                    >
+                        <ChevronDown size={16} aria-hidden="true" />
+                    </Block>
+                </PrimitiveButton>
+
+                {variant === MultiSelectVariant.CONTAINER &&
+                    selectedValues.length > 0 && (
+                        <PrimitiveButton
+                            type="button"
+                            borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
+                            backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                            contentCentered
+                            height={'100%'}
+                            style={{ aspectRatio: 1 }}
+                            onClick={() => onChange('')}
+                            aria-label={
+                                label
+                                    ? `Clear selection for ${label}`
+                                    : 'Clear selection'
+                            }
+                            outline={
+                                multiSelectTokens.trigger.outline[variant][
+                                    error ? 'error' : 'closed'
+                                ]
+                            }
+                            _hover={{
+                                backgroundColor:
+                                    FOUNDATION_THEME.colors.gray[25],
+                            }}
+                            _focus={{
+                                backgroundColor:
+                                    FOUNDATION_THEME.colors.gray[25],
+                                outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
+                            }}
+                        >
+                            <X
+                                size={16}
+                                color={FOUNDATION_THEME.colors.gray[400]}
+                                aria-hidden="true"
+                            />
+                        </PrimitiveButton>
+                    )}
+            </Block>
+        </Block>
+    )
+}
+export default MultiSelectTrigger

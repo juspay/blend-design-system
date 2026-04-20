@@ -1,0 +1,304 @@
+---
+title: SearchInput
+description: The SearchInput component provides a specialized input field for search functionality, featuring customizable left and right slots for icons, error states, and a clean minimalist design with underline borders.
+category: components
+tags:
+    - searchinput
+    - component
+    - input
+    - search
+    - form
+    - textfield
+    - filter
+    - query
+    - find
+    - lookup
+RepoFolderName: SearchInput
+StorybookLink: components-searchinput--docs
+---
+
+<SearchInputPreview />
+
+## Usage
+
+```tsx
+import { SearchInput } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [searchValue, setSearchValue] = useState('')
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(e.target.value)
+    }
+
+    return (
+        <SearchInput
+            placeholder="Search products..."
+            value={searchValue}
+            onChange={handleSearchChange}
+            leftSlot={<SearchIcon />}
+            rightSlot={<FilterIcon />}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'SearchInput.leftSlot',
+                hintText:
+                    'Optional React element displayed on the left side of the input field, typically before the text. Commonly used for search icons (from lucide-react or other icon libraries) that visually indicate the search functionality. The slot maintains proper spacing and alignment with the input text.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon) displayed on the left side',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.rightSlot',
+                hintText:
+                    'Optional React element displayed on the right side of the input field, typically after the text. Can be used for filter icons, clear buttons, or other action elements. The slot maintains proper spacing and alignment with the input text.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'React element (typically an icon or button) displayed on the right side',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.error',
+                hintText:
+                    'When true, displays the input field in an error state with red underline border and error styling. Useful for form validation feedback when the search query is invalid or required but missing. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state, false shows normal state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.value',
+                hintText:
+                    'Optional string representing the current search input value. Use this for controlled input where the value is managed by your component state. When provided, the input is controlled and updates only through onChange. If not provided, the input is uncontrolled.',
+            },
+            {
+                content: 'string',
+                hintText: 'String value representing the current search query',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.onChange',
+                hintText:
+                    'Optional callback function invoked when the input value changes. Receives a React.ChangeEvent<HTMLInputElement> as a parameter. Use event.target.value to get the new string value. Update your state in this handler for controlled input. Required for controlled usage.',
+            },
+            {
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with change event when value changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.placeholder',
+                hintText:
+                    'Optional placeholder text string displayed in the input field when it\'s empty. Provides guidance to users about what they can search for. Should be concise and action-oriented (e.g., "Search products...", "Enter search term"). Defaults to "Enter" if not provided.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder text shown when input is empty',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.name',
+                hintText:
+                    'Optional name attribute string for the input field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Name attribute for form identification and submission',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.disabled',
+                hintText:
+                    "When true, disables the input field, making it non-interactive and visually muted. Users cannot type or change the value. Disabled fields show reduced opacity and a disabled underline style. Useful for preventing interaction when prerequisites aren't met. Defaults to false.",
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables input field, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.autoFocus',
+                hintText:
+                    'When true, automatically focuses the input field when the component mounts. Useful for improving UX by allowing users to immediately start typing without clicking. Only works if disabled is false. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true auto-focuses input on mount, false requires manual focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.onFocus',
+                hintText:
+                    'Optional callback function invoked when the input field receives focus. Receives a React.FocusEvent<HTMLInputElement> as a parameter. Useful for tracking user interaction, showing additional UI, or triggering search suggestions.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with focus event when input gains focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.onBlur',
+                hintText:
+                    'Optional callback function invoked when the input field loses focus. Receives a React.FocusEvent<HTMLInputElement> as a parameter. Useful for validation, cleanup, or hiding search suggestions when the user clicks away.',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText:
+                    'Function called with focus event when input loses focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.allowClear',
+                hintText:
+                    'When true, displays a clear button (X icon) on the right side when the input has a value. Clicking the button clears the input. When false or when rightSlot is provided, the clear button is not shown. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows clear button when input has value, false hides clear button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.onClear',
+                hintText:
+                    'Optional callback function invoked when the clear button is clicked. Receives no parameters. Use this for custom clear logic such as analytics tracking or additional cleanup. If not provided, the component clears the input by calling onChange with an empty string.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when clear button is clicked',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.clearIcon',
+                hintText:
+                    'Optional React element to use as the clear button icon. Defaults to X icon from lucide-react. Only visible when allowClear is true and rightSlot is not provided. Use this to customize the clear button appearance.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText: 'Custom icon element for the clear button',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the SearchInput component using the following tokens:
+
+```tsx
+export type SearchInputTokensType = {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        padding: {
+            x: CSSObject['padding']
+            y: CSSObject['padding']
+        }
+        borderRadius: CSSObject['borderRadius']
+        borderBottom: {
+            [key in SearchInputState]: CSSObject['borderBottom']
+        }
+        outline: CSSObject['outline']
+        boxShadow: CSSObject['boxShadow']
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+    }
+    icon: {
+        color: {
+            [key in SearchInputState]: CSSObject['color']
+        }
+        width: CSSObject['width']
+    }
+}
+
+export type ResponsiveSearchInputTokens = {
+    [key in keyof BreakpointType]: SearchInputTokensType
+}
+
+export type SearchInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
+```

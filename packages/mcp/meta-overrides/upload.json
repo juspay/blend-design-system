@@ -1,0 +1,52 @@
+{
+    "componentDescription": "Upload provides a file selection area with drag-and-drop support. Use for profile photo uploads, document attachments, CSV imports, and any scenario requiring file input. Displays upload area with accept type hints and size constraints.",
+    "features": [
+        "Drag and drop target area",
+        "Click to open file browser",
+        "File type restrictions via accept",
+        "Multiple file selection",
+        "File size limit enforcement",
+        "Disabled state",
+        "Label and hint text"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Profile photo upload",
+            "description": "Single image upload for user profile picture.",
+            "code": "<Upload\n  label=\"Profile photo\"\n  hint=\"JPG or PNG, max 5MB\"\n  accept=\"image/jpeg,image/png\"\n  maxSize={5 * 1024 * 1024}\n  onUpload={(files) => handleProfilePhotoUpload(files[0])}\n/>"
+        },
+        {
+            "title": "Multi-file document upload",
+            "description": "Upload area accepting multiple PDF documents.",
+            "code": "<Upload\n  label=\"Supporting documents\"\n  hint=\"Upload up to 10 PDF files, max 10MB each\"\n  accept=\"application/pdf\"\n  multiple\n  maxSize={10 * 1024 * 1024}\n  onUpload={handleDocumentUpload}\n/>"
+        },
+        {
+            "title": "CSV data import",
+            "description": "Upload for CSV file import.",
+            "code": "<Upload\n  label=\"Import data\"\n  hint=\"Upload a CSV file with the required column headers\"\n  accept=\".csv,text/csv\"\n  onUpload={(files) => handleCsvImport(files[0])}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "onUpload": {
+            "llmContext": "Required. Callback receiving a FileList or File[] when the user selects or drops files. Process the files here — upload to a server, read contents, or store in state. Always validate file type and size before uploading even if accept and maxSize are set.",
+            "propDescription": "Required. Called with selected/dropped File array"
+        },
+        "accept": {
+            "llmContext": "MIME type or file extension filter string (e.g., 'image/jpeg,image/png' or '.pdf,.docx'). This restricts the file browser and provides a hint to users. Use specific MIME types for precision. Always validate on the server side as well.",
+            "propDescription": "Accepted file MIME types or extensions"
+        },
+        "multiple": {
+            "llmContext": "Set to true to allow selecting multiple files at once. Leave false (default) for single file fields like profile photos. When multiple is true, onUpload receives an array of all selected files.",
+            "propDescription": "Allows selecting multiple files"
+        },
+        "maxSize": {
+            "llmContext": "Maximum file size in bytes. The component shows an error if the selected file exceeds this. Common values: 1MB = 1048576, 5MB = 5242880, 10MB = 10485760. Always display the limit in the hint text so users know before attempting upload.",
+            "propDescription": "Maximum file size in bytes"
+        },
+        "disabled": {
+            "llmContext": "Set to true to prevent file selection. Use when the upload feature is gated (e.g., on a free plan) or when the form is in a read-only/submitted state.",
+            "propDescription": "Disables the upload area"
+        }
+    }
+}

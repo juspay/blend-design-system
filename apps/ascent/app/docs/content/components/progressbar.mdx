@@ -1,0 +1,205 @@
+---
+title: ProgressBar
+description: The ProgressBar component provides visual feedback for ongoing processes, supporting linear and circular variants with solid and segmented styles to indicate completion status and progress over time.
+category: components
+tags:
+    - progressbar
+    - component
+    - progress
+    - indicator
+    - loading
+    - status
+    - completion
+    - feedback
+RepoFolderName: ProgressBar
+StorybookLink: components-progressbar--docs
+---
+
+<ProgressBarPreview />
+
+## Usage
+
+```tsx
+import {
+    ProgressBar,
+    ProgressBarVariant,
+    ProgressBarSize,
+    ProgressBarType,
+} from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [progress, setProgress] = useState(65)
+
+    return (
+        <div className="space-y-4">
+            <ProgressBar
+                value={progress}
+                variant={ProgressBarVariant.SOLID}
+                size={ProgressBarSize.MEDIUM}
+                showLabel={true}
+            />
+
+            <ProgressBar
+                value={progress}
+                variant={ProgressBarVariant.CIRCULAR}
+                type={ProgressBarType.SOLID}
+                size={ProgressBarSize.MEDIUM}
+                showLabel={true}
+            />
+        </div>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'ProgressBar.value',
+                hintText:
+                    'Required numeric value between 0 and 100 representing the progress percentage. 0 means no progress, 100 means complete. The progress bar visually displays this value as a filled portion. Values outside this range are clamped to 0-100.',
+            },
+            {
+                content: 'number',
+                hintText:
+                    'Number between 0 and 100 representing progress percentage',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'ProgressBar.variant',
+                hintText:
+                    'Optional ProgressBarVariant enum value that determines the visual style and layout. SOLID creates a solid filled bar, SEGMENTED creates a segmented bar with visible segments, CIRCULAR creates a circular progress indicator. Defaults to SOLID.',
+            },
+            {
+                content: 'ProgressBarVariant',
+                hintText:
+                    'Enum that determines the visual style variant of the progress bar',
+            },
+            { content: 'SOLID, SEGMENTED, CIRCULAR' },
+        ],
+        [
+            {
+                content: 'ProgressBar.size',
+                hintText:
+                    'Optional ProgressBarSize enum value that determines the size variant affecting dimensions, height (for linear), and stroke width (for circular). SMALL creates a compact progress bar, MEDIUM creates a standard size, LARGE creates a prominent size. Defaults to MEDIUM.',
+            },
+            {
+                content: 'ProgressBarSize',
+                hintText:
+                    'Enum that determines the size variant of the progress bar',
+            },
+            { content: 'SMALL, MEDIUM, LARGE' },
+        ],
+        [
+            {
+                content: 'ProgressBar.type',
+                hintText:
+                    'Optional ProgressBarType enum value that determines the style type for circular variant only. SOLID creates a solid circular progress ring, SEGMENTED creates a segmented circular ring with visible segments. Only applies when variant is CIRCULAR. Defaults to SOLID.',
+            },
+            {
+                content: 'ProgressBarType',
+                hintText:
+                    'Enum that determines the style type for circular progress bars',
+            },
+            { content: 'SOLID, SEGMENTED' },
+        ],
+        [
+            {
+                content: 'ProgressBar.showLabel',
+                hintText:
+                    'When true, displays a progress percentage label showing the current value (e.g., "65%"). The label appears centered for linear progress bars and inside the circle for circular progress bars. Useful for providing precise progress feedback. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows percentage label, false hides label',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ProgressBar component using the following tokens:
+
+```tsx
+export type ProgressBarTokenType = {
+    linear: {
+        height: {
+            [key in ProgressBarSize]: CSSObject['height']
+        }
+        fill: {
+            backgroundColor: {
+                [key in Exclude<
+                    ProgressBarVariant,
+                    'circular'
+                >]: CSSObject['backgroundColor']
+            }
+            borderRadius: {
+                [key in Exclude<
+                    ProgressBarVariant,
+                    'circular'
+                >]: CSSObject['borderRadius']
+            }
+        }
+        empty: {
+            backgroundColor: {
+                [key in Exclude<
+                    ProgressBarVariant,
+                    'circular'
+                >]: CSSObject['backgroundColor']
+            }
+            backgroundImage: {
+                segmented: CSSObject['backgroundImage']
+            }
+            backgroundSize: {
+                segmented: CSSObject['backgroundSize']
+            }
+        }
+        borderRadius: {
+            [key in Exclude<
+                ProgressBarVariant,
+                'circular'
+            >]: CSSObject['borderRadius']
+        }
+    }
+    circular: {
+        size: {
+            [key in ProgressBarSize]: CSSObject['width']
+        }
+        strokeWidth: {
+            [key in ProgressBarSize]: number
+        }
+        stroke: {
+            [key in ProgressBarType]: CSSObject['stroke']
+        }
+        background: {
+            [key in ProgressBarType]: CSSObject['stroke']
+        }
+        dashArray: {
+            [key in ProgressBarType]: string
+        }
+        dashOffset: {
+            [key in ProgressBarType]: string
+        }
+    }
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    transition: string
+}
+
+export type ResponsiveProgressBarTokens = {
+    [key in keyof BreakpointType]: ProgressBarTokenType
+}
+```

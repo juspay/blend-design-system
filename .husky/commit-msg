@@ -1,0 +1,6 @@
+if [ -f "$HOME/.nvm/nvm.sh" ]; then
+  . "$HOME/.nvm/nvm.sh"
+  nvm use default
+fi
+
+npx --no-install commitlint --edit "$1"

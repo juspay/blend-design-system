@@ -1,0 +1,276 @@
+---
+title: Alert
+description: The Alert component is a versatile notification element used to display important messages to users with multiple variants, styles, and interactive options.
+category: components
+tags:
+    - alert
+    - component
+    - notification
+    - message
+    - banner
+    - status
+    - feedback
+RepoFolderName: Alert
+StorybookLink: components-alert--docs
+---
+
+<AlertPreview />
+
+## Usage
+
+```tsx
+import {
+    Alert,
+    AlertVariant,
+    AlertStyle,
+    AlertActionPlacement,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <Alert
+            heading="Update Available"
+            description="A new version of the application is available. Please update to get the latest features."
+            variant={AlertVariant.PRIMARY}
+            style={AlertStyle.SUBTLE}
+            maxWidth="600px"
+            primaryAction={{
+                label: 'Update Now',
+                onClick: () => console.log('Update clicked'),
+            }}
+            secondaryAction={{
+                label: 'Later',
+                onClick: () => console.log('Later clicked'),
+            }}
+            onClose={() => console.log('Alert dismissed')}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'heading',
+                hintText:
+                    'Required main heading text displayed prominently at the top of the alert. This is the primary message title that should be concise and attention-grabbing.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Main title text that appears at the top of the alert component',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText:
+                    'Required descriptive text that provides detailed information about the alert message. This appears below the heading and should explain the context, consequences, or next steps.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Detailed description text displayed below the heading',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText:
+                    'Defines the color scheme and semantic meaning of the alert. PRIMARY (blue), SUCCESS (green), WARNING (yellow), ERROR (red), PURPLE, ORANGE, and NEUTRAL (gray) provide different visual cues for different types of messages. Defaults to PRIMARY.',
+            },
+            {
+                content: 'AlertVariant',
+                hintText:
+                    'Enum that determines the color scheme and semantic styling',
+            },
+            {
+                content:
+                    'PRIMARY, SUCCESS, WARNING, ERROR, PURPLE, ORANGE, NEUTRAL',
+            },
+        ],
+        [
+            {
+                content: 'style',
+                hintText:
+                    'Controls the visual treatment of the alert background. SUBTLE uses a light background with borders, while NO_FILL removes background fill for a more minimal appearance. Defaults to SUBTLE.',
+            },
+            {
+                content: 'AlertStyle',
+                hintText:
+                    'Enum that controls background styling and visual treatment',
+            },
+            { content: 'SUBTLE, NO_FILL' },
+        ],
+        [
+            {
+                content: 'primaryAction',
+                hintText:
+                    'Configuration object for the primary action button. Contains label (button text) and onClick (callback function). When provided, displays a prominent action button that users can click to perform the main action related to the alert.',
+            },
+            {
+                content: 'AlertAction',
+                hintText:
+                    'Object with { label: string, onClick: () => void } properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryAction',
+                hintText:
+                    'Configuration object for the secondary action button. Contains label (button text) and onClick (callback function). When provided, displays a less prominent action button for alternative actions or cancellation.',
+            },
+            {
+                content: 'AlertAction',
+                hintText:
+                    'Object with { label: string, onClick: () => void } properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClose',
+                hintText:
+                    'Optional callback function invoked when the close (X) button is clicked. Providing this prop automatically shows a close button in the alert header, allowing users to dismiss the alert.',
+            },
+            {
+                content: '() => void',
+                hintText:
+                    'Function called when the user clicks the close button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'icon',
+                hintText:
+                    'Optional custom icon or React element displayed at the start of the alert, before the heading. Useful for adding visual context or brand-specific icons. If not provided, the alert may use default icons based on the variant.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText:
+                    'Any React element (icon, image, or custom component) to display at the start',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actionPlacement',
+                hintText:
+                    'Controls where action buttons are positioned relative to the alert content. RIGHT places buttons horizontally next to the content (default), BOTTOM stacks buttons vertically below the content. Automatically switches to BOTTOM if only close button is present.',
+            },
+            {
+                content: 'AlertActionPlacement',
+                hintText:
+                    'Enum that determines the layout position of action buttons',
+            },
+            { content: 'BOTTOM, RIGHT' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText:
+                    'Optional CSS max-width value to control the maximum width of the alert component. Accepts any valid CSS width value (e.g., "600px", "50%", "80ch"). Defaults to the value from component tokens if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS max-width value (e.g., "600px", "50%", "80ch", "100%")',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText:
+                    'Optional CSS min-width value to control the minimum width of the alert component. Accepts any valid CSS width value (e.g., "300px", "50%", "20ch"). Useful for ensuring the alert maintains a minimum readable width. Defaults to the value from component tokens if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS min-width value (e.g., "300px", "50%", "20ch", "auto")',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText:
+                    'Optional CSS width value to set a fixed or specific width for the alert component. Accepts any valid CSS width value (e.g., "500px", "100%", "80ch", "fit-content"). When provided, this overrides the default width behavior. Defaults to the value from component tokens if not provided.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS width value (e.g., "500px", "100%", "80ch", "fit-content")',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Alert component using the following tokens:
+
+```tsx
+export type AlertTokenType = {
+    maxWidth: CSSObject['maxWidth']
+    gap: CSSObject['gap']
+    padding: CSSObject['padding']
+    borderRadius: CSSObject['borderRadius']
+    background: {
+        [key in AlertVariant]: {
+            [key in AlertStyle]: CSSObject['backgroundColor']
+        }
+    }
+    border: {
+        [key in AlertVariant]: {
+            [key in AlertStyle]: CSSObject['border']
+        }
+    }
+    text: {
+        heading: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+        description: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+    }
+    button: {
+        gap: CSSObject['gap']
+        primaryAction: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+        secondaryAction: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+        closeButton: {
+            color: { [key in AlertVariant]: CSSObject['color'] }
+            fontWeight: CSSObject['fontWeight']
+            fontSize: CSSObject['fontSize']
+            lineHeight: CSSObject['lineHeight']
+        }
+    }
+}
+```

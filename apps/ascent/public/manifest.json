@@ -1,0 +1,18 @@
+{
+    "name": "Blend Design System",
+    "short_name": "Blend",
+    "description": "Modern React component library and design system documentation",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "lang": "en",
+    "icons": [
+        {
+            "src": "/icon.png",
+            "sizes": "any",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

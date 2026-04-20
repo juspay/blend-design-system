@@ -1,0 +1,46 @@
+{
+    "componentDescription": "ProgressBar visualizes completion of a process or task as a filled bar. Use it for file uploads, onboarding completion, multi-step form progress, or profile completion. For step-based workflows with named steps, use Stepper instead.",
+    "features": [
+        "Value-driven fill (0–100)",
+        "Multiple semantic variants for color-coded meaning",
+        "Size variants for different visual weights",
+        "Optional label display",
+        "Optional percentage label"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "File upload progress",
+            "description": "Progress bar showing file upload completion percentage.",
+            "code": "<ProgressBar\n  value={uploadProgress}\n  variant=\"primary\"\n  size=\"md\"\n  label=\"Uploading file...\"\n  showLabel\n/>"
+        },
+        {
+            "title": "Profile completion indicator",
+            "description": "Progress bar in a profile card showing how complete the user's profile is.",
+            "code": "<div>\n  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>\n    <span>Profile completion</span>\n    <span>{completionPercent}%</span>\n  </div>\n  <ProgressBar\n    value={completionPercent}\n    variant={completionPercent === 100 ? 'success' : 'primary'}\n    size=\"sm\"\n  />\n</div>"
+        },
+        {
+            "title": "Danger threshold indicator",
+            "description": "Storage usage bar that turns red when near capacity.",
+            "code": "<ProgressBar\n  value={storageUsedPercent}\n  variant={storageUsedPercent > 90 ? 'error' : storageUsedPercent > 70 ? 'warning' : 'primary'}\n  size=\"md\"\n  label={`${storageUsed} of ${storageTotal} used`}\n  showLabel\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. A number between 0 and 100 representing the completion percentage. 0 is empty, 100 is fully filled. Always clamp your actual values to this range before passing them in.",
+            "propDescription": "Required. Completion percentage (0–100)"
+        },
+        "variant": {
+            "llmContext": "Use 'primary' for general progress. Use 'success' when the process is complete or going well. Use 'warning' for processes approaching limits (e.g., 75% storage used). Use 'error' for processes at risk or over limit.",
+            "propDescription": "Color variant of the progress bar fill"
+        },
+        "size": {
+            "llmContext": "Use 'sm' for subtle inline indicators (profile cards, table rows). Use 'md' for standard progress displays. Use 'lg' for prominent onboarding or feature highlight flows.",
+            "propDescription": "Controls the height/thickness of the progress bar"
+        },
+        "showLabel": {
+            "llmContext": "Set to true to display the label text above or alongside the bar. Use when context is needed to explain what the bar represents.",
+            "propDescription": "Shows the label text alongside the progress bar"
+        }
+    }
+}

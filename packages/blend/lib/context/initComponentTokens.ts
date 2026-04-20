@@ -1,0 +1,245 @@
+import { type ThemeType } from '../tokens'
+import { type ComponentTokenType } from './ThemeContext'
+import { Theme } from './theme.enum'
+import { getAlertTokens } from '../components/Alert/alert.tokens'
+import { getNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
+import { getSearchInputTokens } from '../components/Inputs/SearchInput/searchInput.tokens'
+import { getTextAreaTokens } from '../components/Inputs/TextArea/textarea.token'
+import { getTextInputTokens } from '../components/Inputs/TextInput/textInput.tokens'
+import { getTagTokens } from '../components/Tags/tag.tokens'
+import { getRadioTokens } from '../components/Radio/radio.token'
+import { getSwitchTokens } from '../components/Switch/switch.token'
+import { getCheckboxTokens } from '../components/Checkbox/checkbox.token'
+import { getTabsTokens } from '../components/Tabs/tabs.token'
+import { getOTPInputTokens } from '../components/Inputs/OTPInput/otpInput.tokens'
+import { getTooltipTokens } from '../components/Tooltip/tooltip.tokens'
+import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tokens'
+import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
+import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
+import { getModalComponentTokens } from '../components/Modal/modal.tokens'
+import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
+import { getPopoverTokens } from '../components/Popover/popover.tokens'
+import { getMenuTokens } from '../components/Menu/menu.tokens'
+import { getMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
+import { getSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
+import { getTableToken } from '../components/DataTable/dataTable.tokens'
+import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
+import { getAccordionToken } from '../components/Accordion/accordion.tokens'
+import { getStatCardToken } from '../components/StatCard/statcard.tokens'
+import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
+import { getChartTokens } from '../components/Charts/chart.tokens'
+import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
+import { getStepperTokens } from '../components/Stepper/stepper.tokens'
+import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
+import { getCardTokens } from '../components/Card/card.tokens'
+import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
+import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
+import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
+import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
+import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import { getDirectoryTokens } from '../components/Directory/directory.tokens'
+import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import { getUploadTokens } from '../components/Upload/upload.tokens'
+import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
+import { getButtonTokens } from '../components/Button/button.tokens'
+import { getButtonV2Tokens } from '../components/ButtonV2/buttonV2.tokens'
+import { getTagV2Tokens } from '../components/TagV2/tagV2.tokens'
+import { getAlertV2Tokens } from '../components/AlertV2'
+import { getAccordionV2Tokens } from '../components/AccordionV2'
+import { getSnackbarV2Tokens } from '../components/SnackbarV2'
+import { getSwitchV2Tokens } from '../components/SelectorV2/SwitchV2/switchV2.tokens'
+import { getSingleSelectV2Tokens } from '../components/SingleSelectV2/singleSelectV2.tokens'
+import { getMultiSelectV2Tokens } from '../components/MultiSelectV2/multiSelectV2.tokens'
+import { getKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
+import { getAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
+import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
+import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
+import { getTimelineTokens } from '../components/Timeline/timeline.token'
+import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { getStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
+import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
+import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
+import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
+import { getTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
+import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
+import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
+import { getCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import { getProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
+import { getMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import { getNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import { getTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+
+import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+const initTokens = (
+    componentTokens: ComponentTokenType,
+    foundationTokens: ThemeType,
+    theme: Theme | string = Theme.LIGHT
+): Required<ComponentTokenType> => {
+    return {
+        TAGS: componentTokens.TAGS ?? getTagTokens(foundationTokens, theme),
+        SEARCH_INPUT:
+            componentTokens.SEARCH_INPUT ??
+            getSearchInputTokens(foundationTokens),
+        TEXT_AREA:
+            componentTokens.TEXT_AREA ?? getTextAreaTokens(foundationTokens),
+        RADIO: componentTokens.RADIO ?? getRadioTokens(foundationTokens),
+        SWITCH: componentTokens.SWITCH ?? getSwitchTokens(foundationTokens),
+        TEXT_INPUT:
+            componentTokens.TEXT_INPUT ?? getTextInputTokens(foundationTokens),
+        NUMBER_INPUT:
+            componentTokens.NUMBER_INPUT ??
+            getNumberInputTokens(foundationTokens),
+        ALERT: componentTokens.ALERT ?? getAlertTokens(foundationTokens),
+        OTP_INPUT:
+            componentTokens.OTP_INPUT ?? getOTPInputTokens(foundationTokens),
+        TOOLTIP: componentTokens.TOOLTIP ?? getTooltipTokens(foundationTokens),
+        UNIT_INPUT:
+            componentTokens.UNIT_INPUT ?? getUnitInputTokens(foundationTokens),
+        MULTI_VALUE_INPUT:
+            componentTokens.MULTI_VALUE_INPUT ??
+            getMultiValueInputTokens(foundationTokens),
+        DROPDOWN_INPUT:
+            componentTokens.DROPDOWN_INPUT ??
+            getDropdownInputTokens(foundationTokens),
+        CHECKBOX:
+            componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
+        TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),
+        BUTTON: componentTokens.BUTTON ?? getButtonTokens(foundationTokens),
+        KEYVALUEPAIR:
+            componentTokens.KEYVALUEPAIR ??
+            getKeyValuePairTokens(foundationTokens),
+        MODAL:
+            componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
+        BREADCRUMB:
+            componentTokens.BREADCRUMB ?? getBreadcrumbTokens(foundationTokens),
+        POPOVER: componentTokens.POPOVER ?? getPopoverTokens(foundationTokens),
+        MENU: componentTokens.MENU ?? getMenuTokens(foundationTokens),
+        MENU_V2:
+            componentTokens.MENU_V2 ?? getMenuV2Tokens(foundationTokens, theme),
+        MULTI_SELECT:
+            componentTokens.MULTI_SELECT ??
+            getMultiSelectTokens(foundationTokens),
+        SINGLE_SELECT:
+            componentTokens.SINGLE_SELECT ??
+            getSingleSelectTokens(foundationTokens),
+        TABLE: componentTokens.TABLE ?? getTableToken(foundationTokens),
+        CALENDAR:
+            componentTokens.CALENDAR ?? getCalendarToken(foundationTokens),
+        ACCORDION:
+            componentTokens.ACCORDION ?? getAccordionToken(foundationTokens),
+        STAT_CARD:
+            componentTokens.STAT_CARD ?? getStatCardToken(foundationTokens),
+        PROGRESS_BAR:
+            componentTokens.PROGRESS_BAR ??
+            getProgressBarTokens(foundationTokens),
+        DRAWER:
+            componentTokens.DRAWER ??
+            getDrawerComponentTokens(foundationTokens),
+        CHARTS: componentTokens.CHARTS ?? getChartTokens(foundationTokens),
+        SNACKBAR:
+            componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
+        STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
+        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        SKELETON:
+            componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
+        TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
+        AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
+        AVATAR_GROUP:
+            componentTokens.AVATAR_GROUP ??
+            getAvatarGroupTokens(foundationTokens),
+        SIDEBAR: componentTokens.SIDEBAR ?? getSidebarTokens(foundationTokens),
+        DIRECTORY:
+            componentTokens.DIRECTORY ?? getDirectoryTokens(foundationTokens),
+        MOBILE_NAVIGATION:
+            componentTokens.MOBILE_NAVIGATION ??
+            getMobileNavigationTokens(foundationTokens),
+        UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
+        CODE_BLOCK:
+            componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
+        CHAT_INPUT:
+            componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
+        BUTTONV2:
+            componentTokens.BUTTONV2 ??
+            getButtonV2Tokens(foundationTokens, theme),
+        TAGV2: componentTokens.TAGV2 ?? getTagV2Tokens(foundationTokens, theme),
+        ALERTV2:
+            componentTokens.ALERTV2 ??
+            getAlertV2Tokens(foundationTokens, theme),
+        ACCORDIONV2:
+            componentTokens.ACCORDIONV2 ??
+            getAccordionV2Tokens(foundationTokens, theme),
+        SNACKBARV2:
+            componentTokens.SNACKBARV2 ??
+            getSnackbarV2Tokens(foundationTokens, theme),
+        SWITCHV2:
+            componentTokens.SWITCHV2 ??
+            getSwitchV2Tokens(foundationTokens, theme),
+        SINGLE_SELECT_V2:
+            componentTokens.SINGLE_SELECT_V2 ??
+            getSingleSelectV2Tokens(foundationTokens, theme),
+        MULTI_SELECT_V2:
+            componentTokens.MULTI_SELECT_V2 ??
+            getMultiSelectV2Tokens(foundationTokens, theme),
+        BREADCRUMBV2:
+            componentTokens.BREADCRUMBV2 ??
+            getBreadcrumbV2Tokens(foundationTokens, theme),
+        AVATARV2:
+            componentTokens.AVATARV2 ??
+            getAvatarV2Tokens(foundationTokens, theme),
+        TEXT_INPUTV2:
+            componentTokens.TEXT_INPUTV2 ??
+            getTextInputV2Tokens(foundationTokens, theme),
+        TEXT_AREA_V2:
+            componentTokens.TEXT_AREA_V2 ??
+            getTextAreaV2Tokens(foundationTokens, theme),
+        CHARTSV2:
+            componentTokens.CHARTSV2 ??
+            getChartV2Tokens(foundationTokens, theme),
+        TIMELINE:
+            componentTokens.TIMELINE ??
+            getTimelineTokens(foundationTokens, theme),
+        CHECKBOXV2:
+            componentTokens.CHECKBOXV2 ??
+            getCheckboxV2Tokens(foundationTokens, theme),
+        KEYVALUEPAIRV2:
+            componentTokens.KEYVALUEPAIRV2 ??
+            getKeyValuePairV2Tokens(foundationTokens, theme),
+        STATCARDV2:
+            componentTokens.STATCARDV2 ??
+            getStatCardV2Tokens(foundationTokens, theme),
+        TOOLTIPV2:
+            componentTokens.TOOLTIPV2 ??
+            getTooltipV2Tokens(foundationTokens, theme),
+        RADIOV2:
+            componentTokens.RADIOV2 ??
+            getRadioV2Tokens(foundationTokens, theme),
+        POPOVERV2:
+            componentTokens.POPOVERV2 ??
+            getPopoverV2Tokens(foundationTokens, theme),
+        TABSV2:
+            componentTokens.TABSV2 ?? getTabsV2Tokens(foundationTokens, theme),
+        CODEEDITORV2:
+            componentTokens.CODEEDITORV2 ??
+            getCodeEditorV2Tokens(foundationTokens, theme),
+        PROGRESS_BARV2:
+            componentTokens.PROGRESS_BARV2 ??
+            getProgressBarV2Tokens(foundationTokens, theme),
+        MULTI_VALUE_INPUT_V2:
+            componentTokens.MULTI_VALUE_INPUT_V2 ??
+            getMultiValueInputV2Tokens(foundationTokens, theme),
+        NUMBER_INPUT_V2:
+            componentTokens.NUMBER_INPUT_V2 ??
+            getNumberInputV2Tokens(foundationTokens, theme),
+        OTP_INPUTV2:
+            componentTokens.OTP_INPUTV2 ??
+            getOTPInputV2Tokens(foundationTokens, theme),
+        SEARCH_INPUT_V2:
+            componentTokens.SEARCH_INPUT_V2 ??
+            getSearchInputV2Tokens(foundationTokens, theme),
+    }
+}
+
+export default initTokens

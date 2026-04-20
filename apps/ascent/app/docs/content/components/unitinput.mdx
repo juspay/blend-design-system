@@ -1,0 +1,351 @@
+---
+title: UnitInput
+description: The UnitInput component provides a specialized numeric input field with integrated unit display, configurable positioning, multiple sizes, and support for left/right slots. Perfect for measurements, quantities, and unit-based data entry.
+category: components
+tags:
+    - unitinput
+    - component
+    - input
+    - numeric
+    - unit
+    - measurement
+    - quantity
+    - form
+    - number
+    - weight
+RepoFolderName: UnitInput
+StorybookLink: components-unitinput--docs
+---
+
+<UnitInputPreview />
+
+## Usage
+
+```tsx
+import {
+    UnitInput,
+    UnitInputSize,
+    UnitPosition,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [weight, setWeight] = useState<number | undefined>(undefined)
+
+    const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setWeight(e.target.value ? parseFloat(e.target.value) : undefined)
+    }
+
+    return (
+        <UnitInput
+            label="Weight"
+            placeholder="Enter weight"
+            value={weight}
+            onChange={handleWeightChange}
+            unit="kg"
+            unitPosition={UnitPosition.RIGHT}
+            size={UnitInputSize.MEDIUM}
+            min={0}
+            max={1000}
+            step={0.1}
+            hintText="Enter weight in kilograms"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Current numeric value of the input',
+            },
+            { content: 'number | undefined', hintText: 'number or undefined' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback when input value changes',
+            },
+            {
+                content: '(e: React.ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'unit',
+                hintText: 'Unit text to display (e.g., "kg", "cm", "$")',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'unitPosition',
+                hintText: 'Position of the unit display',
+            },
+            { content: 'UnitPosition', hintText: 'enum' },
+            { content: 'LEFT, RIGHT' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size variant of the input',
+            },
+            { content: 'UnitInputSize', hintText: 'enum' },
+            { content: 'SMALL, MEDIUM, LARGE' },
+        ],
+        [
+            {
+                content: 'min',
+                hintText: 'Minimum allowed value',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'max',
+                hintText: 'Maximum allowed value',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'step',
+                hintText: 'Step interval for numeric input',
+            },
+            { content: 'number', hintText: 'number' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Whether the input is in error state',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'errorMessage',
+                hintText: 'Error message to display when in error state',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'Whether the input is required',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Whether the input is disabled',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Primary label for the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sublabel',
+                hintText: 'Secondary label or description',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text for the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconHintText',
+                hintText: 'Tooltip text for the help icon',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'React element to display on the left side',
+            },
+            { content: 'React.ReactNode', hintText: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'React element to display on the right side',
+            },
+            { content: 'React.ReactNode', hintText: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'Name attribute for the input element',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFocus',
+                hintText: 'Callback when input receives focus',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onBlur',
+                hintText: 'Callback when input loses focus',
+            },
+            {
+                content: '(e: React.FocusEvent<HTMLInputElement>) => void',
+                hintText: 'function',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the UnitInput component using the following tokens:
+
+```tsx
+export type UnitInputTokensType = {
+    gap: CSSObject['gap']
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in UnitInputState]: CSSObject['color']
+        }
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in UnitInputState]: CSSObject['color']
+        }
+    }
+    helpIcon: {
+        width: CSSObject['width']
+        color: {
+            [key in UnitInputState]: CSSObject['color']
+        }
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in UnitInputState]: CSSObject['color']
+        }
+    }
+    errorMessage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    required: {
+        color: CSSObject['color']
+    }
+    inputContainer: {
+        fontSize: {
+            [key in UnitInputSize]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in UnitInputSize]: CSSObject['fontWeight']
+        }
+        color: {
+            [key in UnitInputState]: CSSObject['color']
+        }
+        borderRadius: {
+            [key in UnitInputSize]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            x: {
+                [key in UnitInputSize]: CSSObject['padding']
+            }
+            y: {
+                [key in UnitInputSize]: CSSObject['padding']
+            }
+        }
+        border: {
+            [key in UnitInputState]: CSSObject['border']
+        }
+        backgroundColor: {
+            [key in UnitInputState]: CSSObject['backgroundColor']
+        }
+        unit: {
+            fontSize: {
+                [key in UnitInputSize]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in UnitInputSize]: CSSObject['fontWeight']
+            }
+            color: {
+                [key in UnitInputState]: CSSObject['color']
+            }
+            padding: {
+                [key in UnitInputSize]: CSSObject['padding']
+            }
+            backgroundColor: {
+                [key in UnitInputState]: CSSObject['backgroundColor']
+            }
+        }
+    }
+}
+
+export type ResponsiveUnitInputTokens = {
+    [key in keyof BreakpointType]: UnitInputTokensType
+}
+
+export type UnitInputState =
+    | 'default'
+    | 'hover'
+    | 'focus'
+    | 'error'
+    | 'disabled'
+```

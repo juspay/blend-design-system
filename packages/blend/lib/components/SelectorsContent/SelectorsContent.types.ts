@@ -1,0 +1,55 @@
+import {
+    SelectorV2InteractionState,
+    SelectorV2Size,
+} from '../SelectorV2/selectorV2.types'
+
+export type SelectorsSize = SelectorV2Size
+
+export type SelectorsLabelTokensType = {
+    content: {
+        label: {
+            fontSize: Record<SelectorsSize, string | number>
+            fontWeight: Record<SelectorsSize, string | number>
+            lineHeight: Record<SelectorsSize, string | number>
+            color: Record<SelectorV2InteractionState, string>
+        }
+        required: {
+            color: string
+        }
+    }
+}
+
+export type SelectorsSubLabelTokensType = {
+    content: {
+        subLabel: {
+            fontSize: Record<SelectorsSize, string | number>
+            fontWeight: Record<SelectorsSize, string | number>
+            lineHeight: Record<SelectorsSize, string | number>
+            color: Record<SelectorV2InteractionState, string>
+        }
+    }
+}
+
+export type SelectorsLabelProps = {
+    id?: string
+    uniqueId: string
+    disabled: boolean
+    error: boolean
+    required: boolean
+    size: SelectorsSize
+    label: string
+    tokens: SelectorsLabelTokensType
+    maxLength?: number
+    elementType?: string
+}
+
+export type SelectorsSubLabelProps = {
+    id?: string
+    subLabel: string
+    size: SelectorsSize
+    disabled: boolean
+    error: boolean
+    tokens: SelectorsSubLabelTokensType
+    maxLength?: number
+    elementType?: string
+}

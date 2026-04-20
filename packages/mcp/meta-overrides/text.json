@@ -1,0 +1,41 @@
+{
+    "componentDescription": "Text is the typography component for rendering all text content with design system tokens. Use it instead of bare HTML tags (h1, p, span) to ensure consistent font sizes, weights, and line heights across the application.",
+    "features": [
+        "Semantic variant system (heading.lg, heading.md, body.md, body.sm, etc.)",
+        "Polymorphic rendering via 'as' prop (h1-h6, p, span, div, label)",
+        "Color token support",
+        "Text alignment",
+        "Inherits no extra margin by default"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Page heading and body text",
+            "description": "Heading and description text using design system variants.",
+            "code": "<div>\n  <Text variant=\"heading.lg\" as=\"h1\">Welcome back</Text>\n  <Text variant=\"body.md\" as=\"p\" color=\"text.subtle\">Here's what's happening with your account today.</Text>\n</div>"
+        },
+        {
+            "title": "Card with mixed typography",
+            "description": "Card header with heading and label variants.",
+            "code": "<Card>\n  <Text variant=\"heading.sm\" as=\"h3\">{user.name}</Text>\n  <Text variant=\"body.sm\" color=\"text.subtle\">{user.email}</Text>\n  <Text variant=\"label.md\" color=\"text.secondary\" style={{ marginTop: 8 }}>Joined {formatDate(user.createdAt)}</Text>\n</Card>"
+        }
+    ],
+    "propOverrides": {
+        "variant": {
+            "llmContext": "Controls font size, weight, and line height via design tokens. Common variants: 'heading.lg' (page titles), 'heading.md' (section titles), 'heading.sm' (card titles), 'body.md' (standard body text), 'body.sm' (secondary text), 'label.md' (field labels), 'label.sm' (captions). Always use semantic variants — do not override font-size manually.",
+            "propDescription": "Typography variant from the design token system"
+        },
+        "as": {
+            "llmContext": "The HTML element to render. Separate semantic meaning from visual appearance: you can render a 'heading.md' variant as an h2 for correct DOM hierarchy, or as a div if used in non-heading contexts. Use 'h1'-'h6' for headings, 'p' for paragraphs, 'span' for inline text, 'label' for form labels.",
+            "propDescription": "HTML element to render (h1-h6, p, span, div, label)"
+        },
+        "color": {
+            "llmContext": "Text color from design tokens. Use 'text.primary' for main content, 'text.subtle' or 'text.secondary' for supporting text, 'text.disabled' for inactive text. Avoid raw hex colors — always use token names.",
+            "propDescription": "Text color token"
+        },
+        "align": {
+            "llmContext": "'left' is the default for LTR text. Use 'center' for headings in empty states or hero sections. Use 'right' for numeric values in table cells. Avoid right-aligning body text.",
+            "propDescription": "Text alignment"
+        }
+    }
+}

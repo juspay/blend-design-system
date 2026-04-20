@@ -1,0 +1,362 @@
+---
+title: 'Blend MCP Server'
+description: 'Connect any MCP-compatible AI assistant to the Blend design system — get component discovery, prop lookup, code generation, validation, and token access, all grounded in the real component manifest.'
+author: 'Deepanshu Rai'
+publishDate: '2026-03-17'
+tags: ['mcp', 'ai', 'tools', 'developer-experience']
+category: 'tools'
+featured: false
+excerpt: 'The blend-ui-mcp server gives AI assistants like Claude, Cursor, and Windsurf real-time access to Blend components — no more hallucinated APIs or stale prop tables.'
+readTime: '10 min read'
+---
+
+The **Blend MCP Server** (`blend-ui-mcp`) connects MCP-compatible AI assistants — Claude, Cursor, Windsurf, Cline, and others — directly to the Blend design system. Instead of the AI guessing prop names or inventing enum values, it calls the server and gets accurate, manifest-backed answers about every component.
+
+## What It Does
+
+The server exposes **11 tools** that cover the full component development loop:
+
+- **Discover** what components exist and search by use-case
+- **Understand** props, enum values, and compound component structures
+- **Generate** correct React JSX with proper imports
+- **Validate** props before shipping — catch typos and invalid enums
+- **Scaffold** complete multi-component UI sections
+- **Access** design tokens for colors, spacing, borders, shadows, and typography
+
+Everything is grounded in the `manifest.json` that ships with the package — a pre-built snapshot of all component types extracted directly from the Blend TypeScript source.
+
+## Installation
+
+### Claude Desktop
+
+Open `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows) and add:
+
+```json
+{
+    "mcpServers": {
+        "blend-design-system": {
+            "command": "npx",
+            "args": ["-y", "blend-ui-mcp"]
+        }
+    }
+}
+```
+
+Save the file, restart Claude Desktop, then verify:
+
+> _"List all Blend design system components"_
+
+Claude should call `list_blend_components` and return the full catalog.
+
+### Cursor
+
+Create `.cursor/mcp.json` in your project root (or open Cursor Settings → MCP → Add new server):
+
+```json
+{
+    "mcpServers": {
+        "blend-design-system": {
+            "command": "npx",
+            "args": ["-y", "blend-ui-mcp"]
+        }
+    }
+}
+```
+
+### Windsurf
+
+Edit `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+    "mcpServers": {
+        "blend-design-system": {
+            "command": "npx",
+            "args": ["-y", "blend-ui-mcp"]
+        }
+    }
+}
+```
+
+### Cline (VS Code)
+
+Open the Cline panel → MCP Servers tab → Edit Config, then add the same `blend-design-system` entry above.
+
+## The 11 Tools
+
+### `list_blend_components`
+
+Lists all available Blend components, optionally filtered by category.
+
+| Param      | Type   | Required | Description                                                            |
+| ---------- | ------ | -------- | ---------------------------------------------------------------------- |
+| `category` | string | No       | `action`, `input`, `data-display`, `feedback`, `navigation`, `overlay` |
+
+```json
+{ "category": "input" }
+```
+
+---
+
+### `search_components`
+
+Search by keyword, use-case, or feature description when you don't know the exact component name.
+
+| Param   | Type   | Required | Description                      |
+| ------- | ------ | -------- | -------------------------------- |
+| `query` | string | Yes      | Keywords or use-case description |
+
+```json
+{ "query": "dropdown select options" }
+```
+
+---
+
+### `get_blend_component_props`
+
+Returns the full prop list for a component: names, types, required flags, defaults, enum references, and LLM guidance.
+
+| Param           | Type   | Required | Description                       |
+| --------------- | ------ | -------- | --------------------------------- |
+| `componentName` | string | Yes      | Component name (case-insensitive) |
+
+```json
+{
+    "componentName": "Button",
+    "props": [
+        {
+            "propName": "buttonType",
+            "propType": "ButtonType",
+            "required": false
+        },
+        { "propName": "text", "propType": "string", "required": false },
+        { "propName": "loading", "propType": "boolean", "required": false }
+    ]
+}
+```
+
+---
+
+### `get_component_variants`
+
+Returns all enum types and valid members for a component. Always call this before generating code to know exact enum values.
+
+```json
+{
+    "componentName": "Button",
+    "enums": {
+        "ButtonType": {
+            "PRIMARY": "primary",
+            "SECONDARY": "secondary",
+            "DANGER": "danger"
+        },
+        "ButtonSize": { "SMALL": "sm", "MEDIUM": "md", "LARGE": "lg" },
+        "ButtonSubType": {
+            "DEFAULT": "default",
+            "ICON_ONLY": "iconOnly",
+            "INLINE": "inline"
+        }
+    }
+}
+```
+
+---
+
+### `get_component_composition`
+
+Returns compound component structure, composition patterns, and usage examples. Essential for components like Accordion, Radio, Switch, and Tabs that require specific parent-child relationships.
+
+```json
+{
+    "componentName": "Accordion",
+    "isCompound": true,
+    "subComponents": ["AccordionItem"],
+    "compositionPattern": "Accordion wraps AccordionItem children. Each AccordionItem needs a unique 'value' and a 'title'."
+}
+```
+
+---
+
+### `generate_blend_component`
+
+Generates ready-to-use React JSX with correct prop syntax and import statements.
+
+| Param            | Type            | Required | Description                                |
+| ---------------- | --------------- | -------- | ------------------------------------------ |
+| `componentName`  | string          | Yes      | Component to generate                      |
+| `props`          | object          | Yes      | Props key-value map                        |
+| `children`       | string \| array | No       | String content or nested child specs       |
+| `includeImports` | boolean         | No       | Include import statement (default: `true`) |
+
+Input:
+
+```json
+{
+    "componentName": "Button",
+    "props": {
+        "buttonType": "ButtonType.DANGER",
+        "size": "ButtonSize.MEDIUM",
+        "text": "Delete account",
+        "loading": false
+    }
+}
+```
+
+Output:
+
+```tsx
+import { Button, ButtonSize, ButtonType } from '@juspay/blend-design-system'
+;<Button
+    buttonType={ButtonType.DANGER}
+    size={ButtonSize.MEDIUM}
+    text="Delete account"
+    loading={false}
+/>
+```
+
+---
+
+### `scaffold_blend_section`
+
+Generates a complete multi-component UI section. Returns production-ready JSX with imports.
+
+| sectionType                      | Description                                         |
+| -------------------------------- | --------------------------------------------------- |
+| `fintech_kpi_summary_with_chart` | KPI stat cards with a chart                         |
+| `transaction_list_with_controls` | DataTable with search, filters, and actions         |
+| `interactive_modal_with_form`    | Modal with TextInputs and Buttons                   |
+| `settings_form`                  | Settings page with Cards, TextInputs, SingleSelects |
+| `data_table_with_filters`        | DataTable with filter bar, search, export           |
+
+```json
+{
+    "sectionType": "fintech_kpi_summary_with_chart",
+    "options": { "title": "Financial Overview" }
+}
+```
+
+---
+
+### `validate_component_usage`
+
+Validates a props object against the manifest. Catches unknown props, suggests corrections for typos (fuzzy match), and flags invalid enum values.
+
+Input:
+
+```json
+{
+    "componentName": "Button",
+    "props": { "typ": "primary", "txt": "Submit" }
+}
+```
+
+Output:
+
+```json
+{
+    "valid": false,
+    "errors": [
+        "Unknown prop 'typ' on Button. Did you mean 'buttonType'?",
+        "Unknown prop 'txt' on Button. Did you mean 'text'?"
+    ]
+}
+```
+
+---
+
+### `get_theme_tokens`
+
+Returns Blend design token values by category.
+
+| Category     | Description                                  |
+| ------------ | -------------------------------------------- |
+| `colors`     | Full color palette and semantic color tokens |
+| `spacing`    | Spacing scale values                         |
+| `borders`    | Border widths and radius values              |
+| `shadows`    | Shadow definitions                           |
+| `typography` | Font families, sizes, and weights            |
+
+Omit `category` for an overview of all categories.
+
+---
+
+### `generate_component_documentation`
+
+Generates complete Markdown documentation for a component including props table, enum values, usage examples, and composition guide.
+
+---
+
+### `get_server_info`
+
+Returns server status, manifest metadata, component count by category, and full tool inventory. Useful for verifying the server is connected and up-to-date.
+
+```json
+{
+    "serverVersion": "2.0.2",
+    "mcpPackage": "blend-ui-mcp",
+    "blendPackage": "@juspay/blend-design-system",
+    "componentCount": 50,
+    "toolCount": 11,
+    "categories": {
+        "input": 20,
+        "data-display": 13,
+        "navigation": 7,
+        "feedback": 4,
+        "action": 2,
+        "overlay": 4
+    }
+}
+```
+
+## How the Manifest Works
+
+The server ships a `manifest.json` — a pre-built snapshot of all 50+ component props and enums extracted directly from the Blend TypeScript source. At startup the server loads this file and serves all tool responses from it. No live TypeScript compilation happens at runtime.
+
+The manifest is regenerated automatically before every npm publish via `prepublishOnly`. To regenerate it manually after component changes:
+
+```bash
+cd packages/mcp
+node generateManifest.js
+```
+
+### Adding LLM Context via Meta-Overrides
+
+Each component can have a `meta-overrides/<componentname>.json` file with hand-authored descriptions and prop guidance that gets merged into the manifest at generation time:
+
+```json
+{
+    "componentDescription": "Human-written description for the LLM.",
+    "compositionPattern": "Explain how to compose this component.",
+    "propOverrides": {
+        "buttonType": {
+            "llmContext": "Use ButtonType.PRIMARY for the main CTA. Use DANGER only for destructive actions like delete or revoke."
+        }
+    }
+}
+```
+
+## Environment Variables
+
+Only one variable is supported:
+
+| Variable                     | Default                       | Description                                                                                                          |
+| ---------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `BLEND_LIBRARY_PACKAGE_NAME` | `@juspay/blend-design-system` | The package name used in generated import statements. Override only if you have forked or renamed the Blend package. |
+
+## Keeping Up to Date
+
+`npx` caches packages by version. When a new `blend-ui-mcp` version is published, you get it automatically on the next restart. To force the latest immediately:
+
+```bash
+npx -y blend-ui-mcp@latest
+```
+
+## Links
+
+| Resource                     | URL                                                                                                                                |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Blend Design System (GitHub) | [github.com/juspay/blend-design-system](https://github.com/juspay/blend-design-system)                                             |
+| Blend Design System (npm)    | [npmjs.com/package/@juspay/blend-design-system](https://www.npmjs.com/package/@juspay/blend-design-system)                         |
+| MCP Server (npm)             | [npmjs.com/package/blend-ui-mcp](https://www.npmjs.com/package/blend-ui-mcp)                                                       |
+| MCP Server (GitHub)          | [github.com/juspay/blend-design-system/tree/dev/packages/mcp](https://github.com/juspay/blend-design-system/tree/dev/packages/mcp) |
+| Issues                       | [github.com/juspay/blend-design-system/issues](https://github.com/juspay/blend-design-system/issues)                               |
