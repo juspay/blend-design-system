@@ -1,14 +1,44 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { NumberInput, NumberInputSize } from '@juspay/blend-design-system'
+import {
+    NumberInput,
+    NumberInputSize,
+    ThemeProvider,
+} from '@juspay/blend-design-system'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
 
+/** Maps change events to `number | null` for controlled `value` (empty input → `null`). */
+const parseNumberInputValue = (
+    e: React.ChangeEvent<HTMLInputElement>
+): number | null => {
+    const { value } = e.target
+    if (value === '') return null
+    const n = Number(value)
+    return Number.isNaN(n) ? null : n
+}
+
+const parseIntInputValue = (
+    e: React.ChangeEvent<HTMLInputElement>
+): number | null => {
+    const { value } = e.target
+    if (value === '') return null
+    const n = parseInt(value, 10)
+    return Number.isNaN(n) ? null : n
+}
+
 const meta: Meta<typeof NumberInput> = {
     title: 'Components/Inputs/NumberInput',
     component: NumberInput,
+    decorators: [
+        (Story) => (
+            <ThemeProvider>
+                <Story />
+            </ThemeProvider>
+        ),
+    ],
     parameters: {
         layout: 'padded',
         // Use shared a11y config for interactive form controls
@@ -20,6 +50,7 @@ const meta: Meta<typeof NumberInput> = {
         docs: {
             description: {
                 component: `
+Legacy numeric input (v1) with validation, step controls, and min/max constraints. **New work should prefer [NumberInputV2](/?path=/docs/components-inputs-numberinputv2--docs)** (responsive tokens, units, slots, \`forwardRef\`).
 
 ## Usage
 
@@ -39,8 +70,9 @@ import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
 \`\`\`
 ## Features
 - Two sizes (Medium, Large)
+- Controlled \`value\`: \`number | null\` (empty → \`null\`)
 - Numeric validation with step controls
-- Min/max value constraints
+- Min/max value constraints; optional \`preventNegative\`
 - Error state handling with custom messages
 - Required field indication
 - Label, sublabel, and hint text support
@@ -73,6 +105,28 @@ import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
 - **Manual tests**: Verify with screen readers (VoiceOver/NVDA), keyboard-only navigation, and contrast tools
 
 > Note: WCAG 2.2 builds on 2.1 and 2.0; content that conforms to 2.2 also conforms to earlier versions [[WCAG 2 Overview](https://www.w3.org/WAI/standards-guidelines/wcag/#versions)].
+
+## Usage
+
+\`\`\`tsx
+import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
+
+const [age, setAge] = useState<number | null>(null);
+
+<NumberInput
+  label="Age"
+  placeholder="Enter your age"
+  value={age}
+  onChange={(e) => {
+    const v = e.target.value;
+    setAge(v === '' ? null : Number(v));
+  }}
+  min={0}
+  max={120}
+  size={NumberInputSize.MEDIUM}
+  required
+/>
+\`\`\`
         `,
             },
         },
@@ -80,9 +134,10 @@ import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
     argTypes: {
         value: {
             control: { type: 'number' },
-            description: 'Current numeric value of the input',
+            description:
+                'Current numeric value of the input (`null` when empty)',
             table: {
-                type: { summary: 'number | undefined' },
+                type: { summary: 'number | null' },
                 category: 'Core',
             },
         },
@@ -93,6 +148,14 @@ import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
                 type: {
                     summary: '(e: React.ChangeEvent<HTMLInputElement>) => void',
                 },
+                category: 'Core',
+            },
+        },
+        name: {
+            control: { type: 'text' },
+            description: 'Name attribute for the input (forms / accessibility)',
+            table: {
+                type: { summary: 'string' },
                 category: 'Core',
             },
         },
@@ -118,6 +181,15 @@ import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
             description: 'Maximum allowed value',
             table: {
                 type: { summary: 'number' },
+                category: 'Numeric',
+            },
+        },
+        preventNegative: {
+            control: { type: 'boolean' },
+            description: 'When true, blocks negative values in the field',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
                 category: 'Numeric',
             },
         },
@@ -242,9 +314,7 @@ export const Default: Story = {
             <NumberInput
                 {...args}
                 value={value}
-                onChange={(e) =>
-                    setValue(e.target.value ? parseFloat(e.target.value) : null)
-                }
+                onChange={(e) => setValue(parseNumberInputValue(e))}
             />
         )
     },
@@ -260,7 +330,7 @@ export const Default: Story = {
 
 // Different sizes
 export const Sizes: Story = {
-    render: () => {
+    render: function SizesStory() {
         const [values, setValues] = useState({
             medium: null as number | null,
             large: null as number | null,
@@ -276,9 +346,7 @@ export const Sizes: Story = {
                     onChange={(e) =>
                         setValues((prev) => ({
                             ...prev,
-                            medium: e.target.value
-                                ? parseFloat(e.target.value)
-                                : null,
+                            medium: parseNumberInputValue(e),
                         }))
                     }
                 />
@@ -290,9 +358,7 @@ export const Sizes: Story = {
                     onChange={(e) =>
                         setValues((prev) => ({
                             ...prev,
-                            large: e.target.value
-                                ? parseFloat(e.target.value)
-                                : null,
+                            large: parseNumberInputValue(e),
                         }))
                     }
                 />
@@ -310,7 +376,7 @@ export const Sizes: Story = {
 
 // With constraints
 export const WithConstraints: Story = {
-    render: () => {
+    render: function WithConstraintsStory() {
         const [values, setValues] = useState({
             age: null as number | null,
             percentage: null as number | null,
@@ -329,9 +395,7 @@ export const WithConstraints: Story = {
                     onChange={(e) =>
                         setValues((prev) => ({
                             ...prev,
-                            age: e.target.value
-                                ? parseInt(e.target.value)
-                                : null,
+                            age: parseIntInputValue(e),
                         }))
                     }
                     hintText="Must be between 0 and 120"
@@ -346,9 +410,7 @@ export const WithConstraints: Story = {
                     onChange={(e) =>
                         setValues((prev) => ({
                             ...prev,
-                            percentage: e.target.value
-                                ? parseFloat(e.target.value)
-                                : null,
+                            percentage: parseNumberInputValue(e),
                         }))
                     }
                     hintText="Between 0% and 100%"
@@ -362,9 +424,7 @@ export const WithConstraints: Story = {
                     onChange={(e) =>
                         setValues((prev) => ({
                             ...prev,
-                            price: e.target.value
-                                ? parseFloat(e.target.value)
-                                : null,
+                            price: parseNumberInputValue(e),
                         }))
                     }
                     hintText="Enter amount in dollars"
@@ -383,7 +443,7 @@ export const WithConstraints: Story = {
 
 // Error and validation states
 export const ErrorStates: Story = {
-    render: () => {
+    render: function ErrorStatesStory() {
         const [values, setValues] = useState({
             required: null as number | null,
             outOfRange: 150 as number | null,
@@ -399,9 +459,7 @@ export const ErrorStates: Story = {
                     onChange={(e) =>
                         setValues((prev) => ({
                             ...prev,
-                            required: e.target.value
-                                ? parseFloat(e.target.value)
-                                : null,
+                            required: parseNumberInputValue(e),
                         }))
                     }
                     required
@@ -419,9 +477,7 @@ export const ErrorStates: Story = {
                     onChange={(e) =>
                         setValues((prev) => ({
                             ...prev,
-                            outOfRange: e.target.value
-                                ? parseInt(e.target.value)
-                                : null,
+                            outOfRange: parseIntInputValue(e),
                         }))
                     }
                     error={
@@ -439,9 +495,7 @@ export const ErrorStates: Story = {
                     onChange={(e) =>
                         setValues((prev) => ({
                             ...prev,
-                            valid: e.target.value
-                                ? parseInt(e.target.value)
-                                : null,
+                            valid: parseIntInputValue(e),
                         }))
                     }
                 />
@@ -487,7 +541,7 @@ export const DisabledState: Story = {
 
 // With comprehensive labels
 export const WithLabelsAndHints: Story = {
-    render: () => {
+    render: function WithLabelsAndHintsStory() {
         const [value, setValue] = useState<number | null>(null)
 
         return (
@@ -500,9 +554,7 @@ export const WithLabelsAndHints: Story = {
                 min={0}
                 step={100}
                 value={value}
-                onChange={(e) =>
-                    setValue(e.target.value ? parseFloat(e.target.value) : null)
-                }
+                onChange={(e) => setValue(parseNumberInputValue(e))}
                 required
             />
         )
@@ -513,5 +565,134 @@ export const WithLabelsAndHints: Story = {
                 story: 'NumberInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
+    },
+}
+
+// Accessibility-focused examples
+export const Accessibility: Story = {
+    render: function AccessibilityStory() {
+        const [age, setAge] = useState<number | null>(null)
+        const [income, setIncome] = useState<number | null>(null)
+        const [percentage, setPercentage] = useState<number | null>(null)
+
+        const ageError =
+            age !== null && (age < 0 || age > 120)
+                ? 'Age must be between 0 and 120'
+                : ''
+
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    padding: '24px',
+                    maxWidth: '800px',
+                }}
+            >
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Labels, Required Fields, and Hints
+                    </h3>
+                    <NumberInput
+                        label="Monthly Income"
+                        sublabel="Before taxes and deductions"
+                        hintText="Enter your gross monthly income in USD"
+                        placeholder="5000"
+                        min={0}
+                        step={100}
+                        value={income}
+                        onChange={(e) => setIncome(parseNumberInputValue(e))}
+                        required
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Error Messaging and Validation
+                    </h3>
+                    <NumberInput
+                        label="Age"
+                        placeholder="Enter your age"
+                        min={0}
+                        max={120}
+                        step={1}
+                        value={age}
+                        onChange={(e) => setAge(parseIntInputValue(e))}
+                        error={!!ageError}
+                        errorMessage={ageError}
+                        required
+                        hintText="Must be between 0 and 120"
+                    />
+                </section>
+
+                <section>
+                    <h3
+                        style={{
+                            marginBottom: '12px',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                        }}
+                    >
+                        Disabled and Read-Only Contexts
+                    </h3>
+                    <NumberInput
+                        label="Disabled Percentage"
+                        value={percentage}
+                        onChange={(e) =>
+                            setPercentage(parseNumberInputValue(e))
+                        }
+                        min={0}
+                        max={100}
+                        step={0.5}
+                        disabled
+                        hintText="Disabled fields are not focusable and do not submit values"
+                    />
+                </section>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Accessibility examples demonstrating labeling, required indicators, error messaging, disabled state, and keyboard-friendly focus behavior for numeric inputs.
+
+### Accessibility Verification
+
+1. **Storybook a11y addon**:
+   - Open the Accessibility panel and verify there are no violations for these scenarios.
+   - Pay special attention to label / control associations, numeric constraints, and error messaging.
+
+2. **jest-axe tests**:
+   - Add \`NumberInput.accessibility.test.tsx\` mirroring TextInput/Button tests and run:
+   \`\`\`bash
+   pnpm test NumberInput.accessibility
+   \`\`\`
+   - Validate WCAG 2.1/2.2 A and AA success criteria for form fields (labels, errors, keyboard support, numeric constraints).
+
+3. **Manual testing**:
+   - Navigate using keyboard only (Tab / Shift+Tab, arrow keys / buttons for value changes).
+   - Use a screen reader (VoiceOver/NVDA) to confirm labels, hints, and errors are announced.
+   - Verify color contrast of text, borders, and focus styles using contrast tools.
+                `,
+            },
+        },
+        a11y: {
+            ...getA11yConfig('form'),
+        },
+        chromatic: CHROMATIC_CONFIG,
     },
 }

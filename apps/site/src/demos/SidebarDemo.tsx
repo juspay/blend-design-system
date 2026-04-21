@@ -241,7 +241,7 @@ const SidebarDemo = () => {
         | 'numberInputV2'
         | 'otpInputV2'
         | 'textAreaV2'
-    >('textAreaV2')
+    >('numberInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
