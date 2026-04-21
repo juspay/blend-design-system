@@ -11,7 +11,7 @@ Create a compact search field that supports:
 - **Built-in clear**: When **`allowClear`** is true (default), there is no custom **`rightSlot`**, and **`value`** is non-empty, a default **clear** affordance is shown on the right (Phosphor **`XIcon`** unless **`clearIcon`** is provided). Clicking the right slot container runs **`onClear`** if passed; otherwise **`onChange`** is invoked with a **synthetic** event whose `target.value` is `''`.
 - **Custom right slot**: If **`rightSlot`** is set, it replaces the built-in clear region; the clear click handler on the wrapper only applies when using the built-in clear (no custom `rightSlot`).
 - **States**: **`error`** (boolean) affects `aria-invalid` and error styling; **`disabled`** disables the native input and applies disabled tokens; other safe HTML input attributes pass through **`rest`** (after **`filterBlockedProps`**), except **`required`** is omitted from the public props type.
-- **Focus styling on slots**: Left/right slot wrappers scale slightly and change opacity when the input is focused (internal `isFocused`).
+- **Slot wrapper styling**: Left/right slot wrappers use the configured slot styling (including transform where provided); the current implementation does not apply additional focus-only transform or opacity changes based on internal `isFocused`.
 - **Theme**: Responsive tokens via **`useResponsiveTokens('SEARCH_INPUT_V2')`**; **`getSearchInputV2Tokens`** in `SearchInputV2.tokens.ts` selects **light** vs **dark** factories (`SearchInputV2.light.tokens.ts` / `SearchInputV2.dark.tokens.ts`) from `ThemeProvider`.
 - **Ref forwarding**: Consumer **`ref`** attaches to the underlying **`PrimitiveInput`** / `<input>`.
 - **No built-in label row**: Unlike `TextInputV2`, there is no `InputLabelsV2` — provide an external label or **`aria-label`** / **`aria-labelledby`** for accessibility.
@@ -31,7 +31,7 @@ Create a compact search field that supports:
 
 - **Wrapper**: `Block` — `data-searchinput={placeholder}`, `data-status` enabled/disabled.
 - **Slots**: `Block` with `data-element="left-slot"` / `"right-slot"`, `ref` for width measurement, `applyIconStyles` for icon color/size from tokens.
-- **Field**: `PrimitiveInput` — `paddingInlineStart` / `paddingInlineEnd` / `paddingY`, `borderBottom` / `_hover` / `_focus` / `_disabled`, `placeholderStyles` opacity tied to focus.
+- **Field**: `PrimitiveInput` — `paddingInlineStart` / `paddingInlineEnd` / `paddingY`, `borderBottom` / `_hover` / `_focus` / `_disabled` styling for the underline field states.
 
 _(Optional: add `SearchInputV2Anatomy.png` beside this doc when a diagram is available.)_
 

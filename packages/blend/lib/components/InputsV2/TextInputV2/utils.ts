@@ -8,23 +8,6 @@ export const FOCUS_RING_STYLES = {
 export const TRANSITION =
     'border 200ms ease-in-out, box-shadow 200ms ease-in-out, background-color 200ms ease-in-out'
 
-export const getInteractionState = (state: InputStateV2) => {
-    switch (state) {
-        case InputStateV2.DEFAULT:
-            return 'default'
-        case InputStateV2.HOVER:
-            return 'hover'
-        case InputStateV2.FOCUS:
-            return 'focus'
-        case InputStateV2.ERROR:
-            return 'error'
-        case InputStateV2.DISABLED:
-            return 'disabled'
-        default:
-            return 'default'
-    }
-}
-
 export const getInputState = (
     error?: { show: boolean } | null,
     disabled?: boolean

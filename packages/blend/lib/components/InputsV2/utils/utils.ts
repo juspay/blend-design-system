@@ -1,4 +1,4 @@
-import { AnyRef } from '../inputV2.types'
+import { AnyRef, InputStateV2 } from '../inputV2.types'
 
 export const setExternalRef = <T>(ref: AnyRef<T>, value: T | null): void => {
     if (!ref) return
@@ -17,5 +17,22 @@ export const generateAccessibilityIds = (baseId: string) => {
         hintId: `${baseId}-hint`,
         groupId: `${baseId}-group`,
         firstInputId: `${baseId}-0`,
+    }
+}
+
+export const getInteractionState = (state: InputStateV2) => {
+    switch (state) {
+        case InputStateV2.DEFAULT:
+            return 'default'
+        case InputStateV2.HOVER:
+            return 'hover'
+        case InputStateV2.FOCUS:
+            return 'focus'
+        case InputStateV2.ERROR:
+            return 'error'
+        case InputStateV2.DISABLED:
+            return 'disabled'
+        default:
+            return 'default'
     }
 }

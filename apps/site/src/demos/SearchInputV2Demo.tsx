@@ -140,8 +140,8 @@ const SearchInputV2Demo = () => {
                         <div className="w-full max-w-md">
                             <SearchInputV2
                                 data-id={'Enter search query'}
-                                data-input-name={playgroundValue}
-                                name={playgroundValue}
+                                data-input-name="search"
+                                name="search"
                                 value={playgroundValue}
                                 onChange={(e) =>
                                     setPlaygroundValue(e.target.value)

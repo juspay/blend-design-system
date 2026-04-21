@@ -7,9 +7,16 @@ import type { SearchInputV2Props } from './SearchInputV2.types'
 import type { SearchInputV2TokensType } from './SearchInputV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
-import { applyIconStyles, toPixels } from './utils'
-import { getInteractionState } from '../TextInputV2/utils'
-import { InputStateV2 } from '../inputV2.types'
+import {
+    applyIconStyles,
+    createSearchInputV2ClearHandler,
+    getSearchInputV2InputStateKey,
+    getSearchInputV2PaddingInline,
+    getSearchInputV2PrimitiveInputChrome,
+    getSearchInputV2SlotWrapperStyle,
+    shouldShowSearchInputV2Clear,
+    toPixels,
+} from './utils'
 
 const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
     (
@@ -41,32 +48,26 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
         const [leftSlotWidth, setLeftSlotWidth] = useState(0)
         const [rightSlotWidth, setRightSlotWidth] = useState(0)
         const [isFocused, setIsFocused] = useState(false)
-        const inputState = useMemo(
-            () =>
-                getInteractionState(
-                    error
-                        ? InputStateV2.ERROR
-                        : isFocused
-                          ? InputStateV2.FOCUS
-                          : InputStateV2.DEFAULT
-                ),
-            [error, isFocused]
-        )
-        const showClearButton = allowClear && value && value.length > 0
 
-        const handleClear = () => {
-            if (onClear) {
-                onClear()
-            } else if (onChange) {
-                const syntheticEvent = {
-                    target: { value: '' },
-                    currentTarget: { value: '' },
-                    preventDefault: () => {},
-                    stopPropagation: () => {},
-                } as React.ChangeEvent<HTMLInputElement>
-                onChange(syntheticEvent)
-            }
-        }
+        const inputState = useMemo(
+            () => getSearchInputV2InputStateKey(error, isFocused, disabled),
+            [error, isFocused, disabled]
+        )
+
+        const showClearButton = useMemo(
+            () => shouldShowSearchInputV2Clear(allowClear, value, disabled),
+            [allowClear, value, disabled]
+        )
+
+        const handleClear = useMemo(
+            () =>
+                createSearchInputV2ClearHandler({
+                    disabled,
+                    onClear,
+                    onChange,
+                }),
+            [disabled, onClear, onChange]
+        )
 
         const effectiveRightSlot = useMemo(
             () =>
@@ -94,36 +95,58 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
         }, [leftSlot, effectiveRightSlot])
 
         const paddingX = toPixels(
-            searchInputTokens.inputContainer.paddingTop.sm
+            searchInputTokens.inputContainer.paddingLeft.sm
         )
         const paddingY = toPixels(
             searchInputTokens.inputContainer.paddingTop.sm
         )
         const GAP = toPixels(searchInputTokens.gap)
 
-        const paddingInlineStart = leftSlot
-            ? paddingX + leftSlotWidth + GAP
-            : paddingX
-        const paddingInlineEnd = effectiveRightSlot
-            ? paddingX + rightSlotWidth + GAP
-            : paddingX
+        const { paddingInlineStart, paddingInlineEnd } = useMemo(
+            () =>
+                getSearchInputV2PaddingInline({
+                    paddingX,
+                    gap: GAP,
+                    hasLeftSlot: Boolean(leftSlot),
+                    leftSlotWidth,
+                    hasRightSlot: Boolean(effectiveRightSlot),
+                    rightSlotWidth,
+                }),
+            [
+                paddingX,
+                GAP,
+                leftSlot,
+                leftSlotWidth,
+                effectiveRightSlot,
+                rightSlotWidth,
+            ]
+        )
+
+        const slotWrapperStyle = useMemo(
+            () =>
+                getSearchInputV2SlotWrapperStyle(
+                    searchInputTokens.inputContainer.slot,
+                    inputState
+                ),
+            [searchInputTokens.inputContainer.slot, inputState]
+        )
+
+        const primitiveChrome = useMemo(
+            () =>
+                getSearchInputV2PrimitiveInputChrome(
+                    searchInputTokens.inputContainer,
+                    disabled,
+                    error
+                ),
+            [searchInputTokens.inputContainer, disabled, error]
+        )
 
         const styledLeftSlot = leftSlot
-            ? applyIconStyles(
-                  leftSlot,
-                  searchInputTokens,
-                  disabled || false,
-                  error
-              )
+            ? applyIconStyles(leftSlot, searchInputTokens, inputState)
             : null
 
         const styledRightSlot = effectiveRightSlot
-            ? applyIconStyles(
-                  effectiveRightSlot,
-                  searchInputTokens,
-                  disabled || false,
-                  error
-              )
+            ? applyIconStyles(effectiveRightSlot, searchInputTokens, inputState)
             : null
 
         return (
@@ -144,16 +167,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
                             searchInputTokens.inputContainer.slot.left.bottom
                         }
                         contentCentered
-                        style={{
-                            transition:
-                                searchInputTokens.inputContainer.slot
-                                    .transition,
-                            transform:
-                                searchInputTokens.inputContainer.slot.transform,
-                            color: searchInputTokens.inputContainer.slot.color[
-                                inputState
-                            ],
-                        }}
+                        style={slotWrapperStyle}
                     >
                         {styledLeftSlot}
                     </Block>
@@ -164,6 +178,14 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
                         data-element="right-slot"
                         ref={rightSlotRef}
                         position="absolute"
+                        role={
+                            showClearButton && !rightSlot ? 'button' : undefined
+                        }
+                        aria-label={
+                            showClearButton && !rightSlot
+                                ? 'Clear search'
+                                : undefined
+                        }
                         top={searchInputTokens.inputContainer.slot.right.top}
                         right={
                             searchInputTokens.inputContainer.slot.right.right
@@ -178,14 +200,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
                                 : undefined
                         }
                         style={{
-                            transition:
-                                searchInputTokens.inputContainer.slot
-                                    .transition,
-                            transform:
-                                searchInputTokens.inputContainer.slot.transform,
-                            color: searchInputTokens.inputContainer.slot.color[
-                                inputState
-                            ],
+                            ...slotWrapperStyle,
                             cursor:
                                 showClearButton && !rightSlot
                                     ? 'pointer'
@@ -216,50 +231,18 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
                     paddingY={paddingY}
                     outline={searchInputTokens.inputContainer.outline}
                     borderRadius={searchInputTokens.inputContainer.borderRadius}
-                    borderBottom={
-                        disabled
-                            ? searchInputTokens.inputContainer.borderBottom
-                                  .disabled
-                            : error
-                              ? searchInputTokens.inputContainer.borderBottom
-                                    .error
-                              : searchInputTokens.inputContainer.borderBottom
-                                    .default
-                    }
-                    color={
-                        disabled
-                            ? searchInputTokens.inputContainer.color.disabled
-                            : error
-                              ? searchInputTokens.inputContainer.color.error
-                              : searchInputTokens.inputContainer.color.default
-                    }
+                    borderBottom={primitiveChrome.borderBottom}
+                    color={primitiveChrome.color}
                     fontSize={searchInputTokens.inputContainer.fontSize}
                     fontWeight={searchInputTokens.inputContainer.fontWeight}
                     transition="border-bottom 200ms ease-in-out, color 200ms ease-in-out"
                     _hover={{
-                        borderBottom: disabled
-                            ? searchInputTokens.inputContainer.borderBottom
-                                  .disabled
-                            : searchInputTokens.inputContainer.borderBottom
-                                  .hover,
-                        color: disabled
-                            ? searchInputTokens.inputContainer.color.disabled
-                            : searchInputTokens.inputContainer.color.hover,
+                        borderBottom: primitiveChrome.hover.borderBottom,
+                        color: primitiveChrome.hover.color,
                     }}
                     _focus={{
-                        borderBottom: disabled
-                            ? searchInputTokens.inputContainer.borderBottom
-                                  .disabled
-                            : error
-                              ? searchInputTokens.inputContainer.borderBottom
-                                    .error
-                              : searchInputTokens.inputContainer.borderBottom
-                                    .focus,
-                        color: disabled
-                            ? searchInputTokens.inputContainer.color.disabled
-                            : error
-                              ? searchInputTokens.inputContainer.color.error
-                              : searchInputTokens.inputContainer.color.focus,
+                        borderBottom: primitiveChrome.focus.borderBottom,
+                        color: primitiveChrome.focus.color,
                     }}
                     disabled={disabled}
                     _disabled={{
