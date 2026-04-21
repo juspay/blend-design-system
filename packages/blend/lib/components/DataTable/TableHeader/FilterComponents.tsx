@@ -1229,6 +1229,13 @@ export const DateFilter: React.FC<{
     filterState: FilterState
     onColumnFilter?: ColumnFilterHandler
 }> = ({ column, fieldKey, tableToken, filterState, onColumnFilter }) => {
+    const toLocalDateString = (date: Date): string => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+    }
+
     const selectedValue = filterState.columnSelectedValues[fieldKey]
     const selectedRange = Array.isArray(selectedValue)
         ? selectedValue
@@ -1245,18 +1252,17 @@ export const DateFilter: React.FC<{
                       : new Date(selectedRange[0]),
               }
             : undefined
+    const hasActiveDateRange = selectedRange.length > 0
 
     return (
-        <Block
-            display="flex"
-            flexDirection="column"
-            padding={`${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[8]}`}
-        >
+        <Block display="flex" flexDirection="column">
             <DateRangePicker
                 value={pickerValue}
                 onChange={(range) => {
-                    const start = range.startDate.toISOString()
-                    const end = (range.endDate || range.startDate).toISOString()
+                    const start = toLocalDateString(range.startDate)
+                    const end = toLocalDateString(
+                        range.endDate || range.startDate
+                    )
                     onColumnFilter?.(
                         String(column.field),
                         FilterType.DATE,
@@ -1269,7 +1275,13 @@ export const DateFilter: React.FC<{
                 showPresets={false}
                 allowSingleDateSelection={false}
                 useDrawerOnMobile={false}
+                popoverConfig={{
+                    side: 'right',
+                    align: 'start',
+                    sideOffset: 10,
+                }}
                 triggerConfig={{
+                    style: { width: '100%' },
                     renderTrigger: ({ onClick }) => (
                         <MenuItem
                             icon={
@@ -1297,10 +1309,35 @@ export const DateFilter: React.FC<{
                                 />
                             }
                             tableToken={tableToken}
+                            style={{ width: '100%' }}
                         />
                     ),
                 }}
             />
+            {hasActiveDateRange && (
+                <MenuItem
+                    icon={
+                        <TrashSimpleIcon
+                            size={FOUNDATION_THEME.unit[16]}
+                            color={FOUNDATION_THEME.colors.red[600]}
+                            weight="bold"
+                        />
+                    }
+                    label="Clear Filter"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onColumnFilter?.(
+                            String(column.field),
+                            FilterType.DATE,
+                            [],
+                            'range'
+                        )
+                    }}
+                    isDestructive
+                    tableToken={tableToken}
+                    style={{ width: '100%' }}
+                />
+            )}
         </Block>
     )
 }

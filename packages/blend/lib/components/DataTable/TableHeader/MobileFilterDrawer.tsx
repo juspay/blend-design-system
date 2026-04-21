@@ -67,6 +67,12 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     onPopoverClose,
 }) => {
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
+    const toLocalDateString = (date: Date): string => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
+    }
 
     const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
     const fieldKey = String(column.field)
@@ -649,12 +655,13 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                                 }
                                             })()}
                                             onChange={(range) => {
-                                                const start =
-                                                    range.startDate.toISOString()
-                                                const end = (
-                                                    range.endDate ||
+                                                const start = toLocalDateString(
                                                     range.startDate
-                                                ).toISOString()
+                                                )
+                                                const end = toLocalDateString(
+                                                    range.endDate ||
+                                                        range.startDate
+                                                )
                                                 onColumnFilter?.(
                                                     fieldKey,
                                                     FilterType.DATE,
