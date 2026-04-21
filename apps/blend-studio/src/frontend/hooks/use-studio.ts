@@ -12,6 +12,7 @@ import {
     executeMutation,
     type DataSource,
 } from '@/api/data-source'
+import type { TokenLock, MergeRequest } from '@/api/backend'
 import type {
     Branch,
     BranchListOptions,
@@ -298,7 +299,9 @@ export function useBranchWithMock(branchId: string | null) {
 
     return {
         branch: query.data ?? null,
-        loading: query.isLoading || query.isFetching,
+        // `isFetching` includes background refetches (e.g. after snapshot invalidation).
+        // Using it as "loading" causes editor pages to unmount/remount and lose focus/UI state.
+        loading: query.isLoading,
         error: query.error instanceof Error ? query.error.message : null,
         updateBranch,
         refetch: query.refetch,
@@ -513,7 +516,7 @@ export function useCreateSnapshotWithMock(branchId: string | null) {
             isAutoSave = true
         ): Promise<Snapshot | null> =>
             mutation.mutateAsync({ brandConfig, label, isAutoSave }),
-        [mutation]
+        [mutation.mutateAsync]
     )
 
     return { createSnapshot, loading: mutation.isPending }
@@ -670,17 +673,43 @@ export function useResolvedTokensWithMock(
 // Organization Hooks
 // ---------------------------------------------------------------------------
 
+type OrganizationData = {
+    id: string
+    name: string
+    slug: string
+    defaultBranchId: string | null
+    blendVersion: string | null
+    wcagEnforcement: string
+    createdAt: string
+    updatedAt: string
+}
+
 export function useOrganization(orgId: string | null) {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
 
     const query = useQuery({
-        queryKey: ['organization', orgId],
+        queryKey: ['organization', source.type, orgId],
+        enabled: source.type !== 'none' && !!orgId,
         queryFn: async () => {
-            if (!token || !orgId) return null
-            const { getOrganizationBackend } = await import('@/api/backend')
-            return getOrganizationBackend(token, orgId)
+            const result =
+                await executeQueryWithDefault<OrganizationData | null>(
+                    source,
+                    {
+                        backend: async (token) => {
+                            const { getOrganizationBackend } =
+                                await import('@/api/backend')
+                            return getOrganizationBackend(token, orgId!)
+                        },
+                        mock: async () => {
+                            const { mockGovernanceApi } =
+                                await import('@/api/mock/mock-governance')
+                            return mockGovernanceApi.getOrganization(orgId!)
+                        },
+                    },
+                    null
+                )
+            return result
         },
-        enabled: !!token && !!orgId,
     })
 
     return {
@@ -691,7 +720,7 @@ export function useOrganization(orgId: string | null) {
 }
 
 export function useUpdateOrganization() {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
@@ -704,9 +733,26 @@ export function useUpdateOrganization() {
                 wcagEnforcement?: 'none' | 'warn' | 'block'
             }
         }) => {
-            if (!token) throw new Error('Not authenticated')
-            const { updateOrganizationBackend } = await import('@/api/backend')
-            return updateOrganizationBackend(token, input.orgId, input.updates)
+            const result = await executeMutation<OrganizationData>(source, {
+                backend: async (token) => {
+                    const { updateOrganizationBackend } =
+                        await import('@/api/backend')
+                    return updateOrganizationBackend(
+                        token,
+                        input.orgId,
+                        input.updates
+                    )
+                },
+                mock: async () => {
+                    const { mockGovernanceApi } =
+                        await import('@/api/mock/mock-governance')
+                    return mockGovernanceApi.updateOrganization(
+                        input.orgId,
+                        input.updates
+                    )
+                },
+            })
+            return result
         },
         onSuccess: (
             _data: unknown,
@@ -738,16 +784,30 @@ export function useUpdateOrganization() {
 // ---------------------------------------------------------------------------
 
 export function useTokenLocks(orgId: string | null) {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
 
     const query = useQuery({
-        queryKey: ['tokenLocks', orgId],
+        queryKey: ['tokenLocks', source.type, orgId],
+        enabled: source.type !== 'none' && !!orgId,
         queryFn: async () => {
-            if (!token || !orgId) return []
-            const { listTokenLocksBackend } = await import('@/api/backend')
-            return listTokenLocksBackend(token, orgId)
+            const result = await executeQueryWithDefault<TokenLock[]>(
+                source,
+                {
+                    backend: async (token) => {
+                        const { listTokenLocksBackend } =
+                            await import('@/api/backend')
+                        return listTokenLocksBackend(token, orgId!)
+                    },
+                    mock: async () => {
+                        const { mockGovernanceApi } =
+                            await import('@/api/mock/mock-governance')
+                        return mockGovernanceApi.listTokenLocks(orgId!)
+                    },
+                },
+                []
+            )
+            return result
         },
-        enabled: !!token && !!orgId,
     })
 
     return {
@@ -758,7 +818,7 @@ export function useTokenLocks(orgId: string | null) {
 }
 
 export function useLockToken() {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
@@ -767,14 +827,27 @@ export function useLockToken() {
             tokenPath: string
             reason?: string
         }) => {
-            if (!token) throw new Error('Not authenticated')
-            const { lockTokenBackend } = await import('@/api/backend')
-            return lockTokenBackend(
-                token,
-                input.orgId,
-                input.tokenPath,
-                input.reason
-            )
+            const result = await executeMutation<TokenLock>(source, {
+                backend: async (token) => {
+                    const { lockTokenBackend } = await import('@/api/backend')
+                    return lockTokenBackend(
+                        token,
+                        input.orgId,
+                        input.tokenPath,
+                        input.reason
+                    )
+                },
+                mock: async () => {
+                    const { mockGovernanceApi } =
+                        await import('@/api/mock/mock-governance')
+                    return mockGovernanceApi.lockToken(
+                        input.orgId,
+                        input.tokenPath,
+                        input.reason
+                    )
+                },
+            })
+            return result
         },
         onSuccess: (
             _data: unknown,
@@ -794,14 +867,29 @@ export function useLockToken() {
 }
 
 export function useUnlockToken() {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
         mutationFn: async (input: { orgId: string; tokenPath: string }) => {
-            if (!token) throw new Error('Not authenticated')
-            const { unlockTokenBackend } = await import('@/api/backend')
-            return unlockTokenBackend(token, input.orgId, input.tokenPath)
+            await executeMutation<void>(source, {
+                backend: async (token) => {
+                    const { unlockTokenBackend } = await import('@/api/backend')
+                    return unlockTokenBackend(
+                        token,
+                        input.orgId,
+                        input.tokenPath
+                    )
+                },
+                mock: async () => {
+                    const { mockGovernanceApi } =
+                        await import('@/api/mock/mock-governance')
+                    return mockGovernanceApi.unlockToken(
+                        input.orgId,
+                        input.tokenPath
+                    )
+                },
+            })
         },
         onSuccess: (
             _data: unknown,
@@ -828,16 +916,34 @@ export function useMergeRequests(options?: {
     organizationId?: string
     status?: string
 }) {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
 
     const query = useQuery({
-        queryKey: ['mergeRequests', options],
+        queryKey: ['mergeRequests', source.type, options],
+        enabled: source.type !== 'none',
         queryFn: async () => {
-            if (!token) return { mergeRequests: [] }
-            const { listMergeRequestsBackend } = await import('@/api/backend')
-            return listMergeRequestsBackend(token, options)
+            const result = await executeQueryWithDefault<{
+                mergeRequests: MergeRequest[]
+            }>(
+                source,
+                {
+                    backend: async (token) => {
+                        const { listMergeRequestsBackend } =
+                            await import('@/api/backend')
+                        return listMergeRequestsBackend(token, options)
+                    },
+                    mock: async () => {
+                        const { mockGovernanceApi } =
+                            await import('@/api/mock/mock-governance')
+                        return mockGovernanceApi.listMergeRequests({
+                            status: options?.status,
+                        })
+                    },
+                },
+                { mergeRequests: [] }
+            )
+            return result
         },
-        enabled: !!token,
     })
 
     return {
@@ -848,16 +954,30 @@ export function useMergeRequests(options?: {
 }
 
 export function useMergeRequest(mrId: string | null) {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
 
     const query = useQuery({
-        queryKey: ['mergeRequest', mrId],
+        queryKey: ['mergeRequest', source.type, mrId],
+        enabled: source.type !== 'none' && !!mrId,
         queryFn: async () => {
-            if (!token || !mrId) return null
-            const { getMergeRequestBackend } = await import('@/api/backend')
-            return getMergeRequestBackend(token, mrId)
+            const result = await executeQueryWithDefault<MergeRequest | null>(
+                source,
+                {
+                    backend: async (token) => {
+                        const { getMergeRequestBackend } =
+                            await import('@/api/backend')
+                        return getMergeRequestBackend(token, mrId!)
+                    },
+                    mock: async () => {
+                        const { mockGovernanceApi } =
+                            await import('@/api/mock/mock-governance')
+                        return mockGovernanceApi.getMergeRequest(mrId!)
+                    },
+                },
+                null
+            )
+            return result
         },
-        enabled: !!token && !!mrId,
     })
 
     return {
@@ -868,7 +988,7 @@ export function useMergeRequest(mrId: string | null) {
 }
 
 export function useCreateMergeRequest() {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
@@ -879,9 +999,19 @@ export function useCreateMergeRequest() {
             description?: string
             organizationId?: string
         }) => {
-            if (!token) throw new Error('Not authenticated')
-            const { createMergeRequestBackend } = await import('@/api/backend')
-            return createMergeRequestBackend(token, input)
+            const result = await executeMutation<MergeRequest>(source, {
+                backend: async (token) => {
+                    const { createMergeRequestBackend } =
+                        await import('@/api/backend')
+                    return createMergeRequestBackend(token, input)
+                },
+                mock: async () => {
+                    const { mockGovernanceApi } =
+                        await import('@/api/mock/mock-governance')
+                    return mockGovernanceApi.createMergeRequest(input)
+                },
+            })
+            return result
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['mergeRequests'] })
@@ -896,18 +1026,31 @@ export function useCreateMergeRequest() {
 }
 
 export function useApproveMergeRequest() {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
         mutationFn: async (input: { mrId: string; reviewComment?: string }) => {
-            if (!token) throw new Error('Not authenticated')
-            const { approveMergeRequestBackend } = await import('@/api/backend')
-            return approveMergeRequestBackend(
-                token,
-                input.mrId,
-                input.reviewComment
-            )
+            const result = await executeMutation<MergeRequest>(source, {
+                backend: async (token) => {
+                    const { approveMergeRequestBackend } =
+                        await import('@/api/backend')
+                    return approveMergeRequestBackend(
+                        token,
+                        input.mrId,
+                        input.reviewComment
+                    )
+                },
+                mock: async () => {
+                    const { mockGovernanceApi } =
+                        await import('@/api/mock/mock-governance')
+                    return mockGovernanceApi.approveMergeRequest(
+                        input.mrId,
+                        input.reviewComment
+                    )
+                },
+            })
+            return result
         },
         onSuccess: (
             _data: unknown,
@@ -928,18 +1071,31 @@ export function useApproveMergeRequest() {
 }
 
 export function useRejectMergeRequest() {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
         mutationFn: async (input: { mrId: string; reviewComment?: string }) => {
-            if (!token) throw new Error('Not authenticated')
-            const { rejectMergeRequestBackend } = await import('@/api/backend')
-            return rejectMergeRequestBackend(
-                token,
-                input.mrId,
-                input.reviewComment
-            )
+            const result = await executeMutation<MergeRequest>(source, {
+                backend: async (token) => {
+                    const { rejectMergeRequestBackend } =
+                        await import('@/api/backend')
+                    return rejectMergeRequestBackend(
+                        token,
+                        input.mrId,
+                        input.reviewComment
+                    )
+                },
+                mock: async () => {
+                    const { mockGovernanceApi } =
+                        await import('@/api/mock/mock-governance')
+                    return mockGovernanceApi.rejectMergeRequest(
+                        input.mrId,
+                        input.reviewComment
+                    )
+                },
+            })
+            return result
         },
         onSuccess: (
             _data: unknown,
@@ -960,14 +1116,24 @@ export function useRejectMergeRequest() {
 }
 
 export function useMergeMergeRequest() {
-    const { token } = useBackendAuth()
+    const source = useDataSource()
     const queryClient = useQueryClient()
 
     const mutation = useMutation({
         mutationFn: async (mrId: string) => {
-            if (!token) throw new Error('Not authenticated')
-            const { mergeMergeRequestBackend } = await import('@/api/backend')
-            return mergeMergeRequestBackend(token, mrId)
+            const result = await executeMutation<MergeRequest>(source, {
+                backend: async (token) => {
+                    const { mergeMergeRequestBackend } =
+                        await import('@/api/backend')
+                    return mergeMergeRequestBackend(token, mrId)
+                },
+                mock: async () => {
+                    const { mockGovernanceApi } =
+                        await import('@/api/mock/mock-governance')
+                    return mockGovernanceApi.mergeMergeRequest(mrId)
+                },
+            })
+            return result
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['mergeRequests'] })

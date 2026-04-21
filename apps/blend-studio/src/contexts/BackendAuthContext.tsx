@@ -4,7 +4,10 @@ import React, {
     useState,
     useEffect,
     useCallback,
+    useMemo,
 } from 'react'
+import { featureFlags } from '@/lib/feature-flags'
+import { mockUserStore } from '@/lib/mock-user'
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -28,28 +31,43 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-/**
- * Auth provider using httpOnly cookies for secure token storage.
- *
- * Flow:
- * 1. Google OAuth callback sets httpOnly `accessToken` + `refreshToken` cookies
- * 2. Frontend auth-callback page receives a one-time URL token to detect success
- * 3. All subsequent API calls use `credentials: 'include'` — cookies are sent
- *    automatically. The Bearer header is kept as a fallback for API key usage.
- * 4. No tokens stored in localStorage — XSS-safe.
- */
 export function BackendAuthProvider({
     children,
 }: {
     children: React.ReactNode
 }) {
-    const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
-    // Token is only kept in memory for the Bearer header fallback (CLI/API keys).
-    // Browser requests primarily rely on the httpOnly cookie.
+    const flags = featureFlags.get()
+    const isMockMode = flags.useMockData
+
+    const [realUser, setRealUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState(!isMockMode)
     const [token, setToken] = useState<string | null>(
         sessionStorage.getItem('blend_auth_token')
     )
+    const [mockRoleVersion, setMockRoleVersion] = useState(0)
+
+    useEffect(() => {
+        if (!isMockMode) return
+        const handler = () => setMockRoleVersion((v) => v + 1)
+        window.addEventListener('mockRoleChanged', handler)
+        return () => window.removeEventListener('mockRoleChanged', handler)
+    }, [isMockMode])
+
+    const mockUser = useMemo((): User | null => {
+        if (!isMockMode) return null
+        const mu = mockUserStore.getUser()
+        return {
+            id: mu.id,
+            email: mu.email,
+            displayName: mu.displayName,
+            photoUrl: mu.photoUrl,
+            role: mu.role,
+            organizations: mu.organizations,
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isMockMode, mockRoleVersion])
+
+    const user = isMockMode ? mockUser : realUser
 
     const fetchUser = useCallback(async (bearerToken?: string) => {
         try {
@@ -65,12 +83,12 @@ export function BackendAuthProvider({
 
             if (response.ok) {
                 const data = await response.json()
-                setUser(data.data.user)
+                setRealUser(data.data.user)
                 return true
             } else {
                 setToken(null)
                 sessionStorage.removeItem('blend_auth_token')
-                setUser(null)
+                setRealUser(null)
                 return false
             }
         } catch {
@@ -80,17 +98,21 @@ export function BackendAuthProvider({
         }
     }, [])
 
-    // On mount, try to fetch user using cookies
     useEffect(() => {
+        if (isMockMode) {
+            setLoading(false)
+            return
+        }
         if (token) {
             fetchUser(token)
         } else {
-            // Try cookie-based auth (no Bearer header)
             fetchUser()
         }
-    }, [token, fetchUser])
+    }, [token, fetchUser, isMockMode])
 
     const signInWithGoogle = async () => {
+        if (isMockMode) return
+
         const response = await fetch(`${API_URL}/api/auth/google`)
         const data = await response.json()
 
@@ -119,8 +141,6 @@ export function BackendAuthProvider({
                 if (!event.data?.type) return
 
                 if (event.data.type === 'AUTH_SUCCESS') {
-                    // Store token in sessionStorage as fallback for Bearer header.
-                    // The httpOnly cookie is the primary auth mechanism.
                     const oneTimeToken = event.data.token as string
                     sessionStorage.setItem('blend_auth_token', oneTimeToken)
                     setToken(oneTimeToken)
@@ -149,9 +169,14 @@ export function BackendAuthProvider({
     }
 
     const logout = async () => {
+        if (isMockMode) {
+            mockUserStore.setRole('viewer')
+            return
+        }
+
         sessionStorage.removeItem('blend_auth_token')
         setToken(null)
-        setUser(null)
+        setRealUser(null)
 
         try {
             await fetch(`${API_URL}/api/auth/logout`, {
@@ -172,7 +197,7 @@ export function BackendAuthProvider({
                 user,
                 loading,
                 isConfigured: true,
-                token,
+                token: isMockMode ? 'mock-token' : token,
                 signInWithGoogle,
                 logout,
             }}

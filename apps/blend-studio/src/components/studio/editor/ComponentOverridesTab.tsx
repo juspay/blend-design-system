@@ -76,8 +76,10 @@ export function ComponentOverridesTab({
     brand,
     onChange,
     onSelectComponent,
+    resolvedTokens: externalTokens,
 }: EditorTabProps & {
     onSelectComponent?: (componentKey: string | null) => void
+    resolvedTokens?: Record<string, unknown> | null
 }) {
     const overrides: ComponentOverrides = brand.componentOverrides ?? {}
     const [selectedComponent, setSelectedComponent] = useState<string | null>(
@@ -85,13 +87,15 @@ export function ComponentOverridesTab({
     )
     const [showAddMenu, setShowAddMenu] = useState(false)
 
+    // Use external resolved tokens if provided; only resolve locally as fallback
     const resolvedTokens = useMemo(() => {
+        if (externalTokens) return externalTokens
         try {
             return resolveBrandTokens(brand, 'light')
         } catch {
             return null
         }
-    }, [brand])
+    }, [brand, externalTokens])
 
     const addOverride = (key: string) => {
         onChange((prev) => ({

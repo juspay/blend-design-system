@@ -16,7 +16,6 @@ import {
     TabsV2,
     TabsV2List,
     TabsV2Trigger,
-    TabsV2Content,
     TabsV2Variant,
 } from '@juspay/blend-design-system'
 import { Panel, Group, Separator } from 'react-resizable-panels'
@@ -182,15 +181,31 @@ function EditorPage() {
         }
     }, [hasChanges, brand, createSnapshot])
 
-    // Derived state
+    // Derived state — debounced token resolution to avoid lag on every keystroke
+    const [debouncedBrand, setDebouncedBrand] = useState<BrandConfig | null>(
+        brand
+    )
+    const resolveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    useEffect(() => {
+        if (!brand) return
+        if (resolveTimer.current) clearTimeout(resolveTimer.current)
+        resolveTimer.current = setTimeout(() => {
+            setDebouncedBrand(brand)
+        }, 200)
+        return () => {
+            if (resolveTimer.current) clearTimeout(resolveTimer.current)
+        }
+    }, [brand])
+
     const componentTokens = useMemo(() => {
-        if (!brand) return null
+        if (!debouncedBrand) return null
         try {
-            return resolveBrandTokens(brand, previewTheme)
+            return resolveBrandTokens(debouncedBrand, previewTheme)
         } catch {
             return null
         }
-    }, [brand, previewTheme])
+    }, [debouncedBrand, previewTheme])
 
     const diffs = useMemo<TokenDiff[]>(() => {
         if (!brand) return []
@@ -332,107 +347,84 @@ function EditorPage() {
                         {/* Left Panel: Editor Tabs (30%) */}
                         <Panel minSize={20} defaultSize={30}>
                             <div className="h-full bg-white border-r border-gray-200 flex flex-col overflow-hidden">
-                                <TabsV2
-                                    value={activeTab}
-                                    onValueChange={(v: string) =>
-                                        setActiveTab(v as EditorTabId)
-                                    }
-                                    variant={TabsV2Variant.UNDERLINE}
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        height: '100%',
-                                    }}
-                                >
-                                    <TabsV2List>
-                                        {EDITOR_TABS.map(
-                                            ({ id, icon: Icon, label }) => (
-                                                <TabsV2Trigger
-                                                    key={id}
-                                                    value={id}
-                                                    leftSlot={
-                                                        <Icon className="w-3.5 h-3.5" />
-                                                    }
-                                                >
-                                                    {label}
-                                                </TabsV2Trigger>
-                                            )
-                                        )}
-                                    </TabsV2List>
+                                {/* Tab triggers — not inside Radix TabsV2Content to avoid scroll interference */}
+                                <div className="shrink-0 border-b border-gray-200">
+                                    <TabsV2
+                                        value={activeTab}
+                                        onValueChange={(v: string) =>
+                                            setActiveTab(v as EditorTabId)
+                                        }
+                                        variant={TabsV2Variant.UNDERLINE}
+                                    >
+                                        <TabsV2List>
+                                            {EDITOR_TABS.map(
+                                                ({ id, icon: Icon, label }) => (
+                                                    <TabsV2Trigger
+                                                        key={id}
+                                                        value={id}
+                                                        leftSlot={
+                                                            <Icon className="w-3.5 h-3.5" />
+                                                        }
+                                                    >
+                                                        {label}
+                                                    </TabsV2Trigger>
+                                                )
+                                            )}
+                                        </TabsV2List>
+                                    </TabsV2>
+                                </div>
 
-                                    {EDITOR_TABS.map(({ id }) => (
-                                        <TabsV2Content
-                                            key={id}
-                                            value={id}
-                                            style={{
-                                                flex: 1,
-                                                overflow: 'auto',
-                                            }}
-                                        >
-                                            <div className="p-4 space-y-6">
-                                                {id === 'colors' && (
-                                                    <ColorsTab
-                                                        brand={brand}
-                                                        onChange={
-                                                            handleBrandChange
-                                                        }
-                                                    />
-                                                )}
-                                                {id === 'typography' && (
-                                                    <TypographyTab
-                                                        brand={brand}
-                                                        onChange={
-                                                            handleBrandChange
-                                                        }
-                                                    />
-                                                )}
-                                                {id === 'radius' && (
-                                                    <RadiusTab
-                                                        brand={brand}
-                                                        onChange={
-                                                            handleBrandChange
-                                                        }
-                                                    />
-                                                )}
-                                                {id === 'shadows' && (
-                                                    <ShadowsTab
-                                                        brand={brand}
-                                                        onChange={
-                                                            handleBrandChange
-                                                        }
-                                                    />
-                                                )}
-                                                {id === 'darkmode' && (
-                                                    <DarkModeTab
-                                                        brand={brand}
-                                                        onChange={
-                                                            handleBrandChange
-                                                        }
-                                                    />
-                                                )}
-                                                {id === 'components' && (
-                                                    <ComponentOverridesTab
-                                                        brand={brand}
-                                                        onChange={
-                                                            handleBrandChange
-                                                        }
-                                                        onSelectComponent={
-                                                            setSelectedComponent
-                                                        }
-                                                    />
-                                                )}
-                                                {id === 'json' && (
-                                                    <JsonTab
-                                                        brand={brand}
-                                                        onChange={
-                                                            handleBrandChange
-                                                        }
-                                                    />
-                                                )}
-                                            </div>
-                                        </TabsV2Content>
-                                    ))}
-                                </TabsV2>
+                                {/* Tab content — isolated scroll container, no Radix Content wrapper */}
+                                <div className="flex-1 overflow-y-auto">
+                                    <div className="p-4 space-y-6">
+                                        {activeTab === 'colors' && (
+                                            <ColorsTab
+                                                brand={brand}
+                                                onChange={handleBrandChange}
+                                            />
+                                        )}
+                                        {activeTab === 'typography' && (
+                                            <TypographyTab
+                                                brand={brand}
+                                                onChange={handleBrandChange}
+                                            />
+                                        )}
+                                        {activeTab === 'radius' && (
+                                            <RadiusTab
+                                                brand={brand}
+                                                onChange={handleBrandChange}
+                                            />
+                                        )}
+                                        {activeTab === 'shadows' && (
+                                            <ShadowsTab
+                                                brand={brand}
+                                                onChange={handleBrandChange}
+                                            />
+                                        )}
+                                        {activeTab === 'darkmode' && (
+                                            <DarkModeTab
+                                                brand={brand}
+                                                onChange={handleBrandChange}
+                                            />
+                                        )}
+                                        {activeTab === 'components' && (
+                                            <ComponentOverridesTab
+                                                brand={brand}
+                                                onChange={handleBrandChange}
+                                                onSelectComponent={
+                                                    setSelectedComponent
+                                                }
+                                                resolvedTokens={componentTokens}
+                                            />
+                                        )}
+                                        {activeTab === 'json' && (
+                                            <JsonTab
+                                                brand={brand}
+                                                onChange={handleBrandChange}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </Panel>
 

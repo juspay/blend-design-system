@@ -61,6 +61,9 @@ interface RGB {
 export function hexToRgb(hex: string): RGB | null {
     const cleaned = hex.replace(/^#/, '')
 
+    // Validate hex characters
+    if (!/^[0-9A-Fa-f]+$/.test(cleaned)) return null
+
     if (cleaned.length === 3) {
         return {
             r: parseInt(cleaned[0] + cleaned[0], 16),
