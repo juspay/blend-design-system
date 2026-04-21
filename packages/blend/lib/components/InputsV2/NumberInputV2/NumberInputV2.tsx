@@ -210,7 +210,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                 return
             }
             return subscribeElementOffsetWidth(el, setMeasuredUnitWidth)
-        }, [showUnit, unitDirection, unitText, size, unitState, disabled])
+        }, [showUnit, unitDirection, unitText, size])
 
         useLayoutEffect(() => {
             setMeasuredLeftSlotWidth(

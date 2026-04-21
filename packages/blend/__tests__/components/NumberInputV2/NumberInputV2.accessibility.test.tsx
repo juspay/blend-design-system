@@ -5,6 +5,7 @@ import { axe } from 'jest-axe'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { NumberInputV2Direction } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.types'
+import { NUMBER_INPUT_V2_UNIT_MAX_LENGTH } from '../../../lib/components/InputsV2/NumberInputV2/utils'
 
 const noop = () => {}
 
@@ -164,6 +165,20 @@ describe('NumberInputV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards when unit text exceeds max length (unit configuration error)', async () => {
+            const longUnit = `${'a'.repeat(NUMBER_INPUT_V2_UNIT_MAX_LENGTH)}x`
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'UnitLen', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit={longUnit}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {
@@ -291,6 +306,49 @@ describe('NumberInputV2 Accessibility', () => {
             expect(
                 screen.getByText(/Value must be at most 100/i)
             ).toBeInTheDocument()
+        })
+
+        it('shows unit length error when unit exceeds max characters', () => {
+            const longUnit = `${'a'.repeat(NUMBER_INPUT_V2_UNIT_MAX_LENGTH)}x`
+            render(
+                <NumberInputV2
+                    label={{ text: 'UnitErr', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit={longUnit}
+                />
+            )
+            expect(
+                screen.getByText(
+                    `Unit must be ${NUMBER_INPUT_V2_UNIT_MAX_LENGTH} characters or fewer.`
+                )
+            ).toBeInTheDocument()
+        })
+
+        it('associates unit length error with input via aria-describedby', () => {
+            const longUnit = `${'a'.repeat(NUMBER_INPUT_V2_UNIT_MAX_LENGTH)}x`
+            render(
+                <NumberInputV2
+                    label={{ text: 'UnitErr', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit={longUnit}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            expect(input).toHaveAttribute('aria-invalid', 'true')
+            const describedBy = input.getAttribute('aria-describedby')
+            expect(describedBy).toBeTruthy()
+            const errorId = describedBy!
+                .split(/\s+/)
+                .find((id) => id.endsWith('-error'))
+            expect(errorId).toBeTruthy()
+            expect(document.getElementById(errorId!)).toHaveTextContent(
+                new RegExp(
+                    `Unit must be ${NUMBER_INPUT_V2_UNIT_MAX_LENGTH} characters or fewer`,
+                    'i'
+                )
+            )
         })
     })
 
@@ -738,6 +796,22 @@ describe('NumberInputV2 Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('sets aria-invalid when unit prop exceeds max length', () => {
+            const longUnit = `${'a'.repeat(NUMBER_INPUT_V2_UNIT_MAX_LENGTH)}x`
+            render(
+                <NumberInputV2
+                    label={{ text: 'BadUnit', subtext: '' }}
+                    value={2}
+                    onChange={noop}
+                    unit={longUnit}
+                />
+            )
+            expect(screen.getByRole('spinbutton')).toHaveAttribute(
+                'aria-invalid',
+                'true'
+            )
         })
     })
 

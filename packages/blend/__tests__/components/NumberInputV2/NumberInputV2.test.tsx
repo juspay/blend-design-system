@@ -9,6 +9,8 @@ import {
     getNumberInputDisplayValue,
     getNumberInputV2PaddingLeft,
     getNumberInputV2PaddingRight,
+    getNumberInputV2UnitLengthErrorMessage,
+    NUMBER_INPUT_V2_UNIT_MAX_LENGTH,
 } from '../../../lib/components/InputsV2/NumberInputV2/utils'
 import type { NumberInputV2TokensType } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.tokens'
 
@@ -158,6 +160,52 @@ describe('NumberInputV2 Component', () => {
             expect(
                 screen.getByRole('button', { name: /Increase Qty/i })
             ).toBeInTheDocument()
+        })
+
+        it('shows footer error, hides unit strip, and shows steppers when unit exceeds max length', () => {
+            const tooLong = `${'a'.repeat(NUMBER_INPUT_V2_UNIT_MAX_LENGTH)}x`
+            render(
+                <NumberInputV2
+                    label={{ text: 'LongU', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit={tooLong}
+                />
+            )
+            expect(
+                screen.getByText(
+                    `Unit must be ${NUMBER_INPUT_V2_UNIT_MAX_LENGTH} characters or fewer.`
+                )
+            ).toBeInTheDocument()
+            expect(
+                document.querySelector('[data-element="unit"]')
+            ).not.toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: /Increase LongU/i })
+            ).toBeInTheDocument()
+            expect(screen.getByRole('spinbutton')).toHaveAttribute(
+                'aria-invalid',
+                'true'
+            )
+        })
+
+        it('renders unit strip when unit length is exactly the max', () => {
+            const unit = 'a'.repeat(NUMBER_INPUT_V2_UNIT_MAX_LENGTH)
+            render(
+                <NumberInputV2
+                    label={{ text: 'Edge', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit={unit}
+                />
+            )
+            expect(screen.getByText(unit)).toBeInTheDocument()
+            expect(
+                document.querySelector('[data-element="unit"]')
+            ).toBeInTheDocument()
+            expect(
+                screen.queryByText(/Unit must be \d+ characters or fewer/i)
+            ).not.toBeInTheDocument()
         })
 
         it('still exposes spinbutton when unit is set', () => {
@@ -875,6 +923,33 @@ describe('NumberInputV2 Component', () => {
             expect(
                 screen.getByText(/Value must be at least 0/i)
             ).toBeInTheDocument()
+        })
+    })
+
+    describe('getNumberInputV2UnitLengthErrorMessage', () => {
+        it('returns undefined for empty, undefined, or whitespace-only unit', () => {
+            expect(getNumberInputV2UnitLengthErrorMessage(undefined)).toBe(
+                undefined
+            )
+            expect(getNumberInputV2UnitLengthErrorMessage('')).toBe(undefined)
+            expect(getNumberInputV2UnitLengthErrorMessage('   ')).toBe(
+                undefined
+            )
+        })
+
+        it('returns undefined when trimmed length is at the max', () => {
+            const ok = 'a'.repeat(NUMBER_INPUT_V2_UNIT_MAX_LENGTH)
+            expect(getNumberInputV2UnitLengthErrorMessage(ok)).toBe(undefined)
+            expect(getNumberInputV2UnitLengthErrorMessage(`  ${ok}  `)).toBe(
+                undefined
+            )
+        })
+
+        it('returns a message when trimmed length exceeds the max', () => {
+            const bad = 'a'.repeat(NUMBER_INPUT_V2_UNIT_MAX_LENGTH + 1)
+            expect(getNumberInputV2UnitLengthErrorMessage(bad)).toBe(
+                `Unit must be ${NUMBER_INPUT_V2_UNIT_MAX_LENGTH} characters or fewer.`
+            )
         })
     })
 
