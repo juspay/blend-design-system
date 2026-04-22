@@ -243,6 +243,7 @@ const SidebarDemo = () => {
         | 'numberInputV2'
         | 'otpInputV2'
         | 'textAreaV2'
+        | 'badge'
         | 'searchInputV2'
     >('searchInputV2')
 
@@ -609,7 +610,7 @@ const SidebarDemo = () => {
                 return <OTPInputV2Demo />
             case 'textAreaV2':
                 return <TextAreaV2Demo />
-            case 'Badge':
+            case 'badge':
                 return <BadgeDemo />
             default:
                 return (
@@ -838,8 +839,8 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <TagIcon style={{ width: '16px', height: '16px' }} />
                     ),
-                    isSelected: activeComponent === 'Badge',
-                    onClick: () => setActiveComponent('Badge'),
+                    isSelected: activeComponent === 'badge',
+                    onClick: () => setActiveComponent('badge'),
                     showOnMobile: true,
                 },
                 {
