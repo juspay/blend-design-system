@@ -1,4 +1,4 @@
-import type { Version } from '@blend-design/token-engine'
+import type { Version } from '@juspay/blend-design-system/tokens'
 import { JuspayDefaultConfig } from './brand-configs'
 
 export const versions: Map<string, Version[]> = new Map([

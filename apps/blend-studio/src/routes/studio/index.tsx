@@ -15,7 +15,7 @@ import {
     useRejectMergeRequest,
     useMergeMergeRequest,
 } from '@/frontend/hooks/use-studio'
-import { type Branch } from '@blend-design/token-engine'
+import { type Branch } from '@juspay/blend-design-system/tokens'
 import { memo, useState, useCallback, useEffect } from 'react'
 import {
     GitBranchIcon,
@@ -709,7 +709,7 @@ function QuickGuidePanel({ onClose }: { onClose: () => void }) {
                             </div>
                             <div className="text-blue-300">
                                 {
-                                    "import { resolveBrandTokens } from '@blend-design/token-engine'"
+                                    "import { resolveBrandTokens } from '@juspay/blend-design-system/tokens'"
                                 }
                             </div>
                             <div className="text-gray-500 mt-2">

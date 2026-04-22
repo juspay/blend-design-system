@@ -24,7 +24,7 @@ import {
     type BrandConfig,
     validateBrandConfig,
     type ValidationResult,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 import { useState, useMemo, useCallback } from 'react'
 import {
     Palette,

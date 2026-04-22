@@ -23,11 +23,11 @@ import {
     reportCommandSuccess,
 } from '../utils/cli-output'
 import { apiClient } from '../utils/api-client'
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 import {
     validateBrandConfig,
     incrementVersion,
-} from '@blend-design/token-engine/server'
+} from '@juspay/blend-design-system/tokens/server'
 
 interface PushOptions {
     publish?: boolean

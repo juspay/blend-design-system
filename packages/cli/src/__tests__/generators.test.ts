@@ -17,7 +17,7 @@ import {
     parseConfig,
     validateConfig,
 } from '../generators/config-generator'
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 
 // ---------------------------------------------------------------------------
 // Fixtures

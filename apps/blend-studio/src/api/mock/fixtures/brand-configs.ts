@@ -1,4 +1,4 @@
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens'
 
 export const JuspayDefaultConfig: BrandConfig = {
     brandId: 'juspay-default',

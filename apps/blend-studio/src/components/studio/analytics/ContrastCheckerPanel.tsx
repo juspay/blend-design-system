@@ -14,7 +14,7 @@ import {
     Warning,
     WarningCircle,
 } from '@phosphor-icons/react'
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens'
 
 // ---------------------------------------------------------------------------
 // Types

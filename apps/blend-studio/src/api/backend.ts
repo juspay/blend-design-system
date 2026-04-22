@@ -12,7 +12,7 @@ import type {
     Branch,
     BrandConfig,
     CreateBranchInput,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 
 // ---------------------------------------------------------------------------
 // Error Class

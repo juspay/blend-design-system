@@ -6,8 +6,8 @@ import {
     FloppyDisk,
     ArrowCounterClockwise,
 } from '@phosphor-icons/react'
-import type { BrandConfig } from '@blend-design/token-engine'
-import { generateColorScale } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens'
+import { generateColorScale } from '@juspay/blend-design-system/tokens'
 
 interface TokenEditorProps {
     brandConfig: BrandConfig

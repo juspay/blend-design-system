@@ -7,7 +7,7 @@
 
 import { useState } from 'react'
 import { Package, Clock, ArrowsClockwise } from '@phosphor-icons/react'
-import type { BrandConfig, Version, Snapshot } from '@blend-design/token-engine'
+import type { BrandConfig, Version, Snapshot } from '@juspay/blend-design-system/tokens'
 import type { HistoryPanelProps } from './types'
 import {
     TabsV2,

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Branch } from '@blend-design/token-engine'
+import type { Branch } from '@juspay/blend-design-system/tokens'
 import { BranchModal } from './BranchModal'
 
 interface ForkBranchModalProps {

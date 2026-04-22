@@ -14,10 +14,6 @@ export default defineConfig(({ mode }) => ({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
-            '@blend-design/token-engine': path.resolve(
-                __dirname,
-                '../../packages/token-engine/src'
-            ),
             '@juspay/blend-design-system/node': path.resolve(
                 __dirname,
                 '../../packages/blend/dist/node.js'

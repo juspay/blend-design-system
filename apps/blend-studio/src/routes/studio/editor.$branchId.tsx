@@ -27,7 +27,7 @@ import {
     type BrandConfig,
     type TokenDiff,
     type ValidationResult,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 import {
     useBranchWithMock,
     usePublishVersionWithMock,

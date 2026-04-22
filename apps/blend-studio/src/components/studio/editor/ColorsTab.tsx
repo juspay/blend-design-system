@@ -6,7 +6,7 @@
  */
 
 import { useState } from 'react'
-import { listPresets, getPreset } from '@blend-design/token-engine'
+import { listPresets, getPreset } from '@juspay/blend-design-system/tokens'
 import { CaretDown, CaretRight } from '@phosphor-icons/react'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 import { COLOR_GROUPS, type EditorTabProps, type ColorGroupKey } from './types'

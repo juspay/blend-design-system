@@ -6,7 +6,7 @@ import type {
     CreateBranchInput,
     BranchListFilters,
     BranchListResult,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 import {
     branches as MOCK_BRANCHES,
     versions as MOCK_VERSIONS,

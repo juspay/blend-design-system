@@ -18,7 +18,7 @@ import {
     printJsonEnvelope,
     reportCommandFailure,
 } from '../utils/cli-output'
-import { validateBrandConfig } from '@blend-design/token-engine/server'
+import { validateBrandConfig } from '@juspay/blend-design-system/tokens/server'
 
 interface ValidateOptions {
     format?: string

@@ -3,7 +3,7 @@ import {
     listPresets,
     getPreset,
     type BrandConfig,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 import type { useCreateBranchWithMock } from '@/frontend/hooks/use-studio'
 import { BranchModal } from './BranchModal'
 

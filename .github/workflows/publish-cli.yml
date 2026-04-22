@@ -65,9 +65,9 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-            # Build token-engine first (CLI depends on it)
-            - name: Build token-engine
-              run: pnpm --filter @blend-design/token-engine build
+            # Build blend-design-system first (CLI depends on it)
+            - name: Build blend-design-system
+              run: pnpm --filter @juspay/blend-design-system build
 
             # Bump version
             - name: Bump CLI version

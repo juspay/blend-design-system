@@ -15,7 +15,7 @@
 
 import { useState, useMemo } from 'react'
 import { Copy, Check, Download, Code, PaintBrush } from '@phosphor-icons/react'
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens'
 
 // ---------------------------------------------------------------------------
 // Types

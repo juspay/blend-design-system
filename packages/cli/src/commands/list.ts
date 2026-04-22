@@ -22,7 +22,7 @@ import type {
     BranchListOptions,
     BranchStatus,
     BranchVisibility,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens/server'
 
 interface ListOptions {
     status?: BranchStatus

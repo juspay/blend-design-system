@@ -10,7 +10,7 @@ import type {
     TokenDiff,
     Version,
     Snapshot,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 
 // ---------------------------------------------------------------------------
 // Editor Tab Types

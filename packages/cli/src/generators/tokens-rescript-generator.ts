@@ -5,7 +5,7 @@
  * Used to verify the same resolved token maps work outside React/TS consumers.
  */
 
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 
 function compactJson(value: unknown): string {
     return JSON.stringify(value)

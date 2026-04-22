@@ -20,7 +20,6 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"],
-            "@blend-design/token-engine": ["../../packages/token-engine/src"],
             "@juspay/blend-design-system": ["../../packages/blend/lib/main.ts"]
         }
     },

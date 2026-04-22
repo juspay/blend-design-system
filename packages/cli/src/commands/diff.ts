@@ -11,11 +11,11 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import pc from 'picocolors'
 import { logger } from '../utils/logger'
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 import {
     diffBrandConfigs,
     PRESET_BLEND_DEFAULT,
-} from '@blend-design/token-engine/server'
+} from '@juspay/blend-design-system/tokens/server'
 
 export async function diffCommand(): Promise<void> {
     const cwd = process.cwd()

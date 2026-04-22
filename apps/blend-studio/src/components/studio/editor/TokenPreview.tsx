@@ -6,7 +6,7 @@
 
 import { useState } from 'react'
 import { CaretDown, CaretRight } from '@phosphor-icons/react'
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens'
 
 interface TokenPreviewProps {
     brand: BrandConfig

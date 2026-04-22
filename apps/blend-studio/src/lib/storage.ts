@@ -8,12 +8,12 @@
 import type {
     OnboardingState,
     UserPreferences,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 import {
     getDefaultOnboardingState,
     getDefaultPreferences,
     STORAGE_KEYS,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 
 const STORAGE = STORAGE_KEYS
 

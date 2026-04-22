@@ -5,7 +5,7 @@ import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator
 import {
     resolveBrandTokens,
     type ComponentOverrides,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 import { ComponentTokenEditor } from './token-editor'
 import {
     removeNestedValue,

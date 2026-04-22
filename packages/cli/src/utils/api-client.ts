@@ -14,7 +14,7 @@
 import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 import type {
     Branch,
     BranchListOptions,
@@ -23,7 +23,7 @@ import type {
     CreateVersionInput,
     ResolvedTokensResponse,
     Version,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens/server'
 
 const DEFAULT_API_URL = 'https://studio.blend.juspay.design'
 const CONFIG_DIR = join(homedir(), '.blend-token-studio')

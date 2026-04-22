@@ -1,4 +1,4 @@
-import type { Snapshot } from '@blend-design/token-engine'
+import type { Snapshot } from '@juspay/blend-design-system/tokens'
 import { JuspayDefaultConfig } from './brand-configs'
 
 export const snapshots: Map<string, Snapshot[]> = new Map([

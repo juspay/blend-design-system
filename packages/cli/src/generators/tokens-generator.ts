@@ -8,7 +8,7 @@
  * Re-run `blend-token-studio brand` or `blend-token-studio pull` to update.
  */
 
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 
 /**
  * Generate the tokens.ts file content.

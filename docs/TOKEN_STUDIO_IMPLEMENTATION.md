@@ -700,7 +700,7 @@ export type { BrandConfig }
 
 ```json
 {
-    "name": "@blend-design/token-engine",
+    "name": "@juspay/blend-design-system/tokens",
     "version": "0.1.0",
     "private": true,
     "main": "src/index.ts",
@@ -887,7 +887,7 @@ app/api/studio/
 // Body: { theme: "light" | "dark" }
 // Returns: ComponentTokenType (the full resolved tokens)
 
-import { resolveBrandTokens } from '@blend-design/token-engine'
+import { resolveBrandTokens } from '@juspay/blend-design-system/tokens'
 
 export async function POST(request, { params }) {
     const { branchId } = params
@@ -963,7 +963,7 @@ This is the main Token Studio screen. Two panels side-by-side:
 
 ```tsx
 // In the editor page
-import { resolveBrandTokens } from '@blend-design/token-engine'
+import { resolveBrandTokens } from '@juspay/blend-design-system/tokens'
 import { ThemeProvider, ButtonV2, TextInputV2, ... } from '@juspay/blend-design-system'
 
 function EditorPage({ branchId }) {

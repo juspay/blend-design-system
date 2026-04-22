@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 import { ThemeProvider } from '@juspay/blend-design-system'
-import { resolveBrandTokens } from '@blend-design/token-engine'
+import { resolveBrandTokens } from '@juspay/blend-design-system/tokens'
 import { useBranchWithMock } from '@/frontend/hooks/use-studio'
 import { ComponentShowcase } from '@/components/studio/ComponentShowcase'
 import { ThemeToggle } from '@/components/shared/ThemeToggle'

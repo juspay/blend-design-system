@@ -23,7 +23,7 @@ import {
     validateBranchId,
     validateVersion,
     parseBranchId,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -611,7 +611,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '@/lib/firebase'
 
 export function useBranches(
-    options?: import('@blend-design/token-engine').BranchListOptions
+    options?: import('@juspay/blend-design-system/tokens').BranchListOptions
 ) {
     const [user] = useAuthState(auth)
     const [branches, setBranches] = useState<Branch[]>([])

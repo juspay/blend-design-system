@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Copy, ArrowsClockwise, Check, Eyedropper } from '@phosphor-icons/react'
-import { generateColorScale } from '@blend-design/token-engine'
+import { generateColorScale } from '@juspay/blend-design-system/tokens'
 
 // ---------------------------------------------------------------------------
 // Constants

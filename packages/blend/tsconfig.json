@@ -15,7 +15,12 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "baseUrl": ".",
+        "paths": {
+            "@blend-design/token-engine": ["../../packages/token-engine/src/index.ts"],
+            "@blend-design/token-engine/server": ["../../packages/token-engine/src/server.ts"]
+        }
     },
     "include": ["src", "lib"],
     "references": [{ "path": "./tsconfig.vite.json" }]

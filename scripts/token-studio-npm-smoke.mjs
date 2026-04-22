@@ -39,9 +39,6 @@ const assertFile = (path) => {
 }
 
 const packPackage = (packageDir, patchPackageJson) => {
-    // In-repo we use `workspace:` for internal deps (best DX).
-    // But `npm pack` preserves `workspace:` which breaks npm installs.
-    // For smoke testing, pack from a temporary copy with patched deps.
     const packDir = patchPackageJson
         ? join(tmpRoot, 'pack', packageDir.split('/').pop())
         : packageDir
@@ -69,13 +66,12 @@ const packPackage = (packageDir, patchPackageJson) => {
 const setupConsumerWithNpm = (consumerDir, tarballs) => {
     run(`npm init -y`, consumerDir)
     run(
-        `npm install react react-dom styled-components "${tarballs.blend}" "${tarballs.engine}" "${tarballs.cli}"`,
+        `npm install react react-dom styled-components "${tarballs.blend}" "${tarballs.cli}"`,
         consumerDir
     )
 }
 
 const setupConsumerWithPnpm = (consumerDir, tarballs) => {
-    // Keep this flow hermetic even inside a monorepo workspace.
     const pnpmHome = join(tmpRoot, '.pnpm-home')
     const pnpmStoreDir = join(tmpRoot, '.pnpm-store')
     const pnpmEnv = {
@@ -87,12 +83,10 @@ const setupConsumerWithPnpm = (consumerDir, tarballs) => {
     }
 
     run(`pnpm init`, consumerDir, pnpmEnv)
-    // Defensive: if pnpm (workspace) created a node_modules with a different store,
-    // wipe it to avoid ERR_PNPM_UNEXPECTED_STORE.
     rmSync(join(consumerDir, 'node_modules'), { recursive: true, force: true })
     rmSync(join(consumerDir, 'pnpm-lock.yaml'), { force: true })
     run(
-        `pnpm add react react-dom styled-components "${tarballs.blend}" "${tarballs.engine}" "${tarballs.cli}"`,
+        `pnpm add react react-dom styled-components "${tarballs.blend}" "${tarballs.cli}"`,
         consumerDir,
         pnpmEnv
     )
@@ -115,37 +109,31 @@ const main = () => {
 
     console.log('\n[smoke] Building required packages...\n')
     run(`pnpm --filter @juspay/blend-design-system build`, repoRoot)
-    run(`pnpm --filter @blend-design/token-engine build`, repoRoot)
     run(`pnpm --filter blend-token-studio build`, repoRoot)
 
     console.log('\n[smoke] Packing tarballs...\n')
     const blendDir = join(repoRoot, 'packages', 'blend')
-    const engineDir = join(repoRoot, 'packages', 'token-engine')
     const cliDir = join(repoRoot, 'packages', 'cli')
 
     const packed = {
         blend: packPackage(blendDir),
-        engine: packPackage(engineDir),
         cli: packPackage(cliDir, (pkg) => {
             const next = { ...pkg }
             next.dependencies = { ...(next.dependencies || {}) }
-            // Replace workspace protocol with a real semver range for npm.
-            next.dependencies['@blend-design/token-engine'] = '^0.1.0'
+            next.dependencies['@juspay/blend-design-system'] = '^0.0.37-beta.1'
             return next
         }),
     }
 
     const tarballs = {
         blend: join(tarballDir, 'blend.tgz'),
-        engine: join(tarballDir, 'token-engine.tgz'),
         cli: join(tarballDir, 'cli.tgz'),
     }
 
     run(`cp "${packed.blend}" "${tarballs.blend}"`)
-    run(`cp "${packed.engine}" "${tarballs.engine}"`)
     run(`cp "${packed.cli}" "${tarballs.cli}"`)
 
-    run(`rm -f "${packed.blend}" "${packed.engine}" "${packed.cli}"`)
+    run(`rm -f "${packed.blend}" "${packed.cli}"`)
 
     console.log('\n[smoke] Running npm consumer test...\n')
     const npmConsumer = join(tmpRoot, 'consumer-npm')

@@ -1,5 +1,5 @@
 import { TrashIcon, WarningCircleIcon } from '@phosphor-icons/react'
-import type { Branch } from '@blend-design/token-engine'
+import type { Branch } from '@juspay/blend-design-system/tokens'
 import { ButtonV2Type } from '@juspay/blend-design-system'
 import { BranchModal } from './BranchModal'
 

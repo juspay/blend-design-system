@@ -21,7 +21,7 @@ import {
     reportCommandSuccess,
 } from '../utils/cli-output'
 import { apiClient } from '../utils/api-client'
-import type { BrandConfig } from '@blend-design/token-engine'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 import { generateBrandTokensCode } from '../generators/tokens-generator'
 import { generateBrandTokensRescriptCode } from '../generators/tokens-rescript-generator'
 import {
@@ -137,7 +137,7 @@ export async function pullCommand(
             ? ora('Resolving tokens for all V2 components...').start()
             : null
 
-    const { resolveBrandTokens } = await import('@blend-design/token-engine')
+    const { resolveBrandTokens } = await import('@juspay/blend-design-system/tokens')
     const lightTokens = resolveBrandTokens(brandConfig, 'light')
     const darkTokens = resolveBrandTokens(brandConfig, 'dark')
 

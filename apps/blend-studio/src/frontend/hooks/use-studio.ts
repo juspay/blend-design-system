@@ -21,7 +21,7 @@ import type {
     CreateBranchInput,
     Version,
     Snapshot,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 
 // Re-export utilities that consumers need
 export {
@@ -29,7 +29,7 @@ export {
     validateVersion,
     incrementVersion,
     parseBranchId,
-} from '@blend-design/token-engine'
+} from '@juspay/blend-design-system/tokens'
 
 // Re-export standalone Firestore functions for direct use
 export {
@@ -664,7 +664,7 @@ export function useResolvedTokensWithMock(
 ) {
     return useCallback(() => {
         if (!brandConfig) return null
-        const { resolveBrandTokens } = require('@blend-design/token-engine')
+        const { resolveBrandTokens } = require('@juspay/blend-design-system/tokens')
         return resolveBrandTokens(brandConfig, theme)
     }, [brandConfig, theme])
 }

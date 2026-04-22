@@ -10,7 +10,7 @@
  */
 
 import { CheckCircle, ArrowRight } from '@phosphor-icons/react'
-import type { TokenDiff } from '@blend-design/token-engine'
+import type { TokenDiff } from '@juspay/blend-design-system/tokens'
 import type { DiffPanelProps } from './types'
 
 // ---------------------------------------------------------------------------

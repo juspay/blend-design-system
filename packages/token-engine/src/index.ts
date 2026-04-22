@@ -16,7 +16,7 @@
  *
  * @example
  * ```ts
- * import { resolveBrandTokens } from '@blend-design/token-engine'
+ * import { resolveBrandTokens } from '@juspay/blend-design-system/tokens'
  *
  * const tokens = resolveBrandTokens({
  *     brandId: 'my-brand/default',

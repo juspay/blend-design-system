@@ -1,4 +1,4 @@
-import type { Branch, BranchStatus } from '@blend-design/token-engine'
+import type { Branch, BranchStatus } from '@juspay/blend-design-system/tokens'
 import {
     JuspayDefaultConfig,
     StarterPurpleConfig,

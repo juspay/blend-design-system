@@ -17,7 +17,7 @@
         "cli": "node dist/index.js"
     },
     "dependencies": {
-        "@blend-design/token-engine": "workspace:^",
+        "@juspay/blend-design-system": "workspace:*",
         "commander": "^12.0.0",
         "open": "^10.2.0",
         "ora": "^8.0.0",

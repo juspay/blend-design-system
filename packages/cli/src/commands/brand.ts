@@ -16,13 +16,13 @@ import { join } from 'node:path'
 import prompts from 'prompts'
 import ora from 'ora'
 import { logger } from '../utils/logger'
-import type { BrandConfig, RadiusPreset } from '@blend-design/token-engine'
+import type { BrandConfig, RadiusPreset } from '@juspay/blend-design-system/tokens/server'
 import {
     generateColorScale,
     getPreset,
     listPresets,
     RADIUS_PRESETS,
-} from '@blend-design/token-engine/server'
+} from '@juspay/blend-design-system/tokens/server'
 import { generateBrandTokensCode } from '../generators/tokens-generator'
 import type { BlendConfig } from '../generators/config-generator'
 
@@ -90,7 +90,7 @@ export async function brandCommand(options: BrandOptions = {}): Promise<void> {
     // Resolve tokens
     const spinner = ora('Resolving tokens for all V2 components...').start()
 
-    const { resolveBrandTokens } = await import('@blend-design/token-engine')
+    const { resolveBrandTokens } = await import('@juspay/blend-design-system/tokens')
     const lightTokens = resolveBrandTokens(brandConfig, 'light')
     const darkTokens = resolveBrandTokens(brandConfig, 'dark')
 

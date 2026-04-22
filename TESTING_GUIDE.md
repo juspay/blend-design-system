@@ -38,16 +38,16 @@ Run from repo root:
 ```bash
 pnpm install
 pnpm --filter @juspay/blend-design-system build
-pnpm --filter @blend-design/token-engine build
+pnpm --filter @juspay/blend-design-system build
 pnpm --filter blend-token-studio build
-pnpm --filter @blend-design/token-engine typecheck
+pnpm --filter @juspay/blend-design-system typecheck
 pnpm --filter blend-token-studio typecheck
 ```
 
 Pass criteria:
 
 - all commands succeed
-- `packages/token-engine/dist` exists with `.js` and `.d.ts`
+- `packages/blend/dist` exists with token engine files
 - `packages/cli/dist/index.js` exists
 
 ---
@@ -74,7 +74,7 @@ From repo root:
 
 ```bash
 pnpm --filter blend-token-studio build
-pnpm --filter @blend-design/token-engine build
+pnpm --filter @juspay/blend-design-system build
 ```
 
 Then test commands in a sample app folder:
@@ -129,7 +129,7 @@ Pass criteria:
 
 Publish canary versions first:
 
-1. publish `@blend-design/token-engine` with canary tag
+1. publish `@juspay/blend-design-system` with canary tag (includes token engine)
 2. publish `blend-token-studio` with canary tag
 3. test in a fresh external project using only npm packages
 
@@ -186,7 +186,7 @@ Add CI jobs:
 
 ## 10) Versioning Policy (Non-Hacky)
 
-- `blend-token-studio` and `@blend-design/token-engine` can remain on `0.1.x` while `@juspay/blend-design-system` is on `0.0.x`; they are separate packages with separate semver lifecycles.
+- `blend-token-studio` can remain on `0.1.x` while `@juspay/blend-design-system` is on `0.0.x`; they are separate packages with separate semver lifecycles.
 - Internal monorepo links should use semver ranges (e.g. `^0.1.0`) so npm installs work. Use changesets so these ranges update automatically during release.
-- `@blend-design/token-engine` keeps `@juspay/blend-design-system` as a peer dependency with a bounded range (`>=0.0.37-0 <1.0.0`) to avoid accidental major-version breakage.
+- `@juspay/blend-design-system` includes the token engine as part of its core functionality.
 - Use changesets to bump and publish; avoid manual cross-editing package versions.
