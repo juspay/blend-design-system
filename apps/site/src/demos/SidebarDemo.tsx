@@ -140,6 +140,10 @@ import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 import CodeEditorV2Demo from './CodeEditorV2Demo'
 import ProgressBarV2Demo from './ProgressBarV2Demo'
 import MultiValueInputV2Demo from './MultiValueInputV2Demo'
+import NumberInputV2Demo from './NumberInputV2Demo'
+import OTPInputV2Demo from './OTPInputV2Demo'
+import TextAreaV2Demo from './TextAreaV2Demo'
+import SearchInputV2Demo from './SearchInputV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -235,7 +239,11 @@ const SidebarDemo = () => {
         | 'popoverV2'
         | 'progressBarV2'
         | 'multiValueInputV2'
-    >('multiValueInputV2')
+        | 'numberInputV2'
+        | 'otpInputV2'
+        | 'textAreaV2'
+        | 'searchInputV2'
+    >('searchInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -456,10 +464,14 @@ const SidebarDemo = () => {
                 return <InputDemo />
             case 'searchInput':
                 return <SearchInputDemo />
+            case 'searchInputV2':
+                return <SearchInputV2Demo />
             case 'unitInput':
                 return <UnitInputDemo />
             case 'numberInput':
                 return <NumberInputDemo />
+            case 'numberInputV2':
+                return <NumberInputV2Demo />
             case 'textArea':
                 return <TextAreaDemo />
             case 'chatInput':
@@ -592,6 +604,10 @@ const SidebarDemo = () => {
                 return <CodeEditorV2Demo />
             case 'progressBarV2':
                 return <ProgressBarV2Demo />
+            case 'otpInputV2':
+                return <OTPInputV2Demo />
+            case 'textAreaV2':
+                return <TextAreaV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -942,12 +958,28 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('searchInput'),
                 },
                 {
+                    label: 'Search Input V2',
+                    leftSlot: (
+                        <Search style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'searchInputV2',
+                    onClick: () => setActiveComponent('searchInputV2'),
+                },
+                {
                     label: 'OTP Input',
                     leftSlot: (
                         <Shield style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'otpInput',
                     onClick: () => setActiveComponent('otpInput'),
+                },
+                {
+                    label: 'OTP Input V2',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'otpInputV2',
+                    onClick: () => setActiveComponent('otpInputV2'),
                 },
                 {
                     label: 'Unit Input',
@@ -968,6 +1000,16 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('numberInput'),
                 },
                 {
+                    label: 'Number Input V2',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'numberInputV2',
+                    onClick: () => setActiveComponent('numberInputV2'),
+                },
+                {
                     label: 'Dropdown Input',
                     leftSlot: (
                         <DecimalsArrowRightIcon
@@ -984,6 +1026,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'textArea',
                     onClick: () => setActiveComponent('textArea'),
+                },
+                {
+                    label: 'Text Area V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textAreaV2',
+                    onClick: () => setActiveComponent('textAreaV2'),
                 },
                 {
                     label: 'Chat Input',

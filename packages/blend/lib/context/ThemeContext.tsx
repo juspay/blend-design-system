@@ -150,6 +150,10 @@ import {
     ResponsiveTextInputV2Tokens,
 } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import {
+    getTextAreaV2Tokens,
+    ResponsiveTextAreaV2Tokens,
+} from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import {
     getChartV2Tokens,
     ResponsiveChartV2Tokens,
 } from '../components/ChartsV2/chartV2.tokens'
@@ -207,10 +211,23 @@ import {
     ResponsiveMultiValueInputV2Tokens,
     getMultiValueInputV2Tokens,
 } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import {
+    getNumberInputV2Tokens,
+    ResponsiveNumberInputV2Tokens,
+} from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import {
+    ResponsiveOTPInputV2Tokens,
+    getOTPInputV2Tokens,
+} from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import {
+    ResponsiveSearchInputV2Tokens,
+    getSearchInputV2Tokens,
+} from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
     TEXT_AREA?: ResponsiveTextAreaTokens
+    TEXT_AREA_V2?: ResponsiveTextAreaV2Tokens
     RADIO?: ResponsiveRadioTokens
     SWITCH?: ResponsiveSwitchTokens
     TEXT_INPUT?: ResponsiveTextInputTokens
@@ -278,6 +295,9 @@ export type ComponentTokenType = {
     CODEEDITORV2?: ResponsiveCodeEditorV2Tokens
     PROGRESS_BARV2?: ResponsiveProgressBarV2Tokens
     MULTI_VALUE_INPUT_V2?: ResponsiveMultiValueInputV2Tokens
+    NUMBER_INPUT_V2?: ResponsiveNumberInputV2Tokens
+    OTP_INPUTV2?: ResponsiveOTPInputV2Tokens
+    SEARCH_INPUT_V2?: ResponsiveSearchInputV2Tokens
 }
 
 type ThemeContextType = {
@@ -347,6 +367,7 @@ const ThemeContext = createContext<ThemeContextType>({
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATARV2: getAvatarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TEXT_AREA_V2: getTextAreaV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHARTSV2: getChartV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
         SINGLE_SELECT_V2: getSingleSelectV2Tokens(
@@ -369,6 +390,9 @@ const ThemeContext = createContext<ThemeContextType>({
             FOUNDATION_THEME,
             Theme.LIGHT
         ),
+        NUMBER_INPUT_V2: getNumberInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        OTP_INPUTV2: getOTPInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SEARCH_INPUT_V2: getSearchInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

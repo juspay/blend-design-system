@@ -140,33 +140,3 @@ export const METADATA_CONFIG = {
         },
     },
 }
-
-// Environment-specific configurations
-export const getEnvironmentConfig = () => {
-    if (APP_CONFIG.env.isDevelopment) {
-        return {
-            logging: true,
-            debugMode: true,
-            hotReload: true,
-        }
-    }
-
-    if (APP_CONFIG.env.isProduction) {
-        return {
-            logging: false,
-            debugMode: false,
-            analytics: APP_CONFIG.features.analytics,
-            compression: true,
-        }
-    }
-
-    return {
-        logging: false,
-        debugMode: false,
-    }
-}
-
-// Type exports for better TypeScript support
-export type AppConfig = typeof APP_CONFIG
-export type MetadataConfig = typeof METADATA_CONFIG
-export type EnvironmentConfig = ReturnType<typeof getEnvironmentConfig>

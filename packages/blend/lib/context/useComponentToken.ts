@@ -68,6 +68,10 @@ import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEdi
 import type { ResponsiveTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 import { ResponsiveProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
 import { ResponsiveMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import { ResponsiveNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import { ResponsiveOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import { ResponsiveTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import { ResponsiveSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -141,6 +145,10 @@ export const useComponentToken = (
     | ResponsiveTopbarV2Tokens
     | ResponsiveProgressBarV2Tokens
     | ResponsiveMultiValueInputV2Tokens
+    | ResponsiveNumberInputV2Tokens
+    | ResponsiveOTPInputV2Tokens
+    | ResponsiveTextAreaV2Tokens
+    | ResponsiveSearchInputV2Tokens
     | ResponsiveCodeEditorV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
@@ -258,6 +266,8 @@ export const useComponentToken = (
             return componentTokens.AVATARV2
         case 'TEXT_INPUTV2':
             return componentTokens.TEXT_INPUTV2
+        case 'TEXT_AREA_V2':
+            return componentTokens.TEXT_AREA_V2
         case 'CHARTSV2':
             return componentTokens.CHARTSV2
         case 'TIMELINE':
@@ -284,6 +294,12 @@ export const useComponentToken = (
             return componentTokens.PROGRESS_BARV2
         case 'MULTI_VALUE_INPUT_V2':
             return componentTokens.MULTI_VALUE_INPUT_V2
+        case 'NUMBER_INPUT_V2':
+            return componentTokens.NUMBER_INPUT_V2
+        case 'OTP_INPUTV2':
+            return componentTokens.OTP_INPUTV2
+        case 'SEARCH_INPUT_V2':
+            return componentTokens.SEARCH_INPUT_V2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

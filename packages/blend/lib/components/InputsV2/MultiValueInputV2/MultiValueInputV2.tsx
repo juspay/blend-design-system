@@ -19,6 +19,7 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import styled, { type CSSObject } from 'styled-components'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
+import { generateAccessibilityIds } from '../utils/utils'
 
 const ContentContainer = styled(Block)<{
     $hasLeftSlot: boolean
@@ -90,8 +91,7 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
         // Generate unique IDs for accessibility (WCAG 4.1.2, 3.3.1, 3.3.2)
         const generatedId = useId()
         const inputId = providedId || generatedId
-        const errorId = `${inputId}-error`
-        const hintId = `${inputId}-hint`
+        const { errorId, hintId } = generateAccessibilityIds(inputId)
         // Construct aria-describedby to link hint and error messages (WCAG 3.3.1, 3.3.2)
         const ariaDescribedBy =
             [
@@ -378,4 +378,5 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
     }
 )
 
+MultiValueInputV2.displayName = 'MultiValueInputV2'
 export default MultiValueInputV2

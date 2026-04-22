@@ -55,6 +55,9 @@ const InputFooterV2 = ({
                         fontWeight={tokens?.hintText?.fontWeight[size]}
                         fontSize={tokens?.hintText?.fontSize[size]}
                         color={tokens?.hintText?.color?.default}
+                        lineHeight={addPxToValue(
+                            tokens?.hintText?.lineHeight[size]
+                        )}
                     >
                         {hintText}
                     </Text>
