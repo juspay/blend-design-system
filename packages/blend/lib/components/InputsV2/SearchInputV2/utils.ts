@@ -16,10 +16,10 @@ export const getSearchInputV2InputStateKey = (
     getInteractionState(
         error
             ? InputStateV2.ERROR
-            : isFocused
-              ? InputStateV2.FOCUS
-              : disabled
-                ? InputStateV2.DISABLED
+            : disabled
+              ? InputStateV2.DISABLED
+              : isFocused
+                ? InputStateV2.FOCUS
                 : InputStateV2.DEFAULT
     )
 

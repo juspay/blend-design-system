@@ -17,6 +17,7 @@ import {
     shouldShowSearchInputV2Clear,
     toPixels,
 } from './utils'
+import { InputSizeV2 } from '../inputV2.types'
 
 const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
     (
@@ -94,33 +95,43 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
             }
         }, [leftSlot, effectiveRightSlot])
 
-        const paddingX = toPixels(
-            searchInputTokens.inputContainer.paddingLeft.sm
+        const paddingInlineStartBase = toPixels(
+            searchInputTokens.inputContainer.paddingLeft[InputSizeV2.SM]
+        )
+        const paddingInlineEndBase = toPixels(
+            searchInputTokens.inputContainer.paddingRight[InputSizeV2.SM]
         )
         const paddingY = toPixels(
-            searchInputTokens.inputContainer.paddingTop.sm
+            searchInputTokens.inputContainer.paddingTop[InputSizeV2.SM]
         )
         const GAP = toPixels(searchInputTokens.gap)
-
-        const { paddingInlineStart, paddingInlineEnd } = useMemo(
-            () =>
-                getSearchInputV2PaddingInline({
-                    paddingX,
-                    gap: GAP,
-                    hasLeftSlot: Boolean(leftSlot),
-                    leftSlotWidth,
-                    hasRightSlot: Boolean(effectiveRightSlot),
-                    rightSlotWidth,
-                }),
-            [
-                paddingX,
-                GAP,
-                leftSlot,
+        const { paddingInlineStart, paddingInlineEnd } = useMemo(() => {
+            const { paddingInlineStart } = getSearchInputV2PaddingInline({
+                paddingX: paddingInlineStartBase,
+                gap: GAP,
+                hasLeftSlot: Boolean(leftSlot),
                 leftSlotWidth,
-                effectiveRightSlot,
+                hasRightSlot: false,
+                rightSlotWidth: 0,
+            })
+            const { paddingInlineEnd } = getSearchInputV2PaddingInline({
+                paddingX: paddingInlineEndBase,
+                gap: GAP,
+                hasLeftSlot: false,
+                leftSlotWidth: 0,
+                hasRightSlot: Boolean(effectiveRightSlot),
                 rightSlotWidth,
-            ]
-        )
+            })
+            return { paddingInlineStart, paddingInlineEnd }
+        }, [
+            paddingInlineStartBase,
+            paddingInlineEndBase,
+            GAP,
+            leftSlot,
+            leftSlotWidth,
+            effectiveRightSlot,
+            rightSlotWidth,
+        ])
 
         const slotWrapperStyle = useMemo(
             () =>

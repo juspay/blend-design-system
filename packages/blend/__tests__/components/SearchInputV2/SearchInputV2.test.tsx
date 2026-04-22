@@ -348,6 +348,18 @@ describe('SearchInputV2', () => {
                 )
             })
 
+            it('returns disabled over focus when focused while disabled', () => {
+                expect(getSearchInputV2InputStateKey(false, true, true)).toBe(
+                    'disabled'
+                )
+            })
+
+            it('returns error over disabled when error and disabled', () => {
+                expect(getSearchInputV2InputStateKey(true, true, true)).toBe(
+                    'error'
+                )
+            })
+
             it('returns default otherwise', () => {
                 expect(getSearchInputV2InputStateKey(false, false, false)).toBe(
                     'default'
