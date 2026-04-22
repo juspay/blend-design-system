@@ -74,7 +74,6 @@ import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/Sea
 import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import { getBadgeTokens } from '../components/Badge/badge.tokens'
 
-
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
