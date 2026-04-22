@@ -1,6 +1,14 @@
 import React from 'react'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, within } from '../../test-utils'
+import {
+    describe,
+    it,
+    expect,
+    vi,
+    beforeEach,
+    afterEach,
+    type MockInstance,
+} from 'vitest'
+import { render, screen, fireEvent, within, waitFor } from '../../test-utils'
 import ChatInputV2 from '../../../lib/components/InputsV2/ChatInputV2/ChatInputV2'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 import * as SnackbarV2 from '../../../lib/components/SnackbarV2'
@@ -262,6 +270,104 @@ describe('ChatInputV2', () => {
             expect(onAttachFiles).not.toHaveBeenCalled()
             expect(SnackbarV2.addSnackbarV2).toHaveBeenCalled()
         })
+
+        describe('Overflow menu (narrow row)', () => {
+            // With 3 or 4 files, `computeAttachmentRowCutoff` can merge a *single* hidden
+            // file into the row (see utils), so no "+N more". Use 5+ files so ≥2 stay hidden.
+            const manyAttachedFiles = [
+                { id: 'f1', name: 'a.txt', type: 'text' as const, size: 1 },
+                { id: 'f2', name: 'b.txt', type: 'text' as const, size: 1 },
+                { id: 'f3', name: 'c.txt', type: 'text' as const, size: 1 },
+                { id: 'f4', name: 'd.txt', type: 'text' as const, size: 1 },
+                { id: 'f5', name: 'e.txt', type: 'text' as const, size: 1 },
+            ]
+
+            let rectSpy: MockInstance
+            beforeEach(() => {
+                // jsdom can report a wide row; force a zero-width box so a "+N more" control appears.
+                rectSpy = vi.spyOn(
+                    HTMLElement.prototype,
+                    'getBoundingClientRect'
+                )
+                rectSpy.mockImplementation(
+                    () =>
+                        ({
+                            width: 0,
+                            height: 0,
+                            x: 0,
+                            y: 0,
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            toJSON: () => ({}),
+                        }) as DOMRect
+                )
+            })
+
+            afterEach(() => {
+                rectSpy.mockRestore()
+            })
+
+            it('exposes the overflow “more” control when not all chips fit the row', async () => {
+                render(
+                    <ChatInputV2
+                        {...defaultProps}
+                        attachedFiles={manyAttachedFiles}
+                        onFileRemove={() => {}}
+                    />
+                )
+                // Initial cutoff is `attachedFiles.length` (all chips); `handleResize` runs in
+                // `requestAnimationFrame` and recomputes — wait for the overflow control.
+                const more = await waitFor(() =>
+                    screen.getByRole('button', {
+                        name: /show 4 more attached files/i,
+                    })
+                )
+                expect(more).toHaveAttribute(
+                    'aria-label',
+                    'Show 4 more attached files'
+                )
+            })
+
+            it('closes the overflow menu on Escape', async () => {
+                const { user } = render(
+                    <ChatInputV2
+                        {...defaultProps}
+                        attachedFiles={manyAttachedFiles}
+                        onFileRemove={() => {}}
+                    />
+                )
+                const moreBtn = await waitFor(() =>
+                    screen.getByRole('button', {
+                        name: /show 4 more attached files/i,
+                    })
+                )
+                await user.click(moreBtn)
+                expect(moreBtn).toHaveAttribute('aria-expanded', 'true')
+                fireEvent.keyDown(document, { key: 'Escape', code: 'Escape' })
+                expect(moreBtn).toHaveAttribute('aria-expanded', 'false')
+            })
+
+            it('closes the overflow menu on mousedown outside', async () => {
+                const { user } = render(
+                    <ChatInputV2
+                        {...defaultProps}
+                        attachedFiles={manyAttachedFiles}
+                        onFileRemove={() => {}}
+                    />
+                )
+                const moreBtn = await waitFor(() =>
+                    screen.getByRole('button', {
+                        name: /show 4 more attached files/i,
+                    })
+                )
+                await user.click(moreBtn)
+                expect(moreBtn).toHaveAttribute('aria-expanded', 'true')
+                fireEvent.mouseDown(document.body)
+                expect(moreBtn).toHaveAttribute('aria-expanded', 'false')
+            })
+        })
     })
 
     describe('Top queries', () => {
@@ -285,7 +391,7 @@ describe('ChatInputV2', () => {
             expect(region).toHaveAttribute('aria-hidden', 'true')
         })
 
-        it('calls onTopQuerySelect and inserts query text path when a row is clicked', async () => {
+        it('calls onTopQuerySelect when a top query row is activated', async () => {
             const onTopQuerySelect = vi.fn()
             const { user } = render(
                 <ChatInputV2
@@ -340,6 +446,25 @@ describe('ChatInputV2', () => {
             expect(onFileClick).toHaveBeenCalledWith(
                 expect.objectContaining({ id: 'm1', name: 'mob.txt' })
             )
+        })
+
+        it('composes onKeyDown with onEnter and forwards other keys to onKeyDown', () => {
+            const onKeyDown = vi.fn()
+            const onEnter = vi.fn()
+            render(
+                <ChatInputV2
+                    {...defaultProps}
+                    onKeyDown={onKeyDown}
+                    onEnter={onEnter}
+                />
+            )
+            const ta = screen.getByRole('textbox')
+            fireEvent.keyDown(ta, { key: 'a', shiftKey: false })
+            expect(onKeyDown).toHaveBeenCalled()
+            onKeyDown.mockClear()
+            fireEvent.keyDown(ta, { key: 'Enter', shiftKey: false })
+            expect(onKeyDown).toHaveBeenCalled()
+            expect(onEnter).toHaveBeenCalledTimes(1)
         })
     })
 })

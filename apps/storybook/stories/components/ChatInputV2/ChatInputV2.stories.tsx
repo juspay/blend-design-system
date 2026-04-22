@@ -106,8 +106,10 @@ Uses \`CHAT_INPUTV2\` / \`CHAT_INPUTV2_MOBILE\` tokens. Below **lg** breakpoint 
 - **Textarea**: native \`<textarea>\` with stable \`id\` / \`name\`; \`aria-disabled\` when disabled
 - **Attach control**: \`aria-label="Attach files"\` on the paperclip control (desktop); keyboard reachable where enabled
 - **Secondary action**: icon button uses \`aria-label="Secondary action"\` when \`secondaryAction\` is present
-- **Attachment chips**: \`onFileClick(file)\` when the user activates the chip label (including overflow dropdown)
+- **Attachment chips**: chip name control runs \`onFileClick\`; remove control is \`aria-label="Remove {filename}"\`
+- **Overflow (“+N more”)**: when not all chips fit, a trigger opens the extra files in a panel next to the row — \`aria-haspopup\`, \`aria-expanded\`, and \`aria-controls\` (when open); **Escape** and **click outside** close it (as in a typical disclosure/menu)
 - **Top queries**: region toggles \`aria-hidden\` when collapsed; focus the field to surface suggestions
+- **Mobile**: hidden file input, attach, and **secondary** use the same \`aria-label\` strings as desktop; **native props** passed to \`ChatInputV2\` (e.g. \`aria-label\`, \`inputMode\`, \`onKeyDown\`) are forwarded to the **textarea** where applicable
 - **Keyboard**: **Enter** submits via \`onEnter\` (when wired); **Shift+Enter** inserts a newline
 - **WCAG target**: 2.1 Level AA (supports 2.2)
 
@@ -287,6 +289,62 @@ export const WithTopQueries: Story = {
         docs: {
             description: {
                 story: 'Top queries appear when the input is **focused**.',
+            },
+        },
+    },
+}
+
+/** Long row of files in a **narrow** shell so the **+N more** overflow control appears (resize the pane if needed). */
+const MANY_DEMO_FILES: AttachedFile[] = [
+    { id: 'm1', name: 'Q4-summary.pdf', type: 'pdf', size: 120_000 },
+    { id: 'm2', name: 'revenue-csv', type: 'csv', size: 4_200 },
+    { id: 'm3', name: 'notes.md', type: 'text', size: 800 },
+    { id: 'm4', name: 'screenshot.png', type: 'image', size: 92_000 },
+    { id: 'm5', name: 'contract.docx', type: 'other', size: 55_000 },
+    { id: 'm6', name: 'metrics.xlsx', type: 'other', size: 12_000 },
+]
+
+export const WithAttachmentOverflow: Story = {
+    render: function WithAttachmentOverflowStory() {
+        const [value, setValue] = useState('')
+        const [files, setFiles] = useState<AttachedFile[]>(MANY_DEMO_FILES)
+        return (
+            <div style={{ maxWidth: 320, width: '100%' }}>
+                <p
+                    style={{
+                        margin: '0 0 12px',
+                        fontSize: 13,
+                        color: 'var(--color-text-muted, #64748b)',
+                    }}
+                >
+                    Narrow max-width forces inline chips to collapse into **+N
+                    more** (opens a panel; try Escape or click outside to
+                    close).
+                </p>
+                <ChatInputV2
+                    value={value}
+                    onChange={setValue}
+                    placeholder="Many attachments…"
+                    attachedFiles={files}
+                    onAttachFiles={(newFiles) =>
+                        setFiles((prev) => [
+                            ...prev,
+                            ...mapFilesToAttachedFiles(newFiles, 'ov'),
+                        ])
+                    }
+                    onFileRemove={(id) =>
+                        setFiles((prev) => prev.filter((f) => f.id !== id))
+                    }
+                    onFileClick={fn()}
+                    secondaryAction={secondaryActionIcon}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Use a **narrow** preview or the **+N more** control to see overflow. Keyboard: **Escape** dismisses; click outside also closes.',
             },
         },
     },
@@ -675,7 +733,8 @@ Reference layout for accessibility review of **ChatInputV2**:
 
 - **Textarea**: native control; verify focus ring and \`aria-disabled\` when disabled
 - **Attach**: \`aria-label="Attach files"\` on the attach control (desktop layout)
-- **Chips**: dismiss controls and chip label activation (\`onFileClick\`) should be keyboard-accessible with clear names
+- **Chips**: dismiss controls (\`Remove {name}\`) and label activation (\`onFileClick\`) should be announced clearly
+- **Overflow**: when **+N more** is present, check disclosure semantics and closing via Escape / outside click (see **WithAttachmentOverflow** on a narrow pane)
 - **Top queries**: optional region — focus the field to open (see **WithTopQueries**)
 
 **Verification**

@@ -56,6 +56,7 @@ export function reduceCutoffForFileCountChange(
     }
 }
 
+/** When true with fewer rendered chips than files, the row first sets the cutoff to all files, then re-runs (viewport widening or file list shrink). */
 export function shouldExpandCutoffToMeasureAllChips(
     isExpanding: boolean,
     renderedChipCount: number,

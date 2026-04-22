@@ -32,6 +32,7 @@ import {
 import MobileChatInputV2 from './MobileChatInputV2'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { filterBlockedProps } from '../../../utils/prop-helpers'
 
 const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
     (
@@ -56,6 +57,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
         },
         ref
     ) => {
+        const filteredRest = filterBlockedProps(textareaRest)
         const containerRef = useRef<HTMLDivElement>(null)
         const textareaRef = useRef<HTMLTextAreaElement>(null)
         const fileInputRef = useRef<HTMLInputElement>(null)
@@ -129,6 +131,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                 <>
                     {hiddenFileInput}
                     <MobileChatInputV2
+                        {...filteredRest}
                         ref={ref}
                         webTokens={chatInputV2Tokens}
                         id={chatInputId}
@@ -210,7 +213,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                 >
                     {/* Input */}
                     <PrimitiveTextarea
-                        {...textareaRest}
+                        {...filteredRest}
                         placeholderStyles={{
                             color: chatInputV2Tokens.container.inputContainer
                                 .input.placeholder as string,

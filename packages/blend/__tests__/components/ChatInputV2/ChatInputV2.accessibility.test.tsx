@@ -1,11 +1,20 @@
 import React from 'react'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import {
+    describe,
+    it,
+    expect,
+    vi,
+    beforeEach,
+    afterEach,
+    type MockInstance,
+} from 'vitest'
 import {
     render,
     screen,
     act,
     fireEvent,
     within,
+    waitFor,
     MockIcon,
 } from '../../test-utils'
 import { axe } from 'jest-axe'
@@ -223,6 +232,83 @@ describe('ChatInputV2 Accessibility', () => {
         })
     })
 
+    describe('Attachment overflow menu (accessibility)', () => {
+        const manyAttachedFiles = [
+            { id: 'f1', name: 'a.txt', type: 'text' as const, size: 1 },
+            { id: 'f2', name: 'b.txt', type: 'text' as const, size: 1 },
+            { id: 'f3', name: 'c.txt', type: 'text' as const, size: 1 },
+            { id: 'f4', name: 'd.txt', type: 'text' as const, size: 1 },
+            { id: 'f5', name: 'e.txt', type: 'text' as const, size: 1 },
+        ]
+
+        let rectSpy: MockInstance
+
+        beforeEach(() => {
+            rectSpy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+            rectSpy.mockImplementation(
+                () =>
+                    ({
+                        width: 0,
+                        height: 0,
+                        x: 0,
+                        y: 0,
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        toJSON: () => ({}),
+                    }) as DOMRect
+            )
+        })
+
+        afterEach(() => {
+            rectSpy.mockRestore()
+        })
+
+        it('exposes aria-haspopup and toggles aria-expanded; aria-controls targets the list when open', async () => {
+            const { user } = render(
+                <ChatInputV2
+                    {...baseProps}
+                    attachedFiles={manyAttachedFiles}
+                    {...noopAttachmentHandlers}
+                />
+            )
+            const moreBtn = await waitFor(() =>
+                screen.getByRole('button', {
+                    name: /show 4 more attached files/i,
+                })
+            )
+            expect(moreBtn).toHaveAttribute('aria-haspopup', 'true')
+            expect(moreBtn).toHaveAttribute('aria-expanded', 'false')
+            expect(moreBtn).not.toHaveAttribute('aria-controls')
+
+            await user.click(moreBtn)
+            expect(moreBtn).toHaveAttribute('aria-expanded', 'true')
+            const controlsId = moreBtn.getAttribute('aria-controls')
+            expect(controlsId).toBeTruthy()
+            expect(document.getElementById(controlsId!)).toBeTruthy()
+        })
+
+        it('meets WCAG standards with the overflow menu open (axe-core)', async () => {
+            const { user, container } = render(
+                <ChatInputV2
+                    {...baseProps}
+                    attachedFiles={manyAttachedFiles}
+                    {...noopAttachmentHandlers}
+                    secondaryAction={<MockIcon />}
+                />
+            )
+            const moreBtn = await waitFor(() =>
+                screen.getByRole('button', {
+                    name: /show 4 more attached files/i,
+                })
+            )
+            await user.click(moreBtn)
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
     describe('Top queries visibility (aria-hidden)', () => {
         it('sets aria-hidden on the suggestions container when the field is not focused', () => {
             render(
@@ -327,6 +413,19 @@ describe('ChatInputV2 Accessibility', () => {
             expect(
                 screen.getByRole('button', { name: 'Secondary action' })
             ).toBeInTheDocument()
+        })
+
+        it('forwards native textarea attributes (e.g. aria-label, inputMode) to the textbox', () => {
+            render(
+                <ChatInputV2
+                    value=""
+                    onChange={noopChange}
+                    aria-label="Mobile composer"
+                    inputMode="search"
+                />
+            )
+            const ta = screen.getByRole('textbox', { name: 'Mobile composer' })
+            expect(ta).toHaveAttribute('inputMode', 'search')
         })
 
         it('keeps attachment region and handlers without axe regressions', async () => {

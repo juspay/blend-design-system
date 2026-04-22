@@ -11,6 +11,7 @@ import {
 import Block from '../../Primitives/Block/Block'
 import TooltipV2 from '../../TooltipV2/TooltipV2'
 import type { AttachedFile } from './ChatInputV2.types'
+import { useClickOutside } from '../../../hooks/useClickOutside'
 import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import type { CSSObject } from 'styled-components'
 import AttachmentDropdownV2 from './AttachmentDropdown'
@@ -63,6 +64,8 @@ export default function ChatInputV2AttachmentRow({
     const layoutResizeRafRef = useRef<number | undefined>(undefined)
     const generatedId = useId()
     const filesRegionId = `chat-input-v2-files-${generatedId}`
+    const overflowListId = `${filesRegionId}-overflow-list`
+    const overflowMenuContainerRef = useRef<HTMLDivElement>(null)
 
     const visibleFiles = useMemo(
         () => sliceVisibleAttachedFiles(attachedFiles, cutOffIndex),
@@ -81,7 +84,10 @@ export default function ChatInputV2AttachmentRow({
 
     const handleResize = useCallback(() => {
         const container = filesContainerRef.current
-        if (!container || attachedFiles.length === 0) return
+        if (!container || attachedFiles.length === 0) {
+            isExpanding.current = false
+            return
+        }
 
         const fileChipCount = Array.from(container.children).filter(
             (c) => !c.classList.contains(OVERFLOW_MENU_TRIGGER_CLASS)
@@ -100,6 +106,7 @@ export default function ChatInputV2AttachmentRow({
             return
         }
 
+        isExpanding.current = false
         setCutOffIndex(
             computeAttachmentRowCutoff({
                 filesContainer: container,
@@ -125,11 +132,36 @@ export default function ChatInputV2AttachmentRow({
         const updater = reduceCutoffForFileCountChange(prev, next)
         setCutOffIndex((c) => updater(c))
 
-        isExpanding.current = false
+        // After a removal, rendered chips can still be fewer than `attachedFiles.length`
+        // until we expand — `computeAttachmentRowCutoff` only measures existing nodes.
+        // Reuse the same “show all, then re-measure” pass as for widening the viewport.
+        isExpanding.current = next < prev && next > 0
 
         const id = requestAnimationFrame(() => handleResize())
         return () => cancelAnimationFrame(id)
     }, [attachedFiles.length, handleResize])
+
+    const closeOverflowMenu = useCallback(() => {
+        setOverflowMenuOpen(false)
+    }, [])
+
+    useClickOutside(overflowMenuContainerRef, closeOverflowMenu)
+
+    useEffect(() => {
+        if (!overflowMenuOpen) return
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                e.preventDefault()
+                setOverflowMenuOpen(false)
+            }
+        }
+        document.addEventListener('keydown', onKeyDown)
+        return () => document.removeEventListener('keydown', onKeyDown)
+    }, [overflowMenuOpen])
+
+    useEffect(() => {
+        if (!hasOverflow) setOverflowMenuOpen(false)
+    }, [hasOverflow])
 
     const onOuterResize = useCallback(
         ({ width }: DOMRectReadOnly) => {
@@ -180,25 +212,29 @@ export default function ChatInputV2AttachmentRow({
                         file={file}
                         text={truncateFileNameForTag(file.name)}
                         tokens={tokens.container.tagContainer}
-                        onRemove={(e) => {
-                            e.stopPropagation()
-                            onFileRemove(file.id)
-                        }}
-                        onFileClick={(e) => {
-                            e.stopPropagation()
-                            onFileClick(file)
-                        }}
+                        onRemove={() => onFileRemove(file.id)}
+                        onFileClick={() => onFileClick(file)}
                     />
                 </TooltipV2>
             ))}
 
             {hasOverflow && (
                 <Block
+                    ref={overflowMenuContainerRef}
                     className={OVERFLOW_MENU_TRIGGER_CLASS}
                     position="relative"
                 >
                     <ButtonV2
+                        type="button"
                         text={`${hiddenFiles.length} more`}
+                        aria-label={`Show ${hiddenFiles.length} more attached file${
+                            hiddenFiles.length !== 1 ? 's' : ''
+                        }`}
+                        aria-haspopup="true"
+                        aria-expanded={overflowMenuOpen}
+                        aria-controls={
+                            overflowMenuOpen ? overflowListId : undefined
+                        }
                         size={ButtonV2Size.SMALL}
                         buttonType={ButtonV2Type.SECONDARY}
                         subType={ButtonV2SubType.INLINE}
@@ -209,6 +245,7 @@ export default function ChatInputV2AttachmentRow({
                     />
                     {overflowMenuOpen && (
                         <AttachmentDropdownV2
+                            id={overflowListId}
                             tokens={tokens}
                             files={hiddenFiles}
                             onFileRemove={onFileRemove}

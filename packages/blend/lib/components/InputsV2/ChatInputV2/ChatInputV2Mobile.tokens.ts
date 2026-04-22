@@ -5,7 +5,7 @@ import { Theme } from '../../../context/theme.enum'
 import { getChatInputV2MobileDarkTokens } from './ChatInputV2Mobile.dark.tokens'
 import { getChatInputV2MobileLightTokens } from './ChatInputV2Mobile.light.tokens'
 
-export type dimensions = {
+export type Dimensions = {
     width: CSSObject['width']
     height: CSSObject['height']
     minHeight: CSSObject['minHeight']
@@ -38,7 +38,7 @@ export type ChatInputV2MobileTokensType = {
             color: CSSObject['color']
         }
         backgroundColor: CSSObject['backgroundColor']
-    } & dimensions
+    } & Dimensions
     secondaryAction: {
         width: CSSObject['width']
         height: CSSObject['height']

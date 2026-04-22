@@ -19,8 +19,10 @@ import {
 type ChatInputTagV2Props = {
     text: string
     tokens: ChatInputV2TokensType['container']['tagContainer']
-    onRemove: (e: React.MouseEvent<HTMLDivElement>) => void
-    onFileClick: (e: React.MouseEvent<HTMLDivElement>) => void
+    /** Fired after the remove control handles `stopPropagation` (button). */
+    onRemove: () => void
+    /** Fired after the file-name control handles `preventDefault` / `stopPropagation` (button). */
+    onFileClick: () => void
     file: AttachedFile
 }
 
@@ -68,9 +70,7 @@ const ChatInputTagV2 = ({
                 onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    onFileClick(
-                        e as unknown as React.MouseEvent<HTMLDivElement>
-                    )
+                    onFileClick()
                 }}
             />
             <ButtonV2
@@ -80,7 +80,7 @@ const ChatInputTagV2 = ({
                 aria-label={`Remove ${file.name}`}
                 onClick={(e) => {
                     e.stopPropagation()
-                    onRemove(e as unknown as React.MouseEvent<HTMLDivElement>)
+                    onRemove()
                 }}
                 leftSlot={{
                     slot: <XIcon size={16} color={tokens.text.color} />,

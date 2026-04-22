@@ -6,6 +6,7 @@ import { AttachedFile } from './ChatInputV2.types'
 import { truncateFileNameForTag } from './utils'
 
 type AttachmentDropdownV2Props = {
+    id?: string
     files: AttachedFile[]
     onFileRemove: (fileId: string) => void
     tokens: ChatInputV2TokensType
@@ -13,6 +14,7 @@ type AttachmentDropdownV2Props = {
 }
 
 const AttachmentDropdownV2 = ({
+    id,
     files,
     onFileRemove,
     onFileClick,
@@ -20,6 +22,7 @@ const AttachmentDropdownV2 = ({
 }: AttachmentDropdownV2Props) => {
     return (
         <Block
+            id={id}
             backgroundColor={
                 tokens.container.attachedFilesContainer.overflowMenu
                     .backgroundColor[InputStateV2.DEFAULT]
@@ -50,14 +53,8 @@ const AttachmentDropdownV2 = ({
                         key={file.id}
                         text={truncateFileNameForTag(file.name)}
                         tokens={tokens.container.tagContainer}
-                        onRemove={(e) => {
-                            e.stopPropagation()
-                            onFileRemove(file.id)
-                        }}
-                        onFileClick={(e) => {
-                            e.stopPropagation()
-                            onFileClick(file)
-                        }}
+                        onRemove={() => onFileRemove(file.id)}
+                        onFileClick={() => onFileClick(file)}
                     />
                 ))}
         </Block>

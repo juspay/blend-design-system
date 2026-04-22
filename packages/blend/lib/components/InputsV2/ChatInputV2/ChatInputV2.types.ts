@@ -57,5 +57,5 @@ export type MobileChatInputV2Props = {
     onEnter?: () => void
 } & Omit<
     TextareaHTMLAttributes<HTMLTextAreaElement>,
-    'size' | 'style' | 'className' | 'onFocus' | 'onBlur' | 'cols' | 'onChange'
+    'size' | 'className' | 'onFocus' | 'onBlur' | 'cols' | 'onChange'
 >

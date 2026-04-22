@@ -7,6 +7,8 @@ import {
     useRef,
     useState,
     type ChangeEvent,
+    type CSSProperties,
+    type KeyboardEvent,
 } from 'react'
 import styled from 'styled-components'
 import Block from '../../Primitives/Block/Block'
@@ -53,6 +55,9 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
             onSecondaryActionClick,
             id,
             onEnter = () => {},
+            onKeyDown: onKeyDownFromProps,
+            style: styleFromProps,
+            ...textareaRest
         },
         ref
     ) {
@@ -69,6 +74,32 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
             [ref]
         )
         const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+        const mergedTextareaStyle = useMemo((): CSSProperties => {
+            const base: CSSProperties = {
+                lineHeight: mobileTokens.inputContainer.lineHeight,
+            }
+            if (
+                styleFromProps &&
+                typeof styleFromProps === 'object' &&
+                !Array.isArray(styleFromProps)
+            ) {
+                return { ...styleFromProps, ...base }
+            }
+            return base
+        }, [styleFromProps, mobileTokens.inputContainer.lineHeight])
+
+        const handleTextareaKeyDown = useCallback(
+            (e: KeyboardEvent<HTMLTextAreaElement>) => {
+                onKeyDownFromProps?.(e)
+                if (e.defaultPrevented) return
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    onEnter()
+                }
+            },
+            [onKeyDownFromProps, onEnter]
+        )
         const [truncatedPlaceholder, setTruncatedPlaceholder] = useState<
             string | undefined
         >(placeholder)
@@ -220,6 +251,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                         gap={2}
                     >
                         <HiddenScrollbarTextarea
+                            {...textareaRest}
                             backgroundColor={
                                 mobileTokens.inputContainer.backgroundColor
                             }
@@ -259,10 +291,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                                     InputStateV2.DEFAULT
                                 ]
                             }
-                            style={{
-                                lineHeight:
-                                    mobileTokens.inputContainer.lineHeight,
-                            }}
+                            style={mergedTextareaStyle}
                             _focus={{
                                 border: mobileTokens.inputContainer.border[
                                     InputStateV2.FOCUS
@@ -273,12 +302,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                             _disabled={{
                                 cursor: 'not-allowed',
                             }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault()
-                                    onEnter()
-                                }
-                            }}
+                            onKeyDown={handleTextareaKeyDown}
                         />
 
                         {secondaryAction && (
