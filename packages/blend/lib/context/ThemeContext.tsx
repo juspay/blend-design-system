@@ -211,7 +211,8 @@ import {
     ResponsiveSearchInputV2Tokens,
     getSearchInputV2Tokens,
 } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
-import{ResponsiveChatInputV2TokensType,
+import {
+    ResponsiveChatInputV2TokensType,
     getChatInputV2Tokens,
 } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import {

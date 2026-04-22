@@ -40,7 +40,41 @@ const visualGrid = {
     alignItems: 'start',
 } as const
 
-const slotIcon = <AudioLines size={18} aria-hidden focusable={false} />
+const secondaryActionIcon = (
+    <AudioLines size={18} aria-hidden focusable={false} />
+)
+
+/** Map native `File` picks to `AttachedFile` for attachment demos. */
+function mapFilesToAttachedFiles(
+    newFiles: File[],
+    idPrefix: string
+): AttachedFile[] {
+    return newFiles.map((f, i) => ({
+        id: `${idPrefix}-${Date.now()}-${i}`,
+        name: f.name,
+        type: ((): AttachedFile['type'] => {
+            if (f.type.startsWith('image/')) return 'image'
+            if (
+                f.type === 'application/pdf' ||
+                f.name.toLowerCase().endsWith('.pdf')
+            ) {
+                return 'pdf'
+            }
+            if (
+                f.type === 'text/csv' ||
+                f.type === 'application/csv' ||
+                f.name.toLowerCase().endsWith('.csv')
+            ) {
+                return 'csv'
+            }
+            if (f.type.startsWith('text/') || /\.(txt|md)$/i.test(f.name)) {
+                return 'text'
+            }
+            return 'other'
+        })(),
+        size: f.size,
+    }))
+}
 
 const meta: Meta<typeof ChatInputV2> = {
     title: 'Components/Inputs/ChatInputV2',
@@ -61,7 +95,7 @@ const meta: Meta<typeof ChatInputV2> = {
         docs: {
             description: {
                 component: `
-Chat composer (V2) with optional file chips, **top queries** (focus), attach + secondary slots, and **Enter** to submit (Shift+Enter newline).
+Chat composer (V2) with optional **file chips**, **topContent** / **secondaryAction** props, **top queries** (on focus), attach control, and **Enter** to submit (Shift+Enter for newline).
 
 Uses \`CHAT_INPUTV2\` / \`CHAT_INPUTV2_MOBILE\` tokens. Below **lg** breakpoint the mobile shell is used.
 
@@ -119,6 +153,18 @@ Use **VisualStates** (light) and **VisualStatesDark** (dark theme) with Chromati
         },
         onTopQuerySelect: { action: 'topQuerySelect' },
         onSecondaryActionClick: { action: 'secondaryActionClick' },
+        topContent: {
+            control: false,
+            description:
+                'Full-width content above the field row (e.g. filters, banners).',
+            table: { category: 'Layout' },
+        },
+        secondaryAction: {
+            control: false,
+            description:
+                'Node for the secondary control (e.g. voice) — see **WithSlots** / **Default**.',
+            table: { category: 'Layout' },
+        },
     },
     tags: ['autodocs'],
 }
@@ -135,9 +181,7 @@ export const Default: Story = {
                 disabled={args.disabled}
                 value={value}
                 onChange={setValue}
-                secondaryAction={
-                    <AudioLines size={18} aria-hidden focusable={false} />
-                }
+                secondaryAction={secondaryActionIcon}
                 onSecondaryActionClick={() => args.onSecondaryActionClick?.()}
                 onFileClick={args.onFileClick}
             />
@@ -156,7 +200,7 @@ export const WithSlots: Story = {
             <ChatInputV2
                 value={value}
                 onChange={setValue}
-                placeholder="Message with slots…"
+                placeholder="Message with top content + action…"
                 topContent={
                     <Block
                         padding={8}
@@ -164,12 +208,10 @@ export const WithSlots: Story = {
                         backgroundColor={FOUNDATION_THEME.colors.gray[100]}
                         fontSize={12}
                     >
-                        Optional slot (e.g. filters)
+                        Optional top content (e.g. filters)
                     </Block>
                 }
-                secondaryAction={
-                    <AudioLines size={18} aria-hidden focusable={false} />
-                }
+                secondaryAction={secondaryActionIcon}
                 onSecondaryActionClick={() => undefined}
             />
         )
@@ -196,17 +238,10 @@ export const WithAttachments: Story = {
         ])
 
         const handleAttach = (newFiles: File[]) => {
-            const mapped: AttachedFile[] = newFiles.map((f, i) => ({
-                id: `f-${Date.now()}-${i}`,
-                name: f.name,
-                type: f.type.startsWith('image/')
-                    ? 'image'
-                    : f.name.endsWith('.pdf')
-                      ? 'pdf'
-                      : 'other',
-                size: f.size,
-            }))
-            setFiles((prev) => [...prev, ...mapped])
+            setFiles((prev) => [
+                ...prev,
+                ...mapFilesToAttachedFiles(newFiles, 'f'),
+            ])
         }
 
         return (
@@ -220,16 +255,14 @@ export const WithAttachments: Story = {
                     setFiles((prev) => prev.filter((f) => f.id !== id))
                 }
                 onFileClick={fn()}
-                secondaryAction={
-                    <AudioLines size={18} aria-hidden focusable={false} />
-                }
+                secondaryAction={secondaryActionIcon}
             />
         )
     },
     parameters: {
         docs: {
             description: {
-                story: 'Starts with one chip; use the paperclip to add more (same as product flow). Click a chip label to trigger **onFileClick** (e.g. preview).',
+                story: 'Starts with one chip; use the paperclip to add more. New files are mapped to `AttachedFile` (image, pdf, csv, text, or other). Click a chip label to trigger **onFileClick** (e.g. preview).',
             },
         },
     },
@@ -246,9 +279,7 @@ export const WithTopQueries: Story = {
                 topQueries={SAMPLE_TOP_QUERIES}
                 topQueriesMaxHeight={160}
                 onTopQuerySelect={(q) => setValue(q.text)}
-                secondaryAction={
-                    <AudioLines size={18} aria-hidden focusable={false} />
-                }
+                secondaryAction={secondaryActionIcon}
             />
         )
     },
@@ -270,9 +301,7 @@ export const Disabled: Story = {
                 onChange={setValue}
                 disabled
                 placeholder="Disabled"
-                secondaryAction={
-                    <AudioLines size={18} aria-hidden focusable={false} />
-                }
+                secondaryAction={secondaryActionIcon}
             />
         )
     },
@@ -299,7 +328,7 @@ export const VisualStates: Story = {
                         value=""
                         onChange={noopChange}
                         placeholder="Message…"
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </figure>
                 <figure style={{ margin: 0 }}>
@@ -308,7 +337,7 @@ export const VisualStates: Story = {
                         value="Draft message for review."
                         onChange={noopChange}
                         placeholder="Message…"
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </figure>
                 <figure style={{ margin: 0 }}>
@@ -336,7 +365,7 @@ export const VisualStates: Story = {
                         onAttachFiles={() => undefined}
                         onFileRemove={() => undefined}
                         onFileClick={() => undefined}
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </figure>
                 <figure style={{ margin: 0 }}>
@@ -346,7 +375,7 @@ export const VisualStates: Story = {
                         onChange={noopChange}
                         disabled
                         placeholder="Disabled"
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </figure>
                 <figure style={{ margin: 0 }}>
@@ -358,7 +387,7 @@ export const VisualStates: Story = {
                         onChange={noopChange}
                         placeholder="Message…"
                         textareaMaxHeight={120}
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </figure>
             </div>
@@ -437,13 +466,13 @@ export const Variants: Story = {
                             fontWeight: 600,
                         }}
                     >
-                        + Secondary slot
+                        + Secondary action
                     </h3>
                     <ChatInputV2
                         value={b}
                         onChange={setB}
                         placeholder="With action…"
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                         onSecondaryActionClick={() => undefined}
                     />
                 </section>
@@ -464,7 +493,7 @@ export const Variants: Story = {
                         topQueries={SAMPLE_TOP_QUERIES}
                         topQueriesMaxHeight={140}
                         onTopQuerySelect={(q) => setC(q.text)}
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </section>
                 <section>
@@ -482,15 +511,12 @@ export const Variants: Story = {
                         onChange={setD}
                         placeholder="Full composition…"
                         attachedFiles={files}
-                        onAttachFiles={(newFiles) => {
-                            const mapped = newFiles.map((f, i) => ({
-                                id: `n-${Date.now()}-${i}`,
-                                name: f.name,
-                                type: 'other' as const,
-                                size: f.size,
-                            }))
-                            setFiles((prev) => [...prev, ...mapped])
-                        }}
+                        onAttachFiles={(newFiles) =>
+                            setFiles((prev) => [
+                                ...prev,
+                                ...mapFilesToAttachedFiles(newFiles, 'n'),
+                            ])
+                        }
                         onFileRemove={(id) =>
                             setFiles((prev) => prev.filter((f) => f.id !== id))
                         }
@@ -507,7 +533,7 @@ export const Variants: Story = {
                                 Context slot
                             </Block>
                         }
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </section>
             </div>
@@ -569,7 +595,7 @@ export const Accessibility: Story = {
                         onChange={setMessage}
                         placeholder="Type a message…"
                         onEnter={() => undefined}
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                         onSecondaryActionClick={() => undefined}
                     />
                 </section>
@@ -600,7 +626,7 @@ export const Accessibility: Story = {
                         onChange={() => undefined}
                         disabled
                         placeholder="Unavailable"
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </section>
 
@@ -635,7 +661,7 @@ export const Accessibility: Story = {
                             setFiles((prev) => prev.filter((f) => f.id !== id))
                         }
                         onFileClick={fn()}
-                        secondaryAction={slotIcon}
+                        secondaryAction={secondaryActionIcon}
                     />
                 </section>
             </div>

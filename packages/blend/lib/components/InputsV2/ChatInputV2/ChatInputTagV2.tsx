@@ -77,6 +77,7 @@ const ChatInputTagV2 = ({
                 size={ButtonV2Size.SMALL}
                 buttonType={ButtonV2Type.SECONDARY}
                 subType={ButtonV2SubType.INLINE}
+                aria-label={`Remove ${file.name}`}
                 onClick={(e) => {
                     e.stopPropagation()
                     onRemove(e as unknown as React.MouseEvent<HTMLDivElement>)

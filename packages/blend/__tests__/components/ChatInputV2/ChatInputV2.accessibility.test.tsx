@@ -1,6 +1,13 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, act, fireEvent, MockIcon } from '../../test-utils'
+import {
+    render,
+    screen,
+    act,
+    fireEvent,
+    within,
+    MockIcon,
+} from '../../test-utils'
 import { axe } from 'jest-axe'
 import ChatInputV2 from '../../../lib/components/InputsV2/ChatInputV2/ChatInputV2'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
@@ -191,6 +198,29 @@ describe('ChatInputV2 Accessibility', () => {
                 screen.getByRole('region', { name: /1 file attached/i })
             ).toBeInTheDocument()
         })
+
+        it('gives the attachment remove control a discernible name (chip)', () => {
+            render(
+                <ChatInputV2
+                    {...baseProps}
+                    attachedFiles={[
+                        {
+                            id: 'f1',
+                            name: 'notes.txt',
+                            type: 'text',
+                            size: 1,
+                        },
+                    ]}
+                    {...noopAttachmentHandlers}
+                />
+            )
+            const region = screen.getByRole('region', {
+                name: /1 file attached/i,
+            })
+            expect(
+                within(region).getByRole('button', { name: 'Remove notes.txt' })
+            ).toBeInTheDocument()
+        })
     })
 
     describe('Top queries visibility (aria-hidden)', () => {
@@ -287,6 +317,15 @@ describe('ChatInputV2 Accessibility', () => {
             render(<ChatInputV2 {...baseProps} />)
             expect(
                 screen.getByRole('button', { name: /attach files/i })
+            ).toBeInTheDocument()
+        })
+
+        it('exposes the secondary action slot with an accessible name', () => {
+            render(
+                <ChatInputV2 {...baseProps} secondaryAction={<MockIcon />} />
+            )
+            expect(
+                screen.getByRole('button', { name: 'Secondary action' })
             ).toBeInTheDocument()
         })
 

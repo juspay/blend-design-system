@@ -284,6 +284,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                         {secondaryAction && (
                             <PrimitiveButton
                                 disabled={disabled}
+                                aria-label="Secondary action"
                                 position="absolute"
                                 bottom={mobileTokens.secondaryAction.bottom}
                                 right={mobileTokens.secondaryAction.right}

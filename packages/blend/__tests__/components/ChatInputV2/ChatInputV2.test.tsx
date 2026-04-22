@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent } from '../../test-utils'
+import { render, screen, fireEvent, within } from '../../test-utils'
 import ChatInputV2 from '../../../lib/components/InputsV2/ChatInputV2/ChatInputV2'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 import * as SnackbarV2 from '../../../lib/components/SnackbarV2'
@@ -128,7 +128,7 @@ describe('ChatInputV2', () => {
         })
     })
 
-    describe('Secondary slot', () => {
+    describe('Secondary action', () => {
         it('calls onSecondaryActionClick when secondary action is activated', async () => {
             const onSecondaryActionClick = vi.fn()
             const { user } = render(
@@ -187,7 +187,7 @@ describe('ChatInputV2', () => {
                     onFileClick={onFileClick}
                 />
             )
-            await user.click(screen.getByText('a.txt'))
+            await user.click(screen.getByRole('button', { name: 'a.txt' }))
             expect(onFileClick).toHaveBeenCalledWith({
                 id: 'chip-1',
                 name: 'a.txt',
@@ -213,12 +213,10 @@ describe('ChatInputV2', () => {
             const region = screen.getByRole('region', {
                 name: /1 file attached/i,
             })
-            // Chip: file-type icon, then text; last svg is the dismiss (X) control
-            const svgs = region.querySelectorAll('svg')
-            const dismissIcon = svgs[svgs.length - 1]
-            expect(svgs.length).toBeGreaterThan(0)
-            expect(dismissIcon).toBeTruthy()
-            await user.click(dismissIcon!)
+            // ChatInputTagV2: filename ButtonV2, then icon-only remove ButtonV2
+            const chipButtons = within(region).getAllByRole('button')
+            expect(chipButtons).toHaveLength(2)
+            await user.click(chipButtons[1]!)
             expect(onFileRemove).toHaveBeenCalledWith('chip-1')
         })
 
@@ -298,7 +296,8 @@ describe('ChatInputV2', () => {
             )
             const ta = screen.getByRole('textbox')
             await user.click(ta)
-            await user.click(screen.getByText('Pick me'))
+            const queryButton = screen.getByRole('button', { name: 'Pick me' })
+            await user.click(queryButton)
             expect(onTopQuerySelect).toHaveBeenCalledWith({
                 id: 'q1',
                 text: 'Pick me',
@@ -337,7 +336,7 @@ describe('ChatInputV2', () => {
                     onFileClick={onFileClick}
                 />
             )
-            await user.click(screen.getByText('mob.txt'))
+            await user.click(screen.getByRole('button', { name: 'mob.txt' }))
             expect(onFileClick).toHaveBeenCalledWith(
                 expect.objectContaining({ id: 'm1', name: 'mob.txt' })
             )
