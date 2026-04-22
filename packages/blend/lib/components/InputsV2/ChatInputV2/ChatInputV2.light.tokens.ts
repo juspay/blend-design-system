@@ -11,9 +11,12 @@ export const getChatInputV2LightTokens = (
                 tagContainer: {
                     gap: foundationToken.unit[5],
                     borderRadius: foundationToken.unit[6],
-                    padding: foundationToken.unit[6],
+                    paddingTop: foundationToken.unit[2],
+                    paddingRight: foundationToken.unit[6],
+                    paddingBottom: foundationToken.unit[2],
+                    paddingLeft: foundationToken.unit[6],
                     backgroundColor: foundationToken.colors.gray[50],
-                    border: `1px solid ${foundationToken.colors.gray[200]}`,
+                    border: `1px solid ${foundationToken.colors.gray[150]}`,
                     text: {
                         color: foundationToken.colors.gray[700],
                         fontSize: foundationToken.unit[12],
@@ -21,9 +24,6 @@ export const getChatInputV2LightTokens = (
                     },
                 },
                 attachedFilesContainer: {
-                    fontSize: foundationToken.unit[12],
-                    fontWeight: '500',
-                    color: foundationToken.colors.gray[700],
                     gap: foundationToken.unit[5],
                     overflowMenu: {
                         gap: foundationToken.unit[5],
@@ -66,12 +66,6 @@ export const getChatInputV2LightTokens = (
                 paddingRight: foundationToken.unit[5],
                 paddingBottom: foundationToken.unit[5],
                 paddingLeft: foundationToken.unit[5],
-
-                slot: {
-                    backgroundColor: foundationToken.colors.gray[0],
-                    borderRadius: foundationToken.unit[100],
-                    border: `1px solid ${foundationToken.colors.gray[200]}`,
-                },
                 inputContainer: {
                     outline: {
                         [InputStateV2.DEFAULT]: 'none',
@@ -104,7 +98,7 @@ export const getChatInputV2LightTokens = (
                         minHeight: foundationToken.unit[48],
                         maxHeight: foundationToken.unit[150],
                     },
-                    slotContainer: {
+                    actionContainer: {
                         paddingRight: foundationToken.unit[16],
                         paddingBottom: foundationToken.unit[14],
                         paddingLeft: foundationToken.unit[16],
@@ -171,9 +165,12 @@ export const getChatInputV2LightTokens = (
                 tagContainer: {
                     gap: foundationToken.unit[5],
                     borderRadius: foundationToken.unit[6],
-                    padding: foundationToken.unit[6],
+                    paddingTop: foundationToken.unit[2],
+                    paddingRight: foundationToken.unit[6],
+                    paddingBottom: foundationToken.unit[2],
+                    paddingLeft: foundationToken.unit[6],
                     backgroundColor: foundationToken.colors.gray[50],
-                    border: `1px solid ${foundationToken.colors.gray[200]}`,
+                    border: `1px solid ${foundationToken.colors.gray[150]}`,
                     text: {
                         color: foundationToken.colors.gray[700],
                         fontSize: foundationToken.unit[12],
@@ -181,15 +178,12 @@ export const getChatInputV2LightTokens = (
                     },
                 },
                 attachedFilesContainer: {
-                    fontSize: foundationToken.unit[12],
-                    fontWeight: '500',
-                    color: foundationToken.colors.gray[700],
                     gap: foundationToken.unit[5],
                     overflowMenu: {
                         gap: foundationToken.unit[5],
                         backgroundColor: {
                             [InputStateV2.DEFAULT]:
-                                foundationToken.colors.gray[0],
+                                foundationToken.colors.gray[25],
                             [InputStateV2.HOVER]:
                                 foundationToken.colors.gray[25],
                             [InputStateV2.FOCUS]:
@@ -207,7 +201,7 @@ export const getChatInputV2LightTokens = (
                     },
                 },
                 backgroundColor: {
-                    [InputStateV2.DEFAULT]: foundationToken.colors.gray[100],
+                    [InputStateV2.DEFAULT]: foundationToken.colors.gray[50],
                     [InputStateV2.HOVER]: foundationToken.colors.gray[25],
                     [InputStateV2.FOCUS]: foundationToken.colors.gray[0],
                     [InputStateV2.ERROR]: foundationToken.colors.gray[0],
@@ -226,12 +220,6 @@ export const getChatInputV2LightTokens = (
                 paddingRight: foundationToken.unit[4],
                 paddingBottom: foundationToken.unit[4],
                 paddingLeft: foundationToken.unit[4],
-
-                slot: {
-                    backgroundColor: foundationToken.colors.gray[0],
-                    borderRadius: foundationToken.unit[100],
-                    border: `1px solid ${foundationToken.colors.gray[200]}`,
-                },
                 inputContainer: {
                     outline: {
                         [InputStateV2.DEFAULT]: 'none',
@@ -264,7 +252,7 @@ export const getChatInputV2LightTokens = (
                         minHeight: foundationToken.unit[48],
                         maxHeight: foundationToken.unit[150],
                     },
-                    slotContainer: {
+                    actionContainer: {
                         paddingRight: foundationToken.unit[16],
                         paddingBottom: foundationToken.unit[14],
                         paddingLeft: foundationToken.unit[16],

@@ -6,6 +6,7 @@ import {
     useMemo,
     useRef,
     useState,
+    type ChangeEvent,
 } from 'react'
 import styled from 'styled-components'
 import Block from '../../Primitives/Block/Block'
@@ -41,15 +42,15 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
             webTokens,
             value,
             onChange,
-            slot1,
-            slot2,
+            topContent,
+            secondaryAction,
             placeholder,
             attachedFiles,
             handleAttachClick,
             onFileRemove,
             onFileClick = () => {},
             disabled = false,
-            onSlot2Click,
+            onSecondaryActionClick,
             id,
             onEnter = () => {},
         },
@@ -72,9 +73,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
             string | undefined
         >(placeholder)
 
-        const handleTextareaChange = (
-            e: React.ChangeEvent<HTMLTextAreaElement>
-        ) => {
+        const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
             onChange?.(e.target.value)
         }
 
@@ -126,6 +125,17 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
             }
         }, [mobileTokens.attachmentButtonDimensions.width, mobileTokens.gap])
 
+        /** Reserve space for the absolutely positioned secondary action (right + width from tokens). */
+        const textareaPaddingRight = useMemo(() => {
+            if (!secondaryAction) return 0
+            const { right, width } = mobileTokens.secondaryAction
+            const rightCss =
+                typeof right === 'number' ? `${right}px` : String(right)
+            const widthCss =
+                typeof width === 'number' ? `${width}px` : String(width)
+            return `calc(${rightCss} + ${widthCss})`
+        }, [secondaryAction, mobileTokens.secondaryAction])
+
         return (
             <Block
                 display="flex"
@@ -149,7 +159,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                         />
                     </Block>
                 )}
-                {slot1}
+                {topContent}
 
                 <Block
                     display="flex"
@@ -231,9 +241,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                                 ]
                             }
                             resize="none"
-                            paddingRight={
-                                slot1 ? attachmentButtonDimensions.total : 0
-                            }
+                            paddingRight={textareaPaddingRight}
                             paddingLeft={
                                 mobileTokens.inputContainer.paddingLeft
                             }
@@ -273,30 +281,34 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                             }}
                         />
 
-                        <Block
-                            position="absolute"
-                            bottom={mobileTokens.slot2.bottom}
-                            right={mobileTokens.slot2.right}
-                            width={mobileTokens.slot2.width}
-                            height={mobileTokens.slot2.height}
-                            borderRadius={mobileTokens.slot2.borderRadius}
-                            backgroundColor={
-                                disabled
-                                    ? mobileTokens.slot2.backgroundColor[
-                                          InputStateV2.DISABLED
-                                      ]
-                                    : mobileTokens.slot2.backgroundColor[
-                                          InputStateV2.DEFAULT
-                                      ]
-                            }
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            onClick={disabled ? undefined : onSlot2Click}
-                            color={'white'}
-                        >
-                            {slot2}
-                        </Block>
+                        {secondaryAction && (
+                            <PrimitiveButton
+                                disabled={disabled}
+                                position="absolute"
+                                bottom={mobileTokens.secondaryAction.bottom}
+                                right={mobileTokens.secondaryAction.right}
+                                width={mobileTokens.secondaryAction.width}
+                                height={mobileTokens.secondaryAction.height}
+                                borderRadius={
+                                    mobileTokens.secondaryAction.borderRadius
+                                }
+                                backgroundColor={
+                                    mobileTokens.secondaryAction
+                                        .backgroundColor[InputStateV2.DEFAULT]
+                                }
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                onClick={
+                                    disabled
+                                        ? undefined
+                                        : onSecondaryActionClick
+                                }
+                                color={mobileTokens.secondaryAction.color}
+                            >
+                                {secondaryAction}
+                            </PrimitiveButton>
+                        )}
                     </Block>
                 </Block>
             </Block>

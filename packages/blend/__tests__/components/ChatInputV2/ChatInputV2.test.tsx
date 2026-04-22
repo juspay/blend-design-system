@@ -39,14 +39,16 @@ describe('ChatInputV2', () => {
             expect(screen.getByRole('textbox')).toHaveValue('Hello world')
         })
 
-        it('renders slot1 when provided', () => {
+        it('renders topContent when provided', () => {
             render(
                 <ChatInputV2
                     {...defaultProps}
-                    slot1={<span data-testid="slot1">Context</span>}
+                    topContent={<span data-testid="top-content">Context</span>}
                 />
             )
-            expect(screen.getByTestId('slot1')).toHaveTextContent('Context')
+            expect(screen.getByTestId('top-content')).toHaveTextContent(
+                'Context'
+            )
         })
 
         it('renders hidden file input with aria-label', () => {
@@ -60,7 +62,9 @@ describe('ChatInputV2', () => {
             render(
                 <ChatInputV2
                     {...defaultProps}
-                    slot2={<span data-testid="slot2">S</span>}
+                    secondaryAction={
+                        <span data-testid="secondary-action">S</span>
+                    }
                 />
             )
             expect(
@@ -125,19 +129,23 @@ describe('ChatInputV2', () => {
     })
 
     describe('Secondary slot', () => {
-        it('calls onSlot2Click when secondary action is activated', async () => {
-            const onSlot2Click = vi.fn()
+        it('calls onSecondaryActionClick when secondary action is activated', async () => {
+            const onSecondaryActionClick = vi.fn()
             const { user } = render(
                 <ChatInputV2
                     {...defaultProps}
-                    slot2={<span data-testid="slot2-icon">Go</span>}
-                    onSlot2Click={onSlot2Click}
+                    secondaryAction={
+                        <span data-testid="secondary-action-icon">Go</span>
+                    }
+                    onSecondaryActionClick={onSecondaryActionClick}
                 />
             )
-            const btn = screen.getByTestId('slot2-icon').closest('button')
+            const btn = screen
+                .getByTestId('secondary-action-icon')
+                .closest('button')
             expect(btn).toBeTruthy()
             await user.click(btn!)
-            expect(onSlot2Click).toHaveBeenCalledTimes(1)
+            expect(onSecondaryActionClick).toHaveBeenCalledTimes(1)
         })
     })
 
@@ -205,7 +213,10 @@ describe('ChatInputV2', () => {
             const region = screen.getByRole('region', {
                 name: /1 file attached/i,
             })
-            const dismissIcon = region.querySelector('svg')
+            // Chip: file-type icon, then text; last svg is the dismiss (X) control
+            const svgs = region.querySelectorAll('svg')
+            const dismissIcon = svgs[svgs.length - 1]
+            expect(svgs.length).toBeGreaterThan(0)
             expect(dismissIcon).toBeTruthy()
             await user.click(dismissIcon!)
             expect(onFileRemove).toHaveBeenCalledWith('chip-1')

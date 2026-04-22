@@ -10,7 +10,6 @@ import {
 } from 'react'
 import Block from '../../Primitives/Block/Block'
 import TooltipV2 from '../../TooltipV2/TooltipV2'
-import Text from '../../Text/Text'
 import type { AttachedFile } from './ChatInputV2.types'
 import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import type { CSSObject } from 'styled-components'
@@ -18,16 +17,25 @@ import AttachmentDropdownV2 from './AttachmentDropdown'
 import type { ChatInputV2TokensType } from './ChatInputV2.tokens'
 import ChatInputTagV2 from './ChatInputTagV2'
 import {
+    ATTACHMENT_ROW_GAP_PX,
     computeAttachmentRowCutoff,
     isOuterWidthExpanding,
     isSignificantOuterWidthChange,
     OVERFLOW_MENU_TRIGGER_CLASS,
     reduceCutoffForFileCountChange,
+    removePxFromValue,
     shouldExpandCutoffToMeasureAllChips,
     sliceOverflowAttachedFiles,
     sliceVisibleAttachedFiles,
     truncateFileNameForTag,
 } from './utils'
+import { ButtonV2 } from '../../ButtonV2'
+import {
+    ButtonV2Size,
+    ButtonV2Type,
+    ButtonV2SubType,
+} from '../../ButtonV2/buttonV2.types'
+import { PlusIcon } from '@phosphor-icons/react'
 
 export type ChatInputV2AttachmentRowProps = {
     attachedFiles: AttachedFile[]
@@ -66,6 +74,11 @@ export default function ChatInputV2AttachmentRow({
     )
     const hasOverflow = hiddenFiles.length > 0
 
+    const rowGapPx = useMemo(() => {
+        const n = removePxFromValue(gap as string | number)
+        return Number.isFinite(n) && n >= 0 ? n : ATTACHMENT_ROW_GAP_PX
+    }, [gap])
+
     const handleResize = useCallback(() => {
         const container = filesContainerRef.current
         if (!container || attachedFiles.length === 0) return
@@ -91,9 +104,10 @@ export default function ChatInputV2AttachmentRow({
             computeAttachmentRowCutoff({
                 filesContainer: container,
                 attachedFileCount: attachedFiles.length,
+                rowGapPx,
             })
         )
-    }, [attachedFiles.length])
+    }, [attachedFiles.length, rowGapPx])
 
     const scheduleHandleResize = useCallback(() => {
         if (layoutResizeRafRef.current !== undefined) return
@@ -163,7 +177,7 @@ export default function ChatInputV2AttachmentRow({
             {visibleFiles.map((file) => (
                 <TooltipV2 key={file.id} content={file.name}>
                     <ChatInputTagV2
-                        key={file.id}
+                        file={file}
                         text={truncateFileNameForTag(file.name)}
                         tokens={tokens.container.tagContainer}
                         onRemove={(e) => {
@@ -183,26 +197,20 @@ export default function ChatInputV2AttachmentRow({
                     className={OVERFLOW_MENU_TRIGGER_CLASS}
                     position="relative"
                 >
-                    <Text
-                        style={{ cursor: 'pointer' }}
-                        as="span"
+                    <ButtonV2
+                        text={`${hiddenFiles.length} more`}
+                        size={ButtonV2Size.SMALL}
+                        buttonType={ButtonV2Type.SECONDARY}
+                        subType={ButtonV2SubType.INLINE}
+                        leftSlot={{ slot: <PlusIcon size={16} /> }}
                         onClick={() =>
                             setOverflowMenuOpen((prevOpen) => !prevOpen)
                         }
-                        color={tokens.container.attachedFilesContainer.color}
-                        fontSize={
-                            tokens.container.attachedFilesContainer.fontSize
-                        }
-                        fontWeight={
-                            tokens.container.attachedFilesContainer.fontWeight
-                        }
-                    >
-                        +{hiddenFiles.length} more
-                    </Text>
+                    />
                     {overflowMenuOpen && (
                         <AttachmentDropdownV2
                             tokens={tokens}
-                            tags={hiddenFiles}
+                            files={hiddenFiles}
                             onFileRemove={onFileRemove}
                             onFileClick={onFileClick}
                             key={filesRegionId}

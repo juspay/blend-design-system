@@ -71,7 +71,7 @@ Uses \`CHAT_INPUTV2\` / \`CHAT_INPUTV2_MOBILE\` tokens. Below **lg** breakpoint 
 
 - **Textarea**: native \`<textarea>\` with stable \`id\` / \`name\`; \`aria-disabled\` when disabled
 - **Attach control**: \`aria-label="Attach files"\` on the paperclip control (desktop); keyboard reachable where enabled
-- **Secondary slot**: icon button uses \`aria-label="Secondary action"\` when \`slot2\` is present
+- **Secondary action**: icon button uses \`aria-label="Secondary action"\` when \`secondaryAction\` is present
 - **Attachment chips**: \`onFileClick(file)\` when the user activates the chip label (including overflow dropdown)
 - **Top queries**: region toggles \`aria-hidden\` when collapsed; focus the field to surface suggestions
 - **Keyboard**: **Enter** submits via \`onEnter\` (when wired); **Shift+Enter** inserts a newline
@@ -118,7 +118,7 @@ Use **VisualStates** (light) and **VisualStatesDark** (dark theme) with Chromati
             table: { category: 'Attachments' },
         },
         onTopQuerySelect: { action: 'topQuerySelect' },
-        onSlot2Click: { action: 'slot2Click' },
+        onSecondaryActionClick: { action: 'secondaryActionClick' },
     },
     tags: ['autodocs'],
 }
@@ -135,8 +135,10 @@ export const Default: Story = {
                 disabled={args.disabled}
                 value={value}
                 onChange={setValue}
-                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
-                onSlot2Click={() => args.onSlot2Click?.()}
+                secondaryAction={
+                    <AudioLines size={18} aria-hidden focusable={false} />
+                }
+                onSecondaryActionClick={() => args.onSecondaryActionClick?.()}
                 onFileClick={args.onFileClick}
             />
         )
@@ -155,7 +157,7 @@ export const WithSlots: Story = {
                 value={value}
                 onChange={setValue}
                 placeholder="Message with slots…"
-                slot1={
+                topContent={
                     <Block
                         padding={8}
                         borderRadius={8}
@@ -165,15 +167,17 @@ export const WithSlots: Story = {
                         Optional slot (e.g. filters)
                     </Block>
                 }
-                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
-                onSlot2Click={() => undefined}
+                secondaryAction={
+                    <AudioLines size={18} aria-hidden focusable={false} />
+                }
+                onSecondaryActionClick={() => undefined}
             />
         )
     },
     parameters: {
         docs: {
             description: {
-                story: '`slot1` renders above the row; `slot2` sits in the secondary control area.',
+                story: '`topContent` renders above the row; `secondaryAction` sits in the secondary control area.',
             },
         },
     },
@@ -216,7 +220,9 @@ export const WithAttachments: Story = {
                     setFiles((prev) => prev.filter((f) => f.id !== id))
                 }
                 onFileClick={fn()}
-                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
+                secondaryAction={
+                    <AudioLines size={18} aria-hidden focusable={false} />
+                }
             />
         )
     },
@@ -240,7 +246,9 @@ export const WithTopQueries: Story = {
                 topQueries={SAMPLE_TOP_QUERIES}
                 topQueriesMaxHeight={160}
                 onTopQuerySelect={(q) => setValue(q.text)}
-                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
+                secondaryAction={
+                    <AudioLines size={18} aria-hidden focusable={false} />
+                }
             />
         )
     },
@@ -262,7 +270,9 @@ export const Disabled: Story = {
                 onChange={setValue}
                 disabled
                 placeholder="Disabled"
-                slot2={<AudioLines size={18} aria-hidden focusable={false} />}
+                secondaryAction={
+                    <AudioLines size={18} aria-hidden focusable={false} />
+                }
             />
         )
     },
@@ -289,7 +299,7 @@ export const VisualStates: Story = {
                         value=""
                         onChange={noopChange}
                         placeholder="Message…"
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </figure>
                 <figure style={{ margin: 0 }}>
@@ -298,7 +308,7 @@ export const VisualStates: Story = {
                         value="Draft message for review."
                         onChange={noopChange}
                         placeholder="Message…"
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </figure>
                 <figure style={{ margin: 0 }}>
@@ -326,7 +336,7 @@ export const VisualStates: Story = {
                         onAttachFiles={() => undefined}
                         onFileRemove={() => undefined}
                         onFileClick={() => undefined}
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </figure>
                 <figure style={{ margin: 0 }}>
@@ -336,7 +346,7 @@ export const VisualStates: Story = {
                         onChange={noopChange}
                         disabled
                         placeholder="Disabled"
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </figure>
                 <figure style={{ margin: 0 }}>
@@ -348,7 +358,7 @@ export const VisualStates: Story = {
                         onChange={noopChange}
                         placeholder="Message…"
                         textareaMaxHeight={120}
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </figure>
             </div>
@@ -433,8 +443,8 @@ export const Variants: Story = {
                         value={b}
                         onChange={setB}
                         placeholder="With action…"
-                        slot2={slotIcon}
-                        onSlot2Click={() => undefined}
+                        secondaryAction={slotIcon}
+                        onSecondaryActionClick={() => undefined}
                     />
                 </section>
                 <section>
@@ -454,7 +464,7 @@ export const Variants: Story = {
                         topQueries={SAMPLE_TOP_QUERIES}
                         topQueriesMaxHeight={140}
                         onTopQuerySelect={(q) => setC(q.text)}
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </section>
                 <section>
@@ -465,7 +475,7 @@ export const Variants: Story = {
                             fontWeight: 600,
                         }}
                     >
-                        + Attachments + slot1
+                        + Attachments + top content
                     </h3>
                     <ChatInputV2
                         value={d}
@@ -485,7 +495,7 @@ export const Variants: Story = {
                             setFiles((prev) => prev.filter((f) => f.id !== id))
                         }
                         onFileClick={fn()}
-                        slot1={
+                        topContent={
                             <Block
                                 padding={8}
                                 borderRadius={8}
@@ -497,7 +507,7 @@ export const Variants: Story = {
                                 Context slot
                             </Block>
                         }
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </section>
             </div>
@@ -506,7 +516,7 @@ export const Variants: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Progressive composition: textarea only → secondary slot → top queries → attachments and `slot1`.',
+                story: 'Progressive composition: textarea only → secondary action → top queries → attachments and `topContent`.',
             },
         },
     },
@@ -559,8 +569,8 @@ export const Accessibility: Story = {
                         onChange={setMessage}
                         placeholder="Type a message…"
                         onEnter={() => undefined}
-                        slot2={slotIcon}
-                        onSlot2Click={() => undefined}
+                        secondaryAction={slotIcon}
+                        onSecondaryActionClick={() => undefined}
                     />
                 </section>
 
@@ -590,7 +600,7 @@ export const Accessibility: Story = {
                         onChange={() => undefined}
                         disabled
                         placeholder="Unavailable"
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </section>
 
@@ -625,7 +635,7 @@ export const Accessibility: Story = {
                             setFiles((prev) => prev.filter((f) => f.id !== id))
                         }
                         onFileClick={fn()}
-                        slot2={slotIcon}
+                        secondaryAction={slotIcon}
                     />
                 </section>
             </div>

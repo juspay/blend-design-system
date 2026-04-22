@@ -35,7 +35,7 @@ describe('ChatInputV2 Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA) — axe-core', () => {
         it('meets WCAG standards for default composer (axe-core validation)', async () => {
             const { container } = render(
-                <ChatInputV2 {...baseProps} slot2={<MockIcon />} />
+                <ChatInputV2 {...baseProps} secondaryAction={<MockIcon />} />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -47,7 +47,7 @@ describe('ChatInputV2 Accessibility', () => {
                     {...baseProps}
                     disabled
                     value="Read-only"
-                    slot2={<MockIcon />}
+                    secondaryAction={<MockIcon />}
                 />
             )
             const results = await axe(container)
@@ -67,7 +67,7 @@ describe('ChatInputV2 Accessibility', () => {
                         },
                     ]}
                     {...noopAttachmentHandlers}
-                    slot2={<MockIcon />}
+                    secondaryAction={<MockIcon />}
                 />
             )
             const results = await axe(container)
@@ -83,23 +83,23 @@ describe('ChatInputV2 Accessibility', () => {
                         { id: 'q2', text: 'List action items' },
                     ]}
                     onTopQuerySelect={() => {}}
-                    slot2={<MockIcon />}
+                    secondaryAction={<MockIcon />}
                 />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with slot1 and attachments', async () => {
+        it('meets WCAG standards with topContent and attachments', async () => {
             const { container } = render(
                 <ChatInputV2
                     {...baseProps}
-                    slot1={<span>Context banner</span>}
+                    topContent={<span>Context banner</span>}
                     attachedFiles={[
                         { id: 'p1', name: 'file.pdf', type: 'pdf', size: 100 },
                     ]}
                     {...noopAttachmentHandlers}
-                    slot2={<MockIcon />}
+                    secondaryAction={<MockIcon />}
                 />
             )
             const results = await axe(container)
@@ -166,7 +166,9 @@ describe('ChatInputV2 Accessibility', () => {
         })
 
         it('exposes visible attach and secondary controls with accessible names (desktop)', () => {
-            render(<ChatInputV2 {...baseProps} slot2={<MockIcon />} />)
+            render(
+                <ChatInputV2 {...baseProps} secondaryAction={<MockIcon />} />
+            )
             expect(
                 screen.getByRole('button', { name: 'Attach files' })
             ).toBeInTheDocument()
@@ -275,7 +277,7 @@ describe('ChatInputV2 Accessibility', () => {
 
         it('meets WCAG standards for mobile shell (axe-core)', async () => {
             const { container } = render(
-                <ChatInputV2 {...baseProps} slot2={<MockIcon />} />
+                <ChatInputV2 {...baseProps} secondaryAction={<MockIcon />} />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -301,7 +303,7 @@ describe('ChatInputV2 Accessibility', () => {
                         },
                     ]}
                     {...noopAttachmentHandlers}
-                    slot2={<MockIcon />}
+                    secondaryAction={<MockIcon />}
                 />
             )
             const results = await axe(container)

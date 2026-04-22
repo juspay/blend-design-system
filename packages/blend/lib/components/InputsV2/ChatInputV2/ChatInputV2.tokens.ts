@@ -20,11 +20,6 @@ export type ChatInputV2TokensType = {
         paddingRight: CSSObject['paddingRight']
         paddingBottom: CSSObject['paddingBottom']
         paddingLeft: CSSObject['paddingLeft']
-        slot: {
-            backgroundColor: CSSObject['backgroundColor']
-            borderRadius: CSSObject['borderRadius']
-            border: CSSObject['border']
-        }
         attachedFilesContainer: {
             gap: CSSObject['gap']
             overflowMenu: {
@@ -38,14 +33,14 @@ export type ChatInputV2TokensType = {
                 right: CSSObject['right']
                 maxHeight: CSSObject['maxHeight']
             }
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
         }
         tagContainer: {
             gap: CSSObject['gap']
             borderRadius: CSSObject['borderRadius']
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
             border: CSSObject['border']
             backgroundColor: CSSObject['backgroundColor']
             text: {
@@ -69,14 +64,14 @@ export type ChatInputV2TokensType = {
             backgroundColor: CSSObject['backgroundColor']
             input: {
                 color: CSSObject['color']
-                placeholder: CSSObject['placeholder']
+                placeholder: CSSObject['color']
                 paddingTop: CSSObject['paddingTop']
                 paddingRight: CSSObject['paddingRight']
                 paddingLeft: CSSObject['paddingLeft']
                 minHeight: CSSObject['minHeight']
                 maxHeight: CSSObject['maxHeight']
             }
-            slotContainer: {
+            actionContainer: {
                 paddingRight: CSSObject['paddingRight']
                 paddingBottom: CSSObject['paddingBottom']
                 paddingLeft: CSSObject['paddingLeft']
@@ -102,7 +97,7 @@ export type ChatInputV2TokensType = {
                 }
                 item: {
                     backgroundColor: {
-                        [key in InputStateV2]: CSSObject['outline']
+                        [key in InputStateV2]: CSSObject['backgroundColor']
                     }
                     color: { [key in InputStateV2]: CSSObject['color'] }
                     fontSize: CSSObject['fontSize']

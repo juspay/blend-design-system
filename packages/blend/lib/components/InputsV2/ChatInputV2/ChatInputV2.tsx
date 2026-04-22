@@ -36,9 +36,9 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
     (
         {
-            slot1,
-            slot2,
-            onSlot2Click = () => {},
+            topContent,
+            secondaryAction,
+            onSecondaryActionClick = () => {},
             placeholder = 'Type a message...',
             onChange,
             onEnter = () => {},
@@ -134,14 +134,14 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                         id={chatInputId}
                         value={value}
                         onChange={onChange || (() => {})}
-                        slot1={slot1}
-                        slot2={slot2}
+                        topContent={topContent}
+                        secondaryAction={secondaryAction}
                         placeholder={placeholder}
                         attachedFiles={attachedFiles}
                         handleAttachClick={handleAttachClick}
                         onFileRemove={onFileRemove}
                         onFileClick={onFileClick}
-                        onSlot2Click={onSlot2Click}
+                        onSecondaryActionClick={onSecondaryActionClick}
                         disabled={disabled}
                         onEnter={onEnter}
                     />
@@ -153,6 +153,8 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
             <Block
                 ref={setContainerNode}
                 display="flex"
+                data-chatinput="chat input"
+                data-status={disabled ? 'disabled' : 'enabled'}
                 flexDirection="column"
                 alignItems="flex-start"
                 justifyContent="flex-start"
@@ -182,10 +184,11 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                     }
                     onFileClick={onFileClick}
                 />
-                {slot1 && <Block width="100%">{slot1}</Block>}
+                {topContent && <Block width="100%">{topContent}</Block>}
                 {hiddenFileInput}
                 {/* Input Container */}
                 <Block
+                    data-element="chat input textarea"
                     backgroundColor={
                         chatInputV2Tokens.container.inputContainer
                             .backgroundColor
@@ -266,22 +269,23 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                         }}
                         aria-disabled={disabled}
                     />
-                    {/* Slot Container */}
+                    {/* Action Container */}
                     <Block
+                        data-element="chat input slot container"
                         display="flex"
                         alignItems="center"
                         justifyContent="space-between"
                         paddingRight={
                             chatInputV2Tokens.container.inputContainer
-                                .slotContainer.paddingRight
+                                .actionContainer.paddingRight
                         }
                         paddingBottom={
                             chatInputV2Tokens.container.inputContainer
-                                .slotContainer.paddingBottom
+                                .actionContainer.paddingBottom
                         }
                         paddingLeft={
                             chatInputV2Tokens.container.inputContainer
-                                .slotContainer.paddingLeft
+                                .actionContainer.paddingLeft
                         }
                     >
                         <ButtonV2
@@ -294,22 +298,25 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                             aria-label="Attach files"
                         />
 
-                        <ButtonV2
-                            size={ButtonV2Size.SMALL}
-                            buttonType={ButtonV2Type.PRIMARY}
-                            subType={ButtonV2SubType.ICON_ONLY}
-                            rightSlot={{ slot: slot2 }}
-                            onClick={() => {
-                                onSlot2Click()
-                            }}
-                            disabled={disabled}
-                            aria-label="Secondary action"
-                        />
+                        {secondaryAction && (
+                            <ButtonV2
+                                size={ButtonV2Size.SMALL}
+                                buttonType={ButtonV2Type.PRIMARY}
+                                subType={ButtonV2SubType.ICON_ONLY}
+                                rightSlot={{ slot: secondaryAction }}
+                                onClick={() => {
+                                    onSecondaryActionClick()
+                                }}
+                                disabled={disabled}
+                                aria-label="Secondary action"
+                            />
+                        )}
                     </Block>
 
                     {/* Top Queries container */}
                     {topQueries.length > 0 && (
                         <Block
+                            data-element="chat input top queries"
                             width="100%"
                             maxHeight={
                                 showTopQueries
@@ -381,6 +388,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
 
                             {topQueries.map((query) => (
                                 <Block
+                                    as="button"
                                     key={query.id}
                                     _hover={{
                                         backgroundColor: chatInputV2Tokens
@@ -408,6 +416,13 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                                             .inputContainer.topQueriesContainer
                                             .item.paddingLeft
                                     }
+                                    onMouseDown={(e) => {
+                                        e.preventDefault()
+                                    }}
+                                    onClick={() => {
+                                        onTopQuerySelect(query)
+                                        setInputState(InputStateV2.DEFAULT)
+                                    }}
                                 >
                                     <Text
                                         style={{ cursor: 'pointer' }}
@@ -430,13 +445,6 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                                                 .topQueriesContainer.item
                                                 .fontWeight
                                         }
-                                        onMouseDown={(e) => {
-                                            e.preventDefault()
-                                        }}
-                                        onClick={() => {
-                                            onTopQuerySelect(query)
-                                            setInputState(InputStateV2.DEFAULT)
-                                        }}
                                     >
                                         {query.text}
                                     </Text>

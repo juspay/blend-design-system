@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { AttachedFile } from '../../../../packages/blend/lib/components/ChatInput'
-import { ChatInputV2 } from '../../../../packages/blend/lib/components/InputsV2/ChatInputV2'
-import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
+import {
+    AttachedFile,
+    ChatInputV2,
+} from '../../../../packages/blend/lib/components/InputsV2/ChatInputV2'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { AudioLines } from 'lucide-react'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
@@ -12,12 +13,7 @@ const ChatInputV2Demo = () => {
     // Playground state
     const [playgroundMessage, setPlaygroundMessage] = useState('')
     const [playgroundDisabled, setPlaygroundDisabled] = useState(false)
-    const [playgroundAutoResize, setPlaygroundAutoResize] = useState(true)
-    const [playgroundMaxLength, setPlaygroundMaxLength] = useState<
-        number | undefined
-    >(undefined)
     const [playgroundFiles, setPlaygroundFiles] = useState<AttachedFile[]>([])
-    const [playgroundWidth, setPlaygroundWidth] = useState<string>('100%')
     const [staticExampleMessage, setStaticExampleMessage] = useState('')
 
     // File type utilities
@@ -133,46 +129,12 @@ const ChatInputV2Demo = () => {
                         Interactive Playground
                     </h2>
                     <div className="space-y-6">
-                        {/* Controls */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <TextInput
-                                label="Width"
-                                value={playgroundWidth}
-                                onChange={(e) =>
-                                    setPlaygroundWidth(e.target.value)
-                                }
-                                placeholder="Enter width (e.g., 100%, 400px)"
-                            />
-
-                            <TextInput
-                                label="Max Length"
-                                value={playgroundMaxLength?.toString() || ''}
-                                onChange={(e) => {
-                                    const val = e.target.value
-                                    setPlaygroundMaxLength(
-                                        val ? parseInt(val) : undefined
-                                    )
-                                }}
-                                placeholder="Enter max length"
-                                type="number"
-                            />
-                        </div>
-
                         <div className="flex items-center gap-6">
                             <Switch
                                 label="Disabled"
                                 checked={playgroundDisabled}
                                 onChange={() =>
                                     setPlaygroundDisabled(!playgroundDisabled)
-                                }
-                            />
-                            <Switch
-                                label="Auto Resize"
-                                checked={playgroundAutoResize}
-                                onChange={() =>
-                                    setPlaygroundAutoResize(
-                                        !playgroundAutoResize
-                                    )
                                 }
                             />
                         </div>
@@ -210,7 +172,7 @@ const ChatInputV2Demo = () => {
                                     playgroundFiles
                                 )
                             }}
-                            slot1={
+                            topContent={
                                 <Block
                                     backgroundColor={
                                         FOUNDATION_THEME.colors.gray[200]
@@ -226,8 +188,8 @@ const ChatInputV2Demo = () => {
                                     </ul>
                                 </Block>
                             }
-                            slot2={<AudioLines size={16} />}
-                            onSlot2Click={handlePlaygroundVoiceRecord}
+                            secondaryAction={<AudioLines size={16} />}
+                            onSecondaryActionClick={handlePlaygroundVoiceRecord}
                             topQueries={[
                                 {
                                     id: '1',
@@ -293,8 +255,8 @@ const ChatInputV2Demo = () => {
                             value={staticExampleMessage}
                             onChange={setStaticExampleMessage}
                             placeholder="Ask anything…"
-                            slot2={<AudioLines size={16} />}
-                            onSlot2Click={() =>
+                            secondaryAction={<AudioLines size={16} />}
+                            onSecondaryActionClick={() =>
                                 addSnackbar({
                                     header: 'Static example',
                                     description:

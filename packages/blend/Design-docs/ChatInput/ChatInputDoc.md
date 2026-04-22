@@ -7,7 +7,7 @@ Deliver a **chat composer** (Inputs V2) that supports:
 - **Value API**: Single string via **`value`** and **`onChange(value: string)`** (not a raw DOM `ChangeEvent`). The field is a **`PrimitiveTextarea`** with **`resize="none"`**, **`rows={1}`**, and **auto-height** clamped by **`textareaMaxHeight`** (prop) or the token **`input.maxHeight`** (`resolveChatInputV2TextareaMaxHeightPx`, `applyChatInputV2TextareaAutoHeight` in `utils.ts`).
 - **Submit vs newline**: **`onEnter`** runs when the user presses **Enter** without **Shift** (`preventDefault` on that keydown). **Shift+Enter** keeps default behavior so a newline can be inserted.
 - **Attachments**: Optional **`attachedFiles`** rendered as **`ChatInputTagV2`** chips inside **`ChatInputV2AttachmentRow`** (measurement-based inline chips + **“+ N more”** opening **`AttachmentDropdownV2`** for overflow). New files come from a **hidden** `<input type="file" multiple />` (`PrimitiveInput`); **`onAttachFiles(files: File[])`** receives **new** files only. **`onFileRemove(fileId)`** runs when the user dismisses a chip (X). **`onFileClick(file)`** runs when the user activates the **chip label** (preview / open detail) — same callback for inline chips and overflow dropdown rows. Duplicates (same **name + size** as an existing attachment) are filtered in **`handleChatInputV2FileInputChange`** via **`filterDuplicateFiles`** (shared with legacy ChatInput); duplicates trigger **`notifyChatInputV2DuplicateFiles`** (**`addSnackbarV2`**).
-- **Slots**: **`slot1`** — block above the input row (e.g. context). **`slot2`** — icon/content for the **primary** trailing **`ButtonV2`**; **`onSlot2Click`** fires on click.
+- **Layout slots**: **`topContent`** — block above the input row (e.g. context, filters). **`secondaryAction`** — icon/content for the **primary** trailing **`ButtonV2`** (voice, send, etc.); **`onSecondaryActionClick`** runs when that control is activated.
 - **Top queries**: Optional **`topQueries`**; the list sits under the input and expands when the textarea is **focused** (`InputStateV2.FOCUS`). Container uses **`aria-hidden`** when collapsed. **`onTopQuerySelect(query)`** runs when a row is chosen; **`topQueriesMaxHeight`** caps the panel height.
 - **States**: **Disabled** maps to native **`disabled`** on the textarea and **`aria-disabled`**. Attach and secondary buttons respect **`disabled`**.
 - **Responsive shell**: Below the **`lg`** breakpoint (**`BREAKPOINTS.lg`**, 1024px), **`MobileChatInputV2`** is rendered with **`CHAT_INPUTV2_MOBILE`** tokens; at **`lg`** and up, the desktop layout uses **`CHAT_INPUTV2`** tokens.
@@ -21,13 +21,13 @@ Deliver a **chat composer** (Inputs V2) that supports:
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  [Optional: ChatInputV2AttachmentRow — ChatInputTagV2 chips, overflow] │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  [Optional: slot1 — full width]                                         │
+│  [Optional: topContent — full width]                                   │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  ┌ hidden <input type="file" aria-label="Attach files" />              │
 │  ┌───────────────────────────────────────────────────────────────────┐  │
 │  │ PrimitiveTextarea (id, name="chat-input", auto-grow)             │  │
 │  ├───────────────────────────────────────────────────────────────────┤  │
-│  │ [ButtonV2 attach]              [ButtonV2 primary + slot2]         │  │
+│  │ [ButtonV2 attach]         [ButtonV2 primary + secondaryAction]      │  │
 │  ├───────────────────────────────────────────────────────────────────┤  │
 │  │ [Optional: Top Queries — header + rows, aria-hidden when closed]   │  │
 │  └───────────────────────────────────────────────────────────────────┘  │
@@ -61,9 +61,9 @@ type ChatInputV2Props = {
     onTopQuerySelect?: (query: TopQuery) => void
     placeholder?: string
     onChange: (value: string) => void
-    slot1?: ReactNode
-    slot2?: ReactNode
-    onSlot2Click?: () => void
+    topContent?: ReactNode
+    secondaryAction?: ReactNode
+    onSecondaryActionClick?: () => void
     topQueriesMaxHeight?: number
     textareaMaxHeight?: number
     disabled?: boolean
@@ -82,7 +82,7 @@ type ChatInputV2Props = {
 
 - **`onChange`** is the string value, not a `ChangeEvent`.
 - **`onAttachFiles`** / **`onFileRemove`** / **`onFileClick`** — parent owns **`attachedFiles`**. Removals and chip-label actions never go through **`onAttachFiles`**; use **`onFileRemove`** and **`onFileClick`** respectively.
-- **`MobileChatInputV2Props`** includes **`onFileClick`**, **`onFileRemove`**, and **`handleAttachClick`** for the mobile attachment flow. The type also lists **`overflowMenuProps?: Partial<MenuProps>`** for forward compatibility with menu customization.
+- **`MobileChatInputV2Props`** includes **`onFileClick`** (chip label activation, same as desktop — forwarded to **`ChatInputV2AttachmentRow`**), **`onFileRemove`**, and **`handleAttachClick`** for the mobile attachment flow. Overflow “+ N more” uses **`AttachmentDropdownV2`** (token-styled **`Block`**, not the shared **`Menu`**); there is no **`overflowMenuProps`** on V2 — customize via **`CHAT_INPUT_V2`** tokens under **`container.attachedFilesContainer.overflowMenu`**.
 - **`className`**, **`style`**, **`onFocus`**, **`onBlur`**, **`cols`** are omitted from the public type; other textarea attributes (including **`aria-label`**, **`id`**, **`name`** where allowed) are merged via **`...textareaRest`** in the implementation, with component-controlled props taking precedence where set explicitly.
 
 ## Token type (desktop)
@@ -111,7 +111,7 @@ Shared with legacy ChatInput: **`filterDuplicateFiles`** (`components/ChatInput/
 
 ### 1. Desktop vs mobile
 
-**Decision**: **`useBreakpoints()`**; if **`innerWidth < BREAKPOINTS.lg`**, render **`MobileChatInputV2`** (paperclip **`PrimitiveButton`**, textarea, absolutely positioned **`slot2`**). Otherwise render the desktop **`Block`** tree.
+**Decision**: **`useBreakpoints()`**; if **`innerWidth < BREAKPOINTS.lg`**, render **`MobileChatInputV2`** (paperclip **`PrimitiveButton`**, textarea, absolutely positioned **`secondaryAction`**). Otherwise render the desktop **`Block`** tree.
 
 **Rationale**: Distinct layout and token sets (**`CHAT_INPUTV2`** vs **`CHAT_INPUTV2_MOBILE`**).
 

@@ -91,10 +91,10 @@ const unitTokens: UnitTokensType = {
     100: '100px',
     120: '120px',
     144: '144px',
+    150: '150px',
     190: '190px',
     200: '200px',
     350: '350px',
-    150: '150px',
     auto: 'auto',
 }
 

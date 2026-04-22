@@ -67,6 +67,8 @@ export function shouldExpandCutoffToMeasureAllChips(
 type ComputeCutoffArgs = {
     filesContainer: HTMLElement
     attachedFileCount: number
+    /** Inter-chip gap in px — must match `gap` on the flex row (from tokens, e.g. `attachedFilesContainer.gap`). */
+    rowGapPx: number
 }
 
 /**
@@ -75,8 +77,14 @@ type ComputeCutoffArgs = {
 export function computeAttachmentRowCutoff({
     filesContainer,
     attachedFileCount,
+    rowGapPx,
 }: ComputeCutoffArgs): number {
     if (attachedFileCount === 0) return 0
+
+    const gap =
+        Number.isFinite(rowGapPx) && rowGapPx >= 0
+            ? rowGapPx
+            : ATTACHMENT_ROW_GAP_PX
 
     const containerWidth = filesContainer.getBoundingClientRect().width
 
@@ -90,7 +98,7 @@ export function computeAttachmentRowCutoff({
     for (let i = 0; i < Math.min(fileItems.length, attachedFileCount); i++) {
         const itemWidth = (fileItems[i] as HTMLElement).getBoundingClientRect()
             .width
-        const totalGaps = i > 0 ? i * ATTACHMENT_ROW_GAP_PX : 0
+        const totalGaps = i > 0 ? i * gap : 0
         const remainingItems = attachedFileCount - (i + 1)
         const needsMoreButton = remainingItems > 0
         const requiredSpace =
@@ -98,7 +106,7 @@ export function computeAttachmentRowCutoff({
             itemWidth +
             totalGaps +
             (needsMoreButton
-                ? ATTACHMENT_ROW_MORE_BUTTON_RESERVE_PX + ATTACHMENT_ROW_GAP_PX
+                ? ATTACHMENT_ROW_MORE_BUTTON_RESERVE_PX + gap
                 : 0) +
             ATTACHMENT_ROW_BUFFER_PX
 

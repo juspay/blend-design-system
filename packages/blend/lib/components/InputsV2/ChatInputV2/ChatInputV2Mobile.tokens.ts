@@ -5,7 +5,7 @@ import { Theme } from '../../../context/theme.enum'
 import { getChatInputV2MobileDarkTokens } from './ChatInputV2Mobile.dark.tokens'
 import { getChatInputV2MobileLightTokens } from './ChatInputV2Mobile.light.tokens'
 
-export type dimentions = {
+export type dimensions = {
     width: CSSObject['width']
     height: CSSObject['height']
     minHeight: CSSObject['minHeight']
@@ -38,8 +38,8 @@ export type ChatInputV2MobileTokensType = {
             color: CSSObject['color']
         }
         backgroundColor: CSSObject['backgroundColor']
-    } & dimentions
-    slot2: {
+    } & dimensions
+    secondaryAction: {
         width: CSSObject['width']
         height: CSSObject['height']
         borderRadius: CSSObject['borderRadius']
@@ -54,7 +54,6 @@ export const getChatInputV2MobileTokens = (
     foundationToken: FoundationTokenType,
     theme: Theme | string = Theme.LIGHT
 ): ChatInputV2MobileTokensType => {
-    console.log('theme', theme)
     if (theme === Theme.DARK || theme === 'dark') {
         return getChatInputV2MobileDarkTokens(foundationToken)
     }

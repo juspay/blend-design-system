@@ -1,6 +1,5 @@
-import { ReactNode } from 'react'
+import type { ReactNode, TextareaHTMLAttributes } from 'react'
 import { ChatInputV2TokensType } from './ChatInputV2.tokens'
-import { MenuProps } from '../../../main'
 export type AttachedFile = {
     id: string
     name: string
@@ -19,9 +18,11 @@ export type ChatInputV2Props = {
     onTopQuerySelect?: (query: TopQuery) => void
     placeholder?: string
     onChange: (value: string) => void
-    slot1?: ReactNode
-    slot2?: ReactNode
-    onSlot2Click?: () => void
+    /** Renders full-width above the field row (e.g. context, filters, banners). */
+    topContent?: ReactNode
+    /** Renders in the secondary control area (e.g. voice / send) next to the attach control (desktop) or the textarea end (mobile). */
+    secondaryAction?: ReactNode
+    onSecondaryActionClick?: () => void
     topQueriesMaxHeight?: number
     /** Max textarea height in px (ChatGPT-style auto-grow). Defaults to token `input.maxHeight`. */
     textareaMaxHeight?: number
@@ -34,7 +35,7 @@ export type ChatInputV2Props = {
     onFileClick?: (file: AttachedFile) => void
     onEnter?: () => void
 } & Omit<
-    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
     'size' | 'style' | 'className' | 'onFocus' | 'onBlur' | 'cols' | 'onChange'
 >
 
@@ -42,19 +43,19 @@ export type MobileChatInputV2Props = {
     disabled?: boolean
     value: string
     onChange?: (value: string) => void
-    slot1?: React.ReactNode
-    slot2?: React.ReactNode
+    topContent?: ReactNode
+    secondaryAction?: ReactNode
     placeholder?: string
     attachedFiles?: AttachedFile[]
     handleAttachClick?: () => void
     onFileRemove?: (fileId: string) => void
+    /** Invoked when a chip label is activated (inline or overflow); forwarded to `ChatInputV2AttachmentRow`. */
     onFileClick?: (file: AttachedFile) => void
-    overflowMenuProps?: Partial<MenuProps>
-    onSlot2Click?: () => void
+    onSecondaryActionClick?: () => void
     id?: string
     webTokens: ChatInputV2TokensType
     onEnter?: () => void
 } & Omit<
-    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
     'size' | 'style' | 'className' | 'onFocus' | 'onBlur' | 'cols' | 'onChange'
 >

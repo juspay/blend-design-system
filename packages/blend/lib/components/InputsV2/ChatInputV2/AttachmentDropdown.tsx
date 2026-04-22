@@ -6,14 +6,14 @@ import { AttachedFile } from './ChatInputV2.types'
 import { truncateFileNameForTag } from './utils'
 
 type AttachmentDropdownV2Props = {
-    tags: AttachedFile[]
+    files: AttachedFile[]
     onFileRemove: (fileId: string) => void
     tokens: ChatInputV2TokensType
     onFileClick: (file: AttachedFile) => void
 }
 
 const AttachmentDropdownV2 = ({
-    tags,
+    files,
     onFileRemove,
     onFileClick,
     tokens,
@@ -43,19 +43,20 @@ const AttachmentDropdownV2 = ({
             }
             overflowY="auto"
         >
-            {tags &&
-                tags.map((tag) => (
+            {files &&
+                files.map((file) => (
                     <ChatInputTagV2
-                        key={tag.id}
-                        text={truncateFileNameForTag(tag.name)}
+                        file={file}
+                        key={file.id}
+                        text={truncateFileNameForTag(file.name)}
                         tokens={tokens.container.tagContainer}
                         onRemove={(e) => {
                             e.stopPropagation()
-                            onFileRemove(tag.id)
+                            onFileRemove(file.id)
                         }}
                         onFileClick={(e) => {
                             e.stopPropagation()
-                            onFileClick(tag)
+                            onFileClick(file)
                         }}
                     />
                 ))}

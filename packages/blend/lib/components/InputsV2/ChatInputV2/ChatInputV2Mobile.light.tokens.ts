@@ -60,7 +60,7 @@ export const getChatInputV2MobileLightTokens = (
                 color: foundationToken.colors.gray[500],
             },
         },
-        slot2: {
+        secondaryAction: {
             color: foundationToken.colors.gray[0],
             width: foundationToken.unit[36],
             height: foundationToken.unit[36],
