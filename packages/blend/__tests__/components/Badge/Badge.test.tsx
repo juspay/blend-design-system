@@ -317,6 +317,11 @@ describe('Badge', () => {
 
         it('forwards ref with children', () => {
             const ref = React.createRef<HTMLSpanElement>()
+            render(
+                <Badge count={5} ref={ref}>
+                    <span>Content</span>
+                </Badge>
+            )
             expect(ref.current).toBeInstanceOf(HTMLSpanElement)
             expect(ref.current).toHaveAttribute('role', 'status')
         })
