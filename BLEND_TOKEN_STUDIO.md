@@ -8,10 +8,10 @@ This file covers: Token Engine API, CLI commands, and local development.
 
 ## Two Components
 
-| Component | Package              | Purpose                       |
-| --------- | -------------------- | ----------------------------- |
-| **CLI**   | `blend-token-studio` | Developer commands for tokens |
-| **Studio**| `blend-studio`       | Visual web editor             |
+| Component  | Package              | Purpose                       |
+| ---------- | -------------------- | ----------------------------- |
+| **CLI**    | `blend-token-studio` | Developer commands for tokens |
+| **Studio** | `blend-studio`       | Visual web editor             |
 
 ### How They Work Together
 
@@ -379,15 +379,15 @@ console.log('Components:', Object.keys(tokens).length);
 
 ### PostgreSQL vs Firestore Split
 
-| Data Type                 | Storage        | Why                             |
-| ------------------------- | -------------- | ------------------------------- |
-| Users, Teams, Memberships | PostgreSQL     | Relational data, fuzzy search   |
-| Roles, Permissions        | PostgreSQL     | Complex queries, joins          |
+| Data Type                 | Storage             | Why                             |
+| ------------------------- | ------------------- | ------------------------------- |
+| Users, Teams, Memberships | PostgreSQL          | Relational data, fuzzy search   |
+| Roles, Permissions        | PostgreSQL          | Complex queries, joins          |
 | Authentication            | PostgreSQL+Firebase | Firebase Auth → PostgreSQL sync |
-| Brand configs (JSON)      | Firestore      | Document storage, real-time     |
-| Branches                  | Firestore      | JSON blobs, live preview        |
-| Versions                  | Firestore      | Immutable snapshots             |
-| Snapshots                 | Firestore      | Auto-saved drafts               |
+| Brand configs (JSON)      | Firestore           | Document storage, real-time     |
+| Branches                  | Firestore           | JSON blobs, live preview        |
+| Versions                  | Firestore           | Immutable snapshots             |
+| Snapshots                 | Firestore           | Auto-saved drafts               |
 
 ### Team Roles & Permissions
 

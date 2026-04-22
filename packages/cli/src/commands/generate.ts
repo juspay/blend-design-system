@@ -83,7 +83,8 @@ export async function generateCommand(
     // 3. Resolve
     const spinner = ora('Resolving tokens...').start()
 
-    const { resolveBrandTokens } = await import('@juspay/blend-design-system/tokens')
+    const { resolveBrandTokens } =
+        await import('@juspay/blend-design-system/tokens')
     const lightTokens = resolveBrandTokens(brandConfig, 'light')
     const darkTokens = resolveBrandTokens(brandConfig, 'dark')
 

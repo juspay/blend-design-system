@@ -65,6 +65,7 @@ Internet
 ```
 
 **Data Split:**
+
 - **PostgreSQL:** Users, teams, roles, relational data, audit logs
 - **Firestore:** Brand configs (JSON blobs), snapshots, versions
 - **Secret Manager:** All secrets (DB passwords, JWT, Firebase keys)
@@ -97,10 +98,10 @@ Internet
 2. Click **Google**
 3. Toggle **Enable**
 4. Add authorized domains:
-   - `localhost:3000` (dev)
-   - `localhost:5173` (dev)
-   - `studio.blend.juspay.design` (production)
-   - `blend-studio-prod.web.app` (Firebase default)
+    - `localhost:3000` (dev)
+    - `localhost:5173` (dev)
+    - `studio.blend.juspay.design` (production)
+    - `blend-studio-prod.web.app` (Firebase default)
 5. Click **Save**
 
 ### 1.3 Configure Google OAuth (Cloud Console)
@@ -108,18 +109,18 @@ Internet
 1. Go to [Google Cloud Console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials)
 2. Find your OAuth 2.0 Client ID (auto-created by Firebase)
 3. Add authorized origins:
-   ```
-   http://localhost:3000
-   http://localhost:5173
-   https://studio.blend.juspay.design
-   https://blend-studio-prod.web.app
-   ```
+    ```
+    http://localhost:3000
+    http://localhost:5173
+    https://studio.blend.juspay.design
+    https://blend-studio-prod.web.app
+    ```
 4. Add redirect URIs:
-   ```
-   http://localhost:3000/__/auth/handler
-   https://studio.blend.juspay.design/__/auth/handler
-   https://blend-studio-prod.web.app/__/auth/handler
-   ```
+    ```
+    http://localhost:3000/__/auth/handler
+    https://studio.blend.juspay.design/__/auth/handler
+    https://blend-studio-prod.web.app/__/auth/handler
+    ```
 
 ### 1.4 Enable Firestore
 
@@ -128,9 +129,9 @@ Internet
 3. Select **Start in production mode**
 4. Choose location: `us-central1`
 5. Deploy rules:
-   ```bash
-   firebase deploy --only firestore:rules
-   ```
+    ```bash
+    firebase deploy --only firestore:rules
+    ```
 
 ### 1.5 Create Web App & Get Config
 
@@ -293,6 +294,7 @@ gcloud run services describe blend-backend \
 ### 3.3 Run Database Migrations
 
 **Option A: Via Cloud Run Job**
+
 ```bash
 # Temporary: Run migration as startup command
 gcloud run services update blend-backend \
@@ -302,6 +304,7 @@ gcloud run services update blend-backend \
 ```
 
 **Option B: Via Cloud SQL Proxy (Local)**
+
 ```bash
 # Download proxy
 curl -o cloud_sql_proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2/cloud-sql-proxy.linux.amd64
@@ -356,43 +359,43 @@ Create/update `firebase.json` in project root:
 
 ```json
 {
-  "hosting": {
-    "public": "apps/blend-studio/dist",
-    "ignore": ["firebase.json", "**/node_modules/**"],
-    "rewrites": [
-      {
-        "source": "/api/**",
-        "run": {
-          "serviceId": "blend-backend",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/studio/**",
-        "destination": "/studio/index.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "/studio/**/*.{js,css,svg,png,jpg,woff2}",
+    "hosting": {
+        "public": "apps/blend-studio/dist",
+        "ignore": ["firebase.json", "**/node_modules/**"],
+        "rewrites": [
+            {
+                "source": "/api/**",
+                "run": {
+                    "serviceId": "blend-backend",
+                    "region": "us-central1"
+                }
+            },
+            {
+                "source": "/studio/**",
+                "destination": "/studio/index.html"
+            }
+        ],
         "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=31536000, immutable"
-          }
+            {
+                "source": "/studio/**/*.{js,css,svg,png,jpg,woff2}",
+                "headers": [
+                    {
+                        "key": "Cache-Control",
+                        "value": "public, max-age=31536000, immutable"
+                    }
+                ]
+            },
+            {
+                "source": "/studio/**/*.html",
+                "headers": [
+                    {
+                        "key": "Cache-Control",
+                        "value": "no-cache"
+                    }
+                ]
+            }
         ]
-      },
-      {
-        "source": "/studio/**/*.html",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
-      }
-    ]
-  }
+    }
 }
 ```
 
@@ -400,10 +403,10 @@ Create `.firebaserc`:
 
 ```json
 {
-  "projects": {
-    "production": "YOUR_PROJECT_ID",
-    "staging": "YOUR_STAGING_PROJECT_ID"
-  }
+    "projects": {
+        "production": "YOUR_PROJECT_ID",
+        "staging": "YOUR_STAGING_PROJECT_ID"
+    }
 }
 ```
 
@@ -514,23 +517,23 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react()],
-  base: mode === 'production' ? '/studio/' : '/',
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-  build: {
-    outDir: 'dist',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
+    plugins: [react()],
+    base: mode === 'production' ? '/studio/' : '/',
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
         },
-      },
     },
-  },
+    build: {
+        outDir: 'dist',
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom'],
+                },
+            },
+        },
+    },
 }))
 ```
 
@@ -547,10 +550,10 @@ service cloud.firestore {
     // Allow authenticated users to read branches
     match /branches/{branchId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && 
+      allow write: if request.auth != null &&
         resource.data.owner == request.auth.uid;
     }
-    
+
     // Versions are immutable
     match /branches/{branchId}/versions/{versionId} {
       allow read: if request.auth != null;
@@ -677,35 +680,35 @@ pnpm build
 
 ### Environment Variables Summary
 
-#### Client-side (VITE_* prefix)
+#### Client-side (VITE\_\* prefix)
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `VITE_FIREBASE_API_KEY` | Yes | Firebase public API key |
-| `VITE_FIREBASE_AUTH_DOMAIN` | Yes | e.g., `project.firebaseapp.com` |
-| `VITE_FIREBASE_PROJECT_ID` | Yes | Firebase project ID |
-| `VITE_FIREBASE_STORAGE_BUCKET` | No | Cloud Storage bucket |
-| `VITE_FIREBASE_MESSAGING_SENDER_ID` | No | Push notifications |
-| `VITE_FIREBASE_APP_ID` | Yes | Firebase web app ID |
-| `VITE_API_BASE_URL` | No | Backend URL (empty for Firebase rewrites) |
-| `VITE_USE_MOCK_DATA` | No | Set `true` to skip Firebase |
+| Variable                            | Required | Description                               |
+| ----------------------------------- | -------- | ----------------------------------------- |
+| `VITE_FIREBASE_API_KEY`             | Yes      | Firebase public API key                   |
+| `VITE_FIREBASE_AUTH_DOMAIN`         | Yes      | e.g., `project.firebaseapp.com`           |
+| `VITE_FIREBASE_PROJECT_ID`          | Yes      | Firebase project ID                       |
+| `VITE_FIREBASE_STORAGE_BUCKET`      | No       | Cloud Storage bucket                      |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | No       | Push notifications                        |
+| `VITE_FIREBASE_APP_ID`              | Yes      | Firebase web app ID                       |
+| `VITE_API_BASE_URL`                 | No       | Backend URL (empty for Firebase rewrites) |
+| `VITE_USE_MOCK_DATA`                | No       | Set `true` to skip Firebase               |
 
 #### Server-side
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `INSTANCE_CONNECTION_NAME` | Yes | Cloud SQL connection name |
-| `DATABASE_NAME` | Yes | Database name |
-| `DATABASE_USER` | Yes | Database username |
-| `DATABASE_PASSWORD` | Yes | From Secret Manager |
-| `JWT_SECRET` | Yes | From Secret Manager |
-| `JWT_REFRESH_SECRET` | Yes | From Secret Manager |
-| `GOOGLE_CLIENT_ID` | Yes | OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Yes | OAuth client secret |
-| `FRONTEND_URL` | Yes | Allowed CORS origin |
-| `FIREBASE_PROJECT_ID` | Yes | Firebase project ID |
-| `FIREBASE_CLIENT_EMAIL` | Yes | Service account email |
-| `FIREBASE_PRIVATE_KEY` | Yes | From Secret Manager |
+| Variable                   | Required | Description               |
+| -------------------------- | -------- | ------------------------- |
+| `INSTANCE_CONNECTION_NAME` | Yes      | Cloud SQL connection name |
+| `DATABASE_NAME`            | Yes      | Database name             |
+| `DATABASE_USER`            | Yes      | Database username         |
+| `DATABASE_PASSWORD`        | Yes      | From Secret Manager       |
+| `JWT_SECRET`               | Yes      | From Secret Manager       |
+| `JWT_REFRESH_SECRET`       | Yes      | From Secret Manager       |
+| `GOOGLE_CLIENT_ID`         | Yes      | OAuth client ID           |
+| `GOOGLE_CLIENT_SECRET`     | Yes      | OAuth client secret       |
+| `FRONTEND_URL`             | Yes      | Allowed CORS origin       |
+| `FIREBASE_PROJECT_ID`      | Yes      | Firebase project ID       |
+| `FIREBASE_CLIENT_EMAIL`    | Yes      | Service account email     |
+| `FIREBASE_PRIVATE_KEY`     | Yes      | From Secret Manager       |
 
 ### Common Commands
 
@@ -760,9 +763,9 @@ pnpm -w run publish:blend                                  # Publish components
 ## Next Steps
 
 1. **Monitor:** Set up Cloud Monitoring alerts for:
-   - High error rates in Cloud Run
-   - Database connection limits
-   - Firebase Auth anomalies
+    - High error rates in Cloud Run
+    - Database connection limits
+    - Firebase Auth anomalies
 
 2. **Scale:** Adjust Cloud Run min/max instances based on traffic
 
@@ -773,6 +776,7 @@ pnpm -w run publish:blend                                  # Publish components
 ---
 
 **Questions?** Check the troubleshooting section or refer to:
+
 - `apps/blend-studio/database/SCHEMA.md` — Database schema
 - `packages/cli/README.md` — CLI documentation
 - `packages/blend/README.md` — Component library documentation

@@ -664,7 +664,9 @@ export function useResolvedTokensWithMock(
 ) {
     return useCallback(() => {
         if (!brandConfig) return null
-        const { resolveBrandTokens } = require('@juspay/blend-design-system/tokens')
+        const {
+            resolveBrandTokens,
+        } = require('@juspay/blend-design-system/tokens')
         return resolveBrandTokens(brandConfig, theme)
     }, [brandConfig, theme])
 }

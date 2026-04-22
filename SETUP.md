@@ -11,10 +11,10 @@ This file covers: How to install and use Blend components in your project.
 
 Blend Design System has two pieces:
 
-| Piece                 | Package                       | What it does                                            |
-| --------------------- | ----------------------------- | ------------------------------------------------------- |
+| Piece                 | Package                       | What it does                                                 |
+| --------------------- | ----------------------------- | ------------------------------------------------------------ |
 | **Component Library** | `@juspay/blend-design-system` | React components (Button, Input, Alert, etc.) + Token Engine |
-| **CLI**               | `blend-token-studio`          | Scaffolds projects, generates tokens, syncs with Studio |
+| **CLI**               | `blend-token-studio`          | Scaffolds projects, generates tokens, syncs with Studio      |
 
 The flow:
 
@@ -404,9 +404,9 @@ When an editor wants to promote changes from a workspace to the master theme:
 
 1. Create an NPM token at [npmjs.com](https://www.npmjs.com) → Access Tokens → Generate New Token
 2. Add the secret to your GitHub repository:
-   - Go to Settings → Secrets and variables → Actions
-   - Create an Environment called `npm`
-   - Add `NPM_TOKEN` secret to that environment
+    - Go to Settings → Secrets and variables → Actions
+    - Create an Environment called `npm`
+    - Add `NPM_TOKEN` secret to that environment
 
 ### Trigger
 

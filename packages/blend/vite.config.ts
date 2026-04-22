@@ -14,7 +14,10 @@ export default defineConfig({
                 main: resolve(__dirname, 'lib/main.ts'),
                 node: resolve(__dirname, 'lib/node.ts'),
                 tokens: resolve(__dirname, 'lib/token-engine.ts'),
-                'tokens-server': resolve(__dirname, 'lib/token-engine-server.ts'),
+                'tokens-server': resolve(
+                    __dirname,
+                    'lib/token-engine-server.ts'
+                ),
             },
             formats: ['es'],
         },

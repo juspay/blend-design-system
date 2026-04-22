@@ -18,8 +18,12 @@
         "noImplicitAny": true,
         "baseUrl": ".",
         "paths": {
-            "@blend-design/token-engine": ["../../packages/token-engine/src/index.ts"],
-            "@blend-design/token-engine/server": ["../../packages/token-engine/src/server.ts"]
+            "@blend-design/token-engine": [
+                "../../packages/token-engine/src/index.ts"
+            ],
+            "@blend-design/token-engine/server": [
+                "../../packages/token-engine/src/server.ts"
+            ]
         }
     },
     "include": ["src", "lib"],

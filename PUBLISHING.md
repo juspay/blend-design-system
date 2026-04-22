@@ -25,6 +25,7 @@ npm whoami
 ```
 
 You need publish permissions for:
+
 - `@juspay` scope (blend-design-system)
 - Unscoped packages (CLI, MCP)
 
@@ -103,20 +104,21 @@ The CLI has a GitHub Actions workflow at `.github/workflows/publish-cli.yml`.
 
 1. Create an NPM token at [npmjs.com](https://www.npmjs.com) → Access Tokens → Generate New Token
 2. Add `NPM_TOKEN` secret to GitHub:
-   - Go to Settings → Secrets and variables → Actions
-   - Create an Environment called `npm`
-   - Add `NPM_TOKEN` secret
+    - Go to Settings → Secrets and variables → Actions
+    - Create an Environment called `npm`
+    - Add `NPM_TOKEN` secret
 
 ### Trigger
 
 1. Go to Actions → **Publish CLI (blend-token-studio)**
 2. Click **Run workflow**
 3. Select:
-   - **Version bump**: `patch`, `minor`, or `major`
-   - **Tag**: `latest` (stable) or `beta` (pre-release)
-   - **Confirm**: type `PUBLISH`
+    - **Version bump**: `patch`, `minor`, or `major`
+    - **Tag**: `latest` (stable) or `beta` (pre-release)
+    - **Confirm**: type `PUBLISH`
 
 The workflow will:
+
 1. Bump the CLI version
 2. Build the CLI
 3. Publish to NPM under the selected tag
@@ -152,9 +154,9 @@ The token engine is now part of `@juspay/blend-design-system`. Ensure CLI's `pac
 
 ```json
 {
-  "dependencies": {
-    "@juspay/blend-design-system": "^0.x.x"
-  }
+    "dependencies": {
+        "@juspay/blend-design-system": "^0.x.x"
+    }
 }
 ```
 

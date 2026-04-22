@@ -29,7 +29,10 @@ export default tseslint.config(
         },
     },
     {
-        files: ['lib/token-engine/**/*.{ts,tsx}', '__tests__/token-engine/**/*.{ts,tsx}'],
+        files: [
+            'lib/token-engine/**/*.{ts,tsx}',
+            '__tests__/token-engine/**/*.{ts,tsx}',
+        ],
         rules: {
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-unused-vars': 'off',

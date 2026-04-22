@@ -2247,9 +2247,8 @@ const DataTableDemo = () => {
                     >
                         <button
                             onClick={() => {
-                                const userName = (
-                                    row.name as AvatarColumnProps
-                                ).label
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
                                 alert(`Viewing details for: ${userName}`)
                             }}
                             style={{
@@ -2280,9 +2279,8 @@ const DataTableDemo = () => {
                         </button>
                         <button
                             onClick={() => {
-                                const userName = (
-                                    row.name as AvatarColumnProps
-                                ).label
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
                                 alert(`Editing user: ${userName}`)
                             }}
                             style={{
@@ -2313,9 +2311,8 @@ const DataTableDemo = () => {
                         </button>
                         <button
                             onClick={() => {
-                                const userName = (
-                                    row.name as AvatarColumnProps
-                                ).label
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
                                 alert(`More options for: ${userName}`)
                             }}
                             style={{

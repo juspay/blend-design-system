@@ -137,7 +137,8 @@ export async function pullCommand(
             ? ora('Resolving tokens for all V2 components...').start()
             : null
 
-    const { resolveBrandTokens } = await import('@juspay/blend-design-system/tokens')
+    const { resolveBrandTokens } =
+        await import('@juspay/blend-design-system/tokens')
     const lightTokens = resolveBrandTokens(brandConfig, 'light')
     const darkTokens = resolveBrandTokens(brandConfig, 'dark')
 
