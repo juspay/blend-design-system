@@ -15,9 +15,10 @@ import {
     getMountEditorOptions,
     getPlaceholderPosition,
     getUpdateEditorOptions,
+    blurMonacoEditorDom,
+    syncDiffEditorPaneViewMode,
     toCssValue,
 } from '../utils'
-import './monaco-editor.css'
 import { CSSObject } from 'styled-components'
 
 // ---------------------------------------------------------------------------
@@ -124,6 +125,8 @@ export function MonacoEditorWrapper({
     readOnlyRef.current = readOnly
     disabledRef.current = disabled
 
+    const viewOnly = readOnly || disabled
+
     const monacoLanguage = useMemo(() => mapLanguage(language), [language])
     const editorTheme = useMemo(() => createEditorTheme(tokens), [tokens])
     const metrics = useMemo(
@@ -146,6 +149,11 @@ export function MonacoEditorWrapper({
         )
     }, [metrics, showLineNumbers, readOnly, disabled])
 
+    useEffect(() => {
+        if (diff || !isEditorReady || !editorRef.current || !viewOnly) return
+        blurMonacoEditorDom(editorRef.current)
+    }, [diff, viewOnly, isEditorReady])
+
     const handleMount: OnMount = (editor, monaco) => {
         editorRef.current = editor
         monacoRef.current = monaco
@@ -161,7 +169,13 @@ export function MonacoEditorWrapper({
             )
         )
 
-        editor.onDidFocusEditorText(() => onFocus?.())
+        editor.onDidFocusEditorText(() => {
+            if (readOnlyRef.current || disabledRef.current) {
+                blurMonacoEditorDom(editor)
+                return
+            }
+            onFocus?.()
+        })
         editor.onDidBlurEditorText(() => onBlur?.())
 
         if (autoFocus && !disabled && !readOnly) {
@@ -170,9 +184,13 @@ export function MonacoEditorWrapper({
     }
 
     const diffContainerRef = useRef<HTMLDivElement | null>(null)
+    const diffEditorRef = useRef<Monaco.editor.IStandaloneDiffEditor | null>(
+        null
+    )
 
     const handleDiffMount: DiffOnMount = (diffEditor, monaco) => {
         monacoRef.current = monaco
+        diffEditorRef.current = diffEditor
         setIsEditorReady(true)
 
         diffModifiedOnChangeDisposableRef.current?.dispose()
@@ -187,12 +205,28 @@ export function MonacoEditorWrapper({
                 cb(modified.getValue())
             })
 
-        const scrollbarOverride = {
-            scrollbar: { alwaysConsumeMouseWheel: false },
+        syncDiffEditorPaneViewMode(diffEditor, readOnly, disabled)
+
+        for (const ed of [
+            diffEditor.getOriginalEditor(),
+            diffEditor.getModifiedEditor(),
+        ]) {
+            ed.onDidFocusEditorText(() => {
+                if (readOnlyRef.current || disabledRef.current) {
+                    blurMonacoEditorDom(ed)
+                }
+            })
         }
-        diffEditor.getOriginalEditor().updateOptions(scrollbarOverride)
-        diffEditor.getModifiedEditor().updateOptions(scrollbarOverride)
     }
+
+    useEffect(() => {
+        if (!diff) {
+            diffEditorRef.current = null
+            return
+        }
+        const d = diffEditorRef.current
+        if (d) syncDiffEditorPaneViewMode(d, readOnly, disabled)
+    }, [diff, readOnly, disabled])
 
     useEffect(() => {
         return () => {
@@ -228,6 +262,7 @@ export function MonacoEditorWrapper({
 
     const handleChange = useCallback(
         (newValue: string | undefined) => {
+            if (readOnlyRef.current || disabledRef.current) return
             if (newValue !== undefined) onChange?.(newValue)
         },
         [onChange]
