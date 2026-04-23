@@ -2,6 +2,7 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import TextInputV2 from '../../../lib/components/InputsV2/TextInputV2/TextInputV2'
+import { DropdownPosition } from '../../../lib/components/InputsV2/TextInputV2/TextInputV2.types'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -398,7 +399,7 @@ describe('TextInputV2 Component', () => {
         })
     })
 
-    describe('Embedded selects (leftSelect / rightSelect)', () => {
+    describe('Embedded selects (dropdown + DropdownPosition)', () => {
         beforeEach(() => {
             global.ResizeObserver = class ResizeObserver {
                 observe() {}
@@ -413,7 +414,8 @@ describe('TextInputV2 Component', () => {
                     label="With prefix"
                     value=""
                     onChange={() => {}}
-                    leftSelect={{
+                    dropdown={{
+                        position: DropdownPosition.LEFT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -428,14 +430,15 @@ describe('TextInputV2 Component', () => {
             ).toBeInTheDocument()
         })
 
-        it('hides both slots when leftSelect is set', () => {
+        it('hides both slots when a left embedded select is set', () => {
             render(
                 <TextInputV2
                     value=""
                     onChange={() => {}}
                     leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     rightSlot={{ slot: <MockIcon />, maxHeight: 16 }}
-                    leftSelect={{
+                    dropdown={{
+                        position: DropdownPosition.LEFT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -459,7 +462,8 @@ describe('TextInputV2 Component', () => {
                     label="Value"
                     value="10"
                     onChange={() => {}}
-                    rightSelect={{
+                    dropdown={{
+                        position: DropdownPosition.RIGHT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -474,14 +478,15 @@ describe('TextInputV2 Component', () => {
             ).toBeInTheDocument()
         })
 
-        it('hides both slots when rightSelect is set', () => {
+        it('hides both slots when a right embedded select is set', () => {
             render(
                 <TextInputV2
                     value=""
                     onChange={() => {}}
                     leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     rightSlot={{ slot: <MockIcon />, maxHeight: 16 }}
-                    rightSelect={{
+                    dropdown={{
+                        position: DropdownPosition.RIGHT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -505,20 +510,24 @@ describe('TextInputV2 Component', () => {
                     label="Composite"
                     value="x"
                     onChange={() => {}}
-                    leftSelect={{
-                        items: EMBEDDED_SELECT_ITEMS,
-                        selected: 'a',
-                        onSelect: () => {},
-                        placeholder: 'L',
-                        'aria-label': 'Left select',
-                    }}
-                    rightSelect={{
-                        items: EMBEDDED_SELECT_ITEMS,
-                        selected: 'b',
-                        onSelect: () => {},
-                        placeholder: 'R',
-                        'aria-label': 'Right select',
-                    }}
+                    dropdown={[
+                        {
+                            position: DropdownPosition.LEFT,
+                            items: EMBEDDED_SELECT_ITEMS,
+                            selected: 'a',
+                            onSelect: () => {},
+                            placeholder: 'L',
+                            'aria-label': 'Left select',
+                        },
+                        {
+                            position: DropdownPosition.RIGHT,
+                            items: EMBEDDED_SELECT_ITEMS,
+                            selected: 'b',
+                            onSelect: () => {},
+                            placeholder: 'R',
+                            'aria-label': 'Right select',
+                        },
+                    ]}
                 />
             )
             expect(
@@ -535,7 +544,8 @@ describe('TextInputV2 Component', () => {
                     value=""
                     onChange={() => {}}
                     disabled
-                    rightSelect={{
+                    dropdown={{
+                        position: DropdownPosition.RIGHT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -556,7 +566,8 @@ describe('TextInputV2 Component', () => {
                     value=""
                     onChange={() => {}}
                     label="L"
-                    leftSelect={{
+                    dropdown={{
+                        position: DropdownPosition.LEFT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect,

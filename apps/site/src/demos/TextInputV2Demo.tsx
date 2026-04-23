@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { TextInputV2 } from '../../../../packages/blend/lib/components/InputsV2/TextInputV2'
+import {
+    TextInputV2,
+    DropdownPosition,
+} from '../../../../packages/blend/lib/components/InputsV2/TextInputV2'
 import { TextInput } from '../../../../packages/blend/lib/main'
 import { InputSizeV2 } from '../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 import Switch from '../../../../packages/blend/lib/components/Switch/Switch'
@@ -235,35 +238,53 @@ const TextInputV2Demo = () => {
                             helpIconText={
                                 showHelpIcon ? helpIconText : undefined
                             }
-                            leftSelect={
-                                showInlineSelect
-                                    ? {
-                                          items: selectDemoItems,
-                                          selected: selectValue,
-                                          onSelect: (v) => setSelectValue(v),
-                                          placeholder: 'Code',
-                                          'aria-label': 'Phone country code',
-                                          search: {
-                                              show: true,
-                                              placeholder: 'Search',
-                                          },
-                                      }
-                                    : undefined
-                            }
-                            rightSelect={
-                                showInlineSelectRight
-                                    ? {
-                                          items: rightSelectDemoItems,
-                                          selected: rightSelectValue,
-                                          onSelect: (v) =>
-                                              setRightSelectValue(v),
-                                          placeholder: 'Unit',
-                                          'aria-label': 'Unit of measure',
-                                          search: {
-                                              show: true,
-                                              placeholder: 'Search',
-                                          },
-                                      }
+                            dropdown={
+                                showInlineSelect || showInlineSelectRight
+                                    ? [
+                                          ...(showInlineSelect
+                                              ? [
+                                                    {
+                                                        position:
+                                                            DropdownPosition.LEFT,
+                                                        items: selectDemoItems,
+                                                        selected: selectValue,
+                                                        onSelect: (v: string) =>
+                                                            setSelectValue(v),
+                                                        placeholder: 'Code',
+                                                        'aria-label':
+                                                            'Phone country code',
+                                                        search: {
+                                                            show: true,
+                                                            placeholder:
+                                                                'Search',
+                                                        },
+                                                    },
+                                                ]
+                                              : []),
+                                          ...(showInlineSelectRight
+                                              ? [
+                                                    {
+                                                        position:
+                                                            DropdownPosition.RIGHT,
+                                                        items: rightSelectDemoItems,
+                                                        selected:
+                                                            rightSelectValue,
+                                                        onSelect: (v: string) =>
+                                                            setRightSelectValue(
+                                                                v
+                                                            ),
+                                                        placeholder: 'Unit',
+                                                        'aria-label':
+                                                            'Unit of measure',
+                                                        search: {
+                                                            show: true,
+                                                            placeholder:
+                                                                'Search',
+                                                        },
+                                                    },
+                                                ]
+                                              : []),
+                                      ]
                                     : undefined
                             }
                             leftSlot={

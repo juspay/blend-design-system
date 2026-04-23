@@ -12,7 +12,11 @@ import Block from '../../Primitives/Block/Block'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import { AnyRef, InputSizeV2, InputStateV2 } from '../inputV2.types'
 import type { TextInputV2TokensType } from './TextInputV2.tokens'
-import type { TextInputV2Props } from './TextInputV2.types'
+import {
+    DropdownPosition,
+    type TextInputV2Dropdown,
+    type TextInputV2Props,
+} from './TextInputV2.types'
 import { SelectV2Alignment } from '../../SelectV2/selectV2.shared.types'
 import {
     SingleSelectV2Size,
@@ -40,6 +44,14 @@ import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import SingleSelectV2 from '../../SingleSelectV2/SingleSelectV2'
 
+function omitDropdownPosition(
+    o: TextInputV2Dropdown
+): Omit<TextInputV2Dropdown, 'position'> {
+    const { position, ...rest } = o
+    void position
+    return rest
+}
+
 const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
     (
         {
@@ -56,8 +68,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
             error = { show: false, message: '' },
             hintText,
             helpIconText,
-            leftSelect,
-            rightSelect,
+            dropdown,
             leftSlot,
             rightSlot,
             onFocus,
@@ -66,6 +77,32 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         }: TextInputV2Props,
         ref
     ) => {
+        const normalizedDropdowns = useMemo((): TextInputV2Dropdown[] => {
+            if (dropdown == null) return []
+            return Array.isArray(dropdown) ? dropdown : [dropdown]
+        }, [dropdown])
+        const leftEntry = useMemo(
+            () =>
+                normalizedDropdowns.find(
+                    (d) => d.position === DropdownPosition.LEFT
+                ),
+            [normalizedDropdowns]
+        )
+        const rightEntry = useMemo(
+            () =>
+                normalizedDropdowns.find(
+                    (d) => d.position === DropdownPosition.RIGHT
+                ),
+            [normalizedDropdowns]
+        )
+        const leftSelect = useMemo(
+            () => (leftEntry ? omitDropdownPosition(leftEntry) : undefined),
+            [leftEntry]
+        )
+        const rightSelect = useMemo(
+            () => (rightEntry ? omitDropdownPosition(rightEntry) : undefined),
+            [rightEntry]
+        )
         const showLeftSelect = Boolean(leftSelect)
         const showRightSelect = Boolean(rightSelect)
         const hasEmbeddedSelect = showLeftSelect || showRightSelect

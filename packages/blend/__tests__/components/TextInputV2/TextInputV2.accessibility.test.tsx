@@ -4,6 +4,7 @@ import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Mail } from 'lucide-react'
 import TextInputV2 from '../../../lib/components/InputsV2/TextInputV2/TextInputV2'
+import { DropdownPosition } from '../../../lib/components/InputsV2/TextInputV2/TextInputV2.types'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 
 const A11Y_SELECT_ITEMS = [
@@ -15,7 +16,8 @@ const A11Y_SELECT_ITEMS = [
     },
 ]
 
-const embeddedSelectA11y = (ariaLabel: string) => ({
+const embeddedSelectA11y = (ariaLabel: string, position: DropdownPosition) => ({
+    position,
     items: A11Y_SELECT_ITEMS,
     selected: 'a',
     onSelect: () => {},
@@ -429,7 +431,7 @@ describe('TextInputV2 Accessibility', () => {
         })
     })
 
-    describe('Embedded select and rightSelect (WCAG 4.1.2, axe)', () => {
+    describe('Embedded dropdown (WCAG 4.1.2, axe)', () => {
         beforeEach(() => {
             global.ResizeObserver = class ResizeObserver {
                 observe() {}
@@ -444,7 +446,10 @@ describe('TextInputV2 Accessibility', () => {
                     label="Phone"
                     value=""
                     onChange={() => {}}
-                    leftSelect={embeddedSelectA11y('Country code')}
+                    dropdown={embeddedSelectA11y(
+                        'Country code',
+                        DropdownPosition.LEFT
+                    )}
                 />
             )
             const results = await axe(container)
@@ -457,7 +462,10 @@ describe('TextInputV2 Accessibility', () => {
                     label="Amount"
                     value="10"
                     onChange={() => {}}
-                    rightSelect={embeddedSelectA11y('Unit of measure')}
+                    dropdown={embeddedSelectA11y(
+                        'Unit of measure',
+                        DropdownPosition.RIGHT
+                    )}
                 />
             )
             const results = await axe(container)
@@ -470,8 +478,10 @@ describe('TextInputV2 Accessibility', () => {
                     label="Composite"
                     value="x"
                     onChange={() => {}}
-                    leftSelect={embeddedSelectA11y('Prefix')}
-                    rightSelect={embeddedSelectA11y('Suffix')}
+                    dropdown={[
+                        embeddedSelectA11y('Prefix', DropdownPosition.LEFT),
+                        embeddedSelectA11y('Suffix', DropdownPosition.RIGHT),
+                    ]}
                 />
             )
             const results = await axe(container)
@@ -485,8 +495,10 @@ describe('TextInputV2 Accessibility', () => {
                     value=""
                     onChange={() => {}}
                     disabled
-                    leftSelect={embeddedSelectA11y('Prefix')}
-                    rightSelect={embeddedSelectA11y('Suffix')}
+                    dropdown={[
+                        embeddedSelectA11y('Prefix', DropdownPosition.LEFT),
+                        embeddedSelectA11y('Suffix', DropdownPosition.RIGHT),
+                    ]}
                 />
             )
             const results = await axe(container)
@@ -499,8 +511,13 @@ describe('TextInputV2 Accessibility', () => {
                     label="Field"
                     value=""
                     onChange={() => {}}
-                    leftSelect={embeddedSelectA11y('Country code')}
-                    rightSelect={embeddedSelectA11y('Unit')}
+                    dropdown={[
+                        embeddedSelectA11y(
+                            'Country code',
+                            DropdownPosition.LEFT
+                        ),
+                        embeddedSelectA11y('Unit', DropdownPosition.RIGHT),
+                    ]}
                 />
             )
             expect(
@@ -672,8 +689,16 @@ describe('TextInputV2 Accessibility', () => {
                     onChange={() => {}}
                     name="amount"
                     required
-                    leftSelect={embeddedSelectA11y('Prefix selector')}
-                    rightSelect={embeddedSelectA11y('Unit selector')}
+                    dropdown={[
+                        embeddedSelectA11y(
+                            'Prefix selector',
+                            DropdownPosition.LEFT
+                        ),
+                        embeddedSelectA11y(
+                            'Unit selector',
+                            DropdownPosition.RIGHT
+                        ),
+                    ]}
                 />
             )
             const results = await axe(container)

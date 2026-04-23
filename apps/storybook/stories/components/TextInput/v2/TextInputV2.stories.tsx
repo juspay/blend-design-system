@@ -15,7 +15,10 @@ import {
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
 import { ThemeProvider } from '@juspay/blend-design-system'
-import { TextInputV2 } from '../../../../../../packages/blend/lib/components/InputsV2/TextInputV2'
+import {
+    TextInputV2,
+    DropdownPosition,
+} from '../../../../../../packages/blend/lib/components/InputsV2/TextInputV2'
 import { InputSizeV2 } from '../../../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 
 const SELECT_PREFIX_ITEMS = [
@@ -55,7 +58,7 @@ const meta: Meta<typeof TextInputV2> = {
         docs: {
             description: {
                 component: `
-A flexible text input component (V2) with responsive tokens, floating/static labels, validation, and left/right **slots** or embedded **\`leftSelect\` / \`rightSelect\`** (inline \`SingleSelectV2\`).
+A flexible text input component (V2) with responsive tokens, floating/static labels, validation, and left/right **slots** or embedded **\`dropdown\`** (inline \`SingleSelectV2\` + \`SelectPosition\`).
 
 ## Features
 - Three sizes: Small (\`sm\`), Medium (\`md\`), Large (\`lg\`) — \`TEXT_INPUTV2\` tokens
@@ -63,7 +66,7 @@ A flexible text input component (V2) with responsive tokens, floating/static lab
 - Error state with \`{ show, message }\`
 - Required field indication
 - **Slots**: \`leftSlot\` / \`rightSlot\` as \`{ slot, maxHeight? }\` (icons, buttons)
-- **Inline selects** (\`leftSelect\`, \`rightSelect\`): \`items\`, \`selected\`, \`onSelect\`, \`placeholder\`, optional \`menuDimensions\`, \`aria-label\`, \`singleSelectGroupPosition\`, etc. If **either** embed is set, **neither** \`leftSlot\` nor \`rightSlot\` is shown
+- **Inline embeds** (\`dropdown\`): \`SingleSelectV2Props\` + \`position: SelectPosition\` (left or right). Pass one object or an array of two (one per side). If **any** embed is set, **neither** \`leftSlot\` nor \`rightSlot\` is shown
 - Disabled state (shared for input and embedded selects)
 - Autofill detection for floating label behavior
 - Responsive: on small screens with large size, labels can float
@@ -73,7 +76,7 @@ A flexible text input component (V2) with responsive tokens, floating/static lab
 - Uses native \`<input>\` for semantics; labels associated via \`label\` and \`htmlFor\` / \`id\`
 - Required state: \`required\` and \`aria-required\`
 - Error and hint text linked via \`aria-describedby\` (\`id\`-based)
-- **Embedded select**: \`SingleSelectV2\` trigger — provide \`leftSelect['aria-label']\` / \`rightSelect['aria-label']\` when the field \`label\` is not enough; keyboard and menu follow Select V2
+- **Embedded select**: \`SingleSelectV2\` trigger — set \`aria-label\` on the embed when the field \`label\` is not enough; keyboard and menu follow Select V2
 - Focus styles; Tab order includes the text field and select triggers when present
 - Slot icons are decorative by default; use \`aria-label\` on interactive slot content
 - **WCAG target**: 2.1 Level AA (supports 2.2)
@@ -93,7 +96,8 @@ import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
   value={phone}
   onChange={(e) => setPhone(e.target.value)}
   size={InputSizeV2.MD}
-  leftSelect={{
+  dropdown={{
+    position: SelectPosition.LEFT,
     items: countryGroups,
     selected: code,
     onSelect: setCode,
@@ -104,7 +108,7 @@ import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
 />
 \`\`\`
 
-\`rightSelect\` mirrors \`leftSelect\` on the right. If either embed is used, both icon slots are ignored.
+Use \`SelectPosition.RIGHT\` for a right embed, or pass an **array** of two configs for both sides. If any embed is used, both icon slots are ignored.
                 `,
             },
         },
@@ -180,30 +184,23 @@ import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
         leftSlot: {
             control: false,
             description:
-                'Left slot: { slot: ReactElement, maxHeight?: … }. Ignored when `leftSelect` or `rightSelect` is set.',
+                'Left slot: { slot: ReactElement, maxHeight?: … }. Ignored when `dropdown` is set.',
             table: { type: { summary: 'object' }, category: 'Slots' },
         },
         rightSlot: {
             control: false,
             description:
-                'Right slot: { slot: ReactElement, maxHeight?: … }. Ignored when `leftSelect` or `rightSelect` is set.',
+                'Right slot: { slot: ReactElement, maxHeight?: … }. Ignored when `dropdown` is set.',
             table: { type: { summary: 'object' }, category: 'Slots' },
         },
-        leftSelect: {
+        dropdown: {
             control: false,
             description:
-                'Left inline `SingleSelectV2` (`TextInputV2SelectConfig`); if `leftSelect` or `rightSelect` is set, both slots are ignored',
+                'Inline `SingleSelectV2` + `SelectPosition` (left/right). One object or an array of two. If set, both icon slots are ignored',
             table: {
-                type: { summary: 'TextInputV2SelectConfig' },
-                category: 'Slots',
-            },
-        },
-        rightSelect: {
-            control: false,
-            description:
-                'Right inline `SingleSelectV2`; if `leftSelect` or `rightSelect` is set, both slots are ignored',
-            table: {
-                type: { summary: 'TextInputV2SelectConfig' },
+                type: {
+                    summary: 'TextInputV2Dropdown | TextInputV2Dropdown[]',
+                },
                 category: 'Slots',
             },
         },
@@ -320,7 +317,8 @@ export const WithLeftSelect: Story = {
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     size={InputSizeV2.MD}
-                    leftSelect={{
+                    dropdown={{
+                        position: DropdownPosition.LEFT,
                         items: SELECT_PREFIX_ITEMS,
                         selected: code,
                         onSelect: (v) => setCode(v),
@@ -334,7 +332,7 @@ export const WithLeftSelect: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Left embedded `leftSelect` (inline SingleSelectV2). Icon slots are not used; text field gets extra left padding for the trigger.',
+                story: 'Left embedded `dropdown` with `SelectPosition.LEFT` (inline SingleSelectV2). Icon slots are not used; text field gets extra left padding for the trigger.',
             },
         },
     },
@@ -352,7 +350,8 @@ export const WithRightSelect: Story = {
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     size={InputSizeV2.MD}
-                    rightSelect={{
+                    dropdown={{
+                        position: DropdownPosition.RIGHT,
                         items: SELECT_UNIT_ITEMS,
                         selected: unit,
                         onSelect: (v) => setUnit(v),
@@ -366,7 +365,7 @@ export const WithRightSelect: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Right embedded `rightSelect`. Icon slots are not used; text field gets extra right padding for the trigger.',
+                story: 'Right embedded `dropdown` with `SelectPosition.RIGHT`. Icon slots are not used; text field gets extra right padding for the trigger.',
             },
         },
     },
@@ -385,20 +384,24 @@ export const WithSelectAndRightSelect: Story = {
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     size={InputSizeV2.MD}
-                    leftSelect={{
-                        items: SELECT_PREFIX_ITEMS,
-                        selected: code,
-                        onSelect: (v) => setCode(v),
-                        placeholder: 'Code',
-                        'aria-label': 'Prefix',
-                    }}
-                    rightSelect={{
-                        items: SELECT_UNIT_ITEMS,
-                        selected: unit,
-                        onSelect: (v) => setUnit(v),
-                        placeholder: 'Unit',
-                        'aria-label': 'Suffix',
-                    }}
+                    dropdown={[
+                        {
+                            position: DropdownPosition.LEFT,
+                            items: SELECT_PREFIX_ITEMS,
+                            selected: code,
+                            onSelect: (v) => setCode(v),
+                            placeholder: 'Code',
+                            'aria-label': 'Prefix',
+                        },
+                        {
+                            position: DropdownPosition.RIGHT,
+                            items: SELECT_UNIT_ITEMS,
+                            selected: unit,
+                            onSelect: (v) => setUnit(v),
+                            placeholder: 'Unit',
+                            'aria-label': 'Suffix',
+                        },
+                    ]}
                 />
             </div>
         )
@@ -406,7 +409,7 @@ export const WithSelectAndRightSelect: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Both `leftSelect` and `rightSelect` (no left/right icon slots). Useful for number + unit or segmented inputs.',
+                story: 'Both sides via `dropdown` array (no left/right icon slots). Useful for number + unit or segmented inputs.',
             },
         },
     },
