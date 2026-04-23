@@ -14,6 +14,8 @@ COPY apps/backend ./apps/backend
 COPY packages/token-engine ./packages/token-engine
 
 RUN pnpm install --frozen-lockfile
+RUN pnpm approve-builds @prisma/client @prisma/engines esbuild
+RUN pnpm install
 
 WORKDIR /app/apps/backend
 RUN pnpm run db:generate
