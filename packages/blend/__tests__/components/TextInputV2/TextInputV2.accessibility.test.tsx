@@ -444,7 +444,7 @@ describe('TextInputV2 Accessibility', () => {
                     label="Phone"
                     value=""
                     onChange={() => {}}
-                    select={embeddedSelectA11y('Country code')}
+                    leftSelect={embeddedSelectA11y('Country code')}
                 />
             )
             const results = await axe(container)
@@ -470,7 +470,7 @@ describe('TextInputV2 Accessibility', () => {
                     label="Composite"
                     value="x"
                     onChange={() => {}}
-                    select={embeddedSelectA11y('Prefix')}
+                    leftSelect={embeddedSelectA11y('Prefix')}
                     rightSelect={embeddedSelectA11y('Suffix')}
                 />
             )
@@ -485,7 +485,7 @@ describe('TextInputV2 Accessibility', () => {
                     value=""
                     onChange={() => {}}
                     disabled
-                    select={embeddedSelectA11y('Prefix')}
+                    leftSelect={embeddedSelectA11y('Prefix')}
                     rightSelect={embeddedSelectA11y('Suffix')}
                 />
             )
@@ -499,7 +499,7 @@ describe('TextInputV2 Accessibility', () => {
                     label="Field"
                     value=""
                     onChange={() => {}}
-                    select={embeddedSelectA11y('Country code')}
+                    leftSelect={embeddedSelectA11y('Country code')}
                     rightSelect={embeddedSelectA11y('Unit')}
                 />
             )
@@ -672,7 +672,7 @@ describe('TextInputV2 Accessibility', () => {
                     onChange={() => {}}
                     name="amount"
                     required
-                    select={embeddedSelectA11y('Prefix selector')}
+                    leftSelect={embeddedSelectA11y('Prefix selector')}
                     rightSelect={embeddedSelectA11y('Unit selector')}
                 />
             )

@@ -206,24 +206,16 @@ const TextInputV2Demo = () => {
                     }`}
                 >
                     <div className="w-full max-w-md">
-                        {showInlineSelect && showLeftSlot && (
-                            <p
-                                className="text-sm mb-2 text-amber-600 dark:text-amber-400"
-                                role="status"
-                            >
-                                Inline left select hides the left slot in
-                                TextInputV2.
-                            </p>
-                        )}
-                        {showInlineSelectRight && showRightSlot && (
-                            <p
-                                className="text-sm mb-2 text-amber-600 dark:text-amber-400"
-                                role="status"
-                            >
-                                Inline right select hides the right slot in
-                                TextInputV2.
-                            </p>
-                        )}
+                        {(showInlineSelect || showInlineSelectRight) &&
+                            (showLeftSlot || showRightSlot) && (
+                                <p
+                                    className="text-sm mb-2 text-amber-600 dark:text-amber-400"
+                                    role="status"
+                                >
+                                    Any inline select hides both left and right
+                                    icon slots in TextInputV2.
+                                </p>
+                            )}
                         <TextInputV2
                             ref={ref}
                             label={showLabel ? label : undefined}
@@ -243,7 +235,7 @@ const TextInputV2Demo = () => {
                             helpIconText={
                                 showHelpIcon ? helpIconText : undefined
                             }
-                            select={
+                            leftSelect={
                                 showInlineSelect
                                     ? {
                                           items: selectDemoItems,
@@ -275,7 +267,9 @@ const TextInputV2Demo = () => {
                                     : undefined
                             }
                             leftSlot={
-                                showLeftSlot && !showInlineSelect
+                                showLeftSlot &&
+                                !showInlineSelect &&
+                                !showInlineSelectRight
                                     ? {
                                           slot: <Search size={16} />,
                                           maxHeight: '100%',
@@ -283,7 +277,9 @@ const TextInputV2Demo = () => {
                                     : undefined
                             }
                             rightSlot={
-                                showRightSlot && !showInlineSelectRight
+                                showRightSlot &&
+                                !showInlineSelect &&
+                                !showInlineSelectRight
                                     ? {
                                           slot: (
                                               <X aria-label="Clear" size={16} />

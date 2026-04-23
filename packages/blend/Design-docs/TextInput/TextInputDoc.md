@@ -11,7 +11,7 @@ Create a scalable text input component that supports:
 - **Validation**: Error state with optional message; required indicator (asterisk)
 - **Help**: Hint text below input; optional help icon with tooltip (string `helpIconText` passed to `InputLabelsV2`)
 - **Slots**: Left and right slots (e.g. icons, clear button) with configurable `maxHeight`
-- **Embedded selects** (optional): `select` (left) and `rightSelect` (right) render inline `SingleSelectV2` (`NO_CONTAINER` + `inline`) with token-matched size. When set, the corresponding **slot is not used** (`leftSlot` if `select`, `rightSlot` if `rightSelect`)
+- **Embedded selects** (optional): `leftSelect` and `rightSelect` render inline `SingleSelectV2` (`NO_CONTAINER` + `inline`) with token-matched size. If **either** is set, **neither** `leftSlot` nor `rightSlot` is rendered
 - **Responsive behavior**: On small screens with large size, labels can float inside the input
 - **Accessibility**: Native `<input>`, `aria-required`, `aria-invalid`, `aria-describedby` for error/hint, focus ring; embedded selects use `SingleSelectV2` (provide `aria-label` on the config when needed)
 - **Ref forwarding**: Support both internal ref (autofill, layout) and consumer ref
@@ -32,7 +32,7 @@ Create a scalable text input component that supports:
 ![TextInput Anatomy](./TextInputAnatomy.png)
 
 - **Top container**: Label, subLabel (in parentheses), required asterisk, optional help icon with tooltip
-- **Input row**: Optional **`select`** (left) _or_ **`leftSlot`** (mutually exclusive); native `<input>` (with optional floating label on small + large); optional **`rightSelect`** (right) _or_ **`rightSlot`**. Embeds are absolutely positioned in the padding area; the input’s horizontal padding is increased so text does not overlap the triggers
+- **Input row**: Use **`leftSlot` / `rightSlot`**, _or_ embeds **`leftSelect` / `rightSelect`**. If **either** embed is present, **both** icon slots are omitted. Native `<input>` (with optional floating label on small + large). Embeds are absolutely positioned; horizontal padding resizes with trigger width
 - **Bottom container**: Hint text and/or error message; IDs used for `aria-describedby`
 - **Floating label**: Shown only when `breakPointLabel === 'sm'` and `size === 'lg'`; animates based on focus/value/autofill
 
@@ -88,7 +88,7 @@ type TextInputV2Props = {
     }
     hintText?: string
     helpIconText?: string
-    select?: TextInputV2SelectConfig
+    leftSelect?: TextInputV2SelectConfig
     rightSelect?: TextInputV2SelectConfig
     leftSlot?: {
         slot: ReactElement
@@ -211,14 +211,14 @@ const { top, bottom } = getVerticalInputPadding({
 
 ### 3. Dynamic input padding for left/right slots and embedded selects
 
-**Decision**: Use `useInputSlotPadding` to measure **slot** refs and set input padding to `basePadding + slotWidth + gap` so text does not overlap `leftSlot` / `rightSlot`. When `select` or `rightSelect` is set, the corresponding **slot is not rendered** (`effectiveLeftSlot` / `effectiveRightSlot`), and a separate `useLayoutEffect` measures the **embedded select** wrapper width. Final horizontal padding is:
+**Decision**: Use `useInputSlotPadding` to measure **slot** refs and set input padding to `basePadding + slotWidth + gap` so text does not overlap `leftSlot` / `rightSlot`. When `leftSelect` or `rightSelect` is set, **both** slots are not rendered (`hasEmbeddedSelect` → `effectiveLeftSlot` / `effectiveRightSlot` empty), and `useLayoutEffect` measures each **embedded select** wrapper width. Final horizontal padding is:
 
-- Left: `calculatedLeftInputPadding` **plus** `selectWidth + gap` when `select` is present
+- Left: `calculatedLeftInputPadding` **plus** `leftSelectWidth + gap` when `leftSelect` is present
 - Right: `calculatedRightInputPadding` **plus** `rightSelectWidth + gap` when `rightSelect` is present
 
 The same combined left padding is passed to `FloatingLabelsV2` when floating labels apply.
 
-**Rationale**: Icon slots and inline select triggers have variable width; measurement keeps the text field from overlapping. Re-measuring in `useLayoutEffect` on `select` / `selected` updates padding when the trigger label width changes.
+**Rationale**: Icon slots and inline select triggers have variable width; measurement keeps the text field from overlapping. Re-measuring in `useLayoutEffect` on `leftSelect` / `selected` (and the right side) updates padding when the trigger label width changes.
 
 ```tsx
 const { calculatedLeftInputPadding, calculatedRightInputPadding } =
@@ -236,7 +236,7 @@ const { calculatedLeftInputPadding, calculatedRightInputPadding } =
 
 ### 3b. Embedded `SingleSelectV2` defaults in this field
 
-**Decision**: Map `InputSizeV2` to `SingleSelectV2Size`, use `SingleSelectV2Variant.NO_CONTAINER` and `inline`, and set **`singleSelectGroupPosition`** to `'left'` for `select` and `'right'` for `rightSelect` (overridable via config) so trigger border radii match a composite field (inner edge square, outer edge rounded). **Menu** defaults include alignment (`START` / `END`) and `side`/`align` offsets tuned for the inline layout. `disabled` on `TextInputV2` is passed to the embedded selects.
+**Decision**: Map `InputSizeV2` to `SingleSelectV2Size`, use `SingleSelectV2Variant.NO_CONTAINER` and `inline`, and set **`singleSelectGroupPosition`** to `'left'` for `leftSelect` and `'right'` for `rightSelect` (overridable via config) so trigger border radii match a composite field (inner edge square, outer edge rounded). **Menu** defaults include alignment (`START` / `END`) and `side`/`align` offsets tuned for the inline layout. `disabled` on `TextInputV2` is passed to the embedded selects.
 
 **Rationale**: Matches patterns similar to `DropdownInput` + select and avoids full rounded triggers clipping labels on the side adjacent to the text.
 
@@ -340,11 +340,11 @@ const ariaDescribedBy = useMemo(() => {
 placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
 ```
 
-### 11. `select` / `rightSelect` take precedence over slots
+### 11. `leftSelect` / `rightSelect` take precedence over slots
 
-**Decision**: If `select` is provided, `leftSlot` is ignored; if `rightSelect` is provided, `rightSlot` is ignored. Do not pass both for the same side.
+**Decision**: If `leftSelect` **or** `rightSelect` is provided, both `leftSlot` and `rightSlot` are ignored. Otherwise slots work as before.
 
-**Rationale**: One compositional model per side—either a custom `ReactElement` slot or a typed `TextInputV2SelectConfig` for the design-system single select.
+**Rationale**: Icon slots and embedded selects are not composed together; any inline select mode drops both icon slots to avoid conflicting chrome.
 
 ### 12. `helpIconText` is a string
 

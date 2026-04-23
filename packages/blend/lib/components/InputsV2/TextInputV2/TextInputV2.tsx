@@ -56,7 +56,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
             error = { show: false, message: '' },
             hintText,
             helpIconText,
-            select,
+            leftSelect,
             rightSelect,
             leftSlot,
             rightSlot,
@@ -66,17 +66,18 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         }: TextInputV2Props,
         ref
     ) => {
-        const showSelect = Boolean(select)
+        const showLeftSelect = Boolean(leftSelect)
         const showRightSelect = Boolean(rightSelect)
-        const effectiveLeftSlot = showSelect ? undefined : leftSlot
-        const effectiveRightSlot = showRightSelect ? undefined : rightSlot
+        const hasEmbeddedSelect = showLeftSelect || showRightSelect
+        const effectiveLeftSlot = hasEmbeddedSelect ? undefined : leftSlot
+        const effectiveRightSlot = hasEmbeddedSelect ? undefined : rightSlot
 
         const inputRef = useRef<HTMLInputElement>(null)
         const leftSlotRef = useRef<HTMLDivElement>(null)
         const rightSlotRef = useRef<HTMLDivElement>(null)
-        const selectRef = useRef<HTMLDivElement>(null)
+        const leftSelectRef = useRef<HTMLDivElement>(null)
         const rightSelectRef = useRef<HTMLDivElement>(null)
-        const [selectWidth, setSelectWidth] = useState(0)
+        const [leftSelectWidth, setLeftSelectWidth] = useState(0)
         const [rightSelectWidth, setRightSelectWidth] = useState(0)
 
         const singleSelectV2Size =
@@ -87,7 +88,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                   : SingleSelectV2Size.LG
 
         const embeddedSelectMenuAlignOffset = -11
-        const rightSelectMenuSideOffset =
+        const embeddedSelectMenuSideOffset =
             size === InputSizeV2.SM ? 10 : size === InputSizeV2.MD ? 12 : 15
 
         const tokens =
@@ -149,20 +150,20 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
             })
 
         const gapPx = toPixels(container.gap)
-        const leftPaddingWithSelect = showSelect
-            ? calculatedLeftInputPadding + selectWidth + gapPx
+        const leftPaddingWithSelect = showLeftSelect
+            ? calculatedLeftInputPadding + leftSelectWidth + gapPx
             : calculatedLeftInputPadding
         const rightPaddingWithSelect = showRightSelect
             ? calculatedRightInputPadding + rightSelectWidth + gapPx
             : calculatedRightInputPadding
 
         useLayoutEffect(() => {
-            if (showSelect && selectRef.current) {
-                setSelectWidth(selectRef.current.offsetWidth)
+            if (showLeftSelect && leftSelectRef.current) {
+                setLeftSelectWidth(leftSelectRef.current.offsetWidth)
             } else {
-                setSelectWidth(0)
+                setLeftSelectWidth(0)
             }
-        }, [showSelect, select, select?.selected])
+        }, [showLeftSelect, leftSelect, leftSelect?.selected])
 
         useLayoutEffect(() => {
             if (showRightSelect && rightSelectRef.current) {
@@ -219,9 +220,9 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                         </InputSlots>
                     )}
 
-                    {select && (
+                    {leftSelect && (
                         <Block
-                            ref={selectRef}
+                            ref={leftSelectRef}
                             position="absolute"
                             zIndex={1}
                             top={inputContainerPaddingTop}
@@ -234,33 +235,34 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                                 variant={SingleSelectV2Variant.NO_CONTAINER}
                                 inline
                                 size={singleSelectV2Size}
-                                items={select.items}
-                                selected={select.selected}
-                                onSelect={select.onSelect}
-                                placeholder={select.placeholder}
+                                items={leftSelect.items}
+                                selected={leftSelect.selected}
+                                onSelect={leftSelect.onSelect}
+                                placeholder={leftSelect.placeholder}
                                 disabled={disabled}
-                                name={select.name}
+                                name={leftSelect.name}
                                 aria-label={
-                                    select['aria-label'] ??
+                                    leftSelect['aria-label'] ??
                                     label ??
                                     'Select option'
                                 }
                                 singleSelectGroupPosition={
-                                    select.singleSelectGroupPosition ?? 'left'
+                                    leftSelect.singleSelectGroupPosition ??
+                                    'left'
                                 }
-                                search={select.search}
+                                search={leftSelect.search}
                                 menuPosition={{
                                     alignment: SelectV2Alignment.START,
-                                    sideOffset: rightSelectMenuSideOffset,
+                                    sideOffset: embeddedSelectMenuSideOffset,
                                     alignOffset: embeddedSelectMenuAlignOffset,
-                                    ...select.menuPosition,
+                                    ...leftSelect.menuPosition,
                                 }}
-                                menuDimensions={select.menuDimensions}
-                                usePanelOnMobile={select.usePanelOnMobile}
-                                allowCustomValue={select.allowCustomValue}
-                                customValueLabel={select.customValueLabel}
+                                menuDimensions={leftSelect.menuDimensions}
+                                usePanelOnMobile={leftSelect.usePanelOnMobile}
+                                allowCustomValue={leftSelect.allowCustomValue}
+                                customValueLabel={leftSelect.customValueLabel}
                                 triggerDimensions={
-                                    select.triggerDimensions ?? {
+                                    leftSelect.triggerDimensions ?? {
                                         width: 'max-content',
                                     }
                                 }
@@ -381,7 +383,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                                 search={rightSelect.search}
                                 menuPosition={{
                                     alignment: SelectV2Alignment.END,
-                                    sideOffset: rightSelectMenuSideOffset,
+                                    sideOffset: embeddedSelectMenuSideOffset,
                                     alignOffset: embeddedSelectMenuAlignOffset,
                                     ...rightSelect.menuPosition,
                                 }}

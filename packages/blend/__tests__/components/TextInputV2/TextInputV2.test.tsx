@@ -398,7 +398,7 @@ describe('TextInputV2 Component', () => {
         })
     })
 
-    describe('Embedded selects (select / rightSelect)', () => {
+    describe('Embedded selects (leftSelect / rightSelect)', () => {
         beforeEach(() => {
             global.ResizeObserver = class ResizeObserver {
                 observe() {}
@@ -413,7 +413,7 @@ describe('TextInputV2 Component', () => {
                     label="With prefix"
                     value=""
                     onChange={() => {}}
-                    select={{
+                    leftSelect={{
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -428,13 +428,14 @@ describe('TextInputV2 Component', () => {
             ).toBeInTheDocument()
         })
 
-        it('hides left slot when select is set', () => {
+        it('hides both slots when leftSelect is set', () => {
             render(
                 <TextInputV2
                     value=""
                     onChange={() => {}}
                     leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
-                    select={{
+                    rightSlot={{ slot: <MockIcon />, maxHeight: 16 }}
+                    leftSelect={{
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -445,6 +446,9 @@ describe('TextInputV2 Component', () => {
             )
             expect(
                 document.querySelector('[data-element="left-slot"]')
+            ).toBeNull()
+            expect(
+                document.querySelector('[data-element="right-slot"]')
             ).toBeNull()
             expect(screen.queryByTestId('mock-icon')).not.toBeInTheDocument()
         })
@@ -470,11 +474,12 @@ describe('TextInputV2 Component', () => {
             ).toBeInTheDocument()
         })
 
-        it('hides right slot when rightSelect is set', () => {
+        it('hides both slots when rightSelect is set', () => {
             render(
                 <TextInputV2
                     value=""
                     onChange={() => {}}
+                    leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     rightSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     rightSelect={{
                         items: EMBEDDED_SELECT_ITEMS,
@@ -488,6 +493,9 @@ describe('TextInputV2 Component', () => {
             expect(
                 document.querySelector('[data-element="right-slot"]')
             ).toBeNull()
+            expect(
+                document.querySelector('[data-element="left-slot"]')
+            ).toBeNull()
             expect(screen.queryByTestId('mock-icon')).not.toBeInTheDocument()
         })
 
@@ -497,7 +505,7 @@ describe('TextInputV2 Component', () => {
                     label="Composite"
                     value="x"
                     onChange={() => {}}
-                    select={{
+                    leftSelect={{
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -548,7 +556,7 @@ describe('TextInputV2 Component', () => {
                     value=""
                     onChange={() => {}}
                     label="L"
-                    select={{
+                    leftSelect={{
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect,
