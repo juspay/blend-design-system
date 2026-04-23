@@ -325,13 +325,13 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 position="absolute"
                                 display="flex"
                                 top={0}
-                                left={
-                                    hasSecondarySidebarItems
-                                        ? tokens.secondarySidebar.width
-                                        : 0
-                                }
+                                left={0}
                                 width={
-                                    isHovering ? tokens.primarySidebar.width : 0
+                                    isHovering
+                                        ? hasSecondarySidebarItems
+                                            ? `calc(${tokens.secondarySidebar.width} + ${tokens.primarySidebar.width})`
+                                            : tokens.primarySidebar.width
+                                        : 0
                                 }
                                 minWidth={0}
                                 height="100%"
@@ -356,6 +356,13 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 pointerEvents={isHovering ? 'auto' : 'none'}
                                 onMouseLeave={() => setIsHovering(false)}
                             >
+                                {hasSecondarySidebarItems && (
+                                    <SecondarySidebar
+                                        id={`${secondarySidebarId}-intermediate`}
+                                        secondarySidebar={secondarySidebar}
+                                        tokens={tokens}
+                                    />
+                                )}
                                 <SidebarV2Panel
                                     sidebarTopSlot={sidebarTopSlot}
                                     merchantInfo={merchantInfo}
@@ -371,7 +378,6 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                     defaultActiveItem={defaultActiveItem}
                                     iconOnlyMode={false}
                                     footer={footer}
-                                    setIsHovering={setIsHovering}
                                     sidebarState={sidebarStatus}
                                     tokens={tokens}
                                 />

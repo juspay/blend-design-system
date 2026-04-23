@@ -49,6 +49,7 @@ export type SidebarV2PanelProps = {
     onActiveItemChange?: (item: string | null) => void
     defaultActiveItem?: string | null
     iconOnlyMode?: boolean
+    hideToggleButton?: boolean
     footer?: ReactNode
     setIsHovering?: (isHovering: boolean) => void
     sidebarState?: SidebarV2StateChangeType
@@ -69,6 +70,7 @@ const SidebarV2Panel = ({
     onActiveItemChange,
     defaultActiveItem,
     iconOnlyMode = false,
+    hideToggleButton = false,
     footer,
     setIsHovering,
     sidebarState = 'expanded',
@@ -102,6 +104,7 @@ const SidebarV2Panel = ({
                 onToggle={onToggle}
                 sidebarNavId={sidebarNavId}
                 iconOnlyMode={iconOnlyMode}
+                hideToggleButton={hideToggleButton}
                 tokens={tokens}
             />
 
@@ -112,9 +115,6 @@ const SidebarV2Panel = ({
                 aria-label="Navigation menu"
                 onMouseEnter={
                     trackHover ? () => setIsHovering?.(true) : undefined
-                }
-                onMouseLeave={
-                    trackHover ? () => setIsHovering?.(false) : undefined
                 }
             >
                 <Directory
