@@ -24,6 +24,9 @@ on:
                 required: true
                 type: string
 
+permissions:
+    contents: read
+
 concurrency:
     group: publish-cli-${{ github.ref }}
     cancel-in-progress: true
