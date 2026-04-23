@@ -107,7 +107,6 @@ One side (object):
 
 ```tsx
 import { TextInputV2, DropdownPosition } from '@juspay/blend-design-system/…'
-
 ;<TextInputV2
     label="Phone"
     value={value}
