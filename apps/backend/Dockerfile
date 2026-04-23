@@ -16,8 +16,8 @@ COPY packages/token-engine ./packages/token-engine
 RUN pnpm install --frozen-lockfile
 
 WORKDIR /app/apps/backend
-RUN pnpm run build
 RUN pnpm run db:generate
+RUN pnpm run build
 
 FROM node:20-alpine AS runner
 
