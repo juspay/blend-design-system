@@ -73,6 +73,8 @@ import { getTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV
 import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
 import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 
+import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
@@ -161,6 +163,12 @@ const initTokens = (
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
         CHAT_INPUT:
             componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
+        CHAT_INPUTV2:
+            componentTokens.CHAT_INPUTV2 ??
+            getChatInputV2Tokens(foundationTokens, theme),
+        CHAT_INPUTV2_MOBILE:
+            componentTokens.CHAT_INPUTV2_MOBILE ??
+            getChatInputV2MobileTokens(foundationTokens, theme),
         BUTTONV2:
             componentTokens.BUTTONV2 ??
             getButtonV2Tokens(foundationTokens, theme),

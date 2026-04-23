@@ -211,6 +211,14 @@ import {
     ResponsiveSearchInputV2Tokens,
     getSearchInputV2Tokens,
 } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+import {
+    ResponsiveChatInputV2TokensType,
+    getChatInputV2Tokens,
+} from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+import {
+    getChatInputV2MobileTokens,
+    ChatInputV2MobileTokensType,
+} from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -257,6 +265,7 @@ export type ComponentTokenType = {
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
+    CHAT_INPUTV2?: ResponsiveChatInputV2TokensType
     TIMELINE?: ResponsiveTimelineTokens
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
@@ -283,6 +292,7 @@ export type ComponentTokenType = {
     NUMBER_INPUT_V2?: ResponsiveNumberInputV2Tokens
     OTP_INPUTV2?: ResponsiveOTPInputV2Tokens
     SEARCH_INPUT_V2?: ResponsiveSearchInputV2Tokens
+    CHAT_INPUTV2_MOBILE?: ChatInputV2MobileTokensType
 }
 
 type ThemeContextType = {
@@ -372,6 +382,11 @@ const ThemeContext = createContext<ThemeContextType>({
         NUMBER_INPUT_V2: getNumberInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         OTP_INPUTV2: getOTPInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         SEARCH_INPUT_V2: getSearchInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHAT_INPUTV2: getChatInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHAT_INPUTV2_MOBILE: getChatInputV2MobileTokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
