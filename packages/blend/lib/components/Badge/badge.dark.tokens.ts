@@ -17,6 +17,7 @@ export const getBadgeDarkTokens = (
                     md: foundationToken.unit[8],
                     lg: foundationToken.unit[10],
                 },
+                borderRadius: foundationToken.border.radius.full,
             },
             pill: {
                 minWidth: {
@@ -29,7 +30,12 @@ export const getBadgeDarkTokens = (
                     md: foundationToken.unit[20],
                     lg: foundationToken.unit[24],
                 },
-                paddingX: {
+                paddingLeft: {
+                    sm: foundationToken.unit[4],
+                    md: foundationToken.unit[6],
+                    lg: foundationToken.unit[8],
+                },
+                paddingRight: {
                     sm: foundationToken.unit[4],
                     md: foundationToken.unit[6],
                     lg: foundationToken.unit[8],
@@ -81,6 +87,7 @@ export const getBadgeDarkTokens = (
                     md: foundationToken.unit[8],
                     lg: foundationToken.unit[10],
                 },
+                borderRadius: foundationToken.border.radius.full,
             },
             pill: {
                 minWidth: {
@@ -93,7 +100,12 @@ export const getBadgeDarkTokens = (
                     md: foundationToken.unit[20],
                     lg: foundationToken.unit[24],
                 },
-                paddingX: {
+                paddingLeft: {
+                    sm: foundationToken.unit[4],
+                    md: foundationToken.unit[6],
+                    lg: foundationToken.unit[8],
+                },
+                paddingRight: {
                     sm: foundationToken.unit[4],
                     md: foundationToken.unit[6],
                     lg: foundationToken.unit[8],

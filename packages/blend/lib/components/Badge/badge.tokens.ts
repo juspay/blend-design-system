@@ -16,6 +16,7 @@ export type BadgeTokensType = Readonly<{
         height: {
             [key in BadgeSize]: CSSObject['height']
         }
+        borderRadius: CSSObject['borderRadius']
     }
     pill: {
         minWidth: {
@@ -24,8 +25,11 @@ export type BadgeTokensType = Readonly<{
         height: {
             [key in BadgeSize]: CSSObject['height']
         }
-        paddingX: {
+        paddingLeft: {
             [key in BadgeSize]: CSSObject['paddingLeft']
+        }
+        paddingRight: {
+            [key in BadgeSize]: CSSObject['paddingRight']
         }
         borderRadius: {
             [key in BadgeSize]: CSSObject['borderRadius']

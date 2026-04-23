@@ -839,7 +839,7 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
-                    label: 'Badge V2',
+                    label: 'Badge',
                     leftSlot: (
                         <TagIcon style={{ width: '16px', height: '16px' }} />
                     ),

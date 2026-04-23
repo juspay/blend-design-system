@@ -3,7 +3,6 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { filterBlockedProps } from '../../utils/prop-helpers'
-import { FOUNDATION_THEME } from '../../tokens'
 import { BadgeColor, BadgeProps, BadgeSize } from './Badge.types'
 import { BadgeTokensType } from './badge.tokens'
 import {
@@ -66,11 +65,12 @@ const BadgeContent = forwardRef<
                     as="span"
                     role="status"
                     aria-label={ariaLabel}
+                    data-badge="dot"
                     display="inline-block"
                     width={tokens.dot.width[size]}
                     height={tokens.dot.height[size]}
                     backgroundColor={tokens.backgroundColor[color]}
-                    borderRadius={FOUNDATION_THEME.border.radius.full}
+                    borderRadius={tokens.dot.borderRadius}
                     {...filteredRest}
                 />
             )
@@ -84,18 +84,22 @@ const BadgeContent = forwardRef<
                 as="span"
                 role="status"
                 aria-label={ariaLabel}
+                data-badge="pill"
+                data-content={displayText}
                 display="inline-flex"
                 alignItems="center"
                 justifyContent="center"
                 minWidth={tokens.pill.minWidth[size]}
                 height={tokens.pill.height[size]}
-                paddingX={tokens.pill.paddingX[size]}
+                paddingLeft={tokens.pill.paddingLeft[size]}
+                paddingRight={tokens.pill.paddingRight[size]}
                 backgroundColor={tokens.backgroundColor[color]}
                 borderRadius={tokens.pill.borderRadius[size]}
                 {...filteredRest}
             >
                 <Text
                     as="span"
+                    data-id={displayText}
                     color={tokens.text.color}
                     fontSize={tokens.text.fontSize[size]}
                     fontWeight={tokens.text.fontWeight}
