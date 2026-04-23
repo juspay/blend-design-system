@@ -1,5 +1,2 @@
 export { default as Badge } from './Badge'
 export * from './Badge.types'
-export * from './badge.tokens'
-export * from './badge.light.tokens'
-export * from './badge.dark.tokens'

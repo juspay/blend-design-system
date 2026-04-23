@@ -4,12 +4,8 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { filterBlockedProps } from '../../utils/prop-helpers'
 import { FOUNDATION_THEME } from '../../tokens'
-import {
-    BadgeColor,
-    BadgeProps,
-    BadgeSize,
-    BadgeTokensType,
-} from './Badge.types'
+import { BadgeColor, BadgeProps, BadgeSize } from './Badge.types'
+import { BadgeTokensType } from './badge.tokens'
 import {
     formatCount,
     getAccessibleLabel,
@@ -119,8 +115,9 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
 
     // If no children, render standalone badge
     if (props.children === undefined) {
-        const { size = BadgeSize.MD, ...badgeProps } = props
-        return <BadgeContent ref={ref} size={size} {...badgeProps} />
+        const { size = BadgeSize.MD, ...rest } = props
+        const filteredRest = filterBlockedProps(rest)
+        return <BadgeContent ref={ref} size={size} {...filteredRest} />
     }
 
     // If children provided, wrap with relative positioning
@@ -130,12 +127,14 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
         position = 'top-right',
         offset,
         isCircular = false,
-        ...badgeProps
+        ...rest
     } = props
+    const filteredRest = filterBlockedProps(rest)
+
     // Determine if this should be a dot (no content) or pill (has content) for positioning
     const hasContent =
-        badgeProps.count !== undefined ||
-        (badgeProps.text !== undefined && badgeProps.text !== '')
+        filteredRest.count !== undefined ||
+        (filteredRest.text !== undefined && filteredRest.text !== '')
     const positionStyles = getPositionStyles(
         position,
         size,
@@ -155,7 +154,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>((props, ref) => {
         >
             {children}
             <Block as="span" position="absolute" {...positionStyles}>
-                <BadgeContent ref={ref} size={size} {...badgeProps} />
+                <BadgeContent ref={ref} size={size} {...filteredRest} />
             </Block>
         </Block>
     )

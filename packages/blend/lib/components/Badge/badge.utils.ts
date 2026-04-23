@@ -1,8 +1,7 @@
-import { BadgeSize, BadgePosition, BadgeTokensType } from './Badge.types'
+import { BadgeSize, BadgePosition } from './Badge.types'
+import { BadgeTokensType } from './badge.tokens'
 
-/**
- * Format the count to display, handling max overflow
- */
+// Format the count to display, handling max overflow
 export const formatCount = (count: number, maxCount: number = 99): string => {
     if (count > maxCount) {
         return `${maxCount}+`
@@ -10,9 +9,7 @@ export const formatCount = (count: number, maxCount: number = 99): string => {
     return count.toString()
 }
 
-/**
- * Get position styles for the badge wrapper
- */
+// Get position styles for the badge wrapper
 export const getPositionStyles = (
     position: BadgePosition,
     size: BadgeSize,
@@ -28,8 +25,6 @@ export const getPositionStyles = (
     transform: string
 } => {
     // For circular elements, position on the circumference (45 degrees)
-    // sin(45°) = cos(45°) ≈ 0.707, so offset from center is ~70.7%
-    // We use 85% to position slightly outside for better visual overlap
     if (isCircular) {
         const circularOffset = '14%' // (100% - 70.71%) / 2 for circumference positioning
         const edgeOffset = customOffset ? `${customOffset[0]}px` : '0px'
@@ -62,9 +57,7 @@ export const getPositionStyles = (
         }
     }
 
-    // For dots (no content), use '0px' offset so they extend outside after transform
-    // (transform shifts by 50%, so 0px - half_width = negative = outside)
-    // For pills (has content), use token offset which positions them correctly
+    // For dots (no content), use '0px' offset
     const offset = customOffset
         ? `${customOffset[0]}px`
         : !hasContent
@@ -105,9 +98,7 @@ export const getPositionStyles = (
     }
 }
 
-/**
- * Get accessible label for the badge
- */
+// Get accessible label for the badge
 export const getAccessibleLabel = (
     count: number | undefined,
     text: string | undefined,
