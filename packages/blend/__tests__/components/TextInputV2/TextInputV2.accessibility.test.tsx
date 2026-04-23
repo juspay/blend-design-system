@@ -1,10 +1,27 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Mail } from 'lucide-react'
 import TextInputV2 from '../../../lib/components/InputsV2/TextInputV2/TextInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
+
+const A11Y_SELECT_ITEMS = [
+    {
+        items: [
+            { value: 'a', label: 'Option A' },
+            { value: 'b', label: 'Option B' },
+        ],
+    },
+]
+
+const embeddedSelectA11y = (ariaLabel: string) => ({
+    items: A11Y_SELECT_ITEMS,
+    selected: 'a',
+    onSelect: () => {},
+    placeholder: 'Pick',
+    'aria-label': ariaLabel,
+})
 
 describe('TextInputV2 Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA)', () => {
@@ -412,6 +429,89 @@ describe('TextInputV2 Accessibility', () => {
         })
     })
 
+    describe('Embedded select and rightSelect (WCAG 4.1.2, axe)', () => {
+        beforeEach(() => {
+            global.ResizeObserver = class ResizeObserver {
+                observe() {}
+                unobserve() {}
+                disconnect() {}
+            } as unknown as typeof ResizeObserver
+        })
+
+        it('meets WCAG via axe with left select only', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Phone"
+                    value=""
+                    onChange={() => {}}
+                    select={embeddedSelectA11y('Country code')}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG via axe with right select only', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Amount"
+                    value="10"
+                    onChange={() => {}}
+                    rightSelect={embeddedSelectA11y('Unit of measure')}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG via axe with both left and right selects', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Composite"
+                    value="x"
+                    onChange={() => {}}
+                    select={embeddedSelectA11y('Prefix')}
+                    rightSelect={embeddedSelectA11y('Suffix')}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG via axe when disabled with embedded selects', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Read only"
+                    value=""
+                    onChange={() => {}}
+                    disabled
+                    select={embeddedSelectA11y('Prefix')}
+                    rightSelect={embeddedSelectA11y('Suffix')}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('exposes distinct accessible names for left and right select triggers (4.1.2)', () => {
+            render(
+                <TextInputV2
+                    label="Field"
+                    value=""
+                    onChange={() => {}}
+                    select={embeddedSelectA11y('Country code')}
+                    rightSelect={embeddedSelectA11y('Unit')}
+                />
+            )
+            expect(
+                screen.getByRole('button', { name: 'Country code' })
+            ).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: 'Unit' })
+            ).toBeInTheDocument()
+        })
+    })
+
     describe('Focus and Blur Events (WCAG 3.2.1 On Focus - Level A)', () => {
         it('calls onFocus when input receives focus', () => {
             const handleFocus = vi.fn()
@@ -550,6 +650,30 @@ describe('TextInputV2 Accessibility', () => {
                         ),
                         maxHeight: 16,
                     }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with left and right embedded selects', async () => {
+            global.ResizeObserver = class ResizeObserver {
+                observe() {}
+                unobserve() {}
+                disconnect() {}
+            } as unknown as typeof ResizeObserver
+            const { container } = render(
+                <TextInputV2
+                    label="Composite"
+                    subLabel="Prefix and suffix"
+                    hintText="Select prefix and unit"
+                    placeholder="0"
+                    value="42"
+                    onChange={() => {}}
+                    name="amount"
+                    required
+                    select={embeddedSelectA11y('Prefix selector')}
+                    rightSelect={embeddedSelectA11y('Unit selector')}
                 />
             )
             const results = await axe(container)

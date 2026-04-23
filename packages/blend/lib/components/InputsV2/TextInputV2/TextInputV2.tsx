@@ -1,4 +1,11 @@
-import { forwardRef, useId, useMemo, useRef, useState } from 'react'
+import {
+    forwardRef,
+    useId,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useInputSlotPadding } from '../../../hooks/useInputSlotPadding'
 import Block from '../../Primitives/Block/Block'
@@ -6,6 +13,11 @@ import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import { AnyRef, InputSizeV2, InputStateV2 } from '../inputV2.types'
 import type { TextInputV2TokensType } from './TextInputV2.tokens'
 import type { TextInputV2Props } from './TextInputV2.types'
+import { SelectV2Alignment } from '../../SelectV2/selectV2.shared.types'
+import {
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+} from '../../SingleSelectV2/singleSelectV2.types'
 import type { InputLabelsV2Tokens } from '../inputV2.tokens'
 import {
     FOCUS_RING_STYLES,
@@ -26,6 +38,7 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
+import SingleSelectV2 from '../../SingleSelectV2/SingleSelectV2'
 
 const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
     (
@@ -43,6 +56,8 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
             error = { show: false, message: '' },
             hintText,
             helpIconText,
+            select,
+            rightSelect,
             leftSlot,
             rightSlot,
             onFocus,
@@ -51,9 +66,29 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         }: TextInputV2Props,
         ref
     ) => {
+        const showSelect = Boolean(select)
+        const showRightSelect = Boolean(rightSelect)
+        const effectiveLeftSlot = showSelect ? undefined : leftSlot
+        const effectiveRightSlot = showRightSelect ? undefined : rightSlot
+
         const inputRef = useRef<HTMLInputElement>(null)
         const leftSlotRef = useRef<HTMLDivElement>(null)
         const rightSlotRef = useRef<HTMLDivElement>(null)
+        const selectRef = useRef<HTMLDivElement>(null)
+        const rightSelectRef = useRef<HTMLDivElement>(null)
+        const [selectWidth, setSelectWidth] = useState(0)
+        const [rightSelectWidth, setRightSelectWidth] = useState(0)
+
+        const singleSelectV2Size =
+            size === InputSizeV2.SM
+                ? SingleSelectV2Size.SM
+                : size === InputSizeV2.MD
+                  ? SingleSelectV2Size.MD
+                  : SingleSelectV2Size.LG
+
+        const embeddedSelectMenuAlignOffset = -11
+        const rightSelectMenuSideOffset =
+            size === InputSizeV2.SM ? 10 : size === InputSizeV2.MD ? 12 : 15
 
         const tokens =
             useResponsiveTokens<TextInputV2TokensType>('TEXT_INPUTV2')
@@ -106,12 +141,36 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
             useInputSlotPadding({
                 leftSlotRef,
                 rightSlotRef,
-                hasLeftSlot: Boolean(leftSlot),
-                hasRightSlot: Boolean(rightSlot),
+                hasLeftSlot: Boolean(effectiveLeftSlot),
+                hasRightSlot: Boolean(effectiveRightSlot),
                 paddingLeft: inputContainerPaddingLeft,
                 paddingRight: inputContainerPaddingRight,
                 gap: toPixels(container.gap),
             })
+
+        const gapPx = toPixels(container.gap)
+        const leftPaddingWithSelect = showSelect
+            ? calculatedLeftInputPadding + selectWidth + gapPx
+            : calculatedLeftInputPadding
+        const rightPaddingWithSelect = showRightSelect
+            ? calculatedRightInputPadding + rightSelectWidth + gapPx
+            : calculatedRightInputPadding
+
+        useLayoutEffect(() => {
+            if (showSelect && selectRef.current) {
+                setSelectWidth(selectRef.current.offsetWidth)
+            } else {
+                setSelectWidth(0)
+            }
+        }, [showSelect, select, select?.selected])
+
+        useLayoutEffect(() => {
+            if (showRightSelect && rightSelectRef.current) {
+                setRightSelectWidth(rightSelectRef.current.offsetWidth)
+            } else {
+                setRightSelectWidth(0)
+            }
+        }, [showRightSelect, rightSelect, rightSelect?.selected])
 
         const hasError = Boolean(error?.show)
         const borderVariant = hasError ? InputStateV2.ERROR : inputState
@@ -146,7 +205,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                 )}
 
                 <Block position="relative">
-                    {leftSlot && (
+                    {effectiveLeftSlot && (
                         <InputSlots
                             position="left"
                             slotRef={leftSlotRef}
@@ -156,8 +215,57 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                             right={inputContainerPaddingRight}
                             dataElement="left-slot"
                         >
-                            {leftSlot.slot}
+                            {effectiveLeftSlot.slot}
                         </InputSlots>
+                    )}
+
+                    {select && (
+                        <Block
+                            ref={selectRef}
+                            position="absolute"
+                            zIndex={1}
+                            top={inputContainerPaddingTop}
+                            bottom={inputContainerPaddingBottom}
+                            left={inputContainerPaddingLeft}
+                            width="fit-content"
+                            contentCentered
+                        >
+                            <SingleSelectV2
+                                variant={SingleSelectV2Variant.NO_CONTAINER}
+                                inline
+                                size={singleSelectV2Size}
+                                items={select.items}
+                                selected={select.selected}
+                                onSelect={select.onSelect}
+                                placeholder={select.placeholder}
+                                disabled={disabled}
+                                name={select.name}
+                                aria-label={
+                                    select['aria-label'] ??
+                                    label ??
+                                    'Select option'
+                                }
+                                singleSelectGroupPosition={
+                                    select.singleSelectGroupPosition ?? 'left'
+                                }
+                                search={select.search}
+                                menuPosition={{
+                                    alignment: SelectV2Alignment.START,
+                                    sideOffset: rightSelectMenuSideOffset,
+                                    alignOffset: embeddedSelectMenuAlignOffset,
+                                    ...select.menuPosition,
+                                }}
+                                menuDimensions={select.menuDimensions}
+                                usePanelOnMobile={select.usePanelOnMobile}
+                                allowCustomValue={select.allowCustomValue}
+                                customValueLabel={select.customValueLabel}
+                                triggerDimensions={
+                                    select.triggerDimensions ?? {
+                                        width: 'max-content',
+                                    }
+                                }
+                            />
+                        </Block>
                     )}
 
                     {label && isSmallScreenWithLargeSize && (
@@ -168,7 +276,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                             inputId={inputId}
                             isInputFocusedOrWithValue={inputFocusedOrWithValue}
                             topPadding={inputContainerPaddingTop}
-                            leftPadding={calculatedLeftInputPadding}
+                            leftPadding={leftPaddingWithSelect}
                             tokens={{
                                 placeholder: tokens.inputContainer.placeholder,
                                 required: tokens.topContainer.required,
@@ -177,7 +285,6 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                             state={inputState}
                         />
                     )}
-
                     <PrimitiveInput
                         ref={setInputRef}
                         aria-required={required ? 'true' : undefined}
@@ -195,9 +302,9 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                         width="100%"
                         placeholderColor={container.placeholder.color.default}
                         paddingTop={calculatedTopInputPadding}
-                        paddingRight={calculatedRightInputPadding}
+                        paddingRight={rightPaddingWithSelect}
                         paddingBottom={calculatedBottomInputPadding}
-                        paddingLeft={calculatedLeftInputPadding}
+                        paddingLeft={leftPaddingWithSelect}
                         borderRadius={container.borderRadius[size]}
                         border={container.border[borderVariant]}
                         fontSize={container.inputText.fontSize[size]}
@@ -241,7 +348,57 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                         {...filteredRest}
                     />
 
-                    {rightSlot && (
+                    {rightSelect && (
+                        <Block
+                            ref={rightSelectRef}
+                            position="absolute"
+                            zIndex={1}
+                            top={inputContainerPaddingTop}
+                            bottom={inputContainerPaddingBottom}
+                            right={inputContainerPaddingRight}
+                            width="fit-content"
+                            contentCentered
+                        >
+                            <SingleSelectV2
+                                variant={SingleSelectV2Variant.NO_CONTAINER}
+                                inline
+                                size={singleSelectV2Size}
+                                items={rightSelect.items}
+                                selected={rightSelect.selected}
+                                onSelect={rightSelect.onSelect}
+                                placeholder={rightSelect.placeholder}
+                                disabled={disabled}
+                                name={rightSelect.name}
+                                aria-label={
+                                    rightSelect['aria-label'] ??
+                                    label ??
+                                    'Select option'
+                                }
+                                singleSelectGroupPosition={
+                                    rightSelect.singleSelectGroupPosition ??
+                                    'right'
+                                }
+                                search={rightSelect.search}
+                                menuPosition={{
+                                    alignment: SelectV2Alignment.END,
+                                    sideOffset: rightSelectMenuSideOffset,
+                                    alignOffset: embeddedSelectMenuAlignOffset,
+                                    ...rightSelect.menuPosition,
+                                }}
+                                menuDimensions={rightSelect.menuDimensions}
+                                usePanelOnMobile={rightSelect.usePanelOnMobile}
+                                allowCustomValue={rightSelect.allowCustomValue}
+                                customValueLabel={rightSelect.customValueLabel}
+                                triggerDimensions={
+                                    rightSelect.triggerDimensions ?? {
+                                        width: 'max-content',
+                                    }
+                                }
+                            />
+                        </Block>
+                    )}
+
+                    {effectiveRightSlot && (
                         <InputSlots
                             position="right"
                             slotRef={rightSlotRef}
@@ -251,7 +408,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                             right={inputContainerPaddingRight}
                             dataElement="right-slot"
                         >
-                            {rightSlot.slot}
+                            {effectiveRightSlot.slot}
                         </InputSlots>
                     )}
                 </Block>

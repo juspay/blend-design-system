@@ -9,10 +9,11 @@ Create a scalable text input component that supports:
 - **Sizes**: Small (`sm`), Medium (`md`), Large (`lg`)
 - **States**: Default, hover, focus, error, disabled — with correct borders and backgrounds
 - **Validation**: Error state with optional message; required indicator (asterisk)
-- **Help**: Hint text below input; optional help icon with tooltip (`helpIconText`)
+- **Help**: Hint text below input; optional help icon with tooltip (string `helpIconText` passed to `InputLabelsV2`)
 - **Slots**: Left and right slots (e.g. icons, clear button) with configurable `maxHeight`
+- **Embedded selects** (optional): `select` (left) and `rightSelect` (right) render inline `SingleSelectV2` (`NO_CONTAINER` + `inline`) with token-matched size. When set, the corresponding **slot is not used** (`leftSlot` if `select`, `rightSlot` if `rightSelect`)
 - **Responsive behavior**: On small screens with large size, labels can float inside the input
-- **Accessibility**: Native `<input>`, `aria-required`, `aria-invalid`, `aria-describedby` for error/hint, focus ring
+- **Accessibility**: Native `<input>`, `aria-required`, `aria-invalid`, `aria-describedby` for error/hint, focus ring; embedded selects use `SingleSelectV2` (provide `aria-label` on the config when needed)
 - **Ref forwarding**: Support both internal ref (autofill, layout) and consumer ref
 - **Theme**: Light/dark tokens via `useResponsiveTokens('TEXT_INPUTV2')`
 
@@ -22,7 +23,7 @@ Create a scalable text input component that supports:
 ┌─────────────────────────────────────────────────────────────┐
 │  [Top container: Label, SubLabel, Required *, Help icon]   │
 ├─────────────────────────────────────────────────────────────┤
-│  [LeftSlot]  │  [Floating label or placeholder]  │ [RightSlot]  │  ← input row
+│  [select OR LeftSlot] │ [input / floating label] │ [rightSelect OR RightSlot] │  ← input row
 ├─────────────────────────────────────────────────────────────┤
 │  [Bottom: Hint text / Error message]                       │
 └─────────────────────────────────────────────────────────────┘
@@ -31,11 +32,34 @@ Create a scalable text input component that supports:
 ![TextInput Anatomy](./TextInputAnatomy.png)
 
 - **Top container**: Label, subLabel (in parentheses), required asterisk, optional help icon with tooltip
-- **Input row**: Optional left slot, native `<input>` (with optional floating label on small + large), optional right slot
+- **Input row**: Optional **`select`** (left) _or_ **`leftSlot`** (mutually exclusive); native `<input>` (with optional floating label on small + large); optional **`rightSelect`** (right) _or_ **`rightSlot`**. Embeds are absolutely positioned in the padding area; the input’s horizontal padding is increased so text does not overlap the triggers
 - **Bottom container**: Hint text and/or error message; IDs used for `aria-describedby`
 - **Floating label**: Shown only when `breakPointLabel === 'sm'` and `size === 'lg'`; animates based on focus/value/autofill
 
 ## Props & Types
+
+`TextInputV2SelectConfig` reuses a subset of `SingleSelectV2` props for the embedded, inline control:
+
+```typescript
+// From TextInputV2.types.ts (abbreviated)
+type TextInputV2SelectConfig = Required<
+    Pick<SingleSelectV2Props, 'items' | 'selected' | 'onSelect' | 'placeholder'>
+> &
+    Partial<
+        Pick<
+            SingleSelectV2Props,
+            | 'search'
+            | 'menuPosition'
+            | 'menuDimensions'
+            | 'name'
+            | 'usePanelOnMobile'
+            | 'allowCustomValue'
+            | 'customValueLabel'
+            | 'triggerDimensions'
+            | 'singleSelectGroupPosition'
+        >
+    > & { 'aria-label'?: string }
+```
 
 ```typescript
 // Shared enums (inputV2.types)
@@ -63,10 +87,9 @@ type TextInputV2Props = {
         message?: string
     }
     hintText?: string
-    helpIconText?: {
-        text: string
-        onClick?: () => void
-    }
+    helpIconText?: string
+    select?: TextInputV2SelectConfig
+    rightSelect?: TextInputV2SelectConfig
     leftSlot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
@@ -186,24 +209,36 @@ const { top, bottom } = getVerticalInputPadding({
 // bottom = inputFocusedOrWithValue ? paddingBottom / 2 : paddingBottom
 ```
 
-### 3. Dynamic input padding for left/right slots
+### 3. Dynamic input padding for left/right slots and embedded selects
 
-**Decision**: Use `useInputSlotPadding` to measure slot refs and set input padding to `basePadding + slotWidth + gap` so text does not overlap icons.
+**Decision**: Use `useInputSlotPadding` to measure **slot** refs and set input padding to `basePadding + slotWidth + gap` so text does not overlap `leftSlot` / `rightSlot`. When `select` or `rightSelect` is set, the corresponding **slot is not rendered** (`effectiveLeftSlot` / `effectiveRightSlot`), and a separate `useLayoutEffect` measures the **embedded select** wrapper width. Final horizontal padding is:
 
-**Rationale**: Slot width is unknown (icons, buttons); measuring at runtime keeps the input field aligned with the visual slot and avoids hard-coded widths.
+- Left: `calculatedLeftInputPadding` **plus** `selectWidth + gap` when `select` is present
+- Right: `calculatedRightInputPadding` **plus** `rightSelectWidth + gap` when `rightSelect` is present
+
+The same combined left padding is passed to `FloatingLabelsV2` when floating labels apply.
+
+**Rationale**: Icon slots and inline select triggers have variable width; measurement keeps the text field from overlapping. Re-measuring in `useLayoutEffect` on `select` / `selected` updates padding when the trigger label width changes.
 
 ```tsx
 const { calculatedLeftInputPadding, calculatedRightInputPadding } =
     useInputSlotPadding({
         leftSlotRef,
         rightSlotRef,
-        hasLeftSlot: Boolean(leftSlot),
-        hasRightSlot: Boolean(rightSlot),
+        hasLeftSlot: Boolean(effectiveLeftSlot),
+        hasRightSlot: Boolean(effectiveRightSlot),
         paddingLeft: inputContainerPaddingLeft,
         paddingRight: inputContainerPaddingRight,
         gap: toPixels(container.gap),
     })
+// … plus selectWidth / rightSelectWidth from selectRef / rightSelectRef
 ```
+
+### 3b. Embedded `SingleSelectV2` defaults in this field
+
+**Decision**: Map `InputSizeV2` to `SingleSelectV2Size`, use `SingleSelectV2Variant.NO_CONTAINER` and `inline`, and set **`singleSelectGroupPosition`** to `'left'` for `select` and `'right'` for `rightSelect` (overridable via config) so trigger border radii match a composite field (inner edge square, outer edge rounded). **Menu** defaults include alignment (`START` / `END`) and `side`/`align` offsets tuned for the inline layout. `disabled` on `TextInputV2` is passed to the embedded selects.
+
+**Rationale**: Matches patterns similar to `DropdownInput` + select and avoids full rounded triggers clipping labels on the side adjacent to the text.
 
 ### 4. Ref callback to support internal + external refs
 
@@ -304,3 +339,15 @@ const ariaDescribedBy = useMemo(() => {
 ```tsx
 placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
 ```
+
+### 11. `select` / `rightSelect` take precedence over slots
+
+**Decision**: If `select` is provided, `leftSlot` is ignored; if `rightSelect` is provided, `rightSlot` is ignored. Do not pass both for the same side.
+
+**Rationale**: One compositional model per side—either a custom `ReactElement` slot or a typed `TextInputV2SelectConfig` for the design-system single select.
+
+### 12. `helpIconText` is a string
+
+**Decision**: `helpIconText` is an optional `string` consumed by `InputLabelsV2` for the help tooltip content (not a structured object with `onClick` in the public `TextInputV2` API).
+
+**Rationale**: Simpler API; tooltip behavior is owned by the label component.

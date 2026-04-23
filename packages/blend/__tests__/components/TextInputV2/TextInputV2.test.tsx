@@ -1,9 +1,18 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import TextInputV2 from '../../../lib/components/InputsV2/TextInputV2/TextInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { MockIcon } from '../../test-utils'
+
+const EMBEDDED_SELECT_ITEMS = [
+    {
+        items: [
+            { value: 'a', label: 'Option A' },
+            { value: 'b', label: 'Option B' },
+        ],
+    },
+]
 
 describe('TextInputV2 Component', () => {
     describe('Rendering', () => {
@@ -386,6 +395,173 @@ describe('TextInputV2 Component', () => {
             )
             expect(screen.getByRole('textbox')).toBeInTheDocument()
             expect(screen.getByLabelText('API Key')).toBeInTheDocument()
+        })
+    })
+
+    describe('Embedded selects (select / rightSelect)', () => {
+        beforeEach(() => {
+            global.ResizeObserver = class ResizeObserver {
+                observe() {}
+                unobserve() {}
+                disconnect() {}
+            } as unknown as typeof ResizeObserver
+        })
+
+        it('renders left embedded select with accessible trigger', () => {
+            render(
+                <TextInputV2
+                    label="With prefix"
+                    value=""
+                    onChange={() => {}}
+                    select={{
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'Choose',
+                        'aria-label': 'Prefix field',
+                    }}
+                />
+            )
+            expect(screen.getByRole('textbox')).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: 'Prefix field' })
+            ).toBeInTheDocument()
+        })
+
+        it('hides left slot when select is set', () => {
+            render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
+                    select={{
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'Choose',
+                        'aria-label': 'Prefix field',
+                    }}
+                />
+            )
+            expect(
+                document.querySelector('[data-element="left-slot"]')
+            ).toBeNull()
+            expect(screen.queryByTestId('mock-icon')).not.toBeInTheDocument()
+        })
+
+        it('renders right embedded select with accessible trigger', () => {
+            render(
+                <TextInputV2
+                    label="Value"
+                    value="10"
+                    onChange={() => {}}
+                    rightSelect={{
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'Unit',
+                        'aria-label': 'Unit field',
+                    }}
+                />
+            )
+            expect(screen.getByRole('textbox')).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: 'Unit field' })
+            ).toBeInTheDocument()
+        })
+
+        it('hides right slot when rightSelect is set', () => {
+            render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    rightSlot={{ slot: <MockIcon />, maxHeight: 16 }}
+                    rightSelect={{
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'Unit',
+                        'aria-label': 'Unit field',
+                    }}
+                />
+            )
+            expect(
+                document.querySelector('[data-element="right-slot"]')
+            ).toBeNull()
+            expect(screen.queryByTestId('mock-icon')).not.toBeInTheDocument()
+        })
+
+        it('renders both embedded selects', () => {
+            render(
+                <TextInputV2
+                    label="Composite"
+                    value="x"
+                    onChange={() => {}}
+                    select={{
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'L',
+                        'aria-label': 'Left select',
+                    }}
+                    rightSelect={{
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'b',
+                        onSelect: () => {},
+                        placeholder: 'R',
+                        'aria-label': 'Right select',
+                    }}
+                />
+            )
+            expect(
+                screen.getByRole('button', { name: 'Left select' })
+            ).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: 'Right select' })
+            ).toBeInTheDocument()
+        })
+
+        it('disables right embedded select when input is disabled', () => {
+            render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    disabled
+                    rightSelect={{
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'Unit',
+                        'aria-label': 'Unit field',
+                    }}
+                />
+            )
+            expect(
+                screen.getByRole('button', { name: 'Unit field' })
+            ).toBeDisabled()
+        })
+
+        it('calls onSelect when a menu item is chosen', async () => {
+            const onSelect = vi.fn()
+            const { user } = render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    label="L"
+                    select={{
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect,
+                        placeholder: 'Choose',
+                        'aria-label': 'Prefix field',
+                    }}
+                />
+            )
+            await user.click(
+                screen.getByRole('button', { name: 'Prefix field' })
+            )
+            await user.click(await screen.findByText('Option B'))
+            expect(onSelect).toHaveBeenCalledWith('b')
         })
     })
 

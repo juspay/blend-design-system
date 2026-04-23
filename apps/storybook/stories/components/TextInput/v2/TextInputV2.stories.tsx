@@ -18,6 +18,26 @@ import { ThemeProvider } from '@juspay/blend-design-system'
 import { TextInputV2 } from '../../../../../../packages/blend/lib/components/InputsV2/TextInputV2'
 import { InputSizeV2 } from '../../../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 
+const SELECT_PREFIX_ITEMS = [
+    {
+        items: [
+            { value: 'us', label: 'US +1' },
+            { value: 'uk', label: 'UK +44' },
+            { value: 'in', label: 'IN +91' },
+        ],
+    },
+]
+
+const SELECT_UNIT_ITEMS = [
+    {
+        items: [
+            { value: 'px', label: 'px' },
+            { value: 'rem', label: 'rem' },
+            { value: 'pct', label: '%' },
+        ],
+    },
+]
+
 const meta: Meta<typeof TextInputV2> = {
     title: 'Components/Inputs/TextInputV2',
     component: TextInputV2,
@@ -35,15 +55,16 @@ const meta: Meta<typeof TextInputV2> = {
         docs: {
             description: {
                 component: `
-A flexible text input component (V2) with responsive tokens, floating/static labels, validation, and left/right slots.
+A flexible text input component (V2) with responsive tokens, floating/static labels, validation, and left/right **slots** or embedded **\`select\` / \`rightSelect\`** (inline \`SingleSelectV2\`).
 
 ## Features
-- Three sizes: Small (\`sm\`), Medium (\`md\`), Large (\`lg\`)
-- Label, subLabel, hint text, and help tooltip
+- Three sizes: Small (\`sm\`), Medium (\`md\`), Large (\`lg\`) — \`TEXT_INPUTV2\` tokens
+- Label, subLabel, hint text, and help icon tooltip string (\`helpIconText\`)
 - Error state with \`{ show, message }\`
 - Required field indication
-- Left and right slot content (e.g. icons) with \`{ slot, maxHeight? }\`
-- Disabled state
+- **Slots**: \`leftSlot\` / \`rightSlot\` as \`{ slot, maxHeight? }\` (icons, buttons)
+- **Inline selects** (\`select\` left, \`rightSelect\` right): \`items\`, \`selected\`, \`onSelect\`, \`placeholder\`, optional \`menuDimensions\`, \`aria-label\`, \`singleSelectGroupPosition\`, etc. When a select is set, the matching **slot** is not shown (\`leftSlot\` with \`select\`, \`rightSlot\` with \`rightSelect\`)
+- Disabled state (shared for input and embedded selects)
 - Autofill detection for floating label behavior
 - Responsive: on small screens with large size, labels can float
 
@@ -52,7 +73,8 @@ A flexible text input component (V2) with responsive tokens, floating/static lab
 - Uses native \`<input>\` for semantics; labels associated via \`label\` and \`htmlFor\` / \`id\`
 - Required state: \`required\` and \`aria-required\`
 - Error and hint text linked via \`aria-describedby\` (\`id\`-based)
-- Focus styles and keyboard navigation (Tab, Shift+Tab)
+- **Embedded select**: \`SingleSelectV2\` trigger — provide \`select['aria-label']\` / \`rightSelect['aria-label']\` when the field \`label\` is not enough; keyboard and menu follow Select V2
+- Focus styles; Tab order includes the text field and select triggers when present
 - Slot icons are decorative by default; use \`aria-label\` on interactive slot content
 - **WCAG target**: 2.1 Level AA (supports 2.2)
 
@@ -66,15 +88,23 @@ A flexible text input component (V2) with responsive tokens, floating/static lab
 import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
 
 <TextInputV2
-  label="Email"
-  placeholder="Enter your email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
+  label="Phone"
+  placeholder="000 000 0000"
+  value={phone}
+  onChange={(e) => setPhone(e.target.value)}
   size={InputSizeV2.MD}
-  leftSlot={{ slot: <Mail size={16} /> }}
+  select={{
+    items: countryGroups,
+    selected: code,
+    onSelect: setCode,
+    placeholder: "Code",
+    "aria-label": "Country code",
+  }}
   required
 />
 \`\`\`
+
+\`rightSelect\` mirrors \`select\` on the right; \`rightSlot\` is ignored when \`rightSelect\` is set. Icon slots and inline selects are mutually exclusive on each side.
                 `,
             },
         },
@@ -143,21 +173,39 @@ import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
             table: { type: { summary: 'string' }, category: 'Labels' },
         },
         helpIconText: {
-            control: { type: 'object' },
-            description: 'Help tooltip: { text: string, onClick?: () => void }',
-            table: { type: { summary: 'object' }, category: 'Labels' },
+            control: { type: 'text' },
+            description: 'Copy for the help icon tooltip in the label row',
+            table: { type: { summary: 'string' }, category: 'Labels' },
         },
         leftSlot: {
             control: false,
             description:
-                'Left slot: { slot: ReactElement, maxHeight?: CSSObject["maxHeight"] }',
+                'Left slot: { slot: ReactElement, maxHeight?: … }. Ignored when `select` is set.',
             table: { type: { summary: 'object' }, category: 'Slots' },
         },
         rightSlot: {
             control: false,
             description:
-                'Right slot: { slot: ReactElement, maxHeight?: CSSObject["maxHeight"] }',
+                'Right slot: { slot: ReactElement, maxHeight?: … }. Ignored when `rightSelect` is set.',
             table: { type: { summary: 'object' }, category: 'Slots' },
+        },
+        select: {
+            control: false,
+            description:
+                'Left inline `SingleSelectV2` config (`TextInputV2SelectConfig`); `leftSlot` is ignored when set',
+            table: {
+                type: { summary: 'TextInputV2SelectConfig' },
+                category: 'Slots',
+            },
+        },
+        rightSelect: {
+            control: false,
+            description:
+                'Right inline `SingleSelectV2` config; `rightSlot` is ignored when set',
+            table: {
+                type: { summary: 'TextInputV2SelectConfig' },
+                category: 'Slots',
+            },
         },
         onChange: {
             action: 'changed',
@@ -254,6 +302,111 @@ export const Sizes: Story = {
         docs: {
             description: {
                 story: 'TextInputV2 in Small, Medium, and Large sizes.',
+            },
+        },
+    },
+}
+
+export const WithLeftSelect: Story = {
+    render: function WithLeftSelectStory() {
+        const [value, setValue] = useState('')
+        const [code, setCode] = useState('us')
+        return (
+            <div className="max-w-md">
+                <TextInputV2
+                    label="Phone"
+                    subLabel="Country code and number"
+                    placeholder="000 000 0000"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    size={InputSizeV2.MD}
+                    select={{
+                        items: SELECT_PREFIX_ITEMS,
+                        selected: code,
+                        onSelect: (v) => setCode(v),
+                        placeholder: 'Code',
+                        'aria-label': 'Country calling code',
+                    }}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Left embedded `select` (inline SingleSelectV2). `leftSlot` is not used; text field gets extra left padding for the trigger.',
+            },
+        },
+    },
+}
+
+export const WithRightSelect: Story = {
+    render: function WithRightSelectStory() {
+        const [value, setValue] = useState('16')
+        const [unit, setUnit] = useState('px')
+        return (
+            <div className="max-w-md">
+                <TextInputV2
+                    label="Value"
+                    placeholder="0"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    size={InputSizeV2.MD}
+                    rightSelect={{
+                        items: SELECT_UNIT_ITEMS,
+                        selected: unit,
+                        onSelect: (v) => setUnit(v),
+                        placeholder: 'Unit',
+                        'aria-label': 'Unit of measure',
+                    }}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Right embedded `rightSelect`. `rightSlot` is not used; text field gets extra right padding for the trigger.',
+            },
+        },
+    },
+}
+
+export const WithSelectAndRightSelect: Story = {
+    render: function WithSelectAndRightSelectStory() {
+        const [value, setValue] = useState('')
+        const [code, setCode] = useState('us')
+        const [unit, setUnit] = useState('px')
+        return (
+            <div className="max-w-md">
+                <TextInputV2
+                    label="Composite field"
+                    placeholder="Amount"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    size={InputSizeV2.MD}
+                    select={{
+                        items: SELECT_PREFIX_ITEMS,
+                        selected: code,
+                        onSelect: (v) => setCode(v),
+                        placeholder: 'Code',
+                        'aria-label': 'Prefix',
+                    }}
+                    rightSelect={{
+                        items: SELECT_UNIT_ITEMS,
+                        selected: unit,
+                        onSelect: (v) => setUnit(v),
+                        placeholder: 'Unit',
+                        'aria-label': 'Suffix',
+                    }}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Both `select` and `rightSelect` (no left/right icon slots). Useful for number + unit or segmented inputs.',
             },
         },
     },
