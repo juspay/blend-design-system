@@ -147,7 +147,7 @@ export const useComponentToken = (
     | ResponsiveTextAreaV2Tokens
     | ResponsiveSearchInputV2Tokens
     | ResponsiveCodeEditorV2Tokens
-    | ResponsiveBadgeTokens => {
+    | ResponsiveBadgeTokens
     | ResponsiveChatInputV2TokensType
     | ChatInputV2MobileTokensType
     | ResponsiveCodeEditorV2Tokens => {
