@@ -99,7 +99,7 @@ type TextInputV2Props = {
 
 - **Omit `size`**: Avoids conflict with HTML `size` attribute; component uses `InputSizeV2`.
 - **Omit `style` | `className`**: Styling is driven by tokens and layout; blocked via `filterBlockedProps(rest)` so consumers cannot override in a way that breaks the design.
-- **Omit `select` / `dropdown` (native)**: Reserves the `dropdown` prop for the composite embed API (and avoids clashing with host attributes on `<input>`).
+- **Omit `select` / `dropdown`**: Reserves these prop names for the component API—especially `dropdown` for the composite embed API—and prevents accidental forwarding to the underlying `<input>`.
 
 ### Usage: `dropdown`
 
@@ -272,7 +272,7 @@ const { calculatedLeftInputPadding, calculatedRightInputPadding } =
 
 ### 3b. Embedded `SingleSelectV2` defaults in this field
 
-**Decision**: Map `InputSizeV2` to `SingleSelectV2Size`, use `SingleSelectV2Variant.NO_CONTAINER` and `inline`, and set **`singleSelectGroupPosition`** to `'left'` for `DropdownPosition.LEFT` and `'right'` for `DropdownPosition.RIGHT` (overridable via `SingleSelectV2` props) so trigger border radii match a composite field (inner edge square, outer edge rounded). **Menu** defaults include alignment (`START` / `END`) and `side`/`align` offsets tuned for the inline layout. `disabled` on `TextInputV2` is passed to the embedded selects. The **`position`** field is consumed only by `TextInputV2` for layout; it is stripped before props are passed to `SingleSelectV2` (`omitDropdownPosition`).
+**Decision**: After stripping **`position`**, the embed config is spread onto **`SingleSelectV2`**; then the field applies **defaults and overrides**: `InputSizeV2` → `SingleSelectV2Size`, `SingleSelectV2Variant.NO_CONTAINER`, `inline`, merged **`menuPosition`** (defaults for alignment / `side` / `align` offsets, with consumer `menuPosition` spread on top), default **`singleSelectGroupPosition`** by side, default **`triggerDimensions`** when unset, and **`aria-label`** fallback to the text field’s `label`. **`disabled`** on `TextInputV2` wins over a `disabled` value on the embed. All other `SingleSelectV2Props` (e.g. `open` / `onOpenChange`, `customTrigger`, `slot`, virtualization, `error`, etc.) are forwarded as passed.
 
 **Rationale**: Matches patterns similar to `DropdownInput` + select and avoids full rounded triggers clipping labels on the side adjacent to the text.
 

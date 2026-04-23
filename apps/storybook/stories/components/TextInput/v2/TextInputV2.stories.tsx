@@ -59,14 +59,13 @@ const meta: Meta<typeof TextInputV2> = {
             description: {
                 component: `
 A flexible text input component (V2) with responsive tokens, floating/static labels, validation, and left/right **slots** or embedded **\`dropdown\`** (inline \`SingleSelectV2\` + \`SelectPosition\`).
-
 ## Features
 - Three sizes: Small (\`sm\`), Medium (\`md\`), Large (\`lg\`) — \`TEXT_INPUTV2\` tokens
 - Label, subLabel, hint text, and help icon tooltip string (\`helpIconText\`)
 - Error state with \`{ show, message }\`
 - Required field indication
 - **Slots**: \`leftSlot\` / \`rightSlot\` as \`{ slot, maxHeight? }\` (icons, buttons)
-- **Inline embeds** (\`dropdown\`): \`SingleSelectV2Props\` + \`position: SelectPosition\` (left or right). Pass one object or an array of two (one per side). If **any** embed is set, **neither** \`leftSlot\` nor \`rightSlot\` is shown
+- **Inline embeds** (\`dropdown\`): \`SingleSelectV2Props\` + \`position: DropdownPosition\` (left or right). Pass one object or an array of two (one per side). If **any** embed is set, **neither** \`leftSlot\` nor \`rightSlot\` is shown
 - Disabled state (shared for input and embedded selects)
 - Autofill detection for floating label behavior
 - Responsive: on small screens with large size, labels can float
@@ -97,7 +96,7 @@ import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
   onChange={(e) => setPhone(e.target.value)}
   size={InputSizeV2.MD}
   dropdown={{
-    position: SelectPosition.LEFT,
+    position: DropdownPosition.LEFT,
     items: countryGroups,
     selected: code,
     onSelect: setCode,
@@ -108,7 +107,7 @@ import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
 />
 \`\`\`
 
-Use \`SelectPosition.RIGHT\` for a right embed, or pass an **array** of two configs for both sides. If any embed is used, both icon slots are ignored.
+Use \`DropdownPosition.RIGHT\` for a right embed, or pass an **array** of two configs for both sides. If any embed is used, both icon slots are ignored.
                 `,
             },
         },
@@ -196,7 +195,7 @@ Use \`SelectPosition.RIGHT\` for a right embed, or pass an **array** of two conf
         dropdown: {
             control: false,
             description:
-                'Inline `SingleSelectV2` + `SelectPosition` (left/right). One object or an array of two. If set, both icon slots are ignored',
+                'Inline `SingleSelectV2` + `DropdownPosition` (left/right). One object or an array of two. If set, both icon slots are ignored',
             table: {
                 type: {
                     summary: 'TextInputV2Dropdown | TextInputV2Dropdown[]',
@@ -365,7 +364,7 @@ export const WithRightSelect: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Right embedded `dropdown` with `SelectPosition.RIGHT`. Icon slots are not used; text field gets extra right padding for the trigger.',
+                story: 'Right embedded `dropdown` with `DropdownPosition.RIGHT`. Icon slots are not used; text field gets extra right padding for the trigger.',
             },
         },
     },

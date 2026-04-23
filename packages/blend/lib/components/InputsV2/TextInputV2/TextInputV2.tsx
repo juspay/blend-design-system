@@ -18,10 +18,7 @@ import {
     type TextInputV2Props,
 } from './TextInputV2.types'
 import { SelectV2Alignment } from '../../SelectV2/selectV2.shared.types'
-import {
-    SingleSelectV2Size,
-    SingleSelectV2Variant,
-} from '../../SingleSelectV2/singleSelectV2.types'
+import { SingleSelectV2Size } from '../../SingleSelectV2/singleSelectV2.types'
 import type { InputLabelsV2Tokens } from '../inputV2.tokens'
 import {
     FOCUS_RING_STYLES,
@@ -43,6 +40,7 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import SingleSelectV2 from '../../SingleSelectV2/SingleSelectV2'
+import { toEmbeddedSingleSelectV2Props } from './utils'
 
 function omitDropdownPosition(
     o: TextInputV2Dropdown
@@ -195,20 +193,46 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
             : calculatedRightInputPadding
 
         useLayoutEffect(() => {
-            if (showLeftSelect && leftSelectRef.current) {
-                setLeftSelectWidth(leftSelectRef.current.offsetWidth)
-            } else {
+            if (!showLeftSelect) {
                 setLeftSelectWidth(0)
+                return
             }
-        }, [showLeftSelect, leftSelect, leftSelect?.selected])
+            const el = leftSelectRef.current
+            if (!el) {
+                setLeftSelectWidth(0)
+                return
+            }
+            const measure = () => {
+                setLeftSelectWidth(el.offsetWidth)
+            }
+            measure()
+            const ro = new ResizeObserver(measure)
+            ro.observe(el)
+            return () => {
+                ro.disconnect()
+            }
+        }, [showLeftSelect, leftSelect, leftSelect?.selected, size])
 
         useLayoutEffect(() => {
-            if (showRightSelect && rightSelectRef.current) {
-                setRightSelectWidth(rightSelectRef.current.offsetWidth)
-            } else {
+            if (!showRightSelect) {
                 setRightSelectWidth(0)
+                return
             }
-        }, [showRightSelect, rightSelect, rightSelect?.selected])
+            const el = rightSelectRef.current
+            if (!el) {
+                setRightSelectWidth(0)
+                return
+            }
+            const measure = () => {
+                setRightSelectWidth(el.offsetWidth)
+            }
+            measure()
+            const ro = new ResizeObserver(measure)
+            ro.observe(el)
+            return () => {
+                ro.disconnect()
+            }
+        }, [showRightSelect, rightSelect, rightSelect?.selected, size])
 
         const hasError = Boolean(error?.show)
         const borderVariant = hasError ? InputStateV2.ERROR : inputState
@@ -269,40 +293,17 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                             contentCentered
                         >
                             <SingleSelectV2
-                                variant={SingleSelectV2Variant.NO_CONTAINER}
-                                inline
-                                size={singleSelectV2Size}
-                                items={leftSelect.items}
-                                selected={leftSelect.selected}
-                                onSelect={leftSelect.onSelect}
-                                placeholder={leftSelect.placeholder}
-                                disabled={disabled}
-                                name={leftSelect.name}
-                                aria-label={
-                                    leftSelect['aria-label'] ??
-                                    label ??
-                                    'Select option'
-                                }
-                                singleSelectGroupPosition={
-                                    leftSelect.singleSelectGroupPosition ??
-                                    'left'
-                                }
-                                search={leftSelect.search}
-                                menuPosition={{
-                                    alignment: SelectV2Alignment.START,
-                                    sideOffset: embeddedSelectMenuSideOffset,
-                                    alignOffset: embeddedSelectMenuAlignOffset,
-                                    ...leftSelect.menuPosition,
-                                }}
-                                menuDimensions={leftSelect.menuDimensions}
-                                usePanelOnMobile={leftSelect.usePanelOnMobile}
-                                allowCustomValue={leftSelect.allowCustomValue}
-                                customValueLabel={leftSelect.customValueLabel}
-                                triggerDimensions={
-                                    leftSelect.triggerDimensions ?? {
-                                        width: 'max-content',
-                                    }
-                                }
+                                {...toEmbeddedSingleSelectV2Props(leftSelect, {
+                                    fieldLabel: label,
+                                    fieldDisabled: disabled,
+                                    singleSelectV2Size,
+                                    menuAlignment: SelectV2Alignment.START,
+                                    menuSideOffset:
+                                        embeddedSelectMenuSideOffset,
+                                    menuAlignOffset:
+                                        embeddedSelectMenuAlignOffset,
+                                    defaultSingleSelectGroupPosition: 'left',
+                                })}
                             />
                         </Block>
                     )}
@@ -399,40 +400,17 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                             contentCentered
                         >
                             <SingleSelectV2
-                                variant={SingleSelectV2Variant.NO_CONTAINER}
-                                inline
-                                size={singleSelectV2Size}
-                                items={rightSelect.items}
-                                selected={rightSelect.selected}
-                                onSelect={rightSelect.onSelect}
-                                placeholder={rightSelect.placeholder}
-                                disabled={disabled}
-                                name={rightSelect.name}
-                                aria-label={
-                                    rightSelect['aria-label'] ??
-                                    label ??
-                                    'Select option'
-                                }
-                                singleSelectGroupPosition={
-                                    rightSelect.singleSelectGroupPosition ??
-                                    'right'
-                                }
-                                search={rightSelect.search}
-                                menuPosition={{
-                                    alignment: SelectV2Alignment.END,
-                                    sideOffset: embeddedSelectMenuSideOffset,
-                                    alignOffset: embeddedSelectMenuAlignOffset,
-                                    ...rightSelect.menuPosition,
-                                }}
-                                menuDimensions={rightSelect.menuDimensions}
-                                usePanelOnMobile={rightSelect.usePanelOnMobile}
-                                allowCustomValue={rightSelect.allowCustomValue}
-                                customValueLabel={rightSelect.customValueLabel}
-                                triggerDimensions={
-                                    rightSelect.triggerDimensions ?? {
-                                        width: 'max-content',
-                                    }
-                                }
+                                {...toEmbeddedSingleSelectV2Props(rightSelect, {
+                                    fieldLabel: label,
+                                    fieldDisabled: disabled,
+                                    singleSelectV2Size,
+                                    menuAlignment: SelectV2Alignment.END,
+                                    menuSideOffset:
+                                        embeddedSelectMenuSideOffset,
+                                    menuAlignOffset:
+                                        embeddedSelectMenuAlignOffset,
+                                    defaultSingleSelectGroupPosition: 'right',
+                                })}
                             />
                         </Block>
                     )}
