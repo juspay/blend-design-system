@@ -145,6 +145,7 @@ import OTPInputV2Demo from './OTPInputV2Demo'
 import TextAreaV2Demo from './TextAreaV2Demo'
 import SearchInputV2Demo from './SearchInputV2Demo'
 import BadgeDemo from './BadgeDemo'
+import ChatInputV2Demo from './ChatInputV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -245,7 +246,8 @@ const SidebarDemo = () => {
         | 'textAreaV2'
         | 'badge'
         | 'searchInputV2'
-    >('searchInputV2')
+        | 'chatInputV2'
+    >('chatInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -478,6 +480,8 @@ const SidebarDemo = () => {
                 return <TextAreaDemo />
             case 'chatInput':
                 return <ChatInputDemo />
+            case 'chatInputV2':
+                return <ChatInputV2Demo />
             case 'otpInput':
                 return <OTPInputDemo />
             case 'alerts':
@@ -1058,6 +1062,16 @@ const SidebarDemo = () => {
                     isSelected: activeComponent === 'chatInput',
                     onClick: () => setActiveComponent('chatInput'),
                     showOnMobile: true,
+                },
+                {
+                    label: 'Chat Input V2',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'chatInputV2',
+                    onClick: () => setActiveComponent('chatInputV2'),
                 },
                 {
                     label: 'Multi Value Input',

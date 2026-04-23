@@ -70,6 +70,8 @@ import { ResponsiveOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OT
 import { ResponsiveTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
 import { ResponsiveBadgeTokens } from '../components/Badge/badge.tokens'
 import { ResponsiveSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+import { ResponsiveChatInputV2TokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -146,6 +148,9 @@ export const useComponentToken = (
     | ResponsiveSearchInputV2Tokens
     | ResponsiveCodeEditorV2Tokens
     | ResponsiveBadgeTokens => {
+    | ResponsiveChatInputV2TokensType
+    | ChatInputV2MobileTokensType
+    | ResponsiveCodeEditorV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -238,6 +243,10 @@ export const useComponentToken = (
             return componentTokens.DIRECTORY
         case 'CHAT_INPUT':
             return componentTokens.CHAT_INPUT
+        case 'CHAT_INPUTV2':
+            return componentTokens.CHAT_INPUTV2
+        case 'CHAT_INPUTV2_MOBILE':
+            return componentTokens.CHAT_INPUTV2_MOBILE
         case 'BUTTONV2':
             return componentTokens.BUTTONV2
         case 'TAGV2':
