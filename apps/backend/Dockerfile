@@ -12,13 +12,14 @@ COPY turbo.json ./
 
 COPY apps/backend ./apps/backend
 COPY packages/token-engine ./packages/token-engine
+COPY packages/cli ./packages/cli
+COPY packages/blend ./packages/blend
 
-RUN pnpm install --frozen-lockfile
-RUN pnpm approve-builds @prisma/client @prisma/engines esbuild
-RUN pnpm install
+RUN pnpm config set onlyBuiltDependencies "@prisma/client,@prisma/engines,esbuild,prisma" && \
+    pnpm install --frozen-lockfile
 
 WORKDIR /app/apps/backend
-RUN pnpm run db:generate
+RUN npx prisma generate
 RUN pnpm run build
 
 FROM node:20-alpine AS runner
