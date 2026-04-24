@@ -190,7 +190,7 @@ import {
     getProgressBarV2Tokens,
     ResponsiveProgressBarV2Tokens,
 } from '../components/ProgressBarV2/progressBarV2.tokens'
- import {
+import {
     getStepperV2Tokens,
     ResponsiveStepperV2Tokens,
 } from '../components/StepperV2/stepperV2.tokens'
