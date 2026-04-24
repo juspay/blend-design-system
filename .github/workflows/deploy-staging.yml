@@ -157,19 +157,25 @@ jobs:
                   API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
               run: |
                   set -euo pipefail
-                  url="${API_BASE_URL%/}/health"
-                  echo "Probing ${url}"
-                  # Cloud Run can take a few seconds after deploy; retry briefly.
+                  base="${API_BASE_URL%/}"
+                  health_url="${base}/health"
+                  api_health_url="${base}/api/health"
+                  echo "Probing ${health_url} and ${api_health_url}"
+                  # Cloud Run can take a few seconds after deploy; retry with backoff.
                   for attempt in 1 2 3 4 5 6; do
-                    status=$(curl -s -o /tmp/health.json -w "%{http_code}" "${url}" || echo "000")
-                    if [ "${status}" = "200" ]; then
-                      echo "Backend healthy: $(cat /tmp/health.json)"
-                      exit 0
-                    fi
-                    echo "Attempt ${attempt} got status ${status}; retrying in $((attempt * 5))s..."
-                    sleep $((attempt * 5))
+                    for url in "${health_url}" "${api_health_url}"; do
+                      http_code="$(curl -sS -o /tmp/health.json -w '%{http_code}' "${url}" || true)"
+                      if [ "${http_code}" = "200" ]; then
+                        echo "Backend healthy (${url}): $(cat /tmp/health.json)"
+                        exit 0
+                      fi
+                      echo "Attempt ${attempt} ${url} -> HTTP ${http_code}"
+                    done
+                    sleep_seconds=$((attempt * 5))
+                    echo "Retrying in ${sleep_seconds}s..."
+                    sleep "${sleep_seconds}"
                   done
-                  echo "::error::Backend /health did not return 200 after retries"
+                  echo "::error::Backend health endpoint did not return 200 after retries"
                   exit 1
 
     # ------------------------------------------------------------------------
