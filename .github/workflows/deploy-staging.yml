@@ -174,16 +174,18 @@ jobs:
 
             - name: Build & Deploy via Cloud Build
               env:
-                  DATABASE_URL: ${{ steps.env.outputs.DATABASE_URL }}
                   GOOGLE_REDIRECT_URI: ${{ steps.env.outputs.GOOGLE_REDIRECT_URI }}
                   FRONTEND_URL: ${{ secrets.STAGING_FRONTEND_URL }}
                   API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
               run: |
                   set -euo pipefail
+
+                  echo "${{ steps.env.outputs.DATABASE_URL }}" | gcloud secrets versions add blend-backend-database-url --data-file=- --project=storybook-452807 --quiet || echo "${{ steps.env.outputs.DATABASE_URL }}" | gcloud secrets create blend-backend-database-url --data-file=- --project=storybook-452807 --replication-policy=automatic --quiet
+
                   gcloud builds submit \
                     --config=apps/blend-studio/cloudbuild.yaml \
                     --region="${REGION}" \
-                    --substitutions="^|^_BACKEND_SERVICE=blend-backend-staging|_STUDIO_SERVICE=blend-studio-staging|_REGION=${REGION}|_INSTANCE_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }}|_DATABASE_URL=${DATABASE_URL}|_FRONTEND_URL=${FRONTEND_URL}|_STUDIO_URL=https://blend-studio-staging-2oyuucbkoa-uc.a.run.app|_API_BASE_URL=${API_BASE_URL}|_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}|_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}|_GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}|_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}|_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}|_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}|_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}|_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}|_FIREBASE_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }}" \
+                    --substitutions="^|^_BACKEND_SERVICE=blend-backend-staging|_STUDIO_SERVICE=blend-studio-staging|_REGION=${REGION}|_INSTANCE_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }}|_FRONTEND_URL=${FRONTEND_URL}|_STUDIO_URL=https://blend-studio-staging-2oyuucbkoa-uc.a.run.app|_API_BASE_URL=${API_BASE_URL}|_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}|_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}|_GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}|_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}|_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}|_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}|_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}|_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}|_FIREBASE_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }}" \
                     .
 
             - name: Smoke test deployed backend
