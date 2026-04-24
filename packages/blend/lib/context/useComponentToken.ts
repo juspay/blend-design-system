@@ -68,6 +68,7 @@ import { ResponsiveMultiValueInputV2Tokens } from '../components/InputsV2/MultiV
 import { ResponsiveNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
 import { ResponsiveOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import { ResponsiveTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import { ResponsiveBadgeTokens } from '../components/Badge/badge.tokens'
 import { ResponsiveSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
 import { ResponsiveChatInputV2TokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
@@ -145,9 +146,10 @@ export const useComponentToken = (
     | ResponsiveOTPInputV2Tokens
     | ResponsiveTextAreaV2Tokens
     | ResponsiveSearchInputV2Tokens
+    | ResponsiveCodeEditorV2Tokens
+    | ResponsiveBadgeTokens
     | ResponsiveChatInputV2TokensType
-    | ChatInputV2MobileTokensType
-    | ResponsiveCodeEditorV2Tokens => {
+    | ChatInputV2MobileTokensType => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -294,6 +296,8 @@ export const useComponentToken = (
             return componentTokens.NUMBER_INPUT_V2
         case 'OTP_INPUTV2':
             return componentTokens.OTP_INPUTV2
+        case 'BADGE':
+            return componentTokens.BADGE
         case 'SEARCH_INPUT_V2':
             return componentTokens.SEARCH_INPUT_V2
         default:

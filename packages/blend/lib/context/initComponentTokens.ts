@@ -72,6 +72,7 @@ import { getNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/num
 import { getTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
 import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
 import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import { getBadgeTokens } from '../components/Badge/badge.tokens'
 
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
@@ -244,6 +245,7 @@ const initTokens = (
         OTP_INPUTV2:
             componentTokens.OTP_INPUTV2 ??
             getOTPInputV2Tokens(foundationTokens, theme),
+        BADGE: componentTokens.BADGE ?? getBadgeTokens(foundationTokens, theme),
         SEARCH_INPUT_V2:
             componentTokens.SEARCH_INPUT_V2 ??
             getSearchInputV2Tokens(foundationTokens, theme),

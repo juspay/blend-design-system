@@ -208,6 +208,10 @@ import {
     getOTPInputV2Tokens,
 } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import {
+    ResponsiveBadgeTokens,
+    getBadgeTokens,
+} from '../components/Badge/badge.tokens'
+import {
     ResponsiveSearchInputV2Tokens,
     getSearchInputV2Tokens,
 } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
@@ -291,6 +295,7 @@ export type ComponentTokenType = {
     MULTI_VALUE_INPUT_V2?: ResponsiveMultiValueInputV2Tokens
     NUMBER_INPUT_V2?: ResponsiveNumberInputV2Tokens
     OTP_INPUTV2?: ResponsiveOTPInputV2Tokens
+    BADGE?: ResponsiveBadgeTokens
     SEARCH_INPUT_V2?: ResponsiveSearchInputV2Tokens
     CHAT_INPUTV2_MOBILE?: ChatInputV2MobileTokensType
 }
@@ -381,6 +386,7 @@ const ThemeContext = createContext<ThemeContextType>({
         ),
         NUMBER_INPUT_V2: getNumberInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         OTP_INPUTV2: getOTPInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        BADGE: getBadgeTokens(FOUNDATION_THEME, Theme.LIGHT),
         SEARCH_INPUT_V2: getSearchInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHAT_INPUTV2: getChatInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHAT_INPUTV2_MOBILE: getChatInputV2MobileTokens(

@@ -144,6 +144,7 @@ import NumberInputV2Demo from './NumberInputV2Demo'
 import OTPInputV2Demo from './OTPInputV2Demo'
 import TextAreaV2Demo from './TextAreaV2Demo'
 import SearchInputV2Demo from './SearchInputV2Demo'
+import BadgeDemo from './BadgeDemo'
 import ChatInputV2Demo from './ChatInputV2Demo'
 
 const SidebarDemo = () => {
@@ -243,6 +244,7 @@ const SidebarDemo = () => {
         | 'numberInputV2'
         | 'otpInputV2'
         | 'textAreaV2'
+        | 'badge'
         | 'searchInputV2'
         | 'chatInputV2'
     >('textInputV2')
@@ -612,6 +614,8 @@ const SidebarDemo = () => {
                 return <OTPInputV2Demo />
             case 'textAreaV2':
                 return <TextAreaV2Demo />
+            case 'badge':
+                return <BadgeDemo />
             default:
                 return (
                     <div className="p-8">
@@ -832,6 +836,15 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tagGroupV2',
                     onClick: () => setActiveComponent('tagGroupV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Badge',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'badge',
+                    onClick: () => setActiveComponent('badge'),
                     showOnMobile: true,
                 },
                 {
