@@ -89,6 +89,7 @@ steps:
           - '--region=$_REGION'
           - '--platform=managed'
           - '--allow-unauthenticated'
+          - '--service-account=id-blend-backend-sa@storybook-452807.iam.gserviceaccount.com'
           - '--add-cloudsql-instances=$_INSTANCE_CONNECTION_NAME'
           - '--set-env-vars=^@^NODE_ENV=production@FRONTEND_URL=$_FRONTEND_URL@STUDIO_URL=$_STUDIO_URL@GOOGLE_CLIENT_ID=$_GOOGLE_CLIENT_ID@GOOGLE_CLIENT_SECRET=$_GOOGLE_CLIENT_SECRET@GOOGLE_REDIRECT_URI=$_GOOGLE_REDIRECT_URI@FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID'
           - '--set-secrets=JWT_SECRET=blend-backend-jwt-secret:latest,JWT_REFRESH_SECRET=blend-backend-jwt-refresh-secret:latest,FIREBASE_PRIVATE_KEY=blend-backend-firebase-key:latest,DATABASE_URL=blend-backend-database-url:latest'
@@ -116,12 +117,14 @@ steps:
           - '--region=$_REGION'
           - '--platform=managed'
           - '--allow-unauthenticated'
+          - '--service-account=id-blend-backend-sa@storybook-452807.iam.gserviceaccount.com'
           - '--memory=256Mi'
           - '--cpu=1'
-          - '--timeout=60'
+          - '--timeout=300'
           - '--min-instances=0'
           - '--max-instances=3'
           - '--concurrency=200'
+          - '--startup-timeout=120s'
           - '--quiet'
 
 # -----------------------------------------------------------------------------
