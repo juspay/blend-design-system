@@ -34,7 +34,12 @@ const allowedOrigins = isDevelopment
           'http://127.0.0.1:5173',
           'http://127.0.0.1:3000',
       ]
-    : [env.FRONTEND_URL]
+    : [
+          ...env.FRONTEND_URL.split(',').map((url) => url.trim()),
+          ...(env.STUDIO_URL
+              ? env.STUDIO_URL.split(',').map((url) => url.trim())
+              : []),
+      ]
 
 app.use(
     cors({

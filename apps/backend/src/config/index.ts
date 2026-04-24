@@ -22,6 +22,7 @@ const envSchema = z.object({
     JWT_REFRESH_EXPIRES_IN: z.string().default('30d'),
 
     FRONTEND_URL: z.string().default('http://localhost:5173'),
+    STUDIO_URL: z.string().default(''),
 })
 
 const parsedEnv = envSchema.safeParse(process.env)
