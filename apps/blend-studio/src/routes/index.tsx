@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { Navigate, createFileRoute, Link } from '@tanstack/react-router'
 import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import { featureFlags } from '@/lib/feature-flags'
 import { UserMenu } from '@/components/layout/UserMenu'
@@ -51,7 +51,6 @@ interface CliCommandProps {
 
 function HomePage() {
     const { user, loading } = useBackendAuth()
-    const navigate = useNavigate()
     const flags = featureFlags.get()
 
     if (loading) {
@@ -67,8 +66,7 @@ function HomePage() {
 
     // If not authenticated and not in mock mode, redirect to login
     if (!user && !flags.useMockData) {
-        navigate({ to: '/login', search: { from: undefined } })
-        return null
+        return <Navigate to="/login" search={{ from: undefined }} replace />
     }
 
     return (

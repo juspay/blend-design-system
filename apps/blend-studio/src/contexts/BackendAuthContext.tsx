@@ -114,10 +114,12 @@ export function BackendAuthProvider({
         if (isMockMode) return
 
         const response = await fetch(`${API_URL}/api/auth/google`)
-        const data = await response.json()
+        const data = await response.json().catch(() => ({}))
 
-        if (!data.success || !data.data?.url) {
-            throw new Error('Failed to get Google OAuth URL')
+        if (!response.ok || !data.success || !data.data?.url) {
+            throw new Error(
+                data?.message || 'Failed to initialize Google OAuth login'
+            )
         }
 
         const googleAuthUrl = data.data.url
