@@ -87,6 +87,40 @@ jobs:
                     exit 1
                   fi
 
+            - name: Validate staging URL secrets
+              env:
+                  STAGING_FRONTEND_URL: ${{ secrets.STAGING_FRONTEND_URL }}
+                  STAGING_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+              run: |
+                  set -euo pipefail
+
+                  validate_https_url() {
+                    local name="$1"
+                    local value="$2"
+
+                    if [ -z "${value}" ]; then
+                      echo "::error::${name} is empty."
+                      return 1
+                    fi
+
+                    if ! [[ "${value}" =~ ^https://[^[:space:]]+$ ]]; then
+                      echo "::error::${name} must start with https:// and be a valid absolute URL. Current value: ${value}"
+                      return 1
+                    fi
+
+                    if [[ "${value}" =~ localhost|127\.0\.0\.1 ]]; then
+                      echo "::error::${name} must be publicly reachable (not localhost/127.0.0.1). Current value: ${value}"
+                      return 1
+                    fi
+
+                    if [[ "${value}" =~ /$ ]]; then
+                      echo "::warning::${name} has a trailing slash. It is recommended to store it without trailing slash."
+                    fi
+                  }
+
+                  validate_https_url "STAGING_FRONTEND_URL" "${STAGING_FRONTEND_URL}"
+                  validate_https_url "STAGING_API_BASE_URL" "${STAGING_API_BASE_URL}"
+
     # ------------------------------------------------------------------------
     # 1. Build & deploy backend via Cloud Build. Studio image is still built
     #    inside the same Cloud Build (see cloudbuild.yaml) for parity.
