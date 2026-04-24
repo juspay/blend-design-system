@@ -1,5 +1,7 @@
+import { SingleSelectV2Variant } from '../../SingleSelectV2/singleSelectV2.types'
+import type { SingleSelectV2Props } from '../../SingleSelectV2/singleSelectV2.types'
 import { InputStateV2 } from '../inputV2.types'
-
+import type { EmbeddedSingleSelectOptions } from './TextInputV2.types'
 export const FOCUS_RING_STYLES = {
     boxShadow: '0 0 0 3px #EFF6FF',
     backgroundColor: 'rgba(239, 246, 255, 0.15)',
@@ -39,4 +41,41 @@ export const getVerticalInputPadding = ({
             : paddingBottom
 
     return { top, bottom }
+}
+
+/** Spreads full `SingleSelectV2` config, then applies TextInputV2 embed defaults and field-level disabled/label. */
+export function toEmbeddedSingleSelectV2Props(
+    config: SingleSelectV2Props,
+    options: EmbeddedSingleSelectOptions
+): SingleSelectV2Props {
+    const {
+        fieldLabel,
+        fieldDisabled,
+        singleSelectV2Size,
+        menuAlignment,
+        menuSideOffset,
+        menuAlignOffset,
+        defaultSingleSelectGroupPosition,
+    } = options
+
+    return {
+        ...config,
+        variant: SingleSelectV2Variant.NO_CONTAINER,
+        inline: true,
+        size: singleSelectV2Size,
+        disabled: fieldDisabled,
+        'aria-label': config['aria-label'] ?? fieldLabel ?? 'Select option',
+        singleSelectGroupPosition:
+            config.singleSelectGroupPosition ??
+            defaultSingleSelectGroupPosition,
+        menuPosition: {
+            alignment: menuAlignment,
+            sideOffset: menuSideOffset,
+            alignOffset: menuAlignOffset,
+            ...config.menuPosition,
+        },
+        triggerDimensions: config.triggerDimensions ?? {
+            width: 'max-content',
+        },
+    }
 }

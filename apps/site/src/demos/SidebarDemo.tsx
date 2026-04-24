@@ -247,7 +247,7 @@ const SidebarDemo = () => {
         | 'badge'
         | 'searchInputV2'
         | 'chatInputV2'
-    >('chatInputV2')
+    >('textInputV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
