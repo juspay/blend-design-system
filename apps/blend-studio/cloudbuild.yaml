@@ -124,7 +124,6 @@ steps:
           - '--min-instances=0'
           - '--max-instances=3'
           - '--concurrency=200'
-          - '--startup-timeout=120s'
           - '--quiet'
 
 # -----------------------------------------------------------------------------
