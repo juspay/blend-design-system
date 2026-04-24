@@ -53,7 +53,7 @@ jobs:
                   echo "FRONTEND_URL=${{ secrets.STAGING_FRONTEND_URL }}" >> $GITHUB_OUTPUT
                   echo "API_BASE_URL=${{ secrets.STAGING_API_BASE_URL }}" >> $GITHUB_OUTPUT
                   echo "GOOGLE_REDIRECT_URI=${{ secrets.STAGING_API_BASE_URL }}/api/auth/google/callback" >> $GITHUB_OUTPUT
-                  echo "DATABASE_URL=postgresql://${{ secrets.DATABASE_USER }}:${{ secrets.STAGING_DB_PASSWORD }}@/${{ secrets.STAGING_DATABASE_NAME }}?host=/cloudsql/${{ secrets.CLOUD_SQL_CONNECTION_NAME }}" >> $GITHUB_OUTPUT
+                  echo "DATABASE_URL=postgresql://${{ secrets.DATABASE_USER }}:${{ secrets.STAGING_DB_PASSWORD }}@localhost:5432/${{ secrets.STAGING_DATABASE_NAME }}?host=/cloudsql/${{ secrets.CLOUD_SQL_CONNECTION_NAME }}" >> $GITHUB_OUTPUT
 
             - name: Authenticate to Google Cloud
               uses: google-github-actions/auth@v2

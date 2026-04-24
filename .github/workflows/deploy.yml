@@ -61,7 +61,7 @@ jobs:
                     echo "FRONTEND_URL=${{ secrets.STAGING_FRONTEND_URL }}" >> $GITHUB_OUTPUT
                     echo "API_BASE_URL=${{ secrets.STAGING_API_BASE_URL }}" >> $GITHUB_OUTPUT
                     echo "GOOGLE_REDIRECT_URI=${{ secrets.STAGING_API_BASE_URL }}/api/auth/google/callback" >> $GITHUB_OUTPUT
-                    echo "DATABASE_URL=postgresql://${{ secrets.DATABASE_USER }}:${{ secrets.STAGING_DB_PASSWORD }}@/${{ secrets.STAGING_DATABASE_NAME }}?host=/cloudsql/${{ secrets.CLOUD_SQL_CONNECTION_NAME }}" >> $GITHUB_OUTPUT
+                    echo "DATABASE_URL=postgresql://${{ secrets.DATABASE_USER }}:${{ secrets.STAGING_DB_PASSWORD }}@localhost:5432/${{ secrets.STAGING_DATABASE_NAME }}?host=/cloudsql/${{ secrets.CLOUD_SQL_CONNECTION_NAME }}" >> $GITHUB_OUTPUT
                   else
                     echo "ENVIRONMENT=production" >> $GITHUB_OUTPUT
                     echo "FIREBASE_TARGET=blend-prod" >> $GITHUB_OUTPUT
@@ -70,7 +70,7 @@ jobs:
                     echo "FRONTEND_URL=${{ secrets.PROD_FRONTEND_URL }}" >> $GITHUB_OUTPUT
                     echo "API_BASE_URL=${{ secrets.PROD_API_BASE_URL }}" >> $GITHUB_OUTPUT
                     echo "GOOGLE_REDIRECT_URI=${{ secrets.PROD_API_BASE_URL }}/api/auth/google/callback" >> $GITHUB_OUTPUT
-                    echo "DATABASE_URL=postgresql://${{ secrets.DATABASE_USER }}:${{ secrets.PROD_DB_PASSWORD }}@/${{ secrets.DATABASE_NAME }}?host=/cloudsql/${{ secrets.CLOUD_SQL_CONNECTION_NAME }}" >> $GITHUB_OUTPUT
+                    echo "DATABASE_URL=postgresql://${{ secrets.DATABASE_USER }}:${{ secrets.PROD_DB_PASSWORD }}@localhost:5432/${{ secrets.DATABASE_NAME }}?host=/cloudsql/${{ secrets.CLOUD_SQL_CONNECTION_NAME }}" >> $GITHUB_OUTPUT
                   fi
 
             - name: Authenticate to Google Cloud
