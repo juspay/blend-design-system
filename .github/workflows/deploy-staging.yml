@@ -179,9 +179,6 @@ jobs:
                   API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
               run: |
                   set -euo pipefail
-
-                  echo "${{ steps.env.outputs.DATABASE_URL }}" | gcloud secrets versions add blend-backend-database-url --data-file=- --project=storybook-452807 --quiet || echo "${{ steps.env.outputs.DATABASE_URL }}" | gcloud secrets create blend-backend-database-url --data-file=- --project=storybook-452807 --replication-policy=automatic --quiet
-
                   gcloud builds submit \
                     --config=apps/blend-studio/cloudbuild.yaml \
                     --region="${REGION}" \
