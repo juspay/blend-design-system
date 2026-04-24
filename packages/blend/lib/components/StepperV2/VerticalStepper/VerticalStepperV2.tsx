@@ -6,13 +6,27 @@ import {
     useState,
     useId,
 } from 'react'
-import { StepperV2Props, StepperV2StepStatus } from '../stepperV2.types'
+import {
+    StepperV2Props,
+    StepperV2StepStatus,
+    StepperV2Type,
+} from '../stepperV2.types'
 import { scheduleLiveRegionAnnouncement } from '../utils'
 import Block from '../../Primitives/Block/Block'
 import { VerticalStepComponent } from './VerticalStepComponent'
 
 const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
-    ({ steps, onStepClick, onSubstepClick, clickable, ...htmlProps }, ref) => {
+    (
+        {
+            steps,
+            onStepClick,
+            onSubstepClick,
+            clickable,
+            stepperType = StepperV2Type.VERTICAL,
+            ...htmlProps
+        },
+        ref
+    ) => {
         const stepperInstanceId = useId().replace(/:/g, '-')
 
         const [focusedStepIndex, setFocusedStepIndex] = useState<number | null>(
@@ -118,6 +132,7 @@ const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
                         clickable={clickable}
                         onKeyDown={handleKeyDown}
                         stepperInstanceId={stepperInstanceId}
+                        stepperType={stepperType}
                     />
                 ))}
             </Block>

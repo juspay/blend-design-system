@@ -5,7 +5,11 @@ import Text from '../../Text/Text'
 import { composeRefs, toPixels } from '../../../global-utils/GlobalUtils'
 import VerticalLineV2 from './VerticalLineV2'
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
-import { StepperV2StepProps, StepperV2StepStatus } from '../stepperV2.types'
+import {
+    StepperV2StepProps,
+    StepperV2StepStatus,
+    StepperV2Type,
+} from '../stepperV2.types'
 import Block from '../../Primitives/Block/Block'
 import { getStepState } from '../utils'
 export const VerticalStepComponent = forwardRef<
@@ -13,6 +17,7 @@ export const VerticalStepComponent = forwardRef<
     StepperV2StepProps & {
         onKeyDown?: (event: React.KeyboardEvent, stepIndex: number) => void
         stepperInstanceId: string
+        stepperType: StepperV2Type
     }
 >(
     (
@@ -27,6 +32,7 @@ export const VerticalStepComponent = forwardRef<
             clickable,
             onKeyDown,
             stepperInstanceId,
+            stepperType,
         },
         ref
     ) => {

@@ -34,6 +34,7 @@ const StepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
                     onStepClick={resolvedOnStepClick}
                     onSubstepClick={onSubstepClick}
                     clickable={clickable}
+                    stepperType={stepperType}
                     {...filteredRest}
                 />
             )
