@@ -36,6 +36,8 @@ FROM base AS builder
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json turbo.json ./
 COPY apps/backend/package.json ./apps/backend/package.json
 COPY packages/cli/package.json ./packages/cli/package.json
+COPY packages/blend/package.json ./packages/blend/package.json
+COPY packages/token-engine/package.json ./packages/token-engine/package.json
 
 # Allow native post-install scripts only for the packages that actually
 # need them. Everything else stays locked down.

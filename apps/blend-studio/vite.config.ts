@@ -16,11 +16,15 @@ export default defineConfig(({ mode }) => ({
             '@': path.resolve(__dirname, './src'),
             '@juspay/blend-design-system/node': path.resolve(
                 __dirname,
-                '../../packages/blend/dist/node.js'
+                '../../packages/blend/lib/node.ts'
+            ),
+            '@juspay/blend-design-system/tokens': path.resolve(
+                __dirname,
+                '../../packages/token-engine/src/index.ts'
             ),
             '@juspay/blend-design-system': path.resolve(
                 __dirname,
-                '../../packages/blend/dist/main.js'
+                '../../packages/blend/lib/main.ts'
             ),
         },
     },
@@ -41,6 +45,10 @@ export default defineConfig(({ mode }) => ({
         minify: 'esbuild',
     },
     optimizeDeps: {
-        include: ['@juspay/blend-design-system'],
+        include: [
+            '@juspay/blend-design-system',
+            '@juspay/blend-design-system/node',
+            '@juspay/blend-design-system/tokens',
+        ],
     },
 }))

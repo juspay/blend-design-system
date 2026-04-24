@@ -20,7 +20,13 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"],
-            "@juspay/blend-design-system": ["../../packages/blend/lib/main.ts"]
+            "@juspay/blend-design-system": ["../../packages/blend/lib/main.ts"],
+            "@juspay/blend-design-system/tokens": [
+                "../../packages/token-engine/src/index.ts"
+            ],
+            "@juspay/blend-design-system/node": [
+                "../../packages/blend/lib/node.ts"
+            ]
         }
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
