@@ -211,8 +211,11 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-pnpm-
 
-            - name: Install dependencies (filtered to studio)
-              run: pnpm install --frozen-lockfile --filter 'blend-studio...'
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build design system package (required by studio types/exports)
+              run: pnpm --filter @juspay/blend-design-system build
 
             - name: Build studio
               env:
