@@ -7,7 +7,7 @@ import { logger } from '@/utils/logger.js'
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
 import { rateLimit } from '@/middlewares/rateLimit.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
-import { connectDatabase } from '@/config/database.js'
+import { connectDatabaseWithRetry, isDatabaseReady } from '@/config/database.js'
 import authRoutes from '@/domains/auth/entry-points/auth.routes.js'
 import branchRoutes from '@/domains/branches/entry-points/branch.routes.js'
 import tokenRoutes from '@/domains/tokens/entry-points/token.routes.js'
@@ -79,6 +79,7 @@ app.use((req, _res, next) => {
 app.get('/health', (_req, res) => {
     res.json({
         status: 'ok',
+        database: isDatabaseReady() ? 'connected' : 'connecting',
         timestamp: new Date().toISOString(),
         version: '0.1.0',
     })
@@ -87,6 +88,7 @@ app.get('/health', (_req, res) => {
 app.get('/api/health', (_req, res) => {
     res.json({
         status: 'ok',
+        database: isDatabaseReady() ? 'connected' : 'connecting',
         timestamp: new Date().toISOString(),
         version: '0.1.0',
     })
@@ -111,16 +113,13 @@ app.use(errorHandler)
 
 const PORT = parseInt(env.PORT, 10)
 
-const start = async () => {
-    await connectDatabase()
+const start = () => {
     app.listen(PORT, () => {
         logger.info(`Server running on http://localhost:${PORT}`)
         logger.info(`Swagger docs available at http://localhost:${PORT}/docs`)
         logger.info(`Environment: ${env.NODE_ENV}`)
+        connectDatabaseWithRetry()
     })
 }
 
-start().catch((err) => {
-    logger.error(err, 'Failed to start server')
-    process.exit(1)
-})
+start()
