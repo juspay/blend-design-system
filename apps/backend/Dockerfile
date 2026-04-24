@@ -69,7 +69,10 @@ WORKDIR /repo
 # for packages without injected workspace deps (the backend is standalone).
 RUN pnpm --filter "@blend-design/justbackend" deploy --prod --legacy /deploy
 WORKDIR /deploy
-RUN pnpm exec prisma generate --schema=./prisma/schema.prisma
+# Avoid `pnpm exec` here: in some CI runners Corepack may resolve a newer
+# pnpm (v11+) requiring Node 22+, while this image intentionally uses Node 20.
+# Calling the local binary directly is deterministic and Node-version agnostic.
+RUN ./node_modules/.bin/prisma generate --schema=./prisma/schema.prisma
 
 # -----------------------------------------------------------------------------
 # 4. runner — minimal runtime image

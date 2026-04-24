@@ -226,6 +226,11 @@ jobs:
                   VITE_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
               run: pnpm --filter blend-studio build
 
+            - name: Stage hosting dist for firebase.json
+              run: |
+                  rm -rf dist
+                  cp -R apps/blend-studio/dist ./dist
+
             - name: Deploy to Firebase Hosting (staging)
               run: |
                   npx firebase-tools@latest deploy \
