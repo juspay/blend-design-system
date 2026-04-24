@@ -42,6 +42,5 @@ USER appuser
 EXPOSE 3001
 
 ENV NODE_ENV=production
-ENV PORT=3001
 
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
