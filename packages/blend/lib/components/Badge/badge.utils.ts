@@ -27,72 +27,68 @@ export const getPositionStyles = (
     // For circular elements, position on the circumference (45 degrees)
     if (isCircular) {
         const circularOffset = '14%' // (100% - 70.71%) / 2 for circumference positioning
-        const edgeOffset = customOffset ? `${customOffset[0]}px` : '0px'
+        const xOffset = customOffset ? `${customOffset[0]}px` : '0px'
+        const yOffset = customOffset ? `${customOffset[1]}px` : '0px'
 
         switch (position) {
             case 'top-right':
                 return {
                     top: circularOffset,
                     right: circularOffset,
-                    transform: `translate(50%, -50%) translate(${edgeOffset}, -${edgeOffset})`,
+                    transform: `translate(50%, -50%) translate(${xOffset}, -${yOffset})`,
                 }
             case 'top-left':
                 return {
                     top: circularOffset,
                     left: circularOffset,
-                    transform: `translate(-50%, -50%) translate(-${edgeOffset}, -${edgeOffset})`,
+                    transform: `translate(-50%, -50%) translate(-${xOffset}, -${yOffset})`,
                 }
             case 'bottom-right':
                 return {
                     bottom: circularOffset,
                     right: circularOffset,
-                    transform: `translate(50%, 50%) translate(${edgeOffset}, ${edgeOffset})`,
+                    transform: `translate(50%, 50%) translate(${xOffset}, ${yOffset})`,
                 }
             case 'bottom-left':
                 return {
                     bottom: circularOffset,
                     left: circularOffset,
-                    transform: `translate(-50%, 50%) translate(-${edgeOffset}, ${edgeOffset})`,
+                    transform: `translate(-50%, 50%) translate(-${xOffset}, ${yOffset})`,
                 }
         }
     }
 
-    // For dots (no content), use '0px' offset
-    const offset = customOffset
-        ? `${customOffset[0]}px`
-        : !hasContent
-          ? '0px'
-          : String(tokens.position.offset[size])
+    const defaultOffset = !hasContent
+        ? '0px'
+        : String(tokens.position.offset[size])
 
-    const secondaryOffset = customOffset
-        ? `${customOffset[1]}px`
-        : !hasContent
-          ? '0px'
-          : String(tokens.position.offset[size])
+    // [0] = x = horizontal → left/right, [1] = y = vertical → top/bottom
+    const xOffset = customOffset ? `${customOffset[0]}px` : defaultOffset
+    const yOffset = customOffset ? `${customOffset[1]}px` : defaultOffset
 
     switch (position) {
         case 'top-right':
             return {
-                top: offset,
-                right: secondaryOffset,
+                top: yOffset,
+                right: xOffset,
                 transform: 'translate(50%, -50%)',
             }
         case 'top-left':
             return {
-                top: offset,
-                left: secondaryOffset,
+                top: yOffset,
+                left: xOffset,
                 transform: 'translate(-50%, -50%)',
             }
         case 'bottom-right':
             return {
-                bottom: offset,
-                right: secondaryOffset,
+                bottom: yOffset,
+                right: xOffset,
                 transform: 'translate(50%, 50%)',
             }
         case 'bottom-left':
             return {
-                bottom: offset,
-                left: secondaryOffset,
+                bottom: yOffset,
+                left: xOffset,
                 transform: 'translate(-50%, 50%)',
             }
     }

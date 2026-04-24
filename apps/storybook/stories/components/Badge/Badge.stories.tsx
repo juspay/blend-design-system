@@ -39,7 +39,7 @@ import { Badge, BadgeSize, BadgeColor } from '@juspay/blend-design-system';
 
 {/* Badge positioned on a child element */}
 <Badge count={3}>
-  <MailIcon />
+  <Mail />
 </Badge>
 
 {/* Badge on circular element (circumference positioning) */}
@@ -157,7 +157,8 @@ import { Badge, BadgeSize, BadgeColor } from '@juspay/blend-design-system';
         },
         offset: {
             control: 'object',
-            description: 'Optional offset for positioning [x, y] in pixels',
+            description:
+                'ptional offset for positioning [verticalOffset, horizontalOffset] in pixels',
             table: {
                 type: { summary: '[number, number]' },
             },
