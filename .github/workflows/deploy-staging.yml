@@ -9,6 +9,7 @@ on:
             - 'apps/blend-studio/**'
             - 'packages/token-engine/**'
             - 'packages/blend/**'
+            - 'pnpm-lock.yaml'
             - '.github/workflows/deploy-staging.yml'
     workflow_dispatch:
         inputs:
@@ -30,33 +31,97 @@ concurrency:
 env:
     PROJECT_ID: storybook-452807
     REGION: us-central1
+    PNPM_VERSION: 10.21.0
+    NODE_VERSION: '20'
 
 jobs:
-    deploy-staging:
-        name: Deploy to Staging
+    # ------------------------------------------------------------------------
+    # 0. Preflight — fail fast if any required secret is missing. Cheaper to
+    #    stop here than halfway through a Cloud Build.
+    # ------------------------------------------------------------------------
+    preflight:
+        name: Preflight (validate secrets)
         runs-on: ubuntu-latest
+        steps:
+            - name: Check required secrets
+              env:
+                  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+                  STAGING_DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
+                  STAGING_DATABASE_NAME: ${{ secrets.STAGING_DATABASE_NAME }}
+                  DATABASE_USER: ${{ secrets.DATABASE_USER }}
+                  CLOUD_SQL_CONNECTION_NAME: ${{ secrets.CLOUD_SQL_CONNECTION_NAME }}
+                  STAGING_FRONTEND_URL: ${{ secrets.STAGING_FRONTEND_URL }}
+                  STAGING_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+                  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+                  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+                  FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+                  FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+                  FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+                  FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+                  FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+                  FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+                  FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+                  FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+                  FIREBASE_CI_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN }}
+              run: |
+                  set -euo pipefail
+                  missing=0
+                  for key in \
+                    GCP_SA_KEY STAGING_DB_PASSWORD STAGING_DATABASE_NAME DATABASE_USER \
+                    CLOUD_SQL_CONNECTION_NAME STAGING_FRONTEND_URL STAGING_API_BASE_URL \
+                    GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET \
+                    FIREBASE_API_KEY FIREBASE_AUTH_DOMAIN FIREBASE_PROJECT_ID \
+                    FIREBASE_STORAGE_BUCKET FIREBASE_MESSAGING_SENDER_ID \
+                    FIREBASE_APP_ID FIREBASE_DATABASE_URL FIREBASE_CLIENT_EMAIL \
+                    FIREBASE_CI_TOKEN
+                  do
+                    if [ -z "${!key:-}" ]; then
+                      echo "::error::Required secret '$key' is empty or not set"
+                      missing=$((missing+1))
+                    fi
+                  done
+                  if [ "$missing" -gt 0 ]; then
+                    echo "::error::$missing required secret(s) missing. Aborting."
+                    exit 1
+                  fi
+
+    # ------------------------------------------------------------------------
+    # 1. Build & deploy backend via Cloud Build. Studio image is still built
+    #    inside the same Cloud Build (see cloudbuild.yaml) for parity.
+    # ------------------------------------------------------------------------
+    deploy-backend:
+        name: Build & deploy backend (Cloud Run)
+        runs-on: ubuntu-latest
+        needs: preflight
+        if: >-
+            github.event_name == 'push' ||
+            github.event.inputs.deploy_backend != 'false'
         permissions:
             contents: read
             id-token: write
-
         steps:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Set environment variables
+            - name: Compute derived values
               id: env
+              env:
+                  DB_USER: ${{ secrets.DATABASE_USER }}
+                  DB_NAME: ${{ secrets.STAGING_DATABASE_NAME }}
+                  DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
+                  DB_HOST_SOCK: /cloudsql/${{ secrets.CLOUD_SQL_CONNECTION_NAME }}
+                  API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
               run: |
-                  echo "ENVIRONMENT=staging" >> $GITHUB_OUTPUT
-                  echo "FIREBASE_TARGET=blend-staging" >> $GITHUB_OUTPUT
-                  echo "BACKEND_SERVICE=blend-backend-staging" >> $GITHUB_OUTPUT
-                  echo "STUDIO_SERVICE=blend-studio-staging" >> $GITHUB_OUTPUT
-                  echo "FRONTEND_URL=${{ secrets.STAGING_FRONTEND_URL }}" >> $GITHUB_OUTPUT
-                  echo "API_BASE_URL=${{ secrets.STAGING_API_BASE_URL }}" >> $GITHUB_OUTPUT
-                  echo "GOOGLE_REDIRECT_URI=${{ secrets.STAGING_API_BASE_URL }}/api/auth/google/callback" >> $GITHUB_OUTPUT
-                  # Build DATABASE_URL - escape special chars in password
-                  PASSWORD='${{ secrets.STAGING_DB_PASSWORD }}'
-                  ENCODED_PASS=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$PASSWORD''', safe=''))")
-                  echo "DATABASE_URL=postgresql://${{ secrets.DATABASE_USER }}:${ENCODED_PASS}@localhost:5432/${{ secrets.STAGING_DATABASE_NAME }}?host=/cloudsql/${{ secrets.CLOUD_SQL_CONNECTION_NAME }}" >> $GITHUB_OUTPUT
+                  set -euo pipefail
+                  ENCODED_PASS=$(python3 -c "import os, urllib.parse; print(urllib.parse.quote(os.environ['DB_PASSWORD'], safe=''))")
+                  DATABASE_URL="postgresql://${DB_USER}:${ENCODED_PASS}@localhost:5432/${DB_NAME}?host=${DB_HOST_SOCK}"
+                  GOOGLE_REDIRECT_URI="${API_BASE_URL%/}/api/auth/google/callback"
+                  # Mask the derived URL so it does not appear in logs
+                  echo "::add-mask::${DATABASE_URL}"
+                  {
+                    echo "DATABASE_URL=${DATABASE_URL}"
+                    echo "GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}"
+                  } >> "$GITHUB_OUTPUT"
 
             - name: Authenticate to Google Cloud
               uses: google-github-actions/auth@v2
@@ -65,48 +130,143 @@ jobs:
 
             - name: Set up Cloud SDK
               uses: google-github-actions/setup-gcloud@v2
+              with:
+                  project_id: ${{ env.PROJECT_ID }}
 
             - name: Configure Docker for Artifact Registry
-              run: |
-                  gcloud auth configure-docker gcr.io
+              run: gcloud auth configure-docker gcr.io --quiet
 
-            - name: Build & Deploy via Cloud Build (Staging)
-              if: github.event.inputs.deploy_backend != 'false'
+            - name: Build & Deploy via Cloud Build
+              env:
+                  DATABASE_URL: ${{ steps.env.outputs.DATABASE_URL }}
+                  GOOGLE_REDIRECT_URI: ${{ steps.env.outputs.GOOGLE_REDIRECT_URI }}
+                  FRONTEND_URL: ${{ secrets.STAGING_FRONTEND_URL }}
+                  API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
               run: |
+                  set -euo pipefail
                   gcloud builds submit \
                     --config=apps/blend-studio/cloudbuild.yaml \
-                    --substitutions="_BACKEND_SERVICE=blend-backend-staging,_STUDIO_SERVICE=blend-studio-staging,_INSTANCE_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }},_DATABASE_URL=${{ steps.env.outputs.DATABASE_URL }},_FRONTEND_URL=${{ steps.env.outputs.FRONTEND_URL }},_API_BASE_URL=${{ steps.env.outputs.API_BASE_URL }},_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},_GOOGLE_REDIRECT_URI=${{ steps.env.outputs.GOOGLE_REDIRECT_URI }},_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }},_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }},_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }},_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }},_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }},_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }},_FIREBASE_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }},_FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}" \
+                    --region="${REGION}" \
+                    --substitutions="^@^\
+                  _BACKEND_SERVICE=blend-backend-staging@\
+                  _STUDIO_SERVICE=blend-studio-staging@\
+                  _REGION=${REGION}@\
+                  _INSTANCE_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }}@\
+                  _DATABASE_URL=${DATABASE_URL}@\
+                  _FRONTEND_URL=${FRONTEND_URL}@\
+                  _API_BASE_URL=${API_BASE_URL}@\
+                  _GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}@\
+                  _GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}@\
+                  _GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}@\
+                  _FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}@\
+                  _FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}@\
+                  _FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}@\
+                  _FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}@\
+                  _FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}@\
+                  _FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}@\
+                  _FIREBASE_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }}@\
+                  _FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}" \
                     .
 
-            - name: Deploy Studio to Firebase Hosting (Staging)
-              if: github.event.inputs.deploy_studio != 'false'
+            - name: Smoke test deployed backend
+              env:
+                  API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
               run: |
-                  npm install -g pnpm
-                  pnpm install --frozen-lockfile
-                  cd apps/blend-studio
-                  VITE_FIREBASE_API_KEY="${{ secrets.FIREBASE_API_KEY }}" \
-                  VITE_FIREBASE_AUTH_DOMAIN="${{ secrets.FIREBASE_AUTH_DOMAIN }}" \
-                  VITE_FIREBASE_PROJECT_ID="${{ secrets.FIREBASE_PROJECT_ID }}" \
-                  VITE_FIREBASE_STORAGE_BUCKET="${{ secrets.FIREBASE_STORAGE_BUCKET }}" \
-                  VITE_FIREBASE_MESSAGING_SENDER_ID="${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" \
-                  VITE_FIREBASE_APP_ID="${{ secrets.FIREBASE_APP_ID }}" \
-                  VITE_FIREBASE_DATABASE_URL="${{ secrets.FIREBASE_DATABASE_URL }}" \
-                  VITE_API_BASE_URL="${{ steps.env.outputs.API_BASE_URL }}" \
-                  pnpm build
+                  set -euo pipefail
+                  url="${API_BASE_URL%/}/health"
+                  echo "Probing ${url}"
+                  # Cloud Run can take a few seconds after deploy; retry briefly.
+                  for attempt in 1 2 3 4 5 6; do
+                    status=$(curl -s -o /tmp/health.json -w "%{http_code}" "${url}" || echo "000")
+                    if [ "${status}" = "200" ]; then
+                      echo "Backend healthy: $(cat /tmp/health.json)"
+                      exit 0
+                    fi
+                    echo "Attempt ${attempt} got status ${status}; retrying in $((attempt * 5))s..."
+                    sleep $((attempt * 5))
+                  done
+                  echo "::error::Backend /health did not return 200 after retries"
+                  exit 1
 
-                  cd ../..
+    # ------------------------------------------------------------------------
+    # 2. Build + deploy Studio to Firebase Hosting in parallel with the
+    #    backend. Isolated so a backend Cloud Build failure does not block
+    #    frontend deploys.
+    # ------------------------------------------------------------------------
+    deploy-studio:
+        name: Build & deploy studio (Firebase Hosting)
+        runs-on: ubuntu-latest
+        needs: preflight
+        if: >-
+            github.event_name == 'push' ||
+            github.event.inputs.deploy_studio != 'false'
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: ${{ env.PNPM_VERSION }}
+                  run_install: false
+
+            - name: Cache pnpm store
+              uses: actions/cache@v4
+              with:
+                  path: ~/.local/share/pnpm/store
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-
+
+            - name: Install dependencies (filtered to studio)
+              run: pnpm install --frozen-lockfile --filter 'blend-studio...'
+
+            - name: Build studio
+              env:
+                  VITE_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+                  VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+                  VITE_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+                  VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+                  VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+                  VITE_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+                  VITE_FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+                  VITE_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+              run: pnpm --filter blend-studio build
+
+            - name: Deploy to Firebase Hosting (staging)
+              run: |
                   npx firebase-tools@latest deploy \
                     --only hosting:blend-staging \
-                    --project ${{ env.PROJECT_ID }} \
-                    --token ${{ secrets.FIREBASE_CI_TOKEN }}
+                    --project "${PROJECT_ID}" \
+                    --token "${FIREBASE_TOKEN}" \
+                    --non-interactive
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN }}
 
-            - name: Deployment Summary
+    # ------------------------------------------------------------------------
+    # 3. Summary (always runs, even on partial failure).
+    # ------------------------------------------------------------------------
+    summary:
+        name: Deployment summary
+        runs-on: ubuntu-latest
+        needs: [deploy-backend, deploy-studio]
+        if: always()
+        steps:
+            - name: Write summary
               run: |
-                  echo "## Staging Deployment Complete" >> $GITHUB_STEP_SUMMARY
-                  echo "" >> $GITHUB_STEP_SUMMARY
-                  echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
-                  echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
-                  echo "| **Environment** | staging |" >> $GITHUB_STEP_SUMMARY
-                  echo "| **Backend Service** | blend-backend-staging |" >> $GITHUB_STEP_SUMMARY
-                  echo "| **Studio Service** | blend-studio-staging |" >> $GITHUB_STEP_SUMMARY
-                  echo "| **Firebase Target** | blend-staging |" >> $GITHUB_STEP_SUMMARY
+                  {
+                    echo "## Staging deployment"
+                    echo ""
+                    echo "| Component | Status |"
+                    echo "|-----------|--------|"
+                    echo "| Backend (Cloud Run) | ${{ needs.deploy-backend.result }} |"
+                    echo "| Studio (Firebase Hosting) | ${{ needs.deploy-studio.result }} |"
+                  } >> "$GITHUB_STEP_SUMMARY"

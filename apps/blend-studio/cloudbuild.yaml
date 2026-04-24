@@ -1,11 +1,23 @@
+# =============================================================================
+# Cloud Build pipeline — Blend Backend + Blend Studio image builds, Cloud Run
+# deploys.
+# -----------------------------------------------------------------------------
+# Invoked by .github/workflows/deploy-staging.yml (and equivalents for
+# staging/prod). Environment-specific names are controlled via substitutions;
+# defaults below point at the staging service.
+# =============================================================================
+
 steps:
     # -------------------------------------------------------------------------
-    # Build Backend
+    # 1. Build backend image (multi-stage Dockerfile, BuildKit enabled)
     # -------------------------------------------------------------------------
-    - name: 'gcr.io/cloud-builders/docker'
-      id: 'build-backend'
+    - id: 'build-backend'
+      name: 'gcr.io/cloud-builders/docker'
+      env:
+          - 'DOCKER_BUILDKIT=1'
       args:
           - 'build'
+          - '--pull'
           - '-t'
           - 'gcr.io/$PROJECT_ID/blend-backend:$BUILD_ID'
           - '-t'
@@ -14,18 +26,22 @@ steps:
           - 'apps/backend/Dockerfile'
           - '.'
 
-    - name: 'gcr.io/cloud-builders/docker'
-      id: 'push-backend'
-      args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/blend-backend']
+    - id: 'push-backend'
+      name: 'gcr.io/cloud-builders/docker'
       waitFor: ['build-backend']
+      args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/blend-backend']
 
     # -------------------------------------------------------------------------
-    # Build Studio Frontend
+    # 2. Build studio image in parallel (kept for environments that serve the
+    #    studio from Cloud Run; Firebase Hosting deploys still work alongside)
     # -------------------------------------------------------------------------
-    - name: 'gcr.io/cloud-builders/docker'
-      id: 'build-studio'
+    - id: 'build-studio'
+      name: 'gcr.io/cloud-builders/docker'
+      env:
+          - 'DOCKER_BUILDKIT=1'
       args:
           - 'build'
+          - '--pull'
           - '-t'
           - 'gcr.io/$PROJECT_ID/blend-studio:$BUILD_ID'
           - '-t'
@@ -50,98 +66,100 @@ steps:
           - 'VITE_API_BASE_URL=$_API_BASE_URL'
           - '.'
 
-    - name: 'gcr.io/cloud-builders/docker'
-      id: 'push-studio'
-      args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/blend-studio']
+    - id: 'push-studio'
+      name: 'gcr.io/cloud-builders/docker'
       waitFor: ['build-studio']
+      args: ['push', '--all-tags', 'gcr.io/$PROJECT_ID/blend-studio']
 
     # -------------------------------------------------------------------------
-    # Deploy Backend to Cloud Run
+    # 3. Deploy backend to Cloud Run.
+    #    `--set-env-vars` uses the `^@^` delimiter so any values containing
+    #    commas (e.g. Postgres connection strings with `?host=…`) are safe.
     # -------------------------------------------------------------------------
-    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-      id: 'deploy-backend'
-      entrypoint: gcloud
+    - id: 'deploy-backend'
+      name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+      waitFor: ['push-backend']
+      entrypoint: 'gcloud'
       args:
           - 'run'
           - 'deploy'
           - '$_BACKEND_SERVICE'
-          - '--image'
-          - 'gcr.io/$PROJECT_ID/blend-backend:$BUILD_ID'
-          - '--region'
-          - 'us-central1'
-          - '--platform'
-          - 'managed'
+          - '--image=gcr.io/$PROJECT_ID/blend-backend:$BUILD_ID'
+          - '--region=$_REGION'
+          - '--platform=managed'
           - '--allow-unauthenticated'
-          - '--add-cloudsql-instances'
-          - '$_INSTANCE_CONNECTION_NAME'
-          - '--set-env-vars'
-          - 'NODE_ENV=production,DATABASE_URL=$_DATABASE_URL,FRONTEND_URL=$_FRONTEND_URL,GOOGLE_CLIENT_ID=$_GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET=$_GOOGLE_CLIENT_SECRET,GOOGLE_REDIRECT_URI=$_GOOGLE_REDIRECT_URI,FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID,FIREBASE_CLIENT_EMAIL=$_FIREBASE_CLIENT_EMAIL'
-          - '--set-secrets'
-          - 'JWT_SECRET=blend-backend-jwt-secret:latest,JWT_REFRESH_SECRET=blend-backend-jwt-refresh-secret:latest,FIREBASE_PRIVATE_KEY=blend-backend-firebase-key:latest'
-          - '--memory'
-          - '512Mi'
-          - '--cpu'
-          - '1'
-          - '--timeout'
-          - '300'
-          - '--min-instances'
-          - '0'
-          - '--max-instances'
-          - '5'
-      waitFor: ['push-backend']
+          - '--add-cloudsql-instances=$_INSTANCE_CONNECTION_NAME'
+          - '--set-env-vars=^@^NODE_ENV=production@DATABASE_URL=$_DATABASE_URL@FRONTEND_URL=$_FRONTEND_URL@GOOGLE_CLIENT_ID=$_GOOGLE_CLIENT_ID@GOOGLE_CLIENT_SECRET=$_GOOGLE_CLIENT_SECRET@GOOGLE_REDIRECT_URI=$_GOOGLE_REDIRECT_URI@FIREBASE_PROJECT_ID=$_FIREBASE_PROJECT_ID@FIREBASE_CLIENT_EMAIL=$_FIREBASE_CLIENT_EMAIL'
+          - '--set-secrets=JWT_SECRET=blend-backend-jwt-secret:latest,JWT_REFRESH_SECRET=blend-backend-jwt-refresh-secret:latest,FIREBASE_PRIVATE_KEY=blend-backend-firebase-key:latest'
+          - '--memory=512Mi'
+          - '--cpu=1'
+          - '--timeout=300'
+          - '--min-instances=0'
+          - '--max-instances=5'
+          - '--concurrency=80'
+          - '--quiet'
 
     # -------------------------------------------------------------------------
-    # Deploy Studio to Cloud Run
+    # 4. Deploy studio to Cloud Run (optional — used when Firebase Hosting is
+    #    not the sole frontend entrypoint).
     # -------------------------------------------------------------------------
-    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-      id: 'deploy-studio'
-      entrypoint: gcloud
+    - id: 'deploy-studio'
+      name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+      waitFor: ['push-studio']
+      entrypoint: 'gcloud'
       args:
           - 'run'
           - 'deploy'
           - '$_STUDIO_SERVICE'
-          - '--image'
-          - 'gcr.io/$PROJECT_ID/blend-studio:$BUILD_ID'
-          - '--region'
-          - 'us-central1'
-          - '--platform'
-          - 'managed'
+          - '--image=gcr.io/$PROJECT_ID/blend-studio:$BUILD_ID'
+          - '--region=$_REGION'
+          - '--platform=managed'
           - '--allow-unauthenticated'
-          - '--memory'
-          - '256Mi'
-          - '--cpu'
-          - '1'
-          - '--timeout'
-          - '60'
-          - '--min-instances'
-          - '0'
-          - '--max-instances'
-          - '3'
-      waitFor: ['push-studio']
+          - '--memory=256Mi'
+          - '--cpu=1'
+          - '--timeout=60'
+          - '--min-instances=0'
+          - '--max-instances=3'
+          - '--concurrency=200'
+          - '--quiet'
 
+# -----------------------------------------------------------------------------
+# Artifacts published to GCR for both images.
+# -----------------------------------------------------------------------------
 images:
     - 'gcr.io/$PROJECT_ID/blend-backend:$BUILD_ID'
     - 'gcr.io/$PROJECT_ID/blend-backend:latest'
     - 'gcr.io/$PROJECT_ID/blend-studio:$BUILD_ID'
     - 'gcr.io/$PROJECT_ID/blend-studio:latest'
 
+# -----------------------------------------------------------------------------
+# Substitution defaults. Every sensitive value should be overridden from the
+# invoking workflow / pipeline — the placeholders below only exist so `gcloud
+# builds submit` succeeds in local dry-runs.
+# -----------------------------------------------------------------------------
 substitutions:
     _BACKEND_SERVICE: 'blend-backend'
     _STUDIO_SERVICE: 'blend-studio'
-    _INSTANCE_CONNECTION_NAME: 'YOUR_PROJECT_ID:us-central1:blend-db'
-    _DATABASE_URL: 'postgresql://admin:password@localhost:5432/blend_studio?host=/cloudsql/storybook-452807:us-central1:blend-dashboard'
-    _FRONTEND_URL: 'https://studio.blend.juspay.design'
-    _GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID'
-    _GOOGLE_CLIENT_SECRET: 'YOUR_GOOGLE_CLIENT_SECRET'
-    _GOOGLE_REDIRECT_URI: 'https://api.blend.juspay.design/api/auth/google/callback'
-    _FIREBASE_API_KEY: 'YOUR_FIREBASE_API_KEY'
-    _FIREBASE_AUTH_DOMAIN: 'YOUR_PROJECT.firebaseapp.com'
-    _FIREBASE_PROJECT_ID: 'YOUR_PROJECT_ID'
-    _FIREBASE_STORAGE_BUCKET: 'YOUR_PROJECT.firebasestorage.app'
-    _FIREBASE_MESSAGING_SENDER_ID: 'YOUR_SENDER_ID'
-    _FIREBASE_APP_ID: 'YOUR_APP_ID'
-    _FIREBASE_DATABASE_URL: 'https://YOUR_PROJECT-default-rtdb.firebaseio.com'
-    _FIREBASE_CLIENT_EMAIL: 'blend-firebase@YOUR_PROJECT.iam.gserviceaccount.com'
+    _REGION: 'us-central1'
+    _INSTANCE_CONNECTION_NAME: 'PROJECT_ID:REGION:INSTANCE'
+    _DATABASE_URL: 'postgresql://user:password@localhost:5432/db?host=/cloudsql/PROJECT_ID:REGION:INSTANCE'
+    _FRONTEND_URL: 'https://example.invalid'
+    _API_BASE_URL: 'https://api.example.invalid'
+    _GOOGLE_CLIENT_ID: 'REPLACE_ME'
+    _GOOGLE_CLIENT_SECRET: 'REPLACE_ME'
+    _GOOGLE_REDIRECT_URI: 'https://api.example.invalid/api/auth/google/callback'
+    _FIREBASE_API_KEY: 'REPLACE_ME'
+    _FIREBASE_AUTH_DOMAIN: 'example.firebaseapp.com'
+    _FIREBASE_PROJECT_ID: 'REPLACE_ME'
+    _FIREBASE_STORAGE_BUCKET: 'example.appspot.com'
+    _FIREBASE_MESSAGING_SENDER_ID: 'REPLACE_ME'
+    _FIREBASE_APP_ID: 'REPLACE_ME'
+    _FIREBASE_DATABASE_URL: 'https://example-default-rtdb.firebaseio.com'
+    _FIREBASE_CLIENT_EMAIL: 'firebase-adminsdk@example.iam.gserviceaccount.com'
 
 options:
     logging: CLOUD_LOGGING_ONLY
+    machineType: 'E2_HIGHCPU_8'
+    dynamicSubstitutions: true
+
+timeout: 1800s

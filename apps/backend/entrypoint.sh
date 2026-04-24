@@ -1,23 +1,17 @@
 #!/bin/sh
 set -e
 
-echo "🏃 Starting Blend Backend..."
+echo "Starting Blend Backend (NODE_ENV=${NODE_ENV:-production})..."
 
-# Register TypeScript path aliases at runtime
-if [ -f "./node_modules/tsconfig-paths/register.js" ]; then
-    echo "📝 Registering TypeScript path aliases..."
-    node ./node_modules/tsconfig-paths/register.js
-fi
-
-# Run migrations if DATABASE_URL is set
 if [ -n "$DATABASE_URL" ]; then
-    echo "🔄 Running database migrations..."
-    npx prisma migrate deploy || {
-        echo "⚠️ Migration warning (may be already applied or DB unavailable)"
+    echo "Applying database migrations..."
+    npx --yes prisma migrate deploy \
+        --schema=./prisma/schema.prisma || {
+        echo "WARN: prisma migrate deploy failed (likely already applied or transient); continuing."
     }
 else
-    echo "⚠️ DATABASE_URL not set, skipping migrations"
+    echo "WARN: DATABASE_URL is not set — skipping migrations."
 fi
 
-echo "🚀 Starting server on port ${PORT:-8080}..."
+echo "Launching server on port ${PORT:-8080}..."
 exec node dist/server.js
