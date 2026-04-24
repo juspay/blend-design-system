@@ -122,13 +122,88 @@ jobs:
                   validate_https_url "STAGING_API_BASE_URL" "${STAGING_API_BASE_URL}"
 
     # ------------------------------------------------------------------------
+    # 1. Apply backend database migrations before any Cloud Run rollout.
+    # ------------------------------------------------------------------------
+    migrate-backend-db:
+        name: Apply backend migrations (staging)
+        runs-on: ubuntu-latest
+        needs: preflight
+        if: >-
+            github.event_name == 'push' ||
+            github.event.inputs.deploy_backend != 'false'
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: ${{ env.PNPM_VERSION }}
+                  run_install: false
+
+            - name: Install backend dependencies
+              run: pnpm install --frozen-lockfile --filter "@blend-design/justbackend..."
+
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v2
+              with:
+                  credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+            - name: Set up Cloud SDK
+              uses: google-github-actions/setup-gcloud@v2
+              with:
+                  project_id: ${{ env.PROJECT_ID }}
+
+            - name: Install Cloud SQL Auth Proxy
+              run: |
+                  set -euo pipefail
+                  curl -fsSL -o cloud-sql-proxy \
+                    https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.15.2/cloud-sql-proxy.linux.amd64
+                  chmod +x cloud-sql-proxy
+
+            - name: Run Prisma migrate deploy (staging)
+              env:
+                  DB_USER: ${{ secrets.DATABASE_USER }}
+                  DB_NAME: ${{ secrets.STAGING_DATABASE_NAME }}
+                  DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
+                  INSTANCE_CONNECTION_NAME: ${{ secrets.CLOUD_SQL_CONNECTION_NAME }}
+              run: |
+                  set -euo pipefail
+                  ENCODED_PASS=$(python3 -c "import os, urllib.parse; print(urllib.parse.quote(os.environ['DB_PASSWORD'], safe=''))")
+                  DATABASE_URL="postgresql://${DB_USER}:${ENCODED_PASS}@127.0.0.1:5432/${DB_NAME}?connection_limit=1&pool_timeout=60"
+                  echo "::add-mask::${DATABASE_URL}"
+
+                  ./cloud-sql-proxy "${INSTANCE_CONNECTION_NAME}" --port 5432 --quiet &
+                  proxy_pid=$!
+                  trap 'kill ${proxy_pid}' EXIT
+
+                  for _ in $(seq 1 20); do
+                    if nc -z 127.0.0.1 5432; then
+                      break
+                    fi
+                    sleep 1
+                  done
+                  nc -z 127.0.0.1 5432
+
+                  DATABASE_URL="${DATABASE_URL}" pnpm --filter @blend-design/justbackend exec prisma migrate deploy --schema=apps/backend/prisma/schema.prisma
+                  DATABASE_URL="${DATABASE_URL}" pnpm --filter @blend-design/justbackend exec prisma migrate status --schema=apps/backend/prisma/schema.prisma
+
+    # ------------------------------------------------------------------------
     # 1. Build & deploy backend via Cloud Build. Studio image is still built
     #    inside the same Cloud Build (see cloudbuild.yaml) for parity.
     # ------------------------------------------------------------------------
     deploy-backend:
         name: Build & deploy backend (Cloud Run)
         runs-on: ubuntu-latest
-        needs: preflight
+        needs: [preflight, migrate-backend-db]
         if: >-
             github.event_name == 'push' ||
             github.event.inputs.deploy_backend != 'false'
@@ -285,7 +360,7 @@ jobs:
     summary:
         name: Deployment summary
         runs-on: ubuntu-latest
-        needs: [deploy-backend, deploy-studio]
+        needs: [migrate-backend-db, deploy-backend, deploy-studio]
         if: always()
         permissions: {}
         steps:
@@ -296,6 +371,7 @@ jobs:
                     echo ""
                     echo "| Component | Status |"
                     echo "|-----------|--------|"
+                    echo "| Backend DB migrations | ${{ needs.migrate-backend-db.result }} |"
                     echo "| Backend (Cloud Run) | ${{ needs.deploy-backend.result }} |"
                     echo "| Studio (Firebase Hosting) | ${{ needs.deploy-studio.result }} |"
                   } >> "$GITHUB_STEP_SUMMARY"

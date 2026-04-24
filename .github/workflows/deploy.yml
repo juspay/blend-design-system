@@ -37,6 +37,8 @@ concurrency:
 env:
     PROJECT_ID: storybook-452807
     REGION: us-central1
+    PNPM_VERSION: 10.21.0
+    NODE_VERSION: '20'
 
 jobs:
     deploy:
@@ -88,6 +90,59 @@ jobs:
 
             - name: Configure Docker for Artifact Registry
               run: gcloud auth configure-docker gcr.io --quiet
+
+            - name: Setup Node.js
+              if: github.event.inputs.deploy_backend != 'false'
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+
+            - name: Setup pnpm
+              if: github.event.inputs.deploy_backend != 'false'
+              uses: pnpm/action-setup@v4
+              with:
+                  version: ${{ env.PNPM_VERSION }}
+                  run_install: false
+
+            - name: Install backend dependencies
+              if: github.event.inputs.deploy_backend != 'false'
+              run: pnpm install --frozen-lockfile --filter "@blend-design/justbackend..."
+
+            - name: Install Cloud SQL Auth Proxy
+              if: github.event.inputs.deploy_backend != 'false'
+              run: |
+                  set -euo pipefail
+                  curl -fsSL -o cloud-sql-proxy \
+                    https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.15.2/cloud-sql-proxy.linux.amd64
+                  chmod +x cloud-sql-proxy
+
+            - name: Run Prisma migrate deploy
+              if: github.event.inputs.deploy_backend != 'false'
+              env:
+                  DB_USER: ${{ secrets.DATABASE_USER }}
+                  DB_NAME: ${{ github.event.inputs.environment == 'staging' && secrets.STAGING_DATABASE_NAME || secrets.DATABASE_NAME }}
+                  DB_PASSWORD: ${{ github.event.inputs.environment == 'staging' && secrets.STAGING_DB_PASSWORD || secrets.PROD_DB_PASSWORD }}
+                  INSTANCE_CONNECTION_NAME: ${{ secrets.CLOUD_SQL_CONNECTION_NAME }}
+              run: |
+                  set -euo pipefail
+                  ENCODED_PASS=$(python3 -c "import os, urllib.parse; print(urllib.parse.quote(os.environ['DB_PASSWORD'], safe=''))")
+                  DATABASE_URL="postgresql://${DB_USER}:${ENCODED_PASS}@127.0.0.1:5432/${DB_NAME}?connection_limit=1&pool_timeout=60"
+                  echo "::add-mask::${DATABASE_URL}"
+
+                  ./cloud-sql-proxy "${INSTANCE_CONNECTION_NAME}" --port 5432 --quiet &
+                  proxy_pid=$!
+                  trap 'kill ${proxy_pid}' EXIT
+
+                  for _ in $(seq 1 20); do
+                    if nc -z 127.0.0.1 5432; then
+                      break
+                    fi
+                    sleep 1
+                  done
+                  nc -z 127.0.0.1 5432
+
+                  DATABASE_URL="${DATABASE_URL}" pnpm --filter @blend-design/justbackend exec prisma migrate deploy --schema=apps/backend/prisma/schema.prisma
+                  DATABASE_URL="${DATABASE_URL}" pnpm --filter @blend-design/justbackend exec prisma migrate status --schema=apps/backend/prisma/schema.prisma
 
             - name: Build & Deploy via Cloud Build
               if: github.event.inputs.deploy_backend != 'false'

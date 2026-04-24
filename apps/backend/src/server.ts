@@ -99,6 +99,17 @@ app.get('/api/health', (_req, res) => {
     })
 })
 
+app.use('/api', (req, res, next) => {
+    if (req.path === '/health' || isDatabaseReady()) {
+        return next()
+    }
+
+    return res.status(503).json({
+        success: false,
+        message: 'Database connection is still initializing. Please retry.',
+    })
+})
+
 app.use('/docs', swaggerUiHandler, swaggerUiSetup)
 
 app.get('/auth/google/callback', googleCallback)

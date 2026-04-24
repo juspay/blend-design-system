@@ -11,6 +11,31 @@ import { logger } from '@/utils/logger.js'
 
 const { PrismaClient } = prismaClientModule as any
 
+const withPrismaPoolSettings = (
+    rawDatabaseUrl?: string
+): string | undefined => {
+    if (!rawDatabaseUrl) return rawDatabaseUrl
+
+    try {
+        const parsedUrl = new URL(rawDatabaseUrl)
+        const searchParams = parsedUrl.searchParams
+
+        // Cloud Run creates many concurrent requests; keep per-instance
+        // Prisma pool small and wait a bit longer before timing out.
+        if (!searchParams.has('connection_limit')) {
+            searchParams.set('connection_limit', '3')
+        }
+        if (!searchParams.has('pool_timeout')) {
+            searchParams.set('pool_timeout', '30')
+        }
+
+        return parsedUrl.toString()
+    } catch (error) {
+        logger.warn({ err: error }, 'Invalid DATABASE_URL; using raw value')
+        return rawDatabaseUrl
+    }
+}
+
 // ---------------------------------------------------------------------------
 // PostgreSQL (Prisma)
 // ---------------------------------------------------------------------------
@@ -19,7 +44,18 @@ const globalForPrisma = globalThis as unknown as {
     prisma: any | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+const prismaClientOptions = process.env.DATABASE_URL
+    ? {
+          datasources: {
+              db: {
+                  url: withPrismaPoolSettings(process.env.DATABASE_URL),
+              },
+          },
+      }
+    : undefined
+
+export const prisma =
+    globalForPrisma.prisma ?? new PrismaClient(prismaClientOptions)
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 

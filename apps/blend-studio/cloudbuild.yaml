@@ -98,7 +98,7 @@ steps:
           - '--timeout=300'
           - '--min-instances=0'
           - '--max-instances=5'
-          - '--concurrency=80'
+          - '--concurrency=20'
           - '--quiet'
 
     # -------------------------------------------------------------------------
