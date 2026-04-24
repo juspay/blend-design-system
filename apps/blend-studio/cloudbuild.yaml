@@ -79,8 +79,6 @@ steps:
           - '0'
           - '--max-instances'
           - '5'
-          - '--service-account'
-          - 'blend-backend-sa@$PROJECT_ID.iam.gserviceaccount.com'
       waitFor: ['push-backend']
 
     - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
