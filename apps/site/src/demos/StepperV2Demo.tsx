@@ -553,6 +553,7 @@ const StepperV2Demo = () => {
                         steps={horizontalSteps}
                         clickable={true}
                         onStepClick={handleHorizontalStepClick}
+                        stepperType={StepperV2Type.HORIZONTAL}
                     />
                     <div
                         className={`rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8 ${theme === Theme.DARK ? 'text-gray-100' : 'text-gray-900'}`}

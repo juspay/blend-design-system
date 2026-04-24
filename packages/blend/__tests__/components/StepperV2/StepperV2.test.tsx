@@ -34,6 +34,17 @@ describe('StepperV2', () => {
             expect(screen.getByText('Gamma')).toBeInTheDocument()
         })
 
+        it('uses horizontal layout when stepperType is omitted (default)', () => {
+            render(<StepperV2 steps={horizontalSteps} />)
+
+            expect(
+                screen.getByRole('group', {
+                    name: 'Progress indicator: step 2 of 3',
+                })
+            ).toBeInTheDocument()
+            expect(screen.getByText('Beta')).toBeInTheDocument()
+        })
+
         it('marks the current step with aria-current on the step control', () => {
             render(
                 <StepperV2
@@ -72,6 +83,33 @@ describe('StepperV2', () => {
 
             await user.click(screen.getByRole('button', { name: /Alpha/ }))
             expect(onStepClick).toHaveBeenCalledWith(0)
+        })
+
+        it('moves focus between clickable steps with ArrowRight and ArrowLeft', async () => {
+            const { user } = render(
+                <StepperV2
+                    steps={horizontalSteps}
+                    stepperType={StepperV2Type.HORIZONTAL}
+                    clickable
+                    onStepClick={vi.fn()}
+                />
+            )
+
+            const alpha = screen.getByRole('button', { name: /Alpha/ })
+            const beta = screen.getByRole('button', { name: /Beta/ })
+            const gamma = screen.getByRole('button', { name: /Gamma/ })
+
+            alpha.focus()
+            expect(document.activeElement).toBe(alpha)
+
+            await user.keyboard('{ArrowRight}')
+            expect(document.activeElement).toBe(beta)
+
+            await user.keyboard('{ArrowRight}')
+            expect(document.activeElement).toBe(gamma)
+
+            await user.keyboard('{ArrowLeft}')
+            expect(document.activeElement).toBe(beta)
         })
 
         it('does not call onStepClick when the step is disabled', async () => {
@@ -149,6 +187,65 @@ describe('StepperV2', () => {
             expect(screen.getByText('QA')).toBeInTheDocument()
         })
 
+        it('renders step description when provided', () => {
+            const steps: StepperV2Step[] = [
+                {
+                    id: 1,
+                    title: 'One',
+                    status: StepperV2StepStatus.CURRENT,
+                    description: 'Helper text under the title',
+                },
+                {
+                    id: 2,
+                    title: 'Two',
+                    status: StepperV2StepStatus.PENDING,
+                },
+            ]
+            render(
+                <StepperV2 steps={steps} stepperType={StepperV2Type.VERTICAL} />
+            )
+
+            expect(
+                screen.getByText('Helper text under the title')
+            ).toBeInTheDocument()
+        })
+
+        it('moves focus between clickable steps with ArrowDown and ArrowUp', async () => {
+            const simpleVertical: StepperV2Step[] = [
+                {
+                    id: 1,
+                    title: 'First',
+                    status: StepperV2StepStatus.CURRENT,
+                },
+                { id: 2, title: 'Second', status: StepperV2StepStatus.PENDING },
+                { id: 3, title: 'Third', status: StepperV2StepStatus.PENDING },
+            ]
+            const { user } = render(
+                <StepperV2
+                    steps={simpleVertical}
+                    stepperType={StepperV2Type.VERTICAL}
+                    clickable
+                    onStepClick={vi.fn()}
+                />
+            )
+
+            const first = screen.getByRole('button', { name: /First/ })
+            const second = screen.getByRole('button', { name: /Second/ })
+            const third = screen.getByRole('button', { name: /Third/ })
+
+            first.focus()
+            expect(document.activeElement).toBe(first)
+
+            await user.keyboard('{ArrowDown}')
+            expect(document.activeElement).toBe(second)
+
+            await user.keyboard('{ArrowDown}')
+            expect(document.activeElement).toBe(third)
+
+            await user.keyboard('{ArrowUp}')
+            expect(document.activeElement).toBe(second)
+        })
+
         it('calls onSubstepClick with step id and 1-based substep index', async () => {
             const onSubstepClick = vi.fn()
             const { user } = render(
@@ -179,6 +276,22 @@ describe('StepperV2', () => {
             )
 
             expect(ref.current).toBeInstanceOf(HTMLDivElement)
+            expect(ref.current?.getAttribute('data-stepper')).toBe('stepper')
+        })
+
+        it('forwards ref to the root for vertical stepper', () => {
+            const ref = createRef<HTMLDivElement>()
+            const steps: StepperV2Step[] = [
+                { id: 1, title: 'A', status: StepperV2StepStatus.CURRENT },
+            ]
+            render(
+                <StepperV2
+                    ref={ref}
+                    steps={steps}
+                    stepperType={StepperV2Type.VERTICAL}
+                />
+            )
+
             expect(ref.current?.getAttribute('data-stepper')).toBe('stepper')
         })
     })

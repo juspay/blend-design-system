@@ -13,9 +13,9 @@ import {
 } from '../stepperV2.types'
 import { scheduleLiveRegionAnnouncement } from '../utils'
 import Block from '../../Primitives/Block/Block'
-import { VerticalStepComponent } from './VerticalStepComponent'
+import { Steps } from './Steps'
 
-const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
+const StepperComponent = forwardRef<HTMLDivElement, StepperV2Props>(
     (
         {
             steps,
@@ -48,6 +48,8 @@ const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
         const derivedIndex =
             currentExplicitIndex >= 0 ? currentExplicitIndex : 0
 
+        const isHorizontal = stepperType === StepperV2Type.HORIZONTAL
+
         const handleKeyDown = (
             event: React.KeyboardEvent,
             currentIndex: number
@@ -57,23 +59,44 @@ const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
             let targetIndex: number | null = null
             const lastIndex = steps.length - 1
 
-            switch (event.key) {
-                case 'ArrowDown':
-                    event.preventDefault()
-                    targetIndex = Math.min(currentIndex + 1, lastIndex)
-                    break
-                case 'ArrowUp':
-                    event.preventDefault()
-                    targetIndex = Math.max(currentIndex - 1, 0)
-                    break
-                case 'Home':
-                    event.preventDefault()
-                    targetIndex = 0
-                    break
-                case 'End':
-                    event.preventDefault()
-                    targetIndex = lastIndex
-                    break
+            if (isHorizontal) {
+                switch (event.key) {
+                    case 'ArrowRight':
+                        event.preventDefault()
+                        targetIndex = Math.min(currentIndex + 1, lastIndex)
+                        break
+                    case 'ArrowLeft':
+                        event.preventDefault()
+                        targetIndex = Math.max(currentIndex - 1, 0)
+                        break
+                    case 'Home':
+                        event.preventDefault()
+                        targetIndex = 0
+                        break
+                    case 'End':
+                        event.preventDefault()
+                        targetIndex = lastIndex
+                        break
+                }
+            } else {
+                switch (event.key) {
+                    case 'ArrowDown':
+                        event.preventDefault()
+                        targetIndex = Math.min(currentIndex + 1, lastIndex)
+                        break
+                    case 'ArrowUp':
+                        event.preventDefault()
+                        targetIndex = Math.max(currentIndex - 1, 0)
+                        break
+                    case 'Home':
+                        event.preventDefault()
+                        targetIndex = 0
+                        break
+                    case 'End':
+                        event.preventDefault()
+                        targetIndex = lastIndex
+                        break
+                }
             }
 
             if (targetIndex === null) return
@@ -108,21 +131,32 @@ const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
                 data-stepper="stepper"
                 ref={ref}
                 height={'100%'}
-                display="flex"
-                flexDirection="column"
+                width={
+                    stepperType === StepperV2Type.HORIZONTAL ? '100%' : 'auto'
+                }
+                display={'flex'}
+                flexDirection={
+                    stepperType === StepperV2Type.VERTICAL ? 'column' : 'row'
+                }
+                justifyContent={
+                    stepperType === StepperV2Type.HORIZONTAL
+                        ? 'space-between'
+                        : 'flex-start'
+                }
                 role="group"
                 aria-label={`Progress indicator: step ${derivedIndex + 1} of ${steps.length}`}
                 aria-roledescription="stepper"
                 {...blockHtmlProps}
             >
                 {steps.map((step, index) => (
-                    <VerticalStepComponent
+                    <Steps
                         key={step.id}
                         ref={(el) => {
                             stepRefs.current[index] = el
                         }}
                         step={step}
                         stepIndex={index}
+                        stepsLength={steps.length}
                         isCompleted={index < derivedIndex}
                         isCurrent={index === derivedIndex}
                         isFirst={index === 0}
@@ -140,4 +174,4 @@ const VerticalStepperV2 = forwardRef<HTMLDivElement, StepperV2Props>(
     }
 )
 
-export default VerticalStepperV2
+export default StepperComponent

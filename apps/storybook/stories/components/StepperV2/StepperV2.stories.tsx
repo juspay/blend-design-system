@@ -23,13 +23,14 @@ const meta: Meta<typeof StepperV2> = {
         docs: {
             description: {
                 component: `
-Token-driven stepper with horizontal and vertical layouts, optional substeps (vertical), and accessible keyboard navigation when \`clickable\` is enabled.
+Token-driven stepper with horizontal and vertical layouts, optional substeps (vertical only), and accessible keyboard navigation when \`clickable\` is enabled.
 
 ## Features
-- **Layouts**: \`stepperType\` horizontal (default) or vertical
+- **Layouts**: \`stepperType\` — \`horizontal\` (default) or \`vertical\`
 - **States**: completed, current, pending, disabled, skipped via \`StepperV2StepStatus\`
+- **Descriptions**: \`description\` on a step is shown in the **vertical** layout (below the title). Horizontal shows the title row only.
 - **Vertical substeps**: \`substeps\` array; \`onSubstepClick(stepId, substepIndex)\` uses **1-based** \`substepIndex\`
-- **Interactive**: \`clickable\` + \`onStepClick(stepIndex)\` for step selection
+- **Interactive**: \`clickable\` with \`onStepClick(stepIndex)\` — **horizontal**: \`ArrowLeft\` / \`ArrowRight\`, **vertical**: \`ArrowUp\` / \`ArrowDown\`; \`Home\` / \`End\` jump to first / last step when applicable
 
 ## Usage
 
@@ -58,12 +59,23 @@ const steps = [
         clickable: {
             control: 'boolean',
             description:
-                'When true, steps are focusable and emit onStepClick / support arrow keys',
+                'When true, steps are focusable, emit onStepClick, and support keyboard navigation between steps',
         },
         stepperType: {
             control: 'select',
             options: Object.values(StepperV2Type),
+            description:
+                'Horizontal: Left/Right between steps. Vertical: Up/Down between steps',
         },
+        onStepClick: { description: 'Called with the step index (0-based)' },
+        onSubstepClick: {
+            description:
+                'Vertical only. (stepId, substepIndex) where substepIndex is 1-based',
+        },
+    },
+    args: {
+        onStepClick: fn(),
+        onSubstepClick: fn(),
     },
 }
 
@@ -138,36 +150,36 @@ function HorizontalClickableDemo() {
 }
 
 export const HorizontalClickable: Story = {
+    name: 'Horizontal (clickable)',
     render: () => <HorizontalClickableDemo />,
 }
 
-export const HorizontalWithDescriptions: Story = {
+export const VerticalWithDescriptions: Story = {
+    name: 'Vertical (with descriptions)',
     render: () => {
         const steps: StepperV2Step[] = [
             {
                 id: 1,
-                title: 'Short',
+                title: 'Draft',
                 status: StepperV2StepStatus.COMPLETED,
-                description: 'Optional description shown in a tooltip.',
+                description: 'Content is saved automatically.',
             },
             {
                 id: 2,
-                title: 'Current step',
+                title: 'Review',
                 status: StepperV2StepStatus.CURRENT,
-                description: 'Hover the info icon to read more.',
+                description:
+                    'Optional copy shown under the title in this layout.',
             },
             {
                 id: 3,
-                title: 'Next',
+                title: 'Publish',
                 status: StepperV2StepStatus.PENDING,
             },
         ]
         return (
-            <div style={{ maxWidth: 720 }}>
-                <StepperV2
-                    steps={steps}
-                    stepperType={StepperV2Type.HORIZONTAL}
-                />
+            <div style={{ minHeight: 320, maxWidth: 480 }}>
+                <StepperV2 steps={steps} stepperType={StepperV2Type.VERTICAL} />
             </div>
         )
     },
@@ -353,10 +365,12 @@ function VerticalClickableDemo() {
 }
 
 export const VerticalClickable: Story = {
+    name: 'Vertical (clickable + substeps)',
     render: () => <VerticalClickableDemo />,
 }
 
 export const WithDisabledStep: Story = {
+    name: 'Horizontal (with disabled step)',
     render: () => {
         const steps: StepperV2Step[] = [
             { id: 1, title: 'Done', status: StepperV2StepStatus.COMPLETED },

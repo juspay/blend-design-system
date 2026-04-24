@@ -8,10 +8,10 @@ Create a token-driven stepper for multi-step flows that supports:
 - **Step states**: Completed, current, pending, disabled, and skipped (`StepperV2StepStatus`)
 - **Current step resolution**: The active step is the first step whose `status` is `CURRENT`; if none is set, step `0` is treated as current
 - **Optional substeps** (vertical): Nested items under a step, with expand/collapse when substeps exist
-- **Optional descriptions** (horizontal): Per-step description with info affordance and accessible text
+- **Optional descriptions** (vertical only): `description` renders under the title in the vertical column. The horizontal layout shows the title row only (no description line)
 - **Interactive mode**: Optional `clickable` steps with `onStepClick(stepIndex)`; vertical also supports `onSubstepClick(stepId, substepIndex)` where `substepIndex` is **1-based** (first substep → `1`)
 - **Custom step icons**: Optional `icon` on a step overrides the default check / lock / index rendering
-- **Keyboard support** (when `clickable`): Arrow keys to move between steps, Home / End, Enter / Space to activate; polite live-region announcements on focus moves
+- **Keyboard support** (when `clickable`): **Horizontal** — `ArrowLeft` / `ArrowRight` between steps, `Home` / `End`, `Enter` / `Space` to activate. **Vertical** — `ArrowUp` / `ArrowDown` between steps, same `Home` / `End` and activation keys. Polite live-region announcements on focus moves between steps
 - **Accessibility**: Landmark `role="group"` with `aria-roledescription="stepper"`, per-step labels and `aria-current="step"` on the current step
 - **Theme support**: Light and dark token maps via `getStepperV2Tokens` / `useResponsiveTokens('STEPPERV2')`
 
@@ -25,8 +25,8 @@ Create a token-driven stepper for multi-step flows that supports:
 ```
 
 - **Root**: Flex row container (`data-stepper="stepper"`)
-- **Step column**: Connector line segment, status circle (check, lock, or index), title (and optional description / tooltip)
-- **Connectors**: Connector line styling is driven by connector line tokens (e.g., first/last segment and inactive state) as used by `StepperV2`
+- **Step column**: Inactive line segments, status circle (check, lock, or index), and **title** text (no description row in this layout)
+- **Connectors**: `<hr>`-style line segments and connector tokens for first/last visibility
 
 ### Vertical
 
@@ -40,8 +40,8 @@ Create a token-driven stepper for multi-step flows that supports:
   ○  Step 3
 ```
 
-- **Left rail**: Circle stack and vertical connector lines (including substep dots when expanded)
-- **Right column**: Step title row (interactive when `clickable`), optional chevron expand control, substep list with its own focus/click behavior when `clickable`
+- **Left rail**: Circle stack, vertical connector lines, and substep dot rail when expanded
+- **Right column**: Step title, optional `description` text, interactive title row when `clickable`, chevron when expandable, and substep list with its own focus/click behavior when `clickable`
 
 ## Props & Types
 
@@ -62,7 +62,7 @@ export enum StepperV2Type {
 export type StepperV2Props = {
     steps: StepperV2Step[]
     onStepClick?: (stepIndex: number) => void
-    /** Receives numeric step `id` and 1-based substep ordinal (implementation passes `subIdx + 1`). */
+    /** Receives numeric step `id` and 1-based substep ordinal. */
     onSubstepClick?: (stepId: number, substepIndex: number) => void
     clickable?: boolean
     stepperType?: StepperV2Type
@@ -88,7 +88,7 @@ export type StepperV2Step = {
 } & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'id'>
 ```
 
-Note: the numeric `id` on each step is a domain identifier only and is not used as the DOM `id` attribute.
+**Note:** `id` on each step is the **domain** step identifier (for callbacks and data). The component also generates **DOM** `id` / `aria-*` wiring per step (e.g. `stepper-<instance>-step-<id>-<index>`) for labels and roving focus.
 
 ## Final Token Type (summary)
 
@@ -151,11 +151,11 @@ export type ResponsiveStepperV2Tokens = {
 
 ## Design Decisions
 
-### 1. Separate horizontal and vertical implementations
+### 1. Single container; orientation in `Steps`
 
-**Decision**: `StepperV2` delegates to `HorizontalStepperV2` or `VerticalStepperV2` based on `stepperType`.
+**Decision**: `StepperV2` renders `Stepper/StepperComponent`, which maps steps to `Stepper/Steps` and passes `stepperType`. `Steps` implements horizontal as an early return (one focusable “cell” per step: `StepsHorizontalBody`, `StepStatusCircle`, connectors) and vertical as a two-column tree (title, description, expand, `StepsSubstepList`, `StepsVerticalSubstepRails`).
 
-**Rationale**: Layout, substeps, and keyboard models differ. Isolated components keep each orientation maintainable and avoid a single overloaded tree.
+**Rationale**: One orchestration point for shared behavior (status math, ARIA, handlers) while keeping horizontal vs. vertical trees readable via small subcomponents (`stepsHelpers`, `StepStatusCircle`, etc.).
 
 ### 2. Explicit `CURRENT` status drives the indicator
 
@@ -165,7 +165,7 @@ export type ResponsiveStepperV2Tokens = {
 
 ### 3. Substep callback uses step `id` and 1-based index
 
-**Decision**: `VerticalStepperV2` maps internal `(stepIdx, subIdx)` to `onSubstepClick(steps[stepIdx].id, subIdx + 1)`.
+**Decision**: `StepperComponent` maps internal `(stepIdx, subIdx)` to `onSubstepClick(steps[stepIdx].id, subIdx + 1)`.
 
 **Rationale**: Callers often key data by stable step `id` and human-friendly ordinal; documenting 1-based `substepIndex` avoids off-by-one bugs in app code.
 
@@ -177,12 +177,12 @@ export type ResponsiveStepperV2Tokens = {
 
 ### 5. Live region announcements on keyboard step changes
 
-**Decision**: When `clickable` and focus moves between steps via arrows / Home / End, a short-lived `role="status"` region announces the focused step title.
+**Decision**: When `clickable` and focus moves between steps via arrows or Home / End, a short-lived `role="status"` region announces the focused step title.
 
 **Rationale**: Supports WCAG feedback when focus moves without a full page change; shared helper `scheduleLiveRegionAnnouncement` lives in `StepperV2/utils.ts`.
 
-### 6. Horizontal interactive step surface
+### 6. Horizontal and vertical: ref and focus surface
 
-**Decision**: Click targets include the icon rail and the title column; the forwarded `ref` attaches to the focusable step control for programmatic focus alignment with keyboard order.
+**Decision**: For **horizontal** clickable steps, the forwarded `ref` for each `Steps` instance targets the full step `role="button"` / `group` root so arrow-key order matches the visible cell. For **vertical**, the composed `ref` targets the main title/ interactive column (substeps use their own roving focus).
 
-**Rationale**: Matches user expectation that the whole step “cell” is clickable, while preserving valid roles and focus management for arrow-key navigation.
+**Rationale**: Click targets and `tabIndex` align with the primary step control per layout; `ArrowLeft` in `Steps` delegates to the parent for horizontal inter-step movement alongside `ArrowRight`.

@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import StepperV2 from '../../../lib/components/StepperV2/StepperV2'
@@ -39,10 +39,6 @@ const verticalStepsWithSubsteps: StepperV2Step[] = [
 
 describe('StepperV2 Accessibility', () => {
     beforeEach(() => {
-        vi.clearAllMocks()
-    })
-
-    afterEach(() => {
         vi.clearAllMocks()
     })
 
@@ -127,7 +123,7 @@ describe('StepperV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('horizontal step with description has no detectable violations', async () => {
+        it('vertical step with description has no detectable violations', async () => {
             const steps: StepperV2Step[] = [
                 {
                     id: 1,
@@ -137,10 +133,7 @@ describe('StepperV2 Accessibility', () => {
                 },
             ]
             const { container } = render(
-                <StepperV2
-                    steps={steps}
-                    stepperType={StepperV2Type.HORIZONTAL}
-                />
+                <StepperV2 steps={steps} stepperType={StepperV2Type.VERTICAL} />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -162,7 +155,7 @@ describe('StepperV2 Accessibility', () => {
             ).toHaveAttribute('aria-roledescription', 'stepper')
         })
 
-        it('clickable horizontal steps are focusable and ArrowRight moves focus', async () => {
+        it('clickable horizontal steps are focusable; ArrowRight and ArrowLeft move focus', async () => {
             const { user } = render(
                 <StepperV2
                     steps={horizontalSteps}
@@ -180,6 +173,40 @@ describe('StepperV2 Accessibility', () => {
 
             await user.keyboard('{ArrowRight}')
             expect(document.activeElement).toBe(buttons[1])
+
+            await user.keyboard('{ArrowRight}')
+            expect(document.activeElement).toBe(buttons[2])
+
+            await user.keyboard('{ArrowLeft}')
+            expect(document.activeElement).toBe(buttons[1])
+        })
+
+        it('clickable vertical steps move focus with ArrowDown and ArrowUp', async () => {
+            const simpleVertical: StepperV2Step[] = [
+                {
+                    id: 1,
+                    title: 'First',
+                    status: StepperV2StepStatus.CURRENT,
+                },
+                { id: 2, title: 'Second', status: StepperV2StepStatus.PENDING },
+            ]
+            const { user } = render(
+                <StepperV2
+                    steps={simpleVertical}
+                    stepperType={StepperV2Type.VERTICAL}
+                    clickable
+                    onStepClick={vi.fn()}
+                />
+            )
+
+            const first = screen.getByRole('button', { name: /First/ })
+            const second = screen.getByRole('button', { name: /Second/ })
+            first.focus()
+            expect(document.activeElement).toBe(first)
+            await user.keyboard('{ArrowDown}')
+            expect(document.activeElement).toBe(second)
+            await user.keyboard('{ArrowUp}')
+            expect(document.activeElement).toBe(first)
         })
 
         it('clickable horizontal step activates with Space', async () => {
@@ -193,8 +220,7 @@ describe('StepperV2 Accessibility', () => {
                 />
             )
 
-            // Exposed name is the labelled title (aria-labelledby), not the verbose aria-label
-            // ("Step 3 of Step 3, pending") — match the computed accessible name.
+            // Computed name uses the title text from aria-labelledby, not the verbose aria-label.
             const lastStep = screen.getByRole('button', { name: /^Step 3$/ })
             lastStep.focus()
             await user.keyboard(' ')
