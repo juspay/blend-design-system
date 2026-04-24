@@ -37,7 +37,10 @@ COPY --from=builder --chown=appuser:appgroup /app/apps/backend/prisma ./prisma
 COPY --from=builder --chown=appuser:appgroup /app/apps/backend/node_modules ./node_modules
 COPY --from=builder --chown=appuser:appgroup /app/node_modules ../../node_modules
 COPY --from=builder --chown=appuser:appgroup /app/apps/backend/package.json ./
+COPY --from=builder --chown=appuser:appgroup /app/apps/backend/tsconfig.json ./
 COPY --chown=appuser:appgroup apps/backend/entrypoint.sh ./entrypoint.sh
+
+COPY --from=builder --chown=appuser:appgroup /app/apps/backend/node_modules/tsconfig-paths ./node_modules/tsconfig-paths
 
 RUN chmod +x ./entrypoint.sh
 
