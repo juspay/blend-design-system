@@ -157,7 +157,6 @@ substitutions:
     _FIREBASE_MESSAGING_SENDER_ID: 'REPLACE_ME'
     _FIREBASE_APP_ID: 'REPLACE_ME'
     _FIREBASE_DATABASE_URL: 'https://example-default-rtdb.firebaseio.com'
-    _FIREBASE_CLIENT_EMAIL: 'firebase-adminsdk@example.iam.gserviceaccount.com'
 
 options:
     logging: CLOUD_LOGGING_ONLY
