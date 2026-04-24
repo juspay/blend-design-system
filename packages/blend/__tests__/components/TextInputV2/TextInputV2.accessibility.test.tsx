@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Mail } from 'lucide-react'
@@ -432,12 +432,22 @@ describe('TextInputV2 Accessibility', () => {
     })
 
     describe('Embedded dropdown (WCAG 4.1.2, axe)', () => {
+        const originalResizeObserver = globalThis.ResizeObserver
+
         beforeEach(() => {
-            global.ResizeObserver = class ResizeObserver {
+            globalThis.ResizeObserver = class ResizeObserver {
                 observe() {}
                 unobserve() {}
                 disconnect() {}
             } as unknown as typeof ResizeObserver
+        })
+
+        afterEach(() => {
+            if (originalResizeObserver) {
+                globalThis.ResizeObserver = originalResizeObserver
+            } else {
+                Reflect.deleteProperty(globalThis, 'ResizeObserver')
+            }
         })
 
         it('meets WCAG via axe with left select only', async () => {
@@ -527,6 +537,23 @@ describe('TextInputV2 Accessibility', () => {
                 screen.getByRole('button', { name: 'Unit' })
             ).toBeInTheDocument()
         })
+
+        it('meets WCAG via axe when dropdown is empty and icon slot is used', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="With icon"
+                    value=""
+                    onChange={() => {}}
+                    dropdown={[]}
+                    leftSlot={{
+                        slot: <Mail size={16} aria-hidden="true" />,
+                        maxHeight: 16,
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('Focus and Blur Events (WCAG 3.2.1 On Focus - Level A)', () => {
@@ -600,6 +627,24 @@ describe('TextInputV2 Accessibility', () => {
     })
 
     describe('Comprehensive WCAG compliance', () => {
+        const originalResizeObserver = globalThis.ResizeObserver
+
+        beforeEach(() => {
+            globalThis.ResizeObserver = class ResizeObserver {
+                observe() {}
+                unobserve() {}
+                disconnect() {}
+            } as unknown as typeof ResizeObserver
+        })
+
+        afterEach(() => {
+            if (originalResizeObserver) {
+                globalThis.ResizeObserver = originalResizeObserver
+            } else {
+                Reflect.deleteProperty(globalThis, 'ResizeObserver')
+            }
+        })
+
         it('meets WCAG standards with all features combined', async () => {
             const { container } = render(
                 <TextInputV2
@@ -674,11 +719,6 @@ describe('TextInputV2 Accessibility', () => {
         })
 
         it('meets WCAG standards with left and right embedded selects', async () => {
-            global.ResizeObserver = class ResizeObserver {
-                observe() {}
-                unobserve() {}
-                disconnect() {}
-            } as unknown as typeof ResizeObserver
             const { container } = render(
                 <TextInputV2
                     label="Composite"

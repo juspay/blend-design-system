@@ -1,10 +1,7 @@
-import {
-    SingleSelectV2Props,
-    SingleSelectV2Variant,
-} from '../../SingleSelectV2/singleSelectV2.types'
+import { SingleSelectV2Variant } from '../../SingleSelectV2/singleSelectV2.types'
+import type { SingleSelectV2Props } from '../../SingleSelectV2/singleSelectV2.types'
 import { InputStateV2 } from '../inputV2.types'
-import { EmbeddedSingleSelectOptions } from './TextInputV2.types'
-
+import type { EmbeddedSingleSelectOptions } from './TextInputV2.types'
 export const FOCUS_RING_STYLES = {
     boxShadow: '0 0 0 3px #EFF6FF',
     backgroundColor: 'rgba(239, 246, 255, 0.15)',

@@ -58,9 +58,7 @@ const meta: Meta<typeof TextInputV2> = {
         docs: {
             description: {
                 component: `
-A flexible text input component (V2) with responsive tokens, floating/static labels, validation, and left/right **slots** or embedded **\`dropdown\`** (inline \`SingleSelectV2\` + \`SelectPosition\`).
-## Features
-- Three sizes: Small (\`sm\`), Medium (\`md\`), Large (\`lg\`) — \`TEXT_INPUTV2\` tokens
+ A flexible text input component (V2) with responsive tokens, floating/static labels, validation, and left/right **slots** or embedded **\`dropdown\`** (inline \`SingleSelectV2\` + \`DropdownPosition\`).- Three sizes: Small (\`sm\`), Medium (\`md\`), Large (\`lg\`) — \`TEXT_INPUTV2\` tokens
 - Label, subLabel, hint text, and help icon tooltip string (\`helpIconText\`)
 - Error state with \`{ show, message }\`
 - Required field indication
@@ -87,7 +85,7 @@ A flexible text input component (V2) with responsive tokens, floating/static lab
 ## Usage
 
 \`\`\`tsx
-import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system/...';
+ import { TextInputV2, InputSizeV2, DropdownPosition } from '@juspay/blend-design-system/...';
 
 <TextInputV2
   label="Phone"
@@ -331,7 +329,7 @@ export const WithLeftSelect: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Left embedded `dropdown` with `SelectPosition.LEFT` (inline SingleSelectV2). Icon slots are not used; text field gets extra left padding for the trigger.',
+                story: 'Left embedded `dropdown` with `DropdownPosition.LEFT` (inline SingleSelectV2). Icon slots are not used; text field gets extra left padding for the trigger.',
             },
         },
     },

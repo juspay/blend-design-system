@@ -1,8 +1,17 @@
 import React from 'react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import TextInputV2 from '../../../lib/components/InputsV2/TextInputV2/TextInputV2'
-import { DropdownPosition } from '../../../lib/components/InputsV2/TextInputV2/TextInputV2.types'
+import {
+    type EmbeddedSingleSelectOptions,
+    DropdownPosition,
+} from '../../../lib/components/InputsV2/TextInputV2/TextInputV2.types'
+import { toEmbeddedSingleSelectV2Props } from '../../../lib/components/InputsV2/TextInputV2/utils'
+import { SelectV2Alignment } from '../../../lib/components/SelectV2/selectV2.shared.types'
+import {
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+} from '../../../lib/components/SingleSelectV2/singleSelectV2.types'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -400,12 +409,22 @@ describe('TextInputV2 Component', () => {
     })
 
     describe('Embedded selects (dropdown + DropdownPosition)', () => {
+        const originalResizeObserver = globalThis.ResizeObserver
+
         beforeEach(() => {
-            global.ResizeObserver = class ResizeObserver {
+            globalThis.ResizeObserver = class ResizeObserver {
                 observe() {}
                 unobserve() {}
                 disconnect() {}
             } as unknown as typeof ResizeObserver
+        })
+
+        afterEach(() => {
+            if (originalResizeObserver) {
+                globalThis.ResizeObserver = originalResizeObserver
+            } else {
+                Reflect.deleteProperty(globalThis, 'ResizeObserver')
+            }
         })
 
         it('renders left embedded select with accessible trigger', () => {
@@ -581,6 +600,169 @@ describe('TextInputV2 Component', () => {
             )
             await user.click(await screen.findByText('Option B'))
             expect(onSelect).toHaveBeenCalledWith('b')
+        })
+
+        it('treats empty dropdown array as no embed so icon slots still render', () => {
+            render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
+                    dropdown={[]}
+                />
+            )
+            expect(
+                document.querySelector('[data-element="left-slot"]')
+            ).toBeInTheDocument()
+            expect(screen.getByTestId('mock-icon')).toBeInTheDocument()
+        })
+
+        it('field disabled overrides embed disabled when false on config', () => {
+            render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    disabled
+                    dropdown={{
+                        position: DropdownPosition.RIGHT,
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'Unit',
+                        disabled: false,
+                        'aria-label': 'Unit field',
+                    }}
+                />
+            )
+            expect(
+                screen.getByRole('button', { name: 'Unit field' })
+            ).toBeDisabled()
+        })
+
+        it('forwards SingleSelectV2 props such as name onto the embed', () => {
+            render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    dropdown={{
+                        position: DropdownPosition.LEFT,
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'Choose',
+                        name: 'country-code-select',
+                        'aria-label': 'Country',
+                    }}
+                />
+            )
+            expect(
+                document.querySelector('[name="country-code-select"]')
+            ).toBeInTheDocument()
+        })
+
+        it('uses the first dropdown entry when two share the same position', () => {
+            render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    dropdown={[
+                        {
+                            position: DropdownPosition.LEFT,
+                            items: EMBEDDED_SELECT_ITEMS,
+                            selected: 'a',
+                            onSelect: () => {},
+                            placeholder: 'First',
+                            'aria-label': 'First left',
+                        },
+                        {
+                            position: DropdownPosition.LEFT,
+                            items: EMBEDDED_SELECT_ITEMS,
+                            selected: 'a',
+                            onSelect: () => {},
+                            placeholder: 'Second',
+                            'aria-label': 'Second left',
+                        },
+                    ]}
+                />
+            )
+            expect(
+                screen.getByRole('button', { name: 'First left' })
+            ).toBeInTheDocument()
+            expect(
+                screen.queryByRole('button', { name: 'Second left' })
+            ).not.toBeInTheDocument()
+        })
+
+        it('forwards onOpenChange from dropdown config', async () => {
+            const onOpenChange = vi.fn()
+            const { user } = render(
+                <TextInputV2
+                    value=""
+                    onChange={() => {}}
+                    dropdown={{
+                        position: DropdownPosition.LEFT,
+                        items: EMBEDDED_SELECT_ITEMS,
+                        selected: 'a',
+                        onSelect: () => {},
+                        placeholder: 'Choose',
+                        'aria-label': 'Prefix',
+                        onOpenChange,
+                    }}
+                />
+            )
+            await user.click(screen.getByRole('button', { name: 'Prefix' }))
+            expect(onOpenChange).toHaveBeenCalled()
+            expect(
+                onOpenChange.mock.calls.some((args) => args[0] === true)
+            ).toBe(true)
+        })
+    })
+
+    describe('toEmbeddedSingleSelectV2Props', () => {
+        const baseOptions: EmbeddedSingleSelectOptions = {
+            fieldLabel: 'Field',
+            fieldDisabled: false,
+            singleSelectV2Size: SingleSelectV2Size.MD,
+            menuAlignment: SelectV2Alignment.START,
+            menuSideOffset: 10,
+            menuAlignOffset: -11,
+            defaultSingleSelectGroupPosition: 'left',
+        }
+
+        it('forces NO_CONTAINER, inline, field size, and field disabled over config', () => {
+            const out = toEmbeddedSingleSelectV2Props(
+                {
+                    items: EMBEDDED_SELECT_ITEMS,
+                    selected: 'a',
+                    onSelect: () => {},
+                    placeholder: 'P',
+                    variant: SingleSelectV2Variant.CONTAINER,
+                    inline: false,
+                    size: SingleSelectV2Size.SM,
+                    disabled: false,
+                },
+                { ...baseOptions, fieldDisabled: true }
+            )
+            expect(out.variant).toBe(SingleSelectV2Variant.NO_CONTAINER)
+            expect(out.inline).toBe(true)
+            expect(out.size).toBe(SingleSelectV2Size.MD)
+            expect(out.disabled).toBe(true)
+        })
+
+        it('merges menuPosition: defaults first, then spread from config', () => {
+            const out = toEmbeddedSingleSelectV2Props(
+                {
+                    items: EMBEDDED_SELECT_ITEMS,
+                    selected: 'a',
+                    onSelect: () => {},
+                    placeholder: 'P',
+                    menuPosition: { sideOffset: 99 },
+                },
+                baseOptions
+            )
+            expect(out.menuPosition?.alignment).toBe(SelectV2Alignment.START)
+            expect(out.menuPosition?.sideOffset).toBe(99)
+            expect(out.menuPosition?.alignOffset).toBe(-11)
         })
     })
 

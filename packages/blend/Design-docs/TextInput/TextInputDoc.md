@@ -93,13 +93,13 @@ type TextInputV2Props = {
     }
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'select' | 'dropdown'
+    'size' | 'style' | 'className' | 'dropdown'
 >
 ```
 
 - **Omit `size`**: Avoids conflict with HTML `size` attribute; component uses `InputSizeV2`.
 - **Omit `style` | `className`**: Styling is driven by tokens and layout; blocked via `filterBlockedProps(rest)` so consumers cannot override in a way that breaks the design.
-- **Omit `select` / `dropdown`**: Reserves these prop names for the component API—especially `dropdown` for the composite embed API—and prevents accidental forwarding to the underlying `<input>`.
+- **Omit `dropdown`**: Reserves this prop name for the component API’s composite embed configuration and prevents accidental forwarding to the underlying `<input>`.
 
 ### Usage: `dropdown`
 

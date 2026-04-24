@@ -40,6 +40,7 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import SingleSelectV2 from '../../SingleSelectV2/SingleSelectV2'
+import { subscribeElementOffsetWidth } from '../NumberInputV2/utils'
 import { toEmbeddedSingleSelectV2Props } from './utils'
 
 function omitDropdownPosition(
@@ -202,15 +203,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                 setLeftSelectWidth(0)
                 return
             }
-            const measure = () => {
-                setLeftSelectWidth(el.offsetWidth)
-            }
-            measure()
-            const ro = new ResizeObserver(measure)
-            ro.observe(el)
-            return () => {
-                ro.disconnect()
-            }
+            return subscribeElementOffsetWidth(el, setLeftSelectWidth)
         }, [showLeftSelect, leftSelect, leftSelect?.selected, size])
 
         useLayoutEffect(() => {
@@ -223,15 +216,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                 setRightSelectWidth(0)
                 return
             }
-            const measure = () => {
-                setRightSelectWidth(el.offsetWidth)
-            }
-            measure()
-            const ro = new ResizeObserver(measure)
-            ro.observe(el)
-            return () => {
-                ro.disconnect()
-            }
+            return subscribeElementOffsetWidth(el, setRightSelectWidth)
         }, [showRightSelect, rightSelect, rightSelect?.selected, size])
 
         const hasError = Boolean(error?.show)

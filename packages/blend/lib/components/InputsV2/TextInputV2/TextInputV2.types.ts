@@ -5,7 +5,7 @@ import type {
     SingleSelectV2Props,
     SingleSelectV2Size,
 } from '../../SingleSelectV2/singleSelectV2.types'
-import { SelectV2Alignment } from '../../SelectV2/selectV2.shared.types'
+import type { SelectV2Alignment } from '../../SelectV2/selectV2.shared.types'
 
 export enum DropdownPosition {
     LEFT = 'left',
