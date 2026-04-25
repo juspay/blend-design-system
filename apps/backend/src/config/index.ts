@@ -25,7 +25,53 @@ const envSchema = z.object({
     STUDIO_URL: z.string().default(''),
 })
 
-const parsedEnv = envSchema.safeParse(process.env)
+const isValidUrl = (value: string): boolean => {
+    try {
+        new URL(value)
+        return true
+    } catch {
+        return false
+    }
+}
+
+const hasNonStandardHttpsPort = (value: string): boolean => {
+    const parsed = new URL(value)
+    return (
+        parsed.protocol === 'https:' &&
+        parsed.port !== '' &&
+        parsed.port !== '443'
+    )
+}
+
+const parsedEnv = envSchema
+    .superRefine((data, ctx) => {
+        if (!isValidUrl(data.GOOGLE_REDIRECT_URI)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ['GOOGLE_REDIRECT_URI'],
+                message: 'GOOGLE_REDIRECT_URI must be a valid absolute URL',
+            })
+        }
+
+        if (data.NODE_ENV === 'production') {
+            if (!isValidUrl(data.FRONTEND_URL)) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ['FRONTEND_URL'],
+                    message:
+                        'FRONTEND_URL must be a valid absolute URL in production',
+                })
+            } else if (hasNonStandardHttpsPort(data.FRONTEND_URL)) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    path: ['FRONTEND_URL'],
+                    message:
+                        'FRONTEND_URL must not use a non-443 HTTPS port in production',
+                })
+            }
+        }
+    })
+    .safeParse(process.env)
 
 if (!parsedEnv.success) {
     console.error('Environment validation failed:', parsedEnv.error.errors)

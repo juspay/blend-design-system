@@ -100,7 +100,12 @@ app.get('/api/health', (_req, res) => {
 })
 
 app.use('/api', (req, res, next) => {
-    if (req.path === '/health' || isDatabaseReady()) {
+    // Allow health and OAuth bootstrap endpoints even while DB is connecting.
+    // OAuth callback still depends on DB and should remain guarded.
+    const isReadinessBypassPath =
+        req.path === '/health' || req.path === '/auth/google'
+
+    if (isReadinessBypassPath || isDatabaseReady()) {
         return next()
     }
 
