@@ -340,7 +340,7 @@ jobs:
                     echo "Retrying in ${sleep_seconds}s..."
                     sleep "${sleep_seconds}"
                   done
-                  echo "::error::Backend health endpoint did not return 200 after retries"
+                  echo "::error::Backend health endpoint stayed in database=connecting after retries"
                   exit 1
 
     deploy-studio:

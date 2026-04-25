@@ -11,6 +11,35 @@ import { logger } from '@/utils/logger.js'
 
 const { PrismaClient } = prismaClientModule as any
 
+const getPositiveIntegerFromEnv = (
+    value: string | undefined,
+    fallback: number
+): number => {
+    if (!value) return fallback
+
+    const parsed = Number.parseInt(value, 10)
+    if (!Number.isFinite(parsed) || parsed <= 0) return fallback
+
+    return parsed
+}
+
+const dbConnectionLimit = getPositiveIntegerFromEnv(
+    process.env.DB_CONNECTION_LIMIT,
+    3
+)
+const dbPoolTimeoutSeconds = getPositiveIntegerFromEnv(
+    process.env.DB_POOL_TIMEOUT_SECONDS,
+    10
+)
+const dbConnectRetryDelayMs = getPositiveIntegerFromEnv(
+    process.env.DB_CONNECT_RETRY_DELAY_MS,
+    5000
+)
+const dbConnectMaxAttempts = getPositiveIntegerFromEnv(
+    process.env.DB_CONNECT_MAX_ATTEMPTS,
+    6
+)
+
 const withPrismaPoolSettings = (
     rawDatabaseUrl?: string
 ): string | undefined => {
@@ -21,10 +50,10 @@ const withPrismaPoolSettings = (
         const separator = rawDatabaseUrl.includes('?') ? '&' : '?'
         let result = rawDatabaseUrl
         if (!rawDatabaseUrl.includes('connection_limit')) {
-            result += `${separator}connection_limit=3`
+            result += `${separator}connection_limit=${dbConnectionLimit}`
         }
         if (!rawDatabaseUrl.includes('pool_timeout')) {
-            result += '&pool_timeout=30'
+            result += `&pool_timeout=${dbPoolTimeoutSeconds}`
         }
         return result
     }
@@ -36,10 +65,10 @@ const withPrismaPoolSettings = (
         // Cloud Run creates many concurrent requests; keep per-instance
         // Prisma pool small and wait a bit longer before timing out.
         if (!searchParams.has('connection_limit')) {
-            searchParams.set('connection_limit', '3')
+            searchParams.set('connection_limit', String(dbConnectionLimit))
         }
         if (!searchParams.has('pool_timeout')) {
-            searchParams.set('pool_timeout', '30')
+            searchParams.set('pool_timeout', String(dbPoolTimeoutSeconds))
         }
 
         return parsedUrl.toString()
@@ -99,8 +128,8 @@ export const disconnectDatabase = async (): Promise<void> => {
 export const isDatabaseReady = (): boolean => databaseReady
 
 export const connectDatabaseWithRetry = async (
-    retryDelayMs = 5000,
-    maxAttempts = 12
+    retryDelayMs = dbConnectRetryDelayMs,
+    maxAttempts = dbConnectMaxAttempts
 ): Promise<void> => {
     for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
         try {
