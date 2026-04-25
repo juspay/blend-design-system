@@ -98,18 +98,28 @@ export const disconnectDatabase = async (): Promise<void> => {
 
 export const isDatabaseReady = (): boolean => databaseReady
 
-export const connectDatabaseWithRetry = (retryDelayMs = 5000): void => {
-    const tryConnect = async () => {
+export const connectDatabaseWithRetry = async (
+    retryDelayMs = 5000,
+    maxAttempts = 12
+): Promise<void> => {
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
         try {
             await connectDatabase()
+            return
         } catch (error) {
+            if (attempt === maxAttempts) {
+                logger.error(
+                    { err: error, attempt, maxAttempts },
+                    'Database connection failed after max retries'
+                )
+                throw error
+            }
+
             logger.warn(
-                { err: error, retryDelayMs },
+                { err: error, attempt, maxAttempts, retryDelayMs },
                 'Database connection retry scheduled'
             )
-            setTimeout(tryConnect, retryDelayMs)
+            await new Promise((resolve) => setTimeout(resolve, retryDelayMs))
         }
     }
-
-    void tryConnect()
 }

@@ -134,13 +134,22 @@ app.use(errorHandler)
 
 const PORT = parseInt(env.PORT, 10)
 
-const start = () => {
+const start = async () => {
+    try {
+        await connectDatabaseWithRetry()
+    } catch (error) {
+        logger.error(
+            { err: error },
+            'Failed to establish database connection during startup'
+        )
+        process.exit(1)
+    }
+
     app.listen(PORT, () => {
         logger.info(`Server running on http://localhost:${PORT}`)
         logger.info(`Swagger docs available at http://localhost:${PORT}/docs`)
         logger.info(`Environment: ${env.NODE_ENV}`)
-        connectDatabaseWithRetry()
     })
 }
 
-start()
+void start()
