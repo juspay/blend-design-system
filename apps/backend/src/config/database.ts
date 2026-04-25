@@ -16,6 +16,19 @@ const withPrismaPoolSettings = (
 ): string | undefined => {
     if (!rawDatabaseUrl) return rawDatabaseUrl
 
+    // Handle Cloud SQL Unix socket paths - don't parse URL, just append params
+    if (rawDatabaseUrl.includes('/cloudsql/')) {
+        const separator = rawDatabaseUrl.includes('?') ? '&' : '?'
+        let result = rawDatabaseUrl
+        if (!rawDatabaseUrl.includes('connection_limit')) {
+            result += `${separator}connection_limit=3`
+        }
+        if (!rawDatabaseUrl.includes('pool_timeout')) {
+            result += '&pool_timeout=30'
+        }
+        return result
+    }
+
     try {
         const parsedUrl = new URL(rawDatabaseUrl)
         const searchParams = parsedUrl.searchParams
