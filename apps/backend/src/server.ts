@@ -134,22 +134,30 @@ app.use(errorHandler)
 
 const PORT = parseInt(env.PORT, 10)
 
-const start = async () => {
-    try {
-        await connectDatabaseWithRetry()
-    } catch (error) {
-        logger.error(
-            { err: error },
-            'Failed to establish database connection during startup'
-        )
-        process.exit(1)
-    }
-
+/**
+ * Cloud Run requires the process to listen on PORT within a bounded startup
+ * window (~240s). Prisma retries can exceed that if we await DB before listen.
+ * Bind the HTTP server first, then connect in the background; `/api/*` stays
+ * 503 until `isDatabaseReady()` except health/OAuth bootstrap paths.
+ */
+const start = () => {
     app.listen(PORT, () => {
         logger.info(`Server running on http://localhost:${PORT}`)
         logger.info(`Swagger docs available at http://localhost:${PORT}/docs`)
         logger.info(`Environment: ${env.NODE_ENV}`)
+
+        void (async () => {
+            try {
+                await connectDatabaseWithRetry()
+            } catch (error) {
+                logger.error(
+                    { err: error },
+                    'Failed to establish database connection after startup'
+                )
+                process.exit(1)
+            }
+        })()
     })
 }
 
-void start()
+start()
