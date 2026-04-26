@@ -1,5 +1,6 @@
 import { Router, type IRouter } from 'express'
 import { authenticate } from '@/middlewares/auth.js'
+import { asyncHandler } from '@/middlewares/errorHandler.js'
 import {
     getGoogleAuthUrl,
     googleCallback,
@@ -36,7 +37,7 @@ const router: IRouter = Router()
  *                       type: string
  *                       description: Google OAuth authorization URL
  */
-router.get('/google', getGoogleAuthUrl)
+router.get('/google', asyncHandler(getGoogleAuthUrl))
 
 /**
  * @openapi
@@ -59,7 +60,7 @@ router.get('/google', getGoogleAuthUrl)
  *       400:
  *         description: Missing or invalid authorization code
  */
-router.get('/google/callback', googleCallback)
+router.get('/google/callback', asyncHandler(googleCallback))
 
 /**
  * @openapi
@@ -89,7 +90,7 @@ router.get('/google/callback', googleCallback)
  *       401:
  *         description: Invalid or expired refresh token
  */
-router.post('/refresh', refreshAccessToken)
+router.post('/refresh', asyncHandler(refreshAccessToken))
 
 /**
  * @openapi
@@ -107,7 +108,7 @@ router.post('/refresh', refreshAccessToken)
  *       401:
  *         description: Unauthorized
  */
-router.post('/logout', authenticate, logout)
+router.post('/logout', authenticate, asyncHandler(logout))
 
 /**
  * @openapi
@@ -125,7 +126,7 @@ router.post('/logout', authenticate, logout)
  *       401:
  *         description: Unauthorized
  */
-router.post('/logout-all', authenticate, logoutAllDevices)
+router.post('/logout-all', authenticate, asyncHandler(logoutAllDevices))
 
 /**
  * @openapi
@@ -168,6 +169,6 @@ router.post('/logout-all', authenticate, logoutAllDevices)
  *       401:
  *         description: Unauthorized - Invalid or missing token
  */
-router.get('/me', authenticate, getCurrentUser)
+router.get('/me', authenticate, asyncHandler(getCurrentUser))
 
 export default router

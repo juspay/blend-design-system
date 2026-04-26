@@ -19,192 +19,192 @@ import { Route as StudioPreviewBranchIdRouteImport } from './routes/studio/previ
 import { Route as StudioEditorBranchIdRouteImport } from './routes/studio/editor.$branchId'
 
 const LoginRoute = LoginRouteImport.update({
-    id: '/login',
-    path: '/login',
-    getParentRoute: () => rootRouteImport,
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const StudioIndexRoute = StudioIndexRouteImport.update({
-    id: '/studio/',
-    path: '/studio/',
-    getParentRoute: () => rootRouteImport,
+  id: '/studio/',
+  path: '/studio/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const MonitorIndexRoute = MonitorIndexRouteImport.update({
-    id: '/monitor/',
-    path: '/monitor/',
-    getParentRoute: () => rootRouteImport,
+  id: '/monitor/',
+  path: '/monitor/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthCallbackIndexRoute = AuthCallbackIndexRouteImport.update({
-    id: '/auth-callback/',
-    path: '/auth-callback/',
-    getParentRoute: () => rootRouteImport,
+  id: '/auth-callback/',
+  path: '/auth-callback/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const StudioTestRoute = StudioTestRouteImport.update({
-    id: '/studio/test',
-    path: '/studio/test',
-    getParentRoute: () => rootRouteImport,
+  id: '/studio/test',
+  path: '/studio/test',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const StudioPreviewBranchIdRoute = StudioPreviewBranchIdRouteImport.update({
-    id: '/studio/preview/$branchId',
-    path: '/studio/preview/$branchId',
-    getParentRoute: () => rootRouteImport,
+  id: '/studio/preview/$branchId',
+  path: '/studio/preview/$branchId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const StudioEditorBranchIdRoute = StudioEditorBranchIdRouteImport.update({
-    id: '/studio/editor/$branchId',
-    path: '/studio/editor/$branchId',
-    getParentRoute: () => rootRouteImport,
+  id: '/studio/editor/$branchId',
+  path: '/studio/editor/$branchId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-    '/': typeof IndexRoute
-    '/login': typeof LoginRoute
-    '/studio/test': typeof StudioTestRoute
-    '/auth-callback/': typeof AuthCallbackIndexRoute
-    '/monitor/': typeof MonitorIndexRoute
-    '/studio/': typeof StudioIndexRoute
-    '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
-    '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/studio/test': typeof StudioTestRoute
+  '/auth-callback/': typeof AuthCallbackIndexRoute
+  '/monitor/': typeof MonitorIndexRoute
+  '/studio/': typeof StudioIndexRoute
+  '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
+  '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
 }
 export interface FileRoutesByTo {
-    '/': typeof IndexRoute
-    '/login': typeof LoginRoute
-    '/studio/test': typeof StudioTestRoute
-    '/auth-callback': typeof AuthCallbackIndexRoute
-    '/monitor': typeof MonitorIndexRoute
-    '/studio': typeof StudioIndexRoute
-    '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
-    '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/studio/test': typeof StudioTestRoute
+  '/auth-callback': typeof AuthCallbackIndexRoute
+  '/monitor': typeof MonitorIndexRoute
+  '/studio': typeof StudioIndexRoute
+  '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
+  '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
 }
 export interface FileRoutesById {
-    __root__: typeof rootRouteImport
-    '/': typeof IndexRoute
-    '/login': typeof LoginRoute
-    '/studio/test': typeof StudioTestRoute
-    '/auth-callback/': typeof AuthCallbackIndexRoute
-    '/monitor/': typeof MonitorIndexRoute
-    '/studio/': typeof StudioIndexRoute
-    '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
-    '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/studio/test': typeof StudioTestRoute
+  '/auth-callback/': typeof AuthCallbackIndexRoute
+  '/monitor/': typeof MonitorIndexRoute
+  '/studio/': typeof StudioIndexRoute
+  '/studio/editor/$branchId': typeof StudioEditorBranchIdRoute
+  '/studio/preview/$branchId': typeof StudioPreviewBranchIdRoute
 }
 export interface FileRouteTypes {
-    fileRoutesByFullPath: FileRoutesByFullPath
-    fullPaths:
-        | '/'
-        | '/login'
-        | '/studio/test'
-        | '/auth-callback/'
-        | '/monitor/'
-        | '/studio/'
-        | '/studio/editor/$branchId'
-        | '/studio/preview/$branchId'
-    fileRoutesByTo: FileRoutesByTo
-    to:
-        | '/'
-        | '/login'
-        | '/studio/test'
-        | '/auth-callback'
-        | '/monitor'
-        | '/studio'
-        | '/studio/editor/$branchId'
-        | '/studio/preview/$branchId'
-    id:
-        | '__root__'
-        | '/'
-        | '/login'
-        | '/studio/test'
-        | '/auth-callback/'
-        | '/monitor/'
-        | '/studio/'
-        | '/studio/editor/$branchId'
-        | '/studio/preview/$branchId'
-    fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/studio/test'
+    | '/auth-callback/'
+    | '/monitor/'
+    | '/studio/'
+    | '/studio/editor/$branchId'
+    | '/studio/preview/$branchId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/login'
+    | '/studio/test'
+    | '/auth-callback'
+    | '/monitor'
+    | '/studio'
+    | '/studio/editor/$branchId'
+    | '/studio/preview/$branchId'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/studio/test'
+    | '/auth-callback/'
+    | '/monitor/'
+    | '/studio/'
+    | '/studio/editor/$branchId'
+    | '/studio/preview/$branchId'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-    IndexRoute: typeof IndexRoute
-    LoginRoute: typeof LoginRoute
-    StudioTestRoute: typeof StudioTestRoute
-    AuthCallbackIndexRoute: typeof AuthCallbackIndexRoute
-    MonitorIndexRoute: typeof MonitorIndexRoute
-    StudioIndexRoute: typeof StudioIndexRoute
-    StudioEditorBranchIdRoute: typeof StudioEditorBranchIdRoute
-    StudioPreviewBranchIdRoute: typeof StudioPreviewBranchIdRoute
+  IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
+  StudioTestRoute: typeof StudioTestRoute
+  AuthCallbackIndexRoute: typeof AuthCallbackIndexRoute
+  MonitorIndexRoute: typeof MonitorIndexRoute
+  StudioIndexRoute: typeof StudioIndexRoute
+  StudioEditorBranchIdRoute: typeof StudioEditorBranchIdRoute
+  StudioPreviewBranchIdRoute: typeof StudioPreviewBranchIdRoute
 }
 
 declare module '@tanstack/react-router' {
-    interface FileRoutesByPath {
-        '/login': {
-            id: '/login'
-            path: '/login'
-            fullPath: '/login'
-            preLoaderRoute: typeof LoginRouteImport
-            parentRoute: typeof rootRouteImport
-        }
-        '/': {
-            id: '/'
-            path: '/'
-            fullPath: '/'
-            preLoaderRoute: typeof IndexRouteImport
-            parentRoute: typeof rootRouteImport
-        }
-        '/studio/': {
-            id: '/studio/'
-            path: '/studio'
-            fullPath: '/studio/'
-            preLoaderRoute: typeof StudioIndexRouteImport
-            parentRoute: typeof rootRouteImport
-        }
-        '/monitor/': {
-            id: '/monitor/'
-            path: '/monitor'
-            fullPath: '/monitor/'
-            preLoaderRoute: typeof MonitorIndexRouteImport
-            parentRoute: typeof rootRouteImport
-        }
-        '/auth-callback/': {
-            id: '/auth-callback/'
-            path: '/auth-callback'
-            fullPath: '/auth-callback/'
-            preLoaderRoute: typeof AuthCallbackIndexRouteImport
-            parentRoute: typeof rootRouteImport
-        }
-        '/studio/test': {
-            id: '/studio/test'
-            path: '/studio/test'
-            fullPath: '/studio/test'
-            preLoaderRoute: typeof StudioTestRouteImport
-            parentRoute: typeof rootRouteImport
-        }
-        '/studio/preview/$branchId': {
-            id: '/studio/preview/$branchId'
-            path: '/studio/preview/$branchId'
-            fullPath: '/studio/preview/$branchId'
-            preLoaderRoute: typeof StudioPreviewBranchIdRouteImport
-            parentRoute: typeof rootRouteImport
-        }
-        '/studio/editor/$branchId': {
-            id: '/studio/editor/$branchId'
-            path: '/studio/editor/$branchId'
-            fullPath: '/studio/editor/$branchId'
-            preLoaderRoute: typeof StudioEditorBranchIdRouteImport
-            parentRoute: typeof rootRouteImport
-        }
+  interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/': {
+      id: '/studio/'
+      path: '/studio'
+      fullPath: '/studio/'
+      preLoaderRoute: typeof StudioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/monitor/': {
+      id: '/monitor/'
+      path: '/monitor'
+      fullPath: '/monitor/'
+      preLoaderRoute: typeof MonitorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth-callback/': {
+      id: '/auth-callback/'
+      path: '/auth-callback'
+      fullPath: '/auth-callback/'
+      preLoaderRoute: typeof AuthCallbackIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/test': {
+      id: '/studio/test'
+      path: '/studio/test'
+      fullPath: '/studio/test'
+      preLoaderRoute: typeof StudioTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/preview/$branchId': {
+      id: '/studio/preview/$branchId'
+      path: '/studio/preview/$branchId'
+      fullPath: '/studio/preview/$branchId'
+      preLoaderRoute: typeof StudioPreviewBranchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/editor/$branchId': {
+      id: '/studio/editor/$branchId'
+      path: '/studio/editor/$branchId'
+      fullPath: '/studio/editor/$branchId'
+      preLoaderRoute: typeof StudioEditorBranchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-    IndexRoute: IndexRoute,
-    LoginRoute: LoginRoute,
-    StudioTestRoute: StudioTestRoute,
-    AuthCallbackIndexRoute: AuthCallbackIndexRoute,
-    MonitorIndexRoute: MonitorIndexRoute,
-    StudioIndexRoute: StudioIndexRoute,
-    StudioEditorBranchIdRoute: StudioEditorBranchIdRoute,
-    StudioPreviewBranchIdRoute: StudioPreviewBranchIdRoute,
+  IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
+  StudioTestRoute: StudioTestRoute,
+  AuthCallbackIndexRoute: AuthCallbackIndexRoute,
+  MonitorIndexRoute: MonitorIndexRoute,
+  StudioIndexRoute: StudioIndexRoute,
+  StudioEditorBranchIdRoute: StudioEditorBranchIdRoute,
+  StudioPreviewBranchIdRoute: StudioPreviewBranchIdRoute,
 }
 export const routeTree = rootRouteImport
-    ._addFileChildren(rootRouteChildren)
-    ._addFileTypes<FileRouteTypes>()
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
