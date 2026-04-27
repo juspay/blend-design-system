@@ -16,35 +16,35 @@ export function StepStatusCircle({
     isClickable,
     children,
 }: StepStatusCircleProps) {
+    const circleTokens = stepperTokens.container.step.circle[stepState]
+    const getCircleStateStyles = (
+        circleState: (typeof circleTokens)['default']
+    ) => ({
+        backgroundColor: circleState.backgroundColor,
+        border: `${circleState.borderWidth} solid ${circleState.borderColor}`,
+        borderRadius: circleState.borderRadius,
+        outline: circleState.outline,
+        outlineOffset: circleState.outlineOffset,
+        transition: circleState.transition,
+    })
     return (
         <Block
-            width={stepperTokens.container.step.circle[stepState].default.size}
-            height={stepperTokens.container.step.circle[stepState].default.size}
-            backgroundColor={
-                stepperTokens.container.step.circle[stepState].default
-                    .backgroundColor
-            }
-            border={`${stepperTokens.container.step.circle[stepState].default.borderWidth} solid ${stepperTokens.container.step.circle[stepState].default.borderColor}`}
-            borderRadius={
-                stepperTokens.container.step.circle[stepState].default
-                    .borderRadius
-            }
+            width={circleTokens.default.size}
+            height={circleTokens.default.size}
+            {...getCircleStateStyles(circleTokens.default)}
             display="flex"
             alignItems="center"
             justifyContent="center"
             flexShrink={0}
-            transition={
-                stepperTokens.container.step.circle[stepState].default
-                    .transition
-            }
             role="presentation"
             _hover={
                 isClickable
-                    ? {
-                          backgroundColor:
-                              stepperTokens.container.step.circle[stepState]
-                                  .hover.backgroundColor,
-                      }
+                    ? getCircleStateStyles(circleTokens.hover)
+                    : undefined
+            }
+            _focusVisible={
+                isClickable
+                    ? getCircleStateStyles(circleTokens.focus)
                     : undefined
             }
         >

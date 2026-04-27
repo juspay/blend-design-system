@@ -25,9 +25,9 @@ export function StepsVerticalSubstepRails({
 
     return (
         <>
-            {step.substeps.map((_, index) => (
+            {step.substeps.map((substep, index) => (
                 <Block
-                    key={index}
+                    key={substep.id}
                     display="flex"
                     flexDirection="column"
                     alignItems="center"
@@ -62,8 +62,7 @@ export function StepsVerticalSubstepRails({
                         color={
                             step.substeps?.length === index + 1 && isLast
                                 ? 'transparent'
-                                : stepperTokens.container.connector.line
-                                      .inactive.default.color
+                                : stepperTokens.container.connector.line.color
                         }
                     />
                 </Block>

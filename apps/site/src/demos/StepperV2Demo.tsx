@@ -106,9 +106,6 @@ const StepperV2Demo = () => {
             })
         )
     }
-
-    console.log({ horizontalSteps })
-
     const substepsAllPending = (step: StepperV2Step) =>
         step.substeps?.map((ss) => ({
             ...ss,
@@ -558,12 +555,15 @@ const StepperV2Demo = () => {
                     <div
                         className={`rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8 ${theme === Theme.DARK ? 'text-gray-100' : 'text-gray-900'}`}
                     >
-                        {horizontalSteps.map(
-                            (step) =>
-                                step.status === StepperV2StepStatus.CURRENT && (
-                                    <h1>Step {step.id}</h1>
-                                )
-                        )}
+                        {(() => {
+                            const currentStep = horizontalSteps.find(
+                                (step) =>
+                                    step.status === StepperV2StepStatus.CURRENT
+                            )
+                            return currentStep ? (
+                                <h1>Step {currentStep.id}</h1>
+                            ) : null
+                        })()}
                     </div>
                     <div className="mt-4 flex gap-3">
                         <ButtonV2

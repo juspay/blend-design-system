@@ -333,7 +333,6 @@ export const Steps = forwardRef<
                 display="flex"
                 gap={toPixels(stepperTokens.container.gap) + 2}
                 role="group"
-                aria-current={isCurrent ? 'step' : undefined}
             >
                 <Block
                     display="flex"
@@ -368,8 +367,7 @@ export const Steps = forwardRef<
                             isLast &&
                             (step.substeps?.length === 0 || !isExpanded)
                                 ? 'transparent'
-                                : stepperTokens.container.connector.line
-                                      .inactive.default.color
+                                : stepperTokens.container.connector.line.color
                         }
                     />
                     <StepsVerticalSubstepRails
@@ -418,6 +416,7 @@ export const Steps = forwardRef<
                             style={{ flex: 1 }}
                             role={stepContentRole}
                             tabIndex={stepContentTabIndex}
+                            aria-current={isCurrent ? 'step' : undefined}
                             aria-pressed={
                                 isClickable && isCurrent ? 'true' : undefined
                             }

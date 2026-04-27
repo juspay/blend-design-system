@@ -79,7 +79,7 @@ export function StepsSubstepList({
 
                 return (
                     <Block
-                        key={index}
+                        key={subStep.id}
                         marginTop={
                             toPixels(verticalLineHeight) +
                             (index === 0 ? 10 : -2) +

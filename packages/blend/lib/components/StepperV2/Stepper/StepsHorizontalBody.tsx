@@ -27,8 +27,7 @@ export function StepsHorizontalBody({
     stepIcon,
     isClickable,
 }: StepsHorizontalBodyProps) {
-    const lineColor =
-        stepperTokens.container.connector.line.inactive.default.color
+    const lineColor = stepperTokens.container.connector.line.color
 
     return (
         <>
@@ -46,7 +45,7 @@ export function StepsHorizontalBody({
                 <hr
                     style={{
                         width: '100%',
-                        height: '1px',
+                        height: stepperTokens.container.connector.line.height,
                         color: lineColor,
                         visibility: stepIndex !== 0 ? 'visible' : 'hidden',
                     }}
@@ -61,7 +60,7 @@ export function StepsHorizontalBody({
                 <hr
                     style={{
                         width: '100%',
-                        height: '1px',
+                        height: stepperTokens.container.connector.line.height,
                         color: lineColor,
                         visibility:
                             stepIndex !== stepsLength - 1
