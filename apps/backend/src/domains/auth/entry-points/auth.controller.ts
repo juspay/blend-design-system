@@ -24,6 +24,7 @@ import {
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 
 const REFRESH_TOKEN_EXPIRES_DAYS = 30
+const cookieSameSite = env.NODE_ENV === 'production' ? 'none' : 'lax'
 
 export const getGoogleAuthUrl = async (_req: Request, res: Response) => {
     const url = generateAuthUrl()
@@ -122,7 +123,7 @@ export const googleCallback = async (req: Request, res: Response) => {
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: cookieSameSite,
             maxAge: REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60 * 1000,
             path: '/api/auth',
         })
@@ -135,7 +136,7 @@ export const googleCallback = async (req: Request, res: Response) => {
         res.cookie('accessToken', tokens.accessToken, {
             httpOnly: true,
             secure: env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: cookieSameSite,
             maxAge: accessTokenMaxDays * 24 * 60 * 60 * 1000,
             path: '/api',
         })
@@ -197,7 +198,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         res.cookie('refreshToken', newTokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: cookieSameSite,
             maxAge: REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60 * 1000,
             path: '/api/auth',
         })
@@ -205,7 +206,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         res.cookie('accessToken', newTokens.accessToken, {
             httpOnly: true,
             secure: env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: cookieSameSite,
             maxAge: 7 * 24 * 60 * 60 * 1000,
             path: '/api',
         })
@@ -233,7 +234,7 @@ export const logout = async (req: Request, res: Response) => {
         res.clearCookie('refreshToken', {
             httpOnly: true,
             secure: env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: cookieSameSite,
             path: '/api/auth',
         })
     }
@@ -241,7 +242,7 @@ export const logout = async (req: Request, res: Response) => {
     res.clearCookie('accessToken', {
         httpOnly: true,
         secure: env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: cookieSameSite,
         path: '/api',
     })
 
@@ -258,14 +259,14 @@ export const logoutAllDevices = async (req: Request, res: Response) => {
     res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: cookieSameSite,
         path: '/api/auth',
     })
 
     res.clearCookie('accessToken', {
         httpOnly: true,
         secure: env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: cookieSameSite,
         path: '/api',
     })
 
