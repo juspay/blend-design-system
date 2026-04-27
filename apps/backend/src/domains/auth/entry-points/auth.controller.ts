@@ -32,12 +32,30 @@ export const getGoogleAuthUrl = async (_req: Request, res: Response) => {
 
 export const googleCallback = async (req: Request, res: Response) => {
     const { code } = req.query as { code: string }
+    const callbackContext = {
+        requestHost: req.get('host'),
+        requestOrigin: req.get('origin'),
+        requestReferer: req.get('referer'),
+        frontendUrl: env.FRONTEND_URL,
+        googleRedirectUri: env.GOOGLE_REDIRECT_URI,
+    }
 
     if (!code) {
+        logger.warn(
+            { ...callbackContext, reason: 'missing_code' },
+            'Google callback missing authorization code'
+        )
         return res.redirect(`${env.FRONTEND_URL}/login?error=no_code`)
     }
 
     try {
+        logger.info(
+            {
+                ...callbackContext,
+                codeLength: code.length,
+            },
+            'Processing Google OAuth callback'
+        )
         const googleUser = await exchangeCodeForTokens(code)
         let user = await findUserByGoogleId(googleUser.googleId)
         let isNewUser = false
@@ -122,12 +140,20 @@ export const googleCallback = async (req: Request, res: Response) => {
             path: '/api',
         })
 
-        res.redirect(
-            `${env.FRONTEND_URL}/auth-callback?token=${tokens.accessToken}&newUser=${isNewUser}`
+        logger.info(
+            {
+                ...callbackContext,
+                userId: user.id,
+                email: maskEmail(user.email),
+                isNewUser,
+            },
+            'Google OAuth callback completed successfully'
         )
+        res.redirect(`${env.FRONTEND_URL}/auth-callback?newUser=${isNewUser}`)
     } catch (error: any) {
         logger.error(
             {
+                ...callbackContext,
                 error: error.message || error,
                 stack: error.stack,
                 name: error.name,

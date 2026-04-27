@@ -1,27 +1,39 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 export const Route = createFileRoute('/auth-callback/')({
     component: AuthCallbackPage,
 })
 
 function AuthCallbackPage() {
+    const hasHandledCallback = useRef(false)
+
     useEffect(() => {
+        if (hasHandledCallback.current) return
+        hasHandledCallback.current = true
+
         const params = new URLSearchParams(window.location.search)
-        const token = params.get('token')
         const error = params.get('error')
 
-        if (token) {
-            // Send token back to parent window (popup flow)
+        // Drop sensitive query params from address bar immediately.
+        window.history.replaceState({}, document.title, '/auth-callback')
+
+        if (!error) {
+            // Cookie-only auth flow: callback success is represented by the
+            // backend setting httpOnly cookies before redirecting here.
             if (window.opener) {
                 window.opener.postMessage(
-                    { type: 'AUTH_SUCCESS', token },
+                    { type: 'AUTH_SUCCESS' },
                     window.location.origin
                 )
+
+                window.close()
+                window.setTimeout(() => {
+                    if (!window.closed) {
+                        window.location.href = '/studio'
+                    }
+                }, 300)
             } else {
-                // Direct navigation — store token in sessionStorage
-                // as fallback; the httpOnly cookie is the primary auth
-                sessionStorage.setItem('blend_auth_token', token)
                 window.location.href = '/studio'
             }
         } else if (error) {
@@ -31,6 +43,11 @@ function AuthCallbackPage() {
                     window.location.origin
                 )
             }
+            window.location.href = '/login?error=auth_failed'
+        } else {
+            // Malformed callback (missing token/error); keep users out of a
+            // permanent loading state.
+            window.location.href = '/login?error=invalid_callback'
         }
     }, [])
 

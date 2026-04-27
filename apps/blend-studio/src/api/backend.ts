@@ -33,6 +33,8 @@ export class BackendApiError extends Error {
     }
 }
 
+const COOKIE_SESSION_TOKEN = '__cookie_session__'
+
 // ---------------------------------------------------------------------------
 // API Response Types
 // ---------------------------------------------------------------------------
@@ -91,13 +93,18 @@ async function fetchWithAuth<T>(
     const baseUrl = flags.apiBaseUrl || ''
     const url = `${baseUrl}${endpoint}`
 
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...((options.headers as Record<string, string> | undefined) ?? {}),
+    }
+    const hasBearerToken = Boolean(token) && token !== COOKIE_SESSION_TOKEN
+    if (hasBearerToken) {
+        headers.Authorization = `Bearer ${token}`
+    }
+
     const response = await fetch(url, {
         ...options,
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-            ...options.headers,
-        },
+        headers,
         credentials: 'include',
     })
 

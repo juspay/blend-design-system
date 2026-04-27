@@ -10,6 +10,7 @@ import { featureFlags } from '@/lib/feature-flags'
 import { mockUserStore } from '@/lib/mock-user'
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || ''
+const COOKIE_SESSION_TOKEN = '__cookie_session__'
 
 interface User {
     id: string
@@ -41,9 +42,7 @@ export function BackendAuthProvider({
 
     const [realUser, setRealUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(!isMockMode)
-    const [token, setToken] = useState<string | null>(
-        sessionStorage.getItem('blend_auth_token')
-    )
+    const [token, setToken] = useState<string | null>(null)
     const [mockRoleVersion, setMockRoleVersion] = useState(0)
 
     useEffect(() => {
@@ -69,25 +68,19 @@ export function BackendAuthProvider({
 
     const user = isMockMode ? mockUser : realUser
 
-    const fetchUser = useCallback(async (bearerToken?: string) => {
+    const fetchUser = useCallback(async () => {
         try {
-            const headers: Record<string, string> = {}
-            if (bearerToken) {
-                headers['Authorization'] = `Bearer ${bearerToken}`
-            }
-
             const response = await fetch(`${API_URL}/api/auth/me`, {
-                headers,
                 credentials: 'include',
             })
 
             if (response.ok) {
                 const data = await response.json()
                 setRealUser(data.data.user)
+                setToken(COOKIE_SESSION_TOKEN)
                 return true
             } else {
                 setToken(null)
-                sessionStorage.removeItem('blend_auth_token')
                 setRealUser(null)
                 return false
             }
@@ -104,7 +97,7 @@ export function BackendAuthProvider({
             return
         }
         if (token) {
-            fetchUser(token)
+            fetchUser()
         } else {
             fetchUser()
         }
@@ -140,12 +133,13 @@ export function BackendAuthProvider({
 
         return new Promise<void>((resolve, reject) => {
             const handleMessage = (event: MessageEvent) => {
+                if (event.origin !== window.location.origin) return
+                if (event.source !== popup) return
                 if (!event.data?.type) return
 
                 if (event.data.type === 'AUTH_SUCCESS') {
-                    const oneTimeToken = event.data.token as string
-                    sessionStorage.setItem('blend_auth_token', oneTimeToken)
-                    setToken(oneTimeToken)
+                    setToken(COOKIE_SESSION_TOKEN)
+                    void fetchUser()
                     popup?.close()
                     window.removeEventListener('message', handleMessage)
                     resolve()
@@ -176,7 +170,6 @@ export function BackendAuthProvider({
             return
         }
 
-        sessionStorage.removeItem('blend_auth_token')
         setToken(null)
         setRealUser(null)
 
@@ -184,9 +177,6 @@ export function BackendAuthProvider({
             await fetch(`${API_URL}/api/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
-                ...(token
-                    ? { headers: { Authorization: `Bearer ${token}` } }
-                    : {}),
             })
         } catch {
             // Cookie clearing happens server-side; best-effort call
