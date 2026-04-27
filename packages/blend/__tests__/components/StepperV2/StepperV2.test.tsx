@@ -85,6 +85,51 @@ describe('StepperV2', () => {
             expect(onStepClick).toHaveBeenCalledWith(0)
         })
 
+        it('calls onStepClick when a clickable step is activated with Enter or Space', async () => {
+            const onStepClick = vi.fn()
+            const { user } = render(
+                <StepperV2
+                    steps={horizontalSteps}
+                    stepperType={StepperV2Type.HORIZONTAL}
+                    clickable
+                    onStepClick={onStepClick}
+                />
+            )
+
+            const beta = screen.getByRole('button', { name: /Beta/ })
+            beta.focus()
+            await user.keyboard('{Enter}')
+            expect(onStepClick).toHaveBeenLastCalledWith(1)
+
+            onStepClick.mockClear()
+            const gamma = screen.getByRole('button', { name: /Gamma/ })
+            gamma.focus()
+            await user.keyboard(' ')
+            expect(onStepClick).toHaveBeenLastCalledWith(2)
+        })
+
+        it('moves focus to first and last focusable step with Home and End', async () => {
+            const { user } = render(
+                <StepperV2
+                    steps={horizontalSteps}
+                    stepperType={StepperV2Type.HORIZONTAL}
+                    clickable
+                    onStepClick={vi.fn()}
+                />
+            )
+
+            const alpha = screen.getByRole('button', { name: /Alpha/ })
+            const beta = screen.getByRole('button', { name: /Beta/ })
+            const gamma = screen.getByRole('button', { name: /Gamma/ })
+
+            beta.focus()
+            await user.keyboard('{Home}')
+            expect(document.activeElement).toBe(alpha)
+
+            await user.keyboard('{End}')
+            expect(document.activeElement).toBe(gamma)
+        })
+
         it('moves focus between clickable steps with ArrowRight and ArrowLeft', async () => {
             const { user } = render(
                 <StepperV2
@@ -142,7 +187,11 @@ describe('StepperV2', () => {
                 />
             )
 
-            await user.click(screen.getByText('Locked'))
+            const locked = screen.getByRole('group', { name: /Locked/ })
+            expect(locked).toHaveAttribute('aria-disabled', 'true')
+            expect(screen.getAllByRole('button')).toHaveLength(2)
+
+            await user.click(locked)
             expect(onStepClick).not.toHaveBeenCalled()
         })
     })
@@ -208,6 +257,65 @@ describe('StepperV2', () => {
             expect(
                 screen.getByText('Helper text under the title')
             ).toBeInTheDocument()
+        })
+
+        it('moves focus to first and last focusable step with Home and End', async () => {
+            const simpleVertical: StepperV2Step[] = [
+                {
+                    id: 1,
+                    title: 'First',
+                    status: StepperV2StepStatus.CURRENT,
+                },
+                { id: 2, title: 'Second', status: StepperV2StepStatus.PENDING },
+                { id: 3, title: 'Third', status: StepperV2StepStatus.PENDING },
+            ]
+            const { user } = render(
+                <StepperV2
+                    steps={simpleVertical}
+                    stepperType={StepperV2Type.VERTICAL}
+                    clickable
+                    onStepClick={vi.fn()}
+                />
+            )
+
+            const first = screen.getByRole('button', { name: /First/ })
+            const second = screen.getByRole('button', { name: /Second/ })
+            const third = screen.getByRole('button', { name: /Third/ })
+
+            second.focus()
+            await user.keyboard('{Home}')
+            expect(document.activeElement).toBe(first)
+
+            await user.keyboard('{End}')
+            expect(document.activeElement).toBe(third)
+        })
+
+        it('calls onStepClick when a focused step is activated with Space', async () => {
+            const onStepClick = vi.fn()
+            const simpleVertical: StepperV2Step[] = [
+                {
+                    id: 1,
+                    title: 'One',
+                    status: StepperV2StepStatus.CURRENT,
+                },
+                { id: 2, title: 'Two', status: StepperV2StepStatus.PENDING },
+            ]
+            const { user } = render(
+                <StepperV2
+                    steps={simpleVertical}
+                    stepperType={StepperV2Type.VERTICAL}
+                    clickable
+                    onStepClick={onStepClick}
+                />
+            )
+
+            const one = screen.getByRole('button', { name: /One/ })
+            one.focus()
+            await user.keyboard('{ArrowDown}')
+            const two = screen.getByRole('button', { name: /Two/ })
+            expect(document.activeElement).toBe(two)
+            await user.keyboard(' ')
+            expect(onStepClick).toHaveBeenCalledWith(1)
         })
 
         it('moves focus between clickable steps with ArrowDown and ArrowUp', async () => {

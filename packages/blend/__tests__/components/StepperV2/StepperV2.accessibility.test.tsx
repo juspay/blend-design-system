@@ -140,6 +140,70 @@ describe('StepperV2 Accessibility', () => {
         })
     })
 
+    describe('WCAG 4.1.2 Name, role, and value (Level A)', () => {
+        it('marks the current step with aria-current="step"', () => {
+            render(
+                <StepperV2
+                    steps={horizontalSteps}
+                    stepperType={StepperV2Type.HORIZONTAL}
+                />
+            )
+            const current = screen.getByRole('group', { name: /Step 2/ })
+            expect(current).toHaveAttribute('aria-current', 'step')
+        })
+
+        it('exposes a disabled step as a group with aria-disabled, not a button', () => {
+            const steps: StepperV2Step[] = [
+                {
+                    id: 1,
+                    title: 'Done',
+                    status: StepperV2StepStatus.COMPLETED,
+                },
+                {
+                    id: 2,
+                    title: 'Locked',
+                    status: StepperV2StepStatus.PENDING,
+                    disabled: true,
+                },
+                {
+                    id: 3,
+                    title: 'Current',
+                    status: StepperV2StepStatus.CURRENT,
+                },
+            ]
+            render(
+                <StepperV2
+                    steps={steps}
+                    stepperType={StepperV2Type.HORIZONTAL}
+                    clickable
+                    onStepClick={vi.fn()}
+                />
+            )
+            const locked = screen.getByRole('group', { name: /Locked/ })
+            expect(locked).toHaveAttribute('aria-disabled', 'true')
+            expect(screen.getAllByRole('button')).toHaveLength(2)
+        })
+
+        it('gives substep rows an accessible name that includes substep number and state', () => {
+            render(
+                <StepperV2
+                    steps={verticalStepsWithSubsteps}
+                    stepperType={StepperV2Type.VERTICAL}
+                    clickable
+                    onSubstepClick={vi.fn()}
+                />
+            )
+            expect(
+                screen.getByRole('button', {
+                    name: /Substep 1: Peer review, current/,
+                })
+            ).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: /Substep 2: QA, pending/ })
+            ).toBeInTheDocument()
+        })
+    })
+
     describe('WCAG 2.1.1 Keyboard (Level A)', () => {
         it('exposes the stepper landmark with an accessible name', () => {
             render(
@@ -181,6 +245,25 @@ describe('StepperV2 Accessibility', () => {
             expect(document.activeElement).toBe(buttons[1])
         })
 
+        it('moves focus to the first and last focusable step with Home and End (horizontal)', async () => {
+            const { user } = render(
+                <StepperV2
+                    steps={horizontalSteps}
+                    stepperType={StepperV2Type.HORIZONTAL}
+                    clickable
+                    onStepClick={vi.fn()}
+                />
+            )
+            const first = screen.getByRole('button', { name: /Step 1/ })
+            const mid = screen.getByRole('button', { name: /Step 2/ })
+            const last = screen.getByRole('button', { name: /Step 3/ })
+            mid.focus()
+            await user.keyboard('{Home}')
+            expect(document.activeElement).toBe(first)
+            await user.keyboard('{End}')
+            expect(document.activeElement).toBe(last)
+        })
+
         it('clickable vertical steps move focus with ArrowDown and ArrowUp', async () => {
             const simpleVertical: StepperV2Step[] = [
                 {
@@ -209,7 +292,35 @@ describe('StepperV2 Accessibility', () => {
             expect(document.activeElement).toBe(first)
         })
 
-        it('clickable horizontal step activates with Space', async () => {
+        it('moves focus to the first and last focusable step with Home and End (vertical)', async () => {
+            const simpleVertical: StepperV2Step[] = [
+                {
+                    id: 1,
+                    title: 'First',
+                    status: StepperV2StepStatus.CURRENT,
+                },
+                { id: 2, title: 'Second', status: StepperV2StepStatus.PENDING },
+                { id: 3, title: 'Third', status: StepperV2StepStatus.PENDING },
+            ]
+            const { user } = render(
+                <StepperV2
+                    steps={simpleVertical}
+                    stepperType={StepperV2Type.VERTICAL}
+                    clickable
+                    onStepClick={vi.fn()}
+                />
+            )
+            const first = screen.getByRole('button', { name: /First/ })
+            const second = screen.getByRole('button', { name: /Second/ })
+            const third = screen.getByRole('button', { name: /Third/ })
+            second.focus()
+            await user.keyboard('{Home}')
+            expect(document.activeElement).toBe(first)
+            await user.keyboard('{End}')
+            expect(document.activeElement).toBe(third)
+        })
+
+        it('clickable horizontal step activates with Space or Enter', async () => {
             const onStepClick = vi.fn()
             const { user } = render(
                 <StepperV2
@@ -220,11 +331,44 @@ describe('StepperV2 Accessibility', () => {
                 />
             )
 
-            // Computed name uses the title text from aria-labelledby, not the verbose aria-label.
-            const lastStep = screen.getByRole('button', { name: /^Step 3$/ })
+            const lastStep = screen.getByRole('button', { name: /Step 3/ })
             lastStep.focus()
             await user.keyboard(' ')
-            expect(onStepClick).toHaveBeenCalledWith(2)
+            expect(onStepClick).toHaveBeenLastCalledWith(2)
+
+            onStepClick.mockClear()
+            const second = screen.getByRole('button', { name: /Step 2/ })
+            second.focus()
+            await user.keyboard('{Enter}')
+            expect(onStepClick).toHaveBeenLastCalledWith(1)
+        })
+
+        it('clickable vertical step activates with Space after ArrowDown (second step)', async () => {
+            const onStepClick = vi.fn()
+            const simpleVertical: StepperV2Step[] = [
+                {
+                    id: 1,
+                    title: 'One',
+                    status: StepperV2StepStatus.CURRENT,
+                },
+                { id: 2, title: 'Two', status: StepperV2StepStatus.PENDING },
+            ]
+            const { user } = render(
+                <StepperV2
+                    steps={simpleVertical}
+                    stepperType={StepperV2Type.VERTICAL}
+                    clickable
+                    onStepClick={onStepClick}
+                />
+            )
+            const one = screen.getByRole('button', { name: /One/ })
+            one.focus()
+            await user.keyboard('{ArrowDown}')
+            expect(document.activeElement).toBe(
+                screen.getByRole('button', { name: /Two/ })
+            )
+            await user.keyboard(' ')
+            expect(onStepClick).toHaveBeenCalledWith(1)
         })
     })
 })
