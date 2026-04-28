@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from '@tanstack/react-router'
 import { GitBranch, Plus, Eye, Clock, Tag } from '@phosphor-icons/react'
 import type { Branch } from '@juspay/blend-design-system/tokens'

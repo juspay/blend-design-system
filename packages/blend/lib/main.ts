@@ -135,6 +135,13 @@ export {
     TabsV2Variant,
     TabsV2Size,
 } from './components/TabsV2'
+export {
+    ChartV2,
+    ChartV2Skeleton,
+    ChartV2NoData,
+    ChartContainerV2,
+    ChartHeaderV2,
+} from './components/ChartsV2'
 
 // ---------------------------------------------------------------------------
 // Token Factory Exports (for Token Studio engine)

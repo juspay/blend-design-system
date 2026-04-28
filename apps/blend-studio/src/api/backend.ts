@@ -289,6 +289,136 @@ export async function resolveTokensBackend(
 }
 
 // ---------------------------------------------------------------------------
+// Versions & Snapshots
+// ---------------------------------------------------------------------------
+
+interface VersionListResponse {
+    versions: Array<{
+        id: string
+        branchId: string
+        version: string
+        brandConfig: BrandConfig
+        isBreaking: boolean
+        isPrerelease: boolean
+        publishedAt: string
+        publishedBy: string
+        publishedByName?: string
+        changelog?: string
+        downloadCount?: number
+        lastDownloadedAt?: string | null
+        parentVersion?: string | null
+    }>
+}
+
+/** List all published versions for a branch. */
+export async function listVersionsBackend(
+    token: string,
+    branchId: string
+): Promise<VersionListResponse['versions']> {
+    const data = await fetchWithAuth<VersionListResponse>(
+        `/api/branches/${encodeURIComponent(branchId)}/versions`,
+        { method: 'GET' },
+        token
+    )
+    return data.versions
+}
+
+interface SnapshotResponse {
+    snapshot: {
+        id: string
+        branchId: string
+        brandConfig: BrandConfig
+        savedBy: string
+        savedByName: string
+        savedAt: string
+        label: string | null
+        isAutoSave: boolean
+    }
+}
+
+interface SnapshotListResponse {
+    snapshots: SnapshotResponse['snapshot'][]
+}
+
+/** List all snapshots for a branch. */
+export async function listSnapshotsBackend(
+    token: string,
+    branchId: string
+): Promise<SnapshotListResponse['snapshots']> {
+    const data = await fetchWithAuth<SnapshotListResponse>(
+        `/api/branches/${encodeURIComponent(branchId)}/snapshots`,
+        { method: 'GET' },
+        token
+    )
+    return data.snapshots
+}
+
+/** Create a new snapshot for a branch. */
+export async function createSnapshotBackend(
+    token: string,
+    branchId: string,
+    input: {
+        brandConfig: BrandConfig
+        label?: string
+        isAutoSave?: boolean
+    }
+): Promise<SnapshotResponse['snapshot']> {
+    const data = await fetchWithAuth<SnapshotResponse>(
+        `/api/branches/${encodeURIComponent(branchId)}/snapshots`,
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                brandConfig: input.brandConfig,
+                label: input.label,
+                isAutoSave: input.isAutoSave ?? true,
+            }),
+        },
+        token
+    )
+    return data.snapshot
+}
+
+interface PublishVersionResponse {
+    version: {
+        id: string
+        branchId: string
+        version: string
+        brandConfig: BrandConfig
+        isBreaking: boolean
+        isPrerelease: boolean
+        publishedAt: string
+        changelog?: string
+    }
+}
+
+/** Publish a versioned snapshot of a branch with full metadata. */
+export async function publishVersionBackend(
+    token: string,
+    branchId: string,
+    input: {
+        version: string
+        changelog?: string
+        isBreaking?: boolean
+        isPrerelease?: boolean
+    }
+): Promise<PublishVersionResponse['version']> {
+    const data = await fetchWithAuth<PublishVersionResponse>(
+        `/api/branches/${encodeURIComponent(branchId)}/publish`,
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                version: input.version,
+                changelog: input.changelog,
+                isBreaking: input.isBreaking ?? false,
+                isPrerelease: input.isPrerelease ?? false,
+            }),
+        },
+        token
+    )
+    return data.version
+}
+
+// ---------------------------------------------------------------------------
 // Organization
 // ---------------------------------------------------------------------------
 

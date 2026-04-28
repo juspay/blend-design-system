@@ -1,11 +1,10 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import {
     useComponents,
     useCategoryCoverage,
 } from '../../hooks/usePostgreSQLData'
-import Loader, { CardSkeleton } from '../shared/Loader'
 import {
     Button,
     Tag,
@@ -19,8 +18,14 @@ import {
     TabsTrigger,
     TabsContent,
     TabsVariant,
+    Skeleton,
 } from '@juspay/blend-design-system'
-import { Package, Check, X, ArrowsClockwise } from '@phosphor-icons/react'
+import {
+    PackageIcon,
+    CheckIcon,
+    XIcon,
+    ArrowsClockwiseIcon,
+} from '@phosphor-icons/react'
 
 export default function CodeConnectContent() {
     const { components, loading } = useComponents()
@@ -28,13 +33,11 @@ export default function CodeConnectContent() {
     const [selectedCategory, setSelectedCategory] = useState<string>('all')
     const [refreshing, setRefreshing] = useState(false)
 
-    // Filter components by category
     const filteredComponents = useMemo(() => {
         if (selectedCategory === 'all') return components
         return components.filter((c) => c.category === selectedCategory)
     }, [components, selectedCategory])
 
-    // Calculate stats
     const stats = useMemo(() => {
         const total = filteredComponents.length
         const integrated = filteredComponents.filter(
@@ -54,7 +57,6 @@ export default function CodeConnectContent() {
         }
     }, [filteredComponents])
 
-    // Prepare chart data for pie chart
     const pieChartData = useMemo(() => {
         return [
             {
@@ -74,7 +76,6 @@ export default function CodeConnectContent() {
         ]
     }, [stats])
 
-    // Prepare chart data for bar chart
     const barChartData = useMemo(() => {
         const categoryData = Object.entries(categories).map(
             ([category, data]) => ({
@@ -111,7 +112,6 @@ export default function CodeConnectContent() {
         ]
     }, [categories])
 
-    // Calculate counts for each category
     const categoryCounts = useMemo(() => {
         const counts: Record<string, number> = {
             all: components.length,
@@ -126,7 +126,6 @@ export default function CodeConnectContent() {
         return counts
     }, [components, categories])
 
-    // Button group items with counts
     const categoryButtons = [
         { id: 'all', label: `All (${categoryCounts.all || 0})` },
         { id: 'data', label: `Data (${categoryCounts.data || 0})` },
@@ -143,8 +142,10 @@ export default function CodeConnectContent() {
     const handleRefresh = async () => {
         setRefreshing(true)
         try {
-            await fetch('/api/components', { method: 'POST' })
-            // Data will auto-update via PostgreSQL polling hooks
+            await fetch('/api/components', {
+                method: 'POST',
+                credentials: 'include',
+            })
         } catch (error) {
             console.error('Error refreshing:', error)
         }
@@ -152,7 +153,13 @@ export default function CodeConnectContent() {
     }
 
     if (loading) {
-        return <Loader fullScreen size="large" text="Loading components..." />
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="flex flex-col items-center gap-3 w-full max-w-md p-8">
+                    <Skeleton.Card loading />
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -162,7 +169,7 @@ export default function CodeConnectContent() {
                     <Button
                         text="Refresh"
                         leadingIcon={
-                            <ArrowsClockwise
+                            <ArrowsClockwiseIcon
                                 className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
                             />
                         }
@@ -171,15 +178,14 @@ export default function CodeConnectContent() {
                     />
                 </div>
 
-                {/* Coverage Overview */}
                 <div className="flex gap-6 mb-8">
                     {loading ? (
                         <>
                             <div className="flex-1">
-                                <CardSkeleton />
+                                <Skeleton.Card loading />
                             </div>
                             <div className="flex-1">
-                                <CardSkeleton />
+                                <Skeleton.Card loading />
                             </div>
                         </>
                     ) : (
@@ -224,7 +230,6 @@ export default function CodeConnectContent() {
                     )}
                 </div>
 
-                {/* Category Filter and Components */}
                 <Tabs
                     value={selectedCategory}
                     onValueChange={setSelectedCategory}
@@ -250,7 +255,6 @@ export default function CodeConnectContent() {
                                     key={component.id}
                                     className="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-200"
                                 >
-                                    {/* Card Header */}
                                     <div className="p-4 border-b border-gray-100">
                                         <div className="flex items-start justify-between">
                                             <div>
@@ -261,21 +265,19 @@ export default function CodeConnectContent() {
                                                     {component.category}
                                                 </p>
                                             </div>
-                                            <Package className="w-4 h-4 text-gray-400" />
+                                            <PackageIcon className="w-4 h-4 text-gray-400" />
                                         </div>
                                     </div>
 
-                                    {/* Card Body */}
                                     <div className="p-4 space-y-2">
-                                        {/* Integration Status */}
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-gray-600">
                                                 Code Connect
                                             </span>
                                             {component.hasFigmaConnect ? (
-                                                <Check className="w-4 h-4 text-green-500" />
+                                                <CheckIcon className="w-4 h-4 text-green-500" />
                                             ) : (
-                                                <X className="w-4 h-4 text-gray-300" />
+                                                <XIcon className="w-4 h-4 text-gray-300" />
                                             )}
                                         </div>
 
@@ -284,9 +286,9 @@ export default function CodeConnectContent() {
                                                 Storybook
                                             </span>
                                             {component.hasStorybook ? (
-                                                <Check className="w-4 h-4 text-green-500" />
+                                                <CheckIcon className="w-4 h-4 text-green-500" />
                                             ) : (
-                                                <X className="w-4 h-4 text-gray-300" />
+                                                <XIcon className="w-4 h-4 text-gray-300" />
                                             )}
                                         </div>
 
@@ -295,13 +297,12 @@ export default function CodeConnectContent() {
                                                 Tests
                                             </span>
                                             {component.hasTests ? (
-                                                <Check className="w-4 h-4 text-green-500" />
+                                                <CheckIcon className="w-4 h-4 text-green-500" />
                                             ) : (
-                                                <X className="w-4 h-4 text-gray-300" />
+                                                <XIcon className="w-4 h-4 text-gray-300" />
                                             )}
                                         </div>
 
-                                        {/* Status */}
                                         <div className="pt-3 mt-3 border-t border-gray-100">
                                             {component.hasFigmaConnect ? (
                                                 <Tag

@@ -44,6 +44,7 @@ export function BackendAuthProvider({
     const [loading, setLoading] = useState(!isMockMode)
     const [token, setToken] = useState<string | null>(null)
     const [mockRoleVersion, setMockRoleVersion] = useState(0)
+    const [sessionChecked, setSessionChecked] = useState(false)
 
     useEffect(() => {
         if (!isMockMode) return
@@ -96,12 +97,22 @@ export function BackendAuthProvider({
             setLoading(false)
             return
         }
-        if (token) {
-            fetchUser()
-        } else {
-            fetchUser()
+
+        // Initial session check — runs once
+        if (!sessionChecked) {
+            void fetchUser().then(() => setSessionChecked(true))
         }
-    }, [token, fetchUser, isMockMode])
+
+        // Refresh session every 15 minutes to keep it alive for 7 days
+        const refreshInterval = setInterval(
+            () => {
+                void fetchUser()
+            },
+            15 * 60 * 1000
+        )
+
+        return () => clearInterval(refreshInterval)
+    }, [fetchUser, isMockMode, sessionChecked])
 
     const signInWithGoogle = async () => {
         if (isMockMode) return

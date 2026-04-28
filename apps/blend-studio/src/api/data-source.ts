@@ -60,10 +60,60 @@ export function resolveDataSource(
 // ---------------------------------------------------------------------------
 
 /**
+ * Retry a function with exponential backoff for transient failures.
+ * Retries on network errors and 5xx server errors.
+ */
+async function withRetry<T>(
+    fn: () => Promise<T>,
+    maxRetries = 3,
+    baseDelay = 1000
+): Promise<T> {
+    let lastError: Error | null = null
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+            return await fn()
+        } catch (error) {
+            lastError =
+                error instanceof Error ? error : new Error(String(error))
+
+            // Don't retry on 401/403 (auth errors) or 400 (client errors)
+            if (error && typeof error === 'object' && 'statusCode' in error) {
+                const statusCode = (error as { statusCode: number }).statusCode
+                if (
+                    statusCode === 401 ||
+                    statusCode === 403 ||
+                    statusCode === 400
+                ) {
+                    throw error
+                }
+                // Only retry 5xx errors and network errors
+                if (statusCode < 500) {
+                    throw error
+                }
+            }
+
+            // Don't retry on last attempt
+            if (attempt === maxRetries) {
+                break
+            }
+
+            // Exponential backoff with jitter
+            const delay =
+                baseDelay * Math.pow(2, attempt) + Math.random() * 1000
+            await new Promise((resolve) => setTimeout(resolve, delay))
+        }
+    }
+
+    throw lastError || new Error('Max retries exceeded')
+}
+
+/**
  * Execute a query against the resolved data source.
  *
  * Routes to the correct handler based on the data source type.
  * Throws if no handler is available for the resolved source.
+ * Includes automatic retry logic for transient failures.
  */
 export async function executeQuery<T>(
     source: DataSource,
@@ -74,7 +124,8 @@ export async function executeQuery<T>(
             if (!source.backendToken) {
                 throw new Error('Backend token is required for backend source')
             }
-            return handlers.backend(source.backendToken)
+            const backendToken = source.backendToken
+            return withRetry(() => handlers.backend(backendToken))
         }
 
         case 'mock': {
@@ -91,7 +142,7 @@ export async function executeQuery<T>(
                 )
             }
             const idToken = await source.firebaseUser.getIdToken()
-            return handlers.firestore(idToken)
+            return withRetry(() => handlers.firestore!(idToken))
         }
 
         case 'none':

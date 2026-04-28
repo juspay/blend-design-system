@@ -320,17 +320,13 @@ export function useVersionsWithMock(branchId: string | null) {
             : [...branchKeys.all, 'versions', 'empty'],
         enabled: !!branchId,
         queryFn: async () => {
-            const data = await executeQueryWithDefault<Version[]>(
+            const data = await executeQueryWithDefault<unknown[]>(
                 source,
                 {
                     backend: async (token) => {
-                        const flags = featureFlags.get()
-                        const resp = await fetch(
-                            `${flags.apiBaseUrl}/api/branches/${branchId}/versions`,
-                            { headers: { Authorization: `Bearer ${token}` } }
-                        )
-                        const json = await resp.json()
-                        return json.success ? json.data.versions : []
+                        const { listVersionsBackend } =
+                            await import('@/api/backend')
+                        return listVersionsBackend(token, branchId!)
                     },
                     mock: () => mockApi.listVersions(branchId!),
                 },
@@ -359,17 +355,13 @@ export function useSnapshotsWithMock(branchId: string | null) {
             : [...branchKeys.all, 'snapshots', 'empty'],
         enabled: !!branchId,
         queryFn: async () => {
-            const data = await executeQueryWithDefault<Snapshot[]>(
+            const data = await executeQueryWithDefault<unknown[]>(
                 source,
                 {
                     backend: async (token) => {
-                        const flags = featureFlags.get()
-                        const resp = await fetch(
-                            `${flags.apiBaseUrl}/api/branches/${branchId}/snapshots`,
-                            { headers: { Authorization: `Bearer ${token}` } }
-                        )
-                        const json = await resp.json()
-                        return json.success ? json.data.snapshots : []
+                        const { listSnapshotsBackend } =
+                            await import('@/api/backend')
+                        return listSnapshotsBackend(token, branchId!)
                     },
                     mock: () => mockApi.listSnapshots(branchId!),
                 },
@@ -407,30 +399,14 @@ export function usePublishVersionWithMock(branchId: string | null) {
             }
             const result = await executeMutation<Version | null>(source, {
                 backend: async (token) => {
-                    const flags = featureFlags.get()
-                    const resp = await fetch(
-                        `${flags.apiBaseUrl}/api/branches/${branchId}/publish`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${token}`,
-                            },
-                            body: JSON.stringify({
-                                version: input.version,
-                                changelog: input.changelog,
-                                isBreaking: input.isBreaking,
-                                isPrerelease: input.isPrerelease,
-                            }),
-                        }
-                    )
-                    const data = await resp.json()
-                    if (!data.success)
-                        throw new Error(data.error?.message || 'Publish failed')
-                    return {
-                        ...input,
-                        publishedAt: new Date(),
-                    } as unknown as Version
+                    const { publishVersionBackend } =
+                        await import('@/api/backend')
+                    return publishVersionBackend(token, branchId!, {
+                        version: input.version,
+                        changelog: input.changelog,
+                        isBreaking: input.isBreaking,
+                        isPrerelease: input.isPrerelease,
+                    }) as unknown as Version
                 },
                 mock: () => mockApi.publishVersion(branchId, input),
             })
@@ -470,28 +446,13 @@ export function useCreateSnapshotWithMock(branchId: string | null) {
             if (!branchId) return null
             const result = await executeMutation<Snapshot | null>(source, {
                 backend: async (token) => {
-                    const flags = featureFlags.get()
-                    const resp = await fetch(
-                        `${flags.apiBaseUrl}/api/branches/${branchId}/snapshots`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${token}`,
-                            },
-                            body: JSON.stringify({
-                                brandConfig,
-                                label,
-                                isAutoSave,
-                            }),
-                        }
-                    )
-                    const data = await resp.json()
-                    if (!data.success)
-                        throw new Error(
-                            data.error?.message || 'Snapshot failed'
-                        )
-                    return data.data.snapshot as unknown as Snapshot
+                    const { createSnapshotBackend } =
+                        await import('@/api/backend')
+                    return createSnapshotBackend(token, branchId!, {
+                        brandConfig,
+                        label,
+                        isAutoSave,
+                    }) as unknown as Snapshot
                 },
                 mock: () =>
                     mockApi.createSnapshot(
