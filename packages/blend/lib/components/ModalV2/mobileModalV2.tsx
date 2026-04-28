@@ -150,8 +150,10 @@ const MobileModalV2: React.FC<MobileModalV2Props> = ({
                     )}
                     {/* Body */}
                     {!shouldShowSkeleton ? (
-                        <DrawerV2Body>
-                            <Block style={paddingStyle}>{children}</Block>
+                        <DrawerV2Body
+                            style={{ ...paddingStyle, overflowY: 'auto' }}
+                        >
+                            {children}
                         </DrawerV2Body>
                     ) : (
                         <Block style={paddingStyle}>
