@@ -161,6 +161,48 @@ const branchKeys = {
         ] as const,
 }
 
+const getSourceToken = (source: DataSource): string => source.backendToken ?? ''
+
+const isStudioBranchesKey = (key: readonly unknown[]): boolean =>
+    Array.isArray(key) && key[0] === 'studio' && key[1] === 'branches'
+
+const isBranchListKeyForSource = (
+    key: readonly unknown[],
+    source: DataSource
+): boolean => {
+    if (!isStudioBranchesKey(key)) return false
+    const segment = key[2]
+    return (
+        typeof segment === 'string' &&
+        segment !== 'detail' &&
+        segment !== 'versions' &&
+        segment !== 'snapshots' &&
+        key[2] === source.type &&
+        key[3] === getSourceToken(source)
+    )
+}
+
+const isBranchScopeKeyForSource = (
+    key: readonly unknown[],
+    source: DataSource,
+    branchId: string
+): boolean => {
+    if (!isStudioBranchesKey(key)) return false
+    const segment = key[2]
+    if (
+        segment !== 'detail' &&
+        segment !== 'versions' &&
+        segment !== 'snapshots'
+    ) {
+        return false
+    }
+    return (
+        key[3] === source.type &&
+        key[4] === getSourceToken(source) &&
+        key[5] === branchId
+    )
+}
+
 // ---------------------------------------------------------------------------
 // Internal: shared hook for resolving the current data source
 // ---------------------------------------------------------------------------
@@ -289,7 +331,10 @@ export function useBranchWithMock(branchId: string | null) {
             if (updated) {
                 queryClient.setQueryData(branchKeys.detail(source, id), updated)
                 await queryClient.invalidateQueries({
-                    queryKey: branchKeys.all,
+                    predicate: (query) =>
+                        isBranchScopeKeyForSource(query.queryKey, source, id) ||
+                        isBranchListKeyForSource(query.queryKey, source),
+                    refetchType: 'active',
                 })
             }
             return updated
@@ -414,7 +459,19 @@ export function usePublishVersionWithMock(branchId: string | null) {
             return parseVersion(result)
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: branchKeys.all })
+            if (!branchId) return
+
+            // Invalidate only the active branch-scoped caches and matching
+            // branch list queries for the same data source/session.
+            await queryClient.invalidateQueries({
+                predicate: (query) =>
+                    isBranchScopeKeyForSource(
+                        query.queryKey,
+                        source,
+                        branchId
+                    ) || isBranchListKeyForSource(query.queryKey, source),
+                refetchType: 'active',
+            })
         },
     })
 
@@ -466,7 +523,16 @@ export function useCreateSnapshotWithMock(branchId: string | null) {
             return parseSnapshot(result)
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: branchKeys.all })
+            if (!branchId) return
+            await queryClient.invalidateQueries({
+                predicate: (query) =>
+                    isBranchScopeKeyForSource(
+                        query.queryKey,
+                        source,
+                        branchId
+                    ) || isBranchListKeyForSource(query.queryKey, source),
+                refetchType: 'active',
+            })
         },
     })
 
@@ -522,7 +588,11 @@ export function useCreateBranchWithMock() {
             return parseBranch(created)
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: branchKeys.all })
+            await queryClient.invalidateQueries({
+                predicate: (query) =>
+                    isBranchListKeyForSource(query.queryKey, source),
+                refetchType: 'active',
+            })
         },
     })
 
@@ -554,7 +624,11 @@ export function useDeleteBranchWithMock() {
             return true
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: branchKeys.all })
+            await queryClient.invalidateQueries({
+                predicate: (query) =>
+                    isBranchListKeyForSource(query.queryKey, source),
+                refetchType: 'active',
+            })
         },
     })
 
@@ -594,7 +668,11 @@ export function useForkBranchWithMock() {
             return parseBranch(created)
         },
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: branchKeys.all })
+            await queryClient.invalidateQueries({
+                predicate: (query) =>
+                    isBranchListKeyForSource(query.queryKey, source),
+                refetchType: 'active',
+            })
         },
     })
 
