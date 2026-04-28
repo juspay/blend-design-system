@@ -9,6 +9,7 @@ import type {
     UpdateBranchDTO,
     PublishBranchDTO,
     BrandConfig,
+    BranchVersion,
 } from './branch.types.js'
 import * as branchRepo from '../data-access/branch.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
@@ -514,7 +515,7 @@ export const publishBranch = async (
     userId: string,
     userName: string,
     userEmail: string
-): Promise<void> => {
+): Promise<BranchVersion> => {
     const branch = await getBranch(branchId)
 
     if (branch.createdBy !== userId) {
@@ -527,7 +528,7 @@ export const publishBranch = async (
         )
     }
 
-    await branchRepo.createVersion(branchId, {
+    const version = await branchRepo.createVersion(branchId, {
         version: dto.version,
         brandConfig: branch.brandConfig,
         changelog: dto.changelog || null,
@@ -552,6 +553,8 @@ export const publishBranch = async (
             },
         })
     }
+
+    return version as unknown as BranchVersion
 }
 
 export const listVersions = async (branchId: string) => {

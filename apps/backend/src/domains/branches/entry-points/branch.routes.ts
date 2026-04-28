@@ -196,7 +196,7 @@ router.post(
     authenticate,
     validate({ body: publishBranchSchema }),
     asyncHandler(async (req: Request, res: Response) => {
-        await branchService.publishBranch(
+        const version = await branchService.publishBranch(
             req.params.branchId,
             req.body,
             req.user!.id,
@@ -205,6 +205,7 @@ router.post(
         )
         res.json({
             success: true,
+            data: { version },
             message: 'Branch published successfully',
         })
     })

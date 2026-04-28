@@ -163,6 +163,13 @@ const branchKeys = {
 
 const getSourceToken = (source: DataSource): string => source.backendToken ?? ''
 
+const STUDIO_QUERY_BEHAVIOR = {
+    staleTime: 60_000,
+    gcTime: 10 * 60_000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+} as const
+
 const isStudioBranchesKey = (key: readonly unknown[]): boolean =>
     Array.isArray(key) && key[0] === 'studio' && key[1] === 'branches'
 
@@ -232,6 +239,7 @@ export function useBranchesWithMock(options?: BranchListOptions) {
     const orgId = user?.organizations?.[0]?.organizationId
 
     const query = useQuery({
+        ...STUDIO_QUERY_BEHAVIOR,
         queryKey: branchKeys.list(source, optionsKey, orgId),
         enabled: source.type !== 'none',
         queryFn: async () => {
@@ -284,6 +292,7 @@ export function useBranchWithMock(branchId: string | null) {
     const queryClient = useQueryClient()
 
     const query = useQuery({
+        ...STUDIO_QUERY_BEHAVIOR,
         queryKey: branchId
             ? branchKeys.detail(source, branchId)
             : [...branchKeys.all, 'detail', 'empty'],
@@ -357,13 +366,18 @@ export function useBranchWithMock(branchId: string | null) {
 // useVersionsWithMock
 // ---------------------------------------------------------------------------
 
-export function useVersionsWithMock(branchId: string | null) {
+export function useVersionsWithMock(
+    branchId: string | null,
+    options?: { enabled?: boolean }
+) {
     const source = useDataSource()
+    const isEnabled = options?.enabled ?? true
     const query = useQuery({
+        ...STUDIO_QUERY_BEHAVIOR,
         queryKey: branchId
             ? branchKeys.versions(source, branchId)
             : [...branchKeys.all, 'versions', 'empty'],
-        enabled: !!branchId,
+        enabled: !!branchId && isEnabled,
         queryFn: async () => {
             const data = await executeQueryWithDefault<unknown[]>(
                 source,
@@ -392,13 +406,18 @@ export function useVersionsWithMock(branchId: string | null) {
 // useSnapshotsWithMock
 // ---------------------------------------------------------------------------
 
-export function useSnapshotsWithMock(branchId: string | null) {
+export function useSnapshotsWithMock(
+    branchId: string | null,
+    options?: { enabled?: boolean }
+) {
     const source = useDataSource()
+    const isEnabled = options?.enabled ?? true
     const query = useQuery({
+        ...STUDIO_QUERY_BEHAVIOR,
         queryKey: branchId
             ? branchKeys.snapshots(source, branchId)
             : [...branchKeys.all, 'snapshots', 'empty'],
-        enabled: !!branchId,
+        enabled: !!branchId && isEnabled,
         queryFn: async () => {
             const data = await executeQueryWithDefault<unknown[]>(
                 source,
@@ -458,20 +477,52 @@ export function usePublishVersionWithMock(branchId: string | null) {
             if (!result) return null
             return parseVersion(result)
         },
-        onSuccess: async () => {
-            if (!branchId) return
+        onSuccess: (version) => {
+            if (!branchId || !version) return
 
-            // Invalidate only the active branch-scoped caches and matching
-            // branch list queries for the same data source/session.
-            await queryClient.invalidateQueries({
-                predicate: (query) =>
-                    isBranchScopeKeyForSource(
-                        query.queryKey,
-                        source,
-                        branchId
-                    ) || isBranchListKeyForSource(query.queryKey, source),
-                refetchType: 'active',
-            })
+            queryClient.setQueryData<Version[]>(
+                branchKeys.versions(source, branchId),
+                (current = []) => {
+                    const withoutDuplicate = current.filter(
+                        (item) => item.id !== version.id
+                    )
+                    return [version, ...withoutDuplicate]
+                }
+            )
+
+            queryClient.setQueryData<Branch | null>(
+                branchKeys.detail(source, branchId),
+                (current) =>
+                    current
+                        ? {
+                              ...current,
+                              status: 'published',
+                              latestVersion: version.version,
+                          }
+                        : current
+            )
+
+            queryClient.setQueriesData<BranchListResult>(
+                {
+                    predicate: (query) =>
+                        isBranchListKeyForSource(query.queryKey, source),
+                },
+                (current) =>
+                    current
+                        ? {
+                              ...current,
+                              branches: current.branches.map((branch) =>
+                                  branch.id === branchId
+                                      ? {
+                                            ...branch,
+                                            status: 'published',
+                                            latestVersion: version.version,
+                                        }
+                                      : branch
+                              ),
+                          }
+                        : current
+            )
         },
     })
 
@@ -522,17 +573,17 @@ export function useCreateSnapshotWithMock(branchId: string | null) {
             if (!result) return null
             return parseSnapshot(result)
         },
-        onSuccess: async () => {
-            if (!branchId) return
-            await queryClient.invalidateQueries({
-                predicate: (query) =>
-                    isBranchScopeKeyForSource(
-                        query.queryKey,
-                        source,
-                        branchId
-                    ) || isBranchListKeyForSource(query.queryKey, source),
-                refetchType: 'active',
-            })
+        onSuccess: (snapshot) => {
+            if (!branchId || !snapshot) return
+            queryClient.setQueryData<Snapshot[]>(
+                branchKeys.snapshots(source, branchId),
+                (current = []) => {
+                    const withoutDuplicate = current.filter(
+                        (item) => item.id !== snapshot.id
+                    )
+                    return [snapshot, ...withoutDuplicate]
+                }
+            )
         },
     })
 

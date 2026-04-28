@@ -129,6 +129,8 @@ const AUTO_SAVE_DELAY_MS = 1_000
 function EditorPage() {
     const { branchId } = Route.useParams()
     const navigate = useNavigate()
+    const [activePanel, setActivePanel] = useState<EditorPanelId>('preview')
+    const shouldLoadHistoryData = activePanel === 'history'
 
     // Data hooks
     const {
@@ -140,9 +142,12 @@ function EditorPage() {
     const { publishVersion, loading: publishLoading } =
         usePublishVersionWithMock(branchId)
     const { createSnapshot } = useCreateSnapshotWithMock(branchId)
-    const { versions } = useVersionsWithMock(branchId)
-    const { snapshots, refetch: refetchSnapshots } =
-        useSnapshotsWithMock(branchId)
+    const { versions } = useVersionsWithMock(branchId, {
+        enabled: shouldLoadHistoryData,
+    })
+    const { snapshots } = useSnapshotsWithMock(branchId, {
+        enabled: shouldLoadHistoryData,
+    })
 
     // Editor state
     const [previewTheme, setPreviewTheme] = useState<'light' | 'dark'>('light')
@@ -151,7 +156,6 @@ function EditorPage() {
     const [saving, setSaving] = useState(false)
     const [saveSuccess, setSaveSuccess] = useState(false)
     const [activeTab, setActiveTab] = useState<EditorTabId>('colors')
-    const [activePanel, setActivePanel] = useState<EditorPanelId>('preview')
     const [showPublishModal, setShowPublishModal] = useState(false)
     const [showImportWizard, setShowImportWizard] = useState(false)
     const [selectedComponent, setSelectedComponent] = useState<string | null>(
@@ -292,14 +296,13 @@ function EditorPage() {
             await createSnapshot(brand, 'Manual save', false)
             setHasChanges(false)
             setSaveSuccess(true)
-            refetchSnapshots()
             setTimeout(() => setSaveSuccess(false), 2000)
         } catch (err) {
             console.error('Save failed:', err)
         } finally {
             setSaving(false)
         }
-    }, [brand, branchId, updateBranch, createSnapshot, refetchSnapshots])
+    }, [brand, branchId, updateBranch, createSnapshot])
 
     const handleRestoreSnapshot = useCallback((snapshotBrand: BrandConfig) => {
         setBrand(snapshotBrand)
@@ -750,7 +753,7 @@ interface PublishModalProps {
         changelog: string,
         isBreaking: boolean,
         isPrerelease: boolean
-    ) => void
+    ) => Promise<void>
     loading: boolean
 }
 
@@ -767,7 +770,18 @@ function PublishModal({
     const [changelog, setChangelog] = useState('')
     const [isBreaking, setIsBreaking] = useState(false)
     const [isPrerelease, setIsPrerelease] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const vValid = validateVersion(version)
+
+    const handlePublish = async () => {
+        if (loading || isSubmitting || !vValid.valid) return
+        setIsSubmitting(true)
+        try {
+            await onPublish(version, changelog, isBreaking, isPrerelease)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -892,23 +906,17 @@ function PublishModal({
                 <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
                     <button
                         onClick={onClose}
+                        disabled={loading || isSubmitting}
                         className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg"
                     >
                         Cancel
                     </button>
                     <button
-                        onClick={() =>
-                            onPublish(
-                                version,
-                                changelog,
-                                isBreaking,
-                                isPrerelease
-                            )
-                        }
-                        disabled={loading || !vValid.valid}
+                        onClick={handlePublish}
+                        disabled={loading || isSubmitting || !vValid.valid}
                         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                     >
-                        {loading ? (
+                        {loading || isSubmitting ? (
                             <Spinner className="w-4 h-4 animate-spin" />
                         ) : (
                             <Play className="w-4 h-4" />
