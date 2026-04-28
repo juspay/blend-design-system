@@ -153,6 +153,7 @@ import BadgeDemo from './BadgeDemo'
 import ChatInputV2Demo from './ChatInputV2Demo'
 import StepperV2Demo from './StepperV2Demo'
 import UploadV2Demo from './UploadV2Demo'
+import ModalV2Demo from './ModalV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponentState] = useState<
@@ -258,6 +259,7 @@ const SidebarDemo = () => {
         | 'searchInputV2'
         | 'chatInputV2'
         | 'stepperV2'
+        | 'modalV2'
     >(() => {
         return (window.location.hash.slice(1) || 'checkbox') as any
     })
@@ -543,6 +545,8 @@ const SidebarDemo = () => {
                 return <TooltipDemo />
             case 'modal':
                 return <ModalDemo />
+            case 'modalV2':
+                return <ModalV2Demo />
             case 'radio':
                 return <RadioDemo />
             case 'radioV2':
@@ -1393,6 +1397,12 @@ const SidebarDemo = () => {
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
                     isSelected: activeComponent === 'modal',
                     onClick: () => setActiveComponent('modal'),
+                },
+                {
+                    label: 'Modal V2',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'modalV2',
+                    onClick: () => setActiveComponent('modalV2'),
                 },
                 {
                     label: 'Popover',

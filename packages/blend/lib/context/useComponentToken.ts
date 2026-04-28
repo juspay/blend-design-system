@@ -78,6 +78,7 @@ import { ResponsiveChatInputV2TokensType } from '../components/InputsV2/ChatInpu
 import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 import type { ResponsiveStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 import { ResponsiveUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
+import { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -161,7 +162,10 @@ export const useComponentToken = (
     | ResponsiveChatInputV2TokensType
     | ChatInputV2MobileTokensType
     | ResponsiveStepperV2Tokens
-    | ResponsiveUploadV2Tokens => {
+    | ResponsiveStepperV2Tokens
+    | ResponsiveModalV2Tokens
+    | ResponsiveUploadV2Tokens
+    | ChatInputV2MobileTokensType => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -324,6 +328,8 @@ export const useComponentToken = (
             return componentTokens.STEPPERV2
         case 'UPLOADV2':
             return componentTokens.UPLOADV2
+        case 'MODALV2':
+            return componentTokens.MODALV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }
