@@ -14,7 +14,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import prompts from 'prompts'
 import { logger } from '../utils/logger'
-import { apiClient } from '../utils/api-client'
+import { apiClient, syncApiClientToProject } from '../utils/api-client'
 
 interface LoginOptions {
     token?: string
@@ -23,6 +23,7 @@ interface LoginOptions {
 const AUTH_FILE = join(homedir(), '.blend-token-studio', 'auth.json')
 
 export async function loginCommand(options: LoginOptions = {}): Promise<void> {
+    syncApiClientToProject(process.cwd())
     logger.header('Blend Token Studio — Login')
 
     if (apiClient.isAuthenticated()) {
@@ -48,16 +49,20 @@ export async function loginCommand(options: LoginOptions = {}): Promise<void> {
     }
 
     console.log(`
-  To authenticate, you need a Studio API token (JWT).
+  To authenticate, use a Studio access token (JWT).
 
-  Option 1: Get token from the dashboard
-    1. Open the Studio UI
-    2. Sign in with Google
-    3. Open the user menu (top right) → "API Token (for CLI)"
-    4. Copy the token
+  Option 1 — from the Studio web app (recommended)
+    1. Open Blend Token Studio in your browser (same environment as this project’s blend.config.json).
+    2. Sign in with Google.
+    3. User menu (top right) → "CLI token" — a short-lived token (default 10 minutes) is minted for you.
+    4. Run from your project folder before it expires:
+         npx blend-token-studio login --token <paste>
+       Generate a new token from the menu anytime.
 
-  Option 2: Use environment variable
+  Option 2 — CI / scripts
     export BLEND_STUDIO_API_TOKEN=<your-token>
+
+  Tip: BLEND_STUDIO_API_URL overrides blend.config.json if you need to point the CLI elsewhere.
 
 `)
 
@@ -118,6 +123,7 @@ async function loginWithToken(token: string): Promise<void> {
 }
 
 export async function logoutCommand(): Promise<void> {
+    syncApiClientToProject(process.cwd())
     logger.header('Blend Token Studio — Logout')
 
     if (!apiClient.isAuthenticated()) {
@@ -132,6 +138,7 @@ export async function logoutCommand(): Promise<void> {
 }
 
 export async function whoamiCommand(): Promise<void> {
+    syncApiClientToProject(process.cwd())
     if (!apiClient.isAuthenticated()) {
         logger.info('Not logged in')
         logger.detail('Run `npx blend-token-studio login` to authenticate')

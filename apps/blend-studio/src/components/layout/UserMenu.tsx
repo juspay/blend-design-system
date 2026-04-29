@@ -21,6 +21,8 @@ import {
     ButtonSubType,
 } from '@juspay/blend-design-system'
 
+const API_URL = import.meta.env.VITE_API_BASE_URL || ''
+
 interface UserMenuProps {
     showAdminToggle?: boolean
     onAdminToggle?: () => void
@@ -38,7 +40,92 @@ export function UserMenu({
     const [isOpen, setIsOpen] = useState(false)
     const [showTokenModal, setShowTokenModal] = useState(false)
     const [copied, setCopied] = useState(false)
+    const [cliToken, setCliToken] = useState<string | null>(null)
+    const [cliTokenExpiresAt, setCliTokenExpiresAt] = useState<number | null>(
+        null
+    )
+    const [cliTokenLoading, setCliTokenLoading] = useState(false)
+    const [cliTokenError, setCliTokenError] = useState<string | null>(null)
     const menuRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (!showTokenModal || !user) {
+            return
+        }
+
+        let cancelled = false
+        setCliToken(null)
+        setCliTokenExpiresAt(null)
+        setCliTokenError(null)
+        setCliTokenLoading(true)
+
+        if (!API_URL) {
+            setCliTokenLoading(false)
+            setCliTokenError(
+                'API URL is not configured (VITE_API_BASE_URL). Cannot load CLI token.'
+            )
+            return
+        }
+
+        void (async () => {
+            try {
+                const response = await fetch(`${API_URL}/api/auth/cli-token`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}',
+                })
+                const body = (await response.json().catch(() => ({}))) as {
+                    success?: boolean
+                    data?: {
+                        token?: string
+                        expiresAt?: number | null
+                        expiresInSeconds?: number | null
+                    }
+                    message?: string
+                    error?: { message?: string }
+                }
+
+                if (cancelled) return
+
+                if (!response.ok) {
+                    setCliTokenError(
+                        body?.message ||
+                            body?.error?.message ||
+                            `Could not load token (HTTP ${response.status}). Try signing out and signing in again.`
+                    )
+                    return
+                }
+
+                const token = body?.data?.token
+                if (typeof token === 'string' && token.length > 0) {
+                    setCliToken(token)
+                    const exp = body?.data?.expiresAt
+                    setCliTokenExpiresAt(
+                        typeof exp === 'number' && !Number.isNaN(exp)
+                            ? exp
+                            : null
+                    )
+                } else {
+                    setCliTokenError('Invalid token response from server.')
+                }
+            } catch {
+                if (!cancelled) {
+                    setCliTokenError(
+                        'Network error while loading token. Check your connection and API URL.'
+                    )
+                }
+            } finally {
+                if (!cancelled) {
+                    setCliTokenLoading(false)
+                }
+            }
+        })()
+
+        return () => {
+            cancelled = true
+        }
+    }, [showTokenModal, user])
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -81,8 +168,6 @@ export function UserMenu({
         navigate({ to: '/login', search: { from: undefined } })
     }
 
-    const apiToken = sessionStorage.getItem('blend_auth_token')
-
     const handleOpenToken = () => {
         setIsOpen(false)
         setCopied(false)
@@ -90,14 +175,14 @@ export function UserMenu({
     }
 
     const handleCopyToken = async () => {
-        if (!apiToken) return
+        if (!cliToken) return
         try {
-            await navigator.clipboard.writeText(apiToken)
+            await navigator.clipboard.writeText(cliToken)
             setCopied(true)
             window.setTimeout(() => setCopied(false), 1200)
         } catch {
             const textarea = document.createElement('textarea')
-            textarea.value = apiToken
+            textarea.value = cliToken
             textarea.style.position = 'fixed'
             textarea.style.left = '-9999px'
             document.body.appendChild(textarea)
@@ -239,7 +324,7 @@ export function UserMenu({
                             className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         >
                             <Key className="w-4 h-4 text-gray-400" />
-                            <span>API Token (for CLI)</span>
+                            <span>CLI token</span>
                         </button>
 
                         <div className="my-1 h-px bg-gray-100" />
@@ -258,8 +343,8 @@ export function UserMenu({
             <Modal
                 isOpen={showTokenModal}
                 onClose={() => setShowTokenModal(false)}
-                title="API Token (for CLI)"
-                subtitle="Use this for blend-token-studio login --token"
+                title="CLI token"
+                subtitle="Short-lived (10 min). Mint a new one here anytime after it expires."
                 primaryAction={{
                     text: copied ? 'Copied!' : 'Copy token',
                     buttonType: ButtonType.PRIMARY,
@@ -270,6 +355,7 @@ export function UserMenu({
                         <Copy className="w-4 h-4" />
                     ),
                     onClick: handleCopyToken,
+                    disabled: cliTokenLoading || !cliToken,
                 }}
                 secondaryAction={{
                     text: 'Close',
@@ -279,27 +365,48 @@ export function UserMenu({
                 }}
                 minWidth="480px"
             >
-                {!apiToken ? (
-                    <div className="text-sm text-red-600">
-                        Token not found. Please sign in again.
-                    </div>
-                ) : (
+                {cliTokenLoading ? (
+                    <div className="text-sm text-gray-600">Loading token…</div>
+                ) : cliTokenError ? (
+                    <div className="text-sm text-red-600">{cliTokenError}</div>
+                ) : cliToken ? (
                     <div className="space-y-3">
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                            Use once in your terminal, then run CLI commands
+                            before it expires. Open this dialog again to mint a
+                            new token.
+                        </div>
+                        {cliTokenExpiresAt != null && (
+                            <div className="text-xs text-gray-600">
+                                Expires:{' '}
+                                <span className="font-medium text-gray-900">
+                                    {new Date(
+                                        cliTokenExpiresAt
+                                    ).toLocaleString()}
+                                </span>
+                            </div>
+                        )}
                         <div className="text-xs text-gray-600">
-                            Copy and paste into your terminal:
+                            From your app project folder (same Studio as this
+                            site):
                         </div>
                         <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
                             <code className="block text-xs font-mono text-gray-800 break-all">
-                                {apiToken}
+                                {cliToken}
                             </code>
                         </div>
                         <div className="text-xs text-gray-500">
                             Example:{' '}
                             <span className="font-mono">
-                                blend-token-studio login --token
+                                npx blend-token-studio login --token
                                 &nbsp;&lt;TOKEN&gt;
                             </span>
                         </div>
+                    </div>
+                ) : (
+                    <div className="text-sm text-gray-600">
+                        No token returned. Try refreshing the page or signing in
+                        again.
                     </div>
                 )}
             </Modal>

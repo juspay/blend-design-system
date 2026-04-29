@@ -2,7 +2,7 @@
 
 > **For full infrastructure deployment (GCP/Firebase), see [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)**
 
-This file covers: Publishing `blend-token-studio` (CLI) and `blend-ui-mcp`.
+This file covers: Publishing `blend-studio` (CLI) and `blend-ui-mcp`.
 
 > **Note:** `@juspay/blend-design-system` (component library) is already published. See its existing workflow for that.
 
@@ -11,7 +11,7 @@ This file covers: Publishing `blend-token-studio` (CLI) and `blend-ui-mcp`.
 ## Publishing Order
 
 ```
-1. blend-token-studio            (CLI tool)
+1. blend-studio                   (CLI tool)
 2. blend-ui-mcp                  (MCP package)
 ```
 
@@ -58,11 +58,11 @@ npm publish --access public
 ### Verify
 
 ```bash
-npm view blend-token-studio
+npm view blend-studio
 
 # Test global install
-npm install -g blend-token-studio
-blend-token-studio --version
+npm install -g blend-studio
+blend-studio --version
 ```
 
 ### Version Bump
@@ -110,7 +110,7 @@ The CLI has a GitHub Actions workflow at `.github/workflows/publish-cli.yml`.
 
 ### Trigger
 
-1. Go to Actions → **Publish CLI (blend-token-studio)**
+1. Go to Actions → **Publish CLI (blend-studio)**
 2. Click **Run workflow**
 3. Select:
     - **Version bump**: `patch`, `minor`, or `major`

@@ -15,12 +15,13 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import ora from 'ora'
 import { logger } from '../utils/logger'
+import { resolveStudioApiUrl } from '../constants/studio'
 import {
     parseCliFormat,
     reportCommandFailure,
     reportCommandSuccess,
 } from '../utils/cli-output'
-import { apiClient } from '../utils/api-client'
+import { apiClient, syncApiClientToProject } from '../utils/api-client'
 import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 import { generateBrandTokensCode } from '../generators/tokens-generator'
 import { generateBrandTokensRescriptCode } from '../generators/tokens-rescript-generator'
@@ -46,6 +47,7 @@ export async function pullCommand(
     options: PullOptions = {}
 ): Promise<void> {
     const cwd = process.cwd()
+    syncApiClientToProject(cwd)
     const format = parseCliFormat(options)
 
     const configPath = join(cwd, 'blend.config.json')
@@ -111,6 +113,11 @@ export async function pullCommand(
 
     if (!response.success || !response.data) {
         const message = response.error?.message || 'Unknown error'
+        const authIssue =
+            response.error?.code === 'UNAUTHORIZED' ||
+            /token not found|not authenticated|unauthorized|expired|sign in again/i.test(
+                message
+            )
         if (spinner) {
             spinner.fail('Failed to fetch branch')
         }
@@ -119,7 +126,17 @@ export async function pullCommand(
             command: 'pull',
             message,
             ci: options.ci,
-            logPretty: (m) => logger.error(m),
+            logPretty: (m) => {
+                logger.error(m)
+                if (authIssue) {
+                    logger.detail(
+                        'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                    )
+                    logger.detail(
+                        'Or set BLEND_STUDIO_API_TOKEN for non-interactive flows.'
+                    )
+                }
+            },
         })
         return
     }
@@ -193,9 +210,7 @@ export async function pullCommand(
         branchName: branch.name,
         version: version?.version || null,
         pulledAt: new Date().toISOString(),
-        apiUrl:
-            process.env.BLEND_STUDIO_API_URL ||
-            'https://studio.blend.juspay.design',
+        apiUrl: resolveStudioApiUrl(config.studio?.apiUrl),
     }
 
     const studioMetaPath = join(outputDir, 'studio.json')

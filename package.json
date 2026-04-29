@@ -42,9 +42,9 @@
         "test:a11y": "cd packages/blend && pnpm test:a11y",
         "test:a11y:watch": "cd packages/blend && pnpm test:a11y:watch",
         "test:a11y:file": "cd packages/blend && pnpm test:file",
-        "token-studio": "blend-token-studio",
+        "token-studio": "blend-studio",
         "test:token-studio:npm-smoke": "node ./scripts/token-studio-npm-smoke.mjs",
-        "test:token-studio:release-gate": "pnpm --filter @juspay/blend-design-system build && pnpm --filter blend-token-studio build",
+        "test:token-studio:release-gate": "pnpm --filter @juspay/blend-design-system build && pnpm --filter blend-studio build",
         "chromatic": "cd apps/storybook && pnpm chromatic",
         "chromatic:ci": "cd apps/storybook && pnpm chromatic:ci"
     },
@@ -56,6 +56,7 @@
         "@figma/code-connect": "^1.3.4",
         "@typescript-eslint/eslint-plugin": "^8.37.0",
         "@typescript-eslint/parser": "^8.37.0",
+        "blend-studio": "workspace:*",
         "eslint": "^9.31.0",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^5.2.0",
@@ -64,10 +65,10 @@
         "husky": "^9.1.7",
         "prettier": "^3.6.2",
         "turbo": "^2.5.4",
-        "typescript-eslint": "^8.37.0",
-        "blend-token-studio": "workspace:*"
+        "typescript-eslint": "^8.37.0"
     },
     "dependencies": {
+        "@phosphor-icons/react": "^2.1.10",
         "react-hook-form": "^7.62.0",
         "react-phone-input-2": "^2.15.1"
     }

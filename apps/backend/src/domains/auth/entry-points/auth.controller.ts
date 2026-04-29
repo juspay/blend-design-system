@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
 import { env } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { maskEmail, hashPII } from '@/utils/crypto.js'
@@ -7,6 +8,7 @@ import {
     generateAuthUrl,
     exchangeCodeForTokens,
     generateTokens,
+    generateCliExportToken,
     verifyJwtToken,
     hashToken,
 } from '../domain/auth.service.js'
@@ -182,6 +184,10 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     try {
         const decoded = verifyJwtToken(refreshToken)
 
+        if (decoded.type !== 'refresh') {
+            throw new UnauthorizedError('Invalid refresh token')
+        }
+
         const newTokens = generateTokens({
             userId: decoded.userId,
             email: decoded.email,
@@ -271,6 +277,54 @@ export const logoutAllDevices = async (req: Request, res: Response) => {
     })
 
     res.json({ success: true, message: 'Logged out from all devices' })
+}
+
+/**
+ * Mint a **short-lived CLI-only** JWT for `blend-token-studio login --token`.
+ *
+ * Requires a valid browser session (`authenticate`). Does **not** return the long-lived
+ * httpOnly access cookie; instead signs a new JWT with `type: cli_export` and TTL
+ * `JWT_CLI_EXPORT_EXPIRES_IN` (default **10 minutes**).
+ *
+ * **Security:** Narrower blast radius than exporting the 7-day access token. XSS on the
+ * Studio origin can still exfiltrate a freshly minted token—use CSP and dependency hygiene.
+ */
+export const getCliAccessToken = async (req: Request, res: Response) => {
+    const user = (req as any).user
+
+    if (!user?.id || !user?.email) {
+        throw new UnauthorizedError('User not authenticated')
+    }
+
+    const token = generateCliExportToken({
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+    })
+
+    const raw = jwt.decode(token) as { exp?: number } | null
+    const expSec = raw?.exp
+    const expMs = typeof expSec === 'number' ? expSec * 1000 : null
+    const expiresInSeconds =
+        typeof expSec === 'number'
+            ? Math.max(0, expSec - Math.floor(Date.now() / 1000))
+            : null
+
+    res.setHeader(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate, private'
+    )
+    res.setHeader('Pragma', 'no-cache')
+
+    res.json({
+        success: true,
+        data: {
+            token,
+            expiresAt: expMs,
+            expiresInSeconds,
+            tokenType: 'cli_export' as const,
+        },
+    })
 }
 
 export const getCurrentUser = async (req: Request, res: Response) => {

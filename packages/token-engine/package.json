@@ -17,7 +17,7 @@
         }
     },
     "scripts": {
-        "build": "tsup src/index.ts src/server.ts --format esm --dts --external @juspay/blend-design-system",
+        "build": "tsup src/index.ts src/server.ts --format esm --dts --external @juspay/blend-design-system --external @juspay/blend-design-system/node --tsconfig tsconfig.build.json",
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
         "test:watch": "vitest"

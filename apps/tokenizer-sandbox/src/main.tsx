@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import '@juspay/blend-design-system/style.css'
 import App from './App'
+import '@juspay/blend-design-system/style.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

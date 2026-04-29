@@ -20,6 +20,8 @@ const envSchema = z.object({
     JWT_SECRET: z.string().min(32, 'JWT secret must be at least 32 characters'),
     JWT_EXPIRES_IN: z.string().default('7d'),
     JWT_REFRESH_EXPIRES_IN: z.string().default('30d'),
+    /** Short-lived token minted for CLI paste from Studio (default 10 minutes). */
+    JWT_CLI_EXPORT_EXPIRES_IN: z.string().default('10m'),
 
     FRONTEND_URL: z.string().default('http://localhost:5173'),
     STUDIO_URL: z.string().default(''),

@@ -82,6 +82,22 @@ export const generateRefreshToken = (payload: TokenPayload): string => {
     })
 }
 
+/**
+ * Short-lived JWT for pasting into the Blend CLI (`login --token`).
+ * Narrower blast radius than exporting the long-lived browser access token.
+ */
+export const generateCliExportToken = (payload: TokenPayload): string => {
+    const tokenPayload: JwtPayload = {
+        ...payload,
+        type: 'cli_export',
+    }
+
+    return jwt.sign(tokenPayload, env.JWT_SECRET, {
+        expiresIn:
+            env.JWT_CLI_EXPORT_EXPIRES_IN as jwt.SignOptions['expiresIn'],
+    })
+}
+
 export const verifyJwtToken = (token: string): JwtPayload => {
     try {
         return jwt.verify(token, env.JWT_SECRET) as JwtPayload

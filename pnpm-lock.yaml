@@ -7,6 +7,9 @@ settings:
 importers:
     .:
         dependencies:
+            '@phosphor-icons/react':
+                specifier: ^2.1.10
+                version: 2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             react-hook-form:
                 specifier: ^7.62.0
                 version: 7.69.0(react@19.2.3)
@@ -35,7 +38,7 @@ importers:
             '@typescript-eslint/parser':
                 specifier: ^8.37.0
                 version: 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-            blend-token-studio:
+            blend-studio:
                 specifier: workspace:*
                 version: link:packages/cli
             eslint:
@@ -551,7 +554,7 @@ importers:
             '@vitejs/plugin-react':
                 specifier: ^4.4.1
                 version: 4.7.0(vite@6.4.1(@types/node@22.19.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))
-            blend-token-studio:
+            blend-studio:
                 specifier: workspace:*
                 version: link:../../packages/cli
             typescript:
@@ -563,9 +566,6 @@ importers:
 
     packages/blend:
         dependencies:
-            '@blend-design/token-engine':
-                specifier: workspace:*
-                version: link:../token-engine
             '@dnd-kit/core':
                 specifier: ^6.3.1
                 version: 6.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)

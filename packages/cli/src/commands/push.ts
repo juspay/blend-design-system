@@ -22,7 +22,7 @@ import {
     reportCommandFailure,
     reportCommandSuccess,
 } from '../utils/cli-output'
-import { apiClient } from '../utils/api-client'
+import { apiClient, syncApiClientToProject } from '../utils/api-client'
 import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
 import {
     validateBrandConfig,
@@ -55,6 +55,7 @@ export async function pushCommand(
 ): Promise<void> {
     const format = parseCliFormat(options)
     const cwd = process.cwd()
+    syncApiClientToProject(cwd)
 
     if (!apiClient.isAuthenticated()) {
         const message =
@@ -159,6 +160,12 @@ export async function pushCommand(
             : null
 
     const existingResponse = await apiClient.getBranch(targetBranchId)
+    const existingErrorMessage = existingResponse.error?.message || ''
+    const existingAuthIssue =
+        existingResponse.error?.code === 'UNAUTHORIZED' ||
+        /token not found|not authenticated|unauthorized|expired|sign in again/i.test(
+            existingErrorMessage
+        )
 
     if (!existingResponse.success) {
         if (options.new) {
@@ -172,12 +179,24 @@ export async function pushCommand(
             if (!createResponse.success) {
                 if (spinner) spinner.fail('Failed to create branch')
                 const message = createResponse.error?.message || 'Unknown error'
+                const authIssue =
+                    createResponse.error?.code === 'UNAUTHORIZED' ||
+                    /token not found|not authenticated|unauthorized|expired|sign in again/i.test(
+                        message
+                    )
                 reportCommandFailure({
                     format,
                     command: 'push',
                     message,
                     ci: options.ci,
-                    logPretty: (m) => logger.error(m),
+                    logPretty: (m) => {
+                        logger.error(m)
+                        if (authIssue) {
+                            logger.detail(
+                                'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                            )
+                        }
+                    },
                 })
                 return
             }
@@ -185,7 +204,9 @@ export async function pushCommand(
             if (spinner) spinner.succeed(`Created branch: ${targetBranchId}`)
         } else {
             if (spinner) spinner.fail(`Branch ${targetBranchId} not found`)
-            const message = `Branch ${targetBranchId} not found`
+            const message = existingAuthIssue
+                ? existingErrorMessage
+                : `Branch ${targetBranchId} not found`
             reportCommandFailure({
                 format,
                 command: 'push',
@@ -193,7 +214,13 @@ export async function pushCommand(
                 ci: options.ci,
                 logPretty: (m) => {
                     logger.error(m)
-                    logger.detail('Use --new to create a new branch')
+                    if (existingAuthIssue) {
+                        logger.detail(
+                            'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                        )
+                    } else {
+                        logger.detail('Use --new to create a new branch')
+                    }
                 },
             })
             return
@@ -208,12 +235,24 @@ export async function pushCommand(
         if (!updateResponse.success) {
             if (spinner) spinner.fail('Failed to push brand config')
             const message = updateResponse.error?.message || 'Unknown error'
+            const authIssue =
+                updateResponse.error?.code === 'UNAUTHORIZED' ||
+                /token not found|not authenticated|unauthorized|expired|sign in again/i.test(
+                    message
+                )
             reportCommandFailure({
                 format,
                 command: 'push',
                 message,
                 ci: options.ci,
-                logPretty: (m) => logger.error(m),
+                logPretty: (m) => {
+                    logger.error(m)
+                    if (authIssue) {
+                        logger.detail(
+                            'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                        )
+                    }
+                },
             })
             return
         }
@@ -288,12 +327,24 @@ export async function pushCommand(
         if (!publishResponse.success) {
             if (spinner) spinner.fail('Failed to publish version')
             const message = publishResponse.error?.message || 'Unknown error'
+            const authIssue =
+                publishResponse.error?.code === 'UNAUTHORIZED' ||
+                /token not found|not authenticated|unauthorized|expired|sign in again/i.test(
+                    message
+                )
             reportCommandFailure({
                 format,
                 command: 'push',
                 message,
                 ci: options.ci,
-                logPretty: (m) => logger.error(m),
+                logPretty: (m) => {
+                    logger.error(m)
+                    if (authIssue) {
+                        logger.detail(
+                            'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                        )
+                    }
+                },
             })
             return
         }

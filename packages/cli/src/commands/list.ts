@@ -17,7 +17,7 @@ import {
     reportCommandFailure,
     reportCommandSuccess,
 } from '../utils/cli-output'
-import { apiClient } from '../utils/api-client'
+import { apiClient, syncApiClientToProject } from '../utils/api-client'
 import type {
     BranchListOptions,
     BranchStatus,
@@ -35,6 +35,7 @@ interface ListOptions {
 }
 
 export async function listCommand(options: ListOptions = {}): Promise<void> {
+    syncApiClientToProject(process.cwd())
     const format = parseCliFormat(options)
 
     if (!apiClient.isAuthenticated()) {
@@ -73,12 +74,27 @@ export async function listCommand(options: ListOptions = {}): Promise<void> {
     if (!response.success || !response.data) {
         if (spinner) spinner.fail('Failed to fetch branches')
         const message = response.error?.message || 'Unknown error'
+        const authIssue =
+            response.error?.code === 'UNAUTHORIZED' ||
+            /token not found|not authenticated|unauthorized|expired|sign in again/i.test(
+                message
+            )
         reportCommandFailure({
             format,
             command: 'list',
             message,
             ci: options.ci,
-            logPretty: (m) => logger.error(m),
+            logPretty: (m) => {
+                logger.error(m)
+                if (authIssue) {
+                    logger.detail(
+                        'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                    )
+                    logger.detail(
+                        'Or set BLEND_STUDIO_API_TOKEN for non-interactive flows.'
+                    )
+                }
+            },
         })
         return
     }

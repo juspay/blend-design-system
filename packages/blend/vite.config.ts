@@ -4,9 +4,38 @@ import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
-    // NOTE: Do not inject CSS into JS. This package exposes `./style.css` for consumers,
-    // and keeping the JS entry CSS-free makes it safe to import in Node (e.g. CLI/token-engine).
-    plugins: [react(), dts({ include: ['lib'] })],
+    plugins: [
+        react(),
+        dts({
+            include: ['lib'],
+            entryRoot: resolve(__dirname, 'lib'),
+            outDir: resolve(__dirname, 'dist'),
+            insertTypesEntry: true,
+        }),
+    ],
+    resolve: {
+        alias: [
+            {
+                find: '@blend-design/token-engine/server',
+                replacement: resolve(
+                    __dirname,
+                    '../token-engine/src/server.ts'
+                ),
+            },
+            {
+                find: '@blend-design/token-engine',
+                replacement: resolve(__dirname, '../token-engine/src/index.ts'),
+            },
+            {
+                find: '@juspay/blend-design-system/node',
+                replacement: resolve(__dirname, 'lib/node.ts'),
+            },
+            {
+                find: '@juspay/blend-design-system',
+                replacement: resolve(__dirname, 'lib/main.ts'),
+            },
+        ],
+    },
     build: {
         copyPublicDir: false,
         lib: {

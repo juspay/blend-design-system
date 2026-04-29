@@ -93,9 +93,9 @@ const setupConsumerWithPnpm = (consumerDir, tarballs) => {
 }
 
 const runCliFlow = (consumerDir) => {
-    run(`npx blend-token-studio init --defaults --force`, consumerDir)
-    run(`npx blend-token-studio brand --preset blend`, consumerDir)
-    run(`npx blend-token-studio validate`, consumerDir)
+    run(`npx blend-studio init --defaults --force`, consumerDir)
+    run(`npx blend-studio brand --preset blend`, consumerDir)
+    run(`npx blend-studio validate`, consumerDir)
 
     assertFile(join(consumerDir, 'blend.config.json'))
     assertFile(join(consumerDir, 'src', 'blend', 'provider.tsx'))
@@ -109,7 +109,7 @@ const main = () => {
 
     console.log('\n[smoke] Building required packages...\n')
     run(`pnpm --filter @juspay/blend-design-system build`, repoRoot)
-    run(`pnpm --filter blend-token-studio build`, repoRoot)
+    run(`pnpm --filter blend-studio build`, repoRoot)
 
     console.log('\n[smoke] Packing tarballs...\n')
     const blendDir = join(repoRoot, 'packages', 'blend')

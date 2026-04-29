@@ -5,6 +5,14 @@
  * Includes schema reference for IDE autocomplete.
  */
 
+import {
+    DEFAULT_STUDIO_DEPLOYMENT,
+    type BlendStudioDeployment,
+    getStudioApiUrlForDeployment,
+    getStudioSchemaUrl,
+    normalizeStudioApiUrl,
+} from '../constants/studio'
+
 export interface BlendStudioConfig {
     $schema?: string
     brand?: string
@@ -43,22 +51,38 @@ export interface BlendConfig {
     }
 }
 
-const SCHEMA_URL =
-    'https://studio.blend.juspay.design/schemas/blend-config.json'
+export type GenerateConfigOptions = Partial<BlendConfig> & {
+    /** Preset Studio host (staging vs production). Ignored if studio.apiUrl is set. */
+    deployment?: BlendStudioDeployment
+}
 
 export function generateConfig(
-    options: Partial<BlendConfig> = {}
+    options: GenerateConfigOptions = {}
 ): BlendConfig {
+    const deployment = options.deployment ?? DEFAULT_STUDIO_DEPLOYMENT
+    const resolvedApiUrl =
+        options.studio?.apiUrl != null
+            ? normalizeStudioApiUrl(options.studio.apiUrl)
+            : getStudioApiUrlForDeployment(deployment)
+
+    const studio: BlendConfig['studio'] = {
+        apiUrl: resolvedApiUrl,
+        autoSync: options.studio?.autoSync ?? false,
+        ...(options.studio?.branch !== undefined
+            ? { branch: options.studio.branch }
+            : {}),
+        ...(options.studio?.version !== undefined
+            ? { version: options.studio.version }
+            : {}),
+    }
+
     return {
-        $schema: SCHEMA_URL,
+        $schema: getStudioSchemaUrl(resolvedApiUrl),
         brand: options.brand || 'blend/default',
         theme: options.theme || 'light',
         output: options.output || 'src/blend',
         components: options.components || [],
-        studio: options.studio || {
-            apiUrl: 'https://studio.blend.juspay.design',
-            autoSync: false,
-        },
+        studio,
         generate: options.generate || {
             typescript: true,
             cssVariables: false,
@@ -73,15 +97,23 @@ export function generateConfigCode(config: BlendConfig): string {
 
 export function parseConfig(json: string): BlendConfig | null {
     try {
-        const parsed = JSON.parse(json)
+        const parsed = JSON.parse(json) as Record<string, unknown>
+        const studio = parsed.studio as BlendConfig['studio'] | undefined
+        const apiForSchema =
+            studio?.apiUrl != null && typeof studio.apiUrl === 'string'
+                ? normalizeStudioApiUrl(studio.apiUrl)
+                : getStudioApiUrlForDeployment(DEFAULT_STUDIO_DEPLOYMENT)
+
         return {
-            $schema: parsed.$schema || SCHEMA_URL,
-            brand: parsed.brand || 'blend/default',
-            theme: parsed.theme || 'light',
-            output: parsed.output || 'src/blend',
-            components: parsed.components || [],
-            studio: parsed.studio,
-            generate: parsed.generate,
+            $schema:
+                (parsed.$schema as string | undefined) ||
+                getStudioSchemaUrl(apiForSchema),
+            brand: (parsed.brand as string) || 'blend/default',
+            theme: (parsed.theme as 'light' | 'dark') || 'light',
+            output: (parsed.output as string) || 'src/blend',
+            components: (parsed.components as string[]) || [],
+            studio: parsed.studio as BlendConfig['studio'],
+            generate: parsed.generate as BlendConfig['generate'],
         }
     } catch {
         return null

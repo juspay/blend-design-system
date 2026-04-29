@@ -14,7 +14,7 @@
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
-import prompts from 'prompts'
+import prompts, { type PromptObject } from 'prompts'
 import { logger } from '../utils/logger'
 import { detectProject, getInstallCommand } from '../utils/detect-project'
 import { generateProviderCode } from '../generators/provider-generator'
@@ -23,13 +23,21 @@ import {
     generateConfig,
     generateConfigCode,
     type BlendConfig,
+    type GenerateConfigOptions,
 } from '../generators/config-generator'
+import {
+    DEFAULT_STUDIO_DEPLOYMENT,
+    type BlendStudioDeployment,
+    parseEnvFlag,
+} from '../constants/studio'
 
 interface InitOptions {
     defaults?: boolean
     force?: boolean
     output?: string
     theme?: 'light' | 'dark'
+    /** CLI: --env staging | prod | production */
+    env?: string
 }
 
 export async function initCommand(options: InitOptions = {}): Promise<void> {
@@ -54,20 +62,53 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         return
     }
 
-    // 3. Interactive config (unless --defaults)
-    let configOptions: Partial<BlendConfig> = {
+    // 3. Studio deployment: --env wins; else prompt (interactive); else default staging
+    let deployment: BlendStudioDeployment = DEFAULT_STUDIO_DEPLOYMENT
+    if (options.env) {
+        const parsed = parseEnvFlag(options.env)
+        if (!parsed) {
+            logger.error('Invalid --env. Use staging, prod, or production.')
+            return
+        }
+        deployment = parsed
+    }
+
+    // 4. Interactive config (unless --defaults)
+    const configOptions: GenerateConfigOptions = {
         output: options.output,
         theme: options.theme,
     }
 
     if (!options.defaults) {
-        const answers = await prompts([
+        const promptsList: PromptObject[] = [
             {
                 type: 'text',
                 name: 'output',
                 message: 'Output directory:',
                 initial: 'src/blend',
             },
+        ]
+
+        if (!options.env) {
+            promptsList.push({
+                type: 'select',
+                name: 'studioDeployment',
+                message: 'Blend Studio environment:',
+                choices: [
+                    {
+                        title: 'Staging (recommended for testing)',
+                        value: 'staging',
+                    },
+                    {
+                        title: 'Production (when API is live)',
+                        value: 'production',
+                    },
+                ],
+                initial: 0,
+            })
+        }
+
+        promptsList.push(
             {
                 type: 'select',
                 name: 'theme',
@@ -83,9 +124,14 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
                 name: 'cssVariables',
                 message: 'Generate CSS variables file?',
                 initial: false,
-            },
-        ])
+            }
+        )
 
+        const answers = await prompts(promptsList)
+
+        if (!options.env && answers.studioDeployment) {
+            deployment = answers.studioDeployment as BlendStudioDeployment
+        }
         if (answers.output) configOptions.output = answers.output
         if (answers.theme) configOptions.theme = answers.theme
         if (answers.cssVariables) {
@@ -97,7 +143,9 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         }
     }
 
-    // 4. Check & install dependencies
+    configOptions.deployment = deployment
+
+    // 5. Check & install dependencies
     const missingDeps: string[] = []
     if (!project.hasBlend) missingDeps.push('@juspay/blend-design-system')
     if (!project.hasStyledComponents) missingDeps.push('styled-components')
@@ -123,16 +171,17 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         logger.success('Dependencies already installed')
     }
 
-    // 5. Create blend.config.json
+    // 6. Create blend.config.json
     const config = generateConfig(configOptions)
     writeFileSync(configPath, generateConfigCode(config))
     logger.fileWritten('blend.config.json')
+    logger.detail(`Studio deployment: ${deployment} → ${config.studio?.apiUrl}`)
 
-    // 6. Create output directory
+    // 7. Create output directory
     const outputDir = join(cwd, config.output)
     mkdirSync(outputDir, { recursive: true })
 
-    // 7. Generate provider.tsx
+    // 8. Generate provider.tsx
     const providerPath = join(outputDir, 'provider.tsx')
     if (!existsSync(providerPath) || options.force) {
         const isNextJs = project.type === 'nextjs'
@@ -142,19 +191,19 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         logger.fileSkipped(`${config.output}/provider.tsx`)
     }
 
-    // 8. Generate tokens.ts (default — empty, Blend defaults)
+    // 9. Generate tokens.ts (default — empty, Blend defaults)
     const tokensPath = join(outputDir, 'tokens.ts')
     writeFileSync(tokensPath, generateDefaultTokensCode())
     logger.fileWritten(`${config.output}/tokens.ts`)
 
-    // 9. Generate CSS variables if requested
+    // 10. Generate CSS variables if requested
     if (config.generate?.cssVariables) {
         const cssPath = join(outputDir, 'tokens.css')
         writeFileSync(cssPath, generateDefaultCssVariables())
         logger.fileWritten(`${config.output}/tokens.css`)
     }
 
-    // 10. Create .gitignore entry suggestion
+    // 11. Create .gitignore entry suggestion
     const gitignorePath = join(cwd, '.gitignore')
     if (existsSync(gitignorePath)) {
         const gitignore = readFileSync(gitignorePath, 'utf-8')
@@ -165,7 +214,7 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
         }
     }
 
-    // 11. Print next steps
+    // 12. Print next steps
     logger.newline()
     logger.header('Next steps')
     logger.newline()

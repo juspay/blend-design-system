@@ -24,9 +24,9 @@ pnpm test:token-studio:npm-smoke
 
 Ensure this flow works for any React/Next/Vite project without per-component binding:
 
-1. `npx blend-token-studio init`
+1. `npx blend-studio init`
 2. wrap app with generated `BlendProvider`
-3. `npx blend-token-studio brand ...` or `npx blend-token-studio pull <branchId>`
+3. `npx blend-studio brand ...` or `npx blend-studio pull <branchId>`
 4. run app and confirm Blend components render with resolved tokens
 
 ---
@@ -39,9 +39,9 @@ Run from repo root:
 pnpm install
 pnpm --filter @juspay/blend-design-system build
 pnpm --filter @juspay/blend-design-system build
-pnpm --filter blend-token-studio build
+pnpm --filter blend-studio build
 pnpm --filter @juspay/blend-design-system typecheck
-pnpm --filter blend-token-studio typecheck
+pnpm --filter blend-studio typecheck
 ```
 
 Pass criteria:
@@ -73,18 +73,18 @@ Verify:
 From repo root:
 
 ```bash
-pnpm --filter blend-token-studio build
+pnpm --filter blend-studio build
 pnpm --filter @juspay/blend-design-system build
 ```
 
 Then test commands in a sample app folder:
 
 ```bash
-npx blend-token-studio --help
-npx blend-token-studio init --defaults
-npx blend-token-studio brand --preset blend
-npx blend-token-studio validate
-npx blend-token-studio diff
+npx blend-studio --help
+npx blend-studio init --defaults
+npx blend-studio brand --preset blend
+npx blend-studio validate
+npx blend-studio diff
 ```
 
 Pass criteria:
@@ -106,8 +106,8 @@ Create fresh projects and run same flow:
 For each:
 
 ```bash
-npx blend-token-studio init --defaults
-npx blend-token-studio brand --primary "#E31837" --radius sharp
+npx blend-studio init --defaults
+npx blend-studio brand --primary "#E31837" --radius sharp
 ```
 
 Then:
@@ -130,12 +130,12 @@ Pass criteria:
 Publish canary versions first:
 
 1. publish `@juspay/blend-design-system` with canary tag (includes token engine)
-2. publish `blend-token-studio` with canary tag
+2. publish `blend-studio` with canary tag
 3. test in a fresh external project using only npm packages
 
 Checklist:
 
-- `npx blend-token-studio@next init` works
+- `npx blend-studio@next init` works
 - `brand` generation works
 - `pull/list/login` behavior is correct against target API
 
@@ -179,14 +179,14 @@ Add CI jobs:
 
 - **d.ts build failure in token-engine**: check for inferred exported return types in blend token utilities; add explicit return types.
 - **CLI write errors**: ensure commands create output directory before writing files.
-- **missing auth for pull/list/push**: run `blend-token-studio login` or provide token env vars.
+- **missing auth for pull/list/push**: run `blend-studio login` or provide token env vars.
 - **npm-smoke pnpm store errors**: by default the smoke runs an npm consumer only. To also run the pnpm consumer, set `TOKEN_STUDIO_SMOKE_PNPM=1`.
 
 ---
 
 ## 10) Versioning Policy (Non-Hacky)
 
-- `blend-token-studio` can remain on `0.1.x` while `@juspay/blend-design-system` is on `0.0.x`; they are separate packages with separate semver lifecycles.
+- `blend-studio` can remain on `0.1.x` while `@juspay/blend-design-system` is on `0.0.x`; they are separate packages with separate semver lifecycles.
 - Internal monorepo links should use semver ranges (e.g. `^0.1.0`) so npm installs work. Use changesets so these ranges update automatically during release.
 - `@juspay/blend-design-system` includes the token engine as part of its core functionality.
 - Use changesets to bump and publish; avoid manual cross-editing package versions.

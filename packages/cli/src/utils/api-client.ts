@@ -15,6 +15,8 @@ import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
+import { normalizeStudioApiUrl } from '../constants/studio'
+import { resolveStudioApiUrlForProject } from './project-api-url'
 import type {
     Branch,
     BranchListOptions,
@@ -25,7 +27,6 @@ import type {
     Version,
 } from '@juspay/blend-design-system/tokens/server'
 
-const DEFAULT_API_URL = 'https://studio.blend.juspay.design'
 const CONFIG_DIR = join(homedir(), '.blend-token-studio')
 const AUTH_FILE = join(CONFIG_DIR, 'auth.json')
 
@@ -90,9 +91,20 @@ export class ApiClient {
     private authData: AuthData | null = null
 
     constructor(apiUrl?: string) {
-        this.apiUrl =
-            apiUrl || process.env.BLEND_STUDIO_API_URL || DEFAULT_API_URL
+        if (apiUrl != null && apiUrl !== '') {
+            this.apiUrl = normalizeStudioApiUrl(apiUrl)
+        } else {
+            this.apiUrl = resolveStudioApiUrlForProject(process.cwd())
+        }
         this.loadAuth()
+    }
+
+    /**
+     * Point API calls at the Studio URL for the current project (blend.config.json + env).
+     * Call at the start of commands that talk to the network.
+     */
+    syncToProject(cwd: string = process.cwd()): void {
+        this.apiUrl = resolveStudioApiUrlForProject(cwd)
     }
 
     private loadAuth(): void {
@@ -448,3 +460,7 @@ export class ApiClient {
 }
 
 export const apiClient = new ApiClient()
+
+export function syncApiClientToProject(cwd: string = process.cwd()): void {
+    apiClient.syncToProject(cwd)
+}

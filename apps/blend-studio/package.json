@@ -1,5 +1,5 @@
 {
-    "name": "blend-studio",
+    "name": "blend-studio-web",
     "version": "0.1.0",
     "private": true,
     "description": "Token Studio UI (Vite + Tailwind) and Express API. styled-components is bundled by @juspay/blend-design-system so consumer apps don't need it.",

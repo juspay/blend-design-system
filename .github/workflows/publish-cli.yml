@@ -1,4 +1,4 @@
-name: Publish CLI (blend-token-studio)
+name: Publish CLI (blend-studio)
 
 on:
     workflow_dispatch:
@@ -33,7 +33,7 @@ concurrency:
 
 jobs:
     publish-cli:
-        name: Publish blend-token-studio to NPM
+        name: Publish blend-studio to NPM
         runs-on: ubuntu-latest
         environment: npm
         if: github.event.inputs.confirm_publish == 'PUBLISH'
@@ -94,7 +94,7 @@ jobs:
 
             # Build CLI
             - name: Build CLI
-              run: pnpm --filter blend-token-studio build
+              run: pnpm --filter blend-studio build
 
             # Verify the build
             - name: Verify build output
@@ -119,7 +119,7 @@ jobs:
             - name: Verify published version
               run: |
                   sleep 10
-                  PUBLISHED=$(npm view blend-token-studio@${{ github.event.inputs.tag }} version 2>/dev/null || echo "NOT_FOUND")
+                  PUBLISHED=$(npm view blend-studio@${{ github.event.inputs.tag }} version 2>/dev/null || echo "NOT_FOUND")
                   EXPECTED="${{ steps.bump.outputs.new_version }}"
                   echo "Published: $PUBLISHED | Expected: $EXPECTED"
                   if [ "$PUBLISHED" != "$EXPECTED" ]; then
@@ -135,7 +135,7 @@ jobs:
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
                   git add packages/cli/package.json
-                  git commit -m "chore(cli): release blend-token-studio@${{ steps.bump.outputs.new_version }}" || true
+                  git commit -m "chore(cli): release blend-studio@${{ steps.bump.outputs.new_version }}" || true
                   git push || true
 
             - name: Summary
@@ -144,12 +144,12 @@ jobs:
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
                   echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
-                  echo "| Package | blend-token-studio |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Package | blend-studio |" >> $GITHUB_STEP_SUMMARY
                   echo "| Version | ${{ steps.bump.outputs.new_version }} |" >> $GITHUB_STEP_SUMMARY
                   echo "| Tag | ${{ github.event.inputs.tag }} |" >> $GITHUB_STEP_SUMMARY
                   echo "| Previous | ${{ steps.bump.outputs.old_version }} |" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "Install with:" >> $GITHUB_STEP_SUMMARY
                   echo '```' >> $GITHUB_STEP_SUMMARY
-                  echo "npx blend-token-studio@${{ github.event.inputs.tag }} --version" >> $GITHUB_STEP_SUMMARY
+                  echo "npx blend-studio@${{ github.event.inputs.tag }} --version" >> $GITHUB_STEP_SUMMARY
                   echo '```' >> $GITHUB_STEP_SUMMARY

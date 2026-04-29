@@ -1,43 +1,35 @@
 #!/usr/bin/env node
 
 /**
- * blend-token-studio CLI
+ * blend-studio CLI (npm package `blend-studio`; bin alias `blend-token-studio`)
  *
  * The developer-facing tool for Blend Token Studio.
  * Inspired by shadcn/ui CLI — one command to scaffold,
  * one command to brand.
  *
  * Usage:
- *   npx blend-token-studio init                    # scaffold project
- *   npx blend-token-studio brand                   # interactive branding
- *   npx blend-token-studio brand --preset juspay   # use a preset
- *   npx blend-token-studio pull juspay/default     # pull from studio
- *   npx blend-token-studio push                    # push to studio
- *   npx blend-token-studio list                    # list branches
- *   npx blend-token-studio diff                    # see overrides
- *   npx blend-token-studio validate                # validate brand.json
- *   npx blend-token-studio generate ./brand.json   # offline generation (TypeScript)
- *   npx blend-token-studio generate ./brand.json --language rescript  # ReScript module
+ *   npx blend-studio init                    # scaffold project
+ *   npx blend-studio init --env staging       # explicit Studio deployment URL preset
+ *   npx blend-studio brand                   # interactive branding
+ *   npx blend-studio brand --preset juspay   # use a preset
+ *   npx blend-studio pull juspay/default     # pull from studio
+ *   npx blend-studio push                    # push to studio
+ *   npx blend-studio list                    # list branches
+ *   npx blend-studio diff                    # see overrides
+ *   npx blend-studio validate                # validate brand.json
+ *   npx blend-studio generate ./brand.json   # offline generation (TypeScript)
+ *   npx blend-studio generate ./brand.json --language rescript  # ReScript module
  *
  * From monorepo root (after pnpm install): use a real brand path or the sample fixture, e.g.
- *   pnpm exec blend-token-studio generate packages/cli/fixtures/sample-brand.json --language rescript -o ./out/blend
+ *   pnpm exec blend-studio generate packages/cli/fixtures/sample-brand.json --language rescript -o ./out/blend
  */
 
 import { Command, Option } from 'commander'
-import { initCommand } from './commands/init'
-import { brandCommand } from './commands/brand'
-import { diffCommand } from './commands/diff'
-import { validateCommand } from './commands/validate'
-import { generateCommand } from './commands/generate'
-import { pullCommand } from './commands/pull'
-import { pushCommand } from './commands/push'
-import { listCommand } from './commands/list'
-import { loginCommand, logoutCommand, whoamiCommand } from './commands/login'
 
 const program = new Command()
 
 program
-    .name('blend-token-studio')
+    .name('blend-studio')
     .description('Blend Token Studio — scaffold, brand, and sync design tokens')
     .version('0.1.0')
 
@@ -46,7 +38,14 @@ program
     .description('Scaffold Blend Token Studio in your project')
     .option('-d, --defaults', 'Skip prompts, use defaults')
     .option('-f, --force', 'Overwrite existing files')
+    .addOption(
+        new Option(
+            '--env <deployment>',
+            'Studio deployment preset for blend.config.json (staging recommended until production is live)'
+        ).choices(['staging', 'prod', 'production'])
+    )
     .action(async (options) => {
+        const { initCommand } = await import('./commands/init')
         await initCommand(options)
     })
 
@@ -63,6 +62,7 @@ program
         'Border radius style (sharp, default, rounded, pill)'
     )
     .action(async (options) => {
+        const { brandCommand } = await import('./commands/brand')
         await brandCommand(options)
     })
 
@@ -84,6 +84,7 @@ program
     )
     .option('--format <format>', 'Output format (pretty, json)', 'pretty')
     .action(async (branchId, options) => {
+        const { pullCommand } = await import('./commands/pull')
         await pullCommand(branchId, options)
     })
 
@@ -99,6 +100,7 @@ program
     .option('--ci', 'CI mode (no prompts; default patch bump when publishing)')
     .option('--format <format>', 'Output format (pretty, json)', 'pretty')
     .action(async (branchId, options) => {
+        const { pushCommand } = await import('./commands/push')
         await pushCommand(branchId, options)
     })
 
@@ -120,6 +122,7 @@ program
     .option('--ci', 'CI mode (non-zero exit on failure)')
     .option('-l, --limit <number>', 'Limit number of results', '50')
     .action(async (options) => {
+        const { listCommand } = await import('./commands/list')
         await listCommand({
             ...options,
             limit: options.limit ? parseInt(options.limit, 10) : 50,
@@ -131,6 +134,7 @@ program
     .description('Authenticate with Blend Token Studio')
     .option('-t, --token <token>', 'Firebase ID token')
     .action(async (options) => {
+        const { loginCommand } = await import('./commands/login')
         await loginCommand(options)
     })
 
@@ -138,6 +142,7 @@ program
     .command('logout')
     .description('Clear authentication')
     .action(async () => {
+        const { logoutCommand } = await import('./commands/login')
         await logoutCommand()
     })
 
@@ -145,6 +150,7 @@ program
     .command('whoami')
     .description('Show current authenticated user')
     .action(async () => {
+        const { whoamiCommand } = await import('./commands/login')
         await whoamiCommand()
     })
 
@@ -152,6 +158,7 @@ program
     .command('diff')
     .description('Show overrides from Blend defaults')
     .action(async () => {
+        const { diffCommand } = await import('./commands/diff')
         await diffCommand()
     })
 
@@ -162,6 +169,7 @@ program
     .option('--format <format>', 'Output format (pretty, json)', 'pretty')
     .option('--ci', 'CI mode (non-zero exit on validation failure)')
     .action(async (options) => {
+        const { validateCommand } = await import('./commands/validate')
         await validateCommand(options)
     })
 
@@ -178,10 +186,9 @@ program
             .default('typescript')
     )
     .action(async (input, options) => {
+        const { generateCommand } = await import('./commands/generate')
         await generateCommand(input, options)
     })
-
-import { previewCommand } from './commands/preview'
 
 program
     .command('preview')
@@ -189,6 +196,7 @@ program
     .option('-p, --port <port>', 'Port number', '3456')
     .option('--no-open', 'Do not open browser automatically')
     .action(async (options) => {
+        const { previewCommand } = await import('./commands/preview')
         await previewCommand({
             port: parseInt(options.port, 10),
             open: options.open,

@@ -7,6 +7,7 @@ import {
     refreshAccessToken,
     logout,
     logoutAllDevices,
+    getCliAccessToken,
     getCurrentUser,
 } from './auth.controller.js'
 
@@ -170,5 +171,11 @@ router.post('/logout-all', authenticate, asyncHandler(logoutAllDevices))
  *         description: Unauthorized - Invalid or missing token
  */
 router.get('/me', authenticate, asyncHandler(getCurrentUser))
+
+/**
+ * CLI: exposes current access JWT when the user has a valid browser session (cookie).
+ * POST avoids treating this as a cacheable GET; client must send credentials (cookies).
+ */
+router.post('/cli-token', authenticate, asyncHandler(getCliAccessToken))
 
 export default router
