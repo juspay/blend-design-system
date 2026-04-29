@@ -11,7 +11,13 @@
  *   - Request timeout support
  */
 
-import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs'
+import {
+    existsSync,
+    mkdirSync,
+    readFileSync,
+    unlinkSync,
+    writeFileSync,
+} from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
@@ -149,7 +155,6 @@ export class ApiClient {
     }
 
     private saveAuth(data: AuthData): void {
-        const { mkdirSync } = require('node:fs')
         mkdirSync(CONFIG_DIR, { recursive: true })
         writeFileSync(AUTH_FILE, JSON.stringify(data, null, 2))
         this.authData = data

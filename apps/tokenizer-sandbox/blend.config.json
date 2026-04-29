@@ -5,7 +5,8 @@
     "output": "src/blend",
     "components": [],
     "studio": {
-        "apiUrl": "https://studio.blend.juspay.design",
+        "$comment": "Testing uses staging for now. Switch this to production URL when prod rollout is complete.",
+        "apiUrl": "https://blend-studio-staging-2oyuucbkoa-uc.a.run.app/studio",
         "autoSync": false
     },
     "generate": {
