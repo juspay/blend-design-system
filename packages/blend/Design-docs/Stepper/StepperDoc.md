@@ -121,8 +121,8 @@ export type StepperV2TokensType = {
         }
         connector: {
             line: {
-                active: { default: { color; height } }
-                inactive: { default: { color; height } }
+                color: CSSObject['backgroundColor']
+                height: CSSObject['height']
             }
         }
         title: {

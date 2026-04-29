@@ -22,6 +22,11 @@ export enum StepperV2Type {
 export type StepperV2Props = {
     steps: StepperV2Step[]
     onStepClick?: (stepIndex: number) => void
+    /**
+     * Called when a substep is clicked. The substepIndex is **1-based** (starts at 1).
+     * @param stepId - The id of the parent step
+     * @param substepIndex - The 1-based index of the substep (e.g., 1 for first substep)
+     */
     onSubstepClick?: (stepId: number, substepIndex: number) => void
     clickable?: boolean
     stepperType?: StepperV2Type
@@ -54,6 +59,11 @@ export type StepperV2StepProps = {
     isLast: boolean
     isFirst: boolean
     onClick?: (stepIndex: number) => void
+    /**
+     * Called when a substep is clicked. The substepIndex is **1-based** (starts at 1).
+     * @param stepIndex - The index of the parent step
+     * @param substepIndex - The 1-based index of the substep (e.g., 1 for first substep)
+     */
     onSubstepClick?: (stepIndex: number, substepIndex: number) => void
     clickable?: boolean
     currentSubsteps?: Record<string, number>

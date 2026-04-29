@@ -335,12 +335,8 @@ export const getStepperV2DarkTokens = (
                 },
                 subConnector: {
                     line: {
-                        active: {
-                            default: {
-                                color: foundationToken.colors.gray[600],
-                                height: '1px',
-                            },
-                        },
+                        color: foundationToken.colors.gray[600],
+                        height: '1px',
                     },
                     dot: {
                         border: `1px solid ${foundationToken.colors.primary[500]}`,
@@ -931,12 +927,8 @@ export const getStepperV2DarkTokens = (
                 },
                 subConnector: {
                     line: {
-                        active: {
-                            default: {
-                                color: foundationToken.colors.gray[600],
-                                height: '1px',
-                            },
-                        },
+                        color: foundationToken.colors.gray[600],
+                        height: '1px',
                     },
                     dot: {
                         border: `1px solid ${foundationToken.colors.primary[500]}`,

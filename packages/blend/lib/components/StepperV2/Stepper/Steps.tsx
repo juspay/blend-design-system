@@ -188,13 +188,14 @@ export const Steps = forwardRef<
                     onClick!(stepIndex)
                     break
                 case 'ArrowRight':
-                    if (hasSubsteps && !isExpanded) {
+                    // Substep navigation only applies in vertical mode
+                    if (!isHorizontal && hasSubsteps && !isExpanded) {
                         event.preventDefault()
                         toggleExpand()
                         setTimeout(() => focusFirstSubstep(), 100)
                         return
                     }
-                    if (hasSubsteps && isExpanded) {
+                    if (!isHorizontal && hasSubsteps && isExpanded) {
                         event.preventDefault()
                         focusFirstSubstep()
                         return
@@ -270,7 +271,7 @@ export const Steps = forwardRef<
         const stepContentTabIndex = isClickable ? 0 : -1
 
         const clickableStepLabel = isClickable
-            ? `Step ${stepIndex + 1} of ${step.title}${
+            ? `Step ${stepIndex + 1} of ${stepsLength}: ${step.title}${
                   stepState === StepperV2StepStatus.COMPLETED
                       ? ', completed'
                       : stepState === StepperV2StepStatus.CURRENT
@@ -302,7 +303,6 @@ export const Steps = forwardRef<
                     aria-pressed={isClickable && isCurrent ? 'true' : undefined}
                     aria-disabled={step.disabled ? 'true' : undefined}
                     aria-label={clickableStepLabel}
-                    aria-labelledby={stepTitleId}
                     id={stepId}
                     cursor={isClickable ? 'pointer' : 'default'}
                     onClick={isClickable ? handleClick : undefined}
@@ -422,7 +422,6 @@ export const Steps = forwardRef<
                             }
                             aria-disabled={step.disabled ? 'true' : undefined}
                             aria-label={clickableStepLabel}
-                            aria-labelledby={stepTitleId}
                             aria-describedby={stepDescriptionId}
                             cursor={isClickable ? 'pointer' : 'default'}
                             onClick={isClickable ? handleClick : undefined}

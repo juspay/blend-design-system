@@ -42,11 +42,14 @@ export function StepsHorizontalBody({
                 }
                 width="100%"
             >
-                <hr
+                <Block
+                    aria-hidden="true"
+                    width="100%"
+                    height={stepperTokens.container.connector.line.height}
+                    backgroundColor={lineColor}
+                    margin={0}
+                    border="none"
                     style={{
-                        width: '100%',
-                        height: stepperTokens.container.connector.line.height,
-                        color: lineColor,
                         visibility: stepIndex !== 0 ? 'visible' : 'hidden',
                     }}
                 />
@@ -57,11 +60,14 @@ export function StepsHorizontalBody({
                 >
                     {stepIcon}
                 </StepStatusCircle>
-                <hr
+                <Block
+                    aria-hidden="true"
+                    width="100%"
+                    height={stepperTokens.container.connector.line.height}
+                    backgroundColor={lineColor}
+                    margin={0}
+                    border="none"
                     style={{
-                        width: '100%',
-                        height: stepperTokens.container.connector.line.height,
-                        color: lineColor,
                         visibility:
                             stepIndex !== stepsLength - 1
                                 ? 'visible'
