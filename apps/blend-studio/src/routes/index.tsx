@@ -201,7 +201,7 @@ function HeroSection() {
                         <QuickStat
                             icon={Terminal}
                             label="CLI Ready"
-                            sublabel="npx blend-token-studio pull"
+                            sublabel="npx blend-studio pull"
                         />
                     </div>
                 </div>
@@ -330,7 +330,7 @@ function WorkflowSection() {
                                 step={4}
                                 title="Developer Pulls"
                                 description="Developer runs one CLI command to pull the tokens into their project."
-                                code="npx blend-token-studio pull juspay/default"
+                                code="npx blend-studio pull juspay/default"
                             />
                         </div>
                     </div>
@@ -348,13 +348,13 @@ function WorkflowSection() {
                                 step={1}
                                 title="Initialize Project"
                                 description="Scaffolds BlendProvider, tokens file, and blend.config.json."
-                                code="npx blend-token-studio init"
+                                code="npx blend-studio init"
                             />
                             <WorkflowStep
                                 step={2}
                                 title="Apply Brand"
                                 description="Choose a preset or provide a hex color. Generates tokens for all 26 components."
-                                code='npx blend-token-studio brand --primary "#E31837"'
+                                code='npx blend-studio brand --primary "#E31837"'
                             />
                             <WorkflowStep
                                 step={3}
@@ -402,7 +402,7 @@ function CliSection() {
             <p className="text-sm text-gray-600 mb-6">
                 All commands available via{' '}
                 <code className="px-1.5 py-0.5 bg-gray-100 rounded text-xs font-mono">
-                    npx blend-token-studio
+                    npx blend-studio
                 </code>
             </p>
 
@@ -444,7 +444,7 @@ function CliCommand({ command, description }: CliCommandProps) {
             </div>
             <div className="min-w-0">
                 <code className="text-xs font-mono text-gray-800">
-                    npx blend-token-studio {command}
+                    npx blend-studio {command}
                 </code>
                 <p className="text-xs text-gray-500 mt-0.5">{description}</p>
             </div>
@@ -480,13 +480,13 @@ function UsageSection() {
                                 # 1. Initialize (creates provider + config)
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio init
+                                npx blend-studio init
                             </div>
                             <div className="text-gray-500 mt-3">
                                 # 2. Pull a published branch
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio pull juspay/default
+                                npx blend-studio pull juspay/default
                             </div>
                             <div className="text-gray-500 mt-3">
                                 # 3. Wrap your app
@@ -519,13 +519,13 @@ function UsageSection() {
                                 # Switch to default brand
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio pull juspay/default
+                                npx blend-studio pull juspay/default
                             </div>
                             <div className="text-gray-500 mt-3">
                                 # Switch to a custom brand
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio pull acme/light
+                                npx blend-studio pull acme/light
                             </div>
                             <div className="text-gray-500 mt-3">
                                 # Your app code stays the same!

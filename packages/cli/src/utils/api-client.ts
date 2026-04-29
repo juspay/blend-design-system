@@ -33,7 +33,7 @@ import type {
     Version,
 } from '@juspay/blend-design-system/tokens/server'
 
-const CONFIG_DIR = join(homedir(), '.blend-token-studio')
+const CONFIG_DIR = join(homedir(), '.blend-studio')
 const AUTH_FILE = join(CONFIG_DIR, 'auth.json')
 
 // ---------------------------------------------------------------------------
@@ -80,6 +80,21 @@ interface AuthData {
     expiresAt: number
     email: string
     uid: string
+}
+
+interface CliTokenExchangeResult {
+    token: string
+    tokenType: 'cli_export' | string
+    expiresAt: number | null
+    expiresInSeconds: number | null
+
+    accessToken: string
+    accessExpiresAt: number | null
+    accessExpiresInSeconds: number | null
+
+    refreshToken: string
+    refreshExpiresAt: number | null
+    refreshExpiresInSeconds: number | null
 }
 
 interface ApiResponse<T> {
@@ -145,7 +160,13 @@ export class ApiClient {
 
             if (existsSync(AUTH_FILE)) {
                 const data = JSON.parse(readFileSync(AUTH_FILE, 'utf-8'))
-                if (data.expiresAt > Date.now()) {
+                // If we have a refresh token, keep authData even if the access token expired.
+                // This allows Option 2 auto-refresh without requiring re-login.
+                if (
+                    data.expiresAt > Date.now() ||
+                    (typeof data.refreshToken === 'string' &&
+                        data.refreshToken.trim().length > 0)
+                ) {
                     this.authData = data
                 }
             }
@@ -170,7 +191,12 @@ export class ApiClient {
     }
 
     isAuthenticated(): boolean {
-        return this.authData !== null && this.authData.expiresAt > Date.now()
+        if (!this.authData) return false
+        // Option 2: if we have a refresh token, we can auto-refresh expired sessions.
+        return (
+            this.authData.expiresAt > Date.now() ||
+            this.authData.refreshToken.trim().length > 0
+        )
     }
 
     getAuthEmail(): string | null {
@@ -194,6 +220,109 @@ export class ApiClient {
         this.saveAuth(authData)
     }
 
+    async exchangeCliExportTokenForSession(
+        studioCliToken: string
+    ): Promise<CliTokenExchangeResult> {
+        const url = `${this.apiUrl}/api/auth/cli-token`
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${studioCliToken}`,
+                'Content-Type': 'application/json',
+            },
+        })
+
+        const rawText = await response.text()
+        let raw: unknown
+        try {
+            raw = JSON.parse(rawText) as unknown
+        } catch {
+            throw new Error(
+                `Unexpected response from Studio API (${response.status}). Expected JSON but got HTML/text.`
+            )
+        }
+
+        const parsed = raw as ApiResponse<CliTokenExchangeResult>
+        if (!response.ok || parsed.success !== true || !parsed.data) {
+            const message =
+                parsed.error?.message ||
+                `Failed to exchange CLI token (HTTP ${response.status})`
+            throw new Error(message)
+        }
+
+        return parsed.data
+    }
+
+    private async refreshCliSession(): Promise<void> {
+        if (!this.authData?.refreshToken) {
+            throw new Error('No refresh token available')
+        }
+
+        const url = `${this.apiUrl}/api/auth/refresh`
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ refreshToken: this.authData.refreshToken }),
+        })
+
+        const rawText = await response.text()
+        let raw: unknown
+        try {
+            raw = JSON.parse(rawText) as unknown
+        } catch {
+            throw new Error(
+                `Unexpected response from Studio API (${response.status}). Expected JSON but got HTML/text.`
+            )
+        }
+
+        const parsed = raw as ApiResponse<{
+            accessToken: string
+            refreshToken: string
+            expiresAt: number | null
+            expiresInSeconds: number | null
+            refreshExpiresAt: number | null
+        }>
+
+        if (!response.ok || parsed.success !== true || !parsed.data) {
+            const message =
+                parsed.error?.message ||
+                `Failed to refresh session (HTTP ${response.status})`
+            throw new Error(message)
+        }
+
+        const accessToken = parsed.data.accessToken
+        const refreshToken = parsed.data.refreshToken
+
+        const expiresAt =
+            typeof parsed.data.expiresAt === 'number' && parsed.data.expiresAt
+                ? parsed.data.expiresAt
+                : this.authData.expiresAt
+
+        // If backend returned expiresInSeconds (remaining), use it for robustness.
+        const expiresInSeconds =
+            typeof parsed.data.expiresInSeconds === 'number'
+                ? parsed.data.expiresInSeconds
+                : null
+
+        const nextExpiresAt =
+            typeof expiresInSeconds === 'number'
+                ? Date.now() + expiresInSeconds * 1000
+                : expiresAt
+
+        // Persist for next command runs.
+        this.saveAuth({
+            idToken: accessToken,
+            refreshToken,
+            expiresAt: nextExpiresAt,
+            email: this.authData.email,
+            uid: this.authData.uid,
+        })
+    }
+
     private async request<T>(
         method: string,
         path: string,
@@ -210,6 +339,8 @@ export class ApiClient {
         }
 
         let lastError: ApiResponse<T> | null = null
+
+        let hasRefreshed = false
 
         for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
             try {
@@ -229,9 +360,27 @@ export class ApiClient {
 
                 clearTimeout(timeoutId)
 
-                const raw = (await response.json()) as any
+                const rawText = await response.text()
+                let raw: any
+                try {
+                    raw = JSON.parse(rawText)
+                } catch {
+                    raw = null
+                }
 
                 if (!response.ok) {
+                    // Option 2 auto-refresh on expired/invalid access tokens.
+                    if (
+                        response.status === 401 &&
+                        this.authData?.refreshToken &&
+                        !hasRefreshed
+                    ) {
+                        hasRefreshed = true
+                        await this.refreshCliSession()
+                        attempt -= 1
+                        continue
+                    }
+
                     const errorResponse: ApiResponse<T> = {
                         success: false,
                         error: (

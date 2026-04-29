@@ -197,9 +197,23 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         await revokeRefreshToken(tokenHash)
 
         const newRefreshTokenHash = hashToken(newTokens.refreshToken)
-        const expiresAt = new Date()
-        expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_EXPIRES_DAYS)
-        await storeRefreshToken(decoded.userId, newRefreshTokenHash, expiresAt)
+
+        const rawRefresh = jwt.decode(newTokens.refreshToken) as {
+            exp?: number
+        } | null
+        const refreshExpSec = rawRefresh?.exp
+        const refreshExpMs =
+            typeof refreshExpSec === 'number' ? refreshExpSec * 1000 : null
+
+        if (!refreshExpMs) {
+            throw new UnauthorizedError('Invalid refresh token')
+        }
+
+        await storeRefreshToken(
+            decoded.userId,
+            newRefreshTokenHash,
+            new Date(refreshExpMs)
+        )
 
         res.cookie('refreshToken', newTokens.refreshToken, {
             httpOnly: true,
@@ -221,7 +235,31 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
             success: true,
             data: {
                 accessToken: newTokens.accessToken,
-                expiresIn: newTokens.expiresIn,
+                expiresAt: (() => {
+                    const rawAccess = jwt.decode(newTokens.accessToken) as {
+                        exp?: number
+                    } | null
+                    const accessExpSec = rawAccess?.exp
+                    return typeof accessExpSec === 'number'
+                        ? accessExpSec * 1000
+                        : null
+                })(),
+                // Remaining seconds to expiry (computed from exp).
+                expiresInSeconds: (() => {
+                    const rawAccess = jwt.decode(newTokens.accessToken) as {
+                        exp?: number
+                    } | null
+                    const accessExpSec = rawAccess?.exp
+                    return typeof accessExpSec === 'number'
+                        ? Math.max(
+                              0,
+                              accessExpSec - Math.floor(Date.now() / 1000)
+                          )
+                        : null
+                })(),
+                // Return new refresh token so CLI can keep refreshing.
+                refreshToken: newTokens.refreshToken,
+                refreshExpiresAt: refreshExpMs,
             },
         })
     } catch {
@@ -280,7 +318,7 @@ export const logoutAllDevices = async (req: Request, res: Response) => {
 }
 
 /**
- * Mint a **short-lived CLI-only** JWT for `blend-token-studio login --token`.
+ * Mint a **short-lived CLI-only** JWT for `blend-studio login --token`.
  *
  * Requires a valid browser session (`authenticate`). Does **not** return the long-lived
  * httpOnly access cookie; instead signs a new JWT with `type: cli_export` and TTL
@@ -296,18 +334,56 @@ export const getCliAccessToken = async (req: Request, res: Response) => {
         throw new UnauthorizedError('User not authenticated')
     }
 
+    // Short-lived token (10m) intended for `blend-studio login --token`.
     const token = generateCliExportToken({
         userId: user.id,
         email: user.email,
         role: user.role,
     })
 
-    const raw = jwt.decode(token) as { exp?: number } | null
-    const expSec = raw?.exp
-    const expMs = typeof expSec === 'number' ? expSec * 1000 : null
-    const expiresInSeconds =
-        typeof expSec === 'number'
-            ? Math.max(0, expSec - Math.floor(Date.now() / 1000))
+    const rawCli = jwt.decode(token) as { exp?: number } | null
+    const cliExpSec = rawCli?.exp
+    const cliExpMs = typeof cliExpSec === 'number' ? cliExpSec * 1000 : null
+    const cliExpiresInSeconds =
+        typeof cliExpSec === 'number'
+            ? Math.max(0, cliExpSec - Math.floor(Date.now() / 1000))
+            : null
+
+    // Long-lived refresh token (days) for CLI auto-refresh.
+    const tokens = generateTokens({
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+    })
+
+    const rawRefresh = jwt.decode(tokens.refreshToken) as {
+        exp?: number
+    } | null
+    const refreshExpSec = rawRefresh?.exp
+    const refreshExpMs =
+        typeof refreshExpSec === 'number' ? refreshExpSec * 1000 : null
+    const refreshExpiresInSeconds =
+        typeof refreshExpSec === 'number'
+            ? Math.max(0, refreshExpSec - Math.floor(Date.now() / 1000))
+            : null
+
+    // Persist refresh token so `/api/auth/refresh` can validate it.
+    if (refreshExpMs) {
+        const refreshTokenHash = hashToken(tokens.refreshToken)
+        await storeRefreshToken(
+            user.id,
+            refreshTokenHash,
+            new Date(refreshExpMs)
+        )
+    }
+
+    const rawAccess = jwt.decode(tokens.accessToken) as { exp?: number } | null
+    const accessExpSec = rawAccess?.exp
+    const accessExpMs =
+        typeof accessExpSec === 'number' ? accessExpSec * 1000 : null
+    const accessExpiresInSeconds =
+        typeof accessExpSec === 'number'
+            ? Math.max(0, accessExpSec - Math.floor(Date.now() / 1000))
             : null
 
     res.setHeader(
@@ -320,9 +396,18 @@ export const getCliAccessToken = async (req: Request, res: Response) => {
         success: true,
         data: {
             token,
-            expiresAt: expMs,
-            expiresInSeconds,
+            expiresAt: cliExpMs,
+            expiresInSeconds: cliExpiresInSeconds,
             tokenType: 'cli_export' as const,
+
+            // Extra fields for CLI auto-refresh (Option 2).
+            accessToken: tokens.accessToken,
+            accessExpiresAt: accessExpMs,
+            accessExpiresInSeconds: accessExpiresInSeconds,
+
+            refreshToken: tokens.refreshToken,
+            refreshExpiresAt: refreshExpMs,
+            refreshExpiresInSeconds,
         },
     })
 }

@@ -4,10 +4,10 @@
  * List available branches from Blend Token Studio.
  *
  * Usage:
- *   blend-token-studio list                    # list all branches
- *   blend-token-studio list --status published # filter by status
- *   blend-token-studio list --search hdfc      # search by name
- *   blend-token-studio list --json             # output as JSON (envelope)
+ *   blend-studio list                    # list all branches
+ *   blend-studio list --status published # filter by status
+ *   blend-studio list --search hdfc      # search by name
+ *   blend-studio list --json             # output as JSON (envelope)
  */
 
 import ora from 'ora'
@@ -34,13 +34,77 @@ interface ListOptions {
     limit?: number
 }
 
+export type ListBranchRow = {
+    brandId: string
+    name: string
+    status: BranchStatus
+    latestVersion: string | null
+    updatedAt: Date | string
+}
+
+function getStatusBadge(status: string, useColors: boolean): string {
+    const statusColors: Record<string, string> = {
+        draft: '\x1b[33m',
+        published: '\x1b[32m',
+        archived: '\x1b[90m',
+    }
+
+    const reset = '\x1b[0m'
+    const statusColor = statusColors[status] || ''
+    if (!useColors) return `[${status}]`
+    return `${statusColor}[${status}]${reset}`
+}
+
+export function formatDateRelative(
+    date: Date | string,
+    now: Date = new Date()
+): string {
+    const d = typeof date === 'string' ? new Date(date) : date
+    const diff = now.getTime() - d.getTime()
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+    if (days === 0) {
+        const hours = Math.floor(diff / (1000 * 60 * 60))
+        if (hours === 0) {
+            const minutes = Math.floor(diff / (1000 * 60))
+            return `${minutes}m ago`
+        }
+        return `${hours}h ago`
+    }
+    if (days === 1) return 'yesterday'
+    if (days < 7) return `${days}d ago`
+    return d.toLocaleDateString()
+}
+
+export function formatBranchDisplayLines(
+    branches: ListBranchRow[],
+    options: { useColors?: boolean; now?: Date } = {}
+): string[] {
+    const { useColors = true, now = new Date() } = options
+    const lines: string[] = []
+
+    for (const branch of branches) {
+        const statusBadge = getStatusBadge(branch.status, useColors)
+        const versionBadge = branch.latestVersion
+            ? ` v${branch.latestVersion}`
+            : ''
+
+        // Human-first: show `name (id)` so users don't have to mentally map slugs.
+        lines.push(`  ${branch.name} (${branch.brandId})`)
+        lines.push(`  ${statusBadge}${versionBadge}`)
+        lines.push(`  Updated: ${formatDateRelative(branch.updatedAt, now)}`)
+        lines.push('')
+    }
+
+    return lines
+}
+
 export async function listCommand(options: ListOptions = {}): Promise<void> {
     syncApiClientToProject(process.cwd())
     const format = parseCliFormat(options)
 
     if (!apiClient.isAuthenticated()) {
-        const message =
-            'Not authenticated. Run `npx blend-token-studio login` first.'
+        const message = 'Not authenticated. Run `npx blend-studio login` first.'
         reportCommandFailure({
             format,
             command: 'list',
@@ -88,7 +152,7 @@ export async function listCommand(options: ListOptions = {}): Promise<void> {
                 logger.error(m)
                 if (authIssue) {
                     logger.detail(
-                        'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                        'Session expired or token missing. Run `npx blend-studio login` again.'
                     )
                     logger.detail(
                         'Or set BLEND_STUDIO_API_TOKEN for non-interactive flows.'
@@ -117,59 +181,21 @@ export async function listCommand(options: ListOptions = {}): Promise<void> {
 
     if (branches.length === 0) {
         logger.info('No branches found.')
-        logger.detail(
-            'Create one with: blend-token-studio push <branch-id> --new'
-        )
+        logger.detail('Create one with: blend-studio push <branch-id> --new')
         return
     }
 
     logger.newline()
-
-    const statusColors: Record<string, string> = {
-        draft: '\x1b[33m',
-        published: '\x1b[32m',
-        archived: '\x1b[90m',
-    }
-    const reset = '\x1b[0m'
-
-    for (const branch of branches) {
-        const statusColor = statusColors[branch.status] || ''
-        const statusBadge = `${statusColor}[${branch.status}]${reset}`
-        const versionBadge = branch.latestVersion
-            ? ` v${branch.latestVersion}`
-            : ''
-
-        console.log(`  ${branch.brandId.padEnd(30)} ${branch.name}`)
-        console.log(`  ${' '.repeat(30)} ${statusBadge}${versionBadge}`)
-        console.log(
-            `  ${' '.repeat(30)} Updated: ${formatDate(branch.updatedAt)}`
-        )
-        logger.newline()
-    }
+    const prettyLines = formatBranchDisplayLines(
+        branches as unknown as ListBranchRow[],
+        { useColors: true }
+    )
+    for (const line of prettyLines) console.log(line)
 
     if (hasMore) {
         logger.info('More branches available. Use --limit to show more.')
     }
 
     logger.newline()
-    logger.detail('Pull a branch: npx blend-token-studio pull <branch-id>')
-}
-
-function formatDate(date: Date | string): string {
-    const d = typeof date === 'string' ? new Date(date) : date
-    const now = new Date()
-    const diff = now.getTime() - d.getTime()
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-
-    if (days === 0) {
-        const hours = Math.floor(diff / (1000 * 60 * 60))
-        if (hours === 0) {
-            const minutes = Math.floor(diff / (1000 * 60))
-            return `${minutes}m ago`
-        }
-        return `${hours}h ago`
-    }
-    if (days === 1) return 'yesterday'
-    if (days < 7) return `${days}d ago`
-    return d.toLocaleDateString()
+    logger.detail('Pull a branch: npx blend-studio pull <branch-id>')
 }

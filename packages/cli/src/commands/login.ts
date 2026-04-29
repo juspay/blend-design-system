@@ -4,9 +4,9 @@
  * Authenticate with Blend Token Studio.
  *
  * Usage:
- *   blend-token-studio login                    # interactive login
- *   blend-token-studio login --token <token>    # login with Studio token (JWT)
- *   blend-token-studio logout                   # clear authentication
+ *   blend-studio login                    # interactive login
+ *   blend-studio login --token <token>    # login with Studio token (JWT)
+ *   blend-studio logout                   # clear authentication
  */
 
 import { existsSync, readFileSync } from 'node:fs'
@@ -20,7 +20,7 @@ interface LoginOptions {
     token?: string
 }
 
-const AUTH_FILE = join(homedir(), '.blend-token-studio', 'auth.json')
+const AUTH_FILE = join(homedir(), '.blend-studio', 'auth.json')
 
 export async function loginCommand(options: LoginOptions = {}): Promise<void> {
     syncApiClientToProject(process.cwd())
@@ -56,7 +56,7 @@ export async function loginCommand(options: LoginOptions = {}): Promise<void> {
     2. Sign in with Google.
     3. User menu (top right) → "CLI token" — a short-lived token (default 10 minutes) is minted for you.
     4. Run from your project folder before it expires:
-         npx blend-token-studio login --token <paste>
+         npx blend-studio login --token <paste>
        Generate a new token from the menu anytime.
 
   Option 2 — CI / scripts
@@ -108,13 +108,33 @@ async function loginWithToken(token: string): Promise<void> {
             return
         }
 
-        const expiresIn = Math.floor((expiresAt - Date.now()) / 1000)
+        // Option 2: Exchange the short-lived Studio CLI token for a
+        // long-lived CLI session (access token + refresh token).
+        const exchange = await apiClient.exchangeCliExportTokenForSession(token)
 
-        await apiClient.login(token, '', expiresIn, email, uid)
+        const nextAccessExpiresAt =
+            exchange.accessExpiresAt ?? exchange.expiresAt ?? expiresAt
+
+        const expiresInSeconds =
+            typeof exchange.accessExpiresInSeconds === 'number'
+                ? exchange.accessExpiresInSeconds
+                : Math.max(
+                      0,
+                      Math.floor((nextAccessExpiresAt - Date.now()) / 1000)
+                  )
+
+        await apiClient.login(
+            exchange.accessToken ?? token,
+            exchange.refreshToken ?? '',
+            expiresInSeconds,
+            email,
+            uid
+        )
 
         logger.success(`Logged in as ${email}`)
         logger.detail(
-            'Token expires at: ' + new Date(expiresAt).toLocaleString()
+            'Access token expires at: ' +
+                new Date(nextAccessExpiresAt).toLocaleString()
         )
     } catch (error) {
         logger.error('Failed to parse token')
@@ -141,7 +161,7 @@ export async function whoamiCommand(): Promise<void> {
     syncApiClientToProject(process.cwd())
     if (!apiClient.isAuthenticated()) {
         logger.info('Not logged in')
-        logger.detail('Run `npx blend-token-studio login` to authenticate')
+        logger.detail('Run `npx blend-studio login` to authenticate')
         return
     }
 

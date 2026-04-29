@@ -4,9 +4,9 @@
  * Fetch a brand config from Blend Token Studio and generate local tokens.
  *
  * Usage:
- *   blend-token-studio pull hdfc/retail              # latest version
- *   blend-token-studio pull hdfc/retail --version 1.2.0
- *   blend-token-studio pull hdfc/retail --theme dark
+ *   blend-studio pull hdfc/retail              # latest version
+ *   blend-studio pull hdfc/retail --version 1.2.0
+ *   blend-studio pull hdfc/retail --theme dark
  *
  * If blend.config.json is missing, a minimal file is created (not in --ci; use --skip-init to require an existing file).
  */
@@ -57,7 +57,7 @@ export async function pullCommand(
         if (!allowAutoInit) {
             const message = options.ci
                 ? 'blend.config.json not found. Add one to the repo or run init before pull in CI.'
-                : 'blend.config.json not found. Run `npx blend-token-studio init` first, or omit --skip-init to create a minimal config.'
+                : 'blend.config.json not found. Run `npx blend-studio init` first, or omit --skip-init to create a minimal config.'
             reportCommandFailure({
                 format,
                 command: 'pull',
@@ -83,8 +83,7 @@ export async function pullCommand(
     const config: BlendConfig = JSON.parse(readFileSync(configPath, 'utf-8'))
 
     if (!apiClient.isAuthenticated()) {
-        const message =
-            'Not authenticated. Run `npx blend-token-studio login` first.'
+        const message = 'Not authenticated. Run `npx blend-studio login` first.'
         reportCommandFailure({
             format,
             command: 'pull',
@@ -130,7 +129,7 @@ export async function pullCommand(
                 logger.error(m)
                 if (authIssue) {
                     logger.detail(
-                        'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                        'Session expired or token missing. Run `npx blend-studio login` again.'
                     )
                     logger.detail(
                         'Or set BLEND_STUDIO_API_TOKEN for non-interactive flows.'

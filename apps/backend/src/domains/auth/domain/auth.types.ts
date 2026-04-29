@@ -15,7 +15,7 @@ export interface JwtPayload {
     userId: string
     email: string
     role: string
-    /** access / refresh = OAuth session; cli_export = short-lived token for `blend-token-studio login` */
+    /** access / refresh = OAuth session; cli_export = short-lived token for `blend-studio login` */
     type?: 'access' | 'refresh' | 'cli_export'
 }
 

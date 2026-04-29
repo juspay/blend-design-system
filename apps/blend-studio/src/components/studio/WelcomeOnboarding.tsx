@@ -142,14 +142,14 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
                     <StepGuide
                         step={3}
                         title="Publish & Pull"
-                        description="Publish a version, then run: npx blend-token-studio pull <branchId>"
+                        description="Publish a version, then run: npx blend-studio pull <branchId>"
                     />
                     <div className="mt-4 p-3 bg-gray-900 rounded-lg">
                         <div className="text-xs font-mono text-gray-500 mb-1">
                             # In your project:
                         </div>
                         <div className="text-xs font-mono text-green-400">
-                            npx blend-token-studio pull juspay/default
+                            npx blend-studio pull juspay/default
                         </div>
                         <div className="text-xs font-mono text-gray-500 mt-1">
                             # Done. All components render with your branding.

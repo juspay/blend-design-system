@@ -791,7 +791,7 @@ function AboutTab() {
                                 1. Install CLI (once)
                             </p>
                             <code className="text-sm bg-gray-800 text-gray-100 px-2 py-1 rounded">
-                                npm install -g blend-token-studio
+                                npm install -g blend-studio
                             </code>
                         </div>
                         <div>
@@ -799,7 +799,7 @@ function AboutTab() {
                                 2. Initialize in your project
                             </p>
                             <code className="text-sm bg-gray-800 text-gray-100 px-2 py-1 rounded">
-                                npx blend-token-studio init
+                                npx blend-studio init
                             </code>
                         </div>
                         <div>
@@ -807,7 +807,7 @@ function AboutTab() {
                                 3. Apply your brand
                             </p>
                             <code className="text-sm bg-gray-800 text-gray-100 px-2 py-1 rounded">
-                                npx blend-token-studio brand --primary "#E31837"
+                                npx blend-studio brand --primary "#E31837"
                             </code>
                         </div>
                         <div>

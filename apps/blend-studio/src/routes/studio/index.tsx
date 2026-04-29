@@ -661,19 +661,19 @@ function QuickGuidePanel({ onClose }: { onClose: () => void }) {
                                 # One-time setup
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio init
+                                npx blend-studio init
                             </div>
                             <div className="text-gray-500 mt-2">
                                 # Pull a published branch
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio pull {'<branchId>'}
+                                npx blend-studio pull {'<branchId>'}
                             </div>
                             <div className="text-gray-500 mt-2">
                                 # Switch to a different branch/brand anytime
                             </div>
                             <div className="text-green-400">
-                                npx blend-token-studio pull acme/light
+                                npx blend-studio pull acme/light
                             </div>
                         </div>
                     </div>
@@ -737,7 +737,7 @@ function QuickGuidePanel({ onClose }: { onClose: () => void }) {
                             </div>
                             <div className="text-green-400">
                                 {
-                                    'npx blend-token-studio pull <branchId> --theme dark'
+                                    'npx blend-studio pull <branchId> --theme dark'
                                 }
                             </div>
                         </div>

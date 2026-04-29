@@ -4,8 +4,8 @@
  * Validate the current brand.json for correctness.
  *
  * Usage:
- *   blend-token-studio validate
- *   blend-token-studio validate --format json --ci
+ *   blend-studio validate
+ *   blend-studio validate --format json --ci
  */
 
 import { existsSync, readFileSync } from 'node:fs'
@@ -35,7 +35,7 @@ export async function validateCommand(
     const configPath = join(cwd, 'blend.config.json')
     if (!existsSync(configPath)) {
         const message =
-            'blend.config.json not found. Run `npx blend-token-studio init` first.'
+            'blend.config.json not found. Run `npx blend-studio init` first.'
         reportCommandFailure({
             format,
             command: 'validate',

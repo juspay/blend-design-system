@@ -476,11 +476,11 @@ node dist/index.js --help
 npm publish --access public
 
 # Verify
-npm view blend-token-studio
+npm view blend-studio
 
 # Test global install
-npm install -g blend-token-studio
-blend-token-studio --version
+npm install -g blend-studio
+blend-studio --version
 ```
 
 **Note**: The CLI depends on `@juspay/blend-design-system` which already includes the token engine at `@juspay/blend-design-system/tokens`.

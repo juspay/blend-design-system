@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * blend-studio CLI (npm package `blend-studio`; bin alias `blend-token-studio`)
+ * blend-studio CLI (npm package `blend-studio`; bin alias `blend-studio`)
  *
  * The developer-facing tool for Blend Token Studio.
  * Inspired by shadcn/ui CLI — one command to scaffold,

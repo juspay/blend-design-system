@@ -8,10 +8,10 @@ This file covers: Token Engine API, CLI commands, and local development.
 
 ## Two Components
 
-| Component  | Package              | Purpose                       |
-| ---------- | -------------------- | ----------------------------- |
-| **CLI**    | `blend-token-studio` | Developer commands for tokens |
-| **Studio** | `blend-studio`       | Visual web editor             |
+| Component  | Package        | Purpose                       |
+| ---------- | -------------- | ----------------------------- |
+| **CLI**    | `blend-studio` | Developer commands for tokens |
+| **Studio** | `blend-studio` | Visual web editor             |
 
 ### How They Work Together
 
@@ -187,10 +187,10 @@ interface ValidationResult {
 
 ```bash
 # Global install
-npm install -g blend-token-studio
+npm install -g blend-studio
 
 # Or use npx (no install needed)
-npx blend-token-studio <command>
+npx blend-studio <command>
 ```
 
 ### Commands
@@ -198,7 +198,7 @@ npx blend-token-studio <command>
 #### `init` — Initialize Project
 
 ```bash
-blend-token-studio init [options]
+blend-studio init [options]
 
 Options:
   --defaults    Skip prompts, use defaults
@@ -206,8 +206,8 @@ Options:
   --template    Template: nextjs, vite, cra
 
 Examples:
-  blend-token-studio init
-  blend-token-studio init --defaults --template nextjs
+  blend-studio init
+  blend-studio init --defaults --template nextjs
 ```
 
 Creates:
@@ -219,7 +219,7 @@ Creates:
 #### `brand` — Apply Branding
 
 ```bash
-blend-token-studio brand [options]
+blend-studio brand [options]
 
 Options:
   --preset <name>      Preset: blend, hdfc, neobank, fintech
@@ -228,28 +228,28 @@ Options:
   --radius <type>      Border radius: sharp, soft, round, pill
 
 Examples:
-  blend-token-studio brand --preset hdfc
-  blend-token-studio brand --primary "#E31837" --radius soft
+  blend-studio brand --preset hdfc
+  blend-studio brand --primary "#E31837" --radius soft
 ```
 
 #### `pull` — Pull from Studio
 
 ```bash
-blend-token-studio pull <branch> [options]
+blend-studio pull <branch> [options]
 
 Options:
   --version <v>    Pull specific version
   --theme <mode>   Theme: light, dark
 
 Examples:
-  blend-token-studio pull hdfc/retail
-  blend-token-studio pull hdfc/retail --version 1.2.0
+  blend-studio pull hdfc/retail
+  blend-studio pull hdfc/retail --version 1.2.0
 ```
 
 #### `push` — Push to Studio
 
 ```bash
-blend-token-studio push [branch] [options]
+blend-studio push [branch] [options]
 
 Options:
   --new           Create branch if not exists
@@ -259,15 +259,15 @@ Options:
   --patch         Bump patch version
 
 Examples:
-  blend-token-studio push hdfc/retail
-  blend-token-studio push mycompany/brand --new
-  blend-token-studio push hdfc/retail --publish --minor
+  blend-studio push hdfc/retail
+  blend-studio push mycompany/brand --new
+  blend-studio push hdfc/retail --publish --minor
 ```
 
 #### `list` — List Branches
 
 ```bash
-blend-token-studio list [options]
+blend-studio list [options]
 
 Options:
   --status <filter>    Filter: draft, published, archived
@@ -280,32 +280,32 @@ Options:
 
 ```bash
 # Interactive login
-blend-token-studio login
+blend-studio login
 
 # With token (for CI/CD)
-blend-token-studio login --token "your-firebase-token"
+blend-studio login --token "your-firebase-token"
 
 # Check current user
-blend-token-studio whoami
+blend-studio whoami
 
 # Logout
-blend-token-studio logout
+blend-studio logout
 ```
 
 #### `validate` — Validate Config
 
 ```bash
-blend-token-studio validate [file]
+blend-studio validate [file]
 
 Examples:
-  blend-token-studio validate
-  blend-token-studio validate ./configs/brand.json
+  blend-studio validate
+  blend-studio validate ./configs/brand.json
 ```
 
 #### `generate` — Generate Tokens Offline
 
 ```bash
-blend-token-studio generate <file> [options]
+blend-studio generate <file> [options]
 
 Options:
   --output <path>   Output directory
@@ -313,14 +313,14 @@ Options:
   --format <type>   Format: ts, js, json
 
 Examples:
-  blend-token-studio generate ./brand.json
-  blend-token-studio generate ./brand.json --theme both
+  blend-studio generate ./brand.json
+  blend-studio generate ./brand.json --theme both
 ```
 
 #### `preview` — Open Browser Preview
 
 ```bash
-blend-token-studio preview [options]
+blend-studio preview [options]
 
 Options:
   --port <port>    Dev server port (default: 3000)
@@ -353,8 +353,8 @@ You can edit primary color, border radius, see live preview, and export brand.js
 cd packages/cli && pnpm build && pnpm link --global
 
 mkdir /tmp/test-blend && cd /tmp/test-blend
-blend-token-studio init --defaults
-blend-token-studio brand --preset hdfc
+blend-studio init --defaults
+blend-studio brand --preset hdfc
 cat src/blend/brand.json
 ```
 
@@ -451,7 +451,7 @@ rm -rf node_modules dist && pnpm install && pnpm build
 ### Debug Mode
 
 ```bash
-DEBUG=* blend-token-studio init
+DEBUG=* blend-studio init
 firebase deploy --debug
 ```
 
@@ -468,7 +468,7 @@ cd apps/blend-studio && pnpm dev                # Start Studio
 
 # === TESTING ===
 http://localhost:3000/studio/test               # Open Studio
-blend-token-studio init --defaults              # Test CLI
+blend-studio init --defaults              # Test CLI
 
 # === FOR DEPLOYMENT ===
 See DEPLOYMENT_GUIDE.md

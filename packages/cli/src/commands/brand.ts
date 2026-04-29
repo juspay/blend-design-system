@@ -5,10 +5,10 @@
  * or interactive prompts.
  *
  * Usage:
- *   blend-token-studio brand                          # interactive
- *   blend-token-studio brand --preset hdfc            # preset
- *   blend-token-studio brand --primary "#E31837"      # custom color
- *   blend-token-studio brand --primary "#E31837" --radius sharp
+ *   blend-studio brand                          # interactive
+ *   blend-studio brand --preset hdfc            # preset
+ *   blend-studio brand --primary "#E31837"      # custom color
+ *   blend-studio brand --primary "#E31837" --radius sharp
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -42,7 +42,7 @@ export async function brandCommand(options: BrandOptions = {}): Promise<void> {
     const configPath = join(cwd, 'blend.config.json')
     if (!existsSync(configPath)) {
         logger.error(
-            'blend.config.json not found. Run `npx blend-token-studio init` first.'
+            'blend.config.json not found. Run `npx blend-studio init` first.'
         )
         return
     }

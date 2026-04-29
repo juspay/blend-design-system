@@ -4,7 +4,7 @@
  * Show what the current brand config overrides from Blend defaults.
  *
  * Usage:
- *   blend-token-studio diff
+ *   blend-studio diff
  */
 
 import { existsSync, readFileSync } from 'node:fs'
@@ -24,7 +24,7 @@ export async function diffCommand(): Promise<void> {
     const configPath = join(cwd, 'blend.config.json')
     if (!existsSync(configPath)) {
         logger.error(
-            'blend.config.json not found. Run `npx blend-token-studio init` first.'
+            'blend.config.json not found. Run `npx blend-studio init` first.'
         )
         return
     }

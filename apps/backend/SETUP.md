@@ -381,7 +381,7 @@ After setup is complete:
 
 1. **Frontend Integration**: Connect blend-studio frontend to use these APIs
 2. **Token Engine**: Implement actual token resolution from brand config
-3. **CLI Tool**: Create the `blend-token-studio` CLI package
+3. **CLI Tool**: Create the `blend-studio` CLI package
 4. **Production Deployment**: Deploy to GCP Cloud Run
 
 ---

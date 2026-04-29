@@ -5,7 +5,6 @@
     "type": "module",
     "bin": {
         "blend-studio": "./dist/index.js",
-        "blend-token-studio": "./dist/index.js",
         "blend": "./dist/index.js"
     },
     "main": "./dist/index.js",

@@ -159,7 +159,7 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
-/// API keys for CLI access. Users run `blend-token-studio login` to create one.
+/// API keys for CLI access. Users run `blend-studio login` to create one.
 /// This avoids passing user JWTs through the terminal.
 model ApiKey {
   id             String      @id @default(uuid()) @db.Uuid
@@ -250,7 +250,7 @@ model Branch {
 }
 
 /// A published snapshot of a branch's brand config. Immutable once created.
-/// Used by `npx blend-token-studio pull <branchId>@<version>`.
+/// Used by `npx blend-studio pull <branchId>@<version>`.
 model BranchVersion {
   id              String      @id @default(uuid()) @db.Uuid
   branchId        String      @map("branch_id") @db.Uuid

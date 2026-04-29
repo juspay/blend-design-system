@@ -398,7 +398,7 @@ export function UserMenu({
                         <div className="text-xs text-gray-500">
                             Example:{' '}
                             <span className="font-mono">
-                                npx blend-token-studio login --token
+                                npx blend-studio login --token
                                 &nbsp;&lt;TOKEN&gt;
                             </span>
                         </div>

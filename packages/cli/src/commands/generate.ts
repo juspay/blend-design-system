@@ -5,11 +5,11 @@
  * and produces the tokens.ts output without connecting to the API.
  *
  * Usage:
- *   blend-token-studio generate ./my-brand.json --output ./src/blend
- *   blend-token-studio generate ./my-brand.json --language rescript
+ *   blend-studio generate ./my-brand.json --output ./src/blend
+ *   blend-studio generate ./my-brand.json --language rescript
  *
  * Monorepo smoke test (repo root):
- *   pnpm exec blend-token-studio generate packages/cli/fixtures/sample-brand.json --language rescript -o ./out/blend
+ *   pnpm exec blend-studio generate packages/cli/fixtures/sample-brand.json --language rescript -o ./out/blend
  */
 
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs'

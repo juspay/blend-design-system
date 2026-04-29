@@ -5,8 +5,8 @@
  * Requires the Studio dev server to be running.
  *
  * Usage:
- *   blend-token-studio preview
- *   blend-token-studio preview --port 3000
+ *   blend-studio preview
+ *   blend-studio preview --port 3000
  */
 
 import { existsSync, readFileSync } from 'fs'
@@ -29,7 +29,7 @@ export async function previewCommand(
     const configPath = join(cwd, 'blend.config.json')
     if (!existsSync(configPath)) {
         logger.error(
-            'blend.config.json not found. Run `blend-token-studio init` first.'
+            'blend.config.json not found. Run `blend-studio init` first.'
         )
         process.exit(1)
     }
@@ -38,9 +38,7 @@ export async function previewCommand(
     const brandPath = join(cwd, config.output || 'src/blend', 'brand.json')
 
     if (!existsSync(brandPath)) {
-        logger.error(
-            'brand.json not found. Run `blend-token-studio brand` first.'
-        )
+        logger.error('brand.json not found. Run `blend-studio brand` first.')
         process.exit(1)
     }
 

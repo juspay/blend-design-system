@@ -17,7 +17,7 @@ export const STUDIO_API_URL_BY_DEPLOYMENT: Record<
     BlendStudioDeployment,
     string
 > = {
-    staging: 'https://blend-studio-staging-2oyuucbkoa-uc.a.run.app/studio',
+    staging: 'https://blend-backend-staging-2oyuucbkoa-uc.a.run.app',
     production: 'https://studio.blend.juspay.design',
 }
 

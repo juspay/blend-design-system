@@ -207,10 +207,10 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
     const gitignorePath = join(cwd, '.gitignore')
     if (existsSync(gitignorePath)) {
         const gitignore = readFileSync(gitignorePath, 'utf-8')
-        if (!gitignore.includes('.blend-token-studio')) {
+        if (!gitignore.includes('.blend-studio')) {
             logger.newline()
             logger.info('Consider adding to .gitignore:')
-            logger.detail('.blend-token-studio/')
+            logger.detail('.blend-studio/')
         }
     }
 
@@ -230,18 +230,18 @@ export async function initCommand(options: InitOptions = {}): Promise<void> {
     logger.newline()
     console.log('  2. Apply a brand:')
     logger.newline()
-    console.log('     npx blend-token-studio brand')
+    console.log('     npx blend-studio brand')
     logger.newline()
     console.log('     Or use a preset:')
     logger.newline()
-    console.log('     npx blend-token-studio brand --preset hdfc')
+    console.log('     npx blend-studio brand --preset hdfc')
     logger.newline()
 
     if (config.studio?.apiUrl) {
         console.log('  3. Connect to Blend Token Studio:')
         logger.newline()
-        console.log('     npx blend-token-studio login')
-        console.log('     npx blend-token-studio pull hdfc/retail')
+        console.log('     npx blend-studio login')
+        console.log('     npx blend-studio pull hdfc/retail')
         logger.newline()
     }
 }

@@ -8,7 +8,7 @@
  * every V2 component via <ThemeProvider componentTokens={...}>.
  *
  * Used by:
- *   - CLI (blend-token-studio init/brand/pull)
+ *   - CLI (blend-studio init/brand/pull)
  *   - Dashboard (live preview)
  *
  * NOTE: This module should only be used in client-side code or CLI.

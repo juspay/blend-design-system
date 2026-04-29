@@ -4,11 +4,11 @@
  * Upload local brand.json to Blend Token Studio.
  *
  * Usage:
- *   blend-token-studio push                        # push to current branch (from studio.json)
- *   blend-token-studio push my-brand/default       # push to specific branch
- *   blend-token-studio push my-brand/default --new # create branch if not exists
- *   blend-token-studio push --publish              # push and publish a version
- *   blend-token-studio push --publish --minor      # push and publish with version bump
+ *   blend-studio push                        # push to current branch (from studio.json)
+ *   blend-studio push my-brand/default       # push to specific branch
+ *   blend-studio push my-brand/default --new # create branch if not exists
+ *   blend-studio push --publish              # push and publish a version
+ *   blend-studio push --publish --minor      # push and publish with version bump
  */
 
 import { existsSync, readFileSync } from 'node:fs'
@@ -58,8 +58,7 @@ export async function pushCommand(
     syncApiClientToProject(cwd)
 
     if (!apiClient.isAuthenticated()) {
-        const message =
-            'Not authenticated. Run `npx blend-token-studio login` first.'
+        const message = 'Not authenticated. Run `npx blend-studio login` first.'
         reportCommandFailure({
             format,
             command: 'push',
@@ -73,7 +72,7 @@ export async function pushCommand(
     const outputDir = findOutputDir(cwd)
     if (!outputDir) {
         const message =
-            'blend.config.json not found. Run `npx blend-token-studio init` first.'
+            'blend.config.json not found. Run `npx blend-studio init` first.'
         reportCommandFailure({
             format,
             command: 'push',
@@ -87,7 +86,7 @@ export async function pushCommand(
     const brandPath = join(outputDir, 'brand.json')
     if (!existsSync(brandPath)) {
         const message =
-            'brand.json not found. Run `npx blend-token-studio brand` first.'
+            'brand.json not found. Run `npx blend-studio brand` first.'
         reportCommandFailure({
             format,
             command: 'push',
@@ -193,7 +192,7 @@ export async function pushCommand(
                         logger.error(m)
                         if (authIssue) {
                             logger.detail(
-                                'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                                'Session expired or token missing. Run `npx blend-studio login` again.'
                             )
                         }
                     },
@@ -216,7 +215,7 @@ export async function pushCommand(
                     logger.error(m)
                     if (existingAuthIssue) {
                         logger.detail(
-                            'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                            'Session expired or token missing. Run `npx blend-studio login` again.'
                         )
                     } else {
                         logger.detail('Use --new to create a new branch')
@@ -249,7 +248,7 @@ export async function pushCommand(
                     logger.error(m)
                     if (authIssue) {
                         logger.detail(
-                            'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                            'Session expired or token missing. Run `npx blend-studio login` again.'
                         )
                     }
                 },
@@ -341,7 +340,7 @@ export async function pushCommand(
                     logger.error(m)
                     if (authIssue) {
                         logger.detail(
-                            'Session expired or token missing. Run `npx blend-token-studio login` again.'
+                            'Session expired or token missing. Run `npx blend-studio login` again.'
                         )
                     }
                 },

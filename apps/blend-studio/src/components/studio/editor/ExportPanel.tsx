@@ -43,11 +43,9 @@ export function ExportPanel({ brand, branchId }: ExportPanelProps) {
             >
                 <div className="bg-gray-900 rounded-xl p-5 text-xs font-mono space-y-2">
                     <CodeLine comment="1. Initialize (one-time)" />
-                    <CodeLine code="npx blend-token-studio init" />
+                    <CodeLine code="npx blend-studio init" />
                     <CodeLine comment="2. Pull this branch" className="mt-3" />
-                    <CodeLine
-                        code={`npx blend-token-studio pull ${branchId}`}
-                    />
+                    <CodeLine code={`npx blend-studio pull ${branchId}`} />
                     <CodeLine comment="3. Wrap your app" className="mt-3" />
                     <CodeLine
                         code="import { BlendProvider } from './blend/provider'"
@@ -67,21 +65,18 @@ export function ExportPanel({ brand, branchId }: ExportPanelProps) {
                 <div className="space-y-2">
                     <CliCommandRow
                         label="Pull this branch"
-                        command={`npx blend-token-studio pull ${branchId}`}
+                        command={`npx blend-studio pull ${branchId}`}
                         onCopy={() =>
-                            copy(
-                                `npx blend-token-studio pull ${branchId}`,
-                                'pull'
-                            )
+                            copy(`npx blend-studio pull ${branchId}`, 'pull')
                         }
                         isCopied={copied === 'pull'}
                     />
                     <CliCommandRow
                         label="Apply as local preset"
-                        command={`npx blend-token-studio brand --preset ${brand.brandId || branchId.split('/')[0]}`}
+                        command={`npx blend-studio brand --preset ${brand.brandId || branchId.split('/')[0]}`}
                         onCopy={() =>
                             copy(
-                                `npx blend-token-studio brand --preset ${brand.brandId || branchId.split('/')[0]}`,
+                                `npx blend-studio brand --preset ${brand.brandId || branchId.split('/')[0]}`,
                                 'brand'
                             )
                         }
@@ -89,10 +84,8 @@ export function ExportPanel({ brand, branchId }: ExportPanelProps) {
                     />
                     <CliCommandRow
                         label="Diff vs defaults"
-                        command="npx blend-token-studio diff"
-                        onCopy={() =>
-                            copy('npx blend-token-studio diff', 'diff')
-                        }
+                        command="npx blend-studio diff"
+                        onCopy={() => copy('npx blend-studio diff', 'diff')}
                         isCopied={copied === 'diff'}
                     />
                 </div>
@@ -107,14 +100,12 @@ export function ExportPanel({ brand, branchId }: ExportPanelProps) {
             >
                 <div className="bg-gray-900 rounded-xl p-4 text-xs font-mono space-y-2">
                     <CodeLine comment="Switch to this branch" />
-                    <CodeLine
-                        code={`npx blend-token-studio pull ${branchId}`}
-                    />
+                    <CodeLine code={`npx blend-studio pull ${branchId}`} />
                     <CodeLine
                         comment="Switch to another branch"
                         className="mt-2"
                     />
-                    <CodeLine code="npx blend-token-studio pull neobank/light" />
+                    <CodeLine code="npx blend-studio pull neobank/light" />
                     <CodeLine
                         comment="Your BlendProvider stays the same!"
                         className="mt-2"

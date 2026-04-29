@@ -14,7 +14,7 @@ Blend Design System has two pieces:
 | Piece                 | Package                       | What it does                                                 |
 | --------------------- | ----------------------------- | ------------------------------------------------------------ |
 | **Component Library** | `@juspay/blend-design-system` | React components (Button, Input, Alert, etc.) + Token Engine |
-| **CLI**               | `blend-token-studio`          | Scaffolds projects, generates tokens, syncs with Studio      |
+| **CLI**               | `blend-studio`                | Scaffolds projects, generates tokens, syncs with Studio      |
 
 The flow:
 
@@ -33,10 +33,10 @@ You write ~20 lines of JSON (your brand colors, radius, font). The token engine 
 npm install @juspay/blend-design-system styled-components
 
 # 2. Scaffold your project
-npx blend-token-studio init
+npx blend-studio init
 
 # 3. Apply a brand preset
-npx blend-token-studio brand --preset juspay
+npx blend-studio brand --preset juspay
 
 # 4. Wrap your app
 # In your root layout:
@@ -89,17 +89,17 @@ If this renders, the component library is installed correctly.
 The CLI is used via `npx` — no global install needed:
 
 ```bash
-npx blend-token-studio --version
+npx blend-studio --version
 ```
 
 ### Login
 
 ```bash
 # Interactive login (opens prompt for JWT token)
-npx blend-token-studio login
+npx blend-studio login
 
 # Or with a token directly
-npx blend-token-studio login --token <your-jwt>
+npx blend-studio login --token <your-jwt>
 
 # Or via environment variable (for CI)
 export BLEND_STUDIO_API_TOKEN=<your-jwt>
@@ -115,14 +115,14 @@ export BLEND_STUDIO_API_TOKEN=<your-jwt>
 ### Verify Authentication
 
 ```bash
-npx blend-token-studio whoami
+npx blend-studio whoami
 # Output: Logged in as: you@company.com
 ```
 
 ### Logout
 
 ```bash
-npx blend-token-studio logout
+npx blend-studio logout
 ```
 
 ---
@@ -130,7 +130,7 @@ npx blend-token-studio logout
 ## Scaffolding Your Project
 
 ```bash
-npx blend-token-studio init
+npx blend-studio init
 ```
 
 This command:
@@ -176,7 +176,7 @@ export default function RootLayout({ children }) {
 ### Interactive
 
 ```bash
-npx blend-token-studio brand
+npx blend-studio brand
 ```
 
 Walks you through picking a primary color, radius style, etc.
@@ -184,7 +184,7 @@ Walks you through picking a primary color, radius style, etc.
 ### Using a preset
 
 ```bash
-npx blend-token-studio brand --preset juspay
+npx blend-studio brand --preset juspay
 ```
 
 Available presets: `blend`, `juspay`, `purple`, `green`, `orange`
@@ -192,7 +192,7 @@ Available presets: `blend`, `juspay`, `purple`, `green`, `orange`
 ### With specific colors
 
 ```bash
-npx blend-token-studio brand --primary "#E11D48" --radius rounded
+npx blend-studio brand --primary "#E11D48" --radius rounded
 ```
 
 ### What this does
@@ -234,16 +234,16 @@ Open [studio.blend.juspay.design](https://studio.blend.juspay.design) and sign i
 
 ```bash
 # Pull the latest version of a workspace
-npx blend-token-studio pull my-org/retail
+npx blend-studio pull my-org/retail
 
 # Pull a specific version
-npx blend-token-studio pull my-org/retail --version 1.2.0
+npx blend-studio pull my-org/retail --version 1.2.0
 
 # Pull with ReScript output
-npx blend-token-studio pull my-org/retail --language rescript
+npx blend-studio pull my-org/retail --language rescript
 
 # Pull for CI (no prompts, JSON output)
-npx blend-token-studio pull my-org/retail --ci --format json
+npx blend-studio pull my-org/retail --ci --format json
 ```
 
 ### What gets generated
@@ -259,8 +259,8 @@ npx blend-token-studio pull my-org/retail --ci --format json
 If you have a `brand.json` but no Studio access:
 
 ```bash
-npx blend-token-studio generate ./brand.json
-npx blend-token-studio generate ./brand.json --language rescript
+npx blend-studio generate ./brand.json
+npx blend-studio generate ./brand.json --language rescript
 ```
 
 ---
@@ -277,7 +277,7 @@ The CLI auto-detects ReScript projects via:
 ### Setup
 
 ```bash
-npx blend-token-studio init
+npx blend-studio init
 # The CLI will detect ReScript and configure accordingly
 ```
 
@@ -285,10 +285,10 @@ npx blend-token-studio init
 
 ```bash
 # From Studio
-npx blend-token-studio pull my-org/retail --language rescript
+npx blend-studio pull my-org/retail --language rescript
 
 # From local brand.json
-npx blend-token-studio generate ./brand.json --language rescript
+npx blend-studio generate ./brand.json --language rescript
 ```
 
 ### Output
@@ -335,7 +335,7 @@ jobs:
             - name: Pull tokens
               env:
                   BLEND_STUDIO_API_TOKEN: ${{ secrets.BLEND_STUDIO_API_TOKEN }}
-              run: npx blend-token-studio pull my-org/retail --ci --format json
+              run: npx blend-studio pull my-org/retail --ci --format json
 
             - name: Commit updated tokens
               run: |
@@ -410,7 +410,7 @@ When an editor wants to promote changes from a workspace to the master theme:
 
 ### Trigger
 
-1. Go to Actions → **Publish CLI (blend-token-studio)**
+1. Go to Actions → **Publish CLI (blend-studio)**
 2. Click **Run workflow**
 3. Select version bump type, tag, and confirm
 
@@ -421,7 +421,7 @@ When an editor wants to promote changes from a workspace to the master theme:
 ### "Not authenticated" error
 
 ```bash
-npx blend-token-studio login
+npx blend-studio login
 # Or: export BLEND_STUDIO_API_TOKEN=<your-token>
 ```
 
@@ -432,14 +432,14 @@ Get a fresh token from Studio → User Menu → API Token.
 ### "blend.config.json not found"
 
 ```bash
-npx blend-token-studio init
+npx blend-studio init
 ```
 
 ### Components don't reflect my brand
 
 1. Make sure `<BlendProvider>` wraps your app
 2. Make sure `tokens.ts` has actual values (not empty `{}`)
-3. Run `npx blend-token-studio brand` to regenerate
+3. Run `npx blend-studio brand` to regenerate
 
 ### "Invalid hex color" validation error
 
@@ -452,6 +452,6 @@ The validator checks color scales against white and dark backgrounds. Pick a dar
 ### ReScript output not generated
 
 ```bash
-npx blend-token-studio pull my-org/retail --language rescript
-npx blend-token-studio generate ./brand.json --language rescript
+npx blend-studio pull my-org/retail --language rescript
+npx blend-studio generate ./brand.json --language rescript
 ```

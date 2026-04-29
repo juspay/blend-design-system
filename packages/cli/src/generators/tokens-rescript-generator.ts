@@ -33,7 +33,7 @@ export function generateBrandTokensRescriptCode(
  * Blend Token Studio — resolved component tokens (ReScript)
  *
  * Auto-generated. DO NOT EDIT — re-run:
- *   npx blend-token-studio generate <brand.json> --language rescript
+ *   npx blend-studio generate <brand.json> --language rescript
  *
  * Generated: ${timestamp}
  * Brand: ${brandConfig.name} (${brandConfig.brandId})

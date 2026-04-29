@@ -23,13 +23,13 @@ Blend works with any React project:
 
 ```bash
 # In your existing project folder
-npm install @juspay/blend-design-system blend-token-studio
+npm install @juspay/blend-design-system blend-studio
 
 # OR with pnpm
-pnpm add @juspay/blend-design-system blend-token-studio
+pnpm add @juspay/blend-design-system blend-studio
 
 # OR with yarn
-yarn add @juspay/blend-design-system blend-token-studio
+yarn add @juspay/blend-design-system blend-studio
 ```
 
 ### Step 2: Import Styles
@@ -59,7 +59,7 @@ You do **not** need to create this file manually in normal setup.
 Run:
 
 ```bash
-npx blend-token-studio init
+npx blend-studio init
 ```
 
 This automatically creates `blend.config.json` and the `src/blend` folder.
@@ -74,7 +74,7 @@ This automatically creates `blend.config.json` and the `src/blend` folder.
     "output": "src/blend",
     "components": [],
     "studio": {
-        "apiUrl": "https://blend-studio-staging-2oyuucbkoa-uc.a.run.app/studio",
+        "apiUrl": "https://blend-backend-staging-2oyuucbkoa-uc.a.run.app",
         "autoSync": false
     },
     "generate": {
@@ -93,10 +93,10 @@ This automatically creates `blend.config.json` and the `src/blend` folder.
 
 ```bash
 # 1) Create blend config + generated files
-npx blend-token-studio init
+npx blend-studio init
 
 # 2) Apply default Blend brand
-npx blend-token-studio brand --preset blend
+npx blend-studio brand --preset blend
 ```
 
 ### Option B: Add to package.json scripts
@@ -104,11 +104,11 @@ npx blend-token-studio brand --preset blend
 ```json
 {
     "scripts": {
-        "blend:init": "blend-token-studio init",
-        "blend:brand": "blend-token-studio brand --preset blend",
-        "blend:login": "blend-token-studio login",
-        "blend:pull": "blend-token-studio pull",
-        "blend:push": "blend-token-studio push"
+        "blend:init": "blend-studio init",
+        "blend:brand": "blend-studio brand --preset blend",
+        "blend:login": "blend-studio login",
+        "blend:pull": "blend-studio pull",
+        "blend:push": "blend-studio push"
     }
 }
 ```
@@ -195,7 +195,7 @@ This keeps the CLI + Studio workflow identical, with only a thin binding layer i
 ### Login to Studio
 
 ```bash
-npx blend-token-studio login
+npx blend-studio login
 # OR
 npm run blend:login
 ```
@@ -203,7 +203,7 @@ npm run blend:login
 ### When Designer Updates Tokens
 
 ```bash
-npx blend-token-studio pull
+npx blend-studio pull
 # OR
 npm run blend:pull
 ```
@@ -213,7 +213,7 @@ Your app automatically gets new colors/fonts!
 ### Push Your Changes (If you edited tokens)
 
 ```bash
-npx blend-token-studio push
+npx blend-studio push
 # OR
 npm run blend:push
 ```
@@ -222,14 +222,14 @@ npm run blend:push
 
 Use this flow to avoid confusion:
 
-1. Run `npx blend-token-studio init` and `npx blend-token-studio brand --preset blend`
+1. Run `npx blend-studio init` and `npx blend-studio brand --preset blend`
 2. Verify app runs with `BlendProvider` and at least one Blend component
 3. Commit generated files (`blend.config.json` and `src/blend/*`)
 4. Push branch and open PR
-5. After PR is merged, run `blend-token-studio login` once on your machine
+5. After PR is merged, run `blend-studio login` once on your machine
 6. Day-to-day:
-    - Designer changed tokens? run `blend-token-studio pull`
-    - You changed tokens locally? run `blend-token-studio push`
+    - Designer changed tokens? run `blend-studio pull`
+    - You changed tokens locally? run `blend-studio push`
 
 **Tip:** Keep token sync (`pull`/`push`) in small, focused commits so review is easy.
 
@@ -240,7 +240,7 @@ Use this flow to avoid confusion:
 ### Package Install
 
 ```bash
-npm i @juspay/blend-design-system blend-token-studio
+npm i @juspay/blend-design-system blend-studio
 ```
 
 ### Required Imports
@@ -259,22 +259,22 @@ import { ButtonV2, TextInputV2, CardV2 } from '@juspay/blend-design-system'
 
 ### Studio Commands
 
-| Command                        | Action                       |
-| ------------------------------ | ---------------------------- |
-| `npx blend-token-studio init`  | Create config + blend folder |
-| `npx blend-token-studio brand` | Apply default brand          |
-| `npx blend-token-studio login` | Login to Studio              |
-| `npx blend-token-studio pull`  | Get latest designs           |
-| `npx blend-token-studio push`  | Send your designs            |
+| Command                  | Action                       |
+| ------------------------ | ---------------------------- |
+| `npx blend-studio init`  | Create config + blend folder |
+| `npx blend-studio brand` | Apply default brand          |
+| `npx blend-studio login` | Login to Studio              |
+| `npx blend-studio pull`  | Get latest designs           |
+| `npx blend-studio push`  | Send your designs            |
 
 ---
 
 ## 🌐 Studio URLs
 
-| Environment    | URL                                                           | Use When  |
-| -------------- | ------------------------------------------------------------- | --------- |
-| **Staging**    | `https://blend-studio-staging-2oyuucbkoa-uc.a.run.app/studio` | Testing   |
-| **Production** | `https://blend.juspay.design`                                 | Live apps |
+| Environment    | URL                                                     | Use When  |
+| -------------- | ------------------------------------------------------- | --------- |
+| **Staging**    | `https://blend-backend-staging-2oyuucbkoa-uc.a.run.app` | Testing   |
+| **Production** | `https://blend.juspay.design`                           | Live apps |
 
 Update `blend.config.json` → `studio.apiUrl` to switch.
 
@@ -329,7 +329,7 @@ Add to `tsconfig.json`:
 Run init again:
 
 ```bash
-npx blend-token-studio init
+npx blend-studio init
 ```
 
 ---
@@ -338,8 +338,8 @@ npx blend-token-studio init
 
 - [ ] Installed packages (`npm i @juspay/blend-design-system`)
 - [ ] Added CSS import
-- [ ] Ran `npx blend-token-studio init` (creates `blend.config.json`)
-- [ ] Ran `npx blend-token-studio brand`
+- [ ] Ran `npx blend-studio init` (creates `blend.config.json`)
+- [ ] Ran `npx blend-studio brand`
 - [ ] Wrapped app with `<BlendProvider>`
 - [ ] Used a component (`<ButtonV2>`)
 - [ ] Can login to Studio
@@ -354,14 +354,14 @@ npx blend-token-studio init
 cd my-existing-vite-app
 
 # 2. Install
-npm i @juspay/blend-design-system blend-token-studio
+npm i @juspay/blend-design-system blend-studio
 
 # 3. Add CSS import to src/main.tsx
 import '@juspay/blend-design-system/style.css'
 
 # 4. Initialize (creates blend.config.json automatically)
-npx blend-token-studio init
-npx blend-token-studio brand
+npx blend-studio init
+npx blend-studio brand
 
 # 5. Wrap your app with BlendProvider
 
