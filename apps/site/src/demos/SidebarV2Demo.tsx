@@ -1830,10 +1830,9 @@ const SidebarV2Demo = () => {
                             sideOffset={8}
                         />
                     }
-                    showPrimaryActionButton={true}
-                    primaryActionButtonProps={{
+                    showMobilePrimaryActionButton={true}
+                    mobilePrimaryActionButtonProps={{
                         onClick: () => {
-                            console.log('Primary action button clicked!')
                             alert('Primary action button clicked!')
                         },
                         'aria-label': 'Create new item',

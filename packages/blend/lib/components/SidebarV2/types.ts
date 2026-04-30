@@ -47,8 +47,8 @@ export type SidebarV2Props = {
     onExpandedChange?: (isExpanded: boolean) => void
     onSidebarStateChange?: (state: SidebarV2StateChangeType) => void
     defaultIsExpanded?: boolean
-    showPrimaryActionButton?: boolean
-    primaryActionButtonProps?: Omit<
+    showMobilePrimaryActionButton?: boolean
+    mobilePrimaryActionButtonProps?: Omit<
         ButtonHTMLAttributes<HTMLButtonElement>,
         'type'
     >

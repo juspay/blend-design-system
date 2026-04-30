@@ -88,8 +88,8 @@ const SidebarV2MobileNavigation = forwardRef<
         {
             items,
             onHeightChange,
-            showPrimaryActionButton = false,
-            primaryActionButtonProps,
+            showMobilePrimaryActionButton = false,
+            mobilePrimaryActionButtonProps,
         },
         ref
     ) => {
@@ -112,9 +112,18 @@ const SidebarV2MobileNavigation = forwardRef<
                     tokens,
                     PRIMARY_VISIBLE_LIMIT,
                     VIEWPORT_HEIGHT_MULTIPLIER,
-                    { primaryReservedSlots: showPrimaryActionButton ? 1 : 0 }
+                    {
+                        primaryReservedSlots: showMobilePrimaryActionButton
+                            ? 1
+                            : 0,
+                    }
                 ),
-            [orderedItems, showPrimaryActionButton, viewportHeight, tokens]
+            [
+                orderedItems,
+                showMobilePrimaryActionButton,
+                viewportHeight,
+                tokens,
+            ]
         )
 
         const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -145,8 +154,11 @@ const SidebarV2MobileNavigation = forwardRef<
 
         const { leftItems, rightItems } = useMemo(
             () =>
-                splitPrimaryItems(layout.primaryItems, showPrimaryActionButton),
-            [layout.primaryItems, showPrimaryActionButton]
+                splitPrimaryItems(
+                    layout.primaryItems,
+                    showMobilePrimaryActionButton
+                ),
+            [layout.primaryItems, showMobilePrimaryActionButton]
         )
 
         const handleItemSelect = useItemSelection(
@@ -183,7 +195,7 @@ const SidebarV2MobileNavigation = forwardRef<
                 )
             })
 
-            if (showPrimaryActionButton) {
+            if (showMobilePrimaryActionButton) {
                 elements.push(
                     <Block
                         key="sidebar-v2-mobile-primary-action-wrapper"
@@ -193,7 +205,7 @@ const SidebarV2MobileNavigation = forwardRef<
                     >
                         <PrimaryActionButton
                             tokens={tokens}
-                            buttonProps={primaryActionButtonProps}
+                            buttonProps={mobilePrimaryActionButtonProps}
                         />
                     </Block>
                 )
@@ -230,11 +242,11 @@ const SidebarV2MobileNavigation = forwardRef<
         }, [
             leftItems,
             rightItems,
-            showPrimaryActionButton,
+            showMobilePrimaryActionButton,
             layout.hasSecondaryItems,
             primaryActionMargin,
             tokens,
-            primaryActionButtonProps,
+            mobilePrimaryActionButtonProps,
             handleItemSelect,
             toggleExpansion,
             isExpanded,

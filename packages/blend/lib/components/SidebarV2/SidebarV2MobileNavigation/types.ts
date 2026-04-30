@@ -9,8 +9,8 @@ export type SidebarV2MobileNavigationItem = NavbarItem & {
 export type SidebarV2MobileNavigationProps = {
     items: SidebarV2MobileNavigationItem[]
     onHeightChange?: (height: string) => void
-    showPrimaryActionButton?: boolean
-    primaryActionButtonProps?: Omit<
+    showMobilePrimaryActionButton?: boolean
+    mobilePrimaryActionButtonProps?: Omit<
         ButtonHTMLAttributes<HTMLButtonElement>,
         'type'
     >
