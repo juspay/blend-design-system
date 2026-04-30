@@ -1,6 +1,6 @@
 {
     "name": "blend-studio",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "CLI for Blend Token Studio — scaffold, brand, and sync design tokens",
     "type": "module",
     "bin": {
