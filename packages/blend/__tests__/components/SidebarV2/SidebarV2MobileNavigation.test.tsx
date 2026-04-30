@@ -96,8 +96,8 @@ describe('SidebarV2MobileNavigation', () => {
         render(
             <SidebarV2MobileNavigation
                 items={items}
-                showPrimaryActionButton
-                primaryActionButtonProps={{
+                showMobilePrimaryActionButton
+                mobilePrimaryActionButtonProps={{
                     'aria-label': 'Compose',
                     onClick: vi.fn(),
                 }}

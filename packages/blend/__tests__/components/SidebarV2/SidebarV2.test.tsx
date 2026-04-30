@@ -295,7 +295,7 @@ describe('SidebarV2', () => {
         expect(sidebar).toBeInTheDocument()
     })
 
-    it('handles merchant info', () => {
+    it('handles merchant info in sidebar and topbar', () => {
         const merchantInfo = {
             items: [
                 { label: 'Merchant 1', value: 'm1', icon: <span>M1</span> },
@@ -314,7 +314,10 @@ describe('SidebarV2', () => {
             </SidebarV2>
         )
 
-        expect(screen.getByText('Merchant 1')).toBeInTheDocument()
+        expect(screen.getAllByText('Merchant 1').length).toBeGreaterThan(0)
+        expect(
+            screen.getByRole('button', { name: /select merchant/i })
+        ).toBeInTheDocument()
     })
 
     it('accepts right actions prop without errors', () => {
@@ -375,6 +378,25 @@ describe('SidebarV2 Mobile Navigation', () => {
         expect(screen.getByRole('button', { name: 'Home' })).toBeInTheDocument()
         expect(
             screen.getByRole('button', { name: 'Preferences' })
+        ).toBeInTheDocument()
+    })
+
+    it('renders mobile primary action using v2 mobile-only props', () => {
+        render(
+            <SidebarV2
+                data={createMockDirectoryData()}
+                showMobilePrimaryActionButton
+                mobilePrimaryActionButtonProps={{
+                    'aria-label': 'Compose',
+                    onClick: vi.fn(),
+                }}
+            >
+                <div>Content</div>
+            </SidebarV2>
+        )
+
+        expect(
+            screen.getByRole('button', { name: 'Compose' })
         ).toBeInTheDocument()
     })
 })
