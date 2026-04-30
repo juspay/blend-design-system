@@ -89,8 +89,8 @@ export function formatBranchDisplayLines(
             ? ` v${branch.latestVersion}`
             : ''
 
-        // Human-first: show `name (id)` so users don't have to mentally map slugs.
-        lines.push(`  ${branch.name} (${branch.brandId})`)
+        lines.push(`  ${branch.name}`)
+        lines.push(`  ID: ${branch.brandId}`)
         lines.push(`  ${statusBadge}${versionBadge}`)
         lines.push(`  Updated: ${formatDateRelative(branch.updatedAt, now)}`)
         lines.push('')
@@ -163,7 +163,8 @@ export async function listCommand(options: ListOptions = {}): Promise<void> {
         return
     }
 
-    const { branches, total, hasMore } = response.data
+    const { branches, hasMore } = response.data
+    const total = response.data.total ?? branches.length
 
     if (spinner) {
         spinner.succeed(`Found ${total} branch${total !== 1 ? 'es' : ''}`)

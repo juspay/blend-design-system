@@ -37,9 +37,10 @@ describe('list formatting', () => {
             now,
         })
 
-        expect(lines[0]).toBe('  Blend Default (juspay/default)')
-        expect(lines[1]).toBe('  [published] v1.2.3')
-        expect(lines[2]).toBe('  Updated: yesterday')
-        expect(lines[3]).toBe('')
+        expect(lines[0]).toBe('  Blend Default')
+        expect(lines[1]).toBe('  ID: juspay/default')
+        expect(lines[2]).toBe('  [published] v1.2.3')
+        expect(lines[3]).toBe('  Updated: yesterday')
+        expect(lines[4]).toBe('')
     })
 })

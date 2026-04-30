@@ -1,6 +1,6 @@
 {
     "$schema": "https://studio.blend.juspay.design/schemas/blend-config.json",
-    "brand": "blend/default",
+    "brand": "d501624e-d432-4824-8cf2-64de6a283ae3",
     "theme": "light",
     "output": "src/blend",
     "components": [],

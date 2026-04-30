@@ -1,5 +1,29 @@
 {
-    "brandId": "blend/default",
-    "name": "Blend Default",
-    "version": "1.0.0"
+    "font": {},
+    "name": "test",
+    "colors": {
+        "primary": {
+            "50": "#EFF5FB",
+            "100": "#DEEAF7",
+            "200": "#BCD5F1",
+            "300": "#85B6EA",
+            "400": "#4191E7",
+            "500": "#1068C6",
+            "600": "#0954A4",
+            "700": "#073B74",
+            "800": "#04284D",
+            "900": "#021426",
+            "950": "#010C18"
+        }
+    },
+    "radius": {
+        "6": "6px",
+        "8": "8px",
+        "10": "10px",
+        "12": "12px"
+    },
+    "brandId": "test",
+    "shadows": {},
+    "version": "1.0.0",
+    "componentOverrides": {}
 }
