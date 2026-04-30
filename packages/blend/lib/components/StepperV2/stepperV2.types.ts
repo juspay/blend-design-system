@@ -1,6 +1,7 @@
 import { HTMLAttributes, ReactNode } from 'react'
 
 export enum StepperV2StepStatus {
+    DEFAULT = 'default',
     COMPLETED = 'completed',
     CURRENT = 'current',
     PENDING = 'pending',

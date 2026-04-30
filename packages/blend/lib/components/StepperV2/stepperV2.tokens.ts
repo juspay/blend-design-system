@@ -67,32 +67,7 @@ export type StepperV2TokensType = {
                 width: CSSObject['width']
             }
             text: {
-                default: {
-                    color: CSSObject['color']
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-                disabled: {
-                    color: CSSObject['color']
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-                completed: {
-                    color: CSSObject['color']
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-                current: {
-                    color: CSSObject['color']
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-                pending: {
-                    color: CSSObject['color']
-                    fontSize: CSSObject['fontSize']
-                    fontWeight: CSSObject['fontWeight']
-                }
-                skipped: {
+                [key in StepperV2StepStatus]: {
                     color: CSSObject['color']
                     fontSize: CSSObject['fontSize']
                     fontWeight: CSSObject['fontWeight']

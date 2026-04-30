@@ -23,6 +23,56 @@ export const getStepperV2DarkTokens = (
                 gap: 8,
                 step: {
                     circle: {
+                        default: {
+                            default: {
+                                backgroundColor:
+                                    foundationToken.colors.gray[700],
+                                borderColor: foundationToken.colors.gray[500],
+                                borderWidth: '1px',
+                                borderRadius: '50%',
+                                size: '28px',
+                                transition: 'all 0.2s ease-in-out',
+                                outline: 'none',
+                                outlineOffset: '0px',
+                                ...circlePadding,
+                            },
+                            hover: {
+                                backgroundColor:
+                                    foundationToken.colors.gray[700],
+                                borderColor: foundationToken.colors.gray[500],
+                                borderWidth: '1px',
+                                borderRadius: '50%',
+                                size: '28px',
+                                transition: 'all 0.2s ease-in-out',
+                                outline: 'none',
+                                outlineOffset: '0px',
+                                ...circlePadding,
+                            },
+                            focus: {
+                                backgroundColor:
+                                    foundationToken.colors.gray[700],
+                                borderColor: foundationToken.colors.gray[500],
+                                borderWidth: '1px',
+                                borderRadius: '50%',
+                                size: '28px',
+                                transition: 'all 0.2s ease-in-out',
+                                outline: `2px solid ${foundationToken.colors.primary[400]}`,
+                                outlineOffset: '2px',
+                                ...circlePadding,
+                            },
+                            disabled: {
+                                backgroundColor:
+                                    foundationToken.colors.gray[700],
+                                borderColor: foundationToken.colors.gray[500],
+                                borderWidth: '1px',
+                                borderRadius: '50%',
+                                size: '28px',
+                                transition: 'all 0.2s ease-in-out',
+                                outline: 'none',
+                                outlineOffset: '0px',
+                                ...circlePadding,
+                            },
+                        },
                         completed: {
                             default: {
                                 backgroundColor:
@@ -275,6 +325,16 @@ export const getStepperV2DarkTokens = (
                         },
                     },
                     icon: {
+                        default: {
+                            default: {
+                                color: foundationToken.colors.gray[200],
+                            },
+                            hover: { color: foundationToken.colors.gray[200] },
+                            focus: { color: foundationToken.colors.gray[200] },
+                            disabled: {
+                                color: foundationToken.colors.gray[200],
+                            },
+                        },
                         completed: {
                             default: {
                                 color: foundationToken.colors.gray[200],
@@ -389,6 +449,48 @@ export const getStepperV2DarkTokens = (
                 },
                 title: {
                     text: {
+                        default: {
+                            default: {
+                                color: foundationToken.colors.gray[100],
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
+                            },
+                            hover: {
+                                color: foundationToken.colors.gray[100],
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
+                            },
+                            focus: {
+                                color: foundationToken.colors.gray[100],
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
+                            },
+                            disabled: {
+                                color: foundationToken.colors.gray[100],
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                gap: 5,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
+                            },
+                        },
                         completed: {
                             default: {
                                 color: foundationToken.colors.gray[100],
@@ -615,6 +717,56 @@ export const getStepperV2DarkTokens = (
                 gap: 6,
                 step: {
                     circle: {
+                        default: {
+                            default: {
+                                backgroundColor:
+                                    foundationToken.colors.gray[700],
+                                borderColor: foundationToken.colors.gray[500],
+                                borderWidth: '1px',
+                                borderRadius: '50%',
+                                size: '28px',
+                                transition: 'all 0.2s ease-in-out',
+                                outline: 'none',
+                                outlineOffset: '0px',
+                                ...circlePadding,
+                            },
+                            hover: {
+                                backgroundColor:
+                                    foundationToken.colors.gray[700],
+                                borderColor: foundationToken.colors.gray[500],
+                                borderWidth: '1px',
+                                borderRadius: '50%',
+                                size: '28px',
+                                transition: 'all 0.2s ease-in-out',
+                                outline: 'none',
+                                outlineOffset: '0px',
+                                ...circlePadding,
+                            },
+                            focus: {
+                                backgroundColor:
+                                    foundationToken.colors.gray[700],
+                                borderColor: foundationToken.colors.gray[500],
+                                borderWidth: '1px',
+                                borderRadius: '50%',
+                                size: '28px',
+                                transition: 'all 0.2s ease-in-out',
+                                outline: `2px solid ${foundationToken.colors.primary[400]}`,
+                                outlineOffset: '2px',
+                                ...circlePadding,
+                            },
+                            disabled: {
+                                backgroundColor:
+                                    foundationToken.colors.gray[700],
+                                borderColor: foundationToken.colors.gray[500],
+                                borderWidth: '1px',
+                                borderRadius: '50%',
+                                size: '28px',
+                                transition: 'all 0.2s ease-in-out',
+                                outline: 'none',
+                                outlineOffset: '0px',
+                                ...circlePadding,
+                            },
+                        },
                         completed: {
                             default: {
                                 backgroundColor:
@@ -867,6 +1019,16 @@ export const getStepperV2DarkTokens = (
                         },
                     },
                     icon: {
+                        default: {
+                            default: {
+                                color: foundationToken.colors.gray[200],
+                            },
+                            hover: { color: foundationToken.colors.gray[200] },
+                            focus: { color: foundationToken.colors.gray[200] },
+                            disabled: {
+                                color: foundationToken.colors.gray[200],
+                            },
+                        },
                         completed: {
                             default: {
                                 color: foundationToken.colors.gray[200],
@@ -981,6 +1143,48 @@ export const getStepperV2DarkTokens = (
                 },
                 title: {
                     text: {
+                        default: {
+                            default: {
+                                color: foundationToken.colors.gray[100],
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
+                            },
+                            hover: {
+                                color: foundationToken.colors.gray[100],
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
+                            },
+                            focus: {
+                                color: foundationToken.colors.gray[100],
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
+                            },
+                            disabled: {
+                                color: foundationToken.colors.gray[100],
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                gap: 8,
+                                paddingTop: '8px',
+                                paddingRight: '8px',
+                                paddingBottom: '8px',
+                                paddingLeft: '8px',
+                            },
+                        },
                         completed: {
                             default: {
                                 color: foundationToken.colors.gray[100],
