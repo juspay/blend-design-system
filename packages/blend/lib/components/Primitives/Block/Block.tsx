@@ -427,6 +427,7 @@ type SemanticTagType = keyof Pick<
     | 'nav'
     | 'hr'
     | 'label'
+    | 'button'
 >
 
 export type BlockProps = StyledBlockProps &
