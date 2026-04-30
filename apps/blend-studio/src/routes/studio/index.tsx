@@ -337,6 +337,22 @@ function StudioPage() {
                             </div>
 
                             <div className="flex items-center gap-3">
+                                <Link
+                                    to="/studio/cli-help"
+                                    search={{ branchId: undefined }}
+                                    className="inline-block"
+                                >
+                                    <ButtonV2
+                                        buttonType={ButtonV2Type.SECONDARY}
+                                        size={ButtonV2Size.SMALL}
+                                        leftSlot={{
+                                            slot: (
+                                                <TerminalIcon className="w-4 h-4" />
+                                            ),
+                                        }}
+                                        text="CLI Help"
+                                    />
+                                </Link>
                                 <ButtonV2
                                     buttonType={ButtonV2Type.SECONDARY}
                                     size={ButtonV2Size.SMALL}
@@ -1377,6 +1393,15 @@ const BranchCard = memo(function BranchCard({
                     </div>
 
                     <div className="flex items-center gap-2">
+                        <Link
+                            to="/studio/cli-help"
+                            search={{ branchId: branch.id }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                            title="How to use this branch in CLI"
+                        >
+                            <TerminalIcon className="w-3.5 h-3.5" />
+                        </Link>
                         <Link
                             to="/studio/preview/$branchId"
                             params={{ branchId: branch.id }}
