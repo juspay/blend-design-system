@@ -637,10 +637,36 @@ const TableBody = forwardRef<
                 skeletonVariant: variant,
             }
         }
-        const tbodyKey =
-            currentData.length > 0
-                ? `tbody-${currentData.length}-${String(currentData[0][idField])}-${String(currentData[currentData.length - 1][idField])}`
-                : 'tbody-empty'
+        // Compute a stable hash of the current data for React key
+        // This ensures proper remounting when data changes (search, filter, sort, pagination)
+        // Hash includes: data length + first ID + last ID + combined hash of all IDs
+        const computeDataHash = (): string => {
+            const len = currentData.length
+            if (len === 0) return 'empty'
+
+            // Get first and last IDs for quick comparison
+            const firstId = String(currentData[0][idField])
+            const lastId = String(currentData[len - 1][idField])
+
+            // Create a simple hash of all IDs for uniqueness
+            let hash = 0
+            for (let i = 0; i < len; i++) {
+                const id = String(currentData[i][idField])
+                for (let j = 0; j < id.length; j++) {
+                    hash = (hash << 5) - hash + id.charCodeAt(j)
+                    hash = hash & hash // Convert to 32-bit integer
+                }
+            }
+
+            // Convert negative hash to positive hex string
+            const hashHex = (hash >>> 0).toString(16)
+
+            return `${len}-${firstId}-${lastId}-${hashHex}`
+        }
+
+        const tbodyKey = useMemo(() => {
+            return `tbody-${computeDataHash()}`
+        }, [currentData, idField])
 
         return (
             <motion.tbody
