@@ -117,7 +117,7 @@ const DataTable = forwardRef(
             enableInlineEdit = false,
             enableRowExpansion = false,
             enableRowSelection = false,
-            isRowSelectable,
+            rowSelectionConfig,
             showBulkActionBar = true,
             onRowSelectionChange,
             renderExpandedRow,
@@ -710,8 +710,8 @@ const DataTable = forwardRef(
             if (newSelectAll) {
                 currentData.forEach((row, index) => {
                     const rowId = String(row[idField])
-                    // Only select rows that are selectable
-                    if (isRowSelectableFn(row, index)) {
+                    // Only select rows that are not disabled
+                    if (!(isRowDisabledFn && isRowDisabledFn(row, index))) {
                         newSelectedRows[rowId] = true
                     }
                 })
@@ -752,14 +752,14 @@ const DataTable = forwardRef(
             }
         }
 
-        const isRowSelectableFn = isRowSelectable || (() => true)
+        const isRowDisabledFn = rowSelectionConfig?.isDisabled
 
         const handleRowSelect = (rowId: unknown, rowIndex: number) => {
             const rowIdStr = String(rowId)
 
             const row = currentData.find((r) => String(r[idField]) === rowIdStr)
 
-            if (!row || !isRowSelectableFn(row, rowIndex)) {
+            if (!row || (isRowDisabledFn && isRowDisabledFn(row, rowIndex))) {
                 return
             }
 
@@ -1681,15 +1681,24 @@ const DataTable = forwardRef(
                                                 enableRowSelection={
                                                     enableRowSelection
                                                 }
-                                                isRowSelectable={
-                                                    isRowSelectable as
-                                                        | ((
-                                                              row: Record<
-                                                                  string,
-                                                                  unknown
-                                                              >,
-                                                              index: number
-                                                          ) => boolean)
+                                                rowSelectionConfig={
+                                                    rowSelectionConfig as
+                                                        | {
+                                                              isDisabled?: (
+                                                                  row: Record<
+                                                                      string,
+                                                                      unknown
+                                                                  >,
+                                                                  index: number
+                                                              ) => boolean
+                                                              disabledText?: (
+                                                                  row: Record<
+                                                                      string,
+                                                                      unknown
+                                                                  >,
+                                                                  index: number
+                                                              ) => string
+                                                          }
                                                         | undefined
                                                 }
                                                 columnFreeze={

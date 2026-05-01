@@ -1055,14 +1055,15 @@ function CompactTable() {
         ],
         [
             {
-                content: 'isRowSelectable',
+                content: 'rowSelectionConfig',
                 hintText:
-                    'Optional function that determines whether a specific row can be selected. Receives the row data and index, returns a boolean. When the function returns false for a row, its checkbox is disabled and users cannot select that row. The "Select All" functionality only selects rows where this function returns true. Useful for preventing selection of disabled, inactive, or restricted rows. If not provided, all rows are selectable.',
+                    'Optional configuration object for customizing row selection behavior. Contains isDisabled function to control which rows cannot be selected, and disabledText function to provide tooltip text when hovering over disabled checkboxes. When isDisabled returns true for a row, its checkbox is disabled, click events are ignored, and it is excluded from "Select All" functionality. The disabledText function receives the same row and index parameters and should return the tooltip message to display.',
             },
             {
-                content: '(row: T, index: number) => boolean',
+                content:
+                    '{ isDisabled?: (row: T, index: number) => boolean; disabledText?: (row: T, index: number) => string }',
                 hintText:
-                    'Function that returns true if row can be selected, false otherwise',
+                    'Configuration object with isDisabled and disabledText functions',
             },
             { content: '' },
         ],

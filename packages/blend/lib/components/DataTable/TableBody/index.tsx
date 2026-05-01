@@ -27,8 +27,10 @@ import {
     Checkbox,
     CheckboxSize,
     TableTokenType,
+    Tooltip,
 } from '../../../main'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip/types'
 
 const TableRow = styled.tr<{
     $isClickable?: boolean
@@ -546,7 +548,7 @@ const TableBody = forwardRef<
             enableColumnManager = true,
             enableRowExpansion = false,
             enableRowSelection = true,
-            isRowSelectable,
+            rowSelectionConfig,
             rowActions,
             columnFreeze = 0,
             columnFreezeRight = 0,
@@ -915,29 +917,84 @@ const TableBody = forwardRef<
                                                       e.stopPropagation()
                                                   }
                                               >
-                                                  <Checkbox
-                                                      checked={
-                                                          !!selectedRows[rowId]
-                                                      }
-                                                      onCheckedChange={() =>
-                                                          onRowSelect(
-                                                              row[idField],
-                                                              index
-                                                          )
-                                                      }
-                                                      size={CheckboxSize.MEDIUM}
-                                                      disabled={
-                                                          isEditing ||
-                                                          rowShouldShowSkeleton ||
-                                                          (isRowSelectable
-                                                              ? !isRowSelectable(
+                                                  {(() => {
+                                                      const isDisabledByConfig =
+                                                          rowSelectionConfig?.isDisabled
+                                                              ? rowSelectionConfig.isDisabled(
                                                                     row,
                                                                     index
                                                                 )
-                                                              : false)
-                                                      }
-                                                      aria-label={`Select row ${index + 1}${tableTitle ? ` in ${tableTitle}` : ''}`}
-                                                  />
+                                                              : false
+
+                                                      const isRowDisabled =
+                                                          isEditing ||
+                                                          rowShouldShowSkeleton ||
+                                                          isDisabledByConfig
+
+                                                      const tooltipText =
+                                                          isRowDisabled &&
+                                                          rowSelectionConfig?.disabledText
+                                                              ? rowSelectionConfig.disabledText(
+                                                                    row,
+                                                                    index
+                                                                )
+                                                              : null
+
+                                                      const checkboxElement = (
+                                                          <Checkbox
+                                                              checked={
+                                                                  !!selectedRows[
+                                                                      rowId
+                                                                  ]
+                                                              }
+                                                              onCheckedChange={() =>
+                                                                  onRowSelect(
+                                                                      row[
+                                                                          idField
+                                                                      ],
+                                                                      index
+                                                                  )
+                                                              }
+                                                              size={
+                                                                  CheckboxSize.MEDIUM
+                                                              }
+                                                              disabled={
+                                                                  isRowDisabled
+                                                              }
+                                                              aria-label={`Select row ${index + 1}${tableTitle ? ` in ${tableTitle}` : ''}`}
+                                                          />
+                                                      )
+
+                                                      return tooltipText ? (
+                                                          <Tooltip
+                                                              content={
+                                                                  tooltipText
+                                                              }
+                                                              side={
+                                                                  TooltipSide.TOP
+                                                              }
+                                                              align={
+                                                                  TooltipAlign.CENTER
+                                                              }
+                                                              size={
+                                                                  TooltipSize.SMALL
+                                                              }
+                                                          >
+                                                              <div
+                                                                  style={{
+                                                                      display:
+                                                                          'inline-block',
+                                                                  }}
+                                                              >
+                                                                  {
+                                                                      checkboxElement
+                                                                  }
+                                                              </div>
+                                                          </Tooltip>
+                                                      ) : (
+                                                          checkboxElement
+                                                      )
+                                                  })()}
                                               </Block>
                                           </StyledTableCell>
                                       )}

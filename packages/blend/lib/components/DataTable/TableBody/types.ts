@@ -15,7 +15,10 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     enableColumnManager?: boolean
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
-    isRowSelectable?: (row: T, index: number) => boolean
+    rowSelectionConfig?: {
+        isDisabled?: (row: T, index: number) => boolean
+        disabledText?: (row: T, index: number) => string
+    }
     rowActions?: RowActionsConfig<T>
     columnFreeze?: number
     /** Freeze last N columns on the right side (sticky right). */
