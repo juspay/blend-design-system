@@ -182,10 +182,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const toggleSidebar = useCallback(() => {
             const newValue = !isExpanded
 
+            // Immediately reset hover state for smoother closing
+            setIsHovering(false)
+
             if (!isControlled) {
                 setInternalExpanded(newValue)
             }
-            setIsHovering(false)
 
             onExpandedChange?.(newValue)
         }, [isExpanded, isControlled, onExpandedChange])
@@ -418,7 +420,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
                                                 : 'none'
                                         }
-                                        transition="width 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)"
+                                        transition="width 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                                         pointerEvents={
                                             isHovering ? 'auto' : 'none'
                                         }
@@ -428,6 +430,10 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                         style={{
                                             willChange: 'width, box-shadow',
                                             transform: 'translateZ(0)',
+                                            // Delay on close to prevent abrupt disappearance
+                                            transitionDelay: isHovering
+                                                ? '0ms'
+                                                : '50ms',
                                         }}
                                     >
                                         {shouldRenderIntermediateLeftPanel && (

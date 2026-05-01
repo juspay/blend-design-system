@@ -74,12 +74,19 @@ const IconWrapper = styled.div<{ $tokens: DirectoryTokenType }>`
     flex-shrink: 0;
     width: ${({ $tokens }) => $tokens.section.itemList.item.icon.width};
     height: ${({ $tokens }) => $tokens.section.itemList.item.icon.width};
+    /* Smooth icon transitions during sidebar expand/collapse */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    transform: translateZ(0);
 
     & > svg {
         width: ${({ $tokens }) =>
             $tokens.section.itemList.item.icon.width} !important;
         height: ${({ $tokens }) =>
             $tokens.section.itemList.item.icon.width} !important;
+        /* Prevent icon flickering during transitions */
+        backface-visibility: hidden;
+        transform: translateZ(0);
     }
 `
 

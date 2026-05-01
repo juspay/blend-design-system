@@ -118,23 +118,23 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                 />
             )}
 
-            <Block
-                flexGrow={iconOnlyMode ? 0 : 1}
-                width={iconOnlyMode ? 0 : undefined}
-                minWidth={0}
-                overflow="hidden"
-                opacity={iconOnlyMode ? 0 : selectVisible ? 1 : 0}
-                pointerEvents={iconOnlyMode ? 'none' : 'auto'}
-                transition="opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), flex-grow 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
-                style={{
-                    willChange: 'opacity, flex-grow, width',
-                    transform: 'translateZ(0)',
-                    backfaceVisibility: 'hidden',
-                    visibility: iconOnlyMode ? 'hidden' : 'visible',
-                }}
-            >
-                {headerSlot}
-            </Block>
+            {!iconOnlyMode && (
+                <Block
+                    flexGrow={1}
+                    minWidth={0}
+                    overflow="hidden"
+                    opacity={selectVisible ? 1 : 0}
+                    pointerEvents="auto"
+                    transition="opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
+                    style={{
+                        willChange: 'opacity',
+                        transform: 'translateZ(0)',
+                        backfaceVisibility: 'hidden',
+                    }}
+                >
+                    {headerSlot}
+                </Block>
+            )}
 
             {!hideToggleButton && (
                 <Tooltip
