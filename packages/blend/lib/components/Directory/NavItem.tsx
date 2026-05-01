@@ -4,6 +4,8 @@ import React, {
     useState,
     useMemo,
     useCallback,
+    useRef,
+    useLayoutEffect,
 } from 'react'
 import type { NavItemProps } from './types'
 import { ChevronDown } from 'lucide-react'
@@ -14,6 +16,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import { handleKeyDown } from './utils'
 import { Tooltip, TooltipSide } from '../Tooltip'
+import { useSectionScroll } from '../../hooks/useSectionScroll'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
@@ -219,6 +222,7 @@ const NavItem = ({
               (activeItem === itemPath || activeItem === item.label)
 
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
+    const nestedListRef = useRef<HTMLUListElement>(null)
 
     const refCallback = React.useCallback(
         (node: HTMLButtonElement | HTMLAnchorElement | null) => {
@@ -226,6 +230,20 @@ const NavItem = ({
         },
         []
     )
+
+    const { scrollIntoView } = useSectionScroll()
+    const previousIsExpanded = useRef(isExpanded)
+
+    // Auto-scroll expanded nested menu items into view
+    useLayoutEffect(() => {
+        const wasCollapsed = !previousIsExpanded.current
+        const isExpanding = isExpanded && wasCollapsed
+        previousIsExpanded.current = isExpanded
+
+        if (isExpanding && nestedListRef.current && !iconOnlyMode) {
+            scrollIntoView(nestedListRef.current)
+        }
+    }, [isExpanded, iconOnlyMode, scrollIntoView])
 
     const activateItem = () => {
         if (hasChildren && !iconOnlyMode) {
@@ -429,6 +447,7 @@ const NavItem = ({
 
             {hasChildren && isExpanded && !iconOnlyMode && (
                 <NestedList
+                    ref={nestedListRef}
                     as="ul"
                     $tokens={tokens}
                     role="list"
