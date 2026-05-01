@@ -418,13 +418,17 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
                                                 : 'none'
                                         }
-                                        transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
+                                        transition="width 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1)"
                                         pointerEvents={
                                             isHovering ? 'auto' : 'none'
                                         }
                                         onMouseLeave={() =>
                                             setIsHovering(false)
                                         }
+                                        style={{
+                                            willChange: 'width, box-shadow',
+                                            transform: 'translateZ(0)',
+                                        }}
                                     >
                                         {shouldRenderIntermediateLeftPanel && (
                                             <TenantPanel

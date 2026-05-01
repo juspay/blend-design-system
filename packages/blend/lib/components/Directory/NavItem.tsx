@@ -350,19 +350,31 @@ const NavItem = ({
                             )}
                         </IconWrapper>
                     )}
-                    <Text
-                        as="span"
-                        variant="body.md"
-                        fontWeight={tokens.section.itemList.item.fontWeight}
-                        fontSize={tokens.section.itemList.item.fontSize}
-                        color={
-                            isActive
-                                ? tokens.section.itemList.item.color.active
-                                : tokens.section.itemList.item.color.default
-                        }
+                    <Block
+                        flexGrow={1}
+                        minWidth={0}
+                        overflow="hidden"
+                        style={{
+                            textRendering: 'optimizeLegibility',
+                            WebkitFontSmoothing: 'antialiased',
+                            MozOsxFontSmoothing: 'grayscale',
+                        }}
                     >
-                        {item.label}
-                    </Text>
+                        <Text
+                            as="span"
+                            variant="body.md"
+                            fontWeight={tokens.section.itemList.item.fontWeight}
+                            fontSize={tokens.section.itemList.item.fontSize}
+                            color={
+                                isActive
+                                    ? tokens.section.itemList.item.color.active
+                                    : tokens.section.itemList.item.color.default
+                            }
+                            truncate
+                        >
+                            {item.label}
+                        </Text>
+                    </Block>
                     {item.rightSlot && React.isValidElement(item.rightSlot) && (
                         <Block aria-hidden="true">{item.rightSlot}</Block>
                     )}
