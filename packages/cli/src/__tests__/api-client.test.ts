@@ -4,8 +4,14 @@
 import { mkdtempSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { beforeEach, afterEach, describe, it, expect } from 'vitest'
-import { ApiClient } from '../utils/api-client'
+import { beforeEach, afterEach, describe, it, expect, vi } from 'vitest'
+
+async function createApiClient(apiUrl?: string) {
+    // Re-evaluate module constants (AUTH_FILE based on homedir) after HOME changes.
+    vi.resetModules()
+    const mod = await import('../utils/api-client')
+    return new mod.ApiClient(apiUrl)
+}
 
 describe('ApiClient', () => {
     const originalHome = process.env.HOME
@@ -26,28 +32,28 @@ describe('ApiClient', () => {
         rmSync(tempHome, { recursive: true, force: true })
     })
 
-    it('creates instance with default API URL', () => {
-        const client = new ApiClient()
+    it('creates instance with default API URL', async () => {
+        const client = await createApiClient()
         expect(client).toBeTruthy()
     })
 
-    it('creates instance with custom API URL', () => {
-        const client = new ApiClient('https://custom.api.com')
+    it('creates instance with custom API URL', async () => {
+        const client = await createApiClient('https://custom.api.com')
         expect(client).toBeTruthy()
     })
 
-    it('is not authenticated by default (no auth file)', () => {
-        const client = new ApiClient('https://test.example.com')
+    it('is not authenticated by default (no auth file)', async () => {
+        const client = await createApiClient('https://test.example.com')
         expect(client.isAuthenticated()).toBe(false)
     })
 
-    it('getAuthEmail returns null when not authenticated', () => {
-        const client = new ApiClient('https://test.example.com')
+    it('getAuthEmail returns null when not authenticated', async () => {
+        const client = await createApiClient('https://test.example.com')
         expect(client.getAuthEmail()).toBeNull()
     })
 
-    it('clearAuth does not throw when no auth exists', () => {
-        const client = new ApiClient('https://test.example.com')
+    it('clearAuth does not throw when no auth exists', async () => {
+        const client = await createApiClient('https://test.example.com')
         expect(() => client.clearAuth()).not.toThrow()
     })
 })

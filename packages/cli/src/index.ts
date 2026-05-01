@@ -25,6 +25,7 @@
  */
 
 import { Command, Option } from 'commander'
+import { normalizeArgvForPullVersion } from './utils/normalize-pull-argv'
 
 const program = new Command()
 
@@ -69,7 +70,7 @@ program
 program
     .command('pull <branchId>')
     .description('Pull a brand config from Blend Token Studio')
-    .option('-v, --version <version>', 'Specific version to pull')
+    .option('--branch-version <version>', 'Specific published branch version')
     .option('-t, --theme <theme>', 'Theme to resolve (light or dark)', 'light')
     .option('-o, --output <dir>', 'Output directory')
     .option(
@@ -85,7 +86,11 @@ program
     .option('--format <format>', 'Output format (pretty, json)', 'pretty')
     .action(async (branchId, options) => {
         const { pullCommand } = await import('./commands/pull')
-        await pullCommand(branchId, options)
+        await pullCommand(branchId, {
+            ...options,
+            // Back-compat: if legacy --version was rewritten, map it.
+            version: options.branchVersion ?? options.version,
+        })
     })
 
 program
@@ -224,4 +229,4 @@ process.on('unhandledRejection', (reason) => {
     process.exit(1)
 })
 
-program.parse()
+program.parse(normalizeArgvForPullVersion(process.argv))

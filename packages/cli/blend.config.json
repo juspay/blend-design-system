@@ -1,11 +1,10 @@
 {
-    "$schema": "https://studio.blend.juspay.design/schemas/blend-config.json",
-    "brand": "blend/default",
+    "$schema": "https://blend-backend-staging-2oyuucbkoa-uc.a.run.app/schemas/blend-config.json",
+    "brand": "test/branch",
     "theme": "light",
     "output": "src/blend",
     "components": [],
     "studio": {
-        "$comment": "Testing uses staging for now. Switch this to production URL when prod rollout is complete.",
         "apiUrl": "https://blend-backend-staging-2oyuucbkoa-uc.a.run.app",
         "autoSync": false
     },
