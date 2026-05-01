@@ -117,6 +117,7 @@ const DataTable = forwardRef(
             enableInlineEdit = false,
             enableRowExpansion = false,
             enableRowSelection = false,
+            isRowSelectable,
             showBulkActionBar = true,
             onRowSelectionChange,
             renderExpandedRow,
@@ -707,9 +708,12 @@ const DataTable = forwardRef(
             const newSelectedRows = { ...selectedRows }
 
             if (newSelectAll) {
-                currentData.forEach((row) => {
+                currentData.forEach((row, index) => {
                     const rowId = String(row[idField])
-                    newSelectedRows[rowId] = true
+                    // Only select rows that are selectable
+                    if (isRowSelectableFn(row, index)) {
+                        newSelectedRows[rowId] = true
+                    }
                 })
             } else {
                 currentData.forEach((row) => {
@@ -748,8 +752,17 @@ const DataTable = forwardRef(
             }
         }
 
-        const handleRowSelect = (rowId: unknown) => {
+        const isRowSelectableFn = isRowSelectable || (() => true)
+
+        const handleRowSelect = (rowId: unknown, rowIndex: number) => {
             const rowIdStr = String(rowId)
+
+            const row = currentData.find((r) => String(r[idField]) === rowIdStr)
+
+            if (!row || !isRowSelectableFn(row, rowIndex)) {
+                return
+            }
+
             const isSelected = !selectedRows[rowIdStr]
 
             const newSelectedRows = {
@@ -1667,6 +1680,17 @@ const DataTable = forwardRef(
                                                 }
                                                 enableRowSelection={
                                                     enableRowSelection
+                                                }
+                                                isRowSelectable={
+                                                    isRowSelectable as
+                                                        | ((
+                                                              row: Record<
+                                                                  string,
+                                                                  unknown
+                                                              >,
+                                                              index: number
+                                                          ) => boolean)
+                                                        | undefined
                                                 }
                                                 columnFreeze={
                                                     effectiveColumnFreeze

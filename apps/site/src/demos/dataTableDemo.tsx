@@ -3317,6 +3317,9 @@ const DataTableDemo = () => {
                 enableInlineEdit
                 enableRowExpansion
                 enableRowSelection={enableRowSelection}
+                isRowSelectable={(row, _index) =>
+                    (row as UserRow).status.text !== 'Inactive'
+                }
                 enableColumnManager={enableColumnManager}
                 columnManagerMaxSelections={9}
                 columnManagerAlwaysSelected={['name', 'email']}

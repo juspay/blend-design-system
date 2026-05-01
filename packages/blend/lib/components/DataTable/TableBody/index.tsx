@@ -546,6 +546,7 @@ const TableBody = forwardRef<
             enableColumnManager = true,
             enableRowExpansion = false,
             enableRowSelection = true,
+            isRowSelectable,
             rowActions,
             columnFreeze = 0,
             columnFreezeRight = 0,
@@ -920,13 +921,20 @@ const TableBody = forwardRef<
                                                       }
                                                       onCheckedChange={() =>
                                                           onRowSelect(
-                                                              row[idField]
+                                                              row[idField],
+                                                              index
                                                           )
                                                       }
                                                       size={CheckboxSize.MEDIUM}
                                                       disabled={
                                                           isEditing ||
-                                                          rowShouldShowSkeleton
+                                                          rowShouldShowSkeleton ||
+                                                          (isRowSelectable
+                                                              ? !isRowSelectable(
+                                                                    row,
+                                                                    index
+                                                                )
+                                                              : false)
                                                       }
                                                       aria-label={`Select row ${index + 1}${tableTitle ? ` in ${tableTitle}` : ''}`}
                                                   />

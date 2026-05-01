@@ -415,6 +415,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     ) => void
 
     enableRowSelection?: boolean
+    isRowSelectable?: (row: T, index: number) => boolean
     showBulkActionBar?: boolean
     onRowSelectionChange?: (
         selectedRowIds: string[],

@@ -1055,6 +1055,19 @@ function CompactTable() {
         ],
         [
             {
+                content: 'isRowSelectable',
+                hintText:
+                    'Optional function that determines whether a specific row can be selected. Receives the row data and index, returns a boolean. When the function returns false for a row, its checkbox is disabled and users cannot select that row. The "Select All" functionality only selects rows where this function returns true. Useful for preventing selection of disabled, inactive, or restricted rows. If not provided, all rows are selectable.',
+            },
+            {
+                content: '(row: T, index: number) => boolean',
+                hintText:
+                    'Function that returns true if row can be selected, false otherwise',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'showBulkActionBar',
                 hintText:
                     'When true (default), the bulk action bar is shown when rows are selected, with Export, Deselect all, and custom actions. When false, the bulk action bar is hidden while checkbox selection remains available. Use when you need selection state (e.g. via onRowSelectionChange) but do not want to show the bulk actions UI.',
