@@ -328,6 +328,11 @@ export type RowActionsConfig<T extends Record<string, unknown>> = {
     slot2?: RowActionConfig<T>
 }
 
+export type RowSelectionConfig<T extends Record<string, unknown>> = {
+    isDisabled?: (row: T, index: number) => boolean
+    disabledText?: (row: T, index: number) => string
+}
+
 export type DataTableProps<T extends Record<string, unknown>> = {
     data: T[]
     columns: ColumnDefinition<T>[]
@@ -415,6 +420,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     ) => void
 
     enableRowSelection?: boolean
+    rowSelectionConfig?: RowSelectionConfig<T>
     showBulkActionBar?: boolean
     onRowSelectionChange?: (
         selectedRowIds: string[],
