@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Copy, ArrowsClockwise, Check, Eyedropper } from '@phosphor-icons/react'
+import { ArrowsClockwise, CaretDown, Eyedropper } from '@phosphor-icons/react'
 import { generateColorScale } from '@juspay/blend-design-system/tokens'
 
 // ---------------------------------------------------------------------------
@@ -76,7 +76,7 @@ export function ColorPaletteGenerator({
     const [baseHexInput, setBaseHexInput] = useState(
         () => value[baseShade] || '#3B82F6'
     )
-    const [copied, setCopied] = useState(false)
+    const [showOverrides, setShowOverrides] = useState(true)
     const [overriddenShades, setOverriddenShades] = useState<Set<ShadeKey>>(
         new Set()
     )
@@ -161,87 +161,49 @@ export function ColorPaletteGenerator({
         }
     }
 
-    const handleCopyPalette = () => {
-        const palette: Record<string, string> = {}
-        for (const key of SHADE_KEYS) {
-            if (value[key]) palette[key] = value[key]
-        }
-        navigator.clipboard.writeText(JSON.stringify(palette, null, 2))
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-    }
-
     // ------------------------------------------------------------------
     // Render
     // ------------------------------------------------------------------
 
     return (
-        <div className="space-y-5">
-            {/* ---- Header ---- */}
-            <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-gray-800 tracking-wide">
-                    {label}
+        <div className="space-y-5" aria-label={label}>
+            <div>
+                <h3 className="mb-2 text-xs font-semibold text-gray-700">
+                    Base Value HEX
                 </h3>
-                <div className="flex items-center gap-1">
-                    <button
-                        type="button"
-                        onClick={handleResetAll}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                        title="Reset all shades to generated values"
-                    >
-                        <ArrowsClockwise className="w-3.5 h-3.5" />
-                        Reset
-                    </button>
-                    <button
-                        type="button"
-                        onClick={handleCopyPalette}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
-                        title="Copy palette as JSON"
-                    >
-                        {copied ? (
-                            <Check className="w-3.5 h-3.5 text-green-600" />
-                        ) : (
-                            <Copy className="w-3.5 h-3.5" />
-                        )}
-                        {copied ? 'Copied' : 'Copy'}
-                    </button>
-                </div>
-            </div>
-
-            {/* ---- Base Color Picker ---- */}
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="relative shrink-0">
-                    <input
-                        type="color"
-                        value={normaliseHex(baseHexInput) ?? '#3B82F6'}
-                        onChange={(e) => handleBaseColorChange(e.target.value)}
-                        className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200 bg-transparent p-0.5"
+                <div className="relative">
+                    <span
+                        className="pointer-events-none absolute left-3 top-1/2 h-3 w-3 -translate-y-1/2 rounded border border-gray-200"
+                        style={{
+                            backgroundColor:
+                                normaliseHex(baseHexInput) ?? '#3B82F6',
+                        }}
                     />
-                    <Eyedropper className="pointer-events-none absolute bottom-0.5 right-0.5 w-3 h-3 text-gray-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                    <label className="block text-[11px] font-medium text-gray-500 mb-1 uppercase tracking-wider">
-                        Base Color ({baseShade})
-                    </label>
                     <input
                         type="text"
                         value={baseHexInput}
                         onChange={(e) => handleBaseColorChange(e.target.value)}
                         spellCheck={false}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-md font-mono text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-shadow"
+                        className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-8 pr-3 font-mono text-sm text-gray-800 shadow-sm transition-shadow focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                         placeholder="#3B82F6"
+                    />
+                    <input
+                        type="color"
+                        value={normaliseHex(baseHexInput) ?? '#3B82F6'}
+                        onChange={(e) => handleBaseColorChange(e.target.value)}
+                        className="absolute inset-y-0 left-0 h-full w-8 cursor-pointer opacity-0"
+                        aria-label="Pick base colour"
                     />
                 </div>
             </div>
 
-            {/* ---- Shade Scale Preview (compact strip) ---- */}
-            <div className="flex rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+            <div className="flex gap-2">
                 {SHADE_KEYS.map((shade) => {
                     const color = value[shade] || '#CCCCCC'
                     return (
                         <div
                             key={shade}
-                            className="flex-1 h-10 relative group cursor-default"
+                            className="group relative h-6 flex-1 cursor-default rounded-md border border-gray-100"
                             style={{ backgroundColor: color }}
                             title={`${shade}: ${color}`}
                         >
@@ -259,93 +221,109 @@ export function ColorPaletteGenerator({
                 })}
             </div>
 
-            {/* ---- Individual Shade Editors ---- */}
-            <div className="space-y-1">
-                <div className="text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-2">
-                    Shade Editor
-                </div>
-                <div className="grid gap-1.5">
-                    {SHADE_KEYS.map((shade) => {
-                        const color = value[shade] || '#CCCCCC'
-                        const isOverridden = overriddenShades.has(shade)
-                        const isBase = shade === baseShade
+            <button
+                type="button"
+                onClick={handleResetAll}
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+                title="Regenerate all shades from the base colour"
+            >
+                <ArrowsClockwise className="h-4 w-4" />
+                Generate Random
+            </button>
 
-                        return (
-                            <div
-                                key={shade}
-                                className={`flex items-center gap-3 px-3 py-1.5 rounded-md border transition-colors ${
-                                    isBase
-                                        ? 'border-blue-200 bg-blue-50/50'
-                                        : isOverridden
-                                          ? 'border-amber-200 bg-amber-50/30'
-                                          : 'border-gray-100 bg-white hover:bg-gray-50'
-                                }`}
-                            >
-                                {/* Shade label */}
-                                <span
-                                    className={`w-8 text-xs font-semibold tabular-nums ${
+            <div className="space-y-3">
+                <button
+                    type="button"
+                    onClick={() => setShowOverrides((current) => !current)}
+                    className="flex w-full items-center justify-between text-left text-xs font-semibold text-gray-700"
+                    aria-expanded={showOverrides}
+                >
+                    <span>Override HEX Values</span>
+                    <CaretDown
+                        className={`h-4 w-4 text-gray-400 transition-transform ${
+                            showOverrides ? 'rotate-180' : ''
+                        }`}
+                    />
+                </button>
+                {showOverrides && (
+                    <div className="grid gap-2">
+                        {SHADE_KEYS.map((shade) => {
+                            const color = value[shade] || '#CCCCCC'
+                            const isOverridden = overriddenShades.has(shade)
+                            const isBase = shade === baseShade
+
+                            return (
+                                <div
+                                    key={shade}
+                                    className={`grid grid-cols-[minmax(0,1fr)_42px] items-center gap-2 rounded-lg border px-2 py-1.5 transition-colors ${
                                         isBase
-                                            ? 'text-blue-600'
-                                            : 'text-gray-500'
+                                            ? 'border-blue-200 bg-blue-50/50'
+                                            : isOverridden
+                                              ? 'border-amber-200 bg-amber-50/30'
+                                              : 'border-gray-100 bg-white hover:bg-gray-50'
                                     }`}
                                 >
-                                    {shade}
-                                </span>
-
-                                {/* Color swatch + picker */}
-                                <label className="relative shrink-0 cursor-pointer">
-                                    <span
-                                        className="block w-7 h-7 rounded-md border border-gray-200 shadow-inner"
-                                        style={{ backgroundColor: color }}
-                                    />
-                                    <input
-                                        type="color"
-                                        value={normaliseHex(color) ?? '#CCCCCC'}
-                                        onChange={(e) =>
-                                            handleShadeChange(
-                                                shade,
-                                                e.target.value
-                                            )
-                                        }
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                    />
-                                </label>
-
-                                {/* Hex input */}
-                                <input
-                                    type="text"
-                                    value={color}
-                                    onChange={(e) =>
-                                        handleShadeChange(shade, e.target.value)
-                                    }
-                                    spellCheck={false}
-                                    className="flex-1 min-w-0 px-2 py-1 text-xs font-mono text-gray-700 bg-transparent border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 transition-shadow"
-                                />
-
-                                {/* Indicators / reset */}
-                                <div className="flex items-center gap-1 w-16 justify-end">
-                                    {isBase && (
-                                        <span className="text-[10px] font-medium text-blue-500 bg-blue-100 px-1.5 py-0.5 rounded">
-                                            base
-                                        </span>
-                                    )}
-                                    {isOverridden && !isBase && (
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleResetShade(shade)
+                                    <div className="relative">
+                                        <span
+                                            className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 rounded border border-gray-200"
+                                            style={{ backgroundColor: color }}
+                                        />
+                                        <Eyedropper className="pointer-events-none absolute left-6 top-1/2 h-3 w-3 -translate-y-1/2 text-gray-300" />
+                                        <input
+                                            type="text"
+                                            value={color}
+                                            onChange={(e) =>
+                                                handleShadeChange(
+                                                    shade,
+                                                    e.target.value
+                                                )
                                             }
-                                            className="text-[10px] font-medium text-amber-600 hover:text-amber-700 bg-amber-100 hover:bg-amber-200 px-1.5 py-0.5 rounded transition-colors"
-                                            title="Reset this shade to generated value"
-                                        >
-                                            reset
-                                        </button>
-                                    )}
+                                            spellCheck={false}
+                                            className="h-8 w-full rounded-md border border-gray-100 bg-white pl-10 pr-2 font-mono text-xs text-gray-700 outline-none transition-shadow focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+                                        />
+                                        <input
+                                            type="color"
+                                            value={
+                                                normaliseHex(color) ?? '#CCCCCC'
+                                            }
+                                            onChange={(e) =>
+                                                handleShadeChange(
+                                                    shade,
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="absolute inset-y-0 left-0 h-full w-8 cursor-pointer opacity-0"
+                                            aria-label={`Pick ${shade} colour`}
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            isOverridden
+                                                ? handleResetShade(shade)
+                                                : undefined
+                                        }
+                                        className={`text-right text-[11px] font-medium tabular-nums ${
+                                            isBase
+                                                ? 'text-blue-600'
+                                                : isOverridden
+                                                  ? 'text-amber-600'
+                                                  : 'text-gray-400'
+                                        }`}
+                                        title={
+                                            isOverridden
+                                                ? 'Reset this shade'
+                                                : `${shade} shade`
+                                        }
+                                    >
+                                        {isBase ? 'Base' : shade}
+                                    </button>
                                 </div>
-                            </div>
-                        )
-                    })}
-                </div>
+                            )
+                        })}
+                    </div>
+                )}
             </div>
         </div>
     )

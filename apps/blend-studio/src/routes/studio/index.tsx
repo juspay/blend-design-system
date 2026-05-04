@@ -60,6 +60,9 @@ import {
     ButtonV2Type,
     ButtonV2Size,
     SearchInput,
+    TagV2,
+    TagV2Color,
+    TagV2Type,
 } from '@juspay/blend-design-system'
 import type { MergeRequest, TokenLock } from '@/api/backend'
 
@@ -78,6 +81,9 @@ type ModalState =
     | { type: 'create' }
     | { type: 'fork'; branch: Branch }
     | { type: 'delete'; branch: Branch }
+
+const formatStatusLabel = (status: StatusFilter): string =>
+    status.charAt(0).toUpperCase() + status.slice(1)
 
 // ---------------------------------------------------------------------------
 // Main Page
@@ -301,42 +307,44 @@ function StudioPage() {
 
     return (
         <RequireAuth>
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+            <div className="min-h-screen bg-slate-50 dark:bg-gray-900 transition-colors">
                 {!onboardingComplete && (
                     <WelcomeOnboarding onComplete={completeOnboarding} />
                 )}
 
                 {/* Header */}
-                <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors">
-                    <div className="max-w-7xl mx-auto px-6 py-5">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="flex items-center gap-3 mb-1">
+                <div className="border-b border-slate-200 bg-white/95 backdrop-blur dark:border-gray-700 dark:bg-gray-800 transition-colors">
+                    <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                            <div className="min-w-0">
+                                <div className="mb-2 flex min-w-0 items-center gap-3">
                                     <Link
                                         to="/"
-                                        className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                        className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                                         title="Back to home"
                                     >
                                         <HouseIcon className="w-4 h-4" />
                                     </Link>
-                                    <div className="w-px h-5 bg-gray-200 dark:bg-gray-600" />
-                                    <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                                    <div className="h-7 w-px bg-gray-200 dark:bg-gray-600" />
+                                    <h1 className="truncate text-2xl font-semibold tracking-[-0.03em] text-gray-900 dark:text-white">
                                         Branches
                                     </h1>
                                     {flags.useMockData && (
-                                        <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium rounded-full">
-                                            Demo Mode
-                                        </span>
+                                        <TagV2
+                                            text="Demo Mode"
+                                            color={TagV2Color.WARNING}
+                                            type={TagV2Type.SUBTLE}
+                                        />
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 ml-14">
+                                <p className="max-w-2xl pl-12 text-sm leading-6 text-gray-500 dark:text-gray-400">
                                     Each branch is a versioned brand
                                     configuration. Edit tokens, preview live,
                                     publish, then pull into your project.
                                 </p>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex flex-wrap items-center gap-2 lg:justify-end">
                                 <Link
                                     to="/studio/cli-help"
                                     search={{ branchId: undefined }}
@@ -385,48 +393,50 @@ function StudioPage() {
                         )}
 
                         {/* Search & Filter Bar */}
-                        <div className="mt-4 flex items-center gap-3">
-                            <div>
+                        <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                            <div className="min-w-0 flex-1 lg:max-w-md">
                                 <SearchInput
                                     value={searchInput}
                                     onChange={(e) =>
                                         setSearchInput(e.target.value)
                                     }
                                     onClear={() => setSearchInput('')}
-                                    placeholder="Search branches by name..."
+                                    placeholder="Search branches"
                                     leftSlot={
                                         <MagnifyingGlassIcon className="w-4 h-4" />
                                     }
                                 />
                             </div>
 
-                            <TabsV2
-                                value={statusFilter}
-                                onValueChange={(v) =>
-                                    setStatusFilter(v as StatusFilter)
-                                }
-                                variant={TabsV2Variant.BOXED}
-                            >
-                                <TabsV2List>
-                                    {(
-                                        [
-                                            'all',
-                                            'draft',
-                                            'published',
-                                            'archived',
-                                        ] as StatusFilter[]
-                                    ).map((s) => (
-                                        <TabsV2Trigger key={s} value={s}>
-                                            {`${s} (${statusCounts[s]})`}
-                                        </TabsV2Trigger>
-                                    ))}
-                                </TabsV2List>
-                            </TabsV2>
+                            <div className="overflow-x-auto">
+                                <TabsV2
+                                    value={statusFilter}
+                                    onValueChange={(v) =>
+                                        setStatusFilter(v as StatusFilter)
+                                    }
+                                    variant={TabsV2Variant.PILLS}
+                                >
+                                    <TabsV2List>
+                                        {(
+                                            [
+                                                'all',
+                                                'draft',
+                                                'published',
+                                                'archived',
+                                            ] as StatusFilter[]
+                                        ).map((s) => (
+                                            <TabsV2Trigger key={s} value={s}>
+                                                {`${formatStatusLabel(s)} ${statusCounts[s]}`}
+                                            </TabsV2Trigger>
+                                        ))}
+                                    </TabsV2List>
+                                </TabsV2>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="max-w-7xl mx-auto px-6 py-6">
+                <div className="studio-fade-in mx-auto max-w-7xl px-4 py-6 sm:px-6">
                     {error && (
                         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
                             <WarningCircleIcon className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -442,7 +452,7 @@ function StudioPage() {
                     )}
 
                     {loading ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                             {[1, 2, 3].map((i) => (
                                 <div
                                     key={i}
@@ -461,11 +471,12 @@ function StudioPage() {
                             onCreate={() => setModal({ type: 'create' })}
                         />
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {branches.map((branch) => (
+                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                            {branches.map((branch, index) => (
                                 <BranchCard
                                     key={branch.id}
                                     branch={branch}
+                                    index={index}
                                     menuOpen={openMenu === branch.id}
                                     onMenuToggle={handleMenuToggle}
                                     onMenuClose={handleMenuClose}
@@ -1231,6 +1242,7 @@ function GovernanceSection({
 
 const BranchCard = memo(function BranchCard({
     branch,
+    index,
     menuOpen,
     onMenuToggle,
     onMenuClose: _onMenuClose,
@@ -1239,6 +1251,7 @@ const BranchCard = memo(function BranchCard({
     onDelete,
 }: {
     branch: Branch
+    index: number
     menuOpen: boolean
     onMenuToggle: (branchId: string) => void
     onMenuClose: () => void
@@ -1252,17 +1265,17 @@ const BranchCard = memo(function BranchCard({
     const statusConfig = {
         draft: {
             label: 'Draft',
-            cls: 'bg-yellow-100 text-yellow-800',
+            color: TagV2Color.WARNING,
             icon: WarningCircleIcon,
         },
         published: {
             label: 'Published',
-            cls: 'bg-green-100 text-green-800',
+            color: TagV2Color.SUCCESS,
             icon: CheckCircleIcon,
         },
         archived: {
             label: 'Archived',
-            cls: 'bg-gray-100 text-gray-600',
+            color: TagV2Color.NEUTRAL,
             icon: PackageIcon,
         },
     }
@@ -1272,32 +1285,37 @@ const BranchCard = memo(function BranchCard({
     const StatusIcon = sc.icon
 
     return (
-        <div className="bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all group relative">
+        <article
+            className="studio-card-enter group relative overflow-visible rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-100/50"
+            style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
+        >
             <div
-                className="h-1.5 rounded-t-xl"
+                className="h-1.5 rounded-t-2xl"
                 style={{ backgroundColor: primaryColor }}
             />
 
             <div className="p-5">
-                <div className="flex items-start justify-between mb-3">
+                <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                            <span
-                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${sc.cls}`}
-                            >
-                                <StatusIcon className="w-3 h-3" />
-                                {sc.label}
-                            </span>
+                        <div className="mb-2 flex min-w-0 flex-wrap items-center gap-2">
+                            <TagV2
+                                text={sc.label}
+                                color={sc.color}
+                                type={TagV2Type.SUBTLE}
+                                leftSlot={{
+                                    slot: <StatusIcon className="h-3 w-3" />,
+                                }}
+                            />
                             {branch.latestVersion && (
-                                <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs font-mono">
+                                <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
                                     v{branch.latestVersion}
                                 </span>
                             )}
                         </div>
-                        <h3 className="text-base font-semibold text-gray-900 truncate">
+                        <h3 className="truncate text-base font-semibold tracking-[-0.01em] text-gray-900">
                             {branch.name}
                         </h3>
-                        <p className="text-xs font-mono text-gray-400 mt-0.5 truncate">
+                        <p className="mt-1 truncate text-xs font-mono text-gray-400">
                             {branch.id}
                         </p>
                     </div>
@@ -1312,13 +1330,14 @@ const BranchCard = memo(function BranchCard({
                                 e.stopPropagation()
                                 onMenuToggle(branch.id)
                             }}
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                            aria-label={`Open actions for ${branch.name}`}
                         >
                             <DotsThreeVerticalIcon className="w-4 h-4" />
                         </button>
 
                         {menuOpen && (
-                            <div className="absolute right-0 top-8 w-44 bg-white border border-gray-200 rounded-xl shadow-lg z-20 py-1 overflow-hidden">
+                            <div className="studio-menu-enter absolute right-0 top-9 z-20 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-xl shadow-gray-200/80">
                                 <button
                                     onClick={() => onEdit(branch.id)}
                                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -1346,13 +1365,13 @@ const BranchCard = memo(function BranchCard({
                     </div>
                 </div>
 
-                <div className="flex items-center gap-1 mb-3">
+                <div className="mb-4 flex items-center gap-1.5">
                     {['500', '400', '300', '200', '100'].map((shade) => {
                         const c = branch.brandConfig?.colors?.primary?.[shade]
                         return c ? (
                             <div
                                 key={shade}
-                                className="w-6 h-6 rounded-md border border-black/10"
+                                className="h-7 flex-1 rounded-lg border border-black/10 transition-transform group-hover:scale-[1.02]"
                                 style={{ backgroundColor: c }}
                                 title={`Primary ${shade}: ${c}`}
                             />
@@ -1361,7 +1380,7 @@ const BranchCard = memo(function BranchCard({
                 </div>
 
                 {branch.tags && branch.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-4">
+                    <div className="mb-4 flex min-h-6 flex-wrap gap-1.5">
                         {branch.tags.slice(0, 3).map((tag: any, i: number) => {
                             const tagKey =
                                 typeof tag === 'string' ? tag : tag.id
@@ -1370,20 +1389,20 @@ const BranchCard = memo(function BranchCard({
                             return (
                                 <span
                                     key={tagKey || i}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs"
+                                    className="inline-flex max-w-full items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600"
                                 >
                                     <TagIcon className="w-2.5 h-2.5" />
-                                    {tagName}
+                                    <span className="truncate">{tagName}</span>
                                 </span>
                             )
                         })}
                     </div>
                 )}
 
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                    <div className="flex items-center gap-1 text-xs text-gray-400">
+                <div className="flex items-center justify-between gap-3 border-t border-gray-100 pt-4">
+                    <div className="flex min-w-0 items-center gap-1 text-xs text-gray-400">
                         <ClockIcon className="w-3 h-3" />
-                        <span>
+                        <span className="truncate">
                             {branch.updatedAt instanceof Date
                                 ? branch.updatedAt.toLocaleDateString()
                                 : new Date(
@@ -1392,12 +1411,12 @@ const BranchCard = memo(function BranchCard({
                         </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex shrink-0 items-center gap-1.5">
                         <Link
                             to="/studio/cli-help"
                             search={{ branchId: branch.id }}
                             onClick={(e) => e.stopPropagation()}
-                            className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                            className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-emerald-50 hover:text-emerald-600"
                             title="How to use this branch in CLI"
                         >
                             <TerminalIcon className="w-3.5 h-3.5" />
@@ -1406,7 +1425,7 @@ const BranchCard = memo(function BranchCard({
                             to="/studio/preview/$branchId"
                             params={{ branchId: branch.id }}
                             onClick={(e) => e.stopPropagation()}
-                            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
                             title="Preview"
                         >
                             <EyeIcon className="w-3.5 h-3.5" />
@@ -1414,7 +1433,7 @@ const BranchCard = memo(function BranchCard({
                         <Link
                             to="/studio/editor/$branchId"
                             params={{ branchId: branch.id }}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-medium text-white transition-colors hover:bg-blue-700"
                         >
                             <PencilSimpleIcon className="w-3 h-3" />
                             Edit
@@ -1422,7 +1441,7 @@ const BranchCard = memo(function BranchCard({
                     </div>
                 </div>
             </div>
-        </div>
+        </article>
     )
 })
 

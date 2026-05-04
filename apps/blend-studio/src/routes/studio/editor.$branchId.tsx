@@ -328,7 +328,7 @@ function EditorPage() {
 
     return (
         <RequireAuth>
-            <div className="h-screen flex flex-col overflow-hidden bg-gray-100">
+            <div className="h-screen flex flex-col overflow-hidden bg-white">
                 {/* Top Bar */}
                 <EditorHeader
                     branchId={branchId}
@@ -346,12 +346,16 @@ function EditorPage() {
 
                 {/* Body: Three Panel Layout */}
                 <div className="flex-1 flex overflow-hidden">
+                    <EditorToolRail
+                        activeTab={activeTab}
+                        onTabChange={setActiveTab}
+                    />
                     <Group orientation="horizontal" style={{ height: '100%' }}>
                         {/* Left Panel: Editor Tabs (30%) */}
-                        <Panel minSize={20} defaultSize={30}>
-                            <div className="h-full bg-white border-r border-gray-200 flex flex-col overflow-hidden">
+                        <Panel minSize={22} defaultSize={29}>
+                            <div className="h-full bg-white flex flex-col overflow-hidden">
                                 {/* Tab triggers — not inside Radix TabsV2Content to avoid scroll interference */}
-                                <div className="shrink-0 border-b border-gray-200">
+                                <div className="shrink-0 border-b border-gray-200 bg-white px-3">
                                     <TabsV2
                                         value={activeTab}
                                         onValueChange={(v: string) =>
@@ -379,7 +383,7 @@ function EditorPage() {
 
                                 {/* Tab content — isolated scroll container, no Radix Content wrapper */}
                                 <div className="flex-1 overflow-y-auto">
-                                    <div className="p-4 space-y-6">
+                                    <div className="px-5 py-4">
                                         {activeTab === 'colors' && (
                                             <ColorsTab
                                                 brand={brand}
@@ -431,13 +435,13 @@ function EditorPage() {
                             </div>
                         </Panel>
 
-                        <Separator className="w-1 bg-gray-200 hover:bg-blue-400 transition-colors cursor-col-resize" />
+                        <Separator className="w-px bg-gray-200 hover:bg-blue-400 transition-colors cursor-col-resize" />
 
                         {/* Right Panel: Preview (70%) */}
-                        <Panel minSize={30} defaultSize={70}>
-                            <div className="h-full flex flex-col overflow-hidden bg-white">
+                        <Panel minSize={38} defaultSize={71}>
+                            <div className="h-full flex flex-col overflow-hidden bg-[#f8fafc]">
                                 {/* Panel switcher */}
-                                <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 shrink-0">
+                                <div className="flex items-center justify-between gap-4 px-5 py-3 bg-white border-b border-gray-200 shrink-0">
                                     <TabsV2
                                         value={activePanel}
                                         onValueChange={(v: string) =>
@@ -515,7 +519,7 @@ function EditorPage() {
                                                         previewTheme === 'dark'
                                                             ? 'bg-gray-900'
                                                             : 'bg-gray-50'
-                                                    } p-6`}
+                                                    } p-8`}
                                                 >
                                                     {activeTab ===
                                                         'components' &&
@@ -617,6 +621,38 @@ function EditorPage() {
 // Editor Header
 // ---------------------------------------------------------------------------
 
+interface EditorToolRailProps {
+    activeTab: EditorTabId
+    onTabChange: (tab: EditorTabId) => void
+}
+
+function EditorToolRail({ activeTab, onTabChange }: EditorToolRailProps) {
+    return (
+        <nav
+            className="hidden w-12 shrink-0 flex-col items-center gap-3 bg-white px-2 py-4 md:flex"
+            aria-label="Editor tools"
+        >
+            {EDITOR_TABS.map(({ id, icon: Icon, label }) => (
+                <button
+                    key={id}
+                    type="button"
+                    onClick={() => onTabChange(id)}
+                    className={`grid h-8 w-8 place-items-center rounded-lg transition-colors ${
+                        activeTab === id
+                            ? 'bg-blue-50 text-blue-600'
+                            : 'text-gray-400 hover:bg-gray-50 hover:text-gray-700'
+                    }`}
+                    aria-label={label}
+                    aria-current={activeTab === id ? 'page' : undefined}
+                    title={label}
+                >
+                    <Icon className="h-4 w-4" />
+                </button>
+            ))}
+        </nav>
+    )
+}
+
 interface EditorHeaderProps {
     branchId: string
     branchName: string
@@ -645,22 +681,23 @@ function EditorHeader({
     validation,
 }: EditorHeaderProps) {
     return (
-        <header className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-gray-200 shrink-0">
-            <div className="flex items-center gap-3">
+        <header className="flex items-center justify-between gap-4 px-4 py-2.5 bg-white border-b border-gray-200 shrink-0">
+            <div className="flex min-w-0 items-center gap-3">
                 <Link
                     to="/studio"
                     className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                    aria-label="Back to Studio"
                 >
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="w-px h-5 bg-gray-200" />
-                <div className="flex items-center gap-2">
+                <div className="flex min-w-0 items-center gap-2">
                     <GitBranch className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm font-mono text-gray-500">
-                        {branchId}
-                    </span>
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="truncate text-sm font-semibold text-gray-900">
                         {branchName}
+                    </span>
+                    <span className="hidden max-w-[180px] truncate text-xs font-mono text-gray-400 lg:inline">
+                        {branchId}
                     </span>
                     {hasChanges && (
                         <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">
@@ -687,11 +724,11 @@ function EditorHeader({
                 )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
                 <Link
                     to="/studio/preview/$branchId"
                     params={{ branchId }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="hidden items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors lg:inline-flex"
                 >
                     <Eye className="w-4 h-4" />
                     Preview
@@ -699,7 +736,7 @@ function EditorHeader({
 
                 <button
                     onClick={onImport}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-700 border border-purple-300 rounded-lg hover:bg-purple-50 transition-colors"
+                    className="hidden items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-700 border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors lg:inline-flex"
                     title="Import tokens from CSS, Tailwind, Figma, etc."
                 >
                     <Upload className="w-4 h-4" />
