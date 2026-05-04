@@ -212,8 +212,8 @@ export const getMenuTokens = (
                 },
                 gap: 4,
                 optionsLabel: {
-                    fontSize: 12,
-                    fontWeight: 400,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[400],
                     color: foundationToken.colors.gray[400],
                     padding: {
                         x: foundationToken.unit[8],
@@ -225,8 +225,8 @@ export const getMenuTokens = (
                     },
                 },
                 option: {
-                    fontSize: 14,
-                    fontWeight: 500,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                     color: {
                         default: {
                             enabled: {
@@ -294,8 +294,8 @@ export const getMenuTokens = (
                     },
                 },
                 description: {
-                    fontSize: 12,
-                    fontWeight: 400,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[400],
                     color: {
                         default: {
                             enabled: {
@@ -453,8 +453,8 @@ export const getMenuTokens = (
                 },
                 gap: 4,
                 optionsLabel: {
-                    fontSize: 12,
-                    fontWeight: 400,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[400],
                     color: foundationToken.colors.gray[400],
                     padding: {
                         x: foundationToken.unit[8],
@@ -466,8 +466,8 @@ export const getMenuTokens = (
                     },
                 },
                 option: {
-                    fontSize: 14,
-                    fontWeight: 500,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[500],
                     color: {
                         default: {
                             enabled: {
@@ -535,8 +535,8 @@ export const getMenuTokens = (
                     },
                 },
                 description: {
-                    fontSize: 12,
-                    fontWeight: 400,
+                    fontSize: foundationToken.font.size.body.md.fontSize,
+                    fontWeight: foundationToken.font.weight[400],
                     color: {
                         default: {
                             enabled: {
