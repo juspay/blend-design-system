@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 interface ScrollOptions {
-    /** Amount of padding (in pixels) from viewport edge when scrolling */
+    /** Amount of padding (in pixels) from scrollable container edge when scrolling */
     padding?: number
     /** Whether to scroll instantly or smoothly */
     behavior?: ScrollBehavior
@@ -10,7 +10,11 @@ interface ScrollOptions {
 /**
  * A custom hook that provides scroll management utilities for sidebar sections.
  * Used to automatically scroll elements into view when they expand near the
- * bottom of the viewport.
+ * bottom of their nearest scrollable ancestor container (not the viewport).
+ *
+ * This hook finds the closest scrollable ancestor element (with overflow-y: auto or scroll)
+ * and scrolls within that container, not the viewport. This is important when using
+ * the hook in nested scrollers or modals.
  *
  * @example
  * const { scrollIntoView } = useSectionScroll()
