@@ -654,17 +654,26 @@ const DataTable = forwardRef(
         const updateSelectAllState = (
             selectedRowsState: Record<string, boolean>
         ) => {
-            const currentPageRowIds = currentData.map((row) =>
-                String(row[idField])
-            )
-            const selectedCurrentPageRows = currentPageRowIds.filter(
+            const selectableRowIds = currentData
+                .map((row, index) => ({ row, rowId: String(row[idField]), index }))
+                .filter(({ row, index }) => !(isRowDisabledFn && isRowDisabledFn(row, index)))
+                .map(({ rowId }) => rowId)
+            
+            const totalSelectableCount = selectableRowIds.length
+            
+            if (totalSelectableCount === 0) {
+                setSelectAll(false)
+                return
+            }
+            
+            const selectedCurrentPageRows = selectableRowIds.filter(
                 (rowId) => selectedRowsState[rowId]
             )
 
             if (selectedCurrentPageRows.length === 0) {
                 setSelectAll(false)
             } else if (
-                selectedCurrentPageRows.length === currentPageRowIds.length
+                selectedCurrentPageRows.length === totalSelectableCount
             ) {
                 setSelectAll(true)
             } else {
@@ -754,12 +763,61 @@ const DataTable = forwardRef(
 
         const isRowDisabledFn = rowSelectionConfig?.isDisabled
 
-        const handleRowSelect = (rowId: unknown, rowIndex: number) => {
+        const handleRowSelect = (rowId: unknown, rowIndex?: number) => {
             const rowIdStr = String(rowId)
 
-            const row = currentData.find((r) => String(r[idField]) === rowIdStr)
+            // If no index provided, fall back to find (for backwards compatibility)
+            if (rowIndex === undefined) {
+                const row = currentData.find((r) => String(r[idField]) === rowIdStr)
+                if (!row || (isRowDisabledFn && isRowDisabledFn(row, -1))) {
+                    return
+                }
+                // Continue with the found row
+                const isSelected = !selectedRows[rowIdStr]
+                const newSelectedRows = {
+                    ...selectedRows,
+                    [rowIdStr]: isSelected,
+                }
+                setSelectedRows(newSelectedRows)
+                updateSelectAllState(newSelectedRows)
 
-            if (!row || (isRowDisabledFn && isRowDisabledFn(row, rowIndex))) {
+                if (onRowSelectionChange) {
+                    const selectedRowIds = Object.entries(newSelectedRows)
+                        .filter(([, selected]) => selected)
+                        .map(([id]) => id)
+
+                    const rawRowData = data.find(
+                        (d) => String(d[idField]) === rowIdStr
+                    )
+                    const rowDataFromCurrent = currentData.find(
+                        (row) => String(row[idField]) === rowIdStr
+                    )
+                    const rowDataToPass = (rawRowData || rowDataFromCurrent) as T
+
+                    if (rowDataToPass) {
+                        onRowSelectionChange(
+                            selectedRowIds,
+                            isSelected,
+                            rowIdStr,
+                            rowDataToPass
+                        )
+                    }
+                }
+                return
+            }
+
+            // Bounds check and use index directly instead of scanning
+            if (
+                rowIndex < 0 ||
+                rowIndex >= currentData.length ||
+                String(currentData[rowIndex][idField]) !== rowIdStr
+            ) {
+                return
+            }
+
+            const row = currentData[rowIndex]
+
+            if (isRowDisabledFn && isRowDisabledFn(row, rowIndex)) {
                 return
             }
 

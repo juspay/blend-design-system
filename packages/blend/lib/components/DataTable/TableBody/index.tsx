@@ -932,7 +932,7 @@ const TableBody = forwardRef<
                                                           isDisabledByConfig
 
                                                       const tooltipText =
-                                                          isRowDisabled &&
+                                                          isDisabledByConfig &&
                                                           rowSelectionConfig?.disabledText
                                                               ? rowSelectionConfig.disabledText(
                                                                     row,
