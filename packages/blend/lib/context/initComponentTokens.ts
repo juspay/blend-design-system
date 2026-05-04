@@ -81,6 +81,7 @@ import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+import { getUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
@@ -268,6 +269,9 @@ const initTokens = (
         STEPPERV2:
             componentTokens.STEPPERV2 ??
             getStepperV2Tokens(foundationTokens, theme),
+        UPLOADV2:
+            componentTokens.UPLOADV2 ??
+            getUploadV2Tokens(foundationTokens, theme),
     }
 }
 

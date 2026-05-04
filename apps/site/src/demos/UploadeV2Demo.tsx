@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import {
     Upload,
     UploadState,
 } from '../../../../packages/blend/lib/components/Upload'
+import UploadV2 from '../../../../packages/blend/lib/components/InputsV2/UploadV2/UploadV2'
+import type { UploadFileV2 } from '../../../../packages/blend/lib/components/InputsV2/UploadV2/UploadV2.types'
 import type { UploadFormValue } from '../../../../packages/blend/lib/components/Upload/types'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import {
@@ -14,10 +16,8 @@ import {
     Video,
     Music,
 } from 'lucide-react'
-import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
-import Text from '../../../../packages/blend/lib/components/Text/Text'
 
-const UploadDemo = () => {
+const UploadV2Demo = () => {
     // Playground state
     const [playgroundMultiple, setPlaygroundMultiple] = useState(false)
     const [playgroundDisabled, setPlaygroundDisabled] = useState(false)
@@ -25,18 +25,17 @@ const UploadDemo = () => {
     const [playgroundCustomSlot, setPlaygroundCustomSlot] = useState(false)
     const [playgroundHelpIcon, setPlaygroundHelpIcon] = useState(false)
     const [playgroundProgressSpeed, setPlaygroundProgressSpeed] = useState(200)
+    const [playgroundHelpIconText, setPlaygroundHelpIconText] = useState(
+        'Upload your files here. Supported formats include CSV files up to 8MB in size.'
+    )
 
     // Simple state for reset buttons
     const [resetKey, setResetKey] = useState(0)
 
-    const renderCustomSlot = () => (
-        <Block>
-            <Text fontSize="16px" fontWeight="bold" color="#6366f1">
-                Upload Files
-            </Text>
-            <UploadIcon size={32} color="#6366f1" />
-        </Block>
-    )
+    // UploadV2 files state
+    const [uploadV2Files, setUploadV2Files] = useState<UploadFileV2[]>([])
+
+    const renderCustomSlot = () => <UploadIcon size={32} color="#6366f1" />
 
     return (
         <div className="p-8 space-y-12">
@@ -52,7 +51,7 @@ const UploadDemo = () => {
 
             {/* Playground Section */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Playground</h2>
+                <h2 className="text-2xl font-bold">UploadV2 Playground</h2>
                 <div className="space-y-6">
                     <div className="flex items-center gap-6">
                         <Switch
@@ -88,6 +87,17 @@ const UploadDemo = () => {
                             checked={playgroundHelpIcon}
                             onChange={() =>
                                 setPlaygroundHelpIcon(!playgroundHelpIcon)
+                            }
+                        />
+                        <Switch
+                            label="Help Icon Text"
+                            checked={!!playgroundHelpIconText}
+                            onChange={() =>
+                                setPlaygroundHelpIconText((prev) =>
+                                    prev
+                                        ? ''
+                                        : 'Upload your files here. Supported formats include CSV files up to 8MB in size.'
+                                )
                             }
                         />
                     </div>
@@ -150,7 +160,7 @@ const UploadDemo = () => {
                             ]}
                             maxSize={8 * 1024 * 1024} // 8MB
                             style={{ width: '480px' }}
-                            maxFiles={5}
+                            maxFiles={2}
                             progressSpeed={playgroundProgressSpeed}
                         >
                             {playgroundCustomSlot
@@ -164,11 +174,48 @@ const UploadDemo = () => {
                         for matching the visual feedback to your backend
                         processing time.
                     </p>
+
+                    <h2>UploadV2</h2>
+
+                    <UploadV2
+                        label="Upload Files"
+                        subLabel="Max 10MB"
+                        helpIconText={playgroundHelpIconText}
+                        required={playgroundRequired}
+                        acceptedFileTypes={[
+                            '.csv',
+                            '.txt',
+                            '.pdf',
+                            '.doc',
+                            '.docx',
+                            '.xls',
+                            '.xlsx',
+                            '.ppt',
+                            '.pptx',
+                            '.jpg',
+                            '.jpeg',
+                            '.png',
+                            '.gif',
+                            '.mp4',
+                            '.avi',
+                            '.mov',
+                            '.mp3',
+                            '.wav',
+                        ]}
+                        slot={<UploadIcon size={32} color="#6366f1" />}
+                        multiple={playgroundMultiple}
+                        disabled={playgroundDisabled}
+                        files={uploadV2Files}
+                        onChange={(files) => {
+                            setUploadV2Files(files)
+                        }}
+                        state={UploadState.ERROR}
+                        maxSize={8 * 1024 * 1024}
+                        maxFiles={2}
+                        description=".csv only | Max size 8 MB"
+                    />
                 </div>
             </div>
-
-            {/* Unmount cleanup test */}
-            <UnmountCleanupExample />
 
             {/* Real-World API Upload Demo */}
             <div className="space-y-6">
@@ -496,187 +543,6 @@ const UploadDemo = () => {
                         </code>
                     </p>
                     <MultipleFilesFormExample />
-                </div>
-            </div>
-        </div>
-    )
-}
-
-const DEMO_UPLOAD_FILE_NAME = 'simulated-upload.txt'
-
-const UnmountCleanupExample = () => {
-    const [isMounted, setIsMounted] = useState(true)
-    const [mountKey, setMountKey] = useState(0)
-    const [logs, setLogs] = useState<string[]>([])
-    const containerRef = useRef<HTMLDivElement>(null)
-
-    const appendLog = (message: string) => {
-        setLogs((prev) => [
-            ...prev,
-            `${new Date().toLocaleTimeString()}: ${message}`,
-        ])
-    }
-
-    useEffect(() => {
-        const originalWarn = console.warn
-        const originalError = console.error
-
-        const captureReactLeak = (level: 'warn' | 'error', args: unknown[]) => {
-            const message = args.map((arg) => String(arg)).join(' ')
-            if (
-                message.includes('unmounted component') ||
-                message.includes('memory leak') ||
-                message.includes("Can't perform a React state update")
-            ) {
-                setLogs((prev) => [
-                    ...prev,
-                    `${new Date().toLocaleTimeString()}: [${level}] ${message}`,
-                ])
-            }
-        }
-
-        console.warn = (...args: unknown[]) => {
-            captureReactLeak('warn', args)
-            originalWarn(...args)
-        }
-        console.error = (...args: unknown[]) => {
-            captureReactLeak('error', args)
-            originalError(...args)
-        }
-
-        return () => {
-            console.warn = originalWarn
-            console.error = originalError
-        }
-    }, [])
-
-    const triggerUpload = () => {
-        if (!isMounted) {
-            appendLog('Upload is unmounted — click Remount first')
-            return
-        }
-
-        const file = new File(['demo content'], DEMO_UPLOAD_FILE_NAME, {
-            type: 'text/plain',
-        })
-        const fileInput = containerRef.current?.querySelector(
-            'input[type="file"]'
-        ) as HTMLInputElement | null
-
-        if (!fileInput) {
-            appendLog('Could not find file input inside Upload')
-            return
-        }
-
-        const dataTransfer = new DataTransfer()
-        dataTransfer.items.add(file)
-        fileInput.files = dataTransfer.files
-        fileInput.dispatchEvent(new Event('change', { bubbles: true }))
-        appendLog(`Started simulated upload (${DEMO_UPLOAD_FILE_NAME})`)
-    }
-
-    const handleUnmount = () => {
-        setIsMounted(false)
-        appendLog('Upload component unmounted')
-    }
-
-    const handleRemount = () => {
-        setMountKey((key) => key + 1)
-        setIsMounted(true)
-        appendLog('Upload component remounted')
-    }
-
-    return (
-        <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Unmount Cleanup Test</h2>
-            <p className="text-sm text-gray-600 max-w-3xl">
-                Verifies simulated upload timers are cancelled when Upload
-                unmounts. Steps: (1) click <strong>Start upload</strong> and
-                wait for progress to begin, (2) within ~1s click{' '}
-                <strong>Unmount</strong>. A fixed build should show no React
-                memory-leak warning in the panel below.
-            </p>
-
-            <div className="flex flex-wrap gap-3">
-                <button
-                    type="button"
-                    onClick={triggerUpload}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                    Start upload
-                </button>
-                <button
-                    type="button"
-                    onClick={handleUnmount}
-                    disabled={!isMounted}
-                    className="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                >
-                    Unmount
-                </button>
-                <button
-                    type="button"
-                    onClick={handleRemount}
-                    disabled={isMounted}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                >
-                    Remount
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setLogs([])}
-                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
-                >
-                    Clear logs
-                </button>
-            </div>
-
-            <div
-                ref={containerRef}
-                className="min-h-48 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8"
-            >
-                {isMounted ? (
-                    <Upload
-                        key={`unmount-test-${mountKey}`}
-                        label="Simulated Upload"
-                        description="Internal progress simulation (200ms ticks)"
-                        accept={['.txt']}
-                        progressSpeed={200}
-                        style={{ width: '480px' }}
-                    >
-                        <UploadIcon size={32} color="#6366f1" />
-                    </Upload>
-                ) : (
-                    <p className="text-sm text-gray-500">
-                        Upload unmounted — progress timers should be cancelled
-                    </p>
-                )}
-            </div>
-
-            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="font-semibold text-sm mb-2">
-                    Captured console output
-                </h3>
-                <div className="text-xs space-y-1 max-h-48 overflow-y-auto font-mono bg-white p-3 rounded border">
-                    {logs.length > 0 ? (
-                        logs.map((log, index) => (
-                            <div
-                                key={index}
-                                className={
-                                    log.includes('[warn]') ||
-                                    log.includes('[error]')
-                                        ? 'text-red-700'
-                                        : 'text-gray-700'
-                                }
-                            >
-                                {log}
-                            </div>
-                        ))
-                    ) : (
-                        <div className="text-gray-500">
-                            No warnings captured yet. Start an upload, then
-                            unmount quickly.
-                        </div>
-                    )}
                 </div>
             </div>
         </div>
@@ -1243,4 +1109,4 @@ const StateManagementExample = () => {
     )
 }
 
-export default UploadDemo
+export default UploadV2Demo

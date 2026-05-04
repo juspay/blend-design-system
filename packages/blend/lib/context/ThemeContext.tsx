@@ -243,6 +243,10 @@ import {
     getChatInputV2MobileTokens,
     ChatInputV2MobileTokensType,
 } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+import {
+    ResponsiveUploadV2Tokens,
+    getUploadV2Tokens,
+} from '../components/InputsV2/UploadV2/UploadV2.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -323,6 +327,7 @@ export type ComponentTokenType = {
     SEARCH_INPUT_V2?: ResponsiveSearchInputV2Tokens
     CHAT_INPUTV2_MOBILE?: ChatInputV2MobileTokensType
     STEPPERV2?: ResponsiveStepperV2Tokens
+    UPLOADV2?: ResponsiveUploadV2Tokens
 }
 
 type ThemeContextType = {
@@ -426,6 +431,7 @@ const ThemeContext = createContext<ThemeContextType>({
             Theme.LIGHT
         ),
         STEPPERV2: getStepperV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        UPLOADV2: getUploadV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

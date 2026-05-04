@@ -152,6 +152,7 @@ import SearchInputV2Demo from './SearchInputV2Demo'
 import BadgeDemo from './BadgeDemo'
 import ChatInputV2Demo from './ChatInputV2Demo'
 import StepperV2Demo from './StepperV2Demo'
+import UploadV2Demo from './UploadeV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponentState] = useState<
@@ -617,6 +618,8 @@ const SidebarDemo = () => {
                 return <VirtualListDemo />
             case 'upload':
                 return <UploadDemo />
+            case 'uploadV2':
+                return <UploadV2Demo />
             case 'codeBlock':
                 return <CodeBlockDemo />
             case 'codeEditor':
@@ -957,6 +960,13 @@ const SidebarDemo = () => {
                         <Upload style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('upload'),
+                },
+                {
+                    label: 'File Upload V2',
+                    leftSlot: (
+                        <Upload style={{ width: '16px', height: '16px' }} />
+                    ),
+                    onClick: () => setActiveComponent('uploadV2'),
                 },
             ],
         },
