@@ -655,17 +655,24 @@ const DataTable = forwardRef(
             selectedRowsState: Record<string, boolean>
         ) => {
             const selectableRowIds = currentData
-                .map((row, index) => ({ row, rowId: String(row[idField]), index }))
-                .filter(({ row, index }) => !(isRowDisabledFn && isRowDisabledFn(row, index)))
+                .map((row, index) => ({
+                    row,
+                    rowId: String(row[idField]),
+                    index,
+                }))
+                .filter(
+                    ({ row, index }) =>
+                        !(isRowDisabledFn && isRowDisabledFn(row, index))
+                )
                 .map(({ rowId }) => rowId)
-            
+
             const totalSelectableCount = selectableRowIds.length
-            
+
             if (totalSelectableCount === 0) {
                 setSelectAll(false)
                 return
             }
-            
+
             const selectedCurrentPageRows = selectableRowIds.filter(
                 (rowId) => selectedRowsState[rowId]
             )
@@ -768,7 +775,9 @@ const DataTable = forwardRef(
 
             // If no index provided, fall back to find (for backwards compatibility)
             if (rowIndex === undefined) {
-                const row = currentData.find((r) => String(r[idField]) === rowIdStr)
+                const row = currentData.find(
+                    (r) => String(r[idField]) === rowIdStr
+                )
                 if (!row || (isRowDisabledFn && isRowDisabledFn(row, -1))) {
                     return
                 }
@@ -792,7 +801,8 @@ const DataTable = forwardRef(
                     const rowDataFromCurrent = currentData.find(
                         (row) => String(row[idField]) === rowIdStr
                     )
-                    const rowDataToPass = (rawRowData || rowDataFromCurrent) as T
+                    const rowDataToPass = (rawRowData ||
+                        rowDataFromCurrent) as T
 
                     if (rowDataToPass) {
                         onRowSelectionChange(
