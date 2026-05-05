@@ -4,6 +4,7 @@ import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
+import { NumberInputV2Direction } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.types'
 
 const noop = () => {}
 
@@ -65,6 +66,99 @@ describe('NumberInputV2 Accessibility', () => {
                         show: true,
                         message: 'Value must be between 0 and 100',
                     }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when unit suffix is shown (no stepper buttons)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Weight', subtext: '' }}
+                    value={12}
+                    onChange={noop}
+                    unit="kg"
+                    hintText="Enter mass in kilograms."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when unit is on the leading edge (unitDirection left)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Length', subtext: '' }}
+                    value={10}
+                    onChange={noop}
+                    unit="cm"
+                    unitDirection={NumberInputV2Direction.LEFT}
+                    hintText="Metric length."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with unit and decorative slot icons (aria-hidden)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Mass', subtext: '' }}
+                    value={5}
+                    onChange={noop}
+                    unit="kg"
+                    slot={{
+                        left: (
+                            <span aria-hidden="true" data-testid="a11y-slot-l">
+                                L
+                            </span>
+                        ),
+                        right: (
+                            <span aria-hidden="true" data-testid="a11y-slot-r">
+                                R
+                            </span>
+                        ),
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when value violates min-only bound (range message)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Floor', subtext: '' }}
+                    value={-5}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when value violates max-only bound (range message)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Ceiling', subtext: '' }}
+                    value={150}
+                    onChange={noop}
+                    max={100}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with help icon only (supplementary)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Tax rate', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    helpIconText="Shown on your last return."
                 />
             )
             const results = await axe(container)
@@ -148,6 +242,55 @@ describe('NumberInputV2 Accessibility', () => {
             const input = screen.getByRole('spinbutton')
             expect(input).toHaveAttribute('aria-describedby')
             expect(screen.getByText('Invalid value')).toBeInTheDocument()
+        })
+
+        it('shows min-only range error when value is below minimum', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={-2}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            expect(
+                screen.getByText(/Value must be at least 0/i)
+            ).toBeInTheDocument()
+        })
+
+        it('associates min-only range error with input via aria-describedby', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={-1}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            const describedBy = input.getAttribute('aria-describedby')
+            expect(describedBy).toBeTruthy()
+            const errorId = describedBy!
+                .split(/\s+/)
+                .find((id) => id.endsWith('-error'))
+            expect(errorId).toBeTruthy()
+            expect(document.getElementById(errorId!)).toHaveTextContent(
+                /Value must be at least 0/i
+            )
+        })
+
+        it('shows max-only range error when value is above maximum', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={200}
+                    onChange={noop}
+                    max={100}
+                />
+            )
+            expect(
+                screen.getByText(/Value must be at most 100/i)
+            ).toBeInTheDocument()
         })
     })
 
@@ -298,6 +441,58 @@ describe('NumberInputV2 Accessibility', () => {
     })
 
     describe('WCAG 2.4.3 Focus Order (Level A)', () => {
+        it('tabs from input to next field when unit hides steppers (no focusable increment controls)', async () => {
+            const { user } = render(
+                <>
+                    <NumberInputV2
+                        label={{ text: 'First', subtext: '' }}
+                        value={1}
+                        onChange={noop}
+                        unit="%"
+                    />
+                    <NumberInputV2
+                        label={{ text: 'Second', subtext: '' }}
+                        value={2}
+                        onChange={noop}
+                        unit="px"
+                    />
+                </>
+            )
+            const inputs = screen.getAllByRole('spinbutton')
+            await user.tab()
+            expect(document.activeElement).toBe(inputs[0])
+            await user.tab()
+            expect(document.activeElement).toBe(inputs[1])
+        })
+
+        it('tabs between spinbuttons when unit and slots are shown (slots are not tab stops)', async () => {
+            const { user } = render(
+                <>
+                    <NumberInputV2
+                        label={{ text: 'A', subtext: '' }}
+                        value={1}
+                        onChange={noop}
+                        unit="kg"
+                        slot={{
+                            left: <span aria-hidden="true">·</span>,
+                            right: <span aria-hidden="true">·</span>,
+                        }}
+                    />
+                    <NumberInputV2
+                        label={{ text: 'B', subtext: '' }}
+                        value={2}
+                        onChange={noop}
+                        unit="g"
+                    />
+                </>
+            )
+            const inputs = screen.getAllByRole('spinbutton')
+            await user.tab()
+            expect(document.activeElement).toBe(inputs[0])
+            await user.tab()
+            expect(document.activeElement).toBe(inputs[1])
+        })
+
         it('maintains logical focus order in form (inputs, steppers, then submit)', async () => {
             const { user } = render(
                 <form>
@@ -493,6 +688,56 @@ describe('NumberInputV2 Accessibility', () => {
                 'placeholder',
                 'Enter amount'
             )
+        })
+    })
+
+    describe('Unit suffix (unit prop)', () => {
+        it('exposes spinbutton name from the label (unit is visual suffix)', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Load', subtext: '' }}
+                    value={5}
+                    onChange={noop}
+                    unit="kg"
+                />
+            )
+            expect(
+                screen.getByRole('spinbutton', { name: /load/i })
+            ).toBeInTheDocument()
+            expect(screen.getByText('kg')).toBeInTheDocument()
+        })
+
+        it('keeps spinbutton accessible name when unit is on the left', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Width', subtext: '' }}
+                    value={3}
+                    onChange={noop}
+                    unit="mm"
+                    unitDirection={NumberInputV2Direction.LEFT}
+                />
+            )
+            expect(
+                screen.getByRole('spinbutton', { name: /width/i })
+            ).toBeInTheDocument()
+        })
+
+        it('meets WCAG with axe for unit, required, and error', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Portion', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    unit="g"
+                    required
+                    error={{
+                        show: true,
+                        message: 'Amount is required.',
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 

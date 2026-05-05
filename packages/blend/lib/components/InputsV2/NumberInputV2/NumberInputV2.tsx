@@ -7,7 +7,14 @@ import { AnyRef, InputSizeV2 } from '../inputV2.types'
 import type { NumberInputV2TokensType } from './numberInputV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { addPxToValue, toPixels } from '../../../global-utils/GlobalUtils'
-import React, { forwardRef, useMemo, useState, useId } from 'react'
+import React, {
+    forwardRef,
+    useMemo,
+    useState,
+    useId,
+    useRef,
+    useLayoutEffect,
+} from 'react'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabelsV2 from '../utils/FloatingLabelsV2/FloatingLabelsV2'
@@ -26,16 +33,23 @@ import {
     getNumberInputDisplayErrorMessage,
     buildNumberInputAriaDescribedBy,
     getNumberInputLabelState,
+    getNumberInputUnitState,
     computeIsUpButtonDisabled,
     computeIsDownButtonDisabled,
     sanitizedToCommittedValueString,
     rawNumericToComparableString,
     shouldSkipControlledChange,
     shouldEmitBlurChange,
+    subscribeElementOffsetWidth,
+    getNumberInputV2PaddingLeft,
+    getNumberInputV2PaddingRight,
+    getNumberInputV2UnitLengthErrorMessage,
 } from './utils'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
-import { setExternalRef } from '../TextInputV2/utils'
+import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import NumberInputV2Stepper from './NumberInputV2Stepper'
+import NumberInputV2Unit from './NumberInputV2Unit'
+import { NumberInputV2Direction } from '.'
 
 const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
     (
@@ -58,6 +72,12 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             onBlur,
             onFocus,
             id: providedId,
+            unitDirection = NumberInputV2Direction.RIGHT,
+            unit = '',
+            slot = {
+                left: null,
+                right: null,
+            },
             ...rest
         },
         ref
@@ -68,14 +88,19 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         const filteredRest = filterBlockedProps(rest)
         const generatedId = useId()
         const inputId = providedId ?? generatedId
+        const unitRef = useRef<HTMLDivElement>(null)
+        const [measuredUnitWidth, setMeasuredUnitWidth] = useState(0)
+        const [measuredLeftSlotWidth, setMeasuredLeftSlotWidth] = useState(0)
+        const [measuredRightSlotWidth, setMeasuredRightSlotWidth] = useState(0)
 
         const setInputRef = (node: HTMLInputElement | null): void => {
             setExternalRef(ref as AnyRef<HTMLInputElement>, node)
         }
-        const errorId = `${inputId}-error`
-        const hintId = `${inputId}-hint`
+
+        const { errorId, hintId } = generateAccessibilityIds(inputId)
 
         const [isFocused, setIsFocused] = useState(false)
+        const [isHovered, setIsHovered] = useState(false)
         const [internalValue, setInternalValue] = useState('')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
@@ -83,10 +108,13 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         const numericMin = min !== undefined ? Number(min) : undefined
         const numericMax = max !== undefined ? Number(max) : undefined
         const stepValue = step ?? 1
-
         const rawNumericValue =
             value !== null && value !== undefined ? Number(value) : null
-
+        /** Whitespace-only `unit` is treated as empty: show steppers, not an empty strip. */
+        const unitText = unit?.trim() ?? ''
+        const unitLengthErrorMessage =
+            getNumberInputV2UnitLengthErrorMessage(unit)
+        const showUnit = Boolean(unitText) && unitLengthErrorMessage == null
         const steppingBaseValue = useMemo(
             () => getSteppingBaseValue(rawNumericValue, preventNegative),
             [rawNumericValue, preventNegative]
@@ -117,7 +145,6 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
 
         const smallScreenLarge = isSmallScreenWithLargeSize(isSmallScreen, size)
 
-        const paddingX = inputContainerTokens.paddingLeft[size]
         const paddingY =
             toPixels(inputContainerTokens.paddingTop[size]) +
             (smallScreenLarge ? 0.5 : 1)
@@ -132,17 +159,21 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             [rawNumericValue, numericMin, numericMax]
         )
 
-        const hasError = getNumberInputHasError(
-            error?.show,
-            error?.message,
-            rangeErrorMessage
-        )
+        const hasError =
+            Boolean(unitLengthErrorMessage) ||
+            getNumberInputHasError(
+                error?.show,
+                error?.message,
+                rangeErrorMessage
+            )
 
-        const displayErrorMessage = getNumberInputDisplayErrorMessage(
-            error?.show,
-            error?.message,
-            rangeErrorMessage
-        )
+        const displayErrorMessage =
+            unitLengthErrorMessage ??
+            getNumberInputDisplayErrorMessage(
+                error?.show,
+                error?.message,
+                rangeErrorMessage
+            )
 
         const ariaDescribedBy = buildNumberInputAriaDescribedBy(
             hintText,
@@ -152,7 +183,50 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             displayErrorMessage
         )
 
-        const labelState = getNumberInputLabelState(disabled, hasError)
+        const labelState = getNumberInputLabelState(
+            disabled,
+            hasError,
+            isFocused
+        )
+        const unitState = useMemo(
+            () =>
+                getNumberInputUnitState(
+                    disabled,
+                    hasError,
+                    isFocused,
+                    isHovered
+                ),
+            [disabled, hasError, isFocused, isHovered]
+        )
+
+        useLayoutEffect(() => {
+            if (!showUnit) {
+                setMeasuredUnitWidth(0)
+                return
+            }
+            const el = unitRef.current
+            if (!el) {
+                setMeasuredUnitWidth(0)
+                return
+            }
+            return subscribeElementOffsetWidth(el, setMeasuredUnitWidth)
+        }, [showUnit, unitDirection, unitText, size, unitState, disabled])
+
+        useLayoutEffect(() => {
+            setMeasuredLeftSlotWidth(
+                slot.left
+                    ? toPixels(inputContainerTokens.slot.left.width[size])
+                    : 0
+            )
+        }, [slot.left, size, inputContainerTokens])
+
+        useLayoutEffect(() => {
+            setMeasuredRightSlotWidth(
+                slot.right
+                    ? toPixels(inputContainerTokens.slot.right.width[size])
+                    : 0
+            )
+        }, [slot.right, size, inputContainerTokens])
 
         const updateValue = (newValue: number): void => {
             if (rawNumericValue === newValue) return
@@ -275,6 +349,52 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                 bump('down')
             }
         }
+        const inputPaddingLeft = useMemo(
+            () =>
+                getNumberInputV2PaddingLeft(
+                    inputContainerTokens,
+                    size,
+                    showUnit,
+                    unitDirection,
+                    measuredUnitWidth,
+                    measuredLeftSlotWidth,
+                    measuredRightSlotWidth
+                ),
+            [
+                showUnit,
+                unitDirection,
+                size,
+                measuredUnitWidth,
+                measuredLeftSlotWidth,
+                measuredRightSlotWidth,
+                inputContainerTokens,
+            ]
+        )
+
+        const inputPaddingRight = useMemo(
+            () =>
+                getNumberInputV2PaddingRight(
+                    inputContainerTokens,
+                    size,
+                    showUnit,
+                    unitDirection,
+                    measuredUnitWidth,
+                    measuredLeftSlotWidth,
+                    measuredRightSlotWidth
+                ),
+            [
+                showUnit,
+                unitDirection,
+                size,
+                measuredUnitWidth,
+                measuredLeftSlotWidth,
+                measuredRightSlotWidth,
+                inputContainerTokens,
+            ]
+        )
+
+        /** Matches input text inset so the floating label aligns with the value, not the field edge (avoids unit / left slot). */
+        const floatingLabelLeftPadding = toPixels(inputPaddingLeft)
 
         return (
             <Block
@@ -303,6 +423,8 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                     width="100%"
                     display="flex"
                     borderRadius={inputContainerTokens.borderRadius[size]}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
                 >
                     {Boolean(label.text?.trim()) && smallScreenLarge && (
                         <FloatingLabelsV2
@@ -312,7 +434,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                             inputId={inputId}
                             isInputFocusedOrWithValue={inputFocusedOrWithValue}
                             topPadding={paddingY}
-                            leftPadding={toPixels(paddingX)}
+                            leftPadding={floatingLabelLeftPadding}
                             tokens={{
                                 placeholder: inputContainerTokens.placeholder,
                                 required:
@@ -322,6 +444,70 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                             state={labelState}
                         />
                     )}
+                    {showUnit &&
+                        unitDirection === NumberInputV2Direction.LEFT && (
+                            <NumberInputV2Unit
+                                ref={unitRef}
+                                unit={unitText}
+                                inputState={unitState}
+                                inputContainerTokens={numberInputTokens}
+                                size={size}
+                                unitDirection={unitDirection}
+                            />
+                        )}
+                    {slot.left &&
+                        showUnit &&
+                        unitDirection === NumberInputV2Direction.LEFT && (
+                            <Block
+                                position="absolute"
+                                top="50%"
+                                left={0}
+                                width={toPixels(
+                                    inputContainerTokens.slot.left.width[size]
+                                )}
+                                height={toPixels(
+                                    inputContainerTokens.slot.left.height[size]
+                                )}
+                                transform="translateY(-50%)"
+                                contentCentered
+                                overflow="hidden"
+                                marginLeft={`${
+                                    measuredUnitWidth +
+                                    toPixels(
+                                        inputContainerTokens.slot.left.margin[
+                                            size
+                                        ] ?? 0
+                                    )
+                                }px`}
+                            >
+                                {slot.left}
+                            </Block>
+                        )}
+                    {slot.left &&
+                        showUnit &&
+                        unitDirection === NumberInputV2Direction.RIGHT && (
+                            <Block
+                                position="absolute"
+                                top="50%"
+                                left={0}
+                                width={toPixels(
+                                    inputContainerTokens.slot.left.width[size]
+                                )}
+                                height={toPixels(
+                                    inputContainerTokens.slot.left.height[size]
+                                )}
+                                transform="translateY(-50%)"
+                                contentCentered
+                                overflow="hidden"
+                                marginLeft={toPixels(
+                                    inputContainerTokens.slot.left.margin[
+                                        size
+                                    ] ?? 0
+                                )}
+                            >
+                                {slot.left}
+                            </Block>
+                        )}
                     <PrimitiveInput
                         ref={setInputRef}
                         id={inputId}
@@ -348,16 +534,17 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         aria-required={required ? 'true' : undefined}
                         aria-invalid={hasError ? 'true' : 'false'}
                         aria-describedby={ariaDescribedBy}
-                        paddingX={paddingX}
+                        paddingLeft={inputPaddingLeft}
+                        paddingRight={inputPaddingRight}
                         paddingTop={
                             smallScreenLarge && inputFocusedOrWithValue
                                 ? paddingY * 1.5
-                                : paddingY
+                                : inputContainerTokens.paddingTop[size]
                         }
                         paddingBottom={
                             smallScreenLarge && inputFocusedOrWithValue
                                 ? paddingY / 2
-                                : paddingY
+                                : inputContainerTokens.paddingBottom[size]
                         }
                         borderRadius={inputContainerTokens.borderRadius[size]}
                         border={inputContainerTokens.border[borderState]}
@@ -417,16 +604,80 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         onBlur={handleBlur}
                         {...filteredRest}
                     />
-                    <NumberInputV2Stepper
-                        labelText={label.text}
-                        disabled={disabled}
-                        borderState={borderState}
-                        isUpButtonDisabled={isUpButtonDisabled}
-                        isDownButtonDisabled={isDownButtonDisabled}
-                        onStep={bump}
-                        inputContainerTokens={inputContainerTokens}
-                        size={size}
-                    />
+                    {slot.right &&
+                        showUnit &&
+                        unitDirection === NumberInputV2Direction.RIGHT && (
+                            <Block
+                                position="absolute"
+                                top="50%"
+                                right={0}
+                                width={toPixels(
+                                    inputContainerTokens.slot.right.width[size]
+                                )}
+                                height={toPixels(
+                                    inputContainerTokens.slot.right.height[size]
+                                )}
+                                transform="translateY(-50%)"
+                                contentCentered
+                                overflow="hidden"
+                                marginRight={`${
+                                    measuredUnitWidth +
+                                    toPixels(
+                                        inputContainerTokens.paddingRight[size]
+                                    )
+                                }px`}
+                            >
+                                {slot.right}
+                            </Block>
+                        )}
+                    {slot.right &&
+                        showUnit &&
+                        unitDirection === NumberInputV2Direction.LEFT && (
+                            <Block
+                                position="absolute"
+                                top="50%"
+                                right={0}
+                                width={toPixels(
+                                    inputContainerTokens.slot.right.width[size]
+                                )}
+                                height={toPixels(
+                                    inputContainerTokens.slot.right.height[size]
+                                )}
+                                transform="translateY(-50%)"
+                                contentCentered
+                                overflow="hidden"
+                                marginRight={toPixels(
+                                    inputContainerTokens.slot.right.margin[
+                                        size
+                                    ] ?? 0
+                                )}
+                            >
+                                {slot.right}
+                            </Block>
+                        )}
+                    {showUnit &&
+                        unitDirection === NumberInputV2Direction.RIGHT && (
+                            <NumberInputV2Unit
+                                ref={unitRef}
+                                unit={unitText}
+                                inputState={unitState}
+                                inputContainerTokens={numberInputTokens}
+                                size={size}
+                                unitDirection={unitDirection}
+                            />
+                        )}
+                    {!showUnit && (
+                        <NumberInputV2Stepper
+                            labelText={label.text}
+                            disabled={disabled}
+                            borderState={borderState}
+                            isUpButtonDisabled={isUpButtonDisabled}
+                            isDownButtonDisabled={isDownButtonDisabled}
+                            onStep={bump}
+                            inputContainerTokens={numberInputTokens}
+                            size={size}
+                        />
+                    )}
                 </Block>
                 <InputFooterV2
                     error={Boolean(displayErrorMessage)}

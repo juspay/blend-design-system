@@ -6,12 +6,12 @@ import Text from '../../../../packages/blend/lib/components/Text/Text'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { Search, Mail, Hash } from 'lucide-react'
 import {
-    Switch,
     TagShape,
     TagSize,
     TagVariant,
-} from '@juspay/blend-design-system'
+} from '../../../../packages/blend/lib/components/Tags/types'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
+import Switch from '../../../../packages/blend/lib/components/Switch/Switch'
 
 const sizeOptions = [
     { value: InputSizeV2.SM, label: 'Small' },

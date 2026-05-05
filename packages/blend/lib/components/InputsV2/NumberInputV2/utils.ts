@@ -1,4 +1,22 @@
+import { toPixels } from '../../../global-utils/GlobalUtils'
 import { InputSizeV2, InputStateV2 } from '../inputV2.types'
+import type { NumberInputV2TokensType } from './numberInputV2.tokens'
+import { NumberInputV2Direction } from './numberInputV2.types'
+
+/** Max length for `unit` after trim; longer values are invalid (error + unit hidden). */
+export const NUMBER_INPUT_V2_UNIT_MAX_LENGTH = 7
+
+/** When non-empty `unit` exceeds the max length, returns a footer error message. */
+export const getNumberInputV2UnitLengthErrorMessage = (
+    unit: string | undefined
+): string | undefined => {
+    const t = unit?.trim() ?? ''
+    if (t.length === 0) return undefined
+    if (t.length > NUMBER_INPUT_V2_UNIT_MAX_LENGTH) {
+        return `Unit must be ${NUMBER_INPUT_V2_UNIT_MAX_LENGTH} characters or fewer.`
+    }
+    return undefined
+}
 
 export const sanitizeNumberInput = (
     inputValue: string,
@@ -234,10 +252,26 @@ export const buildNumberInputAriaDescribedBy = (
 
 export const getNumberInputLabelState = (
     disabled: boolean | undefined,
-    hasError: boolean
+    hasError: boolean,
+    isFocused: boolean
 ): InputStateV2 => {
     if (disabled) return InputStateV2.DISABLED
     if (hasError) return InputStateV2.ERROR
+    if (isFocused) return InputStateV2.FOCUS
+    return InputStateV2.DEFAULT
+}
+
+/** Visual state for the unit strip (borders/color); includes hover so it matches `PrimitiveInput` `_hover` chrome. */
+export const getNumberInputUnitState = (
+    disabled: boolean | undefined,
+    hasError: boolean,
+    isFocused: boolean,
+    isHovered: boolean
+): InputStateV2 => {
+    if (disabled) return InputStateV2.DISABLED
+    if (hasError) return InputStateV2.ERROR
+    if (isFocused) return InputStateV2.FOCUS
+    if (isHovered) return InputStateV2.HOVER
     return InputStateV2.DEFAULT
 }
 
@@ -294,3 +328,84 @@ export const shouldEmitBlurChange = (
     clampedNumValue: number | null,
     rawNumericValue: number | null
 ): boolean => clamped !== eventValue && clampedNumValue !== rawNumericValue
+
+type NumberInputV2InputContainerTokens =
+    NumberInputV2TokensType['inputContainer']
+
+/** Subscribes to `element` width changes; calls `setWidth` with `offsetWidth`. Returns unsubscribe. */
+export const subscribeElementOffsetWidth = (
+    element: HTMLElement,
+    setWidth: (width: number) => void
+): (() => void) => {
+    const measure = (): void => {
+        setWidth(element.offsetWidth)
+    }
+    measure()
+    if (typeof ResizeObserver === 'undefined') {
+        return () => {}
+    }
+    const ro = new ResizeObserver(measure)
+    if (typeof ro.observe !== 'function') {
+        return () => {}
+    }
+    ro.observe(element)
+    return () => {
+        if (typeof ro.disconnect === 'function') {
+            ro.disconnect()
+        }
+    }
+}
+
+/**
+ * Horizontal padding so input text clears absolutely positioned adornments on the **left**:
+ * - **Unit left**: unit width + left-slot margin + left-slot width + `paddingLeft` token.
+ * - **Unit right**: left-slot margin + left-slot width + `paddingLeft` only (unit and right
+ *   adornments do not affect left inset).
+ */
+export const getNumberInputV2PaddingLeft = (
+    inputContainerTokens: NumberInputV2InputContainerTokens,
+    size: InputSizeV2,
+    showUnit: boolean,
+    unitDirection: NumberInputV2Direction,
+    measuredUnitWidth: number,
+    measuredLeftSlotWidth: number,
+    measuredRightSlotWidth: number
+): string => {
+    void measuredRightSlotWidth
+    const pl = inputContainerTokens.paddingLeft[size]
+    const ml = toPixels(inputContainerTokens.slot.left.margin[size] ?? 0)
+    if (showUnit && unitDirection === NumberInputV2Direction.LEFT) {
+        return `${measuredUnitWidth + ml + measuredLeftSlotWidth + toPixels(pl)}px`
+    }
+    if (showUnit && unitDirection === NumberInputV2Direction.RIGHT) {
+        return `${ml + measuredLeftSlotWidth + toPixels(pl)}px`
+    }
+    return pl as string
+}
+
+/**
+ * Horizontal padding so input text clears absolutely positioned adornments on the **right**:
+ * - **Unit right**: unit width + `paddingRight` + right-slot width (matches slot `marginRight`
+ *   layout: unit + padding strip, then the right slot).
+ * - **Unit left**: right-slot margin + right-slot width + `paddingRight` only.
+ */
+export const getNumberInputV2PaddingRight = (
+    inputContainerTokens: NumberInputV2InputContainerTokens,
+    size: InputSizeV2,
+    showUnit: boolean,
+    unitDirection: NumberInputV2Direction,
+    measuredUnitWidth: number,
+    measuredLeftSlotWidth: number,
+    measuredRightSlotWidth: number
+): string => {
+    void measuredLeftSlotWidth
+    const pr = inputContainerTokens.paddingRight[size]
+    const mr = toPixels(inputContainerTokens.slot.right.margin[size] ?? 0)
+    if (showUnit && unitDirection === NumberInputV2Direction.RIGHT) {
+        return `${measuredUnitWidth + toPixels(pr) + measuredRightSlotWidth}px`
+    }
+    if (showUnit && unitDirection === NumberInputV2Direction.LEFT) {
+        return `${mr + measuredRightSlotWidth + toPixels(pr)}px`
+    }
+    return pr as string
+}

@@ -188,12 +188,13 @@ const Menu = ({
                 return (
                     <RadixMenu.Label asChild>
                         <PrimitiveText
-                            fontSize={12}
-                            padding="6px 8px"
+                            fontSize={menuTokens.item.optionsLabel.fontSize}
+                            fontWeight={menuTokens.item.optionsLabel.fontWeight}
+                            padding={`${menuTokens.item.optionsLabel.padding.y} ${menuTokens.item.optionsLabel.padding.x}`}
+                            margin={`${menuTokens.item.optionsLabel.margin.y} ${menuTokens.item.optionsLabel.margin.x}`}
                             userSelect="none"
-                            margin="0px 6px"
                             textTransform="uppercase"
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                            color={menuTokens.item.optionsLabel.color}
                             aria-label={label}
                         >
                             {label}

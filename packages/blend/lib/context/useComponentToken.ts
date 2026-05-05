@@ -66,6 +66,13 @@ import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEdi
 import { ResponsiveProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
 import { ResponsiveMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
 import { ResponsiveNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import { ResponsiveOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import { ResponsiveTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import { ResponsiveBadgeTokens } from '../components/Badge/badge.tokens'
+import { ResponsiveSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+import { ResponsiveChatInputV2TokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+import type { ResponsiveStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -136,8 +143,15 @@ export const useComponentToken = (
     | ResponsiveBreadcrumbV2Tokens
     | ResponsiveProgressBarV2Tokens
     | ResponsiveMultiValueInputV2Tokens
+    | ResponsiveNumberInputV2Tokens
+    | ResponsiveOTPInputV2Tokens
+    | ResponsiveTextAreaV2Tokens
+    | ResponsiveSearchInputV2Tokens
     | ResponsiveCodeEditorV2Tokens
-    | ResponsiveNumberInputV2Tokens => {
+    | ResponsiveBadgeTokens
+    | ResponsiveChatInputV2TokensType
+    | ChatInputV2MobileTokensType
+    | ResponsiveStepperV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -230,6 +244,10 @@ export const useComponentToken = (
             return componentTokens.DIRECTORY
         case 'CHAT_INPUT':
             return componentTokens.CHAT_INPUT
+        case 'CHAT_INPUTV2':
+            return componentTokens.CHAT_INPUTV2
+        case 'CHAT_INPUTV2_MOBILE':
+            return componentTokens.CHAT_INPUTV2_MOBILE
         case 'BUTTONV2':
             return componentTokens.BUTTONV2
         case 'TAGV2':
@@ -250,6 +268,8 @@ export const useComponentToken = (
             return componentTokens.AVATARV2
         case 'TEXT_INPUTV2':
             return componentTokens.TEXT_INPUTV2
+        case 'TEXT_AREA_V2':
+            return componentTokens.TEXT_AREA_V2
         case 'CHARTSV2':
             return componentTokens.CHARTSV2
         case 'TIMELINE':
@@ -276,6 +296,14 @@ export const useComponentToken = (
             return componentTokens.MULTI_VALUE_INPUT_V2
         case 'NUMBER_INPUT_V2':
             return componentTokens.NUMBER_INPUT_V2
+        case 'OTP_INPUTV2':
+            return componentTokens.OTP_INPUTV2
+        case 'BADGE':
+            return componentTokens.BADGE
+        case 'SEARCH_INPUT_V2':
+            return componentTokens.SEARCH_INPUT_V2
+        case 'STEPPERV2':
+            return componentTokens.STEPPERV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

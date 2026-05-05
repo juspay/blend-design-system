@@ -4,6 +4,13 @@ import { render, screen, act, fireEvent } from '../../test-utils'
 import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
+import { NumberInputV2Direction } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.types'
+import {
+    getNumberInputDisplayValue,
+    getNumberInputV2PaddingLeft,
+    getNumberInputV2PaddingRight,
+} from '../../../lib/components/InputsV2/NumberInputV2/utils'
+import type { NumberInputV2TokensType } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.tokens'
 
 const noop = () => {}
 
@@ -67,6 +74,20 @@ describe('NumberInputV2 Component', () => {
             expect(screen.getByText('Between 0 and 100')).toBeInTheDocument()
         })
 
+        it('renders help icon when helpIconText is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'With help', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    helpIconText="Additional context for this field"
+                />
+            )
+            expect(
+                document.querySelector('[data-element="icon"]')
+            ).toBeInTheDocument()
+        })
+
         it('renders required indicator', () => {
             render(
                 <NumberInputV2
@@ -97,6 +118,184 @@ describe('NumberInputV2 Component', () => {
             expect(
                 screen.getByRole('button', { name: /Decrease Items/i })
             ).toBeInTheDocument()
+        })
+    })
+
+    describe('Unit suffix (unit prop)', () => {
+        it('renders unit strip and hides stepper buttons when unit is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Mass', subtext: '' }}
+                    value={12}
+                    onChange={noop}
+                    unit="kg"
+                />
+            )
+            expect(screen.getByText('kg')).toBeInTheDocument()
+            expect(
+                document.querySelector('[data-element="unit"]')
+            ).toBeInTheDocument()
+            expect(
+                screen.queryByRole('button', { name: /Increase Mass/i })
+            ).not.toBeInTheDocument()
+            expect(
+                screen.queryByRole('button', { name: /Decrease Mass/i })
+            ).not.toBeInTheDocument()
+        })
+
+        it('treats whitespace-only unit as empty (steppers shown, no unit strip)', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit="   "
+                />
+            )
+            expect(
+                document.querySelector('[data-element="unit"]')
+            ).not.toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: /Increase Qty/i })
+            ).toBeInTheDocument()
+        })
+
+        it('still exposes spinbutton when unit is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Pct', subtext: '' }}
+                    value={50}
+                    onChange={noop}
+                    unit="%"
+                />
+            )
+            expect(screen.getByRole('spinbutton')).toHaveValue('50')
+        })
+
+        it('increments via ArrowUp when unit is set (no stepper buttons)', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'U', subtext: '' }}
+                    value={4}
+                    onChange={handleChange}
+                    min={0}
+                    max={10}
+                    step={1}
+                    unit="px"
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            handleChange.mockClear()
+            await user.keyboard('{ArrowUp}')
+            expect(handleChange).toHaveBeenCalledTimes(1)
+            expect(
+                handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
+                    .target.value
+            ).toBe('5')
+        })
+
+        it('renders the unit strip before the input when unitDirection is left', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Len', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit="cm"
+                    unitDirection={NumberInputV2Direction.LEFT}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            const unitEl = document.querySelector('[data-element="unit"]')
+            expect(unitEl).toBeInTheDocument()
+            expect(
+                unitEl!.compareDocumentPosition(input) &
+                    Node.DOCUMENT_POSITION_FOLLOWING
+            ).toBeTruthy()
+        })
+
+        it('renders the unit strip after the input when unitDirection is right', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Len', subtext: '' }}
+                    value={1}
+                    onChange={noop}
+                    unit="cm"
+                    unitDirection={NumberInputV2Direction.RIGHT}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            const unitEl = document.querySelector('[data-element="unit"]')
+            expect(unitEl).toBeInTheDocument()
+            expect(
+                input.compareDocumentPosition(unitEl!) &
+                    Node.DOCUMENT_POSITION_FOLLOWING
+            ).toBeTruthy()
+        })
+    })
+
+    describe('Slots (with unit)', () => {
+        it('renders left and right slot content when unit is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'S', subtext: '' }}
+                    value={2}
+                    onChange={noop}
+                    unit="kg"
+                    slot={{
+                        left: <span data-testid="ni-v2-slot-left">L</span>,
+                        right: <span data-testid="ni-v2-slot-right">R</span>,
+                    }}
+                />
+            )
+            expect(screen.getByTestId('ni-v2-slot-left')).toBeInTheDocument()
+            expect(screen.getByTestId('ni-v2-slot-right')).toBeInTheDocument()
+        })
+
+        it('does not render slots when unit is empty', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'S', subtext: '' }}
+                    value={2}
+                    onChange={noop}
+                    unit=""
+                    slot={{
+                        left: <span data-testid="ni-v2-slot-left">L</span>,
+                        right: <span data-testid="ni-v2-slot-right">R</span>,
+                    }}
+                />
+            )
+            expect(
+                screen.queryByTestId('ni-v2-slot-left')
+            ).not.toBeInTheDocument()
+            expect(
+                screen.queryByTestId('ni-v2-slot-right')
+            ).not.toBeInTheDocument()
+        })
+
+        it('still accepts keyboard input when slots are present', async () => {
+            const handleChange = vi.fn()
+            const { user } = render(
+                <NumberInputV2
+                    label={{ text: 'Type', subtext: '' }}
+                    value={null}
+                    onChange={handleChange}
+                    unit="kg"
+                    slot={{
+                        left: <span data-testid="ni-v2-slot-left">L</span>,
+                        right: <span data-testid="ni-v2-slot-right">R</span>,
+                    }}
+                />
+            )
+            const input = screen.getByRole('spinbutton')
+            await user.click(input)
+            await user.type(input, '9')
+            expect(handleChange).toHaveBeenCalled()
+            expect(
+                handleChange.mock.calls[handleChange.mock.calls.length - 1][0]
+                    .target.value
+            ).toBe('9')
         })
     })
 
@@ -662,6 +861,120 @@ describe('NumberInputV2 Component', () => {
             expect(
                 screen.getByText(/Value must be at most 100/i)
             ).toBeInTheDocument()
+        })
+
+        it('shows at-least message when only min is set', () => {
+            render(
+                <NumberInputV2
+                    label={{ text: 'Qty', subtext: '' }}
+                    value={-5}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            expect(
+                screen.getByText(/Value must be at least 0/i)
+            ).toBeInTheDocument()
+        })
+    })
+
+    describe('getNumberInputDisplayValue', () => {
+        it('returns internal string while focused', () => {
+            expect(getNumberInputDisplayValue(true, '1.', 10, 10)).toBe('1.')
+        })
+
+        it('returns empty when controlled value is null', () => {
+            expect(getNumberInputDisplayValue(false, '', null, null)).toBe('')
+        })
+
+        it('returns effective numeric string when blurred and value is set', () => {
+            expect(getNumberInputDisplayValue(false, '', 7, 7)).toBe('7')
+        })
+
+        it('returns empty when value is NaN (effective numeric is null)', () => {
+            expect(
+                getNumberInputDisplayValue(
+                    false,
+                    '',
+                    Number.NaN as unknown as number,
+                    null
+                )
+            ).toBe('')
+        })
+    })
+
+    describe('getNumberInputV2PaddingLeft / getNumberInputV2PaddingRight', () => {
+        const ic = {
+            paddingLeft: { sm: 10, md: 12, lg: 12 },
+            paddingRight: { sm: 10, md: 8, lg: 8 },
+            slot: {
+                left: {
+                    margin: { sm: 4, md: 4, lg: 4 },
+                },
+                right: {
+                    margin: { sm: 4, md: 4, lg: 4 },
+                },
+            },
+        } as NumberInputV2TokensType['inputContainer']
+
+        const unitW = 40
+        const leftSlotW = 16
+        const rightSlotW = 14
+
+        it('left padding with trailing unit uses paddingLeft, left slot margin, and left slot width (not right-side tokens)', () => {
+            expect(
+                getNumberInputV2PaddingLeft(
+                    ic,
+                    InputSizeV2.MD,
+                    true,
+                    NumberInputV2Direction.RIGHT,
+                    unitW,
+                    leftSlotW,
+                    rightSlotW
+                )
+            ).toBe(`${4 + leftSlotW + 12}px`)
+        })
+
+        it('left padding with leading unit includes unit width and left slot margin', () => {
+            expect(
+                getNumberInputV2PaddingLeft(
+                    ic,
+                    InputSizeV2.MD,
+                    true,
+                    NumberInputV2Direction.LEFT,
+                    unitW,
+                    leftSlotW,
+                    rightSlotW
+                )
+            ).toBe(`${unitW + 4 + leftSlotW + 12}px`)
+        })
+
+        it('right padding with trailing unit uses unit width, paddingRight, and right slot width', () => {
+            expect(
+                getNumberInputV2PaddingRight(
+                    ic,
+                    InputSizeV2.MD,
+                    true,
+                    NumberInputV2Direction.RIGHT,
+                    unitW,
+                    leftSlotW,
+                    rightSlotW
+                )
+            ).toBe(`${unitW + 8 + rightSlotW}px`)
+        })
+
+        it('right padding with leading unit uses right slot margin, slot width, and paddingRight', () => {
+            expect(
+                getNumberInputV2PaddingRight(
+                    ic,
+                    InputSizeV2.MD,
+                    true,
+                    NumberInputV2Direction.LEFT,
+                    unitW,
+                    leftSlotW,
+                    rightSlotW
+                )
+            ).toBe(`${4 + rightSlotW + 8}px`)
         })
     })
 })

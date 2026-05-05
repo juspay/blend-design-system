@@ -142,6 +142,10 @@ import {
     ResponsiveTextInputV2Tokens,
 } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import {
+    getTextAreaV2Tokens,
+    ResponsiveTextAreaV2Tokens,
+} from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import {
     getChartV2Tokens,
     ResponsiveChartV2Tokens,
 } from '../components/ChartsV2/chartV2.tokens'
@@ -186,6 +190,10 @@ import {
     getProgressBarV2Tokens,
     ResponsiveProgressBarV2Tokens,
 } from '../components/ProgressBarV2/progressBarV2.tokens'
+import {
+    getStepperV2Tokens,
+    ResponsiveStepperV2Tokens,
+} from '../components/StepperV2/stepperV2.tokens'
 
 import {
     getBreadcrumbV2Tokens,
@@ -199,10 +207,31 @@ import {
     getNumberInputV2Tokens,
     ResponsiveNumberInputV2Tokens,
 } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import {
+    ResponsiveOTPInputV2Tokens,
+    getOTPInputV2Tokens,
+} from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import {
+    ResponsiveBadgeTokens,
+    getBadgeTokens,
+} from '../components/Badge/badge.tokens'
+import {
+    ResponsiveSearchInputV2Tokens,
+    getSearchInputV2Tokens,
+} from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+import {
+    ResponsiveChatInputV2TokensType,
+    getChatInputV2Tokens,
+} from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+import {
+    getChatInputV2MobileTokens,
+    ChatInputV2MobileTokensType,
+} from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
     TEXT_AREA?: ResponsiveTextAreaTokens
+    TEXT_AREA_V2?: ResponsiveTextAreaV2Tokens
     RADIO?: ResponsiveRadioTokens
     SWITCH?: ResponsiveSwitchTokens
     TEXT_INPUT?: ResponsiveTextInputTokens
@@ -244,6 +273,7 @@ export type ComponentTokenType = {
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
+    CHAT_INPUTV2?: ResponsiveChatInputV2TokensType
     TIMELINE?: ResponsiveTimelineTokens
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
@@ -268,6 +298,11 @@ export type ComponentTokenType = {
     PROGRESS_BARV2?: ResponsiveProgressBarV2Tokens
     MULTI_VALUE_INPUT_V2?: ResponsiveMultiValueInputV2Tokens
     NUMBER_INPUT_V2?: ResponsiveNumberInputV2Tokens
+    OTP_INPUTV2?: ResponsiveOTPInputV2Tokens
+    BADGE?: ResponsiveBadgeTokens
+    SEARCH_INPUT_V2?: ResponsiveSearchInputV2Tokens
+    CHAT_INPUTV2_MOBILE?: ChatInputV2MobileTokensType
+    STEPPERV2?: ResponsiveStepperV2Tokens
 }
 
 type ThemeContextType = {
@@ -332,6 +367,7 @@ const ThemeContext = createContext<ThemeContextType>({
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATARV2: getAvatarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TEXT_AREA_V2: getTextAreaV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHARTSV2: getChartV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
         SINGLE_SELECT_V2: getSingleSelectV2Tokens(
@@ -354,6 +390,15 @@ const ThemeContext = createContext<ThemeContextType>({
             Theme.LIGHT
         ),
         NUMBER_INPUT_V2: getNumberInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        OTP_INPUTV2: getOTPInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        BADGE: getBadgeTokens(FOUNDATION_THEME, Theme.LIGHT),
+        SEARCH_INPUT_V2: getSearchInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHAT_INPUTV2: getChatInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHAT_INPUTV2_MOBILE: getChatInputV2MobileTokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
+        STEPPERV2: getStepperV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

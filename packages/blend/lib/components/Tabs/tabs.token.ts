@@ -11,7 +11,7 @@ export type TabsState = 'default' | 'hover' | 'active' | 'disabled'
  * Structure:
  * - target: container | trigger | text | underline (defines what element the token applies to)
  * - CSSProp: backgroundColor | borderRadius | padding | border | color | fontSize | fontWeight | gap | height
- * - size: md | lg (only for size-dependent properties)
+ * - size: sm | md | lg (only for size-dependent properties)
  * - variant: underline | boxed | floating | pills (tabs variant)
  * - state: default | hover | active | disabled (interaction state)
  *
@@ -143,6 +143,12 @@ export const getTabsTokens = (
             // Pattern: borderRadius.[size].[variant]
             // Example: borderRadius.lg.pills
             borderRadius: {
+                [TabsSize.SM]: {
+                    [TabsVariant.UNDERLINE]: '0',
+                    [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                    [TabsVariant.FLOATING]: foundationToken.border.radius[8],
+                    [TabsVariant.PILLS]: foundationToken.border.radius[28],
+                },
                 [TabsSize.MD]: {
                     [TabsVariant.UNDERLINE]: '0',
                     [TabsVariant.BOXED]: foundationToken.border.radius[8],
@@ -159,6 +165,32 @@ export const getTabsTokens = (
             // Pattern: padding.size.variant.top/right/bottom/left.value
             // Example: padding.md.underline.top
             padding: {
+                [TabsSize.SM]: {
+                    [TabsVariant.UNDERLINE]: {
+                        top: foundationToken.unit[2],
+                        right: foundationToken.unit[8],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[8],
+                    },
+                    [TabsVariant.BOXED]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[12],
+                    },
+                    [TabsVariant.FLOATING]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[12],
+                    },
+                    [TabsVariant.PILLS]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[12],
+                    },
+                },
                 [TabsSize.MD]: {
                     [TabsVariant.UNDERLINE]: {
                         top: foundationToken.unit[2],
@@ -240,6 +272,12 @@ export const getTabsTokens = (
                 // Pattern: container.borderRadius.[size].[variant]
                 // Example: container.borderRadius.md.floating
                 borderRadius: {
+                    [TabsSize.SM]: {
+                        [TabsVariant.UNDERLINE]: '0',
+                        [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                        [TabsVariant.FLOATING]: '0',
+                        [TabsVariant.PILLS]: '0',
+                    },
                     [TabsSize.MD]: {
                         [TabsVariant.UNDERLINE]: '0',
                         [TabsVariant.BOXED]: foundationToken.border.radius[8],
@@ -256,6 +294,32 @@ export const getTabsTokens = (
                 // Pattern: container.padding.size.variant.top/right/bottom/left.value
                 // Example: container.padding.md.underline.top
                 padding: {
+                    [TabsSize.SM]: {
+                        [TabsVariant.UNDERLINE]: {
+                            top: foundationToken.unit[4],
+                            right: '0',
+                            bottom: '0',
+                            left: '0',
+                        },
+                        [TabsVariant.BOXED]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                        [TabsVariant.FLOATING]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                        [TabsVariant.PILLS]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                    },
                     [TabsSize.MD]: {
                         [TabsVariant.UNDERLINE]: {
                             top: foundationToken.unit[8],
@@ -351,6 +415,8 @@ export const getTabsTokens = (
                     // Pattern: trigger.text.fontSize.[size]
                     // Example: trigger.text.fontSize.md
                     fontSize: {
+                        [TabsSize.SM]:
+                            foundationToken.font.size.body.md.fontSize,
                         [TabsSize.MD]:
                             foundationToken.font.size.body.md.fontSize,
                         [TabsSize.LG]:
@@ -359,6 +425,7 @@ export const getTabsTokens = (
                     // Pattern: trigger.text.fontWeight.[size]
                     // Example: trigger.text.fontWeight.lg
                     fontWeight: {
+                        [TabsSize.SM]: foundationToken.font.weight[500],
                         [TabsSize.MD]: foundationToken.font.weight[500],
                         [TabsSize.LG]: foundationToken.font.weight[500],
                     },
@@ -398,6 +465,12 @@ export const getTabsTokens = (
             // Pattern: borderRadius.[size].[variant]
             // Example: borderRadius.lg.pills
             borderRadius: {
+                [TabsSize.SM]: {
+                    [TabsVariant.UNDERLINE]: '0',
+                    [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                    [TabsVariant.FLOATING]: foundationToken.border.radius[8],
+                    [TabsVariant.PILLS]: foundationToken.border.radius[28],
+                },
                 [TabsSize.MD]: {
                     [TabsVariant.UNDERLINE]: '0',
                     [TabsVariant.BOXED]: foundationToken.border.radius[8],
@@ -414,6 +487,32 @@ export const getTabsTokens = (
             // Pattern: padding.size.variant.top/right/bottom/left.value
             // Example: padding.lg.boxed.top
             padding: {
+                [TabsSize.SM]: {
+                    [TabsVariant.UNDERLINE]: {
+                        top: foundationToken.unit[2],
+                        right: foundationToken.unit[8],
+                        bottom: foundationToken.unit[8],
+                        left: foundationToken.unit[8],
+                    },
+                    [TabsVariant.BOXED]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[12],
+                    },
+                    [TabsVariant.FLOATING]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[12],
+                    },
+                    [TabsVariant.PILLS]: {
+                        top: foundationToken.unit[6],
+                        right: foundationToken.unit[12],
+                        bottom: foundationToken.unit[6],
+                        left: foundationToken.unit[12],
+                    },
+                },
                 [TabsSize.MD]: {
                     [TabsVariant.UNDERLINE]: {
                         top: foundationToken.unit[2],
@@ -495,6 +594,12 @@ export const getTabsTokens = (
                 // Pattern: container.borderRadius.[size].[variant]
                 // Example: container.borderRadius.lg.boxed
                 borderRadius: {
+                    [TabsSize.SM]: {
+                        [TabsVariant.UNDERLINE]: '0',
+                        [TabsVariant.BOXED]: foundationToken.border.radius[8],
+                        [TabsVariant.FLOATING]: '0',
+                        [TabsVariant.PILLS]: '0',
+                    },
                     [TabsSize.MD]: {
                         [TabsVariant.UNDERLINE]: '0',
                         [TabsVariant.BOXED]: foundationToken.border.radius[8],
@@ -511,6 +616,32 @@ export const getTabsTokens = (
                 // Pattern: container.padding.size.variant.top/right/bottom/left.value
                 // Example: container.padding.lg.floating.top
                 padding: {
+                    [TabsSize.SM]: {
+                        [TabsVariant.UNDERLINE]: {
+                            top: foundationToken.unit[4],
+                            right: '0',
+                            bottom: '0',
+                            left: '0',
+                        },
+                        [TabsVariant.BOXED]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                        [TabsVariant.FLOATING]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                        [TabsVariant.PILLS]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                    },
                     [TabsSize.MD]: {
                         [TabsVariant.UNDERLINE]: {
                             top: foundationToken.unit[8],
@@ -606,6 +737,8 @@ export const getTabsTokens = (
                     // Pattern: trigger.text.fontSize.[size]
                     // Example: trigger.text.fontSize.lg
                     fontSize: {
+                        [TabsSize.SM]:
+                            foundationToken.font.size.body.md.fontSize,
                         [TabsSize.MD]:
                             foundationToken.font.size.body.md.fontSize,
                         [TabsSize.LG]:
@@ -614,6 +747,7 @@ export const getTabsTokens = (
                     // Pattern: trigger.text.fontWeight.[size]
                     // Example: trigger.text.fontWeight.md
                     fontWeight: {
+                        [TabsSize.SM]: foundationToken.font.weight[500],
                         [TabsSize.MD]: foundationToken.font.weight[500],
                         [TabsSize.LG]: foundationToken.font.weight[500],
                     },

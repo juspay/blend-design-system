@@ -1,11 +1,15 @@
 import { useState } from 'react'
-import { NumberInputV2 } from '../../../../packages/blend/lib/components/InputsV2/NumberInputV2'
+import {
+    NumberInputV2,
+    NumberInputV2Direction,
+} from '../../../../packages/blend/lib/components/InputsV2/NumberInputV2'
 import { InputSizeV2 } from '../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
+import { Weight, Ruler } from 'lucide-react'
 
 const NumberInputV2Demo = () => {
     const { theme } = useTheme()
@@ -26,11 +30,37 @@ const NumberInputV2Demo = () => {
     const [showMin, setShowMin] = useState(false)
     const [showMax, setShowMax] = useState(false)
     const [preventNegative, setPreventNegative] = useState(false)
+    const [unit, setUnit] = useState('')
+    const [unitDirection, setUnitDirection] = useState<NumberInputV2Direction>(
+        NumberInputV2Direction.RIGHT
+    )
+
+    const [unitDemoKgValue, setUnitDemoKgValue] = useState<number | null>(72.5)
+    const [unitDemoMsValue, setUnitDemoMsValue] = useState<number | null>(240)
+    const [unitDemoTooLongValue, setUnitDemoTooLongValue] = useState<
+        number | null
+    >(0)
 
     // Options for selects
     const sizeOptions = [
+        { value: InputSizeV2.SM, label: 'Small' },
         { value: InputSizeV2.MD, label: 'Medium' },
         { value: InputSizeV2.LG, label: 'Large' },
+    ]
+    const unitDirectionOptions = [
+        { value: NumberInputV2Direction.LEFT, label: 'Left' },
+        { value: NumberInputV2Direction.RIGHT, label: 'Right' },
+    ]
+    const unitOptions = [
+        { value: '', label: 'None' },
+        { value: 'kg', label: 'kg' },
+        { value: 'lbs', label: 'lbs' },
+        { value: 'g', label: 'g' },
+        { value: 'mg', label: 'mg' },
+        { value: 'mcg', label: 'mcg' },
+        { value: 'iu', label: 'iu' },
+        { value: 'pascal', label: 'pascal' },
+        { value: 'long_unit', label: 'long_unit' },
     ]
 
     const stepOptions = [
@@ -78,6 +108,26 @@ const NumberInputV2Demo = () => {
                                 )
                             }
                             placeholder="Enter value"
+                            size={InputSizeV2.MD}
+                        />
+
+                        <SingleSelect
+                            label="Unit"
+                            items={[{ items: unitOptions }]}
+                            selected={unit}
+                            onSelect={(value) => setUnit(value as string)}
+                            placeholder="Select unit"
+                        />
+                        <SingleSelect
+                            label="Unit Direction"
+                            items={[{ items: unitDirectionOptions }]}
+                            selected={unitDirection}
+                            onSelect={(value) =>
+                                setUnitDirection(
+                                    value as NumberInputV2Direction
+                                )
+                            }
+                            placeholder="Select unit direction"
                         />
 
                         <SingleSelect
@@ -159,6 +209,12 @@ const NumberInputV2Demo = () => {
                     >
                         <div className="w-full max-w-md">
                             <NumberInputV2
+                                slot={{
+                                    left: <Weight size={46} />,
+                                    right: <Ruler size={46} />,
+                                }}
+                                unitDirection={unitDirection}
+                                unit={unit}
                                 label={{
                                     text: 'Your Label',
                                     subtext: 'This is a sublabel',
@@ -195,243 +251,6 @@ const NumberInputV2Demo = () => {
                                 required={isRequired}
                             />
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Basic Examples */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Basic Examples</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Default Number Input
-                        </h3>
-                        <NumberInputV2
-                            label={{ text: 'Default', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Enter number..."
-                            error={{
-                                show: hasError,
-                                message: 'This field has an error',
-                            }}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">With Step</h3>
-                        <NumberInputV2
-                            label={{ text: 'Step by 5', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Enter number..."
-                            step={5}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            Required Field
-                        </h3>
-                        <NumberInputV2
-                            label={{ text: 'Required Number', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Enter number..."
-                            required
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            With Hint Text
-                        </h3>
-                        <NumberInputV2
-                            label={{ text: 'Age', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Enter age"
-                            hintText="Must be between 0 and 120"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Sizes */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Sizes</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Medium</h3>
-                        <NumberInputV2
-                            label={{ text: 'Medium Number Input', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Medium size"
-                            size={InputSizeV2.MD}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Large</h3>
-                        <NumberInputV2
-                            label={{ text: 'Large Number Input', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Large size"
-                            size={InputSizeV2.LG}
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* States */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">States</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Default</h3>
-                        <NumberInputV2
-                            label={{ text: 'Default State', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Default input"
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Disabled</h3>
-                        <NumberInputV2
-                            label={{ text: 'Disabled Input', subtext: '' }}
-                            value={42}
-                            onChange={() => {}}
-                            placeholder="Disabled input"
-                            disabled
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Error</h3>
-                        <NumberInputV2
-                            label={{ text: 'Error Input', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Error input"
-                            error={{
-                                show: true,
-                                message: 'This field is required',
-                            }}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">
-                            With Help Text
-                        </h3>
-                        <NumberInputV2
-                            label={{ text: 'Help Input', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="With help text"
-                            helpIconText="This is additional help information"
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">With Sublabel</h3>
-                        <NumberInputV2
-                            label={{
-                                text: 'Sublabel Input',
-                                subtext: 'This is a sublabel',
-                            }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="With sublabel"
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Required</h3>
-                        <NumberInputV2
-                            label={{ text: 'Required Input', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="Required field"
-                            required
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Step Examples */}
-            <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Step Examples</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Step 0.1</h3>
-                        <NumberInputV2
-                            label={{ text: 'Decimal Step', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="0.1 increments"
-                            step={0.1}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Step 0.5</h3>
-                        <NumberInputV2
-                            label={{ text: 'Half Step', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="0.5 increments"
-                            step={0.5}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Step 1</h3>
-                        <NumberInputV2
-                            label={{ text: 'Whole Numbers', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="1 increments"
-                            step={1}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Step 5</h3>
-                        <NumberInputV2
-                            label={{ text: 'Step by 5', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="5 increments"
-                            step={5}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Step 10</h3>
-                        <NumberInputV2
-                            label={{ text: 'Step by 10', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="10 increments"
-                            step={10}
-                        />
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Step 100</h3>
-                        <NumberInputV2
-                            label={{ text: 'Step by 100', subtext: '' }}
-                            value={0}
-                            onChange={() => {}}
-                            placeholder="100 increments"
-                            step={100}
-                        />
                     </div>
                 </div>
             </div>
@@ -669,70 +488,94 @@ const NumberInputV2Demo = () => {
                 </div>
             </div>
 
-            {/* All Sizes with Different States */}
+            {/* Unit examples */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">All Sizes with States</h2>
-                <div className="space-y-8">
-                    {([InputSizeV2.MD, InputSizeV2.LG] as const).map((size) => (
-                        <div key={size} className="space-y-4">
-                            <h3 className="text-lg font-semibold">
-                                {size === InputSizeV2.MD ? 'MEDIUM' : 'LARGE'}{' '}
-                                Size
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <NumberInputV2
-                                    label={{ text: 'Default', subtext: '' }}
-                                    value={0}
-                                    onChange={() => {}}
-                                    placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} default`}
-                                    size={size}
-                                />
-                                <NumberInputV2
-                                    label={{ text: 'With Step', subtext: '' }}
-                                    value={0}
-                                    onChange={() => {}}
-                                    placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} with step`}
-                                    size={size}
-                                    step={5}
-                                />
-                                <NumberInputV2
-                                    label={{ text: 'Error', subtext: '' }}
-                                    value={0}
-                                    onChange={() => {}}
-                                    placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} error`}
-                                    size={size}
-                                    error={{
-                                        show: true,
-                                        message: 'Error message',
-                                    }}
-                                />
-                                <NumberInputV2
-                                    label={{ text: 'Disabled', subtext: '' }}
-                                    value={42}
-                                    onChange={() => {}}
-                                    placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} disabled`}
-                                    size={size}
-                                    disabled
-                                />
-                                <NumberInputV2
-                                    label={{ text: 'Required', subtext: '' }}
-                                    value={0}
-                                    onChange={() => {}}
-                                    placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} required`}
-                                    size={size}
-                                    required
-                                />
-                                <NumberInputV2
-                                    label={{ text: 'With Hint', subtext: '' }}
-                                    value={0}
-                                    onChange={() => {}}
-                                    placeholder={`${size === InputSizeV2.MD ? 'md' : 'lg'} with hint`}
-                                    size={size}
-                                    hintText="This is a hint"
-                                />
-                            </div>
-                        </div>
-                    ))}
+                <h2 className="text-2xl font-bold">Unit examples</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 max-w-3xl">
+                    Use <code className="font-mono text-xs">unit</code> with{' '}
+                    <code className="font-mono text-xs">unitDirection</code> to
+                    show a suffix or prefix. When a unit is present, the numeric
+                    stepper is hidden. Trimmed units longer than 7 characters
+                    show a validation error and the unit strip is not rendered.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Unit on the right (kg)
+                        </h3>
+                        <NumberInputV2
+                            slot={{
+                                left: <Weight size={46} />,
+                                right: <Ruler size={46} />,
+                            }}
+                            label={{ text: 'Weight', subtext: '' }}
+                            value={unitDemoKgValue}
+                            onChange={(e) =>
+                                setUnitDemoKgValue(
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                )
+                            }
+                            unit="kg"
+                            unitDirection={NumberInputV2Direction.RIGHT}
+                            placeholder="0"
+                            min={0}
+                            step={0.1}
+                            hintText="Typical suffix unit."
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Unit on the left (ms)
+                        </h3>
+                        <NumberInputV2
+                            slot={{
+                                left: <Weight size={46} />,
+                                right: <Ruler size={46} />,
+                            }}
+                            label={{ text: 'Latency', subtext: '' }}
+                            value={unitDemoMsValue}
+                            onChange={(e) =>
+                                setUnitDemoMsValue(
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                )
+                            }
+                            unit="ms"
+                            unitDirection={NumberInputV2Direction.LEFT}
+                            placeholder="0"
+                            min={0}
+                            step={1}
+                            hintText="Prefix unit before the value."
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">
+                            Unit too long (&gt; 7 chars)
+                        </h3>
+                        <NumberInputV2
+                            label={{
+                                text: 'Invalid unit string',
+                                subtext: '',
+                            }}
+                            value={unitDemoTooLongValue}
+                            onChange={(e) =>
+                                setUnitDemoTooLongValue(
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value)
+                                )
+                            }
+                            unit="millibar"
+                            unitDirection={NumberInputV2Direction.RIGHT}
+                            placeholder="0"
+                            hintText="millibar is 8 characters after trim — footer error, no unit chip."
+                        />
+                    </div>
                 </div>
             </div>
 

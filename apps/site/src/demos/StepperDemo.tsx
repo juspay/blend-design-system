@@ -42,7 +42,6 @@ const StepperDemo = () => {
     ])
 
     const handleHorizontalStepClick = (index: number) => {
-        console.log('horizontal step clicked', index)
         setHorizontalSteps((prev) =>
             prev.map((step, i) => {
                 if (i < index) {
@@ -74,8 +73,6 @@ const StepperDemo = () => {
             })
         )
     }
-
-    console.log({ horizontalSteps })
 
     const handleVerticalStepClick = (stepIndex: number) => {
         console.log('vertical step clicked', stepIndex)
@@ -394,7 +391,7 @@ const StepperDemo = () => {
                         {horizontalSteps.map(
                             (step) =>
                                 step.status === StepState.CURRENT && (
-                                    <h1>Step {step.id}</h1>
+                                    <h1 key={step.id}>Step {step.id}</h1>
                                 )
                         )}
                     </div>

@@ -11,7 +11,7 @@ type NumberInputV2StepperProps = {
     isUpButtonDisabled: boolean
     isDownButtonDisabled: boolean
     onStep: (direction: 'up' | 'down') => void
-    inputContainerTokens: NumberInputV2TokensType['inputContainer']
+    inputContainerTokens: NumberInputV2TokensType
     size: InputSizeV2
 }
 
@@ -25,9 +25,9 @@ const NumberInputV2Stepper = ({
     inputContainerTokens,
     size,
 }: NumberInputV2StepperProps) => {
-    const sb = inputContainerTokens.stepperButton
-    const border = inputContainerTokens.border
-    const radius = inputContainerTokens.borderRadius[size]
+    const sb = inputContainerTokens.inputContainer.stepperButton
+    const border = inputContainerTokens.inputContainer.border
+    const radius = inputContainerTokens.inputContainer.borderRadius[size]
     const stepperSize = sb.width[size]
     const iconSize = sb.icon.width[size] ?? 0
     const iconDefault = sb.icon.color.default

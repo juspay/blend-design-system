@@ -119,6 +119,7 @@ const DataTable = forwardRef(
             enableInlineEdit = false,
             enableRowExpansion = false,
             enableRowSelection = false,
+            rowSelectionConfig,
             showBulkActionBar = true,
             onRowSelectionChange,
             renderExpandedRow,
@@ -658,17 +659,33 @@ const DataTable = forwardRef(
         const updateSelectAllState = (
             selectedRowsState: Record<string, boolean>
         ) => {
-            const currentPageRowIds = currentData.map((row) =>
-                String(row[idField])
-            )
-            const selectedCurrentPageRows = currentPageRowIds.filter(
+            const selectableRowIds = currentData
+                .map((row, index) => ({
+                    row,
+                    rowId: String(row[idField]),
+                    index,
+                }))
+                .filter(
+                    ({ row, index }) =>
+                        !(isRowDisabledFn && isRowDisabledFn(row, index))
+                )
+                .map(({ rowId }) => rowId)
+
+            const totalSelectableCount = selectableRowIds.length
+
+            if (totalSelectableCount === 0) {
+                setSelectAll(false)
+                return
+            }
+
+            const selectedCurrentPageRows = selectableRowIds.filter(
                 (rowId) => selectedRowsState[rowId]
             )
 
             if (selectedCurrentPageRows.length === 0) {
                 setSelectAll(false)
             } else if (
-                selectedCurrentPageRows.length === currentPageRowIds.length
+                selectedCurrentPageRows.length === totalSelectableCount
             ) {
                 setSelectAll(true)
             } else {
@@ -712,9 +729,12 @@ const DataTable = forwardRef(
             const newSelectedRows = { ...selectedRows }
 
             if (newSelectAll) {
-                currentData.forEach((row) => {
+                currentData.forEach((row, index) => {
                     const rowId = String(row[idField])
-                    newSelectedRows[rowId] = true
+                    // Only select rows that are not disabled
+                    if (!(isRowDisabledFn && isRowDisabledFn(row, index))) {
+                        newSelectedRows[rowId] = true
+                    }
                 })
             } else {
                 currentData.forEach((row) => {
@@ -753,8 +773,69 @@ const DataTable = forwardRef(
             }
         }
 
-        const handleRowSelect = (rowId: unknown) => {
+        const isRowDisabledFn = rowSelectionConfig?.isDisabled
+
+        const handleRowSelect = (rowId: unknown, rowIndex?: number) => {
             const rowIdStr = String(rowId)
+
+            // If no index provided, fall back to find (for backwards compatibility)
+            if (rowIndex === undefined) {
+                const row = currentData.find(
+                    (r) => String(r[idField]) === rowIdStr
+                )
+                if (!row || (isRowDisabledFn && isRowDisabledFn(row, -1))) {
+                    return
+                }
+                // Continue with the found row
+                const isSelected = !selectedRows[rowIdStr]
+                const newSelectedRows = {
+                    ...selectedRows,
+                    [rowIdStr]: isSelected,
+                }
+                setSelectedRows(newSelectedRows)
+                updateSelectAllState(newSelectedRows)
+
+                if (onRowSelectionChange) {
+                    const selectedRowIds = Object.entries(newSelectedRows)
+                        .filter(([, selected]) => selected)
+                        .map(([id]) => id)
+
+                    const rawRowData = data.find(
+                        (d) => String(d[idField]) === rowIdStr
+                    )
+                    const rowDataFromCurrent = currentData.find(
+                        (row) => String(row[idField]) === rowIdStr
+                    )
+                    const rowDataToPass = (rawRowData ||
+                        rowDataFromCurrent) as T
+
+                    if (rowDataToPass) {
+                        onRowSelectionChange(
+                            selectedRowIds,
+                            isSelected,
+                            rowIdStr,
+                            rowDataToPass
+                        )
+                    }
+                }
+                return
+            }
+
+            // Bounds check and use index directly instead of scanning
+            if (
+                rowIndex < 0 ||
+                rowIndex >= currentData.length ||
+                String(currentData[rowIndex][idField]) !== rowIdStr
+            ) {
+                return
+            }
+
+            const row = currentData[rowIndex]
+
+            if (isRowDisabledFn && isRowDisabledFn(row, rowIndex)) {
+                return
+            }
+
             const isSelected = !selectedRows[rowIdStr]
 
             const newSelectedRows = {
@@ -1719,6 +1800,26 @@ const DataTable = forwardRef(
                                                 }
                                                 enableRowSelection={
                                                     enableRowSelection
+                                                }
+                                                rowSelectionConfig={
+                                                    rowSelectionConfig as
+                                                        | {
+                                                              isDisabled?: (
+                                                                  row: Record<
+                                                                      string,
+                                                                      unknown
+                                                                  >,
+                                                                  index: number
+                                                              ) => boolean
+                                                              disabledText?: (
+                                                                  row: Record<
+                                                                      string,
+                                                                      unknown
+                                                                  >,
+                                                                  index: number
+                                                              ) => string
+                                                          }
+                                                        | undefined
                                                 }
                                                 columnFreeze={
                                                     effectiveColumnFreeze

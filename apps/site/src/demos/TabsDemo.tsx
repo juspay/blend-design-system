@@ -244,6 +244,7 @@ const TabsDemo = () => {
     ]
 
     const sizeOptions = [
+        { value: TabsSize.SM, label: 'Small' },
         { value: TabsSize.MD, label: 'Medium' },
         { value: TabsSize.LG, label: 'Large' },
     ]

@@ -71,6 +71,49 @@ export type NumberInputV2TokensType = {
                 }
             }
         }
+        slot: {
+            left: {
+                width: {
+                    [key in InputSizeV2]: CSSObject['width']
+                }
+                height: {
+                    [key in InputSizeV2]: CSSObject['height']
+                }
+                margin: {
+                    [key in InputSizeV2]: CSSObject['margin']
+                }
+            }
+            right: {
+                width: {
+                    [key in InputSizeV2]: CSSObject['width']
+                }
+                height: {
+                    [key in InputSizeV2]: CSSObject['height']
+                }
+                margin: {
+                    [key in InputSizeV2]: CSSObject['margin']
+                }
+            }
+        }
+    }
+    unit: {
+        fontSize: {
+            [key in InputSizeV2]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in InputSizeV2]: CSSObject['fontWeight']
+        }
+        paddingTop: { [key in InputSizeV2]: CSSObject['paddingTop'] }
+        paddingRight: { [key in InputSizeV2]: CSSObject['paddingRight'] }
+        paddingBottom: { [key in InputSizeV2]: CSSObject['paddingBottom'] }
+        paddingLeft: { [key in InputSizeV2]: CSSObject['paddingLeft'] }
+        borderRadius: { [key in InputSizeV2]: CSSObject['borderRadius'] }
+        border: {
+            [key in InputStateV2]: CSSObject['border']
+        }
+        color: {
+            [key in InputStateV2]: CSSObject['color']
+        }
     }
     floatingLabels: FloatingLabelsV2Tokens
     bottomContainer: InputFooterV2Tokens

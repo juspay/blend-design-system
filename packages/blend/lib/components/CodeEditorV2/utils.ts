@@ -288,6 +288,69 @@ function getPaddingOptions(metrics: EditorMetrics) {
     }
 }
 
+/** Monaco `IEditor` has `focus()` but no `blur()` — clear focus on the editor subtree. */
+export function blurMonacoEditorDom(editor: Monaco.editor.ICodeEditor): void {
+    const root = editor.getDomNode()
+    if (!root) return
+    const ae = document.activeElement
+    if (ae && root.contains(ae) && ae instanceof HTMLElement) {
+        ae.blur()
+    }
+}
+
+/**
+ * Single place for “view only” vs editable: locks model + DOM (no edit tooltip),
+ * empty read-only message, calmer code-block chrome, and restores IDE defaults when editable.
+ */
+export function getMonacoViewModeOptions(
+    readOnly: boolean,
+    disabled: boolean
+): Partial<Monaco.editor.IEditorOptions> {
+    const viewOnly = readOnly || disabled
+    if (viewOnly) {
+        return {
+            readOnly: true,
+            domReadOnly: true,
+            tabIndex: -1,
+            readOnlyMessage: { value: '' },
+            renderLineHighlight: 'none',
+            renderLineHighlightOnlyWhenFocus: false,
+            selectionHighlight: false,
+            occurrencesHighlight: 'off',
+            cursorBlinking: 'solid',
+            cursorSmoothCaretAnimation: 'off',
+            matchBrackets: 'never',
+        }
+    }
+    return {
+        readOnly: false,
+        domReadOnly: false,
+        tabIndex: 0,
+        readOnlyMessage: undefined,
+        renderLineHighlight: 'gutter',
+        renderLineHighlightOnlyWhenFocus: true,
+        selectionHighlight: true,
+        occurrencesHighlight: 'singleFile',
+        cursorBlinking: 'smooth',
+        cursorSmoothCaretAnimation: 'on',
+        matchBrackets: 'always',
+    }
+}
+
+/** Diff panes do not always inherit root options — push view mode + scrollbar to both sides. */
+export function syncDiffEditorPaneViewMode(
+    diffEditor: Monaco.editor.IStandaloneDiffEditor,
+    readOnly: boolean,
+    disabled: boolean
+): void {
+    const opts: Monaco.editor.IEditorOptions = {
+        scrollbar: { alwaysConsumeMouseWheel: false },
+        ...getMonacoViewModeOptions(readOnly, disabled),
+    }
+    diffEditor.getOriginalEditor().updateOptions(opts)
+    diffEditor.getModifiedEditor().updateOptions(opts)
+}
+
 /** Options applied on editor mount (full set) */
 export function getMountEditorOptions(
     metrics: EditorMetrics,
@@ -298,8 +361,6 @@ export function getMountEditorOptions(
 ): Monaco.editor.IStandaloneEditorConstructionOptions {
     return {
         lineNumbers: showLineNumbers ? 'on' : 'off',
-        readOnly: readOnly || disabled,
-        domReadOnly: disabled,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
         fontSize: metrics.fontSize,
@@ -311,8 +372,6 @@ export function getMountEditorOptions(
         folding: false,
         lineDecorationsWidth: metrics.lineDecorationsWidth,
         lineNumbersMinChars: metrics.lineNumbersMinChars,
-        renderLineHighlight: 'gutter',
-        renderLineHighlightOnlyWhenFocus: true,
         overviewRulerBorder: false,
         overviewRulerLanes: 0,
         hideCursorInOverviewRuler: true,
@@ -324,9 +383,8 @@ export function getMountEditorOptions(
         renderControlCharacters: false,
         guides: { indentation: false, highlightActiveIndentation: false },
         smoothScrolling: true,
-        cursorBlinking: 'smooth',
-        cursorSmoothCaretAnimation: 'on',
         bracketPairColorization: { enabled: true },
+        ...getMonacoViewModeOptions(readOnly, disabled),
     }
 }
 
@@ -339,14 +397,13 @@ export function getUpdateEditorOptions(
 ): Monaco.editor.IEditorOptions {
     return {
         lineNumbers: showLineNumbers ? 'on' : 'off',
-        readOnly: readOnly || disabled,
-        domReadOnly: disabled,
         lineDecorationsWidth: metrics.lineDecorationsWidth,
         lineNumbersMinChars: metrics.lineNumbersMinChars,
         fontSize: metrics.fontSize,
         lineHeight: metrics.lineHeight,
         padding: getPaddingOptions(metrics),
         scrollbar: getScrollbarOptions(metrics),
+        ...getMonacoViewModeOptions(readOnly, disabled),
     }
 }
 
@@ -365,10 +422,8 @@ export function getDiffEditorOptions(
     diffContextLines: number,
     diffExpandChunk: number
 ): Monaco.editor.IDiffEditorConstructionOptions {
-    const isViewOnly = readOnly || disabled
     return {
         automaticLayout: true,
-        readOnly: isViewOnly,
         renderSideBySide,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
@@ -378,7 +433,6 @@ export function getDiffEditorOptions(
         fontFamily: tokens.body.code.fontFamily,
         lineHeight: metrics.lineHeight,
         lineNumbers: showLineNumbers ? 'on' : 'off',
-        renderLineHighlight: 'none',
         renderWhitespace: 'none',
         glyphMargin: false,
         folding: false,
@@ -387,13 +441,12 @@ export function getDiffEditorOptions(
         overviewRulerBorder: false,
         guides: { indentation: false, highlightActiveIndentation: false },
         smoothScrolling: true,
-        cursorBlinking: 'smooth',
-        cursorSmoothCaretAnimation: 'on',
         hideUnchangedRegions: {
             enabled: isDiffUnchangedCollapsed,
             contextLineCount: diffContextLines,
             revealLineCount: diffExpandChunk,
         },
+        ...getMonacoViewModeOptions(readOnly, disabled),
     }
 }
 
@@ -408,15 +461,12 @@ export function getInitialEditorOptions(
         automaticLayout: true,
         wordWrap: 'on',
         wrappingIndent: 'indent',
-        readOnly: readOnly || disabled,
-        domReadOnly: disabled,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
         fontSize: metrics.fontSize,
         fontFamily: tokens.body.code.fontFamily,
         lineHeight: metrics.lineHeight,
         lineNumbers: showLineNumbers ? 'on' : 'off',
-        renderLineHighlight: 'none',
         renderWhitespace: 'none',
         guides: { indentation: false },
         scrollbar: {
@@ -424,6 +474,7 @@ export function getInitialEditorOptions(
             horizontal: 'auto',
             alwaysConsumeMouseWheel: false,
         },
+        ...getMonacoViewModeOptions(readOnly, disabled),
     }
 }
 
