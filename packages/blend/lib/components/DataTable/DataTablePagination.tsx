@@ -9,39 +9,192 @@ import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import SingleSelect from '../SingleSelect/SingleSelect'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import {
+    PaginationConfig,
+    CursorDirection,
+    DataTableOnPageChange,
+    DataTablePaginationConfig,
+    DataTablePaginationMode,
+    CursorPaginationConfig,
+    isCursorPaginationConfig,
+} from './types'
 
 type DataTablePaginationProps = {
-    currentPage: number
-    pageSize: number
-    totalRows: number
-    pageSizeOptions: number[]
+    pagination: DataTablePaginationConfig
+    onPageChange: DataTableOnPageChange
+    onPageSizeChange?: (pageSize: number) => void
+    paginationMode?: DataTablePaginationMode
     isLoading?: boolean
     hasData?: boolean
     isNarrowContainer?: boolean
-    onPageChange: (page: number) => void
-    onPageSizeChange: (pageSize: number) => void
 }
 
 export function DataTablePagination({
-    currentPage,
-    pageSize,
-    totalRows,
-    pageSizeOptions,
+    pagination,
+    onPageChange,
+    onPageSizeChange,
+    paginationMode = 'page',
     isLoading = false,
     hasData = true,
     isNarrowContainer = false,
-    onPageChange,
-    onPageSizeChange,
 }: DataTablePaginationProps) {
     const tableToken = useResponsiveTokens('TABLE') as TableTokenType
     const { breakPointLabel } = useBreakpoints()
     const isMobile = isNarrowContainer || breakPointLabel === 'sm'
     const PAGINATION_ITEM_HEIGHT = 33
+    const paginationRef = useRef<HTMLDivElement>(null)
+
+    const isCursorMode =
+        paginationMode === 'cursor' && isCursorPaginationConfig(pagination)
+    const cursorPagination: CursorPaginationConfig | null = isCursorMode
+        ? pagination
+        : null
+
+    const {
+        currentPage,
+        pageSize,
+        totalRows,
+        pageSizeOptions = [10, 20, 50, 100],
+    } = useMemo(() => {
+        if (cursorPagination) {
+            return {
+                currentPage: cursorPagination.currentPage ?? 1,
+                pageSize:
+                    cursorPagination.pageSize ?? cursorPagination.limit ?? 10,
+                totalRows: cursorPagination.totalRows ?? 0,
+                pageSizeOptions: cursorPagination.limitOptions ?? [
+                    10, 20, 50, 100,
+                ],
+            }
+        }
+        const config = pagination as PaginationConfig
+        return {
+            currentPage: config.currentPage,
+            pageSize: config.pageSize,
+            totalRows: config.totalRows,
+            pageSizeOptions: config.pageSizeOptions ?? [10, 20, 50, 100],
+        }
+    }, [pagination, cursorPagination])
 
     const totalPages = Math.ceil(totalRows / pageSize)
+    const hasNextPage =
+        cursorPagination?.hasNextPage ?? currentPage < totalPages
+    const hasPrevPage = cursorPagination?.hasPrevPage ?? currentPage > 1
+    const limit = cursorPagination?.limit ?? pageSize
+    const getCursorPayloadForDirection = (
+        direction: CursorDirection
+    ): unknown => {
+        if (!cursorPagination) return undefined
 
-    const getPageNumbers = () => {
-        const pages = []
+        if (cursorPagination.cursorParams) {
+            return cursorPagination.cursorParams
+        }
+
+        if (direction === CursorDirection.NEXT) {
+            return cursorPagination.nextCursor ?? cursorPagination.cursor
+        }
+
+        return cursorPagination.prevCursor ?? cursorPagination.cursor
+    }
+
+    const canNavigate = () => hasData && !isLoading
+
+    const triggerPageChange = (page: number) => {
+        ;(onPageChange as (page: number) => void)(page)
+    }
+
+    const triggerCursorNavigation = (
+        direction: CursorDirection,
+        cursorPayload: unknown
+    ) => {
+        ;(
+            onPageChange as (
+                direction: CursorDirection,
+                cursorPayload?: unknown,
+                limit?: number
+            ) => void
+        )(direction, cursorPayload, limit)
+    }
+
+    const handlePrevious = () => {
+        if (!canNavigate() || !hasPrevPage) return
+
+        if (isCursorMode && cursorPagination) {
+            triggerCursorNavigation(
+                CursorDirection.PREV,
+                getCursorPayloadForDirection(CursorDirection.PREV)
+            )
+        } else {
+            if (currentPage > 1) {
+                triggerPageChange(currentPage - 1)
+            }
+        }
+    }
+
+    const handleNext = () => {
+        if (!canNavigate() || !hasNextPage) return
+
+        if (isCursorMode && cursorPagination) {
+            triggerCursorNavigation(
+                CursorDirection.NEXT,
+                getCursorPayloadForDirection(CursorDirection.NEXT)
+            )
+        } else {
+            if (currentPage < totalPages) {
+                triggerPageChange(currentPage + 1)
+            }
+        }
+    }
+
+    const handlePageClick = (page: number) => {
+        if (
+            !canNavigate() ||
+            page < 1 ||
+            page > totalPages ||
+            page === currentPage
+        )
+            return
+        triggerPageChange(page)
+    }
+
+    const handleLimitChange = (newLimit: number) => {
+        if (!onPageSizeChange || !hasData || isLoading || newLimit === limit)
+            return
+        onPageSizeChange(newLimit)
+    }
+
+    const filteredPageSizeOptions = useMemo(() => {
+        const options = isCursorMode
+            ? pageSizeOptions
+            : pageSizeOptions.filter((size) => size <= totalRows)
+
+        if (!options.includes(pageSize) && pageSize > 0) {
+            options.push(pageSize)
+            options.sort((a, b) => a - b)
+        }
+        if (options.length === 0 && pageSizeOptions.length > 0) {
+            options.push(Math.min(...pageSizeOptions))
+        }
+        return options
+    }, [pageSizeOptions, totalRows, pageSize, isCursorMode])
+
+    const limitMenuItems = useMemo(
+        () => [
+            {
+                groupLabel: '',
+                showSeparator: false,
+                items: filteredPageSizeOptions.map((size) => ({
+                    label: `${size}`,
+                    value: String(size),
+                    onClick: () => handleLimitChange(size),
+                })),
+            },
+        ],
+        [filteredPageSizeOptions]
+    )
+
+    const getPageNumbers = (): (number | string)[] => {
+        const pages: (number | string)[] = []
         const maxPagesToShow = 5
 
         if (totalPages <= maxPagesToShow) {
@@ -84,58 +237,6 @@ export function DataTablePagination({
 
     const pageNumbers = useMemo(getPageNumbers, [currentPage, totalPages])
 
-    const filteredPageSizeOptions = useMemo(() => {
-        const filtered = pageSizeOptions.filter((size) => size <= totalRows)
-        if (!filtered.includes(pageSize) && pageSize > 0) {
-            filtered.push(pageSize)
-            filtered.sort((a, b) => a - b)
-        }
-        if (filtered.length === 0 && pageSizeOptions.length > 0) {
-            filtered.push(Math.min(...pageSizeOptions))
-        }
-
-        return filtered
-    }, [pageSizeOptions, totalRows, pageSize])
-
-    const pageSizeMenuItems = [
-        {
-            groupLabel: '',
-            showSeparator: false,
-            items: filteredPageSizeOptions.map((size) => ({
-                label: `${size}`,
-                value: String(size),
-                onClick: () => onPageSizeChange(size),
-            })),
-        },
-    ]
-
-    const paginationRef = useRef<HTMLDivElement>(null)
-
-    const canNavigate = () => hasData && !isLoading
-
-    const handlePreviousPage = () => {
-        if (canNavigate() && currentPage > 1) {
-            onPageChange(currentPage - 1)
-        }
-    }
-
-    const handleNextPage = () => {
-        if (canNavigate() && currentPage < totalPages) {
-            onPageChange(currentPage + 1)
-        }
-    }
-
-    const handlePageClick = (page: number) => {
-        if (
-            canNavigate() &&
-            page >= 1 &&
-            page <= totalPages &&
-            page !== currentPage
-        ) {
-            onPageChange(page)
-        }
-    }
-
     useEffect(() => {
         const handleKeyboardNavigation = (event: KeyboardEvent) => {
             const target = event.target as HTMLElement
@@ -151,37 +252,262 @@ export function DataTablePagination({
 
             if (!canNavigate()) return
 
-            switch (event.key) {
-                case 'ArrowLeft':
-                    event.preventDefault()
-                    if (currentPage > 1) onPageChange(currentPage - 1)
-                    break
-
-                case 'ArrowRight':
-                    event.preventDefault()
-                    if (currentPage < totalPages) onPageChange(currentPage + 1)
-                    break
-
-                case 'Home':
-                    if (event.ctrlKey || event.metaKey) {
+            if (isCursorMode) {
+                switch (event.key) {
+                    case 'ArrowLeft':
                         event.preventDefault()
-                        if (currentPage !== 1) onPageChange(1)
-                    }
-                    break
-
-                case 'End':
-                    if (event.ctrlKey || event.metaKey) {
+                        if (hasPrevPage) handlePrevious()
+                        break
+                    case 'ArrowRight':
                         event.preventDefault()
-                        if (currentPage !== totalPages) onPageChange(totalPages)
-                    }
-                    break
+                        if (hasNextPage) handleNext()
+                        break
+                }
+            } else {
+                switch (event.key) {
+                    case 'ArrowLeft':
+                        event.preventDefault()
+                        if (currentPage > 1) handlePrevious()
+                        break
+                    case 'ArrowRight':
+                        event.preventDefault()
+                        if (currentPage < totalPages) handleNext()
+                        break
+                    case 'Home':
+                        if (event.ctrlKey || event.metaKey) {
+                            event.preventDefault()
+                            if (currentPage !== 1) handlePageClick(1)
+                        }
+                        break
+                    case 'End':
+                        if (event.ctrlKey || event.metaKey) {
+                            event.preventDefault()
+                            if (currentPage !== totalPages)
+                                handlePageClick(totalPages)
+                        }
+                        break
+                }
             }
         }
 
         document.addEventListener('keydown', handleKeyboardNavigation)
         return () =>
             document.removeEventListener('keydown', handleKeyboardNavigation)
-    }, [currentPage, totalPages, hasData, isLoading, onPageChange])
+    }, [
+        currentPage,
+        totalPages,
+        hasData,
+        isLoading,
+        isCursorMode,
+        hasNextPage,
+        hasPrevPage,
+        limit,
+        cursorPagination,
+    ])
+
+    const PreviousButton = () => (
+        <PrimitiveButton
+            data-element="previous-page"
+            data-status={!hasPrevPage || !hasData ? 'disabled' : 'enabled'}
+            contentCentered
+            width={FOUNDATION_THEME.unit[32]}
+            height={FOUNDATION_THEME.unit[32]}
+            backgroundColor="transparent"
+            border={
+                isMobile
+                    ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                    : 'none'
+            }
+            borderRadius={
+                isMobile
+                    ? FOUNDATION_THEME.border.radius[10]
+                    : FOUNDATION_THEME.border.radius[2]
+            }
+            color={
+                !hasPrevPage || !hasData
+                    ? FOUNDATION_THEME.colors.gray[300]
+                    : FOUNDATION_THEME.colors.gray[600]
+            }
+            disabled={!hasPrevPage || isLoading || !hasData}
+            onClick={handlePrevious}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handlePrevious()
+                }
+            }}
+            aria-label={
+                isCursorMode
+                    ? 'Load previous results'
+                    : `Previous page${currentPage > 1 ? ` (currently page ${currentPage})` : ''}`
+            }
+            tabIndex={!hasPrevPage || isLoading || !hasData ? -1 : 0}
+            _hover={{
+                backgroundColor:
+                    !hasPrevPage || !hasData
+                        ? 'transparent'
+                        : FOUNDATION_THEME.colors.gray[50],
+            }}
+            style={{
+                cursor:
+                    !hasPrevPage || isLoading || !hasData
+                        ? 'not-allowed'
+                        : 'pointer',
+            }}
+        >
+            <ArrowLeft size={FOUNDATION_THEME.unit[16]} />
+        </PrimitiveButton>
+    )
+
+    const NextButton = () => (
+        <PrimitiveButton
+            data-element="next-page"
+            data-status={!hasNextPage || !hasData ? 'disabled' : 'enabled'}
+            contentCentered
+            width={FOUNDATION_THEME.unit[32]}
+            height={FOUNDATION_THEME.unit[32]}
+            backgroundColor="transparent"
+            border={
+                isMobile
+                    ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                    : 'none'
+            }
+            borderRadius={
+                isMobile
+                    ? FOUNDATION_THEME.border.radius[10]
+                    : FOUNDATION_THEME.border.radius[2]
+            }
+            color={
+                !hasNextPage || !hasData
+                    ? FOUNDATION_THEME.colors.gray[300]
+                    : FOUNDATION_THEME.colors.gray[600]
+            }
+            disabled={!hasNextPage || isLoading || !hasData}
+            onClick={handleNext}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleNext()
+                }
+            }}
+            aria-label={
+                isCursorMode
+                    ? 'Load next results'
+                    : `Next page${currentPage < totalPages ? ` (currently page ${currentPage} of ${totalPages})` : ''}`
+            }
+            tabIndex={!hasNextPage || isLoading || !hasData ? -1 : 0}
+            _hover={{
+                backgroundColor:
+                    !hasNextPage || !hasData
+                        ? 'transparent'
+                        : FOUNDATION_THEME.colors.gray[50],
+            }}
+            style={{
+                cursor:
+                    !hasNextPage || isLoading || !hasData
+                        ? 'not-allowed'
+                        : 'pointer',
+            }}
+        >
+            <ArrowRight size={FOUNDATION_THEME.unit[16]} />
+        </PrimitiveButton>
+    )
+
+    const LimitSelector = () => (
+        <Block
+            data-element={isCursorMode ? 'limit-selector' : 'pagesize'}
+            display="flex"
+            alignItems="center"
+            gap={FOUNDATION_THEME.unit[8]}
+        >
+            <PrimitiveText
+                as="span"
+                fontSize={
+                    tableToken.dataTable.table.footer.pagination.pageText
+                        .fontSize
+                }
+                color={
+                    tableToken.dataTable.table.footer.pagination.pageText.color
+                }
+                style={{
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                }}
+            >
+                {isMobile ? 'Rows' : 'Rows per page'}
+            </PrimitiveText>
+
+            <Block
+                style={{
+                    cursor: hasData && !isLoading ? 'pointer' : 'not-allowed',
+                }}
+            >
+                <SingleSelect
+                    label="Rows per page"
+                    aria-label="Select number of rows per page"
+                    items={limitMenuItems}
+                    selected={String(pageSize)}
+                    onSelect={(value) => {
+                        if (
+                            typeof value === 'string' &&
+                            hasData &&
+                            !isLoading
+                        ) {
+                            const newSize = Number(value)
+                            if (
+                                newSize > 0 &&
+                                Number.isInteger(newSize) &&
+                                newSize !== pageSize
+                            ) {
+                                handleLimitChange(newSize)
+                            }
+                        }
+                    }}
+                    enableSearch={false}
+                    size={SelectMenuSize.SMALL}
+                    variant={SelectMenuVariant.NO_CONTAINER}
+                    placeholder=""
+                    minMenuWidth={80}
+                    disabled={!hasData || isLoading}
+                />
+            </Block>
+        </Block>
+    )
+
+    if (isCursorMode) {
+        return (
+            <Block
+                ref={paginationRef}
+                data-table-pagination="true"
+                data-cursor-pagination="true"
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+                role="navigation"
+                aria-label="Pagination"
+            >
+                <LimitSelector />
+
+                <Block
+                    data-element="pagination"
+                    display="flex"
+                    alignItems="center"
+                    gap={
+                        tableToken.dataTable.table.footer.pagination
+                            .pageNavigation.gap
+                    }
+                    style={{
+                        opacity: hasData ? 1 : 0.5,
+                        pointerEvents: hasData ? 'auto' : 'none',
+                    }}
+                >
+                    <PreviousButton />
+                    <NextButton />
+                </Block>
+            </Block>
+        )
+    }
 
     return (
         <Block
@@ -194,67 +520,7 @@ export function DataTablePagination({
             role="navigation"
             aria-label="Pagination"
         >
-            <Block
-                data-element="pagesize"
-                display="flex"
-                alignItems="center"
-                gap={FOUNDATION_THEME.unit[8]}
-            >
-                <PrimitiveText
-                    as="span"
-                    fontSize={
-                        tableToken.dataTable.table.footer.pagination.pageText
-                            .fontSize
-                    }
-                    color={
-                        tableToken.dataTable.table.footer.pagination.pageText
-                            .color
-                    }
-                    style={{
-                        // minWidth: isMobile ? '40px' : '108px',
-                        whiteSpace: 'nowrap',
-                        flexShrink: 0,
-                    }}
-                >
-                    {isMobile ? 'Rows' : 'Rows per page'}
-                </PrimitiveText>
-
-                <Block
-                    style={{
-                        cursor:
-                            hasData && !isLoading ? 'pointer' : 'not-allowed',
-                    }}
-                >
-                    <SingleSelect
-                        label="Rows per page"
-                        aria-label="Select number of rows per page"
-                        items={pageSizeMenuItems}
-                        selected={String(pageSize)}
-                        onSelect={(value) => {
-                            if (
-                                typeof value === 'string' &&
-                                hasData &&
-                                !isLoading
-                            ) {
-                                const newSize = Number(value)
-                                if (
-                                    newSize > 0 &&
-                                    Number.isInteger(newSize) &&
-                                    newSize !== pageSize
-                                ) {
-                                    onPageSizeChange(newSize)
-                                }
-                            }
-                        }}
-                        enableSearch={false}
-                        size={SelectMenuSize.SMALL}
-                        variant={SelectMenuVariant.NO_CONTAINER}
-                        placeholder=""
-                        minMenuWidth={80}
-                        disabled={!hasData || isLoading}
-                    />
-                </Block>
-            </Block>
+            <LimitSelector />
 
             <Block
                 data-element="pagination"
@@ -269,57 +535,7 @@ export function DataTablePagination({
                     pointerEvents: hasData ? 'auto' : 'none',
                 }}
             >
-                <PrimitiveButton
-                    data-element="previous-page"
-                    data-status={
-                        currentPage === 1 || !hasData ? 'disabled' : 'enabled'
-                    }
-                    contentCentered
-                    width={FOUNDATION_THEME.unit[32]}
-                    height={FOUNDATION_THEME.unit[32]}
-                    backgroundColor="transparent"
-                    border={
-                        isMobile
-                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-                            : 'none'
-                    }
-                    borderRadius={
-                        isMobile
-                            ? FOUNDATION_THEME.border.radius[10]
-                            : FOUNDATION_THEME.border.radius[2]
-                    }
-                    color={
-                        currentPage === 1 || !hasData
-                            ? FOUNDATION_THEME.colors.gray[300]
-                            : FOUNDATION_THEME.colors.gray[600]
-                    }
-                    disabled={currentPage === 1 || isLoading || !hasData}
-                    onClick={handlePreviousPage}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            handlePreviousPage()
-                        }
-                    }}
-                    aria-label={`Previous page${currentPage > 1 ? ` (currently page ${currentPage})` : ''}`}
-                    tabIndex={
-                        currentPage === 1 || isLoading || !hasData ? -1 : 0
-                    }
-                    _hover={{
-                        backgroundColor:
-                            currentPage === 1 || !hasData
-                                ? 'transparent'
-                                : FOUNDATION_THEME.colors.gray[50],
-                    }}
-                    style={{
-                        cursor:
-                            currentPage === 1 || isLoading || !hasData
-                                ? 'not-allowed'
-                                : 'pointer',
-                    }}
-                >
-                    <ArrowLeft size={FOUNDATION_THEME.unit[16]} />
-                </PrimitiveButton>
+                <PreviousButton />
 
                 {!isMobile && (
                     <Block
@@ -430,10 +646,10 @@ export function DataTablePagination({
                                             items: (() => {
                                                 const visiblePages =
                                                     pageNumbers.filter(
-                                                        (p) =>
+                                                        (p): p is number =>
                                                             typeof p ===
                                                             'number'
-                                                    ) as number[]
+                                                    )
 
                                                 const hiddenPages = []
                                                 for (
@@ -462,7 +678,7 @@ export function DataTablePagination({
                                             typeof value === 'string' &&
                                             hasData
                                         ) {
-                                            onPageChange(Number(value))
+                                            handlePageClick(Number(value))
                                         }
                                     }}
                                     enableSearch={totalPages > 10}
@@ -515,63 +731,7 @@ export function DataTablePagination({
                     </Block>
                 )}
 
-                <PrimitiveButton
-                    data-element="next-page"
-                    data-status={
-                        currentPage === totalPages || !hasData
-                            ? 'disabled'
-                            : 'enabled'
-                    }
-                    contentCentered
-                    width={FOUNDATION_THEME.unit[32]}
-                    height={FOUNDATION_THEME.unit[32]}
-                    backgroundColor="transparent"
-                    border={
-                        isMobile
-                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-                            : 'none'
-                    }
-                    borderRadius={
-                        isMobile
-                            ? FOUNDATION_THEME.border.radius[10]
-                            : FOUNDATION_THEME.border.radius[2]
-                    }
-                    color={
-                        currentPage === totalPages || !hasData
-                            ? FOUNDATION_THEME.colors.gray[300]
-                            : FOUNDATION_THEME.colors.gray[600]
-                    }
-                    disabled={
-                        currentPage === totalPages || isLoading || !hasData
-                    }
-                    onClick={handleNextPage}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            handleNextPage()
-                        }
-                    }}
-                    aria-label={`Next page${currentPage < totalPages ? ` (currently page ${currentPage} of ${totalPages})` : ''}`}
-                    tabIndex={
-                        currentPage === totalPages || isLoading || !hasData
-                            ? -1
-                            : 0
-                    }
-                    _hover={{
-                        backgroundColor:
-                            currentPage === totalPages || !hasData
-                                ? 'transparent'
-                                : FOUNDATION_THEME.colors.gray[50],
-                    }}
-                    style={{
-                        cursor:
-                            currentPage === totalPages || isLoading || !hasData
-                                ? 'not-allowed'
-                                : 'pointer',
-                    }}
-                >
-                    <ArrowRight size={FOUNDATION_THEME.unit[16]} />
-                </PrimitiveButton>
+                <NextButton />
             </Block>
         </Block>
     )

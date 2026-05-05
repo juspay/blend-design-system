@@ -9,6 +9,7 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    CursorDirection,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
@@ -717,6 +718,58 @@ const SimpleDataTableExample = () => {
         )
     }
 
+    // Cursor-based pagination state and handlers
+    const [useCursorPagination, setUseCursorPagination] = useState(false)
+    const [cursorState, setCursorState] = useState<{
+        afterId?: number
+        beforeId?: number
+    } | null>(null)
+    const [hasNextPage, setHasNextPage] = useState(true)
+    const [hasPrevPage, setHasPrevPage] = useState(false)
+
+    // Generate mock data for cursor pagination
+    const generatePageData = (startId: number) => {
+        return Array.from({ length: 5 }, (_, i) => {
+            const id = startId + i
+            const original = productData[i % productData.length]
+            return {
+                ...original,
+                id,
+                name: `${original.name || 'Product'} (Item ${id})`,
+            }
+        })
+    }
+
+    const handleCursorPageChange = (
+        direction: CursorDirection,
+        _cursor: unknown,
+        _limit: number
+    ) => {
+        if (direction === CursorDirection.NEXT) {
+            const nextId = productTableData[productTableData.length - 1].id + 1
+            const newData = generatePageData(nextId)
+            setProductTableData(newData)
+            setCursorState({
+                afterId: nextId - 1,
+            })
+            setHasNextPage(nextId < 50)
+            setHasPrevPage(true)
+        } else {
+            const prevId = Math.max(1, productTableData[0].id - 5)
+            const newData = generatePageData(prevId)
+            setProductTableData(newData)
+            setCursorState(
+                prevId > 1
+                    ? {
+                          beforeId: prevId - 1,
+                      }
+                    : null
+            )
+            setHasNextPage(true)
+            setHasPrevPage(prevId > 1)
+        }
+    }
+
     return (
         <div style={{ marginTop: '40px' }}>
             <div
@@ -795,12 +848,6 @@ const SimpleDataTableExample = () => {
                 columnFreeze={0}
                 columnFreezeRight={1}
                 mobileColumnsToShow={2}
-                pagination={{
-                    currentPage: 1,
-                    pageSize: 10,
-                    totalRows: productTableData.length,
-                    pageSizeOptions: [5, 10, 20],
-                }}
                 onRowSave={handleProductSave}
                 onRowCancel={handleProductCancel}
                 onFieldChange={handleFieldChange}
@@ -848,13 +895,72 @@ const SimpleDataTableExample = () => {
                     />
                 }
                 headerSlot2={
-                    <Button
-                        text="Schedule"
-                        buttonType={ButtonType.SECONDARY}
-                        leadingIcon={<Calendar />}
-                        size={ButtonSize.SMALL}
-                        onClick={() => console.log('Calendar action clicked')}
-                    />
+                    <>
+                        <Button
+                            text={
+                                useCursorPagination
+                                    ? 'Switch to Traditional'
+                                    : 'Switch to Cursor Mode'
+                            }
+                            buttonType={ButtonType.PRIMARY}
+                            leadingIcon={<Database />}
+                            size={ButtonSize.SMALL}
+                            onClick={() => {
+                                setUseCursorPagination(!useCursorPagination)
+                                // Reset to original data when switching
+                                setProductTableData(productData)
+                                setCursorState(null)
+                                setHasNextPage(true)
+                                setHasPrevPage(false)
+                            }}
+                        />
+                        <Button
+                            text="Schedule"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Calendar />}
+                            size={ButtonSize.SMALL}
+                            onClick={() =>
+                                console.log('Calendar action clicked')
+                            }
+                        />
+                    </>
+                }
+                paginationMode={useCursorPagination ? 'cursor' : 'page'}
+                pagination={
+                    useCursorPagination
+                        ? {
+                              direction: CursorDirection.NEXT,
+                              limit: 5,
+                              cursorParams: cursorState
+                                  ? {
+                                        cursorLimit: 5,
+                                        cursorAfterId: cursorState.afterId,
+                                        cursorBeforeId: cursorState.beforeId,
+                                    }
+                                  : undefined,
+                              hasNextPage: hasNextPage,
+                              hasPrevPage: hasPrevPage,
+                              limitOptions: [5, 10, 20],
+                          }
+                        : {
+                              currentPage: 1,
+                              pageSize: 10,
+                              totalRows: productTableData.length,
+                              pageSizeOptions: [5, 10, 20],
+                          }
+                }
+                onPageChange={
+                    useCursorPagination
+                        ? (pageOrDirection, cursor, limit) => {
+                              if (typeof pageOrDirection !== 'number') {
+                                  handleCursorPageChange(
+                                      pageOrDirection,
+                                      cursor,
+                                      limit ?? 5
+                                  )
+                              }
+                          }
+                        : undefined
                 }
             />
 
@@ -3345,7 +3451,11 @@ const DataTableDemo = () => {
                         : data.length,
                     pageSizeOptions: [5, 10, 25, 50],
                 }}
-                onPageChange={handlePageChange}
+                onPageChange={(pageOrDirection) => {
+                    if (typeof pageOrDirection === 'number') {
+                        handlePageChange(pageOrDirection)
+                    }
+                }}
                 onPageSizeChange={handlePageSizeChange}
                 defaultSort={sortConfig}
                 onSortChange={handleSortChange}

@@ -1,14 +1,17 @@
-import { PaginationConfig } from '../types'
+import {
+    DataTableOnPageChange,
+    DataTablePaginationConfig,
+    DataTablePaginationMode,
+} from '../types'
 
 export type TableFooterProps = {
-    pagination?: PaginationConfig
-    currentPage: number
-    pageSize: number
-    totalRows: number
+    pagination?: DataTablePaginationConfig
     isLoading?: boolean
     showSkeleton?: boolean
     hasData?: boolean
     isNarrowContainer?: boolean
-    onPageChange: (page: number) => void
+    onPageChange: DataTableOnPageChange
     onPageSizeChange: (size: number) => void
+    /** Effective UI mode after resolving `pagination` shape (see DataTable). */
+    paginationMode?: DataTablePaginationMode
 }
