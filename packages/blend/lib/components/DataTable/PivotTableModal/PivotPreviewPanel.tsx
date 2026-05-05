@@ -5,11 +5,9 @@ import Button from '../../Button/Button'
 import { ButtonSize, ButtonType } from '../../Button/types'
 import DataTable from '../DataTable'
 import { NoScrollbar } from './pivotModal.styled'
+import { PivotTableIllustration } from './PivotTableIllustration'
 import type { PivotPreviewPanelProps } from './types'
 
-/**
- * Left column: shows consumer-computed pivot preview (`previewRows` / `previewColumns`).
- */
 const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
     (
         {
@@ -17,119 +15,115 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
             tableToken,
             showExport,
             previewRows,
-            previewColumns,
             previewTableColumns,
             onExport,
+            hasValues,
         },
         ref
     ) => {
-        const hasPreviewGrid = previewTableColumns.length > 0
+        const hasPreviewGrid =
+            previewTableColumns.length > 0 &&
+            previewRows &&
+            previewRows.length > 0
+        const showEmptyState = !hasValues || !hasPreviewGrid
 
         return (
             <NoScrollbar
                 ref={ref}
                 style={{
-                    padding: pivot.panelPadding,
+                    padding: '0',
                     overflow: 'auto',
-                    backgroundColor: pivot.previewPanelBackground,
+                    backgroundColor: 'transparent',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
                 }}
             >
-                <Block
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    style={{
-                        marginBottom: pivot.preview.headerMarginBottom,
-                    }}
-                >
-                    <div>
-                        <PrimitiveText
-                            style={{
-                                fontWeight: pivot.preview.titleFontWeight,
-                                fontSize: pivot.preview.titleFontSize,
-                                marginBottom: pivot.preview.titleMarginBottom,
-                            }}
-                        >
-                            Preview
-                        </PrimitiveText>
-                        <PrimitiveText
-                            style={{
-                                fontSize: pivot.preview.metaFontSize,
-                                color: tableToken.dataTable.table.body.cell
-                                    .color,
-                            }}
-                        >
-                            {previewRows?.length || 0} rows ×{' '}
-                            {previewColumns?.length || 0} columns
-                        </PrimitiveText>
-                    </div>
-                    {showExport && (
-                        <Button
-                            text="Export CSV"
-                            buttonType={ButtonType.SECONDARY}
-                            size={ButtonSize.SMALL}
-                            onClick={onExport}
-                            disabled={!previewRows?.length}
-                        />
-                    )}
-                </Block>
-                {hasPreviewGrid ? (
-                    <DataTable
-                        data={(previewRows || []) as Record<string, unknown>[]}
-                        columns={previewTableColumns}
-                        idField="__pivotId"
-                        enableSearch={false}
-                        enableFiltering={false}
-                        enableAdvancedFilter={false}
-                        enableColumnManager={false}
-                        enableColumnReordering={false}
-                        enableRowExpansion={false}
-                        enableRowSelection={false}
-                        enableInlineEdit={false}
-                        showHeader
-                        showToolbar={false}
-                        showFooter={false}
-                        getRowStyle={(row) =>
-                            row.__pivotRowType === 'grand_total'
-                                ? {
-                                      backgroundColor:
-                                          tableToken.dataTable.table.header
-                                              .backgroundColor,
-                                      fontWeight: pivot.preview.titleFontWeight,
-                                  }
-                                : {}
-                        }
-                    />
-                ) : (
+                {showEmptyState ? (
                     <Block
                         style={{
-                            textAlign: 'center',
-                            padding: pivot.emptyState.padding,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flex: 1,
+                            minHeight: '300px',
                         }}
                     >
+                        <PivotTableIllustration />
                         <PrimitiveText
                             style={{
                                 fontSize: pivot.emptyState.titleFontSize,
                                 color: pivot.emptyState.titleColor,
-                                marginBottom:
-                                    pivot.emptyState.titleMarginBottom,
+                                marginTop: pivot.spacing.iconBadgeGap,
+                                fontWeight: 500,
                             }}
                         >
-                            No preview yet
+                            Rows
                         </PrimitiveText>
-                        <PrimitiveText
-                            style={{
-                                fontSize: pivot.emptyState.exampleFontSize,
-                                color: pivot.emptyState.exampleColor,
-                                lineHeight: pivot.bodyLineHeight,
-                            }}
-                        >
-                            Add at least one field under Values. Rows fill the
-                            first column; Columns create additional headers;
-                            each Value adds metrics. Your app should pass
-                            preview columns and rows from the same config you
-                            get from onConfigChange (see buildPivotPreview).
-                        </PrimitiveText>
+                    </Block>
+                ) : (
+                    <Block
+                        style={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            overflow: 'hidden',
+                        }}
+                    >
+                        {showExport && (
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                style={{
+                                    marginBottom:
+                                        pivot.preview.headerMarginBottom,
+                                }}
+                            >
+                                <Button
+                                    text="Export CSV"
+                                    buttonType={ButtonType.SECONDARY}
+                                    size={ButtonSize.SMALL}
+                                    onClick={onExport}
+                                    disabled={!previewRows?.length}
+                                />
+                            </Block>
+                        )}
+                        <Block style={{ flex: 1, overflow: 'auto' }}>
+                            <DataTable
+                                data={
+                                    (previewRows || []) as Record<
+                                        string,
+                                        unknown
+                                    >[]
+                                }
+                                columns={previewTableColumns}
+                                idField="__pivotId"
+                                enableSearch={false}
+                                enableFiltering={false}
+                                enableAdvancedFilter={false}
+                                enableColumnManager={false}
+                                enableColumnReordering={false}
+                                enableRowExpansion={false}
+                                enableRowSelection={false}
+                                enableInlineEdit={false}
+                                showHeader
+                                showToolbar={false}
+                                showFooter={false}
+                                getRowStyle={(row) =>
+                                    row.__pivotRowType === 'grand_total'
+                                        ? {
+                                              backgroundColor:
+                                                  tableToken.dataTable.table
+                                                      .header.backgroundColor,
+                                              fontWeight:
+                                                  pivot.preview.titleFontWeight,
+                                          }
+                                        : {}
+                                }
+                            />
+                        </Block>
                     </Block>
                 )}
             </NoScrollbar>

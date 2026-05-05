@@ -3318,9 +3318,7 @@ const DataTableDemo = () => {
                             size={ButtonSize.SMALL}
                         />
                     ),
-                    title: 'Pivot Table Editor',
-                    description:
-                        'Pick Rows/Columns/Values to shape the pivot preview.',
+                    title: 'Create Pivot Table',
                     showExport: true,
                     availableAggregations: [
                         PivotAggregationType.COUNT,

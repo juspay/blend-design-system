@@ -237,7 +237,7 @@ const SidebarDemo = () => {
         | 'progressBarV2'
         | 'multiValueInputV2'
         | 'numberInputV2'
-    >('numberInputV2')
+    >('dataTable')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =

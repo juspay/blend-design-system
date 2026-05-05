@@ -6,6 +6,15 @@ export type PivotModalStyleTokens = {
         minWidth: string
         maxWidth: string
         maxHeight: string
+        bodyPadding: string
+        bodyGap: string
+    }
+    rightPanel: {
+        width: string
+        padding: string
+        background: string
+        border: string
+        borderRadius: string
     }
     shell: {
         display: 'grid'
@@ -13,9 +22,30 @@ export type PivotModalStyleTokens = {
         height: string
         overflow: 'hidden'
     }
+    layout: {
+        wideDesktopMinWidth: number
+        wideDesktopColumns: string
+        fallbackColumns: string
+    }
     panelPadding: string
     configPanelBackground: string
     previewPanelBackground: string
+    text: {
+        sectionTitle: {
+            fontSize: string
+            fontWeight: number
+            color: string
+        }
+        fieldLabel: {
+            fontSize: string
+            fontWeight: number
+            color: string
+        }
+        checkboxLabel: {
+            fontSize: string
+            color: string
+        }
+    }
     spacing: {
         sectionGap: string
         builderIntroGap: string
@@ -99,23 +129,53 @@ export const getPivotModalStyleTokens = (
     const { dataTable, header } = tableToken
     const cell = dataTable.table.body.cell
 
-    const configColumnWidth = `calc(${f.unit[350]} + ${f.unit[32]})`
+    const rightPanelMinWidth = f.unit[360]
 
     return {
         modal: {
             minWidth: 'min(95vw, 120rem)',
             maxWidth: '95vw',
             maxHeight: '92vh',
+            bodyPadding: f.unit[20],
+            bodyGap: f.unit[16],
+        },
+        rightPanel: {
+            width: rightPanelMinWidth,
+            padding: f.unit[20],
+            background: f.colors.gray[0] as string,
+            border: `${f.border.width[1]} solid ${f.colors.gray[200]}`,
+            borderRadius: f.border.radius[8],
         },
         shell: {
             display: 'grid',
-            gridTemplateColumns: `1fr ${configColumnWidth}`,
+            gridTemplateColumns: `minmax(0, 1fr) ${rightPanelMinWidth}`,
             height: `min(${dataTable.maxHeight}, 85vh)`,
             overflow: 'hidden',
+        },
+        layout: {
+            wideDesktopMinWidth: 1800,
+            wideDesktopColumns: `minmax(0, 4fr) minmax(${rightPanelMinWidth}, 1fr)`,
+            fallbackColumns: `minmax(0, 1fr) ${rightPanelMinWidth}`,
         },
         panelPadding: f.unit[16],
         configPanelBackground: f.colors.gray[50] as string,
         previewPanelBackground: dataTable.table.body.backgroundColor as string,
+        text: {
+            sectionTitle: {
+                fontSize: f.font.size.body.md.fontSize,
+                fontWeight: f.font.weight[600],
+                color: f.colors.gray[800] as string,
+            },
+            fieldLabel: {
+                fontSize: f.font.size.body.md.fontSize,
+                fontWeight: f.font.weight[500],
+                color: f.colors.gray[800] as string,
+            },
+            checkboxLabel: {
+                fontSize: f.font.size.body.sm.fontSize,
+                color: f.colors.gray[600] as string,
+            },
+        },
         spacing: {
             sectionGap: f.unit[20],
             builderIntroGap: f.unit[20],
@@ -156,7 +216,7 @@ export const getPivotModalStyleTokens = (
         },
         emptyState: {
             titleFontSize: f.font.size.body.md.fontSize,
-            titleColor: f.colors.gray[500] as string,
+            titleColor: f.colors.gray[800] as string,
             exampleFontSize: f.font.size.body.sm.fontSize,
             exampleColor: f.colors.gray[400] as string,
             padding: f.unit[16],

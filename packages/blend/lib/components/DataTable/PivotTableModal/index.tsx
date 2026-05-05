@@ -6,24 +6,27 @@ import {
     useRef,
     useState,
 } from 'react'
-import { Check, Trash2 } from 'lucide-react'
+import { X, Plus } from 'lucide-react'
+import { ButtonSubType } from '../../Button/types'
 import Modal from '../../Modal/Modal'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import Button from '../../Button/Button'
 import { ButtonSize, ButtonType } from '../../Button/types'
-import Tag from '../../Tags/Tag'
-import { TagColor, TagSize, TagVariant } from '../../Tags/types'
 import SingleSelect from '../../SingleSelect/SingleSelect'
-import { SelectMenuSize, SelectMenuVariant } from '../../SingleSelect/types'
-import Menu from '../../Menu/Menu'
-import { MenuAlignment, MenuSide } from '../../Menu/types'
-import { ColumnDefinition, ColumnType, PivotAggregationType } from '../types'
+import {
+    SelectMenuAlignment,
+    SelectMenuSize,
+    SelectMenuVariant,
+} from '../../SingleSelect/types'
+import { Checkbox } from '../../Checkbox/Checkbox'
+import { CheckboxSize } from '../../Checkbox/types'
+import { ColumnDefinition, PivotAggregationType, ColumnType } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
 import { downloadCSV } from '../utils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { PivotTableModalProps } from './types'
+import { PivotTableModalProps, PivotFieldConfig } from './types'
 import {
     buildPivotPreview,
     getPivotFieldOptions,
@@ -33,12 +36,8 @@ import { NoScrollbar } from './pivotModal.styled'
 import { getPivotModalStyleTokens } from './pivotModalStyleTokens'
 import PivotPreviewPanel from './PivotPreviewPanel'
 
-/**
- * Pivot Table Modal Component
- *
- * Provides a Google Sheets-like interface for configuring pivot tables
- * with four main areas: Rows, Columns, Values, and Filters
- */
+type PivotSectionKey = 'rows' | 'columns' | 'values'
+
 const PivotTableModal = forwardRef<
     HTMLDivElement,
     PivotTableModalProps<Record<string, unknown>>
@@ -49,16 +48,17 @@ const PivotTableModal = forwardRef<
             onClose,
             columns,
             data,
-            title = 'Pivot Table',
+            title = 'Create Pivot Table',
             description: subtitle,
-            showExport = true,
             initialConfig,
             previewColumns,
             previewRows,
             onConfigChange,
             onExport,
             availableAggregations,
-        }: PivotTableModalProps<Record<string, unknown>>,
+            trigger,
+            onTriggerClick,
+        },
         ref
     ) => {
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
@@ -66,42 +66,43 @@ const PivotTableModal = forwardRef<
             () => getPivotModalStyleTokens(FOUNDATION_THEME, tableToken),
             [tableToken]
         )
+
         const removeButtonStyle = useMemo(
             (): CSSProperties => ({
                 minWidth: pivot.removeButton.minWidth,
                 padding: pivot.removeButton.padding,
-                borderRadius: pivot.removeButton.borderRadius,
-                border: pivot.removeButton.border,
-                background: pivot.removeButton.background,
+                borderRadius: '50%',
+                border: 'none',
+                background: 'transparent',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: pivot.chip.transition,
+                transition: 'all 0.2s ease',
             }),
             [pivot]
         )
 
         // State for pivot configuration
-        const [rowFields, setRowFields] = useState<
-            Array<keyof Record<string, unknown>>
-        >(
+        const [rowFields, setRowFields] = useState<PivotFieldConfig[]>(
             () =>
-                (initialConfig?.rows as Array<keyof Record<string, unknown>>) ||
-                []
+                initialConfig?.rows?.map((field) => ({
+                    field: String(field),
+                    showTotal: true,
+                })) || []
         )
-        const [columnFields, setColumnFields] = useState<
-            Array<keyof Record<string, unknown>>
-        >(
+        const [columnFields, setColumnFields] = useState<PivotFieldConfig[]>(
             () =>
-                (initialConfig?.columns as Array<
-                    keyof Record<string, unknown>
-                >) || []
+                initialConfig?.columns?.map((field) => ({
+                    field: String(field),
+                    showTotal: true,
+                })) || []
         )
         const [valueConfigs, setValueConfigs] = useState<
             Array<{
                 field: keyof Record<string, unknown>
                 aggregation: PivotAggregationType
+                showTotal?: boolean
             }>
         >(
             () =>
@@ -110,11 +111,9 @@ const PivotTableModal = forwardRef<
                     aggregation: PivotAggregationType
                 }>) || []
         )
-        // State for value field selection
-        const [selectedValueField, setSelectedValueField] =
-            useState<keyof Record<string, unknown>>('')
-        const [selectedValueAgg, setSelectedValueAgg] =
-            useState<PivotAggregationType>(PivotAggregationType.SUM)
+
+        // State for field selection
+        const [selectedField, setSelectedField] = useState<string>('')
 
         // Compute field options from columns
         const fieldOptions = useMemo(
@@ -147,82 +146,72 @@ const PivotTableModal = forwardRef<
             })
             return map
         }, [fieldOptions, data, allowedAggregations, columnTypeByField])
-        const selectedValueAggregationOptions = useMemo(() => {
-            const fieldKey = String(selectedValueField || '')
-            return supportedAggregationsByField.get(fieldKey) || []
-        }, [selectedValueField, supportedAggregationsByField])
-        const selectedValueAggregationItems = useMemo(
-            () => [
-                {
-                    items: selectedValueAggregationOptions.map((item) => ({
-                        label: item.toUpperCase(),
-                        value: item,
-                    })),
-                },
-            ],
-            [selectedValueAggregationOptions]
-        )
-        const selectedValueMessage = useMemo(() => {
-            if (!selectedValueField) {
-                return 'Choose a value field to see supported operations.'
-            }
-            if (!selectedValueAggregationOptions.length) {
-                return 'This field does not support pivot aggregations for the current dataset.'
-            }
+
+        const getSupportedAggregations = (field: string) => {
+            return supportedAggregationsByField.get(field) || []
+        }
+
+        // Add field handlers
+        const addRowField = () => {
             if (
-                selectedValueAggregationOptions.length === 1 &&
-                selectedValueAggregationOptions[0] ===
-                    PivotAggregationType.COUNT
+                selectedField &&
+                !rowFields.find((f) => f.field === selectedField)
             ) {
-                return 'Only COUNT is available because this field has no numeric values.'
-            }
-            return null
-        }, [selectedValueField, selectedValueAggregationOptions])
-
-        const addRowField = (field: keyof Record<string, unknown>) => {
-            if (field && !rowFields.includes(field)) {
-                setRowFields((prev) => [...prev, field])
+                setRowFields((prev) => [
+                    ...prev,
+                    { field: selectedField, showTotal: true },
+                ])
             }
         }
 
-        const removeRowField = (field: keyof Record<string, unknown>) => {
-            setRowFields((prev) => prev.filter((item) => item !== field))
+        const removeRowField = (field: string) => {
+            setRowFields((prev) => prev.filter((f) => f.field !== field))
         }
 
-        const addColumnField = (field: keyof Record<string, unknown>) => {
-            if (field && !columnFields.includes(field)) {
-                setColumnFields((prev) => [...prev, field])
+        const addColumnField = () => {
+            if (
+                selectedField &&
+                !columnFields.find((f) => f.field === selectedField)
+            ) {
+                setColumnFields((prev) => [
+                    ...prev,
+                    { field: selectedField, showTotal: true },
+                ])
             }
         }
 
-        const removeColumnField = (field: keyof Record<string, unknown>) => {
-            setColumnFields((prev) => prev.filter((item) => item !== field))
+        const removeColumnField = (field: string) => {
+            setColumnFields((prev) => prev.filter((f) => f.field !== field))
+        }
+
+        const updateRowFieldTotal = (field: string, showTotal: boolean) => {
+            setRowFields((prev) =>
+                prev.map((f) => (f.field === field ? { ...f, showTotal } : f))
+            )
+        }
+
+        const updateColumnFieldTotal = (field: string, showTotal: boolean) => {
+            setColumnFields((prev) =>
+                prev.map((f) => (f.field === field ? { ...f, showTotal } : f))
+            )
         }
 
         const addValueField = () => {
-            const supportedAggregations =
-                supportedAggregationsByField.get(String(selectedValueField)) ||
-                []
+            const supported = getSupportedAggregations(selectedField)
             if (
-                selectedValueField &&
-                !valueConfigs.some(
-                    (item) => item.field === selectedValueField
-                ) &&
-                supportedAggregations.length > 0
+                selectedField &&
+                !valueConfigs.some((v) => String(v.field) === selectedField) &&
+                supported.length > 0
             ) {
-                const aggregation = supportedAggregations.includes(
-                    selectedValueAgg
-                )
-                    ? selectedValueAgg
-                    : supportedAggregations[0]
+                const aggregation = supported[0]
                 setValueConfigs((prev) => [
                     ...prev,
                     {
-                        field: selectedValueField,
+                        field: selectedField as keyof Record<string, unknown>,
                         aggregation,
+                        showTotal: true,
                     },
                 ])
-                setSelectedValueField('')
             }
         }
 
@@ -241,6 +230,92 @@ const PivotTableModal = forwardRef<
             })
         }
 
+        const updateValueFieldTotal = (field: string, showTotal: boolean) => {
+            setValueConfigs((prev) =>
+                prev.map((config) =>
+                    String(config.field) === field
+                        ? {
+                              ...config,
+                              showTotal,
+                          }
+                        : config
+                )
+            )
+        }
+
+        const updateRowField = (index: number, nextField: string) => {
+            setRowFields((prev) => {
+                const usedInOtherSections =
+                    columnFields.some((field) => field.field === nextField) ||
+                    valueConfigs.some(
+                        (config) => String(config.field) === nextField
+                    )
+                if (
+                    !nextField ||
+                    usedInOtherSections ||
+                    prev.some((f, i) => i !== index && f.field === nextField)
+                ) {
+                    return prev
+                }
+                return prev.map((field, i) =>
+                    i === index ? { ...field, field: nextField } : field
+                )
+            })
+        }
+
+        const updateColumnField = (index: number, nextField: string) => {
+            setColumnFields((prev) => {
+                const usedInOtherSections =
+                    rowFields.some((field) => field.field === nextField) ||
+                    valueConfigs.some(
+                        (config) => String(config.field) === nextField
+                    )
+                if (
+                    !nextField ||
+                    usedInOtherSections ||
+                    prev.some((f, i) => i !== index && f.field === nextField)
+                ) {
+                    return prev
+                }
+                return prev.map((field, i) =>
+                    i === index ? { ...field, field: nextField } : field
+                )
+            })
+        }
+
+        const updateValueField = (index: number, nextField: string) => {
+            setValueConfigs((prev) => {
+                if (
+                    !nextField ||
+                    rowFields.some((field) => field.field === nextField) ||
+                    columnFields.some((field) => field.field === nextField) ||
+                    prev.some(
+                        (config, i) =>
+                            i !== index && String(config.field) === nextField
+                    )
+                ) {
+                    return prev
+                }
+
+                const supported = getSupportedAggregations(nextField)
+                if (!supported.length) return prev
+
+                return prev.map((config, i) => {
+                    if (i !== index) return config
+                    const nextAggregation = supported.includes(
+                        config.aggregation
+                    )
+                        ? config.aggregation
+                        : supported[0]
+                    return {
+                        ...config,
+                        field: nextField as keyof Record<string, unknown>,
+                        aggregation: nextAggregation,
+                    }
+                })
+            })
+        }
+
         const lastEmittedConfigRef = useRef<string>('')
 
         useEffect(() => {
@@ -250,8 +325,8 @@ const PivotTableModal = forwardRef<
             }
 
             const config = {
-                rows: rowFields,
-                columns: columnFields,
+                rows: rowFields.map((f) => f.field),
+                columns: columnFields.map((f) => f.field),
                 values: valueConfigs,
             }
             const configString = JSON.stringify(config)
@@ -262,48 +337,14 @@ const PivotTableModal = forwardRef<
             }
         }, [isOpen, rowFields, columnFields, valueConfigs, onConfigChange])
 
-        useEffect(() => {
-            if (!selectedValueField) return
-            if (
-                selectedValueAggregationOptions.length > 0 &&
-                !selectedValueAggregationOptions.includes(selectedValueAgg)
-            ) {
-                setSelectedValueAgg(selectedValueAggregationOptions[0])
-            }
-        }, [
-            selectedValueField,
-            selectedValueAggregationOptions,
-            selectedValueAgg,
-        ])
-        useEffect(() => {
-            setValueConfigs(
-                (prev) =>
-                    prev
-                        .map((config) => {
-                            const supported =
-                                supportedAggregationsByField.get(
-                                    String(config.field)
-                                ) || []
-                            if (!supported.length) return null
-                            if (supported.includes(config.aggregation))
-                                return config
-                            return {
-                                ...config,
-                                aggregation: supported[0],
-                            }
-                        })
-                        .filter(Boolean) as typeof prev
-            )
-        }, [supportedAggregationsByField])
-
         const exportPivotTable = () => {
             const exportColumns = effectivePreviewColumns
             const exportRows = effectivePreviewRows
 
             if (onExport) {
                 onExport({
-                    rows: rowFields,
-                    columns: columnFields,
+                    rows: rowFields.map((f) => f.field),
+                    columns: columnFields.map((f) => f.field),
                     values: valueConfigs,
                 })
                 return
@@ -336,8 +377,8 @@ const PivotTableModal = forwardRef<
 
             return buildPivotPreview(
                 data as Record<string, unknown>[],
-                rowFields,
-                columnFields,
+                rowFields.map((f) => f.field),
+                columnFields.map((f) => f.field),
                 valueConfigs
             )
         }, [
@@ -362,578 +403,405 @@ const PivotTableModal = forwardRef<
                 [effectivePreviewColumns]
             )
 
-        const availableFieldsForRows = useMemo(
-            () =>
-                fieldOptions.filter(
-                    (f) =>
-                        !rowFields.includes(
-                            f.key as keyof Record<string, unknown>
-                        )
-                ),
-            [fieldOptions, rowFields]
-        )
+        // Available fields excluding already selected ones
+        const availableFields = useMemo(() => {
+            const selectedFields = new Set([
+                ...rowFields.map((f) => f.field),
+                ...columnFields.map((f) => f.field),
+                ...valueConfigs.map((v) => String(v.field)),
+            ])
+            return fieldOptions.filter((f) => !selectedFields.has(f.key))
+        }, [fieldOptions, rowFields, columnFields, valueConfigs])
 
-        const availableFieldsForColumns = useMemo(
-            () =>
-                fieldOptions.filter(
-                    (f) =>
-                        !columnFields.includes(
-                            f.key as keyof Record<string, unknown>
-                        )
-                ),
-            [fieldOptions, columnFields]
-        )
+        useEffect(() => {
+            if (!selectedField) return
+            const isStillAvailable = availableFields.some(
+                (field) => field.key === selectedField
+            )
+            if (!isStillAvailable) {
+                setSelectedField(availableFields[0]?.key ?? '')
+            }
+        }, [selectedField, availableFields])
 
-        const availableFieldsForValues = useMemo(
-            () =>
-                fieldOptions.filter(
-                    (f) => !valueConfigs.some((v) => String(v.field) === f.key)
-                ),
-            [fieldOptions, valueConfigs]
-        )
-
-        /**
-         * Section title row (Rows / Columns / Values / Filters).
-         */
-        const renderSectionHeader = (
-            icon: string,
-            title: string,
-            count: number
+        // Render field config card
+        const renderFieldConfig = (
+            field: PivotFieldConfig,
+            onRemove: () => void,
+            onFieldChange?: (nextField: string) => void,
+            showAggSelector?: boolean,
+            aggValue?: PivotAggregationType,
+            onAggChange?: (agg: PivotAggregationType) => void,
+            onShowTotalChange?: (checked: boolean) => void
         ) => (
             <Block
+                key={field.field}
                 style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: pivot.spacing.iconBadgeGap,
-                    marginBottom: pivot.spacing.sectionHeaderMarginBottom,
+                    padding: FOUNDATION_THEME.unit[12],
+                    backgroundColor: FOUNDATION_THEME.colors.gray[25] as string,
+                    borderRadius: FOUNDATION_THEME.border.radius[8],
+                    border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                    marginBottom: FOUNDATION_THEME.unit[12],
                 }}
             >
                 <Block
                     style={{
-                        width: pivot.iconBadge.size,
-                        height: pivot.iconBadge.size,
-                        borderRadius: pivot.iconBadge.borderRadius,
-                        backgroundColor:
-                            tableToken.dataTable.table.header.backgroundColor,
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center',
+                        justifyContent: 'space-between',
+                        marginBottom: showAggSelector
+                            ? FOUNDATION_THEME.unit[8]
+                            : '0',
                     }}
                 >
                     <PrimitiveText
                         style={{
-                            fontSize: pivot.iconBadge.glyphFontSize,
-                            fontWeight: pivot.iconBadge.glyphFontWeight,
-                            color: tableToken.dataTable.table.body.cell.color,
+                            fontSize:
+                                FOUNDATION_THEME.font.size.body.sm.fontSize,
+                            fontWeight: FOUNDATION_THEME.font.weight[500],
+                            color: pivot.text.fieldLabel.color,
                         }}
                     >
-                        {icon}
+                        {field.field}
                     </PrimitiveText>
-                </Block>
-                <PrimitiveText
-                    style={{
-                        fontWeight: pivot.sectionLabel.fontWeight,
-                        fontSize: pivot.sectionLabel.fontSize,
-                        textTransform: pivot.sectionLabel.textTransform,
-                        letterSpacing: pivot.sectionLabel.letterSpacing,
-                    }}
-                >
-                    {title}
-                </PrimitiveText>
-                <Block style={{ flex: 1 }} />
-                <PrimitiveText
-                    style={{
-                        fontSize: pivot.sectionCount.fontSize,
-                        color: pivot.sectionCount.color,
-                    }}
-                >
-                    {count} selected
-                </PrimitiveText>
-            </Block>
-        )
-
-        const renderEmptyState = (title: string, example: string) => (
-            <Block
-                style={{
-                    textAlign: 'center',
-                    padding: pivot.emptyState.padding,
-                }}
-            >
-                <PrimitiveText
-                    style={{
-                        fontSize: pivot.emptyState.titleFontSize,
-                        color: pivot.emptyState.titleColor,
-                        marginBottom: pivot.emptyState.titleMarginBottom,
-                    }}
-                >
-                    {title}
-                </PrimitiveText>
-                <PrimitiveText
-                    style={{
-                        fontSize: pivot.emptyState.exampleFontSize,
-                        color: pivot.emptyState.exampleColor,
-                    }}
-                >
-                    {example}
-                </PrimitiveText>
-            </Block>
-        )
-
-        const renderFieldTag = (
-            key: string,
-            field: string,
-            onRemove: () => void
-        ) => (
-            <Tag
-                key={key}
-                text={field}
-                variant={TagVariant.SUBTLE}
-                color={TagColor.NEUTRAL}
-                size={TagSize.SM}
-                maxWidth="100%"
-                rightSlot={
                     <button
                         type="button"
                         style={removeButtonStyle}
                         onClick={onRemove}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor =
-                                pivot.removeButton.hoverBackground
+                                FOUNDATION_THEME.colors.gray[100] as string
                         }}
                         onMouseLeave={(e) => {
                             e.currentTarget.style.backgroundColor =
-                                pivot.removeButton.background
+                                'transparent'
                         }}
-                        aria-label={`Remove ${field}`}
+                        aria-label={`Remove ${field.field}`}
                     >
-                        <Trash2
-                            size={pivot.removeButton.iconSize}
-                            color={pivot.removeButton.iconColor}
+                        <X
+                            size={16}
+                            color={FOUNDATION_THEME.colors.gray[500] as string}
                         />
                     </button>
-                }
-            />
-        )
-
-        const renderFieldSelector = (
-            placeholder: string,
-            options: { label: string; value: string }[],
-            onSelect: (value: string) => void
-        ) => (
-            <Block
-                style={{
-                    marginTop: pivot.spacing.sectionHeaderMarginBottom,
-                }}
-            >
-                <PrimitiveText
+                </Block>
+                <Block
                     style={{
-                        fontSize: pivot.fieldRowLabel.fontSize,
-                        color: pivot.fieldRowLabel.color,
-                        marginBottom: pivot.fieldRowLabel.marginBottom,
+                        display: 'flex',
+                        gap: FOUNDATION_THEME.unit[8],
+                        marginBottom: FOUNDATION_THEME.unit[8],
                     }}
                 >
-                    Add field:
-                </PrimitiveText>
-                <SingleSelect
-                    placeholder={placeholder}
-                    items={[
-                        {
-                            items: options.map((o) => ({
-                                label: o.label,
-                                value: o.value,
-                            })),
-                        },
-                    ]}
-                    selected=""
-                    onSelect={(value) => value && onSelect(value as string)}
-                    variant={SelectMenuVariant.CONTAINER}
-                    size={SelectMenuSize.SMALL}
-                    fullWidth
-                />
-            </Block>
-        )
-
-        /**
-         * Right panel: maps column fields → pivot config; consumer computes preview from `onConfigChange`.
-         */
-        const renderConfiguration = () => (
-            <NoScrollbar
-                style={{
-                    borderLeft: tableToken.dataTable.border,
-                    padding: pivot.panelPadding,
-                    overflow: 'auto',
-                    backgroundColor: pivot.configPanelBackground,
-                }}
-            >
-                <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
-                    {renderSectionHeader('↓', 'Rows', rowFields.length)}
-                    <Block
-                        style={{
-                            minHeight:
-                                rowFields.length === 0
-                                    ? pivot.dropZone.emptyMinHeight
-                                    : 'auto',
-                            padding: pivot.dropZone.padding,
-                            backgroundColor: pivot.dropZone.background,
-                            borderRadius: pivot.dropZone.borderRadius,
-                            border: pivot.dropZone.border,
-                        }}
-                    >
-                        {rowFields.length === 0 ? (
-                            renderEmptyState(
-                                'Fields here become row labels',
-                                'Example: Product, Region, Date'
-                            )
-                        ) : (
-                            <Block
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: pivot.spacing.stackGap,
-                                }}
-                            >
-                                {rowFields.map((field) =>
-                                    renderFieldTag(
-                                        `row-${String(field)}`,
-                                        String(field),
-                                        () => removeRowField(field)
-                                    )
-                                )}
-                            </Block>
-                        )}
+                    <Block style={{ flex: 1, minWidth: 0 }}>
+                        <SingleSelect
+                            placeholder="Column Name"
+                            items={[
+                                {
+                                    items: fieldOptions.map((option) => ({
+                                        label: option.label,
+                                        value: option.key,
+                                    })),
+                                },
+                            ]}
+                            selected={field.field}
+                            onSelect={(value) => onFieldChange?.(String(value))}
+                            variant={SelectMenuVariant.CONTAINER}
+                            size={SelectMenuSize.SMALL}
+                            fullWidth
+                        />
                     </Block>
-                    {availableFieldsForRows.length > 0 &&
-                        renderFieldSelector(
-                            'Choose a field...',
-                            availableFieldsForRows.map((f) => ({
-                                label: f.label,
-                                value: f.key,
-                            })),
-                            (value) =>
-                                addRowField(
-                                    value as keyof Record<string, unknown>
-                                )
-                        )}
-                </Block>
-
-                <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
-                    {renderSectionHeader('→', 'Columns', columnFields.length)}
-                    <Block
-                        style={{
-                            minHeight:
-                                columnFields.length === 0
-                                    ? pivot.dropZone.emptyMinHeight
-                                    : 'auto',
-                            padding: pivot.dropZone.padding,
-                            backgroundColor: pivot.dropZone.background,
-                            borderRadius: pivot.dropZone.borderRadius,
-                            border: pivot.dropZone.border,
-                        }}
-                    >
-                        {columnFields.length === 0 ? (
-                            renderEmptyState(
-                                'Fields here become column headers',
-                                'Example: Quarter, Category, Status'
-                            )
-                        ) : (
-                            <Block
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: pivot.spacing.stackGap,
-                                }}
-                            >
-                                {columnFields.map((field) =>
-                                    renderFieldTag(
-                                        `col-${String(field)}`,
-                                        String(field),
-                                        () => removeColumnField(field)
-                                    )
-                                )}
-                            </Block>
-                        )}
-                    </Block>
-                    {availableFieldsForColumns.length > 0 &&
-                        renderFieldSelector(
-                            'Choose a field...',
-                            availableFieldsForColumns.map((f) => ({
-                                label: f.label,
-                                value: f.key,
-                            })),
-                            (value) =>
-                                addColumnField(
-                                    value as keyof Record<string, unknown>
-                                )
-                        )}
-                </Block>
-
-                <Block style={{ marginBottom: pivot.spacing.sectionGap }}>
-                    {renderSectionHeader('∑', 'Values', valueConfigs.length)}
-                    <Block
-                        style={{
-                            minHeight:
-                                valueConfigs.length === 0
-                                    ? pivot.dropZone.emptyMinHeight
-                                    : 'auto',
-                            padding: pivot.dropZone.padding,
-                            backgroundColor: pivot.dropZone.background,
-                            borderRadius: pivot.dropZone.borderRadius,
-                            border: pivot.dropZone.border,
-                        }}
-                    >
-                        {valueConfigs.length === 0 ? (
-                            renderEmptyState(
-                                'Numeric fields to calculate',
-                                'Example: Sales, Quantity, Revenue'
-                            )
-                        ) : (
-                            <Block
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: pivot.spacing.stackGap,
-                                }}
-                            >
-                                {valueConfigs.map((config, index) => (
-                                    <Block
-                                        key={`val-${String(config.field)}-${index}`}
-                                        style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            gap: pivot.spacing.stackGap,
-                                            padding: pivot.dropZone.padding,
-                                            backgroundColor:
-                                                tableToken.dataTable.table.body
-                                                    .backgroundColor,
-                                            borderRadius:
-                                                pivot.chip.borderRadius,
-                                            border: tableToken.dataTable.border,
-                                        }}
-                                    >
-                                        <Block
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'space-between',
-                                            }}
-                                        >
-                                            <Tag
-                                                text={String(config.field)}
-                                                variant={TagVariant.SUBTLE}
-                                                color={TagColor.NEUTRAL}
-                                                size={TagSize.SM}
-                                                rightSlot={
-                                                    <button
-                                                        type="button"
-                                                        style={
-                                                            removeButtonStyle
-                                                        }
-                                                        onClick={() =>
-                                                            removeValueField(
-                                                                index
-                                                            )
-                                                        }
-                                                        onMouseEnter={(e) => {
-                                                            e.currentTarget.style.backgroundColor =
-                                                                pivot.removeButton.hoverBackground
-                                                        }}
-                                                        onMouseLeave={(e) => {
-                                                            e.currentTarget.style.backgroundColor =
-                                                                pivot.removeButton.background
-                                                        }}
-                                                        aria-label={`Remove ${String(config.field)}`}
-                                                    >
-                                                        <Trash2
-                                                            size={
-                                                                pivot
-                                                                    .removeButton
-                                                                    .iconSize
-                                                            }
-                                                            color={
-                                                                pivot
-                                                                    .removeButton
-                                                                    .iconColor
-                                                            }
-                                                        />
-                                                    </button>
-                                                }
-                                            />
-                                        </Block>
-                                        <Menu
-                                            items={[
-                                                {
-                                                    items: (
-                                                        supportedAggregationsByField.get(
-                                                            String(config.field)
-                                                        ) || []
-                                                    ).map((item) => ({
-                                                        label: item.toUpperCase(),
-                                                        slot3:
-                                                            config.aggregation ===
-                                                            item ? (
-                                                                <Check
-                                                                    size={
-                                                                        pivot.menuCheckIconSize
-                                                                    }
-                                                                    color={
-                                                                        tableToken
-                                                                            .dataTable
-                                                                            .table
-                                                                            .body
-                                                                            .cell
-                                                                            .color
-                                                                    }
-                                                                />
-                                                            ) : null,
-                                                        onClick: () =>
-                                                            updateValueAggregation(
-                                                                index,
-                                                                item as PivotAggregationType
-                                                            ),
-                                                    })),
-                                                },
-                                            ]}
-                                            alignment={MenuAlignment.END}
-                                            side={MenuSide.TOP}
-                                            sideOffset={4}
-                                            trigger={
-                                                <Button
-                                                    text={`${config.aggregation.toUpperCase()}()`}
-                                                    buttonType={
-                                                        ButtonType.SECONDARY
-                                                    }
-                                                    size={ButtonSize.SMALL}
-                                                    fullWidth
-                                                />
-                                            }
-                                        />
-                                    </Block>
-                                ))}
-                            </Block>
-                        )}
-                    </Block>
-                    {availableFieldsForValues.length > 0 && (
-                        <Block
-                            style={{
-                                marginTop:
-                                    pivot.spacing.sectionHeaderMarginBottom,
-                            }}
-                        >
-                            <Block
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: pivot.spacing.controlsRowGap,
-                                }}
-                            >
-                                <SingleSelect
-                                    placeholder="Select field..."
-                                    items={[
-                                        {
-                                            items: availableFieldsForValues.map(
-                                                (f) => ({
-                                                    label: f.label,
-                                                    value: f.key,
-                                                })
-                                            ),
-                                        },
-                                    ]}
-                                    selected={selectedValueField as string}
-                                    onSelect={(value) =>
-                                        setSelectedValueField(
-                                            value as keyof Record<
-                                                string,
-                                                unknown
-                                            >
-                                        )
-                                    }
-                                    variant={SelectMenuVariant.CONTAINER}
-                                    size={SelectMenuSize.SMALL}
-                                    fullWidth
-                                />
-                                <SingleSelect
-                                    placeholder="Function"
-                                    items={selectedValueAggregationItems}
-                                    selected={selectedValueAgg}
-                                    onSelect={(value) =>
-                                        setSelectedValueAgg(
-                                            value as PivotAggregationType
-                                        )
-                                    }
-                                    variant={SelectMenuVariant.CONTAINER}
-                                    size={SelectMenuSize.SMALL}
-                                    // fullWidth
-                                    disabled={
-                                        selectedValueAggregationOptions.length ===
-                                        0
-                                    }
-                                />
-                            </Block>
-                            {selectedValueMessage && (
-                                <PrimitiveText
-                                    style={{
-                                        fontSize:
-                                            pivot.emptyState.exampleFontSize,
-                                        color: pivot.emptyState.exampleColor,
-                                        marginTop: pivot.spacing.stackGap,
-                                    }}
-                                >
-                                    {selectedValueMessage}
-                                </PrimitiveText>
-                            )}
-                            {selectedValueField && (
-                                <Button
-                                    text="Add Value Field"
-                                    buttonType={ButtonType.PRIMARY}
-                                    size={ButtonSize.SMALL}
-                                    onClick={addValueField}
-                                    disabled={
-                                        !selectedValueField ||
-                                        selectedValueAggregationOptions.length ===
-                                            0
-                                    }
-                                    fullWidth
-                                />
-                            )}
+                    {showAggSelector && aggValue && onAggChange && (
+                        <Block style={{ flex: 1, minWidth: 0 }}>
+                            <SingleSelect
+                                placeholder="operation"
+                                items={[
+                                    {
+                                        items: getSupportedAggregations(
+                                            field.field
+                                        ).map((item) => ({
+                                            label: item.toUpperCase(),
+                                            value: item,
+                                        })),
+                                    },
+                                ]}
+                                selected={aggValue}
+                                onSelect={(value) =>
+                                    onAggChange(value as PivotAggregationType)
+                                }
+                                variant={SelectMenuVariant.CONTAINER}
+                                size={SelectMenuSize.SMALL}
+                                alignment={SelectMenuAlignment.END}
+                                fullWidth
+                            />
                         </Block>
                     )}
                 </Block>
-            </NoScrollbar>
+                <Block style={{ marginTop: FOUNDATION_THEME.unit[8] }}>
+                    <Checkbox
+                        checked={field.showTotal !== false}
+                        size={CheckboxSize.SMALL}
+                        onCheckedChange={(checked) =>
+                            onShowTotalChange?.(
+                                checked === true || checked === 'indeterminate'
+                            )
+                        }
+                    >
+                        Show Total
+                    </Checkbox>
+                </Block>
+            </Block>
         )
 
-        return (
-            <Modal
-                ref={ref}
-                isOpen={isOpen}
-                onClose={onClose}
-                title={title}
-                subtitle={subtitle}
-                minWidth={pivot.modal.minWidth}
-                maxWidth={pivot.modal.maxWidth}
-                maxHeight={pivot.modal.maxHeight}
-                showFooter={false}
-                isCustom
+        const getSectionAddHandler = (section: PivotSectionKey) => {
+            if (section === 'rows') return addRowField
+            if (section === 'columns') return addColumnField
+            return addValueField
+        }
+
+        const renderSection = (
+            title: string,
+            sectionKey: PivotSectionKey,
+            fields: PivotFieldConfig[],
+            onRemove: (field: string) => void,
+            showAgg?: boolean,
+            aggs?: PivotAggregationType[],
+            onAggChange?: (index: number, agg: PivotAggregationType) => void,
+            onShowTotalChange?: (field: string, showTotal: boolean) => void
+        ) => (
+            <Block
+                style={{
+                    marginBottom: '0',
+                }}
             >
-                <NoScrollbar
+                <Block
                     style={{
-                        display: pivot.shell.display,
-                        gridTemplateColumns: pivot.shell.gridTemplateColumns,
-                        height: pivot.shell.height,
-                        overflow: pivot.shell.overflow,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginBottom:
+                            fields.length > 0 ? FOUNDATION_THEME.unit[10] : '0',
                     }}
                 >
-                    <PivotPreviewPanel
-                        pivot={pivot}
-                        tableToken={tableToken}
-                        showExport={showExport}
-                        previewRows={effectivePreviewRows}
-                        previewColumns={effectivePreviewColumns}
-                        previewTableColumns={previewTableColumns}
-                        onExport={exportPivotTable}
+                    <PrimitiveText
+                        style={{
+                            fontSize:
+                                FOUNDATION_THEME.font.size.body.md.fontSize,
+                            fontWeight: FOUNDATION_THEME.font.weight[500],
+                            color: pivot.text.sectionTitle.color,
+                        }}
+                    >
+                        {title}
+                    </PrimitiveText>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.SMALL}
+                        subType={ButtonSubType.ICON_ONLY}
+                        leadingIcon={<Plus size={16} />}
+                        onClick={getSectionAddHandler(sectionKey)}
+                        disabled={!selectedField}
+                        aria-label={`Add ${title.toLowerCase()} field`}
                     />
-                    {renderConfiguration()}
-                </NoScrollbar>
-            </Modal>
+                </Block>
+                {fields.length > 0 && (
+                    <Block>
+                        {fields.map((field, index) =>
+                            renderFieldConfig(
+                                field,
+                                () => onRemove(field.field),
+                                (nextField) => {
+                                    if (sectionKey === 'rows') {
+                                        updateRowField(index, nextField)
+                                        return
+                                    }
+                                    if (sectionKey === 'columns') {
+                                        updateColumnField(index, nextField)
+                                        return
+                                    }
+                                    updateValueField(index, nextField)
+                                },
+                                showAgg,
+                                showAgg && aggs ? aggs[index] : undefined,
+                                showAgg && onAggChange
+                                    ? (agg) => onAggChange(index, agg)
+                                    : undefined,
+                                onShowTotalChange
+                                    ? (checked: boolean) =>
+                                          onShowTotalChange(
+                                              field.field,
+                                              checked
+                                          )
+                                    : undefined
+                            )
+                        )}
+                    </Block>
+                )}
+                {fields.length === 0 && <Block />}
+            </Block>
+        )
+
+        const secondaryActionButton = {
+            text: 'Download',
+            buttonType: ButtonType.SECONDARY,
+            size: ButtonSize.SMALL,
+            onClick: exportPivotTable,
+            disabled: valueConfigs.length === 0,
+        }
+
+        return (
+            <>
+                {/* Trigger - rendered outside modal */}
+                {trigger && (
+                    <Block
+                        onClick={onTriggerClick}
+                        style={{ cursor: 'pointer', display: 'inline-block' }}
+                    >
+                        {trigger}
+                    </Block>
+                )}
+
+                <Modal
+                    ref={ref}
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    title={title}
+                    subtitle={subtitle}
+                    minWidth={pivot.modal.minWidth}
+                    maxWidth={pivot.modal.maxWidth}
+                    maxHeight={pivot.modal.maxHeight}
+                    showFooter={true}
+                    secondaryAction={secondaryActionButton}
+                    useDrawerOnMobile={false}
+                    isCustom
+                >
+                    <NoScrollbar
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            height: '72vh',
+                            minHeight: '520px',
+                            overflow: 'hidden',
+                            padding: pivot.modal.bodyPadding,
+                            gap: pivot.modal.bodyGap,
+                        }}
+                    >
+                        <Block
+                            style={{
+                                flex: '1 1 0',
+                                minWidth: 0,
+                                overflow: 'hidden',
+                            }}
+                        >
+                            <PivotPreviewPanel
+                                pivot={pivot}
+                                tableToken={tableToken}
+                                showExport={false}
+                                previewRows={effectivePreviewRows}
+                                previewColumns={effectivePreviewColumns}
+                                previewTableColumns={previewTableColumns}
+                                onExport={exportPivotTable}
+                                hasValues={valueConfigs.length > 0}
+                            />
+                        </Block>
+                        <NoScrollbar
+                            style={{
+                                padding: FOUNDATION_THEME.unit[16],
+                                overflow: 'auto',
+                                border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                                borderRadius: FOUNDATION_THEME.border.radius[8],
+                                width: pivot.rightPanel.width,
+                                minWidth: pivot.rightPanel.width,
+                                maxWidth: pivot.rightPanel.width,
+                                flex: `0 0 ${pivot.rightPanel.width}`,
+                                boxSizing: 'border-box',
+                            }}
+                        >
+                            {/* Select Column Dropdown */}
+                            <Block
+                                style={{
+                                    marginBottom: FOUNDATION_THEME.unit[24],
+                                }}
+                            >
+                                <SingleSelect
+                                    label="Select Column"
+                                    placeholder="column name"
+                                    items={[
+                                        {
+                                            items: availableFields.map((f) => ({
+                                                label: f.label,
+                                                value: f.key,
+                                            })),
+                                        },
+                                    ]}
+                                    selected={selectedField}
+                                    onSelect={(value) =>
+                                        setSelectedField(value as string)
+                                    }
+                                    variant={SelectMenuVariant.CONTAINER}
+                                    size={SelectMenuSize.SMALL}
+                                    fullWidth
+                                    allowDeselect={false}
+                                />
+                            </Block>
+                            <Block
+                                style={{
+                                    borderTop: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                                    marginBottom: FOUNDATION_THEME.unit[24],
+                                }}
+                            />
+
+                            <Block
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: FOUNDATION_THEME.unit[32],
+                                }}
+                            >
+                                {/* Rows Section */}
+                                {renderSection(
+                                    'Rows',
+                                    'rows',
+                                    rowFields,
+                                    removeRowField,
+                                    false,
+                                    undefined,
+                                    undefined,
+                                    updateRowFieldTotal
+                                )}
+
+                                {/* Columns Section */}
+                                {renderSection(
+                                    'Columns',
+                                    'columns',
+                                    columnFields,
+                                    removeColumnField,
+                                    false,
+                                    undefined,
+                                    undefined,
+                                    updateColumnFieldTotal
+                                )}
+
+                                {/* Values Section */}
+                                {renderSection(
+                                    'Values',
+                                    'values',
+                                    valueConfigs.map((v) => ({
+                                        field: String(v.field),
+                                        showTotal: v.showTotal ?? true,
+                                    })),
+                                    (field) => {
+                                        const index = valueConfigs.findIndex(
+                                            (v) => String(v.field) === field
+                                        )
+                                        if (index >= 0) removeValueField(index)
+                                    },
+                                    true,
+                                    valueConfigs.map((v) => v.aggregation),
+                                    updateValueAggregation,
+                                    updateValueFieldTotal
+                                )}
+                            </Block>
+                        </NoScrollbar>
+                    </NoScrollbar>
+                </Modal>
+            </>
         )
     }
 )

@@ -29,6 +29,10 @@ export type PivotTableModalProps<T extends Record<string, unknown>> = {
     onExport?: (config: PivotTableConfig<T>) => void
     trigger?: ReactNode
     /**
+     * Callback when trigger is clicked. Use this to open the modal.
+     */
+    onTriggerClick?: () => void
+    /**
      * Configure which aggregation operations are available in the Values section.
      * If not provided, all operations will be shown.
      * @example ['sum', 'count', 'average'] // Show only sum, count, and average
@@ -54,4 +58,11 @@ export type PivotPreviewPanelProps = {
     previewColumns?: PivotPreviewColumn[]
     previewTableColumns: ColumnDefinition<Record<string, unknown>>[]
     onExport: () => void
+    hasValues: boolean
+}
+
+export type PivotFieldConfig = {
+    field: string
+    showTotal: boolean
+    aggregation?: PivotAggregationType
 }
