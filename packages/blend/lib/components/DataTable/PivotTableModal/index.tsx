@@ -712,6 +712,7 @@ const PivotTableModal = forwardRef<
                             style={{
                                 padding: FOUNDATION_THEME.unit[16],
                                 overflow: 'auto',
+                                overflowX: 'hidden',
                                 border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
                                 borderRadius: FOUNDATION_THEME.border.radius[8],
                                 width: pivot.rightPanel.width,

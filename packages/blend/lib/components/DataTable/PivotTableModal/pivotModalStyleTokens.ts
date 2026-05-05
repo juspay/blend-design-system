@@ -129,7 +129,7 @@ export const getPivotModalStyleTokens = (
     const { dataTable, header } = tableToken
     const cell = dataTable.table.body.cell
 
-    const rightPanelMinWidth = f.unit[360]
+    const rightPanelMinWidth = '360px'
 
     return {
         modal: {
