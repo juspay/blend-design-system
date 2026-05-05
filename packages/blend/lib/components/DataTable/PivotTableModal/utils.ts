@@ -132,23 +132,49 @@ export const getSupportedAggregationsForField = <
  */
 export const buildPivotPreview = <T extends Record<string, unknown>>(
     data: T[],
-    rowFields: Array<keyof T>,
-    columnFields: Array<keyof T>,
+    rowFields: Array<keyof T> | Array<{ field: keyof T; showTotal?: boolean }>,
+    columnFields:
+        | Array<keyof T>
+        | Array<{ field: keyof T; showTotal?: boolean }>,
     valueConfigs: PivotValueConfig<T>[]
 ): { columns: PivotPreviewColumn[]; rows: PivotPreviewRow[] } => {
     if (!valueConfigs.length) return { columns: [], rows: [] }
+
+    const normalizedRowFields = rowFields.map((field) =>
+        typeof field === 'object' && field !== null ? field.field : field
+    ) as Array<keyof T>
+    const normalizedColumnFields = columnFields.map((field) =>
+        typeof field === 'object' && field !== null ? field.field : field
+    ) as Array<keyof T>
+
+    const shouldShowRowGrandTotal =
+        !rowFields.length ||
+        rowFields.some(
+            (field) =>
+                typeof field !== 'object' ||
+                field === null ||
+                field.showTotal !== false
+        )
+    const shouldShowColumnTotals =
+        normalizedColumnFields.length > 0 &&
+        columnFields.some(
+            (field) =>
+                typeof field !== 'object' ||
+                field === null ||
+                field.showTotal !== false
+        )
 
     const rowGroups = new Map<string, T[]>()
     const columnKeySet = new Set<string>()
 
     data.forEach((row) => {
-        const rowKey = rowFields.length
-            ? rowFields
+        const rowKey = normalizedRowFields.length
+            ? normalizedRowFields
                   .map((field) => normalizePivotValue(row[field]))
                   .join(' | ')
             : 'All Rows'
-        const columnKey = columnFields.length
-            ? columnFields
+        const columnKey = normalizedColumnFields.length
+            ? normalizedColumnFields
                   .map((field) => normalizePivotValue(row[field]))
                   .join(' | ')
             : 'All Columns'
@@ -163,8 +189,8 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
     const orderedColumnKeys = Array.from(columnKeySet).sort((a, b) =>
         a.localeCompare(b)
     )
-    const rowLabel = rowFields.length
-        ? rowFields.map((field) => String(field)).join(' / ')
+    const rowLabel = normalizedRowFields.length
+        ? normalizedRowFields.map((field) => String(field)).join(' / ')
         : 'All Rows'
 
     const previewColumns: PivotPreviewColumn[] = [
@@ -175,6 +201,12 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
                 label: `${truncatePivotLabel(columnKey)} | ${valueConfig.aggregation}(${String(valueConfig.field)})`,
             }))
         ),
+        ...(shouldShowColumnTotals
+            ? valueConfigs.map((valueConfig) => ({
+                  key: `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}`,
+                  label: `Total | ${valueConfig.aggregation}(${String(valueConfig.field)})`,
+              }))
+            : []),
     ]
 
     const dataRows: PivotPreviewRow[] = Array.from(rowGroups.entries()).map(
@@ -186,10 +218,10 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
             }
 
             orderedColumnKeys.forEach((columnKey) => {
-                const columnRows = columnFields.length
+                const columnRows = normalizedColumnFields.length
                     ? groupedRows.filter(
                           (groupRow) =>
-                              columnFields
+                              normalizedColumnFields
                                   .map((field) =>
                                       normalizePivotValue(groupRow[field])
                                   )
@@ -208,40 +240,68 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
                     )
                 })
             })
+            if (shouldShowColumnTotals) {
+                valueConfigs.forEach((valueConfig) => {
+                    const key = `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}`
+                    row[key] = Number(
+                        aggregate(
+                            groupedRows as Array<Record<string, unknown>>,
+                            String(valueConfig.field),
+                            valueConfig.aggregation
+                        ).toFixed(2)
+                    )
+                })
+            }
 
             return row
         }
     )
 
-    const grandTotalRow: PivotPreviewRow = {
-        __pivotId: 'pivot-grand-total',
-        __rowLabel: 'Grand Total',
-        __pivotRowType: 'grand_total',
-    }
+    const rows: PivotPreviewRow[] = [...dataRows]
+    if (shouldShowRowGrandTotal) {
+        const grandTotalRow: PivotPreviewRow = {
+            __pivotId: 'pivot-grand-total',
+            __rowLabel: 'Grand Total',
+            __pivotRowType: 'grand_total',
+        }
 
-    orderedColumnKeys.forEach((columnKey) => {
-        const columnRows = columnFields.length
-            ? data.filter(
-                  (row) =>
-                      columnFields
-                          .map((field) => normalizePivotValue(row[field]))
-                          .join(' | ') === columnKey
-              )
-            : data
-        valueConfigs.forEach((valueConfig) => {
-            const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}`
-            grandTotalRow[key] = Number(
-                aggregate(
-                    columnRows as Array<Record<string, unknown>>,
-                    String(valueConfig.field),
-                    valueConfig.aggregation
-                ).toFixed(2)
-            )
+        orderedColumnKeys.forEach((columnKey) => {
+            const columnRows = normalizedColumnFields.length
+                ? data.filter(
+                      (row) =>
+                          normalizedColumnFields
+                              .map((field) => normalizePivotValue(row[field]))
+                              .join(' | ') === columnKey
+                  )
+                : data
+            valueConfigs.forEach((valueConfig) => {
+                const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}`
+                grandTotalRow[key] = Number(
+                    aggregate(
+                        columnRows as Array<Record<string, unknown>>,
+                        String(valueConfig.field),
+                        valueConfig.aggregation
+                    ).toFixed(2)
+                )
+            })
         })
-    })
+        if (shouldShowColumnTotals) {
+            valueConfigs.forEach((valueConfig) => {
+                const key = `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}`
+                grandTotalRow[key] = Number(
+                    aggregate(
+                        data as Array<Record<string, unknown>>,
+                        String(valueConfig.field),
+                        valueConfig.aggregation
+                    ).toFixed(2)
+                )
+            })
+        }
+        rows.push(grandTotalRow)
+    }
 
     return {
         columns: previewColumns,
-        rows: [...dataRows, grandTotalRow],
+        rows,
     }
 }

@@ -230,19 +230,6 @@ const PivotTableModal = forwardRef<
             })
         }
 
-        const updateValueFieldTotal = (field: string, showTotal: boolean) => {
-            setValueConfigs((prev) =>
-                prev.map((config) =>
-                    String(config.field) === field
-                        ? {
-                              ...config,
-                              showTotal,
-                          }
-                        : config
-                )
-            )
-        }
-
         const updateRowField = (index: number, nextField: string) => {
             setRowFields((prev) => {
                 const usedInOtherSections =
@@ -367,8 +354,18 @@ const PivotTableModal = forwardRef<
             downloadCSV(csvContent, 'pivot-table.csv')
         }
 
+        const hasCustomTotalVisibility = useMemo(
+            () =>
+                rowFields.some((field) => field.showTotal === false) ||
+                columnFields.some((field) => field.showTotal === false),
+            [rowFields, columnFields]
+        )
+
         const effectivePreview = useMemo(() => {
-            if (previewColumns?.length || previewRows?.length) {
+            if (
+                !hasCustomTotalVisibility &&
+                (previewColumns?.length || previewRows?.length)
+            ) {
                 return {
                     columns: previewColumns || [],
                     rows: previewRows || [],
@@ -377,8 +374,14 @@ const PivotTableModal = forwardRef<
 
             return buildPivotPreview(
                 data as Record<string, unknown>[],
-                rowFields.map((f) => f.field),
-                columnFields.map((f) => f.field),
+                rowFields.map((f) => ({
+                    field: f.field as keyof Record<string, unknown>,
+                    showTotal: f.showTotal,
+                })),
+                columnFields.map((f) => ({
+                    field: f.field as keyof Record<string, unknown>,
+                    showTotal: f.showTotal,
+                })),
                 valueConfigs
             )
         }, [
@@ -388,6 +391,7 @@ const PivotTableModal = forwardRef<
             rowFields,
             columnFields,
             valueConfigs,
+            hasCustomTotalVisibility,
         ])
         const effectivePreviewColumns = effectivePreview.columns
         const effectivePreviewRows = effectivePreview.rows
@@ -431,7 +435,8 @@ const PivotTableModal = forwardRef<
             showAggSelector?: boolean,
             aggValue?: PivotAggregationType,
             onAggChange?: (agg: PivotAggregationType) => void,
-            onShowTotalChange?: (checked: boolean) => void
+            onShowTotalChange?: (checked: boolean) => void,
+            showTotalToggle = true
         ) => (
             <Block
                 key={field.field}
@@ -440,7 +445,6 @@ const PivotTableModal = forwardRef<
                     backgroundColor: FOUNDATION_THEME.colors.gray[25] as string,
                     borderRadius: FOUNDATION_THEME.border.radius[8],
                     border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
-                    marginBottom: FOUNDATION_THEME.unit[12],
                 }}
             >
                 <Block
@@ -534,19 +538,22 @@ const PivotTableModal = forwardRef<
                         </Block>
                     )}
                 </Block>
-                <Block style={{ marginTop: FOUNDATION_THEME.unit[8] }}>
-                    <Checkbox
-                        checked={field.showTotal !== false}
-                        size={CheckboxSize.SMALL}
-                        onCheckedChange={(checked) =>
-                            onShowTotalChange?.(
-                                checked === true || checked === 'indeterminate'
-                            )
-                        }
-                    >
-                        Show Total
-                    </Checkbox>
-                </Block>
+                {showTotalToggle && (
+                    <Block>
+                        <Checkbox
+                            checked={field.showTotal !== false}
+                            size={CheckboxSize.SMALL}
+                            onCheckedChange={(checked) =>
+                                onShowTotalChange?.(
+                                    checked === true ||
+                                        checked === 'indeterminate'
+                                )
+                            }
+                        >
+                            Show Total
+                        </Checkbox>
+                    </Block>
+                )}
             </Block>
         )
 
@@ -628,7 +635,8 @@ const PivotTableModal = forwardRef<
                                               field.field,
                                               checked
                                           )
-                                    : undefined
+                                    : undefined,
+                                sectionKey !== 'values'
                             )
                         )}
                     </Block>
@@ -784,7 +792,7 @@ const PivotTableModal = forwardRef<
                                     'values',
                                     valueConfigs.map((v) => ({
                                         field: String(v.field),
-                                        showTotal: v.showTotal ?? true,
+                                        showTotal: true,
                                     })),
                                     (field) => {
                                         const index = valueConfigs.findIndex(
@@ -794,8 +802,7 @@ const PivotTableModal = forwardRef<
                                     },
                                     true,
                                     valueConfigs.map((v) => v.aggregation),
-                                    updateValueAggregation,
-                                    updateValueFieldTotal
+                                    updateValueAggregation
                                 )}
                             </Block>
                         </NoScrollbar>
