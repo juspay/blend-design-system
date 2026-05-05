@@ -5,13 +5,16 @@ export enum UploadState {
     UPLOADING = 'uploading',
     SUCCESS = 'success',
     ERROR = 'error',
+
+    DISABLED = 'disabled',
+}
+
+export enum UploadDragState {
     DRAG_ENTER = 'drag_enter',
     DRAG_LEAVE = 'drag_leave',
     DRAG_OVER = 'drag_over',
     DROP = 'drop',
-    DISABLED = 'disabled',
 }
-
 export type UploadFileV2 = {
     file: File
     isValid: boolean

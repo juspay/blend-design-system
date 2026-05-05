@@ -16,6 +16,30 @@ const UploadV2Demo = () => {
     )
     // UploadV2 files state
     const [uploadV2Files, setUploadV2Files] = useState<UploadFileV2[]>([])
+    const successDummyFiles: UploadFileV2[] = [
+        {
+            file: new File(['dummy success content'], 'sample_file.csv', {
+                type: 'text/csv',
+            }),
+            isValid: true,
+        },
+    ]
+    const errorDummyFiles: UploadFileV2[] = [
+        {
+            file: new File(['dummy success content'], 'sample_file.csv', {
+                type: 'text/csv',
+            }),
+            isValid: false,
+            errorReason: 'maxFiles',
+        },
+        {
+            file: new File(['dummy success content'], 'sample_file.csv', {
+                type: 'text/csv',
+            }),
+            isValid: false,
+            errorReason: 'maxFiles',
+        },
+    ]
     return (
         <div className="p-8 space-y-12">
             {/* Playground Section */}
@@ -100,6 +124,7 @@ const UploadV2Demo = () => {
                         disabled={playgroundDisabled}
                         files={uploadV2Files}
                         onChange={(files) => {
+                            console.log('files', files)
                             setUploadV2Files(files)
                         }}
                         maxSize={8 * 1024 * 1024}
@@ -140,12 +165,12 @@ const UploadV2Demo = () => {
                         }
                         multiple={playgroundMultiple}
                         disabled={playgroundDisabled}
-                        files={uploadV2Files}
+                        files={errorDummyFiles}
                         onChange={(files) => {
                             setUploadV2Files(files)
                         }}
                         state={UploadState.ERROR}
-                        errorText="File type not supported"
+                        // errorText="File type not supported"
                         maxSize={8 * 1024 * 1024}
                         maxFiles={2}
                         description=".csv only | Max size 8 MB"
@@ -187,7 +212,7 @@ const UploadV2Demo = () => {
                         }
                         multiple={playgroundMultiple}
                         disabled={playgroundDisabled}
-                        files={uploadV2Files}
+                        files={successDummyFiles}
                         onChange={(files) => {
                             setUploadV2Files(files)
                         }}

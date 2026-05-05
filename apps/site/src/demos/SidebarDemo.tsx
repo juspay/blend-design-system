@@ -152,7 +152,7 @@ import SearchInputV2Demo from './SearchInputV2Demo'
 import BadgeDemo from './BadgeDemo'
 import ChatInputV2Demo from './ChatInputV2Demo'
 import StepperV2Demo from './StepperV2Demo'
-import UploadV2Demo from './UploadeV2Demo'
+import UploadV2Demo from './UploadV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponentState] = useState<

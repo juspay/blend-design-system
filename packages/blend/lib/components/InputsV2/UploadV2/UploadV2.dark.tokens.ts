@@ -1,6 +1,6 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
 import { ResponsiveUploadV2Tokens } from './UploadV2.tokens'
-import { UploadState } from './UploadV2.types'
+import { UploadDragState, UploadState } from './UploadV2.types'
 
 export const getUploadV2DarkTokens = (
     foundationTokens: FoundationTokenType
@@ -84,10 +84,10 @@ export const getUploadV2DarkTokens = (
                 borderRadius: foundationTokens.border.radius[12],
                 border: {
                     [UploadState.IDLE]: `1px dashed ${foundationTokens.colors.gray[200]}`,
-                    [UploadState.DRAG_ENTER]: `1px dashed ${foundationTokens.colors.primary[500]}`,
-                    [UploadState.DRAG_LEAVE]: `1px dashed ${foundationTokens.colors.gray[200]}`,
-                    [UploadState.DRAG_OVER]: `1px dashed ${foundationTokens.colors.primary[500]}`,
-                    [UploadState.DROP]: `1px dashed ${foundationTokens.colors.gray[200]}`,
+                    [UploadDragState.DRAG_ENTER]: `1px dashed ${foundationTokens.colors.primary[500]}`,
+                    [UploadDragState.DRAG_LEAVE]: `1px dashed ${foundationTokens.colors.gray[200]}`,
+                    [UploadDragState.DRAG_OVER]: `1px dashed ${foundationTokens.colors.primary[500]}`,
+                    [UploadDragState.DROP]: `1px dashed ${foundationTokens.colors.gray[200]}`,
                     [UploadState.UPLOADING]: `1px dashed ${foundationTokens.colors.gray[200]}`,
                     [UploadState.SUCCESS]: `1px dashed ${foundationTokens.colors.gray[200]}`,
                     [UploadState.ERROR]: `1px dashed ${foundationTokens.colors.red[200]}`,
@@ -95,12 +95,13 @@ export const getUploadV2DarkTokens = (
                 },
                 backgroundColor: {
                     [UploadState.IDLE]: foundationTokens.colors.gray[900],
-                    [UploadState.DRAG_ENTER]:
+                    [UploadDragState.DRAG_ENTER]:
                         foundationTokens.colors.primary[50],
-                    [UploadState.DRAG_LEAVE]: foundationTokens.colors.gray[900],
-                    [UploadState.DRAG_OVER]:
+                    [UploadDragState.DRAG_LEAVE]:
+                        foundationTokens.colors.gray[900],
+                    [UploadDragState.DRAG_OVER]:
                         foundationTokens.colors.primary[50],
-                    [UploadState.DROP]: foundationTokens.colors.gray[900],
+                    [UploadDragState.DROP]: foundationTokens.colors.gray[900],
                     [UploadState.UPLOADING]: foundationTokens.colors.gray[900],
                     [UploadState.SUCCESS]: foundationTokens.colors.gray[900],
                     [UploadState.ERROR]: foundationTokens.colors.gray[900],
@@ -208,10 +209,10 @@ export const getUploadV2DarkTokens = (
                 borderRadius: foundationTokens.border.radius[12],
                 border: {
                     [UploadState.IDLE]: `1px dashed ${foundationTokens.colors.gray[200]}`,
-                    [UploadState.DRAG_ENTER]: `1px dashed ${foundationTokens.colors.primary[500]}`,
-                    [UploadState.DRAG_LEAVE]: `1px dashed ${foundationTokens.colors.gray[200]}`,
-                    [UploadState.DRAG_OVER]: `1px dashed ${foundationTokens.colors.primary[500]}`,
-                    [UploadState.DROP]: `1px dashed ${foundationTokens.colors.gray[200]}`,
+                    [UploadDragState.DRAG_ENTER]: `1px dashed ${foundationTokens.colors.primary[500]}`,
+                    [UploadDragState.DRAG_LEAVE]: `1px dashed ${foundationTokens.colors.gray[200]}`,
+                    [UploadDragState.DRAG_OVER]: `1px dashed ${foundationTokens.colors.primary[500]}`,
+                    [UploadDragState.DROP]: `1px dashed ${foundationTokens.colors.gray[200]}`,
                     [UploadState.UPLOADING]: `1px dashed ${foundationTokens.colors.gray[200]}`,
                     [UploadState.SUCCESS]: `1px dashed ${foundationTokens.colors.gray[200]}`,
                     [UploadState.ERROR]: `1px dashed ${foundationTokens.colors.red[200]}`,
@@ -219,12 +220,13 @@ export const getUploadV2DarkTokens = (
                 },
                 backgroundColor: {
                     [UploadState.IDLE]: foundationTokens.colors.gray[900],
-                    [UploadState.DRAG_ENTER]:
+                    [UploadDragState.DRAG_ENTER]:
                         foundationTokens.colors.primary[50],
-                    [UploadState.DRAG_LEAVE]: foundationTokens.colors.gray[900],
-                    [UploadState.DRAG_OVER]:
+                    [UploadDragState.DRAG_LEAVE]:
+                        foundationTokens.colors.gray[900],
+                    [UploadDragState.DRAG_OVER]:
                         foundationTokens.colors.primary[50],
-                    [UploadState.DROP]: foundationTokens.colors.gray[900],
+                    [UploadDragState.DROP]: foundationTokens.colors.gray[900],
                     [UploadState.UPLOADING]: foundationTokens.colors.gray[900],
                     [UploadState.SUCCESS]: foundationTokens.colors.gray[900],
                     [UploadState.ERROR]: foundationTokens.colors.gray[900],

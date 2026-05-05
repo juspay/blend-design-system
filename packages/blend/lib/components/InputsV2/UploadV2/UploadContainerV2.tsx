@@ -14,7 +14,7 @@ import {
 import { XIcon } from '@phosphor-icons/react'
 import TooltipV2 from '../../TooltipV2/TooltipV2'
 import { truncateFileNameForTag } from './utils'
-import { UploadFileV2, UploadState } from './UploadV2.types'
+import { UploadDragState, UploadFileV2, UploadState } from './UploadV2.types'
 import {
     ProgressBarV2,
     ProgressBarV2Appearance,
@@ -49,6 +49,7 @@ const UploadContainerV2 = ({
     progressBarValue,
     progressBarMaxWidth,
     uploadHeaderText,
+    dragState,
 }: {
     description: string
     slot: React.ReactNode
@@ -63,6 +64,7 @@ const UploadContainerV2 = ({
     progressBarValue: number
     progressBarMaxWidth: string
     uploadHeaderText: string
+    dragState: UploadDragState
 }) => {
     const isUploading = state === UploadState.UPLOADING
     const isSuccess = state === UploadState.SUCCESS
@@ -73,6 +75,12 @@ const UploadContainerV2 = ({
     const showBrowseButton = files.length === 0 && !isUploading
     const showReplaceButton = files.length > 0 && !multiple && !isUploading
     const showMultiFileTags = files.length > 0 && multiple && !isUploading
+    const isDragEnter = dragState === UploadDragState.DRAG_ENTER
+    const isDragLeave = dragState === UploadDragState.DRAG_LEAVE
+    const isDragOver = dragState === UploadDragState.DRAG_OVER
+    const isDrop = dragState === UploadDragState.DROP
+    const isDragActive = isDragEnter || isDragOver || isDrop
+
     return (
         <Block
             display="flex"
@@ -84,8 +92,16 @@ const UploadContainerV2 = ({
             paddingLeft={uploadContainer.paddingLeft}
             paddingRight={uploadContainer.paddingRight}
             borderRadius={uploadContainer.borderRadius}
-            border={uploadContainer.border[state]}
-            backgroundColor={uploadContainer.backgroundColor[state]}
+            border={
+                isDragActive
+                    ? uploadContainer.border[dragState]
+                    : uploadContainer.border[state]
+            }
+            backgroundColor={
+                isDragActive
+                    ? uploadContainer.backgroundColor[dragState]
+                    : uploadContainer.backgroundColor[state]
+            }
         >
             {slot && <Block>{slot}</Block>}
             <Block

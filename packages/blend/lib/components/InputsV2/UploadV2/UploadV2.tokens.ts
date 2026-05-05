@@ -5,7 +5,7 @@ import { FoundationTokenType } from '../../../tokens/theme.token'
 import { Theme } from '../../../context/theme.enum'
 import { getUploadV2DarkTokens } from './UploadV2.dark.tokens'
 import { getUploadV2LightTokens } from './UploadV2.light.tokens'
-import { UploadState } from './UploadV2.types'
+import { UploadDragState, UploadState } from './UploadV2.types'
 
 export type UploadV2TokensType = {
     gap: CSSObject['gap']
@@ -58,10 +58,10 @@ export type UploadV2TokensType = {
         paddingRight: CSSObject['paddingRight']
         borderRadius: CSSObject['borderRadius']
         border: {
-            [key in UploadState]: CSSObject['border']
+            [key in UploadState | UploadDragState]: CSSObject['border']
         }
         backgroundColor: {
-            [key in UploadState]: CSSObject['backgroundColor']
+            [key in UploadState | UploadDragState]: CSSObject['backgroundColor']
         }
         header: {
             gap: CSSObject['gap']

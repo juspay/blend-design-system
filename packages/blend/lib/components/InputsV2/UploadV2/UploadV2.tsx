@@ -1,6 +1,11 @@
 import { forwardRef, useEffect, useId, useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
-import { UploadFileV2, UploadState, UploadV2Props } from './UploadV2.types'
+import {
+    UploadDragState,
+    UploadFileV2,
+    UploadState,
+    UploadV2Props,
+} from './UploadV2.types'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import { InputLabelsV2Tokens } from '../inputV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -40,6 +45,9 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
         const uploadId = useId()
         const [uploadState, setUploadState] = useState<UploadState>(
             UploadState.IDLE
+        )
+        const [dragState, setDragState] = useState<UploadDragState>(
+            UploadDragState.DRAG_LEAVE
         )
         const isUploading = state === UploadState.UPLOADING
         const isSuccess = state === UploadState.SUCCESS
@@ -138,14 +146,14 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                             e.preventDefault()
                             return
                         }
-                        setUploadState(UploadState.DRAG_ENTER)
+                        setDragState(UploadDragState.DRAG_ENTER)
                     }}
                     onDragLeave={(e) => {
                         if (isInteractionBlocked) {
                             e.preventDefault()
                             return
                         }
-                        setUploadState(UploadState.DRAG_LEAVE)
+                        setDragState(UploadDragState.DRAG_LEAVE)
                     }}
                     onDragOver={(e) => {
                         if (isInteractionBlocked) {
@@ -153,7 +161,7 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                             return
                         }
                         e.preventDefault()
-                        setUploadState(UploadState.DRAG_OVER)
+                        setDragState(UploadDragState.DRAG_OVER)
                     }}
                     onDrop={(e) => {
                         if (isInteractionBlocked) {
@@ -162,7 +170,7 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                         }
                         e.preventDefault()
                         e.stopPropagation()
-                        setUploadState(UploadState.DROP)
+                        setDragState(UploadDragState.DROP)
                         const droppedFiles = Array.from(e.dataTransfer.files)
                         const validatedFiles = validateFiles(droppedFiles)
                         const updatedFiles = multiple
@@ -203,6 +211,7 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                         progressBarValue={progressBarValue}
                         progressBarMaxWidth={progressBarMaxWidth}
                         uploadHeaderText={uploadHeaderText}
+                        dragState={dragState}
                     />
                 </Block>
 
