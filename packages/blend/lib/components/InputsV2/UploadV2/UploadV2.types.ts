@@ -35,6 +35,10 @@ export type UploadV2Props = {
     /** Callback when files are selected or changed */
     onChange?: (files: UploadFileV2[]) => void
     state?: UploadState
+    errorText?: string
     maxSize?: number
     maxFiles?: number
+    progressBarValue?: number
+    progressBarMaxWidth?: string
+    uploadHeaderText?: string
 }

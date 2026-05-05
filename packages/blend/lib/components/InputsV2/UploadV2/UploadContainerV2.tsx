@@ -15,6 +15,25 @@ import { XIcon } from '@phosphor-icons/react'
 import TooltipV2 from '../../TooltipV2/TooltipV2'
 import { truncateFileNameForTag } from './utils'
 import { UploadFileV2, UploadState } from './UploadV2.types'
+import {
+    ProgressBarV2,
+    ProgressBarV2Appearance,
+    ProgressBarV2Size,
+    ProgressBarV2Variant,
+} from '../../ProgressBarV2'
+
+const getValidationMessage = (reason?: UploadFileV2['errorReason']) => {
+    switch (reason) {
+        case 'oversized':
+            return 'File is too large'
+        case 'maxFiles':
+            return 'File limit exceeded'
+        case 'invalidType':
+            return 'Invalid file type'
+        default:
+            return 'Invalid file'
+    }
+}
 
 const UploadContainerV2 = ({
     description,
@@ -26,6 +45,10 @@ const UploadContainerV2 = ({
     onFileRemove,
     multiple,
     state,
+    errorText = '',
+    progressBarValue,
+    progressBarMaxWidth,
+    uploadHeaderText,
 }: {
     description: string
     slot: React.ReactNode
@@ -36,8 +59,20 @@ const UploadContainerV2 = ({
     onFileRemove: (fileName: string) => void
     multiple: boolean
     state: UploadState
+    errorText: string
+    progressBarValue: number
+    progressBarMaxWidth: string
+    uploadHeaderText: string
 }) => {
+    const isUploading = state === UploadState.UPLOADING
+    const isSuccess = state === UploadState.SUCCESS
+    const isInteractionBlocked = isUploading || isSuccess
     const { uploadContainer } = tokens
+    const showEmptyDescription = files.length === 0 && !isUploading
+    const showSingleFileInfo = files.length > 0 && !multiple && !isUploading
+    const showBrowseButton = files.length === 0 && !isUploading
+    const showReplaceButton = files.length > 0 && !multiple && !isUploading
+    const showMultiFileTags = files.length > 0 && multiple && !isUploading
     return (
         <Block
             display="flex"
@@ -63,21 +98,23 @@ const UploadContainerV2 = ({
                     fontSize={uploadContainer.header.title.fontSize}
                     fontWeight={uploadContainer.header.title.fontWeight}
                     color={uploadContainer.header.title.color}
+                    textAlign="center"
                 >
-                    {'Choose a file or drag & drop it here'}
+                    {uploadHeaderText}
                 </Text>
-                {files.length === 0 && (
+                {showEmptyDescription && (
                     <Text
                         fontSize={uploadContainer.header.description.fontSize}
                         fontWeight={
                             uploadContainer.header.description.fontWeight
                         }
                         color={uploadContainer.header.description.color}
+                        textAlign="center"
                     >
                         {description}
                     </Text>
                 )}
-                {files.length > 0 && !multiple && (
+                {showSingleFileInfo && state !== UploadState.SUCCESS && (
                     <Text
                         fontSize={uploadContainer.header.description.fontSize}
                         fontWeight={
@@ -88,12 +125,40 @@ const UploadContainerV2 = ({
                                 ? uploadContainer.header.description.color
                                 : uploadContainer.header.title.color
                         }
+                        textAlign="center"
                     >
                         {'Selected file: ' + files[0].file.name}
                     </Text>
                 )}
+                {isUploading && (
+                    <Block width="100%" maxWidth={progressBarMaxWidth}>
+                        <Text
+                            fontSize={
+                                uploadContainer.header.description.fontSize
+                            }
+                            fontWeight={
+                                uploadContainer.header.description.fontWeight
+                            }
+                            color={uploadContainer.header.title.color}
+                            textAlign="center"
+                        >
+                            {'Please wait while uploading'}
+                        </Text>
+                    </Block>
+                )}
             </Block>
-            {files.length === 0 && (
+            {isUploading && (
+                <Block width="100%" maxWidth={progressBarMaxWidth}>
+                    <ProgressBarV2
+                        value={progressBarValue}
+                        size={ProgressBarV2Size.SM}
+                        variant={ProgressBarV2Variant.LINEAR}
+                        appearance={ProgressBarV2Appearance.SOLID}
+                        showLabel={true}
+                    />
+                </Block>
+            )}
+            {showBrowseButton && !isInteractionBlocked && (
                 <ButtonV2
                     buttonType={ButtonV2Type.SECONDARY}
                     size={ButtonV2Size.MEDIUM}
@@ -105,7 +170,7 @@ const UploadContainerV2 = ({
                     }}
                 />
             )}
-            {files.length > 0 && !multiple && (
+            {showReplaceButton && !isInteractionBlocked && (
                 <ButtonV2
                     buttonType={ButtonV2Type.SECONDARY}
                     size={ButtonV2Size.MEDIUM}
@@ -119,7 +184,7 @@ const UploadContainerV2 = ({
                 />
             )}
 
-            {files.length > 0 && multiple && (
+            {showMultiFileTags && !isInteractionBlocked && (
                 <Block
                     display="flex"
                     flexDirection="column"
@@ -131,9 +196,14 @@ const UploadContainerV2 = ({
                         const fileColor = uploadFile.isValid
                             ? TagV2Color.PRIMARY
                             : TagV2Color.ERROR
+                        const tooltipContent = uploadFile.isValid
+                            ? uploadFile.file.name
+                            : `${uploadFile.file.name} - ${getValidationMessage(
+                                  uploadFile.errorReason
+                              )}`
                         return (
                             <TooltipV2
-                                content={uploadFile.file.name}
+                                content={tooltipContent}
                                 key={uploadFile.file.name}
                             >
                                 <TagV2
@@ -156,7 +226,7 @@ const UploadContainerV2 = ({
                     })}
                 </Block>
             )}
-            {state === UploadState.ERROR && (
+            {state === UploadState.ERROR && !errorText && !multiple && (
                 <Text
                     fontSize={uploadContainer.header.errorText.fontSize}
                     fontWeight={uploadContainer.header.errorText.fontWeight}
@@ -170,14 +240,29 @@ const UploadContainerV2 = ({
                         const hasMaxFiles = invalidFiles.some(
                             (f) => f.errorReason === 'maxFiles'
                         )
+                        const hasInvalidType = invalidFiles.some(
+                            (f) => f.errorReason === 'invalidType'
+                        )
                         const errors: string[] = []
                         if (hasOversized)
-                            errors.push('Some files exceed size limit')
-                        if (hasMaxFiles) errors.push('File limit exceeded')
+                            errors.push(getValidationMessage('oversized'))
+                        if (hasMaxFiles)
+                            errors.push(getValidationMessage('maxFiles'))
+                        if (hasInvalidType)
+                            errors.push(getValidationMessage('invalidType'))
                         return errors.length > 0
                             ? `${errors.join(', ')}`
-                            : 'Error: Invalid file(s)'
+                            : getValidationMessage()
                     })()}
+                </Text>
+            )}
+            {errorText && (
+                <Text
+                    fontSize={uploadContainer.header.errorText.fontSize}
+                    fontWeight={uploadContainer.header.errorText.fontWeight}
+                    color={uploadContainer.header.errorText.color}
+                >
+                    {errorText}
                 </Text>
             )}
         </Block>
