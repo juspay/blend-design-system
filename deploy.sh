@@ -25,7 +25,13 @@ fi
 ENVIRONMENT=$1
 ROOT_DIR=$(pwd)
 
-# Load appropriate environment file
+# Load base .env first (contains shared secrets like GROQ_API_KEY, FIGMA_ACCESS_TOKEN)
+if [ -f ".env" ]; then
+    echo "📋 Loading base environment from .env"
+    export $(cat ".env" | grep -v '^#' | xargs)
+fi
+
+# Load appropriate environment file (overrides base values if needed)
 if [ "$ENVIRONMENT" = "dev" ]; then
     load_env ".env.dev"
 elif [ "$ENVIRONMENT" = "prod" ]; then
@@ -52,6 +58,20 @@ rm -rf apps/ascent/.next
 if [ ! -d "node_modules" ]; then
     echo "📦 Installing workspace dependencies with pnpm..."
     pnpm install
+fi
+
+# Sync changelog before building
+echo "📝 Syncing changelog..."
+pnpm sync-changelog --latest || echo "⚠️ Changelog sync failed, continuing with existing files"
+
+# Commit any newly generated changelog files
+echo "📝 Committing new changelog files..."
+git add apps/ascent/app/changelog/content/
+if ! git diff --staged --quiet; then
+    git config user.name "$(git config --global user.name)"
+    git config user.email "$(git config --global user.email)"
+    git commit -m "chore: sync changelog"
+    git push
 fi
 
 # Build Ascent app
