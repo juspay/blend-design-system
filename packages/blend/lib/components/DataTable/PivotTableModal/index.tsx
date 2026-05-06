@@ -427,6 +427,13 @@ const PivotTableModal = forwardRef<
             }
         }, [selectedField, availableFields])
 
+        useEffect(() => {
+            if (!isOpen) return
+            if (selectedField) return
+            if (availableFields.length === 0) return
+            setSelectedField(availableFields[0].key)
+        }, [isOpen, selectedField, availableFields])
+
         // Render field config card
         const renderFieldConfig = (
             field: PivotFieldConfig,
@@ -445,6 +452,7 @@ const PivotTableModal = forwardRef<
                     backgroundColor: FOUNDATION_THEME.colors.gray[25] as string,
                     borderRadius: FOUNDATION_THEME.border.radius[8],
                     border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                    marginBottom: FOUNDATION_THEME.unit[12],
                 }}
             >
                 <Block

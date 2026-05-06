@@ -2966,6 +2966,9 @@ const DataTableDemo = () => {
         },
         [pivotSourceData]
     )
+    // Change this to 1 | 2 | 3 to render the Pivot trigger
+    // in any DataTable header slot.
+    const pivotTriggerSlot: 1 | 2 | 3 = 3
 
     return (
         <div>
@@ -3309,7 +3312,7 @@ const DataTableDemo = () => {
                 enableRowExpansion
                 enablePivotTable
                 pivotTableConfig={{
-                    triggerSlot: 3,
+                    triggerSlot: pivotTriggerSlot,
                     triggerButton: (
                         <Button
                             text="Pivot"
@@ -3331,20 +3334,6 @@ const DataTableDemo = () => {
                     ],
                     previewColumns: pivotPreviewColumns,
                     previewRows: pivotPreviewRows,
-                    initialConfig: {
-                        rows: ['department'],
-                        columns: ['gateway'],
-                        values: [
-                            {
-                                field: 'id',
-                                aggregation: PivotAggregationType.COUNT,
-                            },
-                            {
-                                field: 'revenueAmount',
-                                aggregation: PivotAggregationType.SUM,
-                            },
-                        ],
-                    },
                     onConfigChange: handlePivotConfigChange,
                 }}
                 enableRowSelection={enableRowSelection}
