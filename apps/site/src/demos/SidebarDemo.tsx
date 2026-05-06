@@ -1676,7 +1676,7 @@ const SidebarDemo = () => {
               }
 
     return (
-        <div className="w-screen h-screen">
+        <div className="w-full h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     onSidebarStateChange={(state) => setSidebarState(state)}

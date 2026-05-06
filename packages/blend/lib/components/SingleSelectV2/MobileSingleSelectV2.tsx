@@ -80,6 +80,12 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
+
+    if (customTrigger !== undefined && !React.isValidElement(customTrigger)) {
+        throw new Error(
+            'SingleSelectV2: customTrigger must be a valid React element.'
+        )
+    }
     const menuItemTokens = singleSelectTokens?.menu?.item ?? {
         paddingTop: '0px',
         paddingRight: '0px',

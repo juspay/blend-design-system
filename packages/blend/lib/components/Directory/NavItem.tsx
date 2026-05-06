@@ -10,13 +10,15 @@ import React, {
 import type { NavItemProps } from './types'
 import { ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
-import Text from '../Text/Text'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import { handleKeyDown } from './utils'
-import { Tooltip, TooltipSide } from '../Tooltip'
+import { TooltipV2 } from '../TooltipV2/TooltipV2'
+import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
+import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
 import { useSectionScroll } from '../../hooks/useSectionScroll'
+import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
@@ -30,6 +32,7 @@ const StyledElement = styled(Block)<{
             : $tokens.section.itemList.item.backgroundColor.default};
     border: none;
     width: 100%;
+    min-width: 0;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -39,18 +42,21 @@ const StyledElement = styled(Block)<{
         $iconOnlyMode ? '0' : $tokens.section.itemList.item.gap};
     padding: ${({ $tokens, $iconOnlyMode }) =>
         $iconOnlyMode
-            ? '8px 10px'
+            ? `${$tokens.section.itemList.item.iconOnlyPadding.paddingTop} ${$tokens.section.itemList.item.iconOnlyPadding.paddingRight} ${$tokens.section.itemList.item.iconOnlyPadding.paddingBottom} ${$tokens.section.itemList.item.iconOnlyPadding.paddingLeft}`
             : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
     color: ${({ $isActive, $tokens }) =>
         $isActive
             ? $tokens.section.itemList.item.color.active
             : $tokens.section.itemList.item.color.default};
     font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
+    font-size: ${({ $tokens }) =>
+        addPxToValue($tokens.section.itemList.item.fontSize)};
     border-radius: ${({ $tokens }) =>
         $tokens.section.itemList.item.borderRadius};
     transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
     user-select: none;
     cursor: pointer;
+    overflow: hidden;
 
     &:hover,
     &:focus-visible {
@@ -287,14 +293,10 @@ const NavItem = ({
     const renderContent = () => {
         if (iconOnlyMode) {
             if (!item.leftSlot) {
-                // Icon is mandatory in icon-only mode
-                console.warn(
-                    `NavItem "${item.label}" is missing required leftSlot icon in icon-only mode`
-                )
                 return (
                     <Block
-                        width="20px"
-                        height="20px"
+                        width={tokens.section.itemList.item.icon.width}
+                        height={tokens.section.itemList.item.icon.width}
                         backgroundColor={
                             isActive
                                 ? tokens.section.itemList.item.backgroundColor
@@ -338,6 +340,8 @@ const NavItem = ({
                     alignItems="center"
                     justifyContent="flex-start"
                     gap={tokens.section.itemList.item.gap}
+                    minWidth={0}
+                    overflow="hidden"
                 >
                     {item.leftSlot && React.isValidElement(item.leftSlot) && (
                         <IconWrapper aria-hidden="true" $tokens={tokens}>
@@ -362,25 +366,14 @@ const NavItem = ({
                         minWidth={0}
                         overflow="hidden"
                         style={{
-                            textRendering: 'optimizeLegibility',
-                            WebkitFontSmoothing: 'antialiased',
-                            MozOsxFontSmoothing: 'grayscale',
+                            display: 'flex',
+                            flexDirection: 'column',
                         }}
                     >
-                        <Text
-                            as="span"
-                            variant="body.md"
-                            fontWeight={tokens.section.itemList.item.fontWeight}
-                            fontSize={tokens.section.itemList.item.fontSize}
-                            color={
-                                isActive
-                                    ? tokens.section.itemList.item.color.active
-                                    : tokens.section.itemList.item.color.default
-                            }
-                            truncate
-                        >
-                            {item.label}
-                        </Text>
+                        <TruncatedTextWithTooltipV2
+                            text={item.label}
+                            side={TooltipV2Side.RIGHT}
+                        />
                     </Block>
                     {item.rightSlot && React.isValidElement(item.rightSlot) && (
                         <Block aria-hidden="true">{item.rightSlot}</Block>
@@ -453,13 +446,9 @@ const NavItem = ({
             }}
         >
             {iconOnlyMode && item.leftSlot ? (
-                <Tooltip
-                    content={item.label}
-                    side={TooltipSide.RIGHT}
-                    offset={12}
-                >
+                <TooltipV2 content={item.label} side={TooltipV2Side.RIGHT}>
                     {itemElement}
-                </Tooltip>
+                </TooltipV2>
             ) : (
                 itemElement
             )}

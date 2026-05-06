@@ -16,6 +16,7 @@ import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import MobileSingleSelectV2 from './MobileSingleSelectV2'
 import { getBorderRadius, getValueLabelMap, setupAccessibility } from './utils'
+import { useDropdownInteractionLock } from '../../hooks'
 
 const SingleSelectV2 = ({
     label,
@@ -73,6 +74,12 @@ const SingleSelectV2 = ({
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
+
+    if (customTrigger !== undefined && !isValidElement(customTrigger)) {
+        throw new Error(
+            'SingleSelectV2: customTrigger must be a valid React element.'
+        )
+    }
 
     const [internalOpen, setInternalOpen] = useState(false)
     const open =
@@ -138,11 +145,7 @@ const SingleSelectV2 = ({
     const shouldEnableVirtualization =
         enableVirtualization ?? safeItems.length > 20
 
-    if (customTrigger && !isValidElement(customTrigger)) {
-        throw new Error(
-            'SingleSelectV2: customTrigger must be a valid React element.'
-        )
-    }
+    useDropdownInteractionLock(!isSmallScreen && open)
 
     if (isSmallScreen && usePanelOnMobile) {
         return (

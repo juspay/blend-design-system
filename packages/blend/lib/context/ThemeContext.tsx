@@ -42,6 +42,10 @@ import {
     getTopbarTokens,
     type ResponsiveTopbarTokens,
 } from '../components/Topbar/topbar.tokens'
+import {
+    getTopbarV2Tokens,
+    type ResponsiveTopbarV2Tokens,
+} from '../components/TopbarV2/topbarV2.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import type { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
@@ -95,6 +99,10 @@ import {
     getMobileNavigationTokens,
     type ResponsiveMobileNavigationTokens,
 } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import {
+    getMobileNavigationV2Tokens,
+    type ResponsiveMobileNavigationV2Tokens,
+} from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import {
     getStepperTokens,
@@ -178,6 +186,10 @@ import {
     getPopoverV2Tokens,
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
+import {
+    getSidebarV2Tokens,
+    ResponsiveSidebarV2Tokens,
+} from '../components/SidebarV2/sidebarV2.tokens'
 import {
     getTabsV2Tokens,
     ResponsiveTabsV2Tokens,
@@ -265,11 +277,13 @@ export type ComponentTokenType = {
     CARD?: ResponsiveCardTokens
     SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
+    TOPBARV2?: ResponsiveTopbarV2Tokens
     AVATAR?: ResponsiveAvatarTokens
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
     SIDEBAR?: ResponsiveSidebarTokens
     DIRECTORY?: ResponsiveDirectoryTokens
     MOBILE_NAVIGATION?: ResponsiveMobileNavigationTokens
+    MOBILE_NAVIGATION_V2?: ResponsiveMobileNavigationV2Tokens
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
@@ -292,6 +306,7 @@ export type ComponentTokenType = {
     TOOLTIPV2?: ResponsiveTooltipV2Tokens
     RADIOV2?: ResponsiveRadioV2Tokens
     POPOVERV2?: ResponsivePopoverV2Tokens
+    SIDEBARV2?: ResponsiveSidebarV2Tokens
     TABSV2?: ResponsiveTabsV2Tokens
     BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
     CODEEDITORV2?: ResponsiveCodeEditorV2Tokens
@@ -350,12 +365,17 @@ const ThemeContext = createContext<ThemeContextType>({
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
+        TOPBARV2: getTopbarV2Tokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
         DIRECTORY: getDirectoryTokens(FOUNDATION_THEME),
         MOBILE_NAVIGATION: getMobileNavigationTokens(FOUNDATION_THEME),
+        MOBILE_NAVIGATION_V2: getMobileNavigationV2Tokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
@@ -381,6 +401,7 @@ const ThemeContext = createContext<ThemeContextType>({
         TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SIDEBARV2: getSidebarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TABSV2: getTabsV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CODEEDITORV2: getCodeEditorV2Tokens(FOUNDATION_THEME, Theme.LIGHT),

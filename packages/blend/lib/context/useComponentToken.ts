@@ -42,6 +42,7 @@ import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import { ResponsiveMobileNavigationV2Tokens } from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
 import { ResponsiveChatInputTokensType } from '../components/ChatInput/chatInput.tokens'
 import { ResponsiveTagV2Tokens } from '../components/TagV2/tagV2.tokens'
@@ -60,9 +61,11 @@ import { ResponsiveKeyValuePairV2Tokens } from '../components/KeyValuePairV2/key
 import { ResponsiveStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { ResponsiveRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { ResponsivePopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
+import { ResponsiveSidebarV2Tokens } from '../components/SidebarV2/sidebarV2.tokens'
 import { ResponsiveTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { ResponsiveBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 import { ResponsiveCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import type { ResponsiveTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 import { ResponsiveProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
 import { ResponsiveMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
 import { ResponsiveNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
@@ -118,6 +121,7 @@ export const useComponentToken = (
     | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens
     | ResponsiveMobileNavigationTokens
+    | ResponsiveMobileNavigationV2Tokens
     | ResponsiveDirectoryTokens
     | ResponsiveChatInputTokensType
     | ResponsiveButtonTokens
@@ -140,7 +144,9 @@ export const useComponentToken = (
     | ResponsiveRadioV2Tokens
     | ResponsivePopoverV2Tokens
     | ResponsiveTabsV2Tokens
+    | ResponsiveSidebarV2Tokens
     | ResponsiveBreadcrumbV2Tokens
+    | ResponsiveTopbarV2Tokens
     | ResponsiveProgressBarV2Tokens
     | ResponsiveMultiValueInputV2Tokens
     | ResponsiveNumberInputV2Tokens
@@ -228,6 +234,8 @@ export const useComponentToken = (
             return componentTokens.SKELETON
         case 'TOPBAR':
             return componentTokens.TOPBAR
+        case 'TOPBARV2':
+            return componentTokens.TOPBARV2
         case 'AVATAR':
             return componentTokens.AVATAR
         case 'AVATAR_GROUP':
@@ -240,6 +248,8 @@ export const useComponentToken = (
             return componentTokens.CODE_BLOCK
         case 'MOBILE_NAVIGATION':
             return componentTokens.MOBILE_NAVIGATION
+        case 'MOBILE_NAVIGATION_V2':
+            return componentTokens.MOBILE_NAVIGATION_V2
         case 'DIRECTORY':
             return componentTokens.DIRECTORY
         case 'CHAT_INPUT':
@@ -284,6 +294,8 @@ export const useComponentToken = (
             return componentTokens.TOOLTIPV2
         case 'RADIOV2':
             return componentTokens.RADIOV2
+        case 'SIDEBARV2':
+            return componentTokens.SIDEBARV2
         case 'TABSV2':
             return componentTokens.TABSV2
         case 'BREADCRUMBV2':
