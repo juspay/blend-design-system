@@ -650,12 +650,40 @@ const DataTable = forwardRef(
             pagination?.pageSize,
         ])
 
+        // Stable row ID list for the current page. Used for selection state and
+        // as a cheap signal to remount the tbody when results change (e.g. server-side search).
+        const currentPageRowIds = useMemo(() => {
+            return currentData.map((row) => String(row[idField]))
+        }, [currentData, idField])
+
+        // Monotonically increasing "dataVersion" for the current page's row IDs.
+        // This avoids expensive per-character hashing in TableBody while still
+        // forcing a remount when IDs change but length/first/last stay the same.
+        const [tbodyDataVersion, setTbodyDataVersion] = useState(0)
+        const prevPageRowIdsRef = useRef<string[] | null>(null)
+        useEffect(() => {
+            const prev = prevPageRowIdsRef.current
+            let changed =
+                prev == null || prev.length !== currentPageRowIds.length
+
+            if (!changed && prev) {
+                for (let i = 0; i < prev.length; i++) {
+                    if (prev[i] !== currentPageRowIds[i]) {
+                        changed = true
+                        break
+                    }
+                }
+            }
+
+            if (changed) {
+                setTbodyDataVersion((v) => v + 1)
+            }
+            prevPageRowIdsRef.current = currentPageRowIds
+        }, [currentPageRowIds])
+
         const updateSelectAllState = (
             selectedRowsState: Record<string, boolean>
         ) => {
-            const currentPageRowIds = currentData.map((row) =>
-                String(row[idField])
-            )
             const selectedCurrentPageRows = currentPageRowIds.filter(
                 (rowId) => selectedRowsState[rowId]
             )
@@ -1634,6 +1662,7 @@ const DataTable = forwardRef(
                                         {currentData.length > 0 && (
                                             <TableBodyComponent
                                                 currentData={currentData}
+                                                dataVersion={tbodyDataVersion}
                                                 visibleColumns={
                                                     effectiveVisibleColumns as ColumnDefinition<
                                                         Record<string, unknown>
