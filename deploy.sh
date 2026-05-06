@@ -122,7 +122,7 @@ if ! git diff --staged --quiet; then
         || echo "⚠️ PR creation failed, check manually"
 
     git checkout $CURRENT_BRANCH
-    git branch -d $PR_BRANCH
+    git branch -D $PR_BRANCH
 fi
 
 # Build Ascent app
