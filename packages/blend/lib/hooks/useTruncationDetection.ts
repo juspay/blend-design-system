@@ -12,8 +12,10 @@ export type UseTruncationDetectionOptions = {
     deps?: DependencyList
 }
 
-export default function useTruncationDetection(
-    elementRef: React.RefObject<HTMLElement>,
+export default function useTruncationDetection<
+    T extends HTMLElement = HTMLElement,
+>(
+    elementRef: React.RefObject<T | null>,
     selector?: string,
     options: UseTruncationDetectionOptions = {}
 ): boolean {

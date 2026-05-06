@@ -86,7 +86,7 @@ const Menu = ({
     const { target: portalContainer } = useShadowRoot()
 
     const menuIsOpen = open ?? isOpen
-    useDropdownInteractionLock(menuIsOpen)
+    useDropdownInteractionLock(asModal && menuIsOpen)
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value)
@@ -171,7 +171,7 @@ const Menu = ({
     const shouldUseVirtualScrolling =
         enableVirtualScrolling && totalItemCount >= virtualScrollThreshold
 
-    useScrollLock(menuIsOpen)
+    useScrollLock(asModal && menuIsOpen)
 
     const renderVirtualItem = useCallback(
         ({ item }: { item: VirtualListItem; index: number }) => {

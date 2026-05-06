@@ -31,13 +31,13 @@ export default defineConfig({
         index: 'src/index.ts',
         cli: 'src/cli.ts',
     },
-    format: ['cjs'],
+    format: ['esm'],
     target: 'node18',
     clean: true,
     sourcemap: false,
     dts: true,
     splitting: false,
-    shims: true,
+    shims: false,
     banner: {},
     // ── Version + Firebase config baked in at build time ─────────────────────
     // All values are inlined as string literals in the compiled bundle.

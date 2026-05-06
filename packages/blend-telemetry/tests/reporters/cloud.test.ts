@@ -3,28 +3,59 @@ import type { BlendTelemetryReport } from '../../src/metrics/definitions.js'
 import type { RepoIdentity } from '../../src/utils/repoDetect.js'
 
 // ─── Mock Firebase modules ────────────────────────────────────────────────────
-// We mock the entire firebase/* namespace so no real network calls are made.
-
-const mockInitializeApp = vi.fn(() => ({ name: 'test-app' }))
-const mockGetApps = vi.fn(() => [])
-const mockDeleteApp = vi.fn(() => Promise.resolve())
-const mockGetFirestore = vi.fn(() => ({}))
-const mockTerminate = vi.fn(() => Promise.resolve())
-const mockDoc = vi.fn()
-const mockSetDoc = vi.fn()
-const mockGetDoc = vi.fn()
-const mockServerTimestamp = vi.fn(() => ({ _serverTimestamp: true }))
-const mockCollection = vi.fn()
-const mockQuery = vi.fn()
-const mockWhere = vi.fn()
-const mockOrderBy = vi.fn()
-const mockLimit = vi.fn()
-const mockGetDocs = vi.fn()
+// vi.mock() is hoisted before const declarations in ESM, so mock fn refs must
+// be created inside vi.hoisted() to be available when the factory runs.
+const {
+    mockInitializeApp,
+    mockGetApps,
+    mockDeleteApp,
+    mockGetFirestore,
+    mockTerminate,
+    mockDoc,
+    mockSetDoc,
+    mockGetDoc,
+    mockServerTimestamp,
+    mockCollection,
+    mockQuery,
+    mockWhere,
+    mockOrderBy,
+    mockLimit,
+    mockGetDocs,
+    mockGetAuth,
+    mockSignInAnonymously,
+} = vi.hoisted(() => ({
+    mockInitializeApp: vi.fn<() => { name: string }>(() => ({
+        name: 'test-app',
+    })),
+    mockGetApps: vi.fn<() => unknown[]>(() => []),
+    mockDeleteApp: vi.fn(() => Promise.resolve()),
+    mockGetFirestore: vi.fn(() => ({})),
+    mockTerminate: vi.fn(() => Promise.resolve()),
+    mockDoc: vi.fn(),
+    mockSetDoc: vi.fn(),
+    mockGetDoc: vi.fn(),
+    mockServerTimestamp: vi.fn(() => ({ _serverTimestamp: true })),
+    mockCollection: vi.fn(),
+    mockQuery: vi.fn(),
+    mockWhere: vi.fn(),
+    mockOrderBy: vi.fn(),
+    mockLimit: vi.fn(),
+    mockGetDocs: vi.fn(),
+    mockGetAuth: vi.fn(() => ({})),
+    mockSignInAnonymously: vi.fn(() =>
+        Promise.resolve({ user: { uid: 'test-uid' } })
+    ),
+}))
 
 vi.mock('firebase/app', () => ({
     initializeApp: mockInitializeApp,
     getApps: mockGetApps,
     deleteApp: mockDeleteApp,
+}))
+
+vi.mock('firebase/auth', () => ({
+    getAuth: mockGetAuth,
+    signInAnonymously: mockSignInAnonymously,
 }))
 
 vi.mock('firebase/firestore', () => ({
@@ -163,6 +194,8 @@ describe('uploadToCloud', () => {
         vi.clearAllMocks()
         mockGetApps.mockReturnValue([]) // not yet initialized
         mockGetFirestore.mockReturnValue({})
+        mockGetAuth.mockReturnValue({})
+        mockSignInAnonymously.mockResolvedValue({ user: { uid: 'test-uid' } })
         mockDoc.mockReturnValue({})
         mockSetDoc.mockResolvedValue(undefined)
         mockGetDocs.mockResolvedValue({ empty: true, docs: [] })
@@ -193,7 +226,7 @@ describe('uploadToCloud', () => {
     // ── Timeout ───────────────────────────────────────────────────────────────
 
     it('returns timeout when write takes too long', async () => {
-        mockGetApps.mockReturnValue([{ name: 'default' }]) // already initialized
+        mockGetApps.mockReturnValue([{ name: 'default' }] as unknown[]) // already initialized
         mockGetDocs.mockResolvedValue({ empty: true, docs: [] })
         // setDoc never resolves
         mockSetDoc.mockReturnValue(new Promise(() => {}))
@@ -211,7 +244,7 @@ describe('uploadToCloud', () => {
     // ── Silent failure ────────────────────────────────────────────────────────
 
     it('returns failure without throwing when setDoc throws', async () => {
-        mockGetApps.mockReturnValue([{ name: 'default' }])
+        mockGetApps.mockReturnValue([{ name: 'default' }] as unknown[])
         mockGetDocs.mockResolvedValue({ empty: true, docs: [] })
         mockSetDoc.mockRejectedValue(new Error('Firestore unavailable'))
 
@@ -225,7 +258,7 @@ describe('uploadToCloud', () => {
     // ── Payload size capping ──────────────────────────────────────────────────
 
     it('caps filesUsedIn to 50 entries in componentMetrics', async () => {
-        mockGetApps.mockReturnValue([{ name: 'default' }])
+        mockGetApps.mockReturnValue([{ name: 'default' }] as unknown[])
         mockGetDocs.mockResolvedValue({ empty: true, docs: [] })
 
         // setDoc is called twice: (1) run doc with full payload, (2) repo summary.
@@ -244,7 +277,7 @@ describe('uploadToCloud', () => {
         })
 
         expect(firstCallPayload).not.toBeNull()
-        const metrics = (firstCallPayload as Record<string, unknown>)
+        const metrics = (firstCallPayload as unknown as Record<string, unknown>)
             .componentMetrics as Array<{
             filesUsedIn: string[]
         }>
@@ -252,7 +285,7 @@ describe('uploadToCloud', () => {
     })
 
     it('includes at most top 10 files in fileMetricsSummary', async () => {
-        mockGetApps.mockReturnValue([{ name: 'default' }])
+        mockGetApps.mockReturnValue([{ name: 'default' }] as unknown[])
         mockGetDocs.mockResolvedValue({ empty: true, docs: [] })
 
         // Capture the first setDoc call (run doc) which has fileMetricsSummary
@@ -268,7 +301,7 @@ describe('uploadToCloud', () => {
         })
 
         expect(firstCallPayload).not.toBeNull()
-        const summary = (firstCallPayload as Record<string, unknown>)
+        const summary = (firstCallPayload as unknown as Record<string, unknown>)
             .fileMetricsSummary as {
             topFiles: unknown[]
             totalFiles: number
