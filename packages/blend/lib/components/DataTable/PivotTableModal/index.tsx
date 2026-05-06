@@ -195,7 +195,8 @@ const PivotTableModal = forwardRef<
             if (
                 valueConfigs.some(
                     (v) =>
-                        String(v.field) === field && v.aggregation === aggregation
+                        String(v.field) === field &&
+                        v.aggregation === aggregation
                 )
             ) {
                 return
@@ -774,8 +775,7 @@ const PivotTableModal = forwardRef<
                                 boxSizing: 'border-box',
                             }}
                         >
-                            <Block
-                            />
+                            <Block />
 
                             <Block
                                 style={{
