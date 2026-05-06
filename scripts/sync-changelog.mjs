@@ -592,8 +592,24 @@ async function main() {
         const entries = parseChangelog(changelogData.content)
 
         if (entries.length === 0) {
-            log('warning', `No entries found in changelog for ${version}`)
-            skippedCount++
+            log(
+                'warning',
+                `No entries found for ${version} — generating minimal release card`
+            )
+            const minimalContent = `---
+version: '${version}'
+date: '${date}'
+status: 'stable'
+---
+
+<ChangelogCard summary="Release ${version}">
+  <ChangelogEntry type="chore">
+    Stable release. No detailed changelog available for this version.
+  </ChangelogEntry>
+</ChangelogCard>
+`
+            writeMDXFile(version, minimalContent)
+            generatedCount++
             continue
         }
 

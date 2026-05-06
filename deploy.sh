@@ -64,14 +64,65 @@ fi
 echo "📝 Syncing changelog..."
 pnpm sync-changelog --latest || echo "⚠️ Changelog sync failed, continuing with existing files"
 
-# Commit any newly generated changelog files
+# Format newly generated changelog files
+echo "✨ Formatting changelog files..."
+pnpm prettier --write "apps/ascent/app/changelog/content/*.mdx" 2>/dev/null || true
+
+# Commit any newly generated changelog files via PR
 echo "📝 Committing new changelog files..."
 git add apps/ascent/app/changelog/content/
 if ! git diff --staged --quiet; then
     git config user.name "$(git config --global user.name)"
     git config user.email "$(git config --global user.email)"
+
+    # Check if GitHub CLI is installed, if not install it
+    if ! command -v gh &> /dev/null; then
+        echo "⚙️ GitHub CLI not found, installing..."
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            brew install gh
+        elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            sudo apt update && sudo apt install gh -y
+        else
+            echo "❌ Unsupported OS, please install GitHub CLI manually: https://cli.github.com"
+            exit 1
+        fi
+        echo "✅ GitHub CLI installed!"
+    else
+        echo "✅ GitHub CLI found: $(gh --version | head -1)"
+    fi
+
+    # Check if authenticated, if not trigger login
+    if ! gh auth status &> /dev/null; then
+        echo "🔐 GitHub CLI is not authenticated. Launching login..."
+        gh auth login
+        # Verify auth succeeded
+        if ! gh auth status &> /dev/null; then
+            echo "❌ GitHub authentication failed. Aborting PR creation."
+            exit 1
+        fi
+        echo "✅ GitHub CLI authenticated!"
+    else
+        echo "✅ GitHub CLI already authenticated"
+    fi
+
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    PR_BRANCH="chore/sync-changelog-$(date +'%Y%m%d-%H%M%S')"
+
+    git checkout -b $PR_BRANCH
     git commit -m "chore: sync changelog"
-    git push
+    git push origin $PR_BRANCH
+
+    gh pr create \
+        --title "chore: sync changelog" \
+        --body "Automated changelog sync from deploy script" \
+        --base $CURRENT_BRANCH \
+        --head $PR_BRANCH \
+        || echo "⚠️ PR creation failed, check manually"
+
+    git checkout $CURRENT_BRANCH
+    git branch -d $PR_BRANCH
 fi
 
 # Build Ascent app
