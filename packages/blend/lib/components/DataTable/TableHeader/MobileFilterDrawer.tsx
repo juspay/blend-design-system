@@ -43,6 +43,7 @@ import {
 } from '../../Drawer'
 import DateRangePicker from '../../DateRangePicker/DateRangePicker'
 import { DateRange } from '../../DateRangePicker/types'
+import { parseDateLike, toLocalDateString } from '../utils'
 
 type MobileFilterDrawerProps = {
     column: ColumnDefinition<Record<string, unknown>>
@@ -67,12 +68,6 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     onPopoverClose,
 }) => {
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
-    const toLocalDateString = (date: Date): string => {
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, '0')
-        const day = String(date.getDate()).padStart(2, '0')
-        return `${year}-${month}-${day}`
-    }
 
     const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
     const fieldKey = String(column.field)
@@ -522,12 +517,18 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                                             .columnSelectedValues[
                                                             fieldKey
                                                         ]
-                                                    const isSelected =
+                                                    const currentSelected =
                                                         Array.isArray(
                                                             selectedValues
-                                                        ) &&
-                                                        selectedValues[0] ===
-                                                            item.value
+                                                        )
+                                                            ? selectedValues[0]
+                                                            : typeof selectedValues ===
+                                                                'string'
+                                                              ? selectedValues
+                                                              : ''
+                                                    const isSelected =
+                                                        currentSelected ===
+                                                        item.value
 
                                                     return (
                                                         <div
@@ -613,6 +614,68 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                         flexDirection="column"
                                         padding="14px 20px"
                                     >
+                                        {(() => {
+                                            const selectedValue =
+                                                filterState
+                                                    .columnSelectedValues[
+                                                    fieldKey
+                                                ]
+                                            const selectedRange = Array.isArray(
+                                                selectedValue
+                                            )
+                                                ? selectedValue
+                                                : typeof selectedValue ===
+                                                        'string' &&
+                                                    selectedValue
+                                                  ? [
+                                                        selectedValue,
+                                                        selectedValue,
+                                                    ]
+                                                  : []
+                                            const hasActiveDateRange =
+                                                selectedRange.length > 0 &&
+                                                Boolean(selectedRange[0])
+
+                                            return hasActiveDateRange ? (
+                                                <Block
+                                                    display="flex"
+                                                    justifyContent="flex-end"
+                                                    paddingBottom="8px"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        style={{
+                                                            background:
+                                                                'transparent',
+                                                            border: 'none',
+                                                            padding: 0,
+                                                            cursor: 'pointer',
+                                                        }}
+                                                        onClick={() => {
+                                                            onColumnFilter?.(
+                                                                fieldKey,
+                                                                FilterType.DATE,
+                                                                [],
+                                                                'range'
+                                                            )
+                                                            handleCloseFilterDrawer()
+                                                        }}
+                                                    >
+                                                        <PrimitiveText
+                                                            style={{
+                                                                fontSize: 12,
+                                                                fontWeight: 600,
+                                                                color: FOUNDATION_THEME
+                                                                    .colors
+                                                                    .red[600],
+                                                            }}
+                                                        >
+                                                            Clear Filter
+                                                        </PrimitiveText>
+                                                    </button>
+                                                </Block>
+                                            ) : null
+                                        })()}
                                         <DateRangePicker
                                             value={(():
                                                 | DateRange
@@ -641,17 +704,19 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                                     return undefined
                                                 }
 
+                                                const start = parseDateLike(
+                                                    selectedRange[0]
+                                                )
+                                                if (!start) return undefined
+                                                const end =
+                                                    parseDateLike(
+                                                        selectedRange[1] ||
+                                                            selectedRange[0]
+                                                    ) || start
+
                                                 return {
-                                                    startDate: new Date(
-                                                        selectedRange[0]
-                                                    ),
-                                                    endDate: selectedRange[1]
-                                                        ? new Date(
-                                                              selectedRange[1]
-                                                          )
-                                                        : new Date(
-                                                              selectedRange[0]
-                                                          ),
+                                                    startDate: start,
+                                                    endDate: end,
                                                 }
                                             })()}
                                             onChange={(range) => {

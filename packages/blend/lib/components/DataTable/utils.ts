@@ -17,6 +17,47 @@ import {
     DateRangeData,
 } from './columnTypes'
 
+export const isDateOnlyString = (value: string): boolean =>
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+
+/**
+ * Parse a date-only string (`YYYY-MM-DD`) as a local date at midnight.
+ * Avoids JS `new Date("YYYY-MM-DD")` UTC parsing and off-by-one issues.
+ */
+export const parseDateOnlyLocal = (dateOnly: string): Date => {
+    const [y, m, d] = dateOnly.split('-').map((p) => Number(p))
+    return new Date(y, (m || 1) - 1, d || 1)
+}
+
+export const parseDateLike = (value: unknown): Date | null => {
+    if (value instanceof Date) {
+        return isNaN(value.getTime()) ? null : value
+    }
+
+    if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (!trimmed) return null
+        const parsed = isDateOnlyString(trimmed)
+            ? parseDateOnlyLocal(trimmed)
+            : new Date(trimmed)
+        return isNaN(parsed.getTime()) ? null : parsed
+    }
+
+    if (typeof value === 'object' && value !== null && 'date' in value) {
+        const dateValue = (value as { date?: unknown }).date
+        return parseDateLike(dateValue)
+    }
+
+    return null
+}
+
+export const toLocalDateString = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
+
 export const filterData = <T extends Record<string, unknown>>(
     data: T[],
     filters: Record<string, unknown>
@@ -309,11 +350,7 @@ export const applyColumnFilters = <T extends Record<string, unknown>>(
                             endDate
                         )
                     }
-                    return applyDateFilter(
-                        cellValue,
-                        new Date(String(filterValue)),
-                        operator
-                    )
+                    return applyDateFilter(cellValue, filterValue, operator)
 
                 default:
                     return true
@@ -386,30 +423,20 @@ const applyNumberFilter = (
 
 const applyDateFilter = (
     cellValue: unknown,
-    filterValue: Date,
+    filterValue: unknown,
     operator: string
 ): boolean => {
-    if (isNaN(filterValue.getTime())) return false
+    const parsedFilter = parseDateLike(filterValue)
+    if (!parsedFilter) return false
 
-    let cellDate: Date
-    if (
-        typeof cellValue === 'object' &&
-        cellValue !== null &&
-        'date' in cellValue
-    ) {
-        const dateCellValue = cellValue as { date: Date | string }
-        cellDate = new Date(dateCellValue.date)
-    } else {
-        cellDate = new Date(String(cellValue))
-    }
-
-    if (isNaN(cellDate.getTime())) return false
+    const parsedCell = parseDateLike(cellValue)
+    if (!parsedCell) return false
 
     const normalizeToDateOnly = (date: Date): number =>
         new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
 
-    const cellTime = normalizeToDateOnly(cellDate)
-    const filterTime = normalizeToDateOnly(filterValue)
+    const cellTime = normalizeToDateOnly(parsedCell)
+    const filterTime = normalizeToDateOnly(parsedFilter)
 
     switch (operator) {
         case 'equals':
@@ -432,28 +459,17 @@ const applyDateRangeFilter = (
     startValue: string,
     endValue: string
 ): boolean => {
-    const startDate = new Date(startValue)
-    const endDate = new Date(endValue)
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return false
+    const startDate = parseDateLike(startValue)
+    const endDate = parseDateLike(endValue)
+    if (!startDate || !endDate) return false
 
-    let cellDate: Date
-    if (
-        typeof cellValue === 'object' &&
-        cellValue !== null &&
-        'date' in cellValue
-    ) {
-        const dateCellValue = cellValue as { date: Date | string }
-        cellDate = new Date(dateCellValue.date)
-    } else {
-        cellDate = new Date(String(cellValue))
-    }
-
-    if (isNaN(cellDate.getTime())) return false
+    const parsedCell = parseDateLike(cellValue)
+    if (!parsedCell) return false
 
     const normalizeToDateOnly = (date: Date): number =>
         new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
 
-    const cellTime = normalizeToDateOnly(cellDate)
+    const cellTime = normalizeToDateOnly(parsedCell)
     const startTime = normalizeToDateOnly(startDate)
     const endTime = normalizeToDateOnly(endDate)
 

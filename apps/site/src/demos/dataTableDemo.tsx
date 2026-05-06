@@ -47,6 +47,25 @@ import {
     TooltipSide,
 } from '../../../../packages/blend/lib/components/Tooltip/types'
 
+const isDateOnlyString = (value: string): boolean =>
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+
+const parseDateOnlyLocal = (dateOnly: string): Date => {
+    const [y, m, d] = dateOnly.split('-').map((p) => Number(p))
+    return new Date(y, (m || 1) - 1, d || 1)
+}
+
+const parseDateLike = (value: unknown): Date | null => {
+    if (value instanceof Date) return isNaN(value.getTime()) ? null : value
+    if (typeof value !== 'string') return null
+    const trimmed = value.trim()
+    if (!trimmed) return null
+    const parsed = isDateOnlyString(trimmed)
+        ? parseDateOnlyLocal(trimmed)
+        : new Date(trimmed)
+    return isNaN(parsed.getTime()) ? null : parsed
+}
+
 const SimpleDataTableExample = () => {
     // Modal state for table demo
     const [isTableModalOpen, setIsTableModalOpen] = useState(false)
@@ -454,7 +473,8 @@ const SimpleDataTableExample = () => {
             isEditable: false,
             renderCell: (value: unknown): React.ReactNode => {
                 const dateValue = value as DateColumnProps
-                const date = new Date(dateValue.date)
+                const date = parseDateLike(dateValue.date)
+                if (!date) return '-'
                 return (
                     <span>
                         {date.toLocaleDateString('en-US', {
@@ -517,7 +537,7 @@ const SimpleDataTableExample = () => {
                         <span>{selectedOption.label}</span>
                     </div>
                 ) : (
-                    // @ts-expect-error
+                    // @ts-expect-error selectedValue can be non-renderable type in demo data
                     <span>{dropdownValue.selectedValue}</span>
                 )
             },
@@ -1680,11 +1700,14 @@ const DataTableDemo = () => {
             '2019-11-01',
         ]
 
-        const formatJoinMonth = (dateString: string) =>
-            new Date(dateString).toLocaleDateString('en-US', {
+        const formatJoinMonth = (dateString: string) => {
+            const parsed = parseDateLike(dateString)
+            if (!parsed) return '-'
+            return parsed.toLocaleDateString('en-US', {
                 month: 'long',
                 year: 'numeric',
             })
+        }
 
         return Array.from({ length: count }, (_, index) => {
             const userName = names[index % names.length]
@@ -1913,8 +1936,8 @@ const DataTableDemo = () => {
             isSortable: true,
             isEditable: false,
             renderCell: (value: unknown): React.ReactNode => {
-                const parsedDate = new Date(String(value))
-                if (isNaN(parsedDate.getTime())) return '-'
+                const parsedDate = parseDateLike(String(value))
+                if (!parsedDate) return '-'
                 return parsedDate.toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -2529,7 +2552,12 @@ const DataTableDemo = () => {
                 `Last login: ${statusText === 'Active' ? '2 hours ago' : '1 week ago'}`,
                 `Profile updated: ${user.role === 'Admin' ? '1 day ago' : '3 days ago'}`,
                 `Password changed: ${user.gateway === 'Gateway A' ? '1 week ago' : '2 weeks ago'}`,
-                `Role assigned: ${new Date(user.joinDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`,
+                `Role assigned: ${
+                    parseDateLike(user.joinDate)?.toLocaleDateString('en-US', {
+                        month: 'short',
+                        year: 'numeric',
+                    }) || '-'
+                }`,
             ]
             return activities
         }
@@ -2684,13 +2712,12 @@ const DataTableDemo = () => {
                             </div>
                             <div>
                                 <strong>Member Since:</strong>{' '}
-                                {new Date(userRow.joinDate).toLocaleDateString(
-                                    'en-US',
-                                    {
-                                        month: 'short',
-                                        year: 'numeric',
-                                    }
-                                )}
+                                {parseDateLike(
+                                    userRow.joinDate
+                                )?.toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    year: 'numeric',
+                                }) || '-'}
                             </div>
                         </div>
                     </div>
@@ -2944,7 +2971,8 @@ const DataTableDemo = () => {
         }
 
         // Priority 3: Recently joined users - New members (2023+)
-        const joinYear = new Date(userData.joinDate).getFullYear() || Number.NaN
+        const joinYear =
+            parseDateLike(userData.joinDate)?.getFullYear() ?? Number.NaN
         if (joinYear >= 2023) {
             return {
                 backgroundColor: '#f0fdf4', // Light green background

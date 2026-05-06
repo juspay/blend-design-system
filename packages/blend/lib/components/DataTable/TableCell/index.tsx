@@ -19,6 +19,7 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import Tooltip from '../../Tooltip/Tooltip'
 import { TooltipSize } from '../../Tooltip/types'
+import { parseDateLike } from '../utils'
 
 const StyledTableCell = styled.td<{
     width?: React.CSSProperties
@@ -66,7 +67,7 @@ const isEmptyValue = (value: unknown, columnType?: ColumnType): boolean => {
         if (
             !dateValue ||
             (typeof dateValue === 'string' && dateValue.trim() === '') ||
-            isNaN(new Date(String(dateValue)).getTime())
+            !parseDateLike(dateValue)
         ) {
             return true
         }
@@ -240,15 +241,18 @@ const TableCell = forwardRef<
                         ? Boolean((valueToCheck as DateColumnProps).showTime)
                         : false
                 if (dateValue) {
-                    const date = new Date(String(dateValue))
-                    if (!isNaN(date.getTime())) {
-                        attrs['data-date'] = date.toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: '2-digit',
-                            hour: showTime ? '2-digit' : undefined,
-                            minute: showTime ? '2-digit' : undefined,
-                        })
+                    const parsedDate = parseDateLike(dateValue)
+                    if (parsedDate) {
+                        attrs['data-date'] = parsedDate.toLocaleDateString(
+                            'en-US',
+                            {
+                                year: 'numeric',
+                                month: 'short',
+                                day: '2-digit',
+                                hour: showTime ? '2-digit' : undefined,
+                                minute: showTime ? '2-digit' : undefined,
+                            }
+                        )
                     }
                 }
             } else if (
@@ -448,7 +452,7 @@ const TableCell = forwardRef<
                     )
                 }
 
-                const date = new Date(dateData.date)
+                const date = parseDateLike(dateData.date)
                 const showTime = dateData.showTime || false
 
                 const formatDate = (date: Date): string => {
@@ -479,7 +483,7 @@ const TableCell = forwardRef<
                         }}
                     >
                         <TruncatedTextWithTooltip
-                            text={formatDate(date)}
+                            text={date ? formatDate(date) : '-'}
                             style={{
                                 fontSize:
                                     FOUNDATION_THEME.font.size.body.sm.fontSize,

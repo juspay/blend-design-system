@@ -46,6 +46,7 @@ import { CheckboxSize } from '../../Checkbox/types'
 import { VirtualListItem } from '../../VirtualList'
 import DateRangePicker from '../../DateRangePicker/DateRangePicker'
 import { DateRange } from '../../DateRangePicker/types'
+import { parseDateLike, toLocalDateString } from '../utils'
 
 const FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT = 40
 const FILTER_VIRTUAL_LIST_MAX_HEIGHT = 220
@@ -1229,13 +1230,6 @@ export const DateFilter: React.FC<{
     filterState: FilterState
     onColumnFilter?: ColumnFilterHandler
 }> = ({ column, fieldKey, tableToken, filterState, onColumnFilter }) => {
-    const toLocalDateString = (date: Date): string => {
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, '0')
-        const day = String(date.getDate()).padStart(2, '0')
-        return `${year}-${month}-${day}`
-    }
-
     const selectedValue = filterState.columnSelectedValues[fieldKey]
     const selectedRange = Array.isArray(selectedValue)
         ? selectedValue
@@ -1243,15 +1237,13 @@ export const DateFilter: React.FC<{
           ? [selectedValue, selectedValue]
           : []
 
-    const pickerValue: DateRange | undefined =
-        selectedRange.length > 0 && selectedRange[0]
-            ? {
-                  startDate: new Date(selectedRange[0]),
-                  endDate: selectedRange[1]
-                      ? new Date(selectedRange[1])
-                      : new Date(selectedRange[0]),
-              }
-            : undefined
+    const pickerValue: DateRange | undefined = (() => {
+        if (selectedRange.length === 0 || !selectedRange[0]) return undefined
+        const start = parseDateLike(selectedRange[0])
+        if (!start) return undefined
+        const end = parseDateLike(selectedRange[1] || selectedRange[0]) || start
+        return { startDate: start, endDate: end }
+    })()
     const hasActiveDateRange = selectedRange.length > 0
 
     return (
