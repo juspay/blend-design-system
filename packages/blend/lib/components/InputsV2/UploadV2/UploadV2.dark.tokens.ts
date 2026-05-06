@@ -237,7 +237,7 @@ export const getUploadV2DarkTokens = (
                     title: {
                         fontSize: foundationTokens.font.fontSize[16],
                         fontWeight: foundationTokens.font.weight[600],
-                        color: foundationTokens.colors.gray[700],
+                        color: foundationTokens.colors.gray[100],
                     },
                     description: {
                         fontSize: foundationTokens.font.fontSize[14],

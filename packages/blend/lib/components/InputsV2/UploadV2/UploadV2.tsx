@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useId, useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import {
     UploadDragState,
+    UploadErrorReason,
     UploadFileV2,
     UploadState,
     UploadV2Props,
@@ -11,7 +12,7 @@ import { InputLabelsV2Tokens } from '../inputV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { UploadV2TokensType } from './UploadV2.tokens'
 import { InputSizeV2, InputStateV2 } from '../inputV2.types'
-import { createClickHandler } from './utils'
+import { createClickHandler, getFileId } from './utils'
 import UploadContainerV2 from './UploadContainerV2'
 
 const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
@@ -64,20 +65,30 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                     // Check maxFiles limit
                     if (limit && index >= remainingSlots) {
                         hasRejection = true
-                        return { file, isValid: false, errorReason: 'maxFiles' }
+                        return {
+                            id: `${file.name}-${file.size}-${file.lastModified}-${Date.now()}-${index}`,
+                            file,
+                            isValid: false,
+                            errorReason: UploadErrorReason.MAX_FILES,
+                        }
                     }
 
                     // Check maxSize
                     if (maxSize && file.size > maxSize) {
                         hasRejection = true
                         return {
+                            id: `${file.name}-${file.size}-${file.lastModified}-${Date.now()}-${index}`,
                             file,
                             isValid: false,
-                            errorReason: 'oversized',
+                            errorReason: UploadErrorReason.OVERSIZED,
                         }
                     }
 
-                    return { file, isValid: true }
+                    return {
+                        id: `${file.name}-${file.size}-${file.lastModified}-${Date.now()}-${index}`,
+                        file,
+                        isValid: true,
+                    }
                 }
             )
 
@@ -191,9 +202,9 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                         tokens={tokens}
                         files={files}
                         multiple={multiple}
-                        onFileRemove={(fileName) => {
+                        onFileRemove={(fileId) => {
                             const updatedFiles = files.filter(
-                                (f) => f.file.name !== fileName
+                                (f, index) => getFileId(f, index) !== fileId
                             )
                             // Check if any invalid files remain
                             const hasInvalidFiles = updatedFiles.some(
@@ -212,6 +223,8 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                         progressBarMaxWidth={progressBarMaxWidth}
                         uploadHeaderText={uploadHeaderText}
                         dragState={dragState}
+                        maxSize={maxSize}
+                        maxFiles={maxFiles}
                     />
                 </Block>
 
@@ -236,12 +249,12 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                     disabled={disabled}
                     required={required}
                     aria-required={required}
-                    // aria-invalid={!!errorId}
-                    // aria-describedby={
-                    //     [descriptionId, errorId, hintId]
-                    //         .filter(Boolean)
-                    //         .join(' ') || undefined
-                    // }
+                    aria-invalid={uploadState === UploadState.ERROR}
+                    aria-describedby={
+                        [description, errorText, helpIconText]
+                            .filter(Boolean)
+                            .join(' ') || undefined
+                    }
                     aria-label={label ? undefined : 'File upload'}
                     style={{ display: 'none' }}
                 />

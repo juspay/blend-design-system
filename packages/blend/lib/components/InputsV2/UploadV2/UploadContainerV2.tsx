@@ -13,7 +13,12 @@ import {
 } from '../../TagV2'
 import { XIcon } from '@phosphor-icons/react'
 import TooltipV2 from '../../TooltipV2/TooltipV2'
-import { truncateFileNameForTag } from './utils'
+import {
+    getFileId,
+    getValidationMessage,
+    normalizeUploadErrorReason,
+    truncateFileNameForTag,
+} from './utils'
 import { UploadDragState, UploadFileV2, UploadState } from './UploadV2.types'
 import {
     ProgressBarV2,
@@ -21,19 +26,6 @@ import {
     ProgressBarV2Size,
     ProgressBarV2Variant,
 } from '../../ProgressBarV2'
-
-const getValidationMessage = (reason?: UploadFileV2['errorReason']) => {
-    switch (reason) {
-        case 'oversized':
-            return 'File is too large'
-        case 'maxFiles':
-            return 'File limit exceeded'
-        case 'invalidType':
-            return 'Invalid file type'
-        default:
-            return 'Invalid file'
-    }
-}
 
 const UploadContainerV2 = ({
     description,
@@ -50,6 +42,8 @@ const UploadContainerV2 = ({
     progressBarMaxWidth,
     uploadHeaderText,
     dragState,
+    maxSize,
+    maxFiles,
 }: {
     description: string
     slot: React.ReactNode
@@ -57,7 +51,7 @@ const UploadContainerV2 = ({
     onClick: () => void
     tokens: UploadV2TokensType
     files: UploadFileV2[]
-    onFileRemove: (fileName: string) => void
+    onFileRemove: (fileId: string) => void
     multiple: boolean
     state: UploadState
     errorText: string
@@ -65,6 +59,8 @@ const UploadContainerV2 = ({
     progressBarMaxWidth: string
     uploadHeaderText: string
     dragState: UploadDragState
+    maxSize?: number
+    maxFiles?: number
 }) => {
     const isUploading = state === UploadState.UPLOADING
     const isSuccess = state === UploadState.SUCCESS
@@ -76,7 +72,6 @@ const UploadContainerV2 = ({
     const showReplaceButton = files.length > 0 && !multiple && !isUploading
     const showMultiFileTags = files.length > 0 && multiple && !isUploading
     const isDragEnter = dragState === UploadDragState.DRAG_ENTER
-    const isDragLeave = dragState === UploadDragState.DRAG_LEAVE
     const isDragOver = dragState === UploadDragState.DRAG_OVER
     const isDrop = dragState === UploadDragState.DROP
     const isDragActive = isDragEnter || isDragOver || isDrop
@@ -130,17 +125,13 @@ const UploadContainerV2 = ({
                         {description}
                     </Text>
                 )}
-                {showSingleFileInfo && state !== UploadState.SUCCESS && (
+                {showSingleFileInfo && (
                     <Text
                         fontSize={uploadContainer.header.description.fontSize}
                         fontWeight={
                             uploadContainer.header.description.fontWeight
                         }
-                        color={
-                            files[0].isValid
-                                ? uploadContainer.header.description.color
-                                : uploadContainer.header.title.color
-                        }
+                        color={uploadContainer.header.description.color}
                         textAlign="center"
                     >
                         {'Selected file: ' + files[0].file.name}
@@ -200,7 +191,9 @@ const UploadContainerV2 = ({
                 />
             )}
 
-            {showMultiFileTags && !isInteractionBlocked && (
+            {/* for multiple files, show a list of files */}
+
+            {showMultiFileTags && (
                 <Block
                     display="flex"
                     flexDirection="column"
@@ -208,20 +201,23 @@ const UploadContainerV2 = ({
                     gap={uploadContainer.fileTag.gap}
                     width={uploadContainer.fileTag.maxWidth}
                 >
-                    {files.map((uploadFile) => {
-                        const fileColor = uploadFile.isValid
-                            ? TagV2Color.PRIMARY
-                            : TagV2Color.ERROR
+                    {files.map((uploadFile, index) => {
+                        const fileId = getFileId(uploadFile, index)
+                        const fileColor =
+                            state === UploadState.SUCCESS
+                                ? TagV2Color.SUCCESS
+                                : uploadFile.isValid
+                                  ? TagV2Color.PRIMARY
+                                  : TagV2Color.ERROR
                         const tooltipContent = uploadFile.isValid
                             ? uploadFile.file.name
                             : `${uploadFile.file.name} - ${getValidationMessage(
-                                  uploadFile.errorReason
+                                  uploadFile.errorReason,
+                                  maxSize,
+                                  maxFiles
                               )}`
                         return (
-                            <TooltipV2
-                                content={tooltipContent}
-                                key={uploadFile.file.name}
-                            >
+                            <TooltipV2 content={tooltipContent} key={fileId}>
                                 <TagV2
                                     rightSlot={{ slot: <XIcon size={16} /> }}
                                     text={truncateFileNameForTag(
@@ -232,9 +228,10 @@ const UploadContainerV2 = ({
                                     subType={TagV2SubType.ROUNDED}
                                     color={fileColor}
                                     onClick={(e) => {
-                                        if (disabled) return
+                                        if (disabled || isInteractionBlocked)
+                                            return
                                         e.stopPropagation()
-                                        onFileRemove?.(uploadFile.file.name)
+                                        onFileRemove?.(fileId)
                                     }}
                                 />
                             </TooltipV2>
@@ -251,24 +248,48 @@ const UploadContainerV2 = ({
                     {(() => {
                         const invalidFiles = files.filter((f) => !f.isValid)
                         const hasOversized = invalidFiles.some(
-                            (f) => f.errorReason === 'oversized'
+                            (f) =>
+                                normalizeUploadErrorReason(f.errorReason) ===
+                                'oversized'
                         )
                         const hasMaxFiles = invalidFiles.some(
-                            (f) => f.errorReason === 'maxFiles'
+                            (f) =>
+                                normalizeUploadErrorReason(f.errorReason) ===
+                                'maxFiles'
                         )
                         const hasInvalidType = invalidFiles.some(
-                            (f) => f.errorReason === 'invalidType'
+                            (f) =>
+                                normalizeUploadErrorReason(f.errorReason) ===
+                                'invalidType'
                         )
                         const errors: string[] = []
                         if (hasOversized)
-                            errors.push(getValidationMessage('oversized'))
+                            errors.push(
+                                getValidationMessage(
+                                    'oversized',
+                                    maxSize,
+                                    maxFiles
+                                )
+                            )
                         if (hasMaxFiles)
-                            errors.push(getValidationMessage('maxFiles'))
+                            errors.push(
+                                getValidationMessage(
+                                    'maxFiles',
+                                    maxSize,
+                                    maxFiles
+                                )
+                            )
                         if (hasInvalidType)
-                            errors.push(getValidationMessage('invalidType'))
+                            errors.push(
+                                getValidationMessage(
+                                    'invalidType',
+                                    maxSize,
+                                    maxFiles
+                                )
+                            )
                         return errors.length > 0
                             ? `${errors.join(', ')}`
-                            : getValidationMessage()
+                            : getValidationMessage(undefined, maxSize, maxFiles)
                     })()}
                 </Text>
             )}

@@ -77,8 +77,8 @@ export const getUploadV2LightTokens = (
             },
             uploadContainer: {
                 gap: foundationTokens.unit[20],
-                paddingTop: foundationTokens.unit[40],
-                paddingBottom: foundationTokens.unit[40],
+                paddingTop: foundationTokens.unit[20],
+                paddingBottom: foundationTokens.unit[20],
                 paddingLeft: foundationTokens.unit[40],
                 paddingRight: foundationTokens.unit[40],
                 borderRadius: foundationTokens.border.radius[12],
@@ -202,8 +202,8 @@ export const getUploadV2LightTokens = (
             },
             uploadContainer: {
                 gap: foundationTokens.unit[20],
-                paddingTop: foundationTokens.unit[40],
-                paddingBottom: foundationTokens.unit[40],
+                paddingTop: foundationTokens.unit[20],
+                paddingBottom: foundationTokens.unit[20],
                 paddingLeft: foundationTokens.unit[40],
                 paddingRight: foundationTokens.unit[40],
                 borderRadius: foundationTokens.border.radius[12],

@@ -4,6 +4,8 @@ import type { UploadFileV2 } from '../../../../packages/blend/lib/components/Inp
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { UploadState } from '../../../../packages/blend/lib/components/InputsV2/UploadV2/UploadV2.types'
 import { Upload as UploadIcon, CheckCircle, AlertCircle } from 'lucide-react'
+import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
+import { UploadErrorReason } from '../../../../packages/blend/lib/components/InputsV2/UploadV2/UploadV2.types'
 
 const UploadV2Demo = () => {
     // Playground state
@@ -24,27 +26,44 @@ const UploadV2Demo = () => {
             isValid: true,
         },
     ]
-    const errorDummyFiles: UploadFileV2[] = [
+    const errorDummyFilesSingle: UploadFileV2[] = [
         {
             file: new File(['dummy success content'], 'sample_file.csv', {
                 type: 'text/csv',
             }),
             isValid: false,
-            errorReason: 'maxFiles',
+            errorReason: UploadErrorReason.OVERSIZED,
+        },
+    ]
+    const errorDummyFilesMultiple: UploadFileV2[] = [
+        {
+            file: new File(['dummy success content'], 'sample_file.csv', {
+                type: 'text/csv',
+            }),
+            isValid: true,
+        },
+        {
+            file: new File(['dummy success content'], 'sample_file.csv', {
+                type: 'text/csv',
+            }),
+            isValid: true,
+            errorReason: UploadErrorReason.MAX_FILES,
         },
         {
             file: new File(['dummy success content'], 'sample_file.csv', {
                 type: 'text/csv',
             }),
             isValid: false,
-            errorReason: 'maxFiles',
+            errorReason: UploadErrorReason.MAX_FILES,
         },
     ]
     return (
-        <div className="p-8 space-y-12">
+        <div className="p-8 space-y-12 mb-12">
             {/* Playground Section */}
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold">UploadV2 Playground</h2>
+                <h2 className="text-2xl font-bold mb-[15px]">
+                    UploadV2 Playground
+                </h2>
                 <div className="space-y-6">
                     <div className="flex items-center gap-6">
                         <Switch
@@ -87,191 +106,308 @@ const UploadV2Demo = () => {
                             }
                         />
                     </div>
-
-                    <h2 className="text-2xl font-bold">UploadV2 Idle State</h2>
-                    <UploadV2
-                        label="Upload Files"
-                        subLabel="Max 10MB"
-                        helpIconText={playgroundHelpIconText}
-                        required={playgroundRequired}
-                        acceptedFileTypes={[
-                            '.csv',
-                            '.txt',
-                            '.pdf',
-                            '.doc',
-                            '.docx',
-                            '.xls',
-                            '.xlsx',
-                            '.ppt',
-                            '.pptx',
-                            '.jpg',
-                            '.jpeg',
-                            '.png',
-                            '.gif',
-                            '.mp4',
-                            '.avi',
-                            '.mov',
-                            '.mp3',
-                            '.wav',
-                        ]}
-                        slot={
-                            playgroundCustomSlot ? (
-                                <UploadIcon size={32} color="#6366f1" />
-                            ) : undefined
-                        }
-                        state={UploadState.IDLE}
-                        multiple={playgroundMultiple}
-                        disabled={playgroundDisabled}
-                        files={uploadV2Files}
-                        onChange={(files) => {
-                            console.log('files', files)
-                            setUploadV2Files(files)
-                        }}
-                        maxSize={8 * 1024 * 1024}
-                        maxFiles={2}
-                        description=".csv only | Max size 8 MB"
-                        uploadHeaderText="Choose a file or drag & drop it here"
-                    />
-                    <h2 className="text-2xl font-bold">UploadV2 Error State</h2>
-                    <UploadV2
-                        label="Upload Files"
-                        subLabel="Max 10MB"
-                        helpIconText={playgroundHelpIconText}
-                        required={playgroundRequired}
-                        acceptedFileTypes={[
-                            '.csv',
-                            '.txt',
-                            '.pdf',
-                            '.doc',
-                            '.docx',
-                            '.xls',
-                            '.xlsx',
-                            '.ppt',
-                            '.pptx',
-                            '.jpg',
-                            '.jpeg',
-                            '.png',
-                            '.gif',
-                            '.mp4',
-                            '.avi',
-                            '.mov',
-                            '.mp3',
-                            '.wav',
-                        ]}
-                        slot={
-                            playgroundCustomSlot ? (
-                                <AlertCircle size={32} color="#ef4444" />
-                            ) : undefined
-                        }
-                        multiple={playgroundMultiple}
-                        disabled={playgroundDisabled}
-                        files={errorDummyFiles}
-                        onChange={(files) => {
-                            setUploadV2Files(files)
-                        }}
-                        state={UploadState.ERROR}
-                        // errorText="File type not supported"
-                        maxSize={8 * 1024 * 1024}
-                        maxFiles={2}
-                        description=".csv only | Max size 8 MB"
-                        uploadHeaderText="Uploading sample_file.csv..."
-                    />
-                    <h2 className="text-2xl font-bold">
-                        UploadV2 Success State
-                    </h2>
-
-                    <UploadV2
-                        label="Upload Files"
-                        subLabel="Max 10MB"
-                        helpIconText={playgroundHelpIconText}
-                        required={playgroundRequired}
-                        acceptedFileTypes={[
-                            '.csv',
-                            '.txt',
-                            '.pdf',
-                            '.doc',
-                            '.docx',
-                            '.xls',
-                            '.xlsx',
-                            '.ppt',
-                            '.pptx',
-                            '.jpg',
-                            '.jpeg',
-                            '.png',
-                            '.gif',
-                            '.mp4',
-                            '.avi',
-                            '.mov',
-                            '.mp3',
-                            '.wav',
-                        ]}
-                        slot={
-                            playgroundCustomSlot ? (
-                                <CheckCircle size={32} color="#10b981" />
-                            ) : undefined
-                        }
-                        multiple={playgroundMultiple}
-                        disabled={playgroundDisabled}
-                        files={successDummyFiles}
-                        onChange={(files) => {
-                            setUploadV2Files(files)
-                        }}
-                        state={UploadState.SUCCESS}
-                        // errorText="File type not supported"
-                        maxSize={8 * 1024 * 1024}
-                        maxFiles={2}
-                        description=" Test files uploaded successfully"
-                        progressBarValue={50}
-                        uploadHeaderText="File uploaded successfully"
-                    />
-
-                    <h2 className="text-2xl font-bold">
-                        UploadV2 with Progress Bar
-                    </h2>
-                    <UploadV2
-                        label="Upload Files"
-                        subLabel="Max 10MB"
-                        helpIconText={playgroundHelpIconText}
-                        required={playgroundRequired}
-                        acceptedFileTypes={[
-                            '.csv',
-                            '.txt',
-                            '.pdf',
-                            '.doc',
-                            '.docx',
-                            '.xls',
-                            '.xlsx',
-                            '.ppt',
-                            '.pptx',
-                            '.jpg',
-                            '.jpeg',
-                            '.png',
-                            '.gif',
-                            '.mp4',
-                            '.avi',
-                            '.mov',
-                            '.mp3',
-                            '.wav',
-                        ]}
-                        slot={
-                            playgroundCustomSlot ? (
-                                <UploadIcon size={32} color="#6366f1" />
-                            ) : undefined
-                        }
-                        multiple={playgroundMultiple}
-                        disabled={playgroundDisabled}
-                        files={uploadV2Files}
-                        onChange={(files) => {
-                            setUploadV2Files(files)
-                        }}
-                        state={UploadState.UPLOADING}
-                        // errorText="File type not supported"
-                        maxSize={8 * 1024 * 1024}
-                        maxFiles={2}
-                        description=".csv only | Max size 8 MB"
-                        uploadHeaderText="Uploading sample_file.csv..."
-                        progressBarValue={50}
-                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                        <Block width="100%">
+                            <h2 className="text-2xl font-bold mb-[15px]">
+                                UploadV2 Idle State
+                            </h2>
+                            <UploadV2
+                                label="Upload Files"
+                                subLabel="Max 8MB"
+                                helpIconText={playgroundHelpIconText}
+                                required={playgroundRequired}
+                                acceptedFileTypes={[
+                                    '.csv',
+                                    '.txt',
+                                    '.pdf',
+                                    '.doc',
+                                    '.docx',
+                                    '.xls',
+                                    '.xlsx',
+                                    '.ppt',
+                                    '.pptx',
+                                    '.jpg',
+                                    '.jpeg',
+                                    '.png',
+                                    '.gif',
+                                    '.mp4',
+                                    '.avi',
+                                    '.mov',
+                                    '.mp3',
+                                    '.wav',
+                                ]}
+                                slot={
+                                    playgroundCustomSlot ? (
+                                        <UploadIcon size={32} color="#6366f1" />
+                                    ) : undefined
+                                }
+                                state={UploadState.IDLE}
+                                multiple={playgroundMultiple}
+                                disabled={playgroundDisabled}
+                                files={uploadV2Files}
+                                onChange={(files) => {
+                                    setUploadV2Files(files)
+                                }}
+                                maxSize={8 * 1024 * 1024}
+                                maxFiles={2}
+                                description=".csv only | Max size 8 MB"
+                                uploadHeaderText="Choose a file or drag & drop it here"
+                            />
+                        </Block>
+                        <Block width="100%">
+                            <h2 className="text-2xl font-bold mb-[15px]">
+                                Error State - Single File
+                            </h2>
+                            <UploadV2
+                                label="Upload Files"
+                                subLabel="Max 8MB"
+                                helpIconText={playgroundHelpIconText}
+                                required={playgroundRequired}
+                                acceptedFileTypes={[
+                                    '.csv',
+                                    '.txt',
+                                    '.pdf',
+                                    '.doc',
+                                    '.docx',
+                                    '.xls',
+                                    '.xlsx',
+                                    '.ppt',
+                                    '.pptx',
+                                    '.jpg',
+                                    '.jpeg',
+                                    '.png',
+                                    '.gif',
+                                    '.mp4',
+                                    '.avi',
+                                    '.mov',
+                                    '.mp3',
+                                    '.wav',
+                                ]}
+                                slot={
+                                    playgroundCustomSlot ? (
+                                        <AlertCircle
+                                            size={32}
+                                            color="#ef4444"
+                                        />
+                                    ) : undefined
+                                }
+                                multiple={false}
+                                disabled={playgroundDisabled}
+                                files={errorDummyFilesSingle}
+                                onChange={(files) => {
+                                    setUploadV2Files(files)
+                                }}
+                                state={UploadState.ERROR}
+                                // errorText="File type not supported"
+                                maxSize={8 * 1024 * 1024}
+                                maxFiles={2}
+                                description=".csv only | Max size 8 MB"
+                                uploadHeaderText="Uploading sample_file.csv..."
+                            />
+                        </Block>
+                        <Block width="100%">
+                            <h2 className="text-2xl font-bold mb-[15px]">
+                                Error State - Multiple Files
+                            </h2>
+                            <UploadV2
+                                label="Upload Files"
+                                subLabel="Max 8MB"
+                                helpIconText={playgroundHelpIconText}
+                                required={playgroundRequired}
+                                acceptedFileTypes={[
+                                    '.csv',
+                                    '.txt',
+                                    '.pdf',
+                                    '.doc',
+                                    '.docx',
+                                    '.xls',
+                                    '.xlsx',
+                                    '.ppt',
+                                    '.pptx',
+                                    '.jpg',
+                                    '.jpeg',
+                                    '.png',
+                                    '.gif',
+                                    '.mp4',
+                                    '.avi',
+                                    '.mov',
+                                    '.mp3',
+                                    '.wav',
+                                ]}
+                                slot={
+                                    playgroundCustomSlot ? (
+                                        <AlertCircle
+                                            size={32}
+                                            color="#ef4444"
+                                        />
+                                    ) : undefined
+                                }
+                                multiple={true}
+                                disabled={playgroundDisabled}
+                                files={errorDummyFilesMultiple}
+                                onChange={(files) => {
+                                    setUploadV2Files(files)
+                                }}
+                                state={UploadState.ERROR}
+                                // errorText="File type not supported"
+                                maxSize={8 * 1024 * 1024}
+                                maxFiles={2}
+                                description=".csv only | Max size 8 MB"
+                                uploadHeaderText="Uploading sample_file.csv..."
+                            />
+                        </Block>
+                        <Block width="100%">
+                            <h2 className="text-2xl font-bold mb-[15px]">
+                                UploadV2 Success State - Single File
+                            </h2>
+                            <UploadV2
+                                label="Upload Files"
+                                subLabel="Max 10MB"
+                                helpIconText={playgroundHelpIconText}
+                                required={playgroundRequired}
+                                acceptedFileTypes={[
+                                    '.csv',
+                                    '.txt',
+                                    '.pdf',
+                                    '.doc',
+                                    '.docx',
+                                    '.xls',
+                                    '.xlsx',
+                                    '.ppt',
+                                    '.pptx',
+                                    '.jpg',
+                                    '.jpeg',
+                                    '.png',
+                                    '.gif',
+                                    '.mp4',
+                                    '.avi',
+                                    '.mov',
+                                    '.mp3',
+                                    '.wav',
+                                ]}
+                                slot={
+                                    playgroundCustomSlot ? (
+                                        <CheckCircle
+                                            size={32}
+                                            color="#10b981"
+                                        />
+                                    ) : undefined
+                                }
+                                multiple={false}
+                                disabled={playgroundDisabled}
+                                files={successDummyFiles}
+                                onChange={(files) => {
+                                    setUploadV2Files(files)
+                                }}
+                                state={UploadState.SUCCESS}
+                                maxSize={8 * 1024 * 1024}
+                                maxFiles={2}
+                                description=" Test files uploaded successfully"
+                                progressBarValue={50}
+                                uploadHeaderText="File uploaded successfully"
+                            />
+                        </Block>
+                        <Block width="100%">
+                            <h2 className="text-2xl font-bold mb-[15px]">
+                                UploadV2 Success State - Multiple Files
+                            </h2>
+                            <UploadV2
+                                label="Upload Files"
+                                subLabel="Max 10MB"
+                                helpIconText={playgroundHelpIconText}
+                                required={playgroundRequired}
+                                acceptedFileTypes={[
+                                    '.csv',
+                                    '.txt',
+                                    '.pdf',
+                                    '.doc',
+                                    '.docx',
+                                    '.xls',
+                                    '.xlsx',
+                                    '.ppt',
+                                    '.pptx',
+                                    '.jpg',
+                                    '.jpeg',
+                                    '.png',
+                                    '.gif',
+                                    '.mp4',
+                                    '.avi',
+                                    '.mov',
+                                    '.mp3',
+                                    '.wav',
+                                ]}
+                                slot={
+                                    playgroundCustomSlot ? (
+                                        <CheckCircle
+                                            size={32}
+                                            color="#10b981"
+                                        />
+                                    ) : undefined
+                                }
+                                multiple={true}
+                                disabled={playgroundDisabled}
+                                files={successDummyFiles}
+                                onChange={(files) => {
+                                    setUploadV2Files(files)
+                                }}
+                                state={UploadState.SUCCESS}
+                                maxSize={8 * 1024 * 1024}
+                                maxFiles={2}
+                                description=" Test files uploaded successfully"
+                                progressBarValue={50}
+                                uploadHeaderText="File uploaded successfully"
+                            />
+                        </Block>
+                        <Block width="100%">
+                            <h2 className="text-2xl font-bold mb-[15px]">
+                                UploadV2 with Progress Bar
+                            </h2>
+                            <UploadV2
+                                label="Upload Files"
+                                subLabel="Max 10MB"
+                                helpIconText={playgroundHelpIconText}
+                                required={playgroundRequired}
+                                acceptedFileTypes={[
+                                    '.csv',
+                                    '.txt',
+                                    '.pdf',
+                                    '.doc',
+                                    '.docx',
+                                    '.xls',
+                                    '.xlsx',
+                                    '.ppt',
+                                    '.pptx',
+                                    '.jpg',
+                                    '.jpeg',
+                                    '.png',
+                                    '.gif',
+                                    '.mp4',
+                                    '.avi',
+                                    '.mov',
+                                    '.mp3',
+                                    '.wav',
+                                ]}
+                                slot={
+                                    playgroundCustomSlot ? (
+                                        <UploadIcon size={32} color="#6366f1" />
+                                    ) : undefined
+                                }
+                                multiple={playgroundMultiple}
+                                disabled={playgroundDisabled}
+                                files={uploadV2Files}
+                                onChange={(files) => {
+                                    setUploadV2Files(files)
+                                }}
+                                state={UploadState.UPLOADING}
+                                // errorText="File type not supported"
+                                maxSize={8 * 1024 * 1024}
+                                maxFiles={2}
+                                description=".csv only | Max size 8 MB"
+                                uploadHeaderText="Uploading sample_file.csv..."
+                                progressBarValue={50}
+                            />
+                        </Block>
+                    </div>
                 </div>
             </div>
         </div>

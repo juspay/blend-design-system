@@ -15,10 +15,21 @@ export enum UploadDragState {
     DRAG_OVER = 'drag_over',
     DROP = 'drop',
 }
+
+export const UploadErrorReason = {
+    OVERSIZED: 'oversized',
+    MAX_FILES: 'maxFiles',
+    INVALID_TYPE: 'invalidType',
+} as const
+
+export type UploadErrorReasonValue =
+    (typeof UploadErrorReason)[keyof typeof UploadErrorReason]
+
 export type UploadFileV2 = {
+    id?: string
     file: File
     isValid: boolean
-    errorReason?: 'oversized' | 'maxFiles' | 'invalidType'
+    errorReason?: UploadErrorReasonValue
 }
 
 export type UploadV2Props = {
@@ -44,4 +55,7 @@ export type UploadV2Props = {
     progressBarValue?: number
     progressBarMaxWidth?: string
     uploadHeaderText?: string
-}
+} & Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'size' | 'style' | 'className' | 'multiple' | 'slot' | 'onChange'
+>
