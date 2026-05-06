@@ -92,6 +92,7 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
                         )}
                         <Block style={{ flex: 1, overflow: 'auto' }}>
                             <DataTable
+                                key={`pivot-preview-${previewRows?.length || 0}-${previewTableColumns.length}`}
                                 data={
                                     (previewRows || []) as Record<
                                         string,
@@ -100,6 +101,17 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
                                 }
                                 columns={previewTableColumns}
                                 idField="__pivotId"
+                                pagination={{
+                                    currentPage: 1,
+                                    pageSize: Math.max(
+                                        previewRows?.length || 0,
+                                        1
+                                    ),
+                                    totalRows: previewRows?.length || 0,
+                                    pageSizeOptions: [
+                                        Math.max(previewRows?.length || 0, 1),
+                                    ],
+                                }}
                                 enableSearch={false}
                                 enableFiltering={false}
                                 enableAdvancedFilter={false}
@@ -112,7 +124,8 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
                                 showToolbar={false}
                                 showFooter={false}
                                 getRowStyle={(row) =>
-                                    row.__pivotRowType === 'grand_total'
+                                    row.__pivotRowType === 'grand_total' ||
+                                    row.__pivotRowType === 'subtotal'
                                         ? {
                                               backgroundColor:
                                                   tableToken.dataTable.table

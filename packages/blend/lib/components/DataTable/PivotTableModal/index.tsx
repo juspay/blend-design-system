@@ -51,8 +51,6 @@ const PivotTableModal = forwardRef<
             title = 'Create Pivot Table',
             description: subtitle,
             initialConfig,
-            previewColumns,
-            previewRows,
             onConfigChange,
             onExport,
             availableAggregations,
@@ -88,14 +86,14 @@ const PivotTableModal = forwardRef<
             () =>
                 initialConfig?.rows?.map((field) => ({
                     field: String(field),
-                    showTotal: true,
+                    showTotal: false,
                 })) || []
         )
         const [columnFields, setColumnFields] = useState<PivotFieldConfig[]>(
             () =>
                 initialConfig?.columns?.map((field) => ({
                     field: String(field),
-                    showTotal: true,
+                    showTotal: false,
                 })) || []
         )
         const [valueConfigs, setValueConfigs] = useState<
@@ -156,7 +154,7 @@ const PivotTableModal = forwardRef<
             if (!field || rowFields.some((f) => f.field === field)) return
             // mutual exclusivity: move from Columns -> Rows
             setColumnFields((prev) => prev.filter((f) => f.field !== field))
-            setRowFields((prev) => [...prev, { field, showTotal: true }])
+            setRowFields((prev) => [...prev, { field, showTotal: false }])
         }
 
         const removeRowField = (field: string) => {
@@ -167,7 +165,7 @@ const PivotTableModal = forwardRef<
             if (!field || columnFields.some((f) => f.field === field)) return
             // mutual exclusivity: move from Rows -> Columns
             setRowFields((prev) => prev.filter((f) => f.field !== field))
-            setColumnFields((prev) => [...prev, { field, showTotal: true }])
+            setColumnFields((prev) => [...prev, { field, showTotal: false }])
         }
 
         const removeColumnField = (field: string) => {
@@ -175,12 +173,26 @@ const PivotTableModal = forwardRef<
         }
 
         const updateRowFieldTotal = (field: string, showTotal: boolean) => {
+            if (process.env.NODE_ENV !== 'production') {
+                // eslint-disable-next-line no-console
+                console.debug('[PivotUI] updateRowFieldTotal', {
+                    field,
+                    showTotal,
+                })
+            }
             setRowFields((prev) =>
                 prev.map((f) => (f.field === field ? { ...f, showTotal } : f))
             )
         }
 
         const updateColumnFieldTotal = (field: string, showTotal: boolean) => {
+            if (process.env.NODE_ENV !== 'production') {
+                // eslint-disable-next-line no-console
+                console.debug('[PivotUI] updateColumnFieldTotal', {
+                    field,
+                    showTotal,
+                })
+            }
             setColumnFields((prev) =>
                 prev.map((f) => (f.field === field ? { ...f, showTotal } : f))
             )
@@ -363,24 +375,7 @@ const PivotTableModal = forwardRef<
             downloadCSV(csvContent, 'pivot-table.csv')
         }
 
-        const hasCustomTotalVisibility = useMemo(
-            () =>
-                rowFields.some((field) => field.showTotal === false) ||
-                columnFields.some((field) => field.showTotal === false),
-            [rowFields, columnFields]
-        )
-
         const effectivePreview = useMemo(() => {
-            if (
-                !hasCustomTotalVisibility &&
-                (previewColumns?.length || previewRows?.length)
-            ) {
-                return {
-                    columns: previewColumns || [],
-                    rows: previewRows || [],
-                }
-            }
-
             return buildPivotPreview(
                 data as Record<string, unknown>[],
                 rowFields.map((f) => ({
@@ -393,15 +388,7 @@ const PivotTableModal = forwardRef<
                 })),
                 valueConfigs
             )
-        }, [
-            previewColumns,
-            previewRows,
-            data,
-            rowFields,
-            columnFields,
-            valueConfigs,
-            hasCustomTotalVisibility,
-        ])
+        }, [data, rowFields, columnFields, valueConfigs])
         const effectivePreviewColumns = effectivePreview.columns
         const effectivePreviewRows = effectivePreview.rows
 
@@ -549,7 +536,7 @@ const PivotTableModal = forwardRef<
                 {showTotalToggle && (
                     <Block>
                         <Checkbox
-                            checked={field.showTotal !== false}
+                            checked={field.showTotal}
                             size={CheckboxSize.SMALL}
                             onCheckedChange={(checked) =>
                                 onShowTotalChange?.(

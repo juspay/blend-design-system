@@ -47,7 +47,7 @@ export type PivotPreviewColumn = {
 
 export type PivotPreviewRow = Record<string, unknown> & {
     __pivotId: string
-    __pivotRowType?: 'data' | 'grand_total'
+    __pivotRowType?: 'data' | 'subtotal' | 'grand_total'
 }
 
 export type PivotPreviewPanelProps = {

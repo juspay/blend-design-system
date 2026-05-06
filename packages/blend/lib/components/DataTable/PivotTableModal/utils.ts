@@ -140,6 +140,17 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
 ): { columns: PivotPreviewColumn[]; rows: PivotPreviewRow[] } => {
     if (!valueConfigs.length) return { columns: [], rows: [] }
 
+    const rowFieldConfigs = rowFields.map((field) =>
+        typeof field === 'object' && field !== null
+            ? { field: field.field, showTotal: field.showTotal === true }
+            : { field, showTotal: false }
+    ) as Array<{ field: keyof T; showTotal: boolean }>
+    const columnFieldConfigs = columnFields.map((field) =>
+        typeof field === 'object' && field !== null
+            ? { field: field.field, showTotal: field.showTotal === true }
+            : { field, showTotal: false }
+    ) as Array<{ field: keyof T; showTotal: boolean }>
+
     const normalizedRowFields = rowFields.map((field) =>
         typeof field === 'object' && field !== null ? field.field : field
     ) as Array<keyof T>
@@ -148,41 +159,44 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
     ) as Array<keyof T>
 
     const shouldShowRowGrandTotal =
-        !rowFields.length ||
-        rowFields.some(
-            (field) =>
-                typeof field !== 'object' ||
-                field === null ||
-                field.showTotal !== false
-        )
+        normalizedRowFields.length === 0 ||
+        rowFieldConfigs.some((r) => r.showTotal)
     const shouldShowColumnTotals =
         normalizedColumnFields.length > 0 &&
-        columnFields.some(
-            (field) =>
-                typeof field !== 'object' ||
-                field === null ||
-                field.showTotal !== false
-        )
+        columnFieldConfigs.some((c) => c.showTotal)
 
-    const rowGroups = new Map<string, T[]>()
+    type PivotRowNode = {
+        rows: T[]
+        children: Map<string, PivotRowNode>
+    }
+    const rowTree: PivotRowNode = { rows: [], children: new Map() }
     const columnKeySet = new Set<string>()
 
     data.forEach((row) => {
-        const rowKey = normalizedRowFields.length
-            ? normalizedRowFields
-                  .map((field) => normalizePivotValue(row[field]))
-                  .join(' | ')
-            : 'All Rows'
+        let node = rowTree
+        node.rows.push(row)
+        normalizedRowFields.forEach((field) => {
+            const part = normalizePivotValue(row[field])
+            const next = node.children.get(part)
+            if (next) {
+                node = next
+                node.rows.push(row)
+            } else {
+                const created: PivotRowNode = {
+                    rows: [row],
+                    children: new Map(),
+                }
+                node.children.set(part, created)
+                node = created
+            }
+        })
+
         const columnKey = normalizedColumnFields.length
             ? normalizedColumnFields
                   .map((field) => normalizePivotValue(row[field]))
                   .join(' | ')
             : 'All Columns'
 
-        if (!rowGroups.has(rowKey)) {
-            rowGroups.set(rowKey, [])
-        }
-        rowGroups.get(rowKey)!.push(row)
         columnKeySet.add(columnKey)
     })
 
@@ -209,55 +223,90 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
             : []),
     ]
 
-    const dataRows: PivotPreviewRow[] = Array.from(rowGroups.entries()).map(
-        ([rowKey, groupedRows], index) => {
+    let idCounter = 0
+    const computeMetricCells = (
+        targetRow: PivotPreviewRow,
+        groupedRows: T[]
+    ) => {
+        orderedColumnKeys.forEach((columnKey) => {
+            const columnRows = normalizedColumnFields.length
+                ? groupedRows.filter(
+                      (groupRow) =>
+                          normalizedColumnFields
+                              .map((field) =>
+                                  normalizePivotValue(groupRow[field])
+                              )
+                              .join(' | ') === columnKey
+                  )
+                : groupedRows
+
+            valueConfigs.forEach((valueConfig, valueIndex) => {
+                const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`
+                targetRow[key] = Number(
+                    aggregate(
+                        columnRows as Array<Record<string, unknown>>,
+                        String(valueConfig.field),
+                        valueConfig.aggregation
+                    ).toFixed(2)
+                )
+            })
+        })
+
+        if (shouldShowColumnTotals) {
+            valueConfigs.forEach((valueConfig, valueIndex) => {
+                const key = `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`
+                targetRow[key] = Number(
+                    aggregate(
+                        groupedRows as Array<Record<string, unknown>>,
+                        String(valueConfig.field),
+                        valueConfig.aggregation
+                    ).toFixed(2)
+                )
+            })
+        }
+    }
+
+    const rows: PivotPreviewRow[] = []
+    const traverse = (node: PivotRowNode, depth: number, parts: string[]) => {
+        if (depth === normalizedRowFields.length) {
+            const rowKey = parts.length ? parts.join(' | ') : 'All Rows'
             const row: PivotPreviewRow = {
-                __pivotId: `pivot-row-${index}`,
+                __pivotId: `pivot-row-${idCounter++}`,
                 __rowLabel: truncatePivotLabel(rowKey, 60),
                 __pivotRowType: 'data',
             }
-
-            orderedColumnKeys.forEach((columnKey) => {
-                const columnRows = normalizedColumnFields.length
-                    ? groupedRows.filter(
-                          (groupRow) =>
-                              normalizedColumnFields
-                                  .map((field) =>
-                                      normalizePivotValue(groupRow[field])
-                                  )
-                                  .join(' | ') === columnKey
-                      )
-                    : groupedRows
-
-                valueConfigs.forEach((valueConfig, valueIndex) => {
-                    const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`
-                    row[key] = Number(
-                        aggregate(
-                            columnRows as Array<Record<string, unknown>>,
-                            String(valueConfig.field),
-                            valueConfig.aggregation
-                        ).toFixed(2)
-                    )
-                })
-            })
-            if (shouldShowColumnTotals) {
-                valueConfigs.forEach((valueConfig, valueIndex) => {
-                    const key = `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`
-                    row[key] = Number(
-                        aggregate(
-                            groupedRows as Array<Record<string, unknown>>,
-                            String(valueConfig.field),
-                            valueConfig.aggregation
-                        ).toFixed(2)
-                    )
-                })
-            }
-
-            return row
+            computeMetricCells(row, node.rows)
+            rows.push(row)
+            return
         }
-    )
 
-    const rows: PivotPreviewRow[] = [...dataRows]
+        const childKeys = Array.from(node.children.keys()).sort((a, b) =>
+            a.localeCompare(b)
+        )
+        childKeys.forEach((key) => {
+            const child = node.children.get(key)
+            if (!child) return
+            traverse(child, depth + 1, [...parts, key])
+        })
+
+        if (
+            normalizedRowFields.length > 1 &&
+            depth < normalizedRowFields.length - 1 &&
+            rowFieldConfigs[depth]?.showTotal
+        ) {
+            const label = `${parts.join(' / ')} Total`
+            const subtotalRow: PivotPreviewRow = {
+                __pivotId: `pivot-subtotal-${idCounter++}`,
+                __rowLabel: truncatePivotLabel(label, 60),
+                __pivotRowType: 'subtotal',
+            }
+            computeMetricCells(subtotalRow, node.rows)
+            rows.push(subtotalRow)
+        }
+    }
+
+    traverse(rowTree, 0, [])
+
     if (shouldShowRowGrandTotal) {
         const grandTotalRow: PivotPreviewRow = {
             __pivotId: 'pivot-grand-total',
