@@ -34,12 +34,14 @@ import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.t
 import { getCardTokens } from '../components/Card/card.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
+import { getTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { getDirectoryTokens } from '../components/Directory/directory.tokens'
 import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import { getMobileNavigationV2Tokens } from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
@@ -62,6 +64,7 @@ import { getStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
+import { getSidebarV2Tokens } from '../components/SidebarV2/sidebarV2.tokens'
 import { getTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
 import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
@@ -150,6 +153,9 @@ const initTokens = (
         SKELETON:
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
+        TOPBARV2:
+            componentTokens.TOPBARV2 ??
+            getTopbarV2Tokens(foundationTokens, theme),
         AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
         AVATAR_GROUP:
             componentTokens.AVATAR_GROUP ??
@@ -160,6 +166,9 @@ const initTokens = (
         MOBILE_NAVIGATION:
             componentTokens.MOBILE_NAVIGATION ??
             getMobileNavigationTokens(foundationTokens),
+        MOBILE_NAVIGATION_V2:
+            componentTokens.MOBILE_NAVIGATION_V2 ??
+            getMobileNavigationV2Tokens(foundationTokens, theme),
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
@@ -229,6 +238,9 @@ const initTokens = (
         POPOVERV2:
             componentTokens.POPOVERV2 ??
             getPopoverV2Tokens(foundationTokens, theme),
+        SIDEBARV2:
+            componentTokens.SIDEBARV2 ??
+            getSidebarV2Tokens(foundationTokens, theme),
         TABSV2:
             componentTokens.TABSV2 ?? getTabsV2Tokens(foundationTokens, theme),
         CODEEDITORV2:
