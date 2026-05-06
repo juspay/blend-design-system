@@ -4,6 +4,8 @@ import React, {
     useState,
     useMemo,
     useCallback,
+    useRef,
+    useLayoutEffect,
 } from 'react'
 import type { NavItemProps } from './types'
 import { ChevronDown } from 'lucide-react'
@@ -15,6 +17,7 @@ import { handleKeyDown } from './utils'
 import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
+import { useSectionScroll } from '../../hooks/useSectionScroll'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 const StyledElement = styled(Block)<{
@@ -77,12 +80,19 @@ const IconWrapper = styled.div<{ $tokens: DirectoryTokenType }>`
     flex-shrink: 0;
     width: ${({ $tokens }) => $tokens.section.itemList.item.icon.width};
     height: ${({ $tokens }) => $tokens.section.itemList.item.icon.width};
+    /* Smooth icon transitions during sidebar expand/collapse */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    transform: translateZ(0);
 
     & > svg {
         width: ${({ $tokens }) =>
             $tokens.section.itemList.item.icon.width} !important;
         height: ${({ $tokens }) =>
             $tokens.section.itemList.item.icon.width} !important;
+        /* Prevent icon flickering during transitions */
+        backface-visibility: hidden;
+        transform: translateZ(0);
     }
 `
 
@@ -225,6 +235,7 @@ const NavItem = ({
               (activeItem === itemPath || activeItem === item.label)
 
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
+    const nestedListRef = useRef<HTMLUListElement>(null)
 
     const refCallback = React.useCallback(
         (node: HTMLButtonElement | HTMLAnchorElement | null) => {
@@ -232,6 +243,20 @@ const NavItem = ({
         },
         []
     )
+
+    const { scrollIntoView } = useSectionScroll()
+    const previousIsExpanded = useRef(isExpanded)
+
+    // Auto-scroll expanded nested menu items into view
+    useLayoutEffect(() => {
+        const wasCollapsed = !previousIsExpanded.current
+        const isExpanding = isExpanded && wasCollapsed
+        previousIsExpanded.current = isExpanded
+
+        if (isExpanding && nestedListRef.current && !iconOnlyMode) {
+            scrollIntoView(nestedListRef.current)
+        }
+    }, [isExpanded, iconOnlyMode, scrollIntoView])
 
     const activateItem = () => {
         if (hasChildren && !iconOnlyMode) {
@@ -430,6 +455,7 @@ const NavItem = ({
 
             {hasChildren && isExpanded && !iconOnlyMode && (
                 <NestedList
+                    ref={nestedListRef}
                     as="ul"
                     $tokens={tokens}
                     role="list"

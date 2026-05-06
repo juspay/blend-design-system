@@ -75,6 +75,7 @@ import { ResponsiveBadgeTokens } from '../components/Badge/badge.tokens'
 import { ResponsiveSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
 import { ResponsiveChatInputV2TokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+import type { ResponsiveStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -155,7 +156,8 @@ export const useComponentToken = (
     | ResponsiveCodeEditorV2Tokens
     | ResponsiveBadgeTokens
     | ResponsiveChatInputV2TokensType
-    | ChatInputV2MobileTokensType => {
+    | ChatInputV2MobileTokensType
+    | ResponsiveStepperV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -312,6 +314,8 @@ export const useComponentToken = (
             return componentTokens.BADGE
         case 'SEARCH_INPUT_V2':
             return componentTokens.SEARCH_INPUT_V2
+        case 'STEPPERV2':
+            return componentTokens.STEPPERV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

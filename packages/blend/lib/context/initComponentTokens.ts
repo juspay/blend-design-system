@@ -76,6 +76,7 @@ import { getTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV
 import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
 import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import { getBadgeTokens } from '../components/Badge/badge.tokens'
+import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
@@ -261,6 +262,9 @@ const initTokens = (
         SEARCH_INPUT_V2:
             componentTokens.SEARCH_INPUT_V2 ??
             getSearchInputV2Tokens(foundationTokens, theme),
+        STEPPERV2:
+            componentTokens.STEPPERV2 ??
+            getStepperV2Tokens(foundationTokens, theme),
     }
 }
 

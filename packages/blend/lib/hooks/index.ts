@@ -5,3 +5,4 @@ export { default as useDropdownInteractionLock } from './useDropdownInteractionL
 export { default as useTruncationDetection } from './useTruncationDetection'
 export type { UseTruncationDetectionOptions } from './useTruncationDetection'
 export { useShadowRoot } from '../context/ShadowAware'
+export { useSectionScroll } from './useSectionScroll'

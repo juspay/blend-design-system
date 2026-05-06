@@ -202,6 +202,10 @@ import {
     getProgressBarV2Tokens,
     ResponsiveProgressBarV2Tokens,
 } from '../components/ProgressBarV2/progressBarV2.tokens'
+import {
+    getStepperV2Tokens,
+    ResponsiveStepperV2Tokens,
+} from '../components/StepperV2/stepperV2.tokens'
 
 import {
     getBreadcrumbV2Tokens,
@@ -313,6 +317,7 @@ export type ComponentTokenType = {
     BADGE?: ResponsiveBadgeTokens
     SEARCH_INPUT_V2?: ResponsiveSearchInputV2Tokens
     CHAT_INPUTV2_MOBILE?: ChatInputV2MobileTokensType
+    STEPPERV2?: ResponsiveStepperV2Tokens
 }
 
 type ThemeContextType = {
@@ -414,6 +419,7 @@ const ThemeContext = createContext<ThemeContextType>({
             FOUNDATION_THEME,
             Theme.LIGHT
         ),
+        STEPPERV2: getStepperV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',
