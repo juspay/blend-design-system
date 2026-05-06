@@ -196,14 +196,14 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
     const previewColumns: PivotPreviewColumn[] = [
         { key: '__rowLabel', label: rowLabel },
         ...orderedColumnKeys.flatMap((columnKey) =>
-            valueConfigs.map((valueConfig) => ({
-                key: `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}`,
+            valueConfigs.map((valueConfig, valueIndex) => ({
+                key: `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`,
                 label: `${truncatePivotLabel(columnKey)} | ${valueConfig.aggregation}(${String(valueConfig.field)})`,
             }))
         ),
         ...(shouldShowColumnTotals
-            ? valueConfigs.map((valueConfig) => ({
-                  key: `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}`,
+            ? valueConfigs.map((valueConfig, valueIndex) => ({
+                  key: `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`,
                   label: `Total | ${valueConfig.aggregation}(${String(valueConfig.field)})`,
               }))
             : []),
@@ -229,8 +229,8 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
                       )
                     : groupedRows
 
-                valueConfigs.forEach((valueConfig) => {
-                    const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}`
+                valueConfigs.forEach((valueConfig, valueIndex) => {
+                    const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`
                     row[key] = Number(
                         aggregate(
                             columnRows as Array<Record<string, unknown>>,
@@ -241,8 +241,8 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
                 })
             })
             if (shouldShowColumnTotals) {
-                valueConfigs.forEach((valueConfig) => {
-                    const key = `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}`
+                valueConfigs.forEach((valueConfig, valueIndex) => {
+                    const key = `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`
                     row[key] = Number(
                         aggregate(
                             groupedRows as Array<Record<string, unknown>>,
@@ -274,8 +274,8 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
                               .join(' | ') === columnKey
                   )
                 : data
-            valueConfigs.forEach((valueConfig) => {
-                const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}`
+            valueConfigs.forEach((valueConfig, valueIndex) => {
+                const key = `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`
                 grandTotalRow[key] = Number(
                     aggregate(
                         columnRows as Array<Record<string, unknown>>,
@@ -286,8 +286,8 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
             })
         })
         if (shouldShowColumnTotals) {
-            valueConfigs.forEach((valueConfig) => {
-                const key = `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}`
+            valueConfigs.forEach((valueConfig, valueIndex) => {
+                const key = `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`
                 grandTotalRow[key] = Number(
                     aggregate(
                         data as Array<Record<string, unknown>>,

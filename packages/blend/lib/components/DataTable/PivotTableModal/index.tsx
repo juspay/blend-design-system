@@ -102,7 +102,6 @@ const PivotTableModal = forwardRef<
             Array<{
                 field: keyof Record<string, unknown>
                 aggregation: PivotAggregationType
-                showTotal?: boolean
             }>
         >(
             () =>
@@ -112,8 +111,9 @@ const PivotTableModal = forwardRef<
                 }>) || []
         )
 
-        // State for field selection
-        const [selectedField, setSelectedField] = useState<string>('')
+        const [addRowSelection, setAddRowSelection] = useState<string>('')
+        const [addColumnSelection, setAddColumnSelection] = useState<string>('')
+        const [addValueSelection, setAddValueSelection] = useState<string>('')
 
         // Compute field options from columns
         const fieldOptions = useMemo(
@@ -151,33 +151,23 @@ const PivotTableModal = forwardRef<
             return supportedAggregationsByField.get(field) || []
         }
 
-        // Add field handlers
-        const addRowField = () => {
-            if (
-                selectedField &&
-                !rowFields.find((f) => f.field === selectedField)
-            ) {
-                setRowFields((prev) => [
-                    ...prev,
-                    { field: selectedField, showTotal: true },
-                ])
-            }
+        // Add field handlers (Sheets-style)
+        const addRowField = (field: string) => {
+            if (!field || rowFields.some((f) => f.field === field)) return
+            // mutual exclusivity: move from Columns -> Rows
+            setColumnFields((prev) => prev.filter((f) => f.field !== field))
+            setRowFields((prev) => [...prev, { field, showTotal: true }])
         }
 
         const removeRowField = (field: string) => {
             setRowFields((prev) => prev.filter((f) => f.field !== field))
         }
 
-        const addColumnField = () => {
-            if (
-                selectedField &&
-                !columnFields.find((f) => f.field === selectedField)
-            ) {
-                setColumnFields((prev) => [
-                    ...prev,
-                    { field: selectedField, showTotal: true },
-                ])
-            }
+        const addColumnField = (field: string) => {
+            if (!field || columnFields.some((f) => f.field === field)) return
+            // mutual exclusivity: move from Rows -> Columns
+            setRowFields((prev) => prev.filter((f) => f.field !== field))
+            setColumnFields((prev) => [...prev, { field, showTotal: true }])
         }
 
         const removeColumnField = (field: string) => {
@@ -196,23 +186,27 @@ const PivotTableModal = forwardRef<
             )
         }
 
-        const addValueField = () => {
-            const supported = getSupportedAggregations(selectedField)
+        const addValueField = (field: string) => {
+            if (!field) return
+            const supported = getSupportedAggregations(field)
+            if (!supported.length) return
+            const aggregation = supported[0]
+            // allow duplicates by (field, aggregation), but prevent exact duplicates
             if (
-                selectedField &&
-                !valueConfigs.some((v) => String(v.field) === selectedField) &&
-                supported.length > 0
+                valueConfigs.some(
+                    (v) =>
+                        String(v.field) === field && v.aggregation === aggregation
+                )
             ) {
-                const aggregation = supported[0]
-                setValueConfigs((prev) => [
-                    ...prev,
-                    {
-                        field: selectedField as keyof Record<string, unknown>,
-                        aggregation,
-                        showTotal: true,
-                    },
-                ])
+                return
             }
+            setValueConfigs((prev) => [
+                ...prev,
+                {
+                    field: field as keyof Record<string, unknown>,
+                    aggregation,
+                },
+            ])
         }
 
         const removeValueField = (index: number) => {
@@ -224,6 +218,15 @@ const PivotTableModal = forwardRef<
             aggregation: PivotAggregationType
         ) => {
             setValueConfigs((prev) => {
+                const target = prev[index]
+                if (!target) return prev
+                const isDuplicate = prev.some(
+                    (v, i) =>
+                        i !== index &&
+                        String(v.field) === String(target.field) &&
+                        v.aggregation === aggregation
+                )
+                if (isDuplicate) return prev
                 const newConfigs = [...prev]
                 newConfigs[index].aggregation = aggregation
                 return newConfigs
@@ -232,11 +235,9 @@ const PivotTableModal = forwardRef<
 
         const updateRowField = (index: number, nextField: string) => {
             setRowFields((prev) => {
-                const usedInOtherSections =
-                    columnFields.some((field) => field.field === nextField) ||
-                    valueConfigs.some(
-                        (config) => String(config.field) === nextField
-                    )
+                const usedInOtherSections = columnFields.some(
+                    (field) => field.field === nextField
+                )
                 if (
                     !nextField ||
                     usedInOtherSections ||
@@ -252,11 +253,9 @@ const PivotTableModal = forwardRef<
 
         const updateColumnField = (index: number, nextField: string) => {
             setColumnFields((prev) => {
-                const usedInOtherSections =
-                    rowFields.some((field) => field.field === nextField) ||
-                    valueConfigs.some(
-                        (config) => String(config.field) === nextField
-                    )
+                const usedInOtherSections = rowFields.some(
+                    (field) => field.field === nextField
+                )
                 if (
                     !nextField ||
                     usedInOtherSections ||
@@ -274,8 +273,6 @@ const PivotTableModal = forwardRef<
             setValueConfigs((prev) => {
                 if (
                     !nextField ||
-                    rowFields.some((field) => field.field === nextField) ||
-                    columnFields.some((field) => field.field === nextField) ||
                     prev.some(
                         (config, i) =>
                             i !== index && String(config.field) === nextField
@@ -294,6 +291,17 @@ const PivotTableModal = forwardRef<
                     )
                         ? config.aggregation
                         : supported[0]
+                    // prevent creating an exact duplicate (field + aggregation) pair
+                    if (
+                        prev.some(
+                            (other, j) =>
+                                j !== index &&
+                                String(other.field) === nextField &&
+                                other.aggregation === nextAggregation
+                        )
+                    ) {
+                        return config
+                    }
                     return {
                         ...config,
                         field: nextField as keyof Record<string, unknown>,
@@ -407,32 +415,23 @@ const PivotTableModal = forwardRef<
                 [effectivePreviewColumns]
             )
 
-        // Available fields excluding already selected ones
-        const availableFields = useMemo(() => {
-            const selectedFields = new Set([
+        const rowAddOptions = useMemo(() => {
+            const blocked = new Set([
                 ...rowFields.map((f) => f.field),
                 ...columnFields.map((f) => f.field),
-                ...valueConfigs.map((v) => String(v.field)),
             ])
-            return fieldOptions.filter((f) => !selectedFields.has(f.key))
-        }, [fieldOptions, rowFields, columnFields, valueConfigs])
+            return fieldOptions.filter((opt) => !blocked.has(opt.key))
+        }, [fieldOptions, rowFields, columnFields])
 
-        useEffect(() => {
-            if (!selectedField) return
-            const isStillAvailable = availableFields.some(
-                (field) => field.key === selectedField
-            )
-            if (!isStillAvailable) {
-                setSelectedField(availableFields[0]?.key ?? '')
-            }
-        }, [selectedField, availableFields])
+        const columnAddOptions = useMemo(() => {
+            const blocked = new Set([
+                ...rowFields.map((f) => f.field),
+                ...columnFields.map((f) => f.field),
+            ])
+            return fieldOptions.filter((opt) => !blocked.has(opt.key))
+        }, [fieldOptions, rowFields, columnFields])
 
-        useEffect(() => {
-            if (!isOpen) return
-            if (selectedField) return
-            if (availableFields.length === 0) return
-            setSelectedField(availableFields[0].key)
-        }, [isOpen, selectedField, availableFields])
+        const valueAddOptions = useMemo(() => fieldOptions, [fieldOptions])
 
         // Render field config card
         const renderFieldConfig = (
@@ -565,12 +564,6 @@ const PivotTableModal = forwardRef<
             </Block>
         )
 
-        const getSectionAddHandler = (section: PivotSectionKey) => {
-            if (section === 'rows') return addRowField
-            if (section === 'columns') return addColumnField
-            return addValueField
-        }
-
         const renderSection = (
             title: string,
             sectionKey: PivotSectionKey,
@@ -605,14 +598,65 @@ const PivotTableModal = forwardRef<
                     >
                         {title}
                     </PrimitiveText>
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        size={ButtonSize.SMALL}
-                        subType={ButtonSubType.ICON_ONLY}
-                        leadingIcon={<Plus size={16} />}
-                        onClick={getSectionAddHandler(sectionKey)}
-                        disabled={!selectedField}
-                        aria-label={`Add ${title.toLowerCase()} field`}
+                    <SingleSelect
+                        placeholder="Add"
+                        items={[
+                            {
+                                items:
+                                    sectionKey === 'rows'
+                                        ? rowAddOptions.map((o) => ({
+                                              label: o.label,
+                                              value: o.key,
+                                          }))
+                                        : sectionKey === 'columns'
+                                          ? columnAddOptions.map((o) => ({
+                                                label: o.label,
+                                                value: o.key,
+                                            }))
+                                          : valueAddOptions.map((o) => ({
+                                                label: o.label,
+                                                value: o.key,
+                                            })),
+                            },
+                        ]}
+                        selected={
+                            sectionKey === 'rows'
+                                ? addRowSelection
+                                : sectionKey === 'columns'
+                                  ? addColumnSelection
+                                  : addValueSelection
+                        }
+                        onSelect={(value) => {
+                            const next = String(value)
+                            if (sectionKey === 'rows') {
+                                setAddRowSelection(next)
+                                addRowField(next)
+                                setAddRowSelection('')
+                                return
+                            }
+                            if (sectionKey === 'columns') {
+                                setAddColumnSelection(next)
+                                addColumnField(next)
+                                setAddColumnSelection('')
+                                return
+                            }
+                            setAddValueSelection(next)
+                            addValueField(next)
+                            setAddValueSelection('')
+                        }}
+                        variant={SelectMenuVariant.NO_CONTAINER}
+                        size={SelectMenuSize.SMALL}
+                        alignment={SelectMenuAlignment.END}
+                        allowDeselect={false}
+                        customTrigger={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                size={ButtonSize.SMALL}
+                                subType={ButtonSubType.ICON_ONLY}
+                                leadingIcon={<Plus size={16} />}
+                                aria-label={`Add ${title.toLowerCase()} field`}
+                            />
+                        }
                     />
                 </Block>
                 {fields.length > 0 && (
@@ -730,38 +774,7 @@ const PivotTableModal = forwardRef<
                                 boxSizing: 'border-box',
                             }}
                         >
-                            {/* Select Column Dropdown */}
                             <Block
-                                style={{
-                                    marginBottom: FOUNDATION_THEME.unit[24],
-                                }}
-                            >
-                                <SingleSelect
-                                    label="Select Column"
-                                    placeholder="column name"
-                                    items={[
-                                        {
-                                            items: availableFields.map((f) => ({
-                                                label: f.label,
-                                                value: f.key,
-                                            })),
-                                        },
-                                    ]}
-                                    selected={selectedField}
-                                    onSelect={(value) =>
-                                        setSelectedField(value as string)
-                                    }
-                                    variant={SelectMenuVariant.CONTAINER}
-                                    size={SelectMenuSize.SMALL}
-                                    fullWidth
-                                    allowDeselect={false}
-                                />
-                            </Block>
-                            <Block
-                                style={{
-                                    borderTop: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[150]}`,
-                                    marginBottom: FOUNDATION_THEME.unit[24],
-                                }}
                             />
 
                             <Block
