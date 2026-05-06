@@ -36,6 +36,7 @@ import {
     RowActionsConfig,
     CursorDirection,
     DataTablePaginationMode,
+    PaginationConfig,
     isCursorPaginationConfig,
 } from './types'
 import { TableTokenType } from './dataTable.tokens'
@@ -2045,7 +2046,16 @@ const DataTable = forwardRef(
 
                     {showFooter && (
                         <TableFooter
-                            pagination={pagination}
+                            pagination={
+                                isCursorPagination || serverSidePagination
+                                    ? pagination
+                                    : {
+                                          ...(pagination as PaginationConfig),
+                                          currentPage,
+                                          pageSize,
+                                          totalRows,
+                                      }
+                            }
                             isLoading={isLoading}
                             showSkeleton={showSkeleton}
                             hasData={currentData.length > 0}

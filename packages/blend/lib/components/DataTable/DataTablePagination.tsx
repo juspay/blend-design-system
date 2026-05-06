@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from 'react'
+import { useMemo, useRef, useEffect, useCallback } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
@@ -81,43 +81,55 @@ export function DataTablePagination({
         cursorPagination?.hasNextPage ?? currentPage < totalPages
     const hasPrevPage = cursorPagination?.hasPrevPage ?? currentPage > 1
     const limit = cursorPagination?.limit ?? pageSize
-    const getCursorPayloadForDirection = (
-        direction: CursorDirection
-    ): unknown => {
-        if (!cursorPagination) return undefined
+    const getCursorPayloadForDirection = useCallback(
+        (direction: CursorDirection): unknown => {
+            if (!cursorPagination) return undefined
 
-        if (cursorPagination.cursorParams) {
-            return cursorPagination.cursorParams
-        }
+            if (cursorPagination.cursorParams) {
+                return cursorPagination.cursorParams
+            }
 
-        if (direction === CursorDirection.NEXT) {
-            return cursorPagination.nextCursor ?? cursorPagination.cursor
-        }
+            if (direction === CursorDirection.NEXT) {
+                return cursorPagination.nextCursor ?? cursorPagination.cursor
+            }
 
-        return cursorPagination.prevCursor ?? cursorPagination.cursor
-    }
+            return cursorPagination.prevCursor ?? cursorPagination.cursor
+        },
+        [cursorPagination]
+    )
 
-    const canNavigate = () => hasData && !isLoading
+    const canNavigate = useCallback(
+        () => hasData && !isLoading,
+        [hasData, isLoading]
+    )
 
-    const triggerPageChange = (page: number) => {
-        ;(onPageChange as (page: number) => void)(page)
-    }
+    const triggerPageChange = useCallback(
+        (page: number) => {
+            ;(onPageChange as (page: number) => void)(page)
+        },
+        [onPageChange]
+    )
 
-    const triggerCursorNavigation = (
-        direction: CursorDirection,
-        cursorPayload: unknown
-    ) => {
-        ;(
-            onPageChange as (
-                direction: CursorDirection,
-                cursorPayload?: unknown,
-                limit?: number
-            ) => void
-        )(direction, cursorPayload, limit)
-    }
+    const triggerCursorNavigation = useCallback(
+        (direction: CursorDirection, cursorPayload: unknown) => {
+            ;(
+                onPageChange as (
+                    direction: CursorDirection,
+                    cursorPayload?: unknown,
+                    limit?: number
+                ) => void
+            )(direction, cursorPayload, limit)
+        },
+        [onPageChange, limit]
+    )
 
-    const handlePrevious = () => {
-        if (!canNavigate() || !hasPrevPage) return
+    const handlePrevious = useCallback(() => {
+        // In cursor mode, allow Previous even without data if hasPrevPage is true
+        // In page mode, require hasData
+        const canNavigatePrevious = isCursorMode
+            ? !isLoading && hasPrevPage
+            : canNavigate() && hasPrevPage
+        if (!canNavigatePrevious) return
 
         if (isCursorMode && cursorPagination) {
             triggerCursorNavigation(
@@ -129,9 +141,20 @@ export function DataTablePagination({
                 triggerPageChange(currentPage - 1)
             }
         }
-    }
+    }, [
+        isCursorMode,
+        isLoading,
+        hasPrevPage,
+        canNavigate,
+        cursorPagination,
+        currentPage,
+        getCursorPayloadForDirection,
+        triggerCursorNavigation,
+        triggerPageChange,
+    ])
 
-    const handleNext = () => {
+    const handleNext = useCallback(() => {
+        // Next always requires hasData (can't navigate forward from empty page)
         if (!canNavigate() || !hasNextPage) return
 
         if (isCursorMode && cursorPagination) {
@@ -144,28 +167,50 @@ export function DataTablePagination({
                 triggerPageChange(currentPage + 1)
             }
         }
-    }
+    }, [
+        canNavigate,
+        hasNextPage,
+        isCursorMode,
+        cursorPagination,
+        getCursorPayloadForDirection,
+        triggerCursorNavigation,
+        currentPage,
+        totalPages,
+        triggerPageChange,
+    ])
 
-    const handlePageClick = (page: number) => {
-        if (
-            !canNavigate() ||
-            page < 1 ||
-            page > totalPages ||
-            page === currentPage
-        )
-            return
-        triggerPageChange(page)
-    }
+    const handlePageClick = useCallback(
+        (page: number) => {
+            if (
+                !canNavigate() ||
+                page < 1 ||
+                page > totalPages ||
+                page === currentPage
+            )
+                return
+            triggerPageChange(page)
+        },
+        [canNavigate, totalPages, currentPage, triggerPageChange]
+    )
 
-    const handleLimitChange = (newLimit: number) => {
-        if (!onPageSizeChange || !hasData || isLoading || newLimit === limit)
-            return
-        onPageSizeChange(newLimit)
-    }
+    const handleLimitChange = useCallback(
+        (newLimit: number) => {
+            if (
+                !onPageSizeChange ||
+                !hasData ||
+                isLoading ||
+                newLimit === limit
+            )
+                return
+            onPageSizeChange(newLimit)
+        },
+        [onPageSizeChange, hasData, isLoading, limit]
+    )
 
     const filteredPageSizeOptions = useMemo(() => {
+        // Create a copy to avoid mutating the original pageSizeOptions
         const options = isCursorMode
-            ? pageSizeOptions
+            ? [...pageSizeOptions]
             : pageSizeOptions.filter((size) => size <= totalRows)
 
         if (!options.includes(pageSize) && pageSize > 0) {
@@ -190,7 +235,7 @@ export function DataTablePagination({
                 })),
             },
         ],
-        [filteredPageSizeOptions]
+        [filteredPageSizeOptions, handleLimitChange]
     )
 
     const getPageNumbers = (): (number | string)[] => {
@@ -303,115 +348,125 @@ export function DataTablePagination({
         hasPrevPage,
         limit,
         cursorPagination,
+        onPageChange,
+        canNavigate,
+        handleNext,
+        handlePageClick,
+        handlePrevious,
     ])
 
-    const PreviousButton = () => (
-        <PrimitiveButton
-            data-element="previous-page"
-            data-status={!hasPrevPage || !hasData ? 'disabled' : 'enabled'}
-            contentCentered
-            width={FOUNDATION_THEME.unit[32]}
-            height={FOUNDATION_THEME.unit[32]}
-            backgroundColor="transparent"
-            border={
-                isMobile
-                    ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-                    : 'none'
-            }
-            borderRadius={
-                isMobile
-                    ? FOUNDATION_THEME.border.radius[10]
-                    : FOUNDATION_THEME.border.radius[2]
-            }
-            color={
-                !hasPrevPage || !hasData
-                    ? FOUNDATION_THEME.colors.gray[300]
-                    : FOUNDATION_THEME.colors.gray[600]
-            }
-            disabled={!hasPrevPage || isLoading || !hasData}
-            onClick={handlePrevious}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    handlePrevious()
-                }
-            }}
-            aria-label={
-                isCursorMode
-                    ? 'Load previous results'
-                    : `Previous page${currentPage > 1 ? ` (currently page ${currentPage})` : ''}`
-            }
-            tabIndex={!hasPrevPage || isLoading || !hasData ? -1 : 0}
-            _hover={{
-                backgroundColor:
-                    !hasPrevPage || !hasData
-                        ? 'transparent'
-                        : FOUNDATION_THEME.colors.gray[50],
-            }}
-            style={{
-                cursor:
-                    !hasPrevPage || isLoading || !hasData
-                        ? 'not-allowed'
-                        : 'pointer',
-            }}
-        >
-            <ArrowLeft size={FOUNDATION_THEME.unit[16]} />
-        </PrimitiveButton>
-    )
+    const PreviousButton = () => {
+        // In cursor mode, allow Previous even without data (if hasPrevPage is true)
+        // In page mode, require hasData
+        const isDisabled = isCursorMode
+            ? !hasPrevPage || isLoading
+            : !hasPrevPage || isLoading || !hasData
 
-    const NextButton = () => (
-        <PrimitiveButton
-            data-element="next-page"
-            data-status={!hasNextPage || !hasData ? 'disabled' : 'enabled'}
-            contentCentered
-            width={FOUNDATION_THEME.unit[32]}
-            height={FOUNDATION_THEME.unit[32]}
-            backgroundColor="transparent"
-            border={
-                isMobile
-                    ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-                    : 'none'
-            }
-            borderRadius={
-                isMobile
-                    ? FOUNDATION_THEME.border.radius[10]
-                    : FOUNDATION_THEME.border.radius[2]
-            }
-            color={
-                !hasNextPage || !hasData
-                    ? FOUNDATION_THEME.colors.gray[300]
-                    : FOUNDATION_THEME.colors.gray[600]
-            }
-            disabled={!hasNextPage || isLoading || !hasData}
-            onClick={handleNext}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    handleNext()
+        return (
+            <PrimitiveButton
+                data-element="previous-page"
+                data-status={isDisabled ? 'disabled' : 'enabled'}
+                contentCentered
+                width={FOUNDATION_THEME.unit[32]}
+                height={FOUNDATION_THEME.unit[32]}
+                backgroundColor="transparent"
+                border={
+                    isMobile
+                        ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                        : 'none'
                 }
-            }}
-            aria-label={
-                isCursorMode
-                    ? 'Load next results'
-                    : `Next page${currentPage < totalPages ? ` (currently page ${currentPage} of ${totalPages})` : ''}`
-            }
-            tabIndex={!hasNextPage || isLoading || !hasData ? -1 : 0}
-            _hover={{
-                backgroundColor:
-                    !hasNextPage || !hasData
+                borderRadius={
+                    isMobile
+                        ? FOUNDATION_THEME.border.radius[10]
+                        : FOUNDATION_THEME.border.radius[2]
+                }
+                color={
+                    isDisabled
+                        ? FOUNDATION_THEME.colors.gray[300]
+                        : FOUNDATION_THEME.colors.gray[600]
+                }
+                disabled={isDisabled}
+                onClick={handlePrevious}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handlePrevious()
+                    }
+                }}
+                aria-label={
+                    isCursorMode
+                        ? 'Load previous results'
+                        : `Previous page${currentPage > 1 ? ` (currently page ${currentPage})` : ''}`
+                }
+                tabIndex={isDisabled ? -1 : 0}
+                _hover={{
+                    backgroundColor: isDisabled
                         ? 'transparent'
                         : FOUNDATION_THEME.colors.gray[50],
-            }}
-            style={{
-                cursor:
-                    !hasNextPage || isLoading || !hasData
-                        ? 'not-allowed'
-                        : 'pointer',
-            }}
-        >
-            <ArrowRight size={FOUNDATION_THEME.unit[16]} />
-        </PrimitiveButton>
-    )
+                }}
+                style={{
+                    cursor: isDisabled ? 'not-allowed' : 'pointer',
+                }}
+            >
+                <ArrowLeft size={FOUNDATION_THEME.unit[16]} />
+            </PrimitiveButton>
+        )
+    }
+
+    const NextButton = () => {
+        // Next always requires data (can't go next from empty page)
+        const isDisabled = !hasNextPage || isLoading || !hasData
+
+        return (
+            <PrimitiveButton
+                data-element="next-page"
+                data-status={isDisabled ? 'disabled' : 'enabled'}
+                contentCentered
+                width={FOUNDATION_THEME.unit[32]}
+                height={FOUNDATION_THEME.unit[32]}
+                backgroundColor="transparent"
+                border={
+                    isMobile
+                        ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+                        : 'none'
+                }
+                borderRadius={
+                    isMobile
+                        ? FOUNDATION_THEME.border.radius[10]
+                        : FOUNDATION_THEME.border.radius[2]
+                }
+                color={
+                    isDisabled
+                        ? FOUNDATION_THEME.colors.gray[300]
+                        : FOUNDATION_THEME.colors.gray[600]
+                }
+                disabled={isDisabled}
+                onClick={handleNext}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handleNext()
+                    }
+                }}
+                aria-label={
+                    isCursorMode
+                        ? 'Load next results'
+                        : `Next page${currentPage < totalPages ? ` (currently page ${currentPage} of ${totalPages})` : ''}`
+                }
+                tabIndex={isDisabled ? -1 : 0}
+                _hover={{
+                    backgroundColor: isDisabled
+                        ? 'transparent'
+                        : FOUNDATION_THEME.colors.gray[50],
+                }}
+                style={{
+                    cursor: isDisabled ? 'not-allowed' : 'pointer',
+                }}
+            >
+                <ArrowRight size={FOUNDATION_THEME.unit[16]} />
+            </PrimitiveButton>
+        )
+    }
 
     const LimitSelector = () => (
         <Block
@@ -497,10 +552,6 @@ export function DataTablePagination({
                         tableToken.dataTable.table.footer.pagination
                             .pageNavigation.gap
                     }
-                    style={{
-                        opacity: hasData ? 1 : 0.5,
-                        pointerEvents: hasData ? 'auto' : 'none',
-                    }}
                 >
                     <PreviousButton />
                     <NextButton />

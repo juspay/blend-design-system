@@ -26,10 +26,13 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
             return null
         }
 
-        // For cursor-based pagination, show footer if we can navigate back even without data
-        const isCursorMode =
+        const cursorPagination =
             paginationMode === 'cursor' && isCursorPaginationConfig(pagination)
-        const canNavigateBack = isCursorMode && pagination.hasPrevPage
+                ? pagination
+                : null
+
+        // For cursor-based pagination, show footer if we can navigate back even without data
+        const canNavigateBack = cursorPagination?.hasPrevPage ?? false
 
         if (!hasData && !canNavigateBack) {
             return null

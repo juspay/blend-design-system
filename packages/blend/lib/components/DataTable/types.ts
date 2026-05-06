@@ -33,6 +33,18 @@ type BivariantCallback<T extends (...args: never[]) => unknown> = {
     bivarianceHack: T
 }['bivarianceHack']
 
+export type DataTablePageModeOnPageChange = BivariantCallback<
+    (page: number) => void
+>
+
+export type DataTableCursorModeOnPageChange = BivariantCallback<
+    (
+        direction: CursorDirection,
+        cursorPayload?: unknown,
+        limit?: number
+    ) => void
+>
+
 /**
  * `onPageChange` handler for DataTable.
  * - **Page mode:** first argument is the 1-based page index.
@@ -425,7 +437,7 @@ export type RowSelectionConfig<T extends Record<string, unknown>> = {
     disabledText?: (row: T, index: number) => string
 }
 
-export type DataTableProps<T extends Record<string, unknown>> = {
+type DataTableBaseProps<T extends Record<string, unknown>> = {
     data: T[]
     columns: ColumnDefinition<T>[]
     idField: keyof T
@@ -475,22 +487,6 @@ export type DataTableProps<T extends Record<string, unknown>> = {
         loading?: boolean
     }
     columnManagerWidth?: number
-    /**
-     * Pagination configuration: {@link PaginationConfig} (page index + total) or {@link CursorPaginationConfig} (cursors).
-     */
-    pagination?: DataTablePaginationConfig
-    serverSidePagination?: boolean
-    /**
-     * `'page'` — numbered pages and jump UI. `'cursor'` — next/previous only; pair with {@link CursorPaginationConfig}.
-     * @default 'page'
-     */
-    paginationMode?: DataTablePaginationMode
-    /**
-     * @deprecated Use `paginationMode="cursor"` instead.
-     */
-    cursorBasedPagination?: boolean
-    onPageChange?: DataTableOnPageChange
-    onPageSizeChange?: (pageSize: number) => void
 
     isLoading?: boolean
     showSkeleton?: boolean
@@ -549,3 +545,67 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     // Mobile configuration
     mobileColumnsToShow?: number
 }
+
+type DataTableCursorPaginationProps = {
+    /**
+     * `'cursor'` — next/previous only; pair with {@link CursorPaginationConfig}.
+     */
+    paginationMode: 'cursor'
+    /**
+     * Pagination configuration for cursor mode.
+     */
+    pagination?: CursorPaginationConfig
+    /**
+     * Cursor mode requires a cursor-aware handler.
+     */
+    onPageChange?: DataTableCursorModeOnPageChange
+    onPageSizeChange?: (pageSize: number) => void
+    serverSidePagination?: boolean
+    /**
+     * @deprecated Use `paginationMode="cursor"` instead.
+     */
+    cursorBasedPagination?: boolean
+}
+
+type DataTablePagePaginationProps = {
+    /**
+     * `'page'` — numbered pages and jump UI.
+     * @default 'page'
+     */
+    paginationMode?: 'page'
+    /**
+     * Pagination configuration for page mode.
+     */
+    pagination?: PaginationConfig
+    /**
+     * Page mode handler: receives 1-based page index.
+     */
+    onPageChange?: DataTablePageModeOnPageChange
+    onPageSizeChange?: (pageSize: number) => void
+    serverSidePagination?: boolean
+    /**
+     * @deprecated Use `paginationMode="cursor"` instead.
+     */
+    cursorBasedPagination?: false
+}
+
+type DataTableLegacyCursorPaginationProps = {
+    /**
+     * Cursor mode via legacy flag (kept for backward compatibility).
+     * @deprecated Use `paginationMode="cursor"` instead.
+     */
+    cursorBasedPagination: true
+    paginationMode?: undefined
+    pagination?: CursorPaginationConfig
+    onPageChange?: DataTableCursorModeOnPageChange
+    onPageSizeChange?: (pageSize: number) => void
+    serverSidePagination?: boolean
+}
+
+export type DataTableProps<T extends Record<string, unknown>> =
+    DataTableBaseProps<T> &
+        (
+            | DataTablePagePaginationProps
+            | DataTableCursorPaginationProps
+            | DataTableLegacyCursorPaginationProps
+        )

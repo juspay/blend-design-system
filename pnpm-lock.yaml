@@ -130,7 +130,7 @@ importers:
                 version: 0.525.0(react@19.2.3)
             motion:
                 specifier: ^12.23.2
-                version: 12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+                version: 12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             next:
                 specifier: 15.3.6
                 version: 15.3.6(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -420,6 +420,9 @@ importers:
             '@dnd-kit/utilities':
                 specifier: ^3.2.2
                 version: 3.2.2(react@19.2.3)
+            '@emotion/is-prop-valid':
+                specifier: ^1.4.0
+                version: 1.4.0
             '@monaco-editor/react':
                 specifier: ^4.7.0
                 version: 4.7.0(monaco-editor@0.54.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -455,7 +458,7 @@ importers:
                 version: 5.1.36
             framer-motion:
                 specifier: ^12.23.24
-                version: 12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+                version: 12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             highcharts:
                 specifier: ^12.4.0
                 version: 12.4.0
@@ -1269,10 +1272,22 @@ packages:
                 integrity: sha512-uNsoYd37AFmaCdXlg6EYD1KaPOaRWRByMCYzbKUX4+hhMfrxdVSelShywL4JVaAeM/eHUOSprYBQls+/neX3pw==,
             }
 
+    '@emotion/is-prop-valid@1.4.0':
+        resolution:
+            {
+                integrity: sha512-QgD4fyscGcbbKwJmqNvUMSE02OsHUa+lAWKdEUIJKgqe5IwRSKd7+KhibEWdaKwgjLj0DRSHA9biAIqGBk05lw==,
+            }
+
     '@emotion/memoize@0.8.1':
         resolution:
             {
                 integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==,
+            }
+
+    '@emotion/memoize@0.9.0':
+        resolution:
+            {
+                integrity: sha512-30FAj7/EoJ5mwVPOWhAyCX+FPfMDrVecJAM+Iw9NRoSl4BBAQeqj4cApHHUXOVvIPgLVDsCFoz/hGD+5QQD1GQ==,
             }
 
     '@emotion/unitless@0.8.1':
@@ -13921,7 +13936,13 @@ snapshots:
         dependencies:
             '@emotion/memoize': 0.8.1
 
+    '@emotion/is-prop-valid@1.4.0':
+        dependencies:
+            '@emotion/memoize': 0.9.0
+
     '@emotion/memoize@0.8.1': {}
+
+    '@emotion/memoize@0.9.0': {}
 
     '@emotion/unitless@0.8.1': {}
 
@@ -16825,22 +16846,6 @@ snapshots:
         transitivePeerDependencies:
             - supports-color
 
-    '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)':
-        dependencies:
-            '@eslint-community/regexpp': 4.12.2
-            '@typescript-eslint/parser': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-            '@typescript-eslint/scope-manager': 8.50.0
-            '@typescript-eslint/type-utils': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
-            '@typescript-eslint/utils': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
-            '@typescript-eslint/visitor-keys': 8.50.0
-            eslint: 9.39.2(jiti@2.6.1)
-            ignore: 7.0.5
-            natural-compare: 1.4.0
-            ts-api-utils: 2.1.0(typescript@5.8.3)
-            typescript: 5.8.3
-        transitivePeerDependencies:
-            - supports-color
-
     '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)':
         dependencies:
             '@eslint-community/regexpp': 4.12.2
@@ -18200,7 +18205,7 @@ snapshots:
             eslint: 9.39.2(jiti@2.6.1)
             eslint-import-resolver-node: 0.3.9
             eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
-            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
+            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
             eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.2(jiti@2.6.1))
             eslint-plugin-react: 7.37.5(eslint@9.39.2(jiti@2.6.1))
             eslint-plugin-react-hooks: 5.2.0(eslint@9.39.2(jiti@2.6.1))
@@ -18230,7 +18235,7 @@ snapshots:
             tinyglobby: 0.2.15
             unrs-resolver: 1.11.1
         optionalDependencies:
-            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))
+            eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1))
         transitivePeerDependencies:
             - supports-color
 
@@ -18245,7 +18250,7 @@ snapshots:
         transitivePeerDependencies:
             - supports-color
 
-    eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1)):
+    eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@2.6.1)):
         dependencies:
             '@rtsao/scc': 1.1.0
             array-includes: 3.1.9
@@ -18700,13 +18705,13 @@ snapshots:
 
     fraction.js@5.3.4: {}
 
-    framer-motion@12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+    framer-motion@12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
         dependencies:
             motion-dom: 12.23.23
             motion-utils: 12.23.6
             tslib: 2.8.1
         optionalDependencies:
-            '@emotion/is-prop-valid': 1.2.2
+            '@emotion/is-prop-valid': 1.4.0
             react: 19.2.3
             react-dom: 19.2.3(react@19.2.3)
 
@@ -20330,12 +20335,12 @@ snapshots:
 
     motion-utils@12.23.6: {}
 
-    motion@12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+    motion@12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
         dependencies:
-            framer-motion: 12.23.26(@emotion/is-prop-valid@1.2.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+            framer-motion: 12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             tslib: 2.8.1
         optionalDependencies:
-            '@emotion/is-prop-valid': 1.2.2
+            '@emotion/is-prop-valid': 1.4.0
             react: 19.2.3
             react-dom: 19.2.3(react@19.2.3)
 
@@ -21925,7 +21930,7 @@ snapshots:
 
     typescript-eslint@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3):
         dependencies:
-            '@typescript-eslint/eslint-plugin': 8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
+            '@typescript-eslint/eslint-plugin': 8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
             '@typescript-eslint/parser': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
             '@typescript-eslint/typescript-estree': 8.50.0(typescript@5.8.3)
             '@typescript-eslint/utils': 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.8.3)
