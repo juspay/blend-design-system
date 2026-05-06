@@ -15,6 +15,10 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     enableColumnManager?: boolean
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
+    rowSelectionConfig?: {
+        isDisabled?: (row: T, index: number) => boolean
+        disabledText?: (row: T, index: number) => string
+    }
     rowActions?: RowActionsConfig<T>
     columnFreeze?: number
     /** Freeze last N columns on the right side (sticky right). */
@@ -31,7 +35,7 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
         toggleExpansion: () => void
     }) => React.ReactNode
     isRowExpandable?: (row: T, index: number) => boolean
-    onRowSelect: (rowId: unknown) => void
+    onRowSelect: (rowId: unknown, rowIndex?: number) => void
     onEditRow: (rowId: unknown) => void
     onSaveRow: (rowId: unknown) => void
     onCancelEdit: (rowId: unknown) => void

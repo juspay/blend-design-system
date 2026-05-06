@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useCallback } from 'react'
+import React, {
+    createContext,
+    useContext,
+    useCallback,
+    useRef,
+    useLayoutEffect,
+} from 'react'
 import type { SectionProps } from './types'
 import { ChevronDown } from 'lucide-react'
 import NavItem from './NavItem'
@@ -7,6 +13,7 @@ import Text from '../Text/Text'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
+import { useSectionScroll } from '../../hooks/useSectionScroll'
 
 type SectionStateContextValue = {
     sectionStates: Map<number, boolean>
@@ -45,19 +52,20 @@ const ChevronWrapper = styled(Block)<{
 const Section = ({
     section,
     sectionIndex,
-    // totalSections,
     onNavigateBetweenSections,
     idPrefix,
     iconOnlyMode = false,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const sectionStateContext = useSectionState()
+    const { scrollIntoView } = useSectionScroll()
 
     const defaultIsOpen = section.defaultOpen !== false
     const sharedIsOpen = sectionStateContext?.sectionStates.get(sectionIndex)
     const [localIsOpen, setLocalIsOpen] = React.useState(defaultIsOpen)
 
     const isOpen = sharedIsOpen !== undefined ? sharedIsOpen : localIsOpen
+    const previousIsOpen = useRef(isOpen)
 
     const setIsOpen = useCallback(
         (value: boolean) => {
@@ -69,11 +77,9 @@ const Section = ({
         },
         [sectionIndex, sectionStateContext]
     )
-    const sectionRef = React.useRef<HTMLDivElement>(null)
-    const headerRef = React.useRef<HTMLDivElement>(null)
-    const itemRefs = React.useRef<Array<React.RefObject<HTMLElement | null>>>(
-        []
-    )
+    const sectionRef = useRef<HTMLDivElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+    const itemRefs = useRef<Array<React.RefObject<HTMLElement | null>>>([])
 
     React.useEffect(() => {
         if (section.items) {
@@ -82,6 +88,16 @@ const Section = ({
             )
         }
     }, [section.items])
+
+    useLayoutEffect(() => {
+        const wasCollapsed = !previousIsOpen.current
+        const isExpanding = isOpen && wasCollapsed
+        previousIsOpen.current = isOpen
+
+        if (isExpanding && sectionRef.current) {
+            scrollIntoView(sectionRef.current)
+        }
+    }, [isOpen, scrollIntoView])
 
     const toggleSection = () => {
         if (!iconOnlyMode) {
@@ -163,10 +179,8 @@ const Section = ({
                     alignItems="center"
                     paddingX={tokens.section.header.padding.x}
                     paddingY={tokens.section.header.padding.y}
-                    // userSelect="none"
                     cursor={isCollapsible ? 'pointer' : undefined}
                     ref={headerRef}
-                    // $isCollapsible={isCollapsible}
                     onClick={isCollapsible ? toggleSection : undefined}
                     onKeyDown={isCollapsible ? handleKeyDown : undefined}
                     role={isCollapsible ? 'button' : undefined}

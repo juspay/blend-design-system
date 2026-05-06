@@ -144,7 +144,9 @@ import NumberInputV2Demo from './NumberInputV2Demo'
 import OTPInputV2Demo from './OTPInputV2Demo'
 import TextAreaV2Demo from './TextAreaV2Demo'
 import SearchInputV2Demo from './SearchInputV2Demo'
+import BadgeDemo from './BadgeDemo'
 import ChatInputV2Demo from './ChatInputV2Demo'
+import StepperV2Demo from './StepperV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -243,9 +245,11 @@ const SidebarDemo = () => {
         | 'numberInputV2'
         | 'otpInputV2'
         | 'textAreaV2'
+        | 'badge'
         | 'searchInputV2'
         | 'chatInputV2'
-    >('chatInputV2')
+        | 'stepperV2'
+    >('stepperV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -612,6 +616,10 @@ const SidebarDemo = () => {
                 return <OTPInputV2Demo />
             case 'textAreaV2':
                 return <TextAreaV2Demo />
+            case 'badge':
+                return <BadgeDemo />
+            case 'stepperV2':
+                return <StepperV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -832,6 +840,15 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'tagGroupV2',
                     onClick: () => setActiveComponent('tagGroupV2'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Badge',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'badge',
+                    onClick: () => setActiveComponent('badge'),
                     showOnMobile: true,
                 },
                 {
@@ -1257,6 +1274,14 @@ const SidebarDemo = () => {
                     ),
                     onClick: () => setActiveComponent('stepper'),
                 },
+                {
+                    label: 'Stepper V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'stepperV2',
+                    onClick: () => setActiveComponent('stepperV2'),
+                },
             ],
         },
         {
@@ -1651,7 +1676,7 @@ const SidebarDemo = () => {
               }
 
     return (
-        <div className="w-screen h-screen">
+        <div className="w-full h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     onSidebarStateChange={(state) => setSidebarState(state)}
