@@ -323,6 +323,7 @@ status: 'stable'
 
 `
 
+    let isFirstCard = true
     for (const [groupName, groupData] of groups) {
         const { items, type } = groupData
 
@@ -331,6 +332,10 @@ status: 'stable'
 
         // Build ChangelogCard props
         let cardProps = `summary="${groupName}"`
+        if (isFirstCard) {
+            cardProps += ` defaultExpanded={true}`
+            isFirstCard = false
+        }
         if (commitHashes.length === 1) {
             cardProps += ` commitHash="${commitHashes[0]}"`
             if (items[0].commitUrl)
