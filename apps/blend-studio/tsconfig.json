@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
+        "skipLibCheck": true,
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"],
+            "@juspay/blend-design-system": ["../../packages/blend/lib/main.ts"],
+            "@juspay/blend-design-system/tokens": [
+                "../../packages/token-engine/src/index.ts"
+            ],
+            "@juspay/blend-design-system/node": [
+                "../../packages/blend/lib/node.ts"
+            ]
+        }
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
+    "exclude": ["node_modules", "dist", "src/backend/db"]
+}
