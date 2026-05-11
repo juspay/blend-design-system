@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useCallback } from 'react'
+import { useMemo, useRef, useEffect, useCallback, useState } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
@@ -50,6 +50,8 @@ export function DataTablePagination({
         ? pagination
         : null
 
+    const [cursorPageNumber, setCursorPageNumber] = useState(1)
+
     const {
         currentPage,
         pageSize,
@@ -58,7 +60,7 @@ export function DataTablePagination({
     } = useMemo(() => {
         if (cursorPagination) {
             return {
-                currentPage: cursorPagination.currentPage ?? 1,
+                currentPage: cursorPagination.currentPage ?? cursorPageNumber,
                 pageSize:
                     cursorPagination.pageSize ?? cursorPagination.limit ?? 10,
                 totalRows: cursorPagination.totalRows ?? 0,
@@ -74,7 +76,7 @@ export function DataTablePagination({
             totalRows: config.totalRows,
             pageSizeOptions: config.pageSizeOptions ?? [10, 20, 50, 100],
         }
-    }, [pagination, cursorPagination])
+    }, [pagination, cursorPagination, cursorPageNumber])
 
     const totalPages = Math.ceil(totalRows / pageSize)
     const hasNextPage =
@@ -83,38 +85,42 @@ export function DataTablePagination({
     const limit = cursorPagination?.limit ?? pageSize
 
     const getRecordRange = useCallback((): { start: number; end: number } => {
-        if (!hasData || totalRows === 0) {
+        if (isLoading) {
             return { start: 0, end: 0 }
         }
 
-        if (isLoading && !hasData) {
+        if (!hasData) {
             return { start: 0, end: 0 }
         }
 
         const startIndex = (currentPage - 1) * pageSize + 1
+        if (isCursorMode && totalRows === 0) {
+            return { start: startIndex, end: currentPage * pageSize }
+        }
+
         const endIndex = Math.min(currentPage * pageSize, totalRows)
 
         return { start: startIndex, end: endIndex }
-    }, [hasData, totalRows, currentPage, pageSize, isLoading])
+    }, [hasData, totalRows, currentPage, pageSize, isLoading, isCursorMode])
 
     const shouldShowRecordRange = useCallback((): boolean => {
         if (!isCursorMode) {
-            return hasData && totalRows > 0
+            return false
         }
 
-        if (cursorPagination && cursorPagination.totalRows !== undefined) {
-            return hasData && cursorPagination.totalRows > 0
+        if (cursorPagination && hasData && !isLoading) {
+            return true
         }
 
         return false
-    }, [isCursorMode, hasData, totalRows, cursorPagination])
+    }, [isCursorMode, hasData, isLoading, cursorPagination])
 
     const getRecordRangeText = useCallback((): string => {
         if (isLoading) {
             return ''
         }
 
-        if (!hasData || totalRows === 0) {
+        if (!hasData) {
             return ''
         }
 
@@ -123,7 +129,8 @@ export function DataTablePagination({
         if (
             isCursorMode &&
             cursorPagination &&
-            cursorPagination.totalRows === undefined
+            (cursorPagination.totalRows === undefined ||
+                cursorPagination.totalRows === 0)
         ) {
             return `${start}-${end}`
         }
@@ -221,6 +228,7 @@ export function DataTablePagination({
                 CursorDirection.PREV,
                 getCursorPayloadForDirection(CursorDirection.PREV)
             )
+            setCursorPageNumber((prev) => Math.max(1, prev - 1))
         } else {
             if (currentPage > 1) {
                 triggerPageChange(currentPage - 1)
@@ -239,7 +247,6 @@ export function DataTablePagination({
     ])
 
     const handleNext = useCallback(() => {
-        // Next always requires hasData (can't navigate forward from empty page)
         if (!canNavigate() || !hasNextPage) return
 
         if (isCursorMode && cursorPagination) {
@@ -247,6 +254,7 @@ export function DataTablePagination({
                 CursorDirection.NEXT,
                 getCursorPayloadForDirection(CursorDirection.NEXT)
             )
+            setCursorPageNumber((prev) => prev + 1)
         } else {
             if (currentPage < totalPages) {
                 triggerPageChange(currentPage + 1)
