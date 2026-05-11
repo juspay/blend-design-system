@@ -1,0 +1,1088 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Blend Token Studio API",
+        "description": "RESTful API for managing design token branches, versions, and snapshots. Supports branch-based workflows with version control and real-time previews.",
+        "version": "1.0.0",
+        "contact": {
+            "name": "Blend Team",
+            "email": "support@blend.studio"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "externalDocs": {
+        "description": "Find out more about Blend Token Studio",
+        "url": "https://docs.blend.studio"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3001/api",
+            "description": "Local development server"
+        },
+        {
+            "url": "https://firestore.googleapis.com/v1/projects/{projectId}/databases/(default)/documents",
+            "description": "Firestore REST API",
+            "variables": {
+                "projectId": {
+                    "default": "dummy-project",
+                    "description": "Firebase project ID"
+                }
+            }
+        },
+        {
+            "url": "https://api-staging.blend.studio/api",
+            "description": "Staging environment"
+        },
+        {
+            "url": "https://api.blend.studio/api",
+            "description": "Production environment"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Branches",
+            "description": "Operations for managing design token branches"
+        },
+        {
+            "name": "Versions",
+            "description": "Version control and publishing operations"
+        },
+        {
+            "name": "Snapshots",
+            "description": "Auto-save and manual snapshot management"
+        },
+        {
+            "name": "Tokens",
+            "description": "Token resolution and preview operations"
+        }
+    ],
+    "paths": {
+        "/branches": {
+            "get": {
+                "summary": "List all branches",
+                "description": "Retrieve a paginated list of branches with optional filtering",
+                "operationId": "listBranches",
+                "tags": ["Branches"],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter branches by status",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["draft", "published", "archived"]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by name or branch ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tags",
+                        "in": "query",
+                        "description": "Filter by tags (comma-separated)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "Sort field",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "name",
+                                "createdAt",
+                                "updatedAt",
+                                "lastPublishedAt"
+                            ],
+                            "default": "updatedAt"
+                        }
+                    },
+                    {
+                        "name": "sortOrder",
+                        "in": "query",
+                        "description": "Sort direction",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["asc", "desc"],
+                            "default": "desc"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 50,
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "description": "Pagination cursor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved branches",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BranchListResponse"
+                                },
+                                "example": {
+                                    "branches": [
+                                        {
+                                            "id": "hdfc/retail",
+                                            "brandId": "hdfc",
+                                            "name": "HDFC Retail",
+                                            "slug": "retail",
+                                            "status": "published",
+                                            "visibility": "team",
+                                            "latestVersion": "2.1.0",
+                                            "publishedCount": 12,
+                                            "createdAt": "2024-01-15T00:00:00Z",
+                                            "updatedAt": "2024-03-20T00:00:00Z"
+                                        }
+                                    ],
+                                    "total": 1,
+                                    "hasMore": false
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing authentication token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new branch",
+                "description": "Create a new design token branch with an optional parent branch for forking",
+                "operationId": "createBranch",
+                "tags": ["Branches"],
+                "requestBody": {
+                    "required": true,
+                    "description": "Branch creation parameters",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateBranchRequest"
+                            },
+                            "examples": {
+                                "simple": {
+                                    "summary": "Simple branch creation",
+                                    "value": {
+                                        "brandId": "acme",
+                                        "name": "Acme Brand",
+                                        "slug": "brand",
+                                        "description": "Main brand theme for Acme Corporation"
+                                    }
+                                },
+                                "with-config": {
+                                    "summary": "Branch with initial brand config",
+                                    "value": {
+                                        "brandId": "hdfc",
+                                        "name": "HDFC Retail",
+                                        "slug": "retail",
+                                        "visibility": "team",
+                                        "tags": ["banking", "retail"],
+                                        "brandConfig": {
+                                            "brandId": "hdfc-retail",
+                                            "name": "HDFC Retail",
+                                            "version": "1.0.0",
+                                            "colors": {
+                                                "primary": {
+                                                    "500": "#0047AB"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Branch created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branch"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - Branch ID already exists or invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/branches/{branchId}": {
+            "get": {
+                "summary": "Get branch details",
+                "description": "Retrieve full details of a specific branch including its brand configuration",
+                "operationId": "getBranch",
+                "tags": ["Branches"],
+                "parameters": [
+                    {
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Branch identifier in format owner/slug",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*/[a-z0-9]+(?:-[a-z0-9]+)*$",
+                            "example": "hdfc/retail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Branch found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Branch"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Branch not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update branch",
+                "description": "Update branch metadata or brand configuration. Updates the updatedAt timestamp automatically.",
+                "operationId": "updateBranch",
+                "tags": ["Branches"],
+                "parameters": [
+                    {
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateBranchRequest"
+                            },
+                            "example": {
+                                "name": "HDFC Retail - Updated",
+                                "description": "Updated description",
+                                "brandConfig": {
+                                    "brandId": "hdfc-retail",
+                                    "name": "HDFC Retail",
+                                    "colors": {
+                                        "primary": {
+                                            "500": "#0047AB"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Branch updated successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden - Branch is locked by another user"
+                    }
+                }
+            }
+        },
+        "/branches/{branchId}/fork": {
+            "post": {
+                "summary": "Fork a branch",
+                "description": "Create a copy of an existing branch with a reference to the original",
+                "operationId": "forkBranch",
+                "tags": ["Branches"],
+                "parameters": [
+                    {
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForkBranchRequest"
+                            },
+                            "example": {
+                                "name": "HDFC Corporate",
+                                "slug": "corporate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Branch forked successfully"
+                    }
+                }
+            }
+        },
+        "/branches/{branchId}/versions": {
+            "get": {
+                "summary": "List versions",
+                "description": "Get all published versions for a branch, ordered by publish date (newest first)",
+                "operationId": "listVersions",
+                "tags": ["Versions"],
+                "parameters": [
+                    {
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of versions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Version"
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "id": "2.1.0",
+                                        "version": "2.1.0",
+                                        "branchId": "hdfc/retail",
+                                        "changelog": "Updated primary color, improved contrast",
+                                        "publishedBy": "user-123",
+                                        "publishedByName": "John Doe",
+                                        "publishedAt": "2024-03-20T10:00:00Z",
+                                        "downloadCount": 1247
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/branches/{branchId}/publish": {
+            "post": {
+                "summary": "Publish new version",
+                "description": "Publish a new immutable version of the branch. Creates a snapshot that cannot be modified.",
+                "operationId": "publishVersion",
+                "tags": ["Versions"],
+                "parameters": [
+                    {
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PublishVersionRequest"
+                            },
+                            "example": {
+                                "version": "2.2.0",
+                                "changelog": "Added new button variants, improved accessibility",
+                                "isBreaking": false,
+                                "brandConfig": {
+                                    "brandId": "hdfc-retail",
+                                    "name": "HDFC Retail",
+                                    "version": "2.2.0",
+                                    "colors": {
+                                        "primary": {
+                                            "500": "#0056D4"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Version published successfully"
+                    },
+                    "409": {
+                        "description": "Conflict - Version already exists"
+                    }
+                }
+            }
+        },
+        "/branches/{branchId}/snapshots": {
+            "get": {
+                "summary": "List snapshots",
+                "description": "Get all snapshots (auto-saves and manual saves) for a branch",
+                "operationId": "listSnapshots",
+                "tags": ["Snapshots"],
+                "parameters": [
+                    {
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of snapshots",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Snapshot"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create snapshot",
+                "description": "Manually create a named snapshot of the current state",
+                "operationId": "createSnapshot",
+                "tags": ["Snapshots"],
+                "parameters": [
+                    {
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSnapshotRequest"
+                            },
+                            "example": {
+                                "label": "Before major color change",
+                                "isAutoSave": false,
+                                "brandConfig": {
+                                    "brandId": "hdfc-retail",
+                                    "colors": {
+                                        "primary": {
+                                            "500": "#0047AB"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Snapshot created"
+                    }
+                }
+            }
+        },
+        "/branches/{branchId}/tokens": {
+            "post": {
+                "summary": "Resolve tokens",
+                "description": "Resolve all component tokens for a given brand config and theme",
+                "operationId": "resolveTokens",
+                "tags": ["Tokens"],
+                "parameters": [
+                    {
+                        "name": "branchId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "brandConfig": {
+                                        "$ref": "#/components/schemas/BrandConfig"
+                                    },
+                                    "theme": {
+                                        "type": "string",
+                                        "enum": ["light", "dark"],
+                                        "default": "light"
+                                    }
+                                },
+                                "required": ["brandConfig"]
+                            },
+                            "example": {
+                                "theme": "light",
+                                "brandConfig": {
+                                    "brandId": "hdfc-retail",
+                                    "colors": {
+                                        "primary": {
+                                            "500": "#0047AB"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resolved component tokens",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResolvedTokensResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Branch": {
+                "type": "object",
+                "description": "A design token branch representing a brand configuration",
+                "required": [
+                    "id",
+                    "brandId",
+                    "name",
+                    "slug",
+                    "status",
+                    "brandConfig",
+                    "createdAt",
+                    "updatedAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier (format: owner/slug)",
+                        "example": "hdfc/retail"
+                    },
+                    "brandId": {
+                        "type": "string",
+                        "description": "Organization/brand identifier",
+                        "example": "hdfc"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Human-readable branch name",
+                        "example": "HDFC Retail"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "description": "URL-friendly identifier",
+                        "example": "retail"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Optional branch description"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["draft", "published", "archived"],
+                        "description": "Current branch status"
+                    },
+                    "visibility": {
+                        "type": "string",
+                        "enum": ["private", "team", "public"],
+                        "default": "private",
+                        "description": "Access control level"
+                    },
+                    "brandConfig": {
+                        "$ref": "#/components/schemas/BrandConfig"
+                    },
+                    "parentBranch": {
+                        "$ref": "#/components/schemas/BranchReference"
+                    },
+                    "forkedFrom": {
+                        "$ref": "#/components/schemas/BranchReference"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/BranchOwner"
+                    },
+                    "latestVersion": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Semver of the most recent published version"
+                    },
+                    "publishedCount": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "snapshotCount": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "createdBy": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "isLocked": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                }
+            },
+            "BranchReference": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                    "branchId": {
+                        "type": "string",
+                        "example": "hdfc/retail"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "HDFC Retail"
+                    },
+                    "version": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2.0.0"
+                    }
+                }
+            },
+            "BranchOwner": {
+                "type": "object",
+                "properties": {
+                    "uid": { "type": "string" },
+                    "email": { "type": "string" },
+                    "displayName": { "type": "string" }
+                }
+            },
+            "BrandConfig": {
+                "type": "object",
+                "description": "Complete brand design token configuration",
+                "required": ["brandId", "name"],
+                "properties": {
+                    "brandId": {
+                        "type": "string",
+                        "example": "hdfc-retail"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "HDFC Retail"
+                    },
+                    "version": {
+                        "type": "string",
+                        "example": "2.1.0"
+                    },
+                    "colors": {
+                        "type": "object",
+                        "properties": {
+                            "primary": {
+                                "type": "object",
+                                "description": "Primary color palette (50-950 scale)",
+                                "additionalProperties": { "type": "string" }
+                            },
+                            "gray": {
+                                "type": "object",
+                                "description": "Neutral gray palette",
+                                "additionalProperties": { "type": "string" }
+                            },
+                            "red": { "type": "string" },
+                            "green": { "type": "string" }
+                        }
+                    },
+                    "typography": {
+                        "type": "object",
+                        "properties": {
+                            "fontFamily": { "type": "string" },
+                            "baseFontSize": { "type": "number" }
+                        }
+                    },
+                    "radius": {
+                        "type": "object",
+                        "properties": {
+                            "base": {
+                                "type": "string",
+                                "description": "Border radius in px units (e.g., '8px')",
+                                "example": "8px"
+                            }
+                        }
+                    }
+                }
+            },
+            "Version": {
+                "type": "object",
+                "description": "Immutable published version of a branch",
+                "required": [
+                    "id",
+                    "branchId",
+                    "version",
+                    "brandConfig",
+                    "publishedBy",
+                    "publishedAt"
+                ],
+                "properties": {
+                    "id": { "type": "string" },
+                    "branchId": { "type": "string" },
+                    "version": {
+                        "type": "string",
+                        "example": "2.1.0",
+                        "description": "Semver version number"
+                    },
+                    "brandConfig": {
+                        "$ref": "#/components/schemas/BrandConfig"
+                    },
+                    "changelog": {
+                        "type": "string",
+                        "example": "Fixed contrast issues, added new button variant"
+                    },
+                    "isBreaking": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "isPrerelease": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "publishedBy": {
+                        "type": "string",
+                        "description": "User ID who published"
+                    },
+                    "publishedByName": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "publishedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "downloadCount": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "parentVersion": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "Snapshot": {
+                "type": "object",
+                "description": "Point-in-time save of brand configuration",
+                "required": [
+                    "id",
+                    "branchId",
+                    "brandConfig",
+                    "savedBy",
+                    "savedAt"
+                ],
+                "properties": {
+                    "id": { "type": "string" },
+                    "branchId": { "type": "string" },
+                    "brandConfig": {
+                        "$ref": "#/components/schemas/BrandConfig"
+                    },
+                    "savedBy": { "type": "string" },
+                    "savedByName": { "type": "string" },
+                    "savedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "label": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional user-provided label"
+                    },
+                    "isAutoSave": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Whether this was auto-saved or manually saved"
+                    }
+                }
+            },
+            "ResolvedTokensResponse": {
+                "type": "object",
+                "properties": {
+                    "branchId": { "type": "string" },
+                    "version": { "type": "string", "nullable": true },
+                    "theme": { "type": "string", "enum": ["light", "dark"] },
+                    "componentTokens": {
+                        "type": "object",
+                        "description": "Generated component-level tokens",
+                        "additionalProperties": true
+                    },
+                    "resolvedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "brandConfig": {
+                        "$ref": "#/components/schemas/BrandConfig"
+                    }
+                }
+            },
+            "BranchListResponse": {
+                "type": "object",
+                "properties": {
+                    "branches": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Branch"
+                        }
+                    },
+                    "total": {
+                        "type": "integer",
+                        "description": "Total count without pagination"
+                    },
+                    "hasMore": {
+                        "type": "boolean",
+                        "description": "Whether more results are available"
+                    },
+                    "nextCursor": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Cursor for fetching next page"
+                    }
+                }
+            },
+            "CreateBranchRequest": {
+                "type": "object",
+                "required": ["brandId", "name"],
+                "properties": {
+                    "brandId": {
+                        "type": "string",
+                        "example": "hdfc",
+                        "description": "Organization identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "HDFC Retail",
+                        "description": "Human-readable branch name"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "retail",
+                        "description": "URL-friendly identifier (auto-generated if not provided)"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Optional description"
+                    },
+                    "visibility": {
+                        "type": "string",
+                        "enum": ["private", "team", "public"],
+                        "default": "private"
+                    },
+                    "brandConfig": {
+                        "$ref": "#/components/schemas/BrandConfig"
+                    },
+                    "parentBranch": {
+                        "$ref": "#/components/schemas/BranchReference"
+                    },
+                    "forkFrom": {
+                        "$ref": "#/components/schemas/BranchReference"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "clientName": { "type": "string" },
+                    "projectName": { "type": "string" }
+                }
+            },
+            "UpdateBranchRequest": {
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" },
+                    "description": { "type": "string" },
+                    "visibility": {
+                        "type": "string",
+                        "enum": ["private", "team", "public"]
+                    },
+                    "brandConfig": {
+                        "$ref": "#/components/schemas/BrandConfig"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    }
+                }
+            },
+            "PublishVersionRequest": {
+                "type": "object",
+                "required": ["version", "brandConfig"],
+                "properties": {
+                    "version": {
+                        "type": "string",
+                        "example": "2.1.0",
+                        "description": "Semver version to publish"
+                    },
+                    "brandConfig": {
+                        "$ref": "#/components/schemas/BrandConfig"
+                    },
+                    "changelog": {
+                        "type": "string",
+                        "description": "Description of changes in this version"
+                    },
+                    "isBreaking": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Whether this version contains breaking changes"
+                    },
+                    "isPrerelease": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Whether this is a prerelease version"
+                    }
+                }
+            },
+            "CreateSnapshotRequest": {
+                "type": "object",
+                "required": ["brandConfig"],
+                "properties": {
+                    "brandConfig": {
+                        "$ref": "#/components/schemas/BrandConfig"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "Optional user-provided label"
+                    },
+                    "isAutoSave": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                }
+            },
+            "ForkBranchRequest": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "HDFC Corporate",
+                        "description": "Name for the new branch"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "corporate",
+                        "description": "Slug for the new branch (auto-generated if not provided)"
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "required": ["error"],
+                "properties": {
+                    "error": {
+                        "type": "object",
+                        "required": ["code", "message"],
+                        "properties": {
+                            "code": {
+                                "type": "string",
+                                "example": "INVALID_REQUEST"
+                            },
+                            "message": {
+                                "type": "string",
+                                "example": "Branch ID already exists"
+                            },
+                            "details": {
+                                "type": "object",
+                                "additionalProperties": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Firebase ID token obtained after authentication"
+            }
+        }
+    }
+}

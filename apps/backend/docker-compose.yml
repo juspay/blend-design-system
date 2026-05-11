@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# Blend Token Studio — Local Staging Environment (OrbStack)
+#
+# OrbStack runs containers natively on macOS. No Docker Desktop needed.
+#
+# Usage:
+#   docker compose up -d          # Start PostgreSQL
+#   npm run db:migrate            # Run Prisma migrations
+#   npm run db:seed               # Seed test data
+#   npm run dev                   # Start backend
+#
+# Connect to PostgreSQL:
+#   Host:     localhost
+#   Port:     5432
+#   User:     blend
+#   Password: blend_secret
+#   Database: blend_studio
+#
+# Prisma Studio (visual DB browser):
+#   npm run db:studio
+#   → opens http://localhost:5555
+#
+# Stop:
+#   docker compose down           # Stop containers (data preserved)
+#   docker compose down -v        # Stop + delete data (fresh start)
+# ---------------------------------------------------------------------------
+
+services:
+    postgres:
+        image: postgres:16-alpine
+        container_name: blend_studio_postgres
+        restart: unless-stopped
+        ports:
+            - '5432:5432'
+        environment:
+            POSTGRES_USER: blend
+            POSTGRES_PASSWORD: blend_secret
+            POSTGRES_DB: blend_studio
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U blend -d blend_studio']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+volumes:
+    postgres_data:
+        driver: local

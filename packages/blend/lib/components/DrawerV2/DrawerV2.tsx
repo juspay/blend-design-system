@@ -1,6 +1,7 @@
 'use client'
 
 import { forwardRef } from 'react'
+import type { ForwardRefExoticComponent, RefAttributes } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
 import type {
     DrawerV2BodyProps,
@@ -46,59 +47,62 @@ export const DrawerV2NestedRoot = forwardRef<
 })
 DrawerV2NestedRoot.displayName = 'DrawerV2NestedRoot'
 
-export const DrawerV2Trigger = forwardRef<
-    DrawerV2TriggerRef,
-    DrawerV2TriggerProps
->(({ ...props }, ref) => {
-    return <VaulDrawer.Trigger ref={ref} {...props} />
-})
+export const DrawerV2Trigger: ForwardRefExoticComponent<
+    DrawerV2TriggerProps & RefAttributes<DrawerV2TriggerRef>
+> = forwardRef<DrawerV2TriggerRef, DrawerV2TriggerProps>(
+    ({ ...props }, ref) => {
+        return <VaulDrawer.Trigger ref={ref} {...props} />
+    }
+)
 DrawerV2Trigger.displayName = 'DrawerV2Trigger'
 
-export const DrawerV2Portal = forwardRef<
-    DrawerV2PortalRef,
-    DrawerV2PortalProps
->(({ ...props }, ref) => {
+export const DrawerV2Portal: ForwardRefExoticComponent<
+    DrawerV2PortalProps & RefAttributes<DrawerV2PortalRef>
+> = forwardRef<DrawerV2PortalRef, DrawerV2PortalProps>(({ ...props }, ref) => {
     void ref
     return <VaulDrawer.Portal {...props} />
 })
 DrawerV2Portal.displayName = 'DrawerV2Portal'
 
-export const DrawerV2Overlay = forwardRef<
-    DrawerV2OverlayRef,
-    DrawerV2OverlayProps
->(({ ...props }, ref) => {
-    return <VaulDrawer.Overlay ref={ref} {...props} />
-})
+export const DrawerV2Overlay: ForwardRefExoticComponent<
+    DrawerV2OverlayProps & RefAttributes<DrawerV2OverlayRef>
+> = forwardRef<DrawerV2OverlayRef, DrawerV2OverlayProps>(
+    ({ ...props }, ref) => {
+        return <VaulDrawer.Overlay ref={ref} {...props} />
+    }
+)
 DrawerV2Overlay.displayName = 'DrawerV2Overlay'
 
-export const DrawerV2Content = forwardRef<
-    DrawerV2ContentRef,
-    DrawerV2ContentProps
->(({ ...props }, ref) => {
-    return <VaulDrawer.Content ref={ref} {...props} />
-})
+export const DrawerV2Content: ForwardRefExoticComponent<
+    DrawerV2ContentProps & RefAttributes<DrawerV2ContentRef>
+> = forwardRef<DrawerV2ContentRef, DrawerV2ContentProps>(
+    ({ ...props }, ref) => {
+        return <VaulDrawer.Content ref={ref} {...props} />
+    }
+)
 DrawerV2Content.displayName = 'DrawerV2Content'
 
-export const DrawerV2Title = forwardRef<DrawerV2TitleRef, DrawerV2TitleProps>(
-    ({ ...props }, ref) => {
-        return <VaulDrawer.Title ref={ref} {...props} />
-    }
-)
+export const DrawerV2Title: ForwardRefExoticComponent<
+    DrawerV2TitleProps & RefAttributes<DrawerV2TitleRef>
+> = forwardRef<DrawerV2TitleRef, DrawerV2TitleProps>(({ ...props }, ref) => {
+    return <VaulDrawer.Title ref={ref} {...props} />
+})
 DrawerV2Title.displayName = 'DrawerV2Title'
 
-export const DrawerV2Description = forwardRef<
-    DrawerV2DescriptionRef,
-    DrawerV2DescriptionProps
->(({ ...props }, ref) => {
-    return <VaulDrawer.Description ref={ref} {...props} />
-})
-DrawerV2Description.displayName = 'DrawerV2Description'
-
-export const DrawerV2Close = forwardRef<DrawerV2CloseRef, DrawerV2CloseProps>(
+export const DrawerV2Description: ForwardRefExoticComponent<
+    DrawerV2DescriptionProps & RefAttributes<DrawerV2DescriptionRef>
+> = forwardRef<DrawerV2DescriptionRef, DrawerV2DescriptionProps>(
     ({ ...props }, ref) => {
-        return <VaulDrawer.Close ref={ref} {...props} />
+        return <VaulDrawer.Description ref={ref} {...props} />
     }
 )
+DrawerV2Description.displayName = 'DrawerV2Description'
+
+export const DrawerV2Close: ForwardRefExoticComponent<
+    DrawerV2CloseProps & RefAttributes<DrawerV2CloseRef>
+> = forwardRef<DrawerV2CloseRef, DrawerV2CloseProps>(({ ...props }, ref) => {
+    return <VaulDrawer.Close ref={ref} {...props} />
+})
 DrawerV2Close.displayName = 'DrawerV2Close'
 
 export const DrawerV2Header = forwardRef<

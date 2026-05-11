@@ -15,7 +15,16 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "baseUrl": ".",
+        "paths": {
+            "@blend-design/token-engine": ["../token-engine/src/index.ts"],
+            "@blend-design/token-engine/server": [
+                "../token-engine/src/server.ts"
+            ],
+            "@juspay/blend-design-system/node": ["./lib/node.ts"],
+            "@juspay/blend-design-system": ["./lib/main.ts"]
+        }
     },
     "include": ["src", "lib"],
     "references": [{ "path": "./tsconfig.vite.json" }]

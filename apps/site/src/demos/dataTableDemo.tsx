@@ -39,6 +39,11 @@ import {
     Settings,
     Download,
     Trash2,
+    Info,
+    FileText,
+    Eye,
+    Edit3,
+    MoreHorizontal,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
@@ -1633,6 +1638,12 @@ const DataTableDemo = () => {
         growthRate: string
         delta_revenue: number
         delta_growthRate: number
+        metadata: {
+            createdAt: string
+            lastModified: string
+            version: string
+        }
+        action: string
     }
 
     // Generate larger dataset for server-side demo
@@ -1851,6 +1862,44 @@ const DataTableDemo = () => {
                     1.25, -0.87, 1.52, 2.21, -0.58, 0.93, 1.46, -0.74, 3.12,
                     1.89, 1.13, 2.57, -0.68, 1.95, 1.34,
                 ][index % 15],
+                metadata: {
+                    createdAt: [
+                        '2024-01-15',
+                        '2024-02-20',
+                        '2024-03-10',
+                        '2024-04-05',
+                        '2024-05-12',
+                        '2024-06-18',
+                        '2024-07-22',
+                        '2024-08-30',
+                        '2024-09-14',
+                        '2024-10-08',
+                        '2024-11-25',
+                        '2024-12-01',
+                        '2023-11-15',
+                        '2023-12-20',
+                        '2024-01-08',
+                    ][index % 15],
+                    lastModified: [
+                        '2024-12-01',
+                        '2024-11-28',
+                        '2024-11-25',
+                        '2024-11-20',
+                        '2024-11-15',
+                        '2024-11-10',
+                        '2024-11-05',
+                        '2024-11-01',
+                        '2024-10-28',
+                        '2024-10-25',
+                        '2024-10-20',
+                        '2024-10-15',
+                        '2024-10-10',
+                        '2024-10-05',
+                        '2024-10-01',
+                    ][index % 15],
+                    version: `v${1 + (index % 5)}.${index % 10}`,
+                },
+                action: `action-${index + 1}`,
             }
         })
     }
@@ -2089,6 +2138,211 @@ const DataTableDemo = () => {
                 prefix: '$',
                 suffix: '',
                 decimalPlaces: 0,
+            },
+            minWidth: '140px',
+            maxWidth: '180px',
+        },
+        {
+            field: 'metadata',
+            header: 'Metadata',
+            headerSubtext: 'Created, Modified & Version Info',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (value: unknown) => {
+                const metadata = value as {
+                    createdAt: string
+                    lastModified: string
+                    version: string
+                }
+                return (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '12px',
+                                    color: '#374151',
+                                }}
+                            >
+                                <FileText size={14} color="#6b7280" />
+                                <span>
+                                    Created:{' '}
+                                    {new Date(
+                                        metadata.createdAt
+                                    ).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '12px',
+                                    color: '#6b7280',
+                                }}
+                            >
+                                <Info size={14} color="#9ca3af" />
+                                <span>
+                                    Modified:{' '}
+                                    {new Date(
+                                        metadata.lastModified
+                                    ).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        backgroundColor: '#f3f4f6',
+                                        padding: '2px 6px',
+                                        borderRadius: '4px',
+                                    }}
+                                >
+                                    {metadata.version}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )
+            },
+            minWidth: '180px',
+            maxWidth: '250px',
+        },
+        {
+            field: 'action',
+            header: 'Actions',
+            headerSubtext: 'Quick Actions & Operations',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (_value: unknown, row: UserRow) => {
+                return (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                        }}
+                    >
+                        <button
+                            onClick={() => {
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
+                                alert(`Viewing details for: ${userName}`)
+                            }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                border: '1px solid #e5e7eb',
+                                backgroundColor: '#ffffff',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#f9fafb'
+                                e.currentTarget.style.borderColor = '#d1d5db'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#ffffff'
+                                e.currentTarget.style.borderColor = '#e5e7eb'
+                            }}
+                            title="View Details"
+                        >
+                            <Eye size={16} color="#374151" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
+                                alert(`Editing user: ${userName}`)
+                            }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                border: '1px solid #e5e7eb',
+                                backgroundColor: '#ffffff',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#eff6ff'
+                                e.currentTarget.style.borderColor = '#3b82f6'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#ffffff'
+                                e.currentTarget.style.borderColor = '#e5e7eb'
+                            }}
+                            title="Edit User"
+                        >
+                            <Edit3 size={16} color="#2563eb" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
+                                alert(`More options for: ${userName}`)
+                            }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                border: '1px solid #e5e7eb',
+                                backgroundColor: '#ffffff',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#f3f4f6'
+                                e.currentTarget.style.borderColor = '#9ca3af'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#ffffff'
+                                e.currentTarget.style.borderColor = '#e5e7eb'
+                            }}
+                            title="More Options"
+                        >
+                            <MoreHorizontal size={16} color="#6b7280" />
+                        </button>
+                    </div>
+                )
             },
             minWidth: '140px',
             maxWidth: '180px',
