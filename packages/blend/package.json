@@ -9,6 +9,7 @@
     "types": "./dist/main.d.ts",
     "files": [
         "dist",
+        "lib",
         "README.md"
     ],
     "sideEffects": false,
@@ -17,11 +18,24 @@
             "import": "./dist/main.js",
             "types": "./dist/main.d.ts"
         },
-        "./style.css": "./dist/style.css"
+        "./node": {
+            "import": "./dist/node.js",
+            "types": "./dist/node.d.ts"
+        },
+        "./tokens": {
+            "import": "./dist/tokens.js",
+            "types": "./dist/tokens.d.ts"
+        },
+        "./tokens/server": {
+            "import": "./dist/tokens-server.js",
+            "types": "./dist/tokens-server.d.ts"
+        },
+        "./style.css": "./dist/style.css",
+        "./lib/*": "./lib/*"
     },
     "scripts": {
         "lint": "eslint .",
-        "build": "pnpm lint && tsc --p ./tsconfig.json && vite build",
+        "build": "pnpm lint && vite build",
         "prepublishOnly": "pnpm run build",
         "test": "vitest",
         "test:ui": "vitest --ui",

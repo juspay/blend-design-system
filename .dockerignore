@@ -1,0 +1,71 @@
+# -----------------------------------------------------------------------------
+# Root .dockerignore — applied to every `docker build` whose context is the
+# repo root (Cloud Build uses the repo root as context).
+# Keep this list tight: anything NOT excluded here ends up in the build
+# context and slows every build step.
+# -----------------------------------------------------------------------------
+
+# VCS / CI metadata
+.git
+.github
+.gitignore
+.gitattributes
+.husky
+.changeset
+.turbo
+.vscode
+.idea
+.cursor
+.cursorrules
+.cursorignore
+
+# Node / package managers
+**/node_modules
+**/.pnpm-store
+**/.pnpm-debug.log*
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Build output — re-created inside the image
+**/dist
+**/build
+**/.next
+**/out
+**/storybook-static
+**/coverage
+**/.nyc_output
+**/.turbo
+
+# Local env files — secrets must come from Cloud Run / Secret Manager
+**/.env
+**/.env.*
+!**/.env.example
+
+# Editor / OS artifacts
+**/.DS_Store
+**/*.log
+**/*.tsbuildinfo
+**/*.swp
+
+# Docs & large non-runtime assets we don't need in the image
+**/*.md
+!packages/cli/README.md
+!packages/blend/README.md
+**/CHANGELOG.md
+apps/ascent
+apps/site
+apps/storybook
+apps/tokenizer-sandbox
+apps/firebase-app
+apps/blend-monitor
+packages/mcp
+packages/blend-telemetry
+
+# Test artifacts
+**/playwright-report
+**/test-results
+
+# Docker context: don't re-include Dockerfiles we don't need
+**/Dockerfile.dev
+**/docker-compose*.yml

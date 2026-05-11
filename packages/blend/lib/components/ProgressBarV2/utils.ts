@@ -95,7 +95,14 @@ export const generateDefaultAriaLabel = (
 export const getCircularDimensions = (
     size: ProgressBarV2Size,
     tokens: ProgressBarV2TokenType
-) => {
+): {
+    circularSize: CSSObject['width']
+    sizeNum: number
+    strokeWidth: number
+    radius: number
+    circumference: number
+    center: number
+} => {
     const circularSizeValue = tokens.circular.size[size]
     // Preserve token type for width/height: numeric tokens stay numbers; avoid String(n) → unitless "n" in CSS.
     const circularSize: CSSObject['width'] =

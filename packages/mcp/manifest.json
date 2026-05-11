@@ -1,7 +1,7 @@
 {
     "version": "2.0.0",
     "packageName": "@juspay/blend-design-system",
-    "blendPackageVersion": "0.0.37-beta.0",
+    "blendPackageVersion": "0.0.37-beta.2",
     "components": {
         "Accordion": {
             "componentName": "Accordion",
@@ -1732,6 +1732,46 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Syntax highlighting language. Common values: 'bash', 'javascript', 'typescript', 'json', 'python', 'sql', 'yaml'. Match to the actual content type for correct token coloring."
+                },
+                {
+                    "propName": "isDiffUnchangedCollapsed",
+                    "propType": "boolean",
+                    "typeDefinition": "boolean",
+                    "propDescription": "When true (default), unchanged lines outside the context window around\nedits are hidden behind an expand control (GitHub-style). Only applies\nwhen variant is DIFF and diffLines is set.",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Set to true to enable isDiffUnchangedCollapsed"
+                },
+                {
+                    "propName": "diffContextLines",
+                    "propType": "number",
+                    "typeDefinition": "number",
+                    "propDescription": "How many unchanged lines to show above and below each change when\nisDiffUnchangedCollapsed is true. Defaults to 3.",
+                    "propDefault": "undefined",
+                    "category": "Content",
+                    "required": false,
+                    "llmContext": "Numeric value for diffContextLines"
+                },
+                {
+                    "propName": "diffExpandChunk",
+                    "propType": "number",
+                    "typeDefinition": "number",
+                    "propDescription": "Lines revealed per click when expanding a collapsed gap from the start\nor end (GitHub-style). Defaults to 20.",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Numeric value for diffExpandChunk"
+                },
+                {
+                    "propName": "maxHeight",
+                    "propType": "string",
+                    "typeDefinition": "string",
+                    "propDescription": "Maximum height for the code content area. When content exceeds this height,\nthe code area scrolls while the header remains fixed.\nAccepts CSS values like '300px', '20rem', '50vh', etc.",
+                    "propDefault": "undefined",
+                    "category": "Layout",
+                    "required": false,
+                    "llmContext": "Text value for maxHeight"
                 }
             ],
             "usageExamples": [
@@ -2027,7 +2067,12 @@
             "compositionPattern": "Define columns as an array of column definition objects, each with a header (display label) and field (key in data object) or custom cell renderer. Pass data as an array of plain objects. idField identifies the unique key in each row object.",
             "imports": {
                 "components": ["DataTable"],
-                "enums": ["SortDirection", "FilterType", "ColumnType"],
+                "enums": [
+                    "SortDirection",
+                    "FilterType",
+                    "ColumnType",
+                    "PivotAggregationType"
+                ],
                 "types": ["DataTableProps"]
             },
             "enums": {
@@ -2059,6 +2104,15 @@
                     "DATE_RANGE": "date_range",
                     "SLIDER": "slider",
                     "CUSTOM": "custom"
+                },
+                "PivotAggregationType": {
+                    "SUM": "sum",
+                    "COUNT": "count",
+                    "AVERAGE": "average",
+                    "MEAN": "mean",
+                    "MEDIAN": "median",
+                    "MIN": "min",
+                    "MAX": "max"
                 }
             },
             "props": [
@@ -2281,6 +2335,16 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Numeric value for columnFreeze"
+                },
+                {
+                    "propName": "columnFreezeRight",
+                    "propType": "number",
+                    "typeDefinition": "number",
+                    "propDescription": "Freeze last N columns on the right side (sticky right).",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Numeric value for columnFreezeRight"
                 },
                 {
                     "propName": "enableColumnManager",
@@ -2603,6 +2667,16 @@
                     "llmContext": "Set to true to enable row checkboxes for multi-select. Use showBulkActionBar and bulkActions to expose bulk operations (delete, export, status change) once rows are selected."
                 },
                 {
+                    "propName": "rowSelectionConfig",
+                    "propType": "RowSelectionConfig<T>",
+                    "typeDefinition": "RowSelectionConfig<T>",
+                    "propDescription": "Sets the rowSelectionConfig of the component",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Sets the rowSelectionConfig of the component"
+                },
+                {
                     "propName": "showBulkActionBar",
                     "propType": "boolean",
                     "typeDefinition": "boolean",
@@ -2643,6 +2717,46 @@
                     "llmContext": "Sets the rowActions of the component"
                 },
                 {
+                    "propName": "onOperations",
+                    "propType": "(field: keyof T) => void",
+                    "typeDefinition": "(field: keyof T) => void",
+                    "propDescription": "Callback function for onOperations",
+                    "propDefault": "undefined",
+                    "category": "Events",
+                    "required": false,
+                    "llmContext": "Callback function for onOperations"
+                },
+                {
+                    "propName": "onInsertLeft",
+                    "propType": "(field: keyof T) => void",
+                    "typeDefinition": "(field: keyof T) => void",
+                    "propDescription": "Callback function for onInsertLeft",
+                    "propDefault": "undefined",
+                    "category": "Events",
+                    "required": false,
+                    "llmContext": "Callback function for onInsertLeft"
+                },
+                {
+                    "propName": "onInsertRight",
+                    "propType": "(field: keyof T) => void",
+                    "typeDefinition": "(field: keyof T) => void",
+                    "propDescription": "Callback function for onInsertRight",
+                    "propDefault": "undefined",
+                    "category": "Events",
+                    "required": false,
+                    "llmContext": "Callback function for onInsertRight"
+                },
+                {
+                    "propName": "onDeleteColumn",
+                    "propType": "(field: keyof T) => void",
+                    "typeDefinition": "(field: keyof T) => void",
+                    "propDescription": "Callback function for onDeleteColumn",
+                    "propDefault": "undefined",
+                    "category": "Events",
+                    "required": false,
+                    "llmContext": "Callback function for onDeleteColumn"
+                },
+                {
                     "propName": "getRowStyle",
                     "propType": "(row: T, index: number) => React.CSSProperties",
                     "typeDefinition": "(row: T, index: number) => React.CSSProperties",
@@ -2671,6 +2785,26 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Numeric value for mobileColumnsToShow"
+                },
+                {
+                    "propName": "enablePivotTable",
+                    "propType": "boolean",
+                    "typeDefinition": "boolean",
+                    "propDescription": "Set to true to enable enablePivotTable",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Set to true to enable enablePivotTable"
+                },
+                {
+                    "propName": "pivotTableConfig",
+                    "propType": "{\n        triggerButton?: ReactNode\n        triggerSlot?: 1 | 2 | 3\n        title?: string\n        description?: string\n        showExport?: boolean\n        initialConfig?: {\n            rows?: (keyof T)[]\n            columns?: (keyof T)[]\n            values?: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }\n        previewColumns?: Array<{\n            key: string\n            label: string\n        }>\n        previewRows?: Array<Record<string, unknown> & { __pivotId: string }>\n        /**\n         * Configure which aggregation operations are available in the Values section.\n         * If not provided, all operations will be shown.\n         * @example ['sum', 'count', 'average'] // Show only sum, count, and average\n         */\n        availableAggregations?: PivotAggregationType[]\n        onConfigChange?: (config: {\n            rows: (keyof T)[]\n            columns: (keyof T)[]\n            values: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }) => void\n        onExport?: (config: {\n            rows: (keyof T)[]\n            columns: (keyof T)[]\n            values: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }) => void\n    }",
+                    "typeDefinition": "{\n        triggerButton?: ReactNode\n        triggerSlot?: 1 | 2 | 3\n        title?: string\n        description?: string\n        showExport?: boolean\n        initialConfig?: {\n            rows?: (keyof T)[]\n            columns?: (keyof T)[]\n            values?: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }\n        previewColumns?: Array<{\n            key: string\n            label: string\n        }>\n        previewRows?: Array<Record<string, unknown> & { __pivotId: string }>\n        /**\n         * Configure which aggregation operations are available in the Values section.\n         * If not provided, all operations will be shown.\n         * @example ['sum', 'count', 'average'] // Show only sum, count, and average\n         */\n        availableAggregations?: PivotAggregationType[]\n        onConfigChange?: (config: {\n            rows: (keyof T)[]\n            columns: (keyof T)[]\n            values: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }) => void\n        onExport?: (config: {\n            rows: (keyof T)[]\n            columns: (keyof T)[]\n            values: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }) => void\n    }",
+                    "propDescription": "React element to render as pivotTableConfig",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "React element to render as pivotTableConfig"
                 }
             ],
             "usageExamples": [
@@ -6877,6 +7011,7 @@
                     "PILLS": "pills"
                 },
                 "TabsSize": {
+                    "SM": "sm",
                     "MD": "md",
                     "LG": "lg"
                 }
@@ -6895,12 +7030,12 @@
                 {
                     "propName": "size",
                     "propType": "TabsSize",
-                    "typeDefinition": "enum TabsSize { MD = 'md', LG = 'lg' }",
-                    "propDescription": "Controls the size. Valid values: TabsSize.MD, TabsSize.LG",
+                    "typeDefinition": "enum TabsSize { SM = 'sm', MD = 'md', LG = 'lg' }",
+                    "propDescription": "Controls the size. Valid values: TabsSize.SM, TabsSize.MD, TabsSize.LG",
                     "propDefault": "undefined",
                     "category": "Appearance",
                     "required": false,
-                    "llmContext": "Controls the size. Valid values: TabsSize.MD, TabsSize.LG"
+                    "llmContext": "Controls the size. Valid values: TabsSize.SM, TabsSize.MD, TabsSize.LG"
                 },
                 {
                     "propName": "expanded",
@@ -9712,6 +9847,7 @@
             "22": "22px",
             "24": "24px",
             "28": "28px",
+            "30": "30px",
             "32": "32px",
             "36": "36px",
             "40": "40px",
@@ -9726,6 +9862,7 @@
             "100": "100px",
             "120": "120px",
             "144": "144px",
+            "150": "150px",
             "190": "190px",
             "200": "200px",
             "350": "350px",
