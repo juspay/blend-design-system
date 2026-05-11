@@ -255,6 +255,11 @@ export type TableTokenType = BasicCSSProps & {
                     pageNavigation: {
                         gap: CSSObject['gap']
                     }
+                    recordRange: {
+                        fontSize: CSSObject['fontSize']
+                        color: CSSObject['color']
+                        fontWeight: CSSObject['fontWeight']
+                    }
                 }
             }
         }
@@ -529,6 +534,12 @@ export const getTableToken = (
                             pageNavigation: {
                                 gap: foundationToken.unit[12],
                             },
+                            recordRange: {
+                                fontSize:
+                                    foundationToken.font.size.body.sm.fontSize,
+                                color: foundationToken.colors.gray[600],
+                                fontWeight: foundationToken.font.weight[500],
+                            },
                         },
                     },
                 },
@@ -792,6 +803,12 @@ export const getTableToken = (
                             },
                             pageNavigation: {
                                 gap: foundationToken.unit[4],
+                            },
+                            recordRange: {
+                                fontSize:
+                                    foundationToken.font.size.body.sm.fontSize,
+                                color: foundationToken.colors.gray[600],
+                                fontWeight: foundationToken.font.weight[500],
                             },
                         },
                     },

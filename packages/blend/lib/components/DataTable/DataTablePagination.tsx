@@ -81,6 +81,91 @@ export function DataTablePagination({
         cursorPagination?.hasNextPage ?? currentPage < totalPages
     const hasPrevPage = cursorPagination?.hasPrevPage ?? currentPage > 1
     const limit = cursorPagination?.limit ?? pageSize
+
+    const getRecordRange = useCallback((): { start: number; end: number } => {
+        if (!hasData || totalRows === 0) {
+            return { start: 0, end: 0 }
+        }
+
+        if (isLoading && !hasData) {
+            return { start: 0, end: 0 }
+        }
+
+        const startIndex = (currentPage - 1) * pageSize + 1
+        const endIndex = Math.min(currentPage * pageSize, totalRows)
+
+        return { start: startIndex, end: endIndex }
+    }, [hasData, totalRows, currentPage, pageSize, isLoading])
+
+    const shouldShowRecordRange = useCallback((): boolean => {
+        if (!isCursorMode) {
+            return hasData && totalRows > 0
+        }
+
+        if (cursorPagination && cursorPagination.totalRows !== undefined) {
+            return hasData && cursorPagination.totalRows > 0
+        }
+
+        return false
+    }, [isCursorMode, hasData, totalRows, cursorPagination])
+
+    const getRecordRangeText = useCallback((): string => {
+        if (isLoading) {
+            return ''
+        }
+
+        if (!hasData || totalRows === 0) {
+            return ''
+        }
+
+        const { start, end } = getRecordRange()
+
+        if (
+            isCursorMode &&
+            cursorPagination &&
+            cursorPagination.totalRows === undefined
+        ) {
+            return `${start}-${end}`
+        }
+
+        return `${start}-${end} of ${totalRows}`
+    }, [
+        hasData,
+        totalRows,
+        isLoading,
+        isCursorMode,
+        cursorPagination,
+        getRecordRange,
+    ])
+
+    const getRecordRangeAriaLabel = useCallback((): string => {
+        if (isLoading) {
+            return 'Loading records'
+        }
+
+        if (!hasData || totalRows === 0) {
+            return 'No records to display'
+        }
+
+        const { start, end } = getRecordRange()
+
+        if (
+            isCursorMode &&
+            cursorPagination &&
+            cursorPagination.totalRows === undefined
+        ) {
+            return `Showing records ${start} to ${end}`
+        }
+
+        return `Showing records ${start} to ${end} of ${totalRows} total records`
+    }, [
+        hasData,
+        totalRows,
+        isLoading,
+        isCursorMode,
+        cursorPagination,
+        getRecordRange,
+    ])
     const getCursorPayloadForDirection = useCallback(
         (direction: CursorDirection): unknown => {
             if (!cursorPagination) return undefined
@@ -355,6 +440,54 @@ export function DataTablePagination({
         handlePrevious,
     ])
 
+    const RecordRangeIndicator = () => {
+        if (!shouldShowRecordRange()) {
+            return null
+        }
+
+        const rangeText = getRecordRangeText()
+
+        if (!rangeText) {
+            return null
+        }
+
+        return (
+            <Block
+                data-element="record-range"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                minWidth={FOUNDATION_THEME.unit[72]}
+                padding={`0 ${FOUNDATION_THEME.unit[8]}`}
+                aria-label={getRecordRangeAriaLabel()}
+                style={{
+                    userSelect: 'none',
+                }}
+            >
+                <PrimitiveText
+                    as="span"
+                    fontSize={
+                        tableToken.dataTable.table.footer.pagination.recordRange
+                            .fontSize
+                    }
+                    fontWeight={
+                        tableToken.dataTable.table.footer.pagination.recordRange
+                            .fontWeight
+                    }
+                    color={
+                        tableToken.dataTable.table.footer.pagination.recordRange
+                            .color
+                    }
+                    style={{
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {rangeText}
+                </PrimitiveText>
+            </Block>
+        )
+    }
+
     const PreviousButton = () => {
         // In cursor mode, allow Previous even without data (if hasPrevPage is true)
         // In page mode, require hasData
@@ -554,6 +687,9 @@ export function DataTablePagination({
                     }
                 >
                     <PreviousButton />
+
+                    <RecordRangeIndicator />
+
                     <NextButton />
                 </Block>
             </Block>
@@ -587,6 +723,10 @@ export function DataTablePagination({
                 }}
             >
                 <PreviousButton />
+
+                {!isMobile && shouldShowRecordRange() && (
+                    <RecordRangeIndicator />
+                )}
 
                 {!isMobile && (
                     <Block
