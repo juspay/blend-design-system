@@ -53,6 +53,9 @@ function setByPath(object: unknown, path: string, value: unknown): void {
 
     for (let index = 0; index < keys.length - 1; index++) {
         const key = keys[index]
+        if (isUnsafePathSegment(key)) {
+            return
+        }
         const existing = current[key]
         if (!existing || typeof existing !== 'object') {
             current[key] = {}

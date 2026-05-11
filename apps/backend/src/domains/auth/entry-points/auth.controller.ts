@@ -58,7 +58,7 @@ export const googleCallback = async (req: Request, res: Response) => {
         googleRedirectUri: env.GOOGLE_REDIRECT_URI,
     }
 
-    if (!code) {
+    if (typeof code !== 'string' || code.length === 0) {
         logger.warn(
             { ...callbackContext, reason: 'missing_code' },
             'Google callback missing authorization code'

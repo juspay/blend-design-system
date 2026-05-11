@@ -46,6 +46,13 @@ export function setNestedValue(
     let current = result as Record<string, unknown>
     for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i]
+        if (
+            part === '__proto__' ||
+            part === 'prototype' ||
+            part === 'constructor'
+        ) {
+            return obj
+        }
         if (!current[part] || typeof current[part] !== 'object') {
             current[part] = {}
         }
