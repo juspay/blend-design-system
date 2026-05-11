@@ -34,6 +34,10 @@ import {
     FilterType,
     ColumnType,
     RowActionsConfig,
+    CursorDirection,
+    DataTablePaginationMode,
+    PaginationConfig,
+    isCursorPaginationConfig,
 } from './types'
 import { TableTokenType } from './dataTable.tokens'
 import {
@@ -133,6 +137,8 @@ const DataTable = forwardRef(
             },
             onPageChange,
             onPageSizeChange,
+            paginationMode,
+            cursorBasedPagination = false,
             onSortChange,
             onSearchChange,
             onFilterChange,
@@ -267,26 +273,43 @@ const DataTable = forwardRef(
         const [previousColumnCount, setPreviousColumnCount] = useState<number>(
             () => initialColumns.filter((col) => col.isVisible !== false).length
         )
-        const [currentPage, setCurrentPage] = useState<number>(
-            pagination?.currentPage || 1
-        )
-        const [pageSize, setPageSize] = useState<number>(
-            pagination?.pageSize || 10
-        )
+        const [currentPage, setCurrentPage] = useState<number>(() => {
+            if (pagination && isCursorPaginationConfig(pagination)) {
+                return pagination.currentPage ?? 1
+            }
+            return pagination?.currentPage || 1
+        })
+        const [pageSize, setPageSize] = useState<number>(() => {
+            if (pagination && isCursorPaginationConfig(pagination)) {
+                return pagination.pageSize ?? pagination.limit ?? 10
+            }
+            return pagination?.pageSize || 10
+        })
+
+        const resolvedPaginationMode: DataTablePaginationMode =
+            paginationMode ?? (cursorBasedPagination ? 'cursor' : 'page')
+
+        const isCursorPagination =
+            resolvedPaginationMode === 'cursor' &&
+            isCursorPaginationConfig(pagination)
 
         useEffect(() => {
-            if (serverSidePagination && pagination) {
-                if (pagination.currentPage !== currentPage) {
-                    setCurrentPage(pagination.currentPage)
+            if (serverSidePagination && pagination && !isCursorPagination) {
+                const pageConfig = pagination as Extract<
+                    typeof pagination,
+                    { currentPage: number }
+                >
+                if (pageConfig.currentPage !== currentPage) {
+                    setCurrentPage(pageConfig.currentPage)
                 }
-                if (pagination.pageSize !== pageSize) {
-                    setPageSize(pagination.pageSize)
+                if (pageConfig.pageSize !== pageSize) {
+                    setPageSize(pageConfig.pageSize)
                 }
             }
         }, [
             serverSidePagination,
-            pagination?.currentPage,
-            pagination?.pageSize,
+            pagination,
+            isCursorPagination,
             currentPage,
             pageSize,
         ])
@@ -628,12 +651,22 @@ const DataTable = forwardRef(
             }
 
             const effectiveCurrentPage =
-                serverSidePagination && pagination
-                    ? pagination.currentPage
+                serverSidePagination && pagination && !isCursorPagination
+                    ? (
+                          pagination as Extract<
+                              typeof pagination,
+                              { currentPage: number }
+                          >
+                      ).currentPage
                     : currentPage
             const effectivePageSize =
-                serverSidePagination && pagination
-                    ? pagination.pageSize
+                serverSidePagination && pagination && !isCursorPagination
+                    ? (
+                          pagination as Extract<
+                              typeof pagination,
+                              { pageSize: number }
+                          >
+                      ).pageSize
                     : pageSize
             const startIndex = (effectiveCurrentPage - 1) * effectivePageSize
             return processedData.slice(
@@ -647,8 +680,8 @@ const DataTable = forwardRef(
             serverSideSearch,
             serverSideFiltering,
             serverSidePagination,
-            pagination?.currentPage,
-            pagination?.pageSize,
+            pagination,
+            isCursorPagination,
         ])
 
         const updateSelectAllState = (
@@ -1018,17 +1051,40 @@ const DataTable = forwardRef(
             applySortConfig(field, newSortConfig)
         }
 
-        const handlePageChange = (page: number) => {
-            if (page !== currentPage) {
-                setCurrentPage(page)
+        const handlePageChange = (
+            pageOrCursorDirection: number | CursorDirection,
+            cursorPayload?: unknown,
+            limit?: number
+        ) => {
+            if (
+                pageOrCursorDirection === CursorDirection.NEXT ||
+                pageOrCursorDirection === CursorDirection.PREV
+            ) {
+                if (serverSidePagination) {
+                    setInternalLoading(true)
+                }
+                ;(
+                    onPageChange as
+                        | ((
+                              direction: CursorDirection,
+                              cursorPayload?: unknown,
+                              limit?: number
+                          ) => void)
+                        | undefined
+                )?.(pageOrCursorDirection, cursorPayload, limit)
+                return
+            }
+
+            if (pageOrCursorDirection !== currentPage) {
+                setCurrentPage(pageOrCursorDirection)
 
                 if (serverSidePagination) {
                     setInternalLoading(true)
                 }
 
-                if (onPageChange) {
-                    onPageChange(page)
-                }
+                ;(onPageChange as ((page: number) => void) | undefined)?.(
+                    pageOrCursorDirection
+                )
             }
         }
 
@@ -1990,16 +2046,25 @@ const DataTable = forwardRef(
 
                     {showFooter && (
                         <TableFooter
-                            pagination={pagination}
-                            currentPage={currentPage}
-                            pageSize={pageSize}
-                            totalRows={totalRows}
+                            pagination={
+                                isCursorPagination || serverSidePagination
+                                    ? pagination
+                                    : {
+                                          ...(pagination as PaginationConfig),
+                                          currentPage,
+                                          pageSize,
+                                          totalRows,
+                                      }
+                            }
                             isLoading={isLoading}
                             showSkeleton={showSkeleton}
                             hasData={currentData.length > 0}
                             isNarrowContainer={isNarrowContainer}
                             onPageChange={handlePageChange}
                             onPageSizeChange={handlePageSizeChange}
+                            paginationMode={
+                                isCursorPagination ? 'cursor' : 'page'
+                            }
                         />
                     )}
                 </Block>

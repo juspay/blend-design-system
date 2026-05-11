@@ -9,6 +9,7 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    CursorDirection,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
@@ -722,6 +723,58 @@ const SimpleDataTableExample = () => {
         )
     }
 
+    // Cursor-based pagination state and handlers
+    const [useCursorPagination, setUseCursorPagination] = useState(false)
+    const [cursorState, setCursorState] = useState<{
+        afterId?: number
+        beforeId?: number
+    } | null>(null)
+    const [hasNextPage, setHasNextPage] = useState(true)
+    const [hasPrevPage, setHasPrevPage] = useState(false)
+
+    // Generate mock data for cursor pagination
+    const generatePageData = (startId: number) => {
+        return Array.from({ length: 5 }, (_, i) => {
+            const id = startId + i
+            const original = productData[i % productData.length]
+            return {
+                ...original,
+                id,
+                name: `${original.name || 'Product'} (Item ${id})`,
+            }
+        })
+    }
+
+    const handleCursorPageChange = (
+        direction: CursorDirection,
+        _cursor: unknown,
+        _limit: number
+    ) => {
+        if (direction === CursorDirection.NEXT) {
+            const nextId = productTableData[productTableData.length - 1].id + 1
+            const newData = generatePageData(nextId)
+            setProductTableData(newData)
+            setCursorState({
+                afterId: nextId - 1,
+            })
+            setHasNextPage(nextId < 50)
+            setHasPrevPage(true)
+        } else {
+            const prevId = Math.max(1, productTableData[0].id - 5)
+            const newData = generatePageData(prevId)
+            setProductTableData(newData)
+            setCursorState(
+                prevId > 1
+                    ? {
+                          beforeId: prevId - 1,
+                      }
+                    : null
+            )
+            setHasNextPage(true)
+            setHasPrevPage(prevId > 1)
+        }
+    }
+
     return (
         <div style={{ marginTop: '40px' }}>
             <div
@@ -761,107 +814,168 @@ const SimpleDataTableExample = () => {
                 </p>
             </div>
 
-            <DataTable
-                data={productTableData}
-                columns={
-                    productColumns as unknown as ColumnDefinition<
+            {(() => {
+                const commonProps = {
+                    data: productTableData,
+                    columns: productColumns as unknown as ColumnDefinition<
                         Record<string, unknown>
-                    >[]
-                }
-                columnManagerPrimaryAction={{
-                    text: 'Applied',
-                    onClick: (selectedColumns) => {
-                        console.log(
-                            'Applied with selected columns:',
-                            selectedColumns
-                        )
-                        alert(
-                            `Applied column changes!\n\nSelected columns: ${selectedColumns.join(', ')}`
-                        )
-                    },
-                }}
-                columnManagerSecondaryAction={{
-                    text: 'Reset',
-                    onClick: () => {
-                        console.log('Reset')
-                    },
-                }}
-                idField="id"
-                title="Product Inventory (Mobile: 2 Columns + Overflow)"
-                description="" // Test case: Empty description to verify SearchInput border-bottom visibility
-                enableSearch={true}
-                enableFiltering={true}
-                enableAdvancedFilter={false}
-                enableInlineEdit={false}
-                enableRowExpansion={false}
-                enableRowSelection={true}
-                enableColumnManager={true}
-                showSettings={true}
-                columnFreeze={0}
-                columnFreezeRight={1}
-                mobileColumnsToShow={2}
-                pagination={{
-                    currentPage: 1,
-                    pageSize: 10,
-                    totalRows: productTableData.length,
-                    pageSizeOptions: [5, 10, 20],
-                }}
-                onRowSave={handleProductSave}
-                onRowCancel={handleProductCancel}
-                onFieldChange={handleFieldChange}
-                rowActions={{
-                    showEditAction: false,
-                    slot1: {
-                        id: 'view-details',
-                        text: 'View Details',
-                        buttonType: ButtonType.SECONDARY,
-                        size: ButtonSize.SMALL,
-                        leadingIcon: <Package size={16} />,
-                        onClick: (row, _index) => {
-                            const product = row as ProductRow
+                    >[],
+                    columnManagerPrimaryAction: {
+                        text: 'Applied',
+                        onClick: (selectedColumns: string[]) => {
+                            console.log(
+                                'Applied with selected columns:',
+                                selectedColumns
+                            )
                             alert(
-                                `Viewing details for: ${product.name} (Price: ${product.price})`
+                                `Applied column changes!\n\nSelected columns: ${selectedColumns.join(', ')}`
                             )
                         },
                     },
-                    slot2: {
-                        id: 'favorite',
-                        text: 'Add to Favorites',
-                        buttonType: ButtonType.PRIMARY,
-                        size: ButtonSize.SMALL,
-                        leadingIcon: <Calendar size={16} />,
-                        hidden: (row) => {
-                            const product = row as ProductRow
-                            const statusText = (
-                                product.status as TagColumnProps
-                            ).text
-                            return statusText === 'Discontinued'
-                        },
-                        onClick: (row, _index) => {
-                            const product = row as ProductRow
-                            alert(`Added ${product.name} to favorites!`)
+                    columnManagerSecondaryAction: {
+                        text: 'Reset',
+                        onClick: () => {
+                            console.log('Reset')
                         },
                     },
-                }}
-                headerSlot1={
-                    <Button
-                        text="Manage Products"
-                        buttonType={ButtonType.SECONDARY}
-                        leadingIcon={<Package />}
-                        size={ButtonSize.SMALL}
-                        onClick={() => console.log('Product action clicked')}
-                    />
+                    idField: 'id' as const,
+                    title: 'Product Inventory (Mobile: 2 Columns + Overflow)',
+                    description: '', // Test case: Empty description to verify SearchInput border-bottom visibility
+                    enableSearch: true,
+                    enableFiltering: true,
+                    enableAdvancedFilter: false,
+                    enableInlineEdit: false,
+                    enableRowExpansion: false,
+                    enableRowSelection: true,
+                    enableColumnManager: true,
+                    showSettings: true,
+                    columnFreeze: 0,
+                    columnFreezeRight: 1,
+                    mobileColumnsToShow: 2,
+                    onRowSave: handleProductSave,
+                    onRowCancel: handleProductCancel,
+                    onFieldChange: handleFieldChange,
+                    rowActions: {
+                        showEditAction: false,
+                        slot1: {
+                            id: 'view-details',
+                            text: 'View Details',
+                            buttonType: ButtonType.SECONDARY,
+                            size: ButtonSize.SMALL,
+                            leadingIcon: <Package size={16} />,
+                            onClick: (row: Record<string, unknown>) => {
+                                const product = row as ProductRow
+                                alert(
+                                    `Viewing details for: ${product.name} (Price: ${product.price})`
+                                )
+                            },
+                        },
+                        slot2: {
+                            id: 'favorite',
+                            text: 'Add to Favorites',
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
+                            leadingIcon: <Calendar size={16} />,
+                            hidden: (row: Record<string, unknown>) => {
+                                const product = row as ProductRow
+                                const statusText = (
+                                    product.status as TagColumnProps
+                                ).text
+                                return statusText === 'Discontinued'
+                            },
+                            onClick: (row: Record<string, unknown>) => {
+                                const product = row as ProductRow
+                                alert(`Added ${product.name} to favorites!`)
+                            },
+                        },
+                    },
+                    headerSlot1: (
+                        <Button
+                            text="Manage Products"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Package />}
+                            size={ButtonSize.SMALL}
+                            onClick={() =>
+                                console.log('Product action clicked')
+                            }
+                        />
+                    ),
+                    headerSlot2: (
+                        <>
+                            <Button
+                                text={
+                                    useCursorPagination
+                                        ? 'Switch to Traditional'
+                                        : 'Switch to Cursor Mode'
+                                }
+                                buttonType={ButtonType.PRIMARY}
+                                leadingIcon={<Database />}
+                                size={ButtonSize.SMALL}
+                                onClick={() => {
+                                    setUseCursorPagination(!useCursorPagination)
+                                    // Reset to original data when switching
+                                    setProductTableData(productData)
+                                    setCursorState(null)
+                                    setHasNextPage(true)
+                                    setHasPrevPage(false)
+                                }}
+                            />
+                            <Button
+                                text="Schedule"
+                                buttonType={ButtonType.SECONDARY}
+                                leadingIcon={<Calendar />}
+                                size={ButtonSize.SMALL}
+                                onClick={() =>
+                                    console.log('Calendar action clicked')
+                                }
+                            />
+                        </>
+                    ),
                 }
-                headerSlot2={
-                    <Button
-                        text="Schedule"
-                        buttonType={ButtonType.SECONDARY}
-                        leadingIcon={<Calendar />}
-                        size={ButtonSize.SMALL}
-                        onClick={() => console.log('Calendar action clicked')}
-                    />
+
+                if (useCursorPagination) {
+                    return (
+                        <DataTable
+                            {...commonProps}
+                            paginationMode="cursor"
+                            pagination={{
+                                direction: CursorDirection.NEXT,
+                                limit: 5,
+                                cursorParams: cursorState
+                                    ? {
+                                          cursorLimit: 5,
+                                          cursorAfterId: cursorState.afterId,
+                                          cursorBeforeId: cursorState.beforeId,
+                                      }
+                                    : undefined,
+                                hasNextPage: hasNextPage,
+                                hasPrevPage: hasPrevPage,
+                                limitOptions: [5, 10, 20],
+                            }}
+                            onPageChange={(direction, cursor, limit) => {
+                                handleCursorPageChange(
+                                    direction,
+                                    cursor,
+                                    limit ?? 5
+                                )
+                            }}
+                        />
+                    )
                 }
-            />
+
+                return (
+                    <DataTable
+                        {...commonProps}
+                        paginationMode="page"
+                        pagination={{
+                            currentPage: 1,
+                            pageSize: 10,
+                            totalRows: productTableData.length,
+                            pageSizeOptions: [5, 10, 20],
+                        }}
+                    />
+                )
+            })()}
 
             <div style={{ marginTop: '40px' }}>
                 <div
@@ -3599,7 +3713,11 @@ const DataTableDemo = () => {
                         : data.length,
                     pageSizeOptions: [5, 10, 25, 50],
                 }}
-                onPageChange={handlePageChange}
+                onPageChange={(pageOrDirection) => {
+                    if (typeof pageOrDirection === 'number') {
+                        handlePageChange(pageOrDirection)
+                    }
+                }}
                 onPageSizeChange={handlePageSizeChange}
                 defaultSort={sortConfig}
                 onSortChange={handleSortChange}

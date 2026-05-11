@@ -19,6 +19,48 @@ export enum FilterType {
     SLIDER = 'slider',
 }
 
+export enum CursorDirection {
+    NEXT = 'next',
+    PREV = 'prev',
+}
+
+/** How the table footer drives pagination: numbered pages vs next/previous cursors. */
+export type DataTablePaginationMode = 'page' | 'cursor'
+
+export type CursorValueMap = Record<string, unknown>
+
+type BivariantCallback<T extends (...args: never[]) => unknown> = {
+    bivarianceHack: T
+}['bivarianceHack']
+
+export type DataTablePageModeOnPageChange = BivariantCallback<
+    (page: number) => void
+>
+
+export type DataTableCursorModeOnPageChange = BivariantCallback<
+    (
+        direction: CursorDirection,
+        cursorPayload?: unknown,
+        limit?: number
+    ) => void
+>
+
+/**
+ * `onPageChange` handler for DataTable.
+ * - **Page mode:** first argument is the 1-based page index.
+ * - **Cursor mode:** first argument is `CursorDirection`; second is the cursor payload for the API; third is the row limit for that request.
+ */
+export type DataTableOnPageChange = BivariantCallback<
+    (
+        pageOrCursorDirection: number | CursorDirection,
+        cursorPayload?: unknown,
+        limit?: number
+    ) => void
+>
+
+/** @deprecated Use {@link DataTableOnPageChange} instead. */
+export type DataTablePageChangeHandler = DataTableOnPageChange
+
 export enum ColumnType {
     TEXT = 'text',
     NUMBER = 'number',
@@ -300,6 +342,68 @@ export type PaginationConfig = {
     pageSizeOptions?: number[]
 }
 
+/**
+ * Cursor-based pagination state for APIs without total counts (next/previous only).
+ * Pass as `pagination` when `paginationMode` is `"cursor"` (or legacy `cursorBasedPagination`).
+ *
+ * @example
+ * {
+ *   direction: CursorDirection.NEXT,
+ *   limit: 20,
+ *   cursor: "last_row_id",
+ *   hasNextPage: true,
+ *   hasPrevPage: false,
+ *   limitOptions: [10, 20, 50]
+ * }
+ */
+export type CursorPaginationConfig = {
+    direction: CursorDirection
+    limit: number
+    /**
+     * Single cursor when next/prev share one token; ignored if `nextCursor` / `prevCursor` / `cursorParams` are set as needed.
+     */
+    cursor?: unknown
+    /** Token(s) for the next page request (e.g. endCursor, cursorAfterId). */
+    nextCursor?: unknown
+    /** Token(s) for the previous page request (e.g. startCursor, cursorBeforeId). */
+    prevCursor?: unknown
+    /**
+     * Full request payload for APIs that need multiple fields (e.g. cursorAfterId + cursorAfterCreatedAt).
+     * Sent as the callback’s `cursorPayload` for both next and prev unless you split with `nextCursor` / `prevCursor`.
+     */
+    cursorParams?: CursorValueMap
+    hasNextPage: boolean
+    hasPrevPage: boolean
+    limitOptions?: number[]
+    /** Optional; omit when the API does not expose a total. */
+    totalRows?: number
+    /** Optional display hint when mapping cursor pages to a synthetic page index. */
+    currentPage?: number
+    /** Alias for `limit` (rows per request). */
+    pageSize?: number
+}
+
+/** @deprecated Use {@link CursorPaginationConfig} instead. */
+export type CursorConfig = CursorPaginationConfig
+
+/** Union of offset (page index) and cursor pagination props for `DataTable`. */
+export type DataTablePaginationConfig =
+    | PaginationConfig
+    | CursorPaginationConfig
+
+export function isCursorPaginationConfig(
+    pagination?: DataTablePaginationConfig
+): pagination is CursorPaginationConfig {
+    if (!pagination || typeof pagination !== 'object') {
+        return false
+    }
+
+    return 'direction' in pagination && 'limit' in pagination
+}
+
+/** @deprecated Use {@link isCursorPaginationConfig} instead. */
+export const isCursorConfig = isCursorPaginationConfig
+
 export type BulkActionsConfig = {
     showSelectAll?: boolean
     showDeselectAll?: boolean
@@ -333,7 +437,7 @@ export type RowSelectionConfig<T extends Record<string, unknown>> = {
     disabledText?: (row: T, index: number) => string
 }
 
-export type DataTableProps<T extends Record<string, unknown>> = {
+type DataTableBaseProps<T extends Record<string, unknown>> = {
     data: T[]
     columns: ColumnDefinition<T>[]
     idField: keyof T
@@ -383,10 +487,6 @@ export type DataTableProps<T extends Record<string, unknown>> = {
         loading?: boolean
     }
     columnManagerWidth?: number
-    pagination?: PaginationConfig
-    serverSidePagination?: boolean
-    onPageChange?: (page: number) => void
-    onPageSizeChange?: (pageSize: number) => void
 
     isLoading?: boolean
     showSkeleton?: boolean
@@ -445,3 +545,67 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     // Mobile configuration
     mobileColumnsToShow?: number
 }
+
+type DataTableCursorPaginationProps = {
+    /**
+     * `'cursor'` — next/previous only; pair with {@link CursorPaginationConfig}.
+     */
+    paginationMode: 'cursor'
+    /**
+     * Pagination configuration for cursor mode.
+     */
+    pagination?: CursorPaginationConfig
+    /**
+     * Cursor mode requires a cursor-aware handler.
+     */
+    onPageChange?: DataTableCursorModeOnPageChange
+    onPageSizeChange?: (pageSize: number) => void
+    serverSidePagination?: boolean
+    /**
+     * @deprecated Use `paginationMode="cursor"` instead.
+     */
+    cursorBasedPagination?: boolean
+}
+
+type DataTablePagePaginationProps = {
+    /**
+     * `'page'` — numbered pages and jump UI.
+     * @default 'page'
+     */
+    paginationMode?: 'page'
+    /**
+     * Pagination configuration for page mode.
+     */
+    pagination?: PaginationConfig
+    /**
+     * Page mode handler: receives 1-based page index.
+     */
+    onPageChange?: DataTablePageModeOnPageChange
+    onPageSizeChange?: (pageSize: number) => void
+    serverSidePagination?: boolean
+    /**
+     * @deprecated Use `paginationMode="cursor"` instead.
+     */
+    cursorBasedPagination?: false
+}
+
+type DataTableLegacyCursorPaginationProps = {
+    /**
+     * Cursor mode via legacy flag (kept for backward compatibility).
+     * @deprecated Use `paginationMode="cursor"` instead.
+     */
+    cursorBasedPagination: true
+    paginationMode?: undefined
+    pagination?: CursorPaginationConfig
+    onPageChange?: DataTableCursorModeOnPageChange
+    onPageSizeChange?: (pageSize: number) => void
+    serverSidePagination?: boolean
+}
+
+export type DataTableProps<T extends Record<string, unknown>> =
+    DataTableBaseProps<T> &
+        (
+            | DataTablePagePaginationProps
+            | DataTableCursorPaginationProps
+            | DataTableLegacyCursorPaginationProps
+        )

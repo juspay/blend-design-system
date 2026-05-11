@@ -6,6 +6,7 @@ import DataTable from '../../../lib/components/DataTable/DataTable'
 import {
     ColumnDefinition,
     ColumnType,
+    CursorDirection,
     SortDirection,
 } from '../../../lib/components/DataTable/types'
 
@@ -261,6 +262,41 @@ describe('DataTable Accessibility', () => {
             const nextButton = screen.getByRole('button', { name: 'Next page' })
             expect(prevButton).toBeInTheDocument()
             expect(nextButton).toBeInTheDocument()
+        })
+
+        it('allows navigating back in cursor mode even on empty page', () => {
+            const onPageChange = vi.fn()
+
+            render(
+                <DataTable
+                    data={[]}
+                    columns={mockColumns}
+                    idField="id"
+                    title="Users"
+                    paginationMode="cursor"
+                    pagination={{
+                        direction: CursorDirection.NEXT,
+                        limit: 10,
+                        hasNextPage: false,
+                        hasPrevPage: true,
+                        prevCursor: 'prev-token',
+                    }}
+                    onPageChange={onPageChange}
+                />
+            )
+
+            const prevButton = screen.getByRole('button', {
+                name: 'Load previous results',
+            })
+            expect(prevButton).toBeInTheDocument()
+            expect(prevButton).not.toBeDisabled()
+
+            prevButton.click()
+            expect(onPageChange).toHaveBeenCalledWith(
+                CursorDirection.PREV,
+                'prev-token',
+                10
+            )
         })
 
         it.skip('has proper aria-current for current page', () => {

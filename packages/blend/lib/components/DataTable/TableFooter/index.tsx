@@ -1,6 +1,7 @@
 import { forwardRef } from 'react'
 import { TableFooterProps } from './types'
 import { DataTablePagination } from '../DataTablePagination'
+import { isCursorPaginationConfig } from '../types'
 import Block from '../../Primitives/Block/Block'
 import { TableTokenType } from '../dataTable.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
@@ -9,21 +10,31 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
     (
         {
             pagination,
-            currentPage,
-            pageSize,
-            totalRows,
             isLoading,
             showSkeleton,
             onPageChange,
             onPageSizeChange,
             hasData = true,
             isNarrowContainer = false,
+            paginationMode = 'page',
         },
         ref
     ) => {
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
 
-        if (!pagination || !hasData) {
+        if (!pagination) {
+            return null
+        }
+
+        const cursorPagination =
+            paginationMode === 'cursor' && isCursorPaginationConfig(pagination)
+                ? pagination
+                : null
+
+        // For cursor-based pagination, show footer if we can navigate back even without data
+        const canNavigateBack = cursorPagination?.hasPrevPage ?? false
+
+        if (!hasData && !canNavigateBack) {
             return null
         }
 
@@ -39,17 +50,13 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
                 }}
             >
                 <DataTablePagination
-                    currentPage={currentPage}
-                    pageSize={pageSize}
-                    totalRows={totalRows}
-                    pageSizeOptions={
-                        pagination.pageSizeOptions || [10, 20, 50, 100]
-                    }
+                    pagination={pagination}
                     isLoading={isLoading || showSkeleton}
                     hasData={hasData}
                     isNarrowContainer={isNarrowContainer}
                     onPageChange={onPageChange}
                     onPageSizeChange={onPageSizeChange}
+                    paginationMode={paginationMode}
                 />
             </Block>
         )
