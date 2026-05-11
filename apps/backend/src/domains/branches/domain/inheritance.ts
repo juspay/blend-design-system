@@ -18,9 +18,20 @@ export interface InheritanceResult {
     isClean: boolean
 }
 
+const isUnsafePathSegment = (segment: string): boolean => {
+    return (
+        segment === '__proto__' ||
+        segment === 'prototype' ||
+        segment === 'constructor'
+    )
+}
+
 function getByPath(object: unknown, path: string): unknown {
     return path.split('.').reduce<unknown>((current, key) => {
         if (!current || typeof current !== 'object') {
+            return undefined
+        }
+        if (isUnsafePathSegment(key)) {
             return undefined
         }
         return (current as Record<string, unknown>)[key]
@@ -34,6 +45,9 @@ function setByPath(object: unknown, path: string, value: unknown): void {
 
     const keys = path.split('.')
     if (keys.length === 0) return
+    if (keys.some(isUnsafePathSegment)) {
+        return
+    }
 
     let current = object as Record<string, unknown>
 

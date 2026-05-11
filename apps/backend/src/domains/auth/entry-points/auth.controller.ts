@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 import { env } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { maskEmail, hashPII } from '@/utils/crypto.js'
@@ -33,8 +34,22 @@ export const getGoogleAuthUrl = async (_req: Request, res: Response) => {
     res.json({ success: true, data: { url } })
 }
 
+export const getCsrfToken = async (_req: Request, res: Response) => {
+    const token = crypto.randomBytes(32).toString('hex')
+
+    res.cookie('csrfToken', token, {
+        httpOnly: false,
+        secure: env.NODE_ENV === 'production',
+        sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
+        path: '/api',
+    })
+
+    res.setHeader('Cache-Control', 'no-store')
+    res.json({ success: true, data: { csrfToken: token } })
+}
+
 export const googleCallback = async (req: Request, res: Response) => {
-    const { code } = req.query as { code: string }
+    const code = (req.query as { code?: string }).code
     const callbackContext = {
         requestHost: req.get('host'),
         requestOrigin: req.get('origin'),

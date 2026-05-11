@@ -1,8 +1,10 @@
 import { Router, type IRouter } from 'express'
 import { authenticate } from '@/middlewares/auth.js'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
+import { validate, googleCallbackQuerySchema } from '@/middlewares/validate.js'
 import {
     getGoogleAuthUrl,
+    getCsrfToken,
     googleCallback,
     refreshAccessToken,
     logout,
@@ -40,6 +42,8 @@ const router: IRouter = Router()
  */
 router.get('/google', asyncHandler(getGoogleAuthUrl))
 
+router.get('/csrf', asyncHandler(getCsrfToken))
+
 /**
  * @openapi
  * /api/auth/google/callback:
@@ -61,7 +65,11 @@ router.get('/google', asyncHandler(getGoogleAuthUrl))
  *       400:
  *         description: Missing or invalid authorization code
  */
-router.get('/google/callback', asyncHandler(googleCallback))
+router.get(
+    '/google/callback',
+    validate({ query: googleCallbackQuerySchema }),
+    asyncHandler(googleCallback)
+)
 
 /**
  * @openapi

@@ -1,4 +1,4 @@
-/// <reference types="express" />
+export {}
 
 declare global {
     namespace Express {
@@ -7,9 +7,10 @@ declare global {
                 id: string
                 email: string
                 role: string
+                displayName: string
+                organizationId?: string
+                authMethod: 'jwt' | 'api_key'
             }
         }
     }
 }
-
-export {}

@@ -17,6 +17,14 @@ interface ValidationSchemas {
     query?: ZodSchema
 }
 
+const normalizeSingleQueryParam = (value: unknown): unknown => {
+    if (Array.isArray(value)) {
+        // Accept a single value, reject multi-value arrays (ambiguous / tampering).
+        return value.length === 1 ? value[0] : value
+    }
+    return value
+}
+
 /**
  * Middleware factory that validates request data against Zod schemas.
  * Validated data is written back to `req.body`, `req.params`, `req.query`
@@ -103,6 +111,19 @@ export const paginationQuery = z.object({
         .optional()
         .transform((v) => (v ? parseInt(v, 10) || 1 : 1)),
 })
+
+/**
+ * Query param that must be exactly one string (rejects string[]).
+ */
+export const queryString = z.preprocess(normalizeSingleQueryParam, z.string())
+
+/**
+ * Optional query param that must be exactly one string when present.
+ */
+export const queryStringOptional = z.preprocess(
+    normalizeSingleQueryParam,
+    z.string().optional()
+)
 
 // ---------------------------------------------------------------------------
 // Organization Schemas
@@ -239,6 +260,14 @@ export const createApiKeySchema = z.object({
         .max(255, 'Name must be 255 characters or fewer'),
     organizationId: z.string().uuid('Invalid organization ID'),
     expiresAt: z.string().datetime('Invalid date format').optional(),
+})
+
+// ---------------------------------------------------------------------------
+// Auth Schemas
+// ---------------------------------------------------------------------------
+
+export const googleCallbackQuerySchema = z.object({
+    code: queryString,
 })
 
 // ---------------------------------------------------------------------------

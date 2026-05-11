@@ -129,15 +129,6 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-            # Commit version bump
-            - name: Commit version bump
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git add packages/cli/package.json
-                  git commit -m "chore(cli): release blend-studio@${{ steps.bump.outputs.new_version }}" || true
-                  git push || true
-
             - name: Summary
               run: |
                   echo "## CLI Published" >> $GITHUB_STEP_SUMMARY

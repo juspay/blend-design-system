@@ -13,7 +13,10 @@ function compactJson(value: unknown): string {
 
 /** Escape a JS expression embedded inside ReScript %raw(`...`) if it ever contains backticks. */
 function escapeForRaw(jsExpr: string): string {
-    return jsExpr.includes('`') ? jsExpr.replace(/`/g, '\\`') : jsExpr
+    return jsExpr
+        .replace(/\\/g, '\\\\')
+        .replace(/`/g, '\\`')
+        .replace(/\$\{/g, '\\${')
 }
 
 /**

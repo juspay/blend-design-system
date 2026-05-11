@@ -5,6 +5,13 @@ export function getNestedValue(
     const parts = path.split('.')
     let current: unknown = obj
     for (const part of parts) {
+        if (
+            part === '__proto__' ||
+            part === 'prototype' ||
+            part === 'constructor'
+        ) {
+            return undefined
+        }
         if (current && typeof current === 'object' && current !== null) {
             current = (current as Record<string, unknown>)[part]
         } else {
@@ -28,6 +35,13 @@ export function setNestedValue(
     value: unknown
 ): Record<string, unknown> {
     const parts = path.split('.')
+    if (
+        parts.some(
+            (p) => p === '__proto__' || p === 'prototype' || p === 'constructor'
+        )
+    ) {
+        return obj
+    }
     const result = safeClone(obj)
     let current = result as Record<string, unknown>
     for (let i = 0; i < parts.length - 1; i++) {

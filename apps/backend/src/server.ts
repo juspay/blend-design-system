@@ -18,15 +18,12 @@ import tagRoutes from '@/domains/tags/entry-points/tag.routes.js'
 import apiKeyRoutes from '@/domains/apikeys/entry-points/apikey.routes.js'
 import lockRoutes from '@/domains/locks/entry-points/lock.routes.js'
 import mergeRequestRoutes from '@/domains/mergerequests/entry-points/merge-request.routes.js'
-import { googleCallback } from '@/domains/auth/entry-points/auth.controller.js'
+// (callback route is mounted via /api/auth router)
+import type { NextFunction, Request, Response } from 'express'
 
 const app = express()
 
-app.use(
-    helmet({
-        contentSecurityPolicy: isDevelopment ? false : undefined,
-    })
-)
+app.use(helmet())
 
 const allowedOrigins = isDevelopment
     ? [
@@ -36,9 +33,9 @@ const allowedOrigins = isDevelopment
           'http://127.0.0.1:3000',
       ]
     : [
-          ...env.FRONTEND_URL.split(',').map((url) => url.trim()),
+          ...env.FRONTEND_URL.split(',').map((url: string) => url.trim()),
           ...(env.STUDIO_URL
-              ? env.STUDIO_URL.split(',').map((url) => url.trim())
+              ? env.STUDIO_URL.split(',').map((url: string) => url.trim())
               : []),
       ]
 
@@ -46,7 +43,10 @@ const cookieCsrfProtection = createCookieCsrfProtection(allowedOrigins)
 
 app.use(
     cors({
-        origin: (origin, callback) => {
+        origin: (
+            origin: string | undefined,
+            callback: (error: Error | null, allow?: boolean) => void
+        ) => {
             if (!origin) return callback(null, true)
 
             if (allowedOrigins.indexOf(origin) !== -1 || isDevelopment) {
@@ -66,12 +66,63 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }))
 app.use(cookieParser())
 app.use(cookieCsrfProtection)
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+    const hasAuthCookies = Boolean(
+        req.cookies?.accessToken || req.cookies?.refreshToken
+    )
+    const isStateChanging = !['GET', 'HEAD', 'OPTIONS'].includes(req.method)
+
+    // CSRF is relevant only for cookie-auth’d browser requests.
+    if (!hasAuthCookies || !isStateChanging) {
+        return next()
+    }
+
+    // 1) Enforce same-origin via Origin/Referer (defense-in-depth with CORS).
+    const origin = req.get('origin')
+    const referer = req.get('referer')
+    const isAllowedOrigin =
+        (origin && allowedOrigins.includes(origin)) ||
+        (referer && allowedOrigins.some((o) => referer.startsWith(o)))
+
+    if (!isAllowedOrigin) {
+        return res.status(403).json({
+            success: false,
+            error: {
+                code: 'CSRF_ORIGIN_DENIED',
+                message: 'Request origin is not allowed',
+            },
+        })
+    }
+
+    // 2) Double-submit token: require header token to match cookie token.
+    const cookieToken = req.cookies?.csrfToken
+    const headerToken = req.get('x-csrf-token')
+
+    if (
+        typeof cookieToken !== 'string' ||
+        typeof headerToken !== 'string' ||
+        cookieToken.length === 0 ||
+        headerToken.length === 0 ||
+        cookieToken !== headerToken
+    ) {
+        return res.status(403).json({
+            success: false,
+            error: {
+                code: 'CSRF_INVALID',
+                message: 'Invalid CSRF token',
+            },
+        })
+    }
+
+    return next()
+})
+
 // ---------------------------------------------------------------------------
 // Rate Limiting — prevent abuse and brute-force attacks
 // ---------------------------------------------------------------------------
 // Mounted on routers below to ensure all `/api/*` routes are covered.
 
-app.use((req, _res, next) => {
+app.use((req: Request, _res: Response, next: NextFunction) => {
     logger.debug(
         {
             method: req.method,
@@ -82,7 +133,7 @@ app.use((req, _res, next) => {
     next()
 })
 
-app.get('/health', (_req, res) => {
+app.get('/health', (_req: Request, res: Response) => {
     res.json({
         status: 'ok',
         database: isDatabaseReady() ? 'connected' : 'connecting',
@@ -91,7 +142,7 @@ app.get('/health', (_req, res) => {
     })
 })
 
-app.get('/api/health', (_req, res) => {
+app.get('/api/health', (_req: Request, res: Response) => {
     res.json({
         status: 'ok',
         database: isDatabaseReady() ? 'connected' : 'connecting',
@@ -100,7 +151,7 @@ app.get('/api/health', (_req, res) => {
     })
 })
 
-app.use('/api', (req, res, next) => {
+app.use('/api', (req: Request, res: Response, next: NextFunction) => {
     // Allow health and OAuth bootstrap endpoints even while DB is connecting.
     // OAuth callback still depends on DB and should remain guarded.
     const isReadinessBypassPath =
@@ -116,9 +167,21 @@ app.use('/api', (req, res, next) => {
     })
 })
 
+app.use(
+    '/docs',
+    helmet({
+        // Swagger UI relies on inline scripts/styles; keep CSP enabled, but scoped.
+        contentSecurityPolicy: {
+            useDefaults: true,
+            directives: {
+                'script-src': ["'self'", "'unsafe-inline'"],
+                'style-src': ["'self'", "'unsafe-inline'", 'https:'],
+                'img-src': ["'self'", 'data:', 'https:'],
+            },
+        },
+    })
+)
 app.use('/docs', swaggerUiHandler, swaggerUiSetup)
-
-app.get('/auth/google/callback', googleCallback)
 
 app.use('/api/auth', authLimiter, authRoutes)
 app.use('/api/branches', apiLimiter, branchRoutes)

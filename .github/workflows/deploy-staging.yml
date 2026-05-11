@@ -28,7 +28,8 @@ concurrency:
     group: deploy-staging
     cancel-in-progress: false
 
-permissions: {}
+permissions:
+    contents: read
 
 env:
     PROJECT_ID: storybook-452807
@@ -47,7 +48,8 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 5
         environment: staging
-        permissions: {}
+        permissions:
+            contents: read
         steps:
             - name: Check required secrets
               env:
@@ -377,7 +379,8 @@ jobs:
         timeout-minutes: 5
         environment: staging
         if: always()
-        permissions: {}
+        permissions:
+            contents: read
         steps:
             - name: Write summary
               run: |

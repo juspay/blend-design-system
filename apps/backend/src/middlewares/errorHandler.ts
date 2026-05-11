@@ -35,7 +35,13 @@ export const errorHandler = (
     })
 }
 
-export const asyncHandler = (fn: Function) => {
+type AsyncHandlerFn = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => unknown | Promise<unknown>
+
+export const asyncHandler = (fn: AsyncHandlerFn) => {
     return (req: Request, res: Response, next: NextFunction) => {
         Promise.resolve(fn(req, res, next)).catch(next)
     }

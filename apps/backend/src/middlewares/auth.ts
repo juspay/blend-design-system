@@ -3,21 +3,6 @@ import { UnauthorizedError, ForbiddenError } from '@/errors/AppError.js'
 import * as apiKeyRepo from '@/domains/apikeys/data-access/apikey.repository.js'
 import * as userRepo from '@/domains/users/data-access/user.repository.js'
 
-declare global {
-    namespace Express {
-        interface Request {
-            user?: {
-                id: string
-                email: string
-                role: string
-                displayName: string
-                organizationId?: string
-                authMethod: 'jwt' | 'api_key'
-            }
-        }
-    }
-}
-
 export const authenticate = async (
     req: any,
     _res: any,
