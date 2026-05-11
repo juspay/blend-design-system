@@ -1,0 +1,277 @@
+---
+version: 2
+title: Textarea
+description: The TextAreaV2 component provides a multi-line text input with label, validation, and resize controls.
+category: components
+tags:
+    - textarea
+    - component
+    - input
+    - form
+    - multiline
+RepoFolderName: TextAreaV2
+StorybookLink: components-inputs-textareav2--docs
+---
+
+<TextAreaV2Preview />
+
+## Usage
+
+```tsx
+import { TextAreaV2, InputSizeV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [value, setValue] = useState('')
+
+    return (
+        <TextAreaV2
+            label="Description"
+            placeholder="Enter a detailed description..."
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            size={InputSizeV2.MD}
+            rows={4}
+            resize="vertical"
+            hintText="Maximum 500 characters"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Required. Current value of the textarea.',
+            },
+            {
+                content: 'string',
+                hintText: 'Textarea value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Required. Callback fired when value changes.',
+            },
+            {
+                content: '(e: ChangeEvent<HTMLTextAreaElement>) => void',
+                hintText: 'Change event handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Required. Placeholder text when empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Field label displayed above the textarea.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sublabel',
+                hintText:
+                    'Secondary label text displayed below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting padding and text sizing.',
+            },
+            {
+                content: 'InputSizeV2',
+                hintText: 'Enum for textarea size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'rows',
+                hintText: 'Number of visible text rows.',
+            },
+            {
+                content: 'number',
+                hintText: 'Row count',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'resize',
+                hintText:
+                    'Controls whether textarea is resizable and in which directions.',
+            },
+            {
+                content: 'string',
+                hintText: 'CSS resize value',
+            },
+            { content: 'none, both, horizontal, vertical, block, inline' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the textarea.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper description',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconText',
+                hintText: 'Tooltip text for the help icon.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'When true, displays a required indicator.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true marks field as required',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, textarea is non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the textarea',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'autoFocus',
+                hintText: 'When true, focuses textarea on mount.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true auto-focuses',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Error state configuration.',
+            },
+            {
+                content: '{ show: boolean; message?: string }',
+                hintText: 'Error display settings',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFocus',
+                hintText: 'Callback fired when textarea receives focus.',
+            },
+            {
+                content: '(e: FocusEvent<HTMLTextAreaElement>) => void',
+                hintText: 'Focus handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onBlur',
+                hintText: 'Callback fired when textarea loses focus.',
+            },
+            {
+                content: '(e: FocusEvent<HTMLTextAreaElement>) => void',
+                hintText: 'Blur handler',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the TextAreaV2 component using the following tokens:
+
+```tsx
+export type TextAreaV2TokensType = {
+    container: {
+        gap: CSSObject['gap']
+    }
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    sublabel: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    textarea: {
+        padding: {
+            [key in InputSizeV2]: CSSObject['padding']
+        }
+        borderRadius: CSSObject['borderRadius']
+        border: {
+            default: CSSObject['border']
+            hover: CSSObject['border']
+            focus: CSSObject['border']
+            error: CSSObject['border']
+            disabled: CSSObject['border']
+        }
+        background: {
+            default: CSSObject['background']
+            disabled: CSSObject['background']
+        }
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+        lineHeight: CSSObject['lineHeight']
+        resize: CSSObject['resize']
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    errorText: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+}
+```

@@ -1,0 +1,129 @@
+---
+version: 2
+title: Tag Group
+description: The TagGroupV2 component groups multiple TagV2 components with flexible layout options.
+category: components
+tags:
+    - tag-group
+    - component
+    - layout
+    - container
+    - tags
+RepoFolderName: TagGroupV2
+StorybookLink: components-tags-taggroupv2--docs
+---
+
+<TagGroupV2Preview />
+
+## Usage
+
+```tsx
+import {
+    TagGroupV2,
+    TagV2,
+    TagV2Color,
+    TagV2Size,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <TagGroupV2 stacked={false} gap="8px">
+            <TagV2
+                text="React"
+                size={TagV2Size.SM}
+                color={TagV2Color.PRIMARY}
+            />
+            <TagV2
+                text="TypeScript"
+                size={TagV2Size.SM}
+                color={TagV2Color.SUCCESS}
+            />
+            <TagV2
+                text="NextJS"
+                size={TagV2Size.SM}
+                color={TagV2Color.NEUTRAL}
+            />
+            <TagV2
+                text="Tailwind"
+                size={TagV2Size.SM}
+                color={TagV2Color.WARNING}
+            />
+        </TagGroupV2>
+    )
+}
+```
+
+## Stacked Layout
+
+```tsx
+import { TagGroupV2, TagV2 } from '@juspay/blend-design-system'
+;<TagGroupV2 stacked={true} gap={4}>
+    <TagV2 text="Feature 1" />
+    <TagV2 text="Feature 2" />
+    <TagV2 text="Feature 3" />
+</TagGroupV2>
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'children',
+                hintText: 'Required. TagV2 components to be grouped together.',
+            },
+            {
+                content:
+                    'ReactElement<TagV2Props> | ReactElement<TagV2Props>[]',
+                hintText: 'TagV2 elements',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'stacked',
+                hintText:
+                    'When true, tags are arranged vertically. When false, arranged horizontally.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true stacks vertically, false arranges horizontally',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'gap',
+                hintText: 'Spacing between tags.',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS gap value or number in pixels',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the TagGroupV2 component using the following tokens:
+
+```tsx
+export type TagGroupV2TokenType = {
+    container: {
+        display: CSSObject['display']
+        flexDirection: {
+            horizontal: CSSObject['flexDirection']
+            stacked: CSSObject['flexDirection']
+        }
+        gap: CSSObject['gap']
+        flexWrap: CSSObject['flexWrap']
+        alignItems: CSSObject['alignItems']
+    }
+}
+```

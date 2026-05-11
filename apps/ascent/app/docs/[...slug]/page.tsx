@@ -117,15 +117,15 @@ function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
 
             // Map each component file to its category
             item.children.forEach((child) => {
+                // Strip -v2 suffix for registry lookup (v1 and v2 share same registry entry)
+                const baseSlug = child.slug.replace(/-v2$/, '')
                 const registryEntry = COMPONENT_REGISTRY.find(
-                    (c) => c.slug === child.slug
+                    (c) => c.slug === baseSlug
                 )
                 if (registryEntry) {
                     const category = registryEntry.category
-                    componentsByCategory[category].push({
-                        ...child,
-                        name: registryEntry.title, // Use title from registry
-                    })
+                    // Keep the name from frontmatter (already cleaned in scanDirectory)
+                    componentsByCategory[category].push(child)
                 } else {
                     // Component not in registry goes to Others
                     componentsByCategory['Others'].push(child)

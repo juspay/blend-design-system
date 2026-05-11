@@ -1,0 +1,180 @@
+---
+version: 2
+title: OTP Input
+description: The OTPInputV2 component provides a one-time password input with separate fields for each digit.
+category: components
+tags:
+    - otp-input
+    - component
+    - input
+    - verification
+    - code
+RepoFolderName: OTPInputV2
+StorybookLink: components-inputs-otpinputv2--docs
+---
+
+<OTPInputV2Preview />
+
+## Usage
+
+```tsx
+import { OTPInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [otp, setOtp] = useState('')
+
+    return (
+        <OTPInputV2
+            length={6}
+            value={otp}
+            onChange={setOtp}
+            size={InputSizeV2.MD}
+            onComplete={(value) => console.log('OTP entered:', value)}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'length',
+                hintText: 'Required. Number of input fields (digits).',
+            },
+            {
+                content: 'number',
+                hintText: 'Digit count (typically 4-8)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'Current OTP value as a string.',
+            },
+            {
+                content: 'string',
+                hintText: 'Complete OTP string',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback fired when OTP value changes.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onComplete',
+                hintText: 'Callback fired when all digits are entered.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Completion handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting input box dimensions.',
+            },
+            {
+                content: 'InputSizeV2',
+                hintText: 'Enum for input size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, all inputs are non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables all inputs',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'masked',
+                hintText: 'When true, masks entered digits (password style).',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true masks input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'autoFocus',
+                hintText: 'When true, focuses first input on mount.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true auto-focuses',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'When true, shows error styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the OTPInputV2 component using the following tokens:
+
+```tsx
+export type OTPInputV2TokensType = {
+    container: {
+        gap: CSSObject['gap']
+    }
+    input: {
+        width: {
+            [key in InputSizeV2]: CSSObject['width']
+        }
+        height: {
+            [key in InputSizeV2]: CSSObject['height']
+        }
+        borderRadius: CSSObject['borderRadius']
+        border: {
+            default: CSSObject['border']
+            focus: CSSObject['border']
+            error: CSSObject['border']
+            disabled: CSSObject['border']
+        }
+        background: {
+            default: CSSObject['background']
+            disabled: CSSObject['background']
+        }
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        textAlign: CSSObject['textAlign']
+        color: CSSObject['color']
+    }
+}
+```

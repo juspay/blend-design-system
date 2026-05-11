@@ -1,0 +1,192 @@
+---
+version: 2
+title: Chat Input
+description: The ChatInputV2 component provides a specialized input for chat interfaces with send button and attachment support.
+category: components
+tags:
+    - chat-input
+    - component
+    - input
+    - chat
+    - message
+RepoFolderName: ChatInputV2
+StorybookLink: components-inputs-chatinputv2--docs
+---
+
+<ChatInputV2Preview />
+
+## Usage
+
+```tsx
+import { ChatInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [message, setMessage] = useState('')
+
+    return (
+        <ChatInputV2
+            placeholder="Type a message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onSend={(value) => console.log('Sending:', value)}
+            size={InputSizeV2.MD}
+            showAttachment={true}
+            onAttachment={() => console.log('Attach file')}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Current message value.',
+            },
+            {
+                content: 'string',
+                hintText: 'Message value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback fired when message changes.',
+            },
+            {
+                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSend',
+                hintText:
+                    'Callback fired when message is sent (Enter or send button).',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Send handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text when empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting input height.',
+            },
+            {
+                content: 'InputSizeV2',
+                hintText: 'Enum for input size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, input is non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'loading',
+                hintText: 'When true, shows loading state.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows loading state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showAttachment',
+                hintText: 'When true, shows attachment button.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows attachment button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onAttachment',
+                hintText: 'Callback fired when attachment button is clicked.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Attachment handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sendButtonDisabled',
+                hintText: 'When true, disables the send button.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables send button',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ChatInputV2 component using the following tokens:
+
+```tsx
+export type ChatInputV2TokensType = {
+    container: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        border: CSSObject['border']
+        background: CSSObject['background']
+    }
+    input: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+        placeholderColor: CSSObject['color']
+    }
+    attachmentButton: {
+        color: CSSObject['color']
+        hoverColor: CSSObject['color']
+        size: CSSObject['width']
+    }
+    sendButton: {
+        size: CSSObject['width']
+        borderRadius: CSSObject['borderRadius']
+        background: CSSObject['background']
+        hoverBackground: CSSObject['background']
+        color: CSSObject['color']
+        disabledOpacity: CSSObject['opacity']
+    }
+}
+```

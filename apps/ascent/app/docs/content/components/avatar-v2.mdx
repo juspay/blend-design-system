@@ -1,0 +1,276 @@
+---
+version: 2
+title: Avatar
+description: The AvatarV2 component displays user profile images, initials, or icons with status indicators and flexible sizing options.
+category: components
+tags:
+    - avatar
+    - component
+    - profile
+    - user
+    - image
+RepoFolderName: AvatarV2
+StorybookLink: components-avatar-avatarv2--docs
+---
+
+<AvatarV2Preview />
+
+## Usage
+
+```tsx
+import {
+    AvatarV2,
+    AvatarV2Size,
+    AvatarV2Shape,
+    AvatarV2Status,
+    AvatarV2StatusPosition,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <AvatarV2
+            src="https://example.com/avatar.jpg"
+            alt="User Avatar"
+            fallbackText="JD"
+            size={AvatarV2Size.MD}
+            shape={AvatarV2Shape.CIRCULAR}
+            status={{
+                type: AvatarV2Status.ONLINE,
+                position: AvatarV2StatusPosition.BOTTOM_RIGHT,
+            }}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'src',
+                hintText:
+                    'URL of the avatar image. If not provided or image fails to load, fallback text is shown.',
+            },
+            {
+                content: 'string',
+                hintText: 'Image source URL',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alt',
+                hintText:
+                    'Alternative text for the avatar image for accessibility.',
+            },
+            {
+                content: 'string',
+                hintText: 'Descriptive text for screen readers',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'fallbackText',
+                hintText:
+                    'Text displayed when image is not available or fails to load. Typically user initials.',
+            },
+            {
+                content: 'string',
+                hintText: 'Fallback display text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Controls the avatar dimensions. Each size has predefined width and height values.',
+            },
+            {
+                content: 'AvatarV2Size',
+                hintText: 'Enum for avatar sizes',
+            },
+            { content: 'SM, REGULAR, MD, LG, XL' },
+        ],
+        [
+            {
+                content: 'shape',
+                hintText:
+                    'Determines the border radius of the avatar. CIRCULAR is fully rounded, ROUNDED has subtle rounding.',
+            },
+            {
+                content: 'AvatarV2Shape',
+                hintText: 'Enum for avatar shape',
+            },
+            { content: 'CIRCULAR, ROUNDED' },
+        ],
+        [
+            {
+                content: 'status',
+                hintText:
+                    'Status indicator configuration showing user availability state.',
+            },
+            {
+                content: 'AvatarV2StatusConfig',
+                hintText: 'Object with type and optional position',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText:
+                    'Optional element displayed to the left of the avatar.',
+            },
+            {
+                content: 'ReactElement',
+                hintText: 'Additional element for the left side',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText:
+                    'Optional element displayed to the right of the avatar.',
+            },
+            {
+                content: 'ReactElement',
+                hintText: 'Additional element for the right side',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Configuration for skeleton loading state.',
+            },
+            {
+                content: 'AvatarV2SkeletonConfig',
+                hintText: 'Object with show and variant properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'backgroundColor',
+                hintText:
+                    'Custom background color for the fallback text state.',
+            },
+            {
+                content: 'string',
+                hintText: 'CSS color value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, applies disabled styling to the avatar.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true applies disabled styling',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onImageError',
+                hintText: 'Callback fired when the avatar image fails to load.',
+            },
+            {
+                content: '(error: Error) => void',
+                hintText: 'Error handler function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onImageLoad',
+                hintText:
+                    'Callback fired when the avatar image successfully loads.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Success handler function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText: 'Custom width overriding the size preset.',
+            },
+            {
+                content: 'CSSObject["width"]',
+                hintText: 'CSS width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'height',
+                hintText: 'Custom height overriding the size preset.',
+            },
+            {
+                content: 'CSSObject["height"]',
+                hintText: 'CSS height value',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the AvatarV2 component using the following tokens:
+
+```tsx
+export type AvatarV2TokensType = {
+    sizes: {
+        [key in AvatarV2Size]: {
+            width: CSSObject['width']
+            height: CSSObject['height']
+        }
+    }
+    shapes: {
+        [key in AvatarV2Shape]: CSSObject['borderRadius']
+    }
+    fallback: {
+        backgroundColor: CSSObject['backgroundColor']
+        textColor: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+    }
+    status: {
+        sizes: {
+            [key in AvatarV2Size]: CSSObject['width']
+        }
+        colors: {
+            [key in AvatarV2Status]: CSSObject['backgroundColor']
+        }
+        positions: {
+            [key in AvatarV2StatusPosition]: {
+                top?: CSSObject['top']
+                bottom?: CSSObject['bottom']
+                left?: CSSObject['left']
+                right?: CSSObject['right']
+            }
+        }
+        border: CSSObject['border']
+    }
+    image: {
+        objectFit: CSSObject['objectFit']
+    }
+    disabled: {
+        opacity: CSSObject['opacity']
+    }
+}
+```

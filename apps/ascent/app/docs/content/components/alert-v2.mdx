@@ -1,0 +1,216 @@
+---
+version: 2
+title: Alert
+description: The AlertV2 component displays contextual feedback messages with various severity levels and styling options.
+category: components
+tags:
+    - alert
+    - component
+    - notification
+    - feedback
+    - message
+RepoFolderName: AlertV2
+StorybookLink: components-alert-alertv2--docs
+---
+
+<AlertV2Preview />
+
+## Usage
+
+```tsx
+import {
+    AlertV2,
+    AlertV2Type,
+    AlertV2SubType,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <AlertV2
+            type={AlertV2Type.SUCCESS}
+            subType={AlertV2SubType.SUBTLE}
+            heading="Success"
+            description="Your changes have been saved successfully."
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'type',
+                hintText:
+                    'Determines the visual style and semantic meaning. PRIMARY for info, SUCCESS for positive, WARNING for caution, ERROR for negative, PURPLE/ORANGE for accent colors, NEUTRAL for general messages.',
+            },
+            {
+                content: 'AlertV2Type',
+                hintText: 'Enum for alert type variants',
+            },
+            {
+                content:
+                    'PRIMARY, SUCCESS, WARNING, ERROR, PURPLE, ORANGE, NEUTRAL',
+            },
+        ],
+        [
+            {
+                content: 'subType',
+                hintText:
+                    'Visual treatment style. SUBTLE uses light background tints, NO_FILL uses only border/outline styling.',
+            },
+            {
+                content: 'AlertV2SubType',
+                hintText: 'Enum for visual treatment',
+            },
+            { content: 'SUBTLE, NO_FILL' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    'Optional custom icon or element to display instead of the default type icon.',
+            },
+            {
+                content:
+                    '{ slot: ReactElement; maxHeight?: CSSObject["maxHeight"] }',
+                hintText: 'Custom slot with optional max height',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'heading',
+                hintText: 'Main title text of the alert.',
+            },
+            {
+                content: 'string',
+                hintText: 'Alert heading text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText: 'Detailed message content of the alert.',
+            },
+            {
+                content: 'string',
+                hintText: 'Alert description text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actions',
+                hintText:
+                    'Action buttons configuration. Can be positioned at the BOTTOM or RIGHT of the alert.',
+            },
+            {
+                content: 'AlertV2Actions',
+                hintText: 'Object with position and action callbacks',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'closeButton',
+                hintText: 'Configuration for the close/dismiss button.',
+            },
+            {
+                content: '{ show?: boolean; onClick?: (event) => void }',
+                hintText: 'Close button visibility and handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText: 'Custom width for the alert container.',
+            },
+            {
+                content: 'CSSObject["width"]',
+                hintText: 'CSS width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width constraint for the alert.',
+            },
+            {
+                content: 'CSSObject["maxWidth"]',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText: 'Minimum width constraint for the alert.',
+            },
+            {
+                content: 'CSSObject["minWidth"]',
+                hintText: 'CSS min-width value',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the AlertV2 component using the following tokens:
+
+```tsx
+export type AlertV2TokensType = {
+    container: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        gap: CSSObject['gap']
+        border: {
+            [key in AlertV2Type]: {
+                [key in AlertV2SubType]: CSSObject['border']
+            }
+        }
+        background: {
+            [key in AlertV2Type]: {
+                [key in AlertV2SubType]: CSSObject['background']
+            }
+        }
+    }
+    icon: {
+        color: {
+            [key in AlertV2Type]: CSSObject['color']
+        }
+        size: CSSObject['width']
+    }
+    heading: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in AlertV2Type]: CSSObject['color']
+        }
+    }
+    description: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            [key in AlertV2Type]: CSSObject['color']
+        }
+    }
+    actions: {
+        gap: CSSObject['gap']
+    }
+    closeButton: {
+        color: CSSObject['color']
+        size: CSSObject['width']
+    }
+}
+```

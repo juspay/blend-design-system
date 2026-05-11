@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import matter from 'gray-matter'
 
 export interface DocItem {
     slug: string
@@ -7,6 +8,29 @@ export interface DocItem {
     path: string
     children?: DocItem[]
     showInSidebar?: boolean
+    version?: number
+}
+
+interface FrontmatterData {
+    title?: string
+    version?: number
+}
+
+/**
+ * Extract title and version from MDX frontmatter using gray-matter.
+ */
+function extractFrontmatter(filePath: string): FrontmatterData {
+    try {
+        const content = fs.readFileSync(filePath, 'utf8')
+        const { data } = matter(content)
+        return {
+            title: typeof data.title === 'string' ? data.title : undefined,
+            version: typeof data.version === 'number' ? data.version : 1,
+        }
+    } catch (err) {
+        console.warn(`Could not read frontmatter from ${filePath}:`, err)
+        return { version: 1 }
+    }
 }
 
 interface DirectoryConfig {
@@ -41,23 +65,23 @@ const sortItemsByConfig = (
         })
     }
 
-    // Create a map for quick lookup
-    const itemMap = new Map(items.map((item) => [item.name, item]))
+    // Create a map for quick lookup (use slug as key since config uses slugs)
+    const itemMap = new Map(items.map((item) => [item.slug, item]))
     const orderedItems: DocItem[] = []
     const remainingItems: DocItem[] = []
 
     // Add items in the specified order
-    for (const itemName of config.order) {
-        const item = itemMap.get(itemName)
+    for (const slug of config.order) {
+        const item = itemMap.get(slug)
         if (item) {
             orderedItems.push(item)
-            itemMap.delete(itemName)
+            itemMap.delete(slug)
         }
     }
 
     // Add remaining items that weren't in the order array
     for (const item of items) {
-        if (itemMap.has(item.name)) {
+        if (itemMap.has(item.slug)) {
             remainingItems.push(item)
         }
     }
@@ -106,10 +130,14 @@ const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
             ) {
                 // Skip page.mdx files as they're handled by the catch-all route
                 const slug = entry.name.replace(/\.mdx$/, '')
+                const { title, version } = extractFrontmatter(fullPath)
+                // Use title from frontmatter (strip V2 suffix), fallback to slug
+                const cleanTitle = title?.replace(/\s*[Vv]2\s*$/, '') ?? slug
                 items.push({
                     slug,
-                    name: slug,
+                    name: cleanTitle,
                     path: relativePath.replace(/\.mdx$/, ''),
+                    version,
                 })
             }
         }

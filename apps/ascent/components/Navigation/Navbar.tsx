@@ -12,6 +12,7 @@ import {
 } from '../../lib/constants/links'
 import { cn } from '@/lib/utils/cn'
 import ThemeToggle from '../ui/ThemeToggle/ThemeToggle'
+import VersionToggle from '../ui/VersionToggle'
 
 export default function Navbar() {
     const pathname = usePathname()
@@ -28,13 +29,16 @@ export default function Navbar() {
     return (
         <header className="lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto relative z-100">
             <div className="mx-auto px-4 sm:px-6.25 py-5 h-15 flex items-center justify-between border-x border-border">
-                <Link
-                    href={ROUTES.home}
-                    className="flex items-center font-semibold text-foreground"
-                    aria-label="Home"
-                >
-                    Blend
-                </Link>
+                <div className="flex items-center gap-4">
+                    <Link
+                        href={ROUTES.home}
+                        className="flex items-center font-semibold text-foreground"
+                        aria-label="Home"
+                    >
+                        Blend
+                    </Link>
+                    <VersionToggle />
+                </div>
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex items-center gap-4">

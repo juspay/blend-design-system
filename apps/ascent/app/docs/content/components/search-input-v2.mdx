@@ -1,0 +1,186 @@
+---
+version: 2
+title: Search Input
+description: The SearchInputV2 component provides a specialized input for search queries with clear button and submit handling.
+category: components
+tags:
+    - search-input
+    - component
+    - input
+    - search
+    - form
+RepoFolderName: SearchInputV2
+StorybookLink: components-inputs-searchinputv2--docs
+---
+
+<SearchInputV2Preview />
+
+## Usage
+
+```tsx
+import { SearchInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [query, setQuery] = useState('')
+
+    return (
+        <SearchInputV2
+            placeholder="Search products..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onSearch={(value) => console.log('Searching:', value)}
+            size={InputSizeV2.MD}
+            clearable={true}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Current search query value.',
+            },
+            {
+                content: 'string',
+                hintText: 'Search value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback fired when query changes.',
+            },
+            {
+                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSearch',
+                hintText:
+                    'Callback fired when search is submitted (Enter key).',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Search submit handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text when empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting input height.',
+            },
+            {
+                content: 'InputSizeV2',
+                hintText: 'Enum for input size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'clearable',
+                hintText: 'When true, shows clear button when input has value.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows clear button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, input is non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'loading',
+                hintText: 'When true, shows loading indicator.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows loading state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'autoFocus',
+                hintText: 'When true, focuses input on mount.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true auto-focuses',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the SearchInputV2 component using the following tokens:
+
+```tsx
+export type SearchInputV2TokensType = {
+    container: {
+        position: CSSObject['position']
+    }
+    input: {
+        height: {
+            [key in InputSizeV2]: CSSObject['height']
+        }
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        border: {
+            default: CSSObject['border']
+            hover: CSSObject['border']
+            focus: CSSObject['border']
+        }
+        background: CSSObject['background']
+        fontSize: CSSObject['fontSize']
+    }
+    searchIcon: {
+        color: CSSObject['color']
+        size: CSSObject['width']
+    }
+    clearButton: {
+        color: CSSObject['color']
+        hoverColor: CSSObject['color']
+        size: CSSObject['width']
+    }
+    loadingIndicator: {
+        color: CSSObject['color']
+        size: CSSObject['width']
+    }
+}
+```
