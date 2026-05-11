@@ -216,6 +216,9 @@ importers:
             express:
                 specifier: ^4.21.2
                 version: 4.22.1
+            express-rate-limit:
+                specifier: ^8.5.1
+                version: 8.5.1(express@4.22.1)
             google-auth-library:
                 specifier: ^9.15.1
                 version: 9.15.1
@@ -8828,6 +8831,15 @@ packages:
         peerDependencies:
             express: '>= 4.11'
 
+    express-rate-limit@8.5.1:
+        resolution:
+            {
+                integrity: sha512-5O6KYmyJEpuPJV5hNTXKbAHWRqrzyu+OI3vUnSd2kXFubIVpG7ezpgxQy76Zo5GQZtrQBg86hF+CM/NX+cioiQ==,
+            }
+        engines: { node: '>= 16' }
+        peerDependencies:
+            express: '>= 4.11'
+
     express@4.22.1:
         resolution:
             {
@@ -9847,6 +9859,13 @@ packages:
         resolution:
             {
                 integrity: sha512-XXADHxXmvT9+CRxhXg56LJovE+bmWnEWB78LB83VZTprKTmaC5QfruXocxzTZ2Kl0DNwKuBdlIhjL8LeY8Sf8Q==,
+            }
+        engines: { node: '>= 12' }
+
+    ip-address@10.2.0:
+        resolution:
+            {
+                integrity: sha512-/+S6j4E9AHvW9SWMSEY9Xfy66O5PWvVEJ08O0y5JGyEKQpojb0K0GKpz/v5HJ/G0vi3D2sjGK78119oXZeE0qA==,
             }
         engines: { node: '>= 12' }
 
@@ -15115,6 +15134,7 @@ packages:
             {
                 integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==,
             }
+        deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
         hasBin: true
 
     valibot@1.2.0:
@@ -21595,6 +21615,11 @@ snapshots:
             express: 5.2.1
             ip-address: 10.1.0
 
+    express-rate-limit@8.5.1(express@4.22.1):
+        dependencies:
+            express: 4.22.1
+            ip-address: 10.2.0
+
     express@4.22.1:
         dependencies:
             accepts: 1.3.8
@@ -22357,6 +22382,8 @@ snapshots:
             loose-envify: 1.4.0
 
     ip-address@10.1.0: {}
+
+    ip-address@10.2.0: {}
 
     ipaddr.js@1.9.1: {}
 

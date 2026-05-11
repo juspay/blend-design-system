@@ -1,94 +1,131 @@
+import { rateLimit, type Options } from 'express-rate-limit'
+import type { Request } from 'express'
+
 /**
- * Rate Limiting Middleware
- *
- * In-memory sliding-window rate limiter. For production at scale,
- * replace with Redis-backed solution (e.g. `rate-limit-redis`).
- *
- * Usage:
- *   app.use('/api', rateLimit({ windowMs: 60_000, max: 100 }))
- *   app.use('/api/auth', rateLimit({ windowMs: 60_000, max: 10 }))
+ * Generate rate limit key based on authenticated user or IP address.
+ * This prevents authenticated users from bypassing limits by changing IPs.
  */
-
-import type { Request, Response, NextFunction } from 'express'
-
-interface RateLimitOptions {
-    /** Time window in milliseconds. Default: 60 seconds. */
-    windowMs?: number
-    /** Maximum requests per window per IP. Default: 100. */
-    max?: number
-    /** Response message when rate limited. */
-    message?: string
-}
-
-interface RequestRecord {
-    count: number
-    resetAt: number
-}
-
-export function rateLimit(options: RateLimitOptions = {}) {
-    const windowMs = options.windowMs ?? 60_000
-    const max = options.max ?? 100
-    const message =
-        options.message ?? 'Too many requests, please try again later'
-
-    const store = new Map<string, RequestRecord>()
-
-    // Cleanup expired entries every 5 minutes
-    const cleanupInterval = setInterval(() => {
-        const now = Date.now()
-        for (const [key, record] of store) {
-            if (record.resetAt <= now) {
-                store.delete(key)
-            }
-        }
-    }, 5 * 60_000)
-
-    // Allow the timer to not prevent Node from exiting
-    if (cleanupInterval.unref) {
-        cleanupInterval.unref()
+const keyGenerator = (req: Request): string => {
+    // Use user ID if authenticated, fallback to IP
+    const userId = req.user?.id
+    if (userId) {
+        return `user:${userId}`
     }
-
-    return (req: Request, res: Response, next: NextFunction): void => {
-        const key = req.ip || req.socket.remoteAddress || 'unknown'
-        const now = Date.now()
-        const record = store.get(key)
-
-        if (!record || record.resetAt <= now) {
-            // First request in this window or window has expired
-            store.set(key, { count: 1, resetAt: now + windowMs })
-            res.setHeader('X-RateLimit-Limit', max)
-            res.setHeader('X-RateLimit-Remaining', max - 1)
-            res.setHeader(
-                'X-RateLimit-Reset',
-                Math.ceil((now + windowMs) / 1000)
-            )
-            next()
-            return
-        }
-
-        record.count++
-
-        if (record.count > max) {
-            res.setHeader('X-RateLimit-Limit', max)
-            res.setHeader('X-RateLimit-Remaining', 0)
-            res.setHeader('X-RateLimit-Reset', Math.ceil(record.resetAt / 1000))
-            res.setHeader(
-                'Retry-After',
-                Math.ceil((record.resetAt - now) / 1000)
-            )
-            res.status(429).json({
-                success: false,
-                error: {
-                    code: 'RATE_LIMITED',
-                    message,
-                },
-            })
-            return
-        }
-
-        res.setHeader('X-RateLimit-Limit', max)
-        res.setHeader('X-RateLimit-Remaining', max - record.count)
-        res.setHeader('X-RateLimit-Reset', Math.ceil(record.resetAt / 1000))
-        next()
-    }
+    return req.ip ?? 'unknown'
 }
+
+/**
+ * Base configuration shared across all rate limiters
+ */
+const baseConfig: Partial<Options> = {
+    standardHeaders: 'draft-8', // IETF standard headers
+    legacyHeaders: false, // Disable deprecated X-RateLimit-* headers
+    keyGenerator,
+    // Trust proxy to get real client IP behind load balancers
+    validate: { trustProxy: false },
+}
+
+/**
+ * General API Limiter
+ * - 100 requests per 15 minutes
+ * - For standard CRUD operations (GET, safe operations)
+ *
+ * Industry standard: Most REST APIs (GitHub, Stripe, etc.) use 100 req/15min
+ * for general authenticated endpoints.
+ */
+export const apiLimiter = rateLimit({
+    ...baseConfig,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100, // 100 requests per window
+    message: {
+        success: false,
+        error: {
+            code: 'RATE_LIMIT_EXCEEDED',
+            message: 'Too many requests. Please try again later.',
+        },
+    },
+})
+
+/**
+ * Strict Limiter
+ * - 30 requests per 15 minutes
+ * - For sensitive operations: approve, reject, merge, delete, update
+ *
+ * Used for operations that modify state or have significant side effects.
+ * Prevents abuse of critical business logic endpoints.
+ */
+export const strictLimiter = rateLimit({
+    ...baseConfig,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 30, // 30 requests per window
+    message: {
+        success: false,
+        error: {
+            code: 'RATE_LIMIT_EXCEEDED',
+            message: 'Too many requests for this operation. Please slow down.',
+        },
+    },
+})
+
+/**
+ * Write Limiter
+ * - 50 requests per 15 minutes
+ * - For write operations: POST, PUT, PATCH (non-sensitive)
+ *
+ * Balance between allowing productive work and preventing abuse.
+ */
+export const writeLimiter = rateLimit({
+    ...baseConfig,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 50, // 50 requests per window
+    message: {
+        success: false,
+        error: {
+            code: 'RATE_LIMIT_EXCEEDED',
+            message: 'Too many write requests. Please try again later.',
+        },
+    },
+})
+
+/**
+ * Auth Limiter
+ * - 5 requests per 15 minutes
+ * - For authentication endpoints: login, register, password reset
+ *
+ * Critical for preventing brute-force attacks on credentials.
+ * Industry standard: OWASP recommends 5 attempts max.
+ */
+export const authLimiter = rateLimit({
+    ...baseConfig,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 5, // 5 requests per window
+    skipSuccessfulRequests: true, // Don't count successful logins
+    message: {
+        success: false,
+        error: {
+            code: 'AUTH_RATE_LIMIT_EXCEEDED',
+            message:
+                'Too many authentication attempts. Please try again later.',
+        },
+    },
+})
+
+/**
+ * Admin Limiter
+ * - 60 requests per 15 minutes
+ * - For admin-only operations
+ *
+ * Higher limit for admin tasks while still preventing accidental abuse.
+ */
+export const adminLimiter = rateLimit({
+    ...baseConfig,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 60, // 60 requests per window
+    message: {
+        success: false,
+        error: {
+            code: 'RATE_LIMIT_EXCEEDED',
+            message: 'Admin operation rate limit exceeded.',
+        },
+    },
+})

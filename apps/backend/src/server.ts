@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser'
 import { env, isDevelopment } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
-import { rateLimit } from '@/middlewares/rateLimit.js'
+import { apiLimiter, authLimiter } from '@/middlewares/rateLimit.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
 import { connectDatabaseWithRetry, isDatabaseReady } from '@/config/database.js'
 import authRoutes from '@/domains/auth/entry-points/auth.routes.js'
@@ -65,10 +65,7 @@ app.use(cookieParser())
 // ---------------------------------------------------------------------------
 // Rate Limiting — prevent abuse and brute-force attacks
 // ---------------------------------------------------------------------------
-// Auth endpoints get stricter limits (20/min) to prevent credential brute-force
-app.use('/api/auth', rateLimit({ windowMs: 60_000, max: 20 }))
-// General API endpoints get standard limits (100/min per IP)
-app.use('/api', rateLimit({ windowMs: 60_000, max: 100 }))
+// Mounted on routers below to ensure all `/api/*` routes are covered.
 
 app.use((req, _res, next) => {
     logger.debug(
@@ -119,15 +116,15 @@ app.use('/docs', swaggerUiHandler, swaggerUiSetup)
 
 app.get('/auth/google/callback', googleCallback)
 
-app.use('/api/auth', authRoutes)
-app.use('/api/branches', branchRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/organizations', orgRoutes)
-app.use('/api/organizations', lockRoutes)
-app.use('/api/merge-requests', mergeRequestRoutes)
-app.use('/api/tags', tagRoutes)
-app.use('/api/api-keys', apiKeyRoutes)
-app.use('/api', tokenRoutes)
+app.use('/api/auth', authLimiter, authRoutes)
+app.use('/api/branches', apiLimiter, branchRoutes)
+app.use('/api/users', apiLimiter, userRoutes)
+app.use('/api/organizations', apiLimiter, orgRoutes)
+app.use('/api/organizations', apiLimiter, lockRoutes)
+app.use('/api/merge-requests', apiLimiter, mergeRequestRoutes)
+app.use('/api/tags', apiLimiter, tagRoutes)
+app.use('/api/api-keys', apiLimiter, apiKeyRoutes)
+app.use('/api', apiLimiter, tokenRoutes)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

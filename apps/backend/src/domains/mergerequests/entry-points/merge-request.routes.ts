@@ -6,6 +6,7 @@ import {
     createMergeRequestSchema,
     reviewMergeRequestSchema,
 } from '@/middlewares/validate.js'
+import { strictLimiter } from '@/middlewares/rateLimit.js'
 import * as mrService from '../domain/merge-request.service.js'
 
 const router: IRouter = Router()
@@ -52,6 +53,7 @@ router.get(
 router.post(
     '/',
     authenticate,
+    strictLimiter,
     validate({ body: createMergeRequestSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const orgId =
@@ -89,6 +91,7 @@ router.post(
 router.post(
     '/:id/approve',
     authenticate,
+    strictLimiter,
     validate({ body: reviewMergeRequestSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const mr = await mrService.approveMR(
@@ -107,6 +110,7 @@ router.post(
 router.post(
     '/:id/reject',
     authenticate,
+    strictLimiter,
     validate({ body: reviewMergeRequestSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const mr = await mrService.rejectMR(
@@ -125,6 +129,7 @@ router.post(
 router.post(
     '/:id/merge',
     authenticate,
+    strictLimiter,
     asyncHandler(async (req: Request, res: Response) => {
         const mr = await mrService.mergeMR(
             req.params.id,
@@ -141,6 +146,7 @@ router.post(
 router.post(
     '/:id/cancel',
     authenticate,
+    strictLimiter,
     asyncHandler(async (req: Request, res: Response) => {
         const mr = await mrService.cancelMR(
             req.params.id,
