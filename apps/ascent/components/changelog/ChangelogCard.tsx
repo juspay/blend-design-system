@@ -34,7 +34,7 @@ export const ChangelogCard = ({
                     isExpanded && 'border-b'
                 )}
             >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+                <div className="flex flex-wrap sm:items-center justify-between gap-2 sm:gap-0">
                     <div className="flex items-center gap-2">
                         <CaretDownIcon
                             className={cn(
@@ -49,24 +49,28 @@ export const ChangelogCard = ({
 
                     {commitHashes.length > 0 && (
                         <div className="flex items-center gap-3 text-sm ml-6 sm:ml-0">
-                            {commitHashes.map((hash, i) => {
-                                const url =
-                                    commitUrls[i] ||
-                                    `https://github.com/juspay/blend-design-system/commit/${hash}`
-                                return (
-                                    <Link
-                                        key={`commit-${hash}`}
-                                        href={url}
-                                        className="flex items-center gap-1 text-blue-600 dark:text-blue-500 hover:underline font-medium text-xs sm:text-sm"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        Commit
-                                        <CaretRightIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                                    </Link>
-                                )
-                            })}
+                            {commitHashes.length === 1 ? (
+                                <Link
+                                    href={
+                                        commitUrls[0] ||
+                                        `https://github.com/juspay/blend-design-system/commit/${commitHashes[0]}`
+                                    }
+                                    className="flex items-center gap-1 text-blue-600 dark:text-blue-500 hover:underline font-medium text-xs sm:text-sm"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    Commit
+                                    <CaretRightIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                                </Link>
+                            ) : (
+                                <div
+                                    className="flex items-center gap-1 text-blue-600 dark:text-blue-500 font-medium text-xs sm:text-sm cursor-default"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {commitHashes.length} commits
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

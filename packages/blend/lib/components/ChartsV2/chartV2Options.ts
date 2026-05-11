@@ -15,25 +15,32 @@ const LEGEND_DEFAULTS = {
 } as const
 
 type AxisStyleTokens = {
-    fontSize: unknown
-    color: unknown
-    fontWeight: unknown
-    lineHeight: unknown
+    fontSize: string | number | undefined
+    color: string | undefined
+    fontWeight: string | number | undefined
+    lineHeight: string | number | undefined
 }
 
-const toAxisStyle = (tokens: AxisStyleTokens) => {
+const toAxisStyle = (tokens: AxisStyleTokens): Highcharts.CSSObject => {
     return {
-        fontSize: tokens.fontSize,
+        fontSize:
+            tokens.fontSize === undefined ? undefined : String(tokens.fontSize),
         color: tokens.color,
-        fontWeight: tokens.fontWeight,
-        lineHeight: tokens.lineHeight,
+        fontWeight:
+            tokens.fontWeight === undefined
+                ? undefined
+                : String(tokens.fontWeight),
+        lineHeight:
+            tokens.lineHeight === undefined
+                ? undefined
+                : String(tokens.lineHeight),
     }
 }
 
 export const mergeChartOptions = (
     options: Highcharts.Options,
     tokens: ChartV2TokensType
-) => {
+): Record<string, unknown> => {
     const { chart, title, subtitle, legend, xAxis, yAxis } = options
     const { chart: chartTokens, legends: legendsTokens } = tokens
 

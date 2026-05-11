@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict'
 
 // Validate Node version before loading anything else
 const [major] = process.versions.node.split('.').map(Number)
@@ -10,4 +9,4 @@ if (major < 18) {
     process.exit(1)
 }
 
-require('../dist/cli.js')
+await import('../dist/cli.js')

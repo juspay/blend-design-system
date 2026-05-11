@@ -120,13 +120,19 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
 
             <Block
                 flexGrow={iconOnlyMode ? 0 : 1}
-                width={iconOnlyMode ? 0 : undefined}
+                width={iconOnlyMode ? 0 : '100%'}
                 minWidth={0}
                 overflow="hidden"
                 opacity={iconOnlyMode ? 0 : selectVisible ? 1 : 0}
                 pointerEvents={iconOnlyMode ? 'none' : 'auto'}
-                transition="opacity 0.15s ease-out, flex-grow 0.2s ease-out, width 0.2s ease-out"
-                display={iconOnlyMode ? 'none' : 'block'}
+                transition="opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1), flex-grow 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
+                style={{
+                    willChange: 'opacity, width, flex-grow',
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden',
+                    position: iconOnlyMode ? 'absolute' : 'relative',
+                    left: iconOnlyMode ? '-9999px' : 'auto',
+                }}
             >
                 {headerSlot}
             </Block>
