@@ -139,6 +139,14 @@ import TabsV2Demo from './TabsV2Demo'
 import BreadcrumbV2Demo from './BreadcrumbV2Demo'
 import CodeEditorV2Demo from './CodeEditorV2Demo'
 import ProgressBarV2Demo from './ProgressBarV2Demo'
+import MultiValueInputV2Demo from './MultiValueInputV2Demo'
+import NumberInputV2Demo from './NumberInputV2Demo'
+import OTPInputV2Demo from './OTPInputV2Demo'
+import TextAreaV2Demo from './TextAreaV2Demo'
+import SearchInputV2Demo from './SearchInputV2Demo'
+import BadgeDemo from './BadgeDemo'
+import ChatInputV2Demo from './ChatInputV2Demo'
+import StepperV2Demo from './StepperV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -231,12 +239,17 @@ const SidebarDemo = () => {
         | 'tooltipV2'
         | 'breadcrumbV2'
         | 'codeEditorV2'
-        | 'singleSelectV2'
         | 'popoverV2'
-        | 'codeEditorV2'
-        | 'breadcrumbV2'
         | 'progressBarV2'
-    >('progressBarV2')
+        | 'multiValueInputV2'
+        | 'numberInputV2'
+        | 'otpInputV2'
+        | 'textAreaV2'
+        | 'badge'
+        | 'searchInputV2'
+        | 'chatInputV2'
+        | 'stepperV2'
+    >('stepperV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -457,14 +470,20 @@ const SidebarDemo = () => {
                 return <InputDemo />
             case 'searchInput':
                 return <SearchInputDemo />
+            case 'searchInputV2':
+                return <SearchInputV2Demo />
             case 'unitInput':
                 return <UnitInputDemo />
             case 'numberInput':
                 return <NumberInputDemo />
+            case 'numberInputV2':
+                return <NumberInputV2Demo />
             case 'textArea':
                 return <TextAreaDemo />
             case 'chatInput':
                 return <ChatInputDemo />
+            case 'chatInputV2':
+                return <ChatInputV2Demo />
             case 'otpInput':
                 return <OTPInputDemo />
             case 'alerts':
@@ -545,6 +564,8 @@ const SidebarDemo = () => {
                 return <PopoverV2Demo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'multiValueInputV2':
+                return <MultiValueInputV2Demo />
             case 'stepper':
                 return <StepperDemo />
             case 'topbar':
@@ -591,6 +612,14 @@ const SidebarDemo = () => {
                 return <CodeEditorV2Demo />
             case 'progressBarV2':
                 return <ProgressBarV2Demo />
+            case 'otpInputV2':
+                return <OTPInputV2Demo />
+            case 'textAreaV2':
+                return <TextAreaV2Demo />
+            case 'badge':
+                return <BadgeDemo />
+            case 'stepperV2':
+                return <StepperV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -814,6 +843,15 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Badge',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'badge',
+                    onClick: () => setActiveComponent('badge'),
+                    showOnMobile: true,
+                },
+                {
                     label: 'Avatar',
                     leftSlot: (
                         <Users style={{ width: '16px', height: '16px' }} />
@@ -941,12 +979,28 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('searchInput'),
                 },
                 {
+                    label: 'Search Input V2',
+                    leftSlot: (
+                        <Search style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'searchInputV2',
+                    onClick: () => setActiveComponent('searchInputV2'),
+                },
+                {
                     label: 'OTP Input',
                     leftSlot: (
                         <Shield style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'otpInput',
                     onClick: () => setActiveComponent('otpInput'),
+                },
+                {
+                    label: 'OTP Input V2',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'otpInputV2',
+                    onClick: () => setActiveComponent('otpInputV2'),
                 },
                 {
                     label: 'Unit Input',
@@ -967,6 +1021,16 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('numberInput'),
                 },
                 {
+                    label: 'Number Input V2',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'numberInputV2',
+                    onClick: () => setActiveComponent('numberInputV2'),
+                },
+                {
                     label: 'Dropdown Input',
                     leftSlot: (
                         <DecimalsArrowRightIcon
@@ -985,6 +1049,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('textArea'),
                 },
                 {
+                    label: 'Text Area V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textAreaV2',
+                    onClick: () => setActiveComponent('textAreaV2'),
+                },
+                {
                     label: 'Chat Input',
                     leftSlot: (
                         <MessageCircle
@@ -996,12 +1068,30 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Chat Input V2',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'chatInputV2',
+                    onClick: () => setActiveComponent('chatInputV2'),
+                },
+                {
                     label: 'Multi Value Input',
                     leftSlot: (
                         <ListFilter style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'multiValueInput',
                     onClick: () => setActiveComponent('multiValueInput'),
+                },
+                {
+                    label: 'Multi Value Input V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiValueInputV2',
+                    onClick: () => setActiveComponent('multiValueInputV2'),
                 },
                 {
                     label: 'Key Value Pair',
@@ -1183,6 +1273,14 @@ const SidebarDemo = () => {
                         <List style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('stepper'),
+                },
+                {
+                    label: 'Stepper V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'stepperV2',
+                    onClick: () => setActiveComponent('stepperV2'),
                 },
             ],
         },
@@ -1578,7 +1676,7 @@ const SidebarDemo = () => {
               }
 
     return (
-        <div className="w-screen h-screen">
+        <div className="w-full h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     onSidebarStateChange={(state) => setSidebarState(state)}

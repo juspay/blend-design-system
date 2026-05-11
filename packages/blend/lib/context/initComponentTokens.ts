@@ -34,12 +34,14 @@ import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.t
 import { getCardTokens } from '../components/Card/card.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
+import { getTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { getDirectoryTokens } from '../components/Directory/directory.tokens'
 import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import { getMobileNavigationV2Tokens } from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
@@ -62,12 +64,22 @@ import { getStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
+import { getSidebarV2Tokens } from '../components/SidebarV2/sidebarV2.tokens'
 import { getTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
 import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
 import { getCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
 import { getProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
+import { getMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import { getNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import { getTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import { getBadgeTokens } from '../components/Badge/badge.tokens'
+import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 
+import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
@@ -141,6 +153,9 @@ const initTokens = (
         SKELETON:
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
+        TOPBARV2:
+            componentTokens.TOPBARV2 ??
+            getTopbarV2Tokens(foundationTokens, theme),
         AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
         AVATAR_GROUP:
             componentTokens.AVATAR_GROUP ??
@@ -151,11 +166,20 @@ const initTokens = (
         MOBILE_NAVIGATION:
             componentTokens.MOBILE_NAVIGATION ??
             getMobileNavigationTokens(foundationTokens),
+        MOBILE_NAVIGATION_V2:
+            componentTokens.MOBILE_NAVIGATION_V2 ??
+            getMobileNavigationV2Tokens(foundationTokens, theme),
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
         CHAT_INPUT:
             componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
+        CHAT_INPUTV2:
+            componentTokens.CHAT_INPUTV2 ??
+            getChatInputV2Tokens(foundationTokens, theme),
+        CHAT_INPUTV2_MOBILE:
+            componentTokens.CHAT_INPUTV2_MOBILE ??
+            getChatInputV2MobileTokens(foundationTokens, theme),
         BUTTONV2:
             componentTokens.BUTTONV2 ??
             getButtonV2Tokens(foundationTokens, theme),
@@ -187,6 +211,9 @@ const initTokens = (
         TEXT_INPUTV2:
             componentTokens.TEXT_INPUTV2 ??
             getTextInputV2Tokens(foundationTokens, theme),
+        TEXT_AREA_V2:
+            componentTokens.TEXT_AREA_V2 ??
+            getTextAreaV2Tokens(foundationTokens, theme),
         CHARTSV2:
             componentTokens.CHARTSV2 ??
             getChartV2Tokens(foundationTokens, theme),
@@ -211,6 +238,9 @@ const initTokens = (
         POPOVERV2:
             componentTokens.POPOVERV2 ??
             getPopoverV2Tokens(foundationTokens, theme),
+        SIDEBARV2:
+            componentTokens.SIDEBARV2 ??
+            getSidebarV2Tokens(foundationTokens, theme),
         TABSV2:
             componentTokens.TABSV2 ?? getTabsV2Tokens(foundationTokens, theme),
         CODEEDITORV2:
@@ -219,6 +249,22 @@ const initTokens = (
         PROGRESS_BARV2:
             componentTokens.PROGRESS_BARV2 ??
             getProgressBarV2Tokens(foundationTokens, theme),
+        MULTI_VALUE_INPUT_V2:
+            componentTokens.MULTI_VALUE_INPUT_V2 ??
+            getMultiValueInputV2Tokens(foundationTokens, theme),
+        NUMBER_INPUT_V2:
+            componentTokens.NUMBER_INPUT_V2 ??
+            getNumberInputV2Tokens(foundationTokens, theme),
+        OTP_INPUTV2:
+            componentTokens.OTP_INPUTV2 ??
+            getOTPInputV2Tokens(foundationTokens, theme),
+        BADGE: componentTokens.BADGE ?? getBadgeTokens(foundationTokens, theme),
+        SEARCH_INPUT_V2:
+            componentTokens.SEARCH_INPUT_V2 ??
+            getSearchInputV2Tokens(foundationTokens, theme),
+        STEPPERV2:
+            componentTokens.STEPPERV2 ??
+            getStepperV2Tokens(foundationTokens, theme),
     }
 }
 

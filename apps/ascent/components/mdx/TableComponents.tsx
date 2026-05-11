@@ -3,36 +3,38 @@ import React, { ComponentPropsWithoutRef } from 'react'
 // Table components for MDX content
 export const TableComponents = {
     table: (props: ComponentPropsWithoutRef<'table'>) => (
-        <table
-            className="w-full table-auto border-collapse border border-gray-300 dark:border-zinc-600 my-6"
-            {...props}
-        />
+        <div className="overflow-x-auto w-full my-4">
+            <table
+                className="w-full min-w-full border border-border rounded-t-xl"
+                {...props}
+            />
+        </div>
     ),
     thead: (props: ComponentPropsWithoutRef<'thead'>) => (
-        <thead className="bg-gray-50 dark:bg-zinc-800" {...props} />
+        <thead className="bg-surface border-b border-code-border" {...props} />
     ),
     tbody: (props: ComponentPropsWithoutRef<'tbody'>) => (
         <tbody
-            className="divide-y divide-gray-200 dark:divide-zinc-700"
+            className="bg-background divide-y divide-code-border"
             {...props}
         />
     ),
     tr: (props: ComponentPropsWithoutRef<'tr'>) => (
-        <tr
-            className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 border-b border-gray-200 dark:border-zinc-700 last:border-b-0"
-            {...props}
-        />
+        <tr className="hover:bg-muted" {...props} />
     ),
     th: (props: ComponentPropsWithoutRef<'th'>) => (
         <th
-            className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-zinc-100 border-b border-gray-300 dark:border-zinc-600 whitespace-nowrap bg-gray-50 dark:bg-zinc-800"
+            className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
             {...props}
         />
     ),
     td: (props: ComponentPropsWithoutRef<'td'>) => (
-        <td
-            className="px-4 py-3 text-sm text-gray-800 dark:text-zinc-300 break-words align-top"
-            {...props}
-        />
+        <td className="py-4 text-sm text-foreground" {...props}>
+            <div className="flex items-start gap-2 px-6">
+                <span className="block wrap-break-words">
+                    {(props as any).children}
+                </span>
+            </div>
+        </td>
     ),
 }

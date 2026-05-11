@@ -62,6 +62,12 @@ export type DirectoryTokenType = {
                     x: CSSObject['padding']
                     y: CSSObject['padding']
                 }
+                iconOnlyPadding: {
+                    paddingTop: CSSObject['paddingTop']
+                    paddingBottom: CSSObject['paddingBottom']
+                    paddingLeft: CSSObject['paddingLeft']
+                    paddingRight: CSSObject['paddingRight']
+                }
                 gap: CSSObject['gap'] // Gap between icon and text within item
                 borderRadius: CSSObject['borderRadius'] // Item border radius
                 fontWeight: CSSObject['fontWeight'] // Item text weight
@@ -146,6 +152,12 @@ export const getDirectoryTokens = (
                             x: foundationToken.unit[12],
                             y: foundationToken.unit[6],
                         },
+                        iconOnlyPadding: {
+                            paddingTop: foundationToken.unit[8],
+                            paddingBottom: foundationToken.unit[8],
+                            paddingLeft: foundationToken.unit[10],
+                            paddingRight: foundationToken.unit[10],
+                        },
                         gap: foundationToken.unit[12],
                         borderRadius: foundationToken.border.radius[4],
                         fontWeight: 500,
@@ -219,6 +231,12 @@ export const getDirectoryTokens = (
                         padding: {
                             x: foundationToken.unit[12],
                             y: foundationToken.unit[6],
+                        },
+                        iconOnlyPadding: {
+                            paddingTop: foundationToken.unit[8],
+                            paddingBottom: foundationToken.unit[8],
+                            paddingLeft: foundationToken.unit[10],
+                            paddingRight: foundationToken.unit[10],
                         },
                         gap: foundationToken.unit[10],
                         borderRadius: foundationToken.border.radius[4],

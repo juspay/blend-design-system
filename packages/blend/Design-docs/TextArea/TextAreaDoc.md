@@ -1,0 +1,217 @@
+# TextAreaV2 Component Documentation
+
+## Requirements
+
+Create a scalable multiline text field that supports:
+
+- **Controlled value**: Single source of truth via `value` and `onChange`
+- **Labels**: Optional primary label, optional `sublabel`; on **small** viewports, optional **`FloatingLabelsV2`** when `label` is set (floated over the field, token-driven)
+- **States**: Default, hover, focus, error, disabled — borders and backgrounds from `inputContainer` tokens
+- **Validation**: `error: { show, message? }` like **`TextInputV2`**; required asterisk via labels / floating label
+- **Help**: Hint text below the field (`InputFooterV2`); optional help on the label row (`helpIconText` → `InputLabelsV2`)
+- **Layout**: **`rows`** sets the native **`<textarea rows>`** attribute (default **`3`**) and, together with token **line height** and computed vertical padding, drives **`minHeight`** on **`PrimitiveTextarea`** so the visible height matches the intended line count. CSS **`resize`**, HTML **`wrap`** (`soft` / `hard`) via inherited attributes — horizontal sizing uses the field’s **`width`** / parent layout (the **`cols`** attribute is **not** part of the public API and is stripped if present)
+- **Responsive layout**: **`useBreakpoints(BREAKPOINTS)`**; when **`breakPointLabel === 'sm'`**, static **`InputLabelsV2`** is hidden; if `label` is set, **`FloatingLabelsV2`** is shown; placeholder is cleared on small screens; vertical padding increases top / clears bottom when the field is focused or has text (room for the floating label)
+- **Events**: **`onFocus`**, **`onBlur`**, and **`onKeyDown`** (consumer handler from **`rest`**) each call **`event.stopPropagation()`** first, then run internal focus tracking (where applicable) and the consumer callback — focus, blur, and key events do not bubble to ancestors
+- **Accessibility**: Stable ids from **`generateAccessibilityIds(textareaId)`** (`textareaId` = `id` prop or **`useId()`**); `aria-required`, `aria-invalid`, `aria-describedby` for hint/error; focus ring shared with **`TextInputV2`** (`FOCUS_RING_STYLES`, `TRANSITION`)
+- **Ref forwarding**: Consumer `ref` to **`HTMLTextAreaElement`** via **`setExternalRef`**
+- **Theme**: Light/dark responsive tokens via **`useResponsiveTokens('TEXT_AREA_V2')`**
+
+**Sizing**: Optional **`size`** (`InputSizeV2`, default **`MD`**) selects **`inputContainer.padding`**, **`inputContainer.lineHeight`** (body text and **`style.lineHeight`** on the field), placeholder maps (**`placeholder.fontSize`**, **`fontWeight`**, **`lineHeight`**), and **`FloatingLabelsV2`**. **`textareaMinHeight`** is **`getTextAreaV2MinHeightFromRows(rows, ic.lineHeight[size], { paddingTop, paddingBottom })`** in **`TextAreaV2/utils.ts`** (vertical padding in px plus **`rows` × line-height in px**, with at least one row). Static **`InputLabelsV2`** and **`InputFooterV2`** use fixed **`InputSizeV2.SM`** in the implementation. There are **no** left/right slots.
+
+## Anatomy
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  [Top: Label, SubLabel, Required *, Help icon]              │  ← lg breakpoint: InputLabelsV2
+├─────────────────────────────────────────────────────────────┤
+│  (sm + label: FloatingLabelsV2 over PrimitiveTextarea)      │
+│                    Native <textarea>                          │
+├─────────────────────────────────────────────────────────────┤
+│  [Bottom: Hint text / Error message]                         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- **Large breakpoint**: **`InputLabelsV2`** (`topContainer` tokens) when `!isSmallScreen`
+- **Small breakpoint + `label`**: **`FloatingLabelsV2`** absolutely positioned (token **`backgroundColor`** on the label strip to reduce overlap with scrolled text); **`PrimitiveTextarea`** gets extra top padding when focused or non-empty
+- **Field**: **`PrimitiveTextarea`** — **`rows`**, **`minHeight`**, inline **`lineHeight`** from tokens, border, background, placeholder styles, **`FOCUS_RING_STYLES`** on focus
+- **Bottom**: **`InputFooterV2`** — hint and/or error; ids align with **`aria-describedby`**
+- **Root**: Outer **`Block`** sets **`data-textarea={label || 'textarea'}`** and **`data-status`** to **`disabled`** or **`enabled`**
+
+## Props & Types
+
+See **`TextAreaV2.types.ts`**. Declared fields plus inherited **`React.TextareaHTMLAttributes`** (with omissions below).
+
+```typescript
+export type TextAreaV2Props = {
+    size?: InputSizeV2
+    value: string
+    placeholder: string
+    disabled?: boolean
+    autoFocus?: boolean
+    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+    onFocus?: (e: React.FocusEvent<HTMLTextAreaElement>) => void
+    onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void
+    rows?: number
+    label?: string
+    sublabel?: string
+    hintText?: string
+    helpIconText?: string
+    required?: boolean
+    error?: {
+        show: boolean
+        message?: string
+    }
+    resize?: 'none' | 'both' | 'horizontal' | 'vertical' | 'block' | 'inline'
+} & Omit<
+    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    'size' | 'style' | 'className' | 'onFocus' | 'onBlur' | 'cols'
+>
+```
+
+- **`error`**: Same shape as **`TextInputV2`** — **`show`** gates validation UI; **`message`** feeds the footer and **`aria-describedby`** when present
+- **Implementation defaults** (not all appear in **`TextAreaV2.types.ts`**): **`name`** defaults to **`'text-area'`**; **`rows`** defaults to **`3`**; **`resize`** defaults to **`'none'`**; **`error`** defaults to **`{ show: false, message: '' }`**; **`required`** defaults to **`false`**
+- **`placeholder`**: Required in the type; on **`sm`** the component passes an empty string so the floating label is not duplicated by placeholder text
+- **`wrap`**: Comes from inherited **`TextareaHTMLAttributes`** — use HTML values **`soft`** / **`hard`** for form behavior (not CSS `white-space`; use styling elsewhere if you need `pre` / `pre-wrap`)
+- **`cols`**: Omitted from the inherited attributes type; **`omitTextAreaV2PrivateProps`** also removes **`cols`** (and other component-only keys if they appear on **`rest`**) before spreading so invalid attributes never reach the DOM
+- **Omit `style` | `className`**: **`filterBlockedProps`** strips these from spreadable rest — consumers cannot override field typography or **`minHeight`** via **`style`**; line height and minimum height come from tokens and **`rows`**
+- **Spread pipeline**: **`restWithoutKeyDown`** → **`omitTextAreaV2PrivateProps`** → **`filterBlockedProps`** → **`PrimitiveTextarea`**. Top-level props (`label`, `hintText`, **`helpIconText`**, **`error`**, **`size`**, **`rows`**, etc.) are destructured first so they are not forwarded twice; **`rows`** is passed explicitly as **`rows={rows}`** with **`minHeight`** and token-driven styles
+- **`onFocus` / `onBlur`**: Omitted from attributes because the component wraps them to track focus for **`labelState`**, call **`stopPropagation`**, then forwards to consumer handlers
+- **`aria-required`**: Set to **`'true'`** when **`required`**; omitted when false (not **`'false'`**)
+
+Native attributes such as `name`, `id`, `autoComplete`, `maxLength`, and `readOnly` remain available on the spread.
+
+## Token type
+
+Tokens are **responsive** per breakpoint (`sm`, `lg` on **`BreakpointType`**). Each breakpoint resolves to **`TextAreaV2TokensType`** (**`TextAreaV2.tokens.ts`**):
+
+```typescript
+export type TextAreaV2TokensType = {
+    gap: CSSObject['gap']
+    topContainer: InputLabelsV2Tokens
+    inputContainer: {
+        gap: CSSObject['gap']
+        placeholder: {
+            transition: CSSObject['transition']
+            color: { [key in InputStateV2]: CSSObject['color'] }
+            fontSize: { [key in InputSizeV2]: CSSObject['fontSize'] }
+            fontWeight: { [key in InputSizeV2]: CSSObject['fontWeight'] }
+            lineHeight: { [key in InputSizeV2]: CSSObject['lineHeight'] }
+        }
+        lineHeight: { [key in InputSizeV2]: CSSObject['lineHeight'] }
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        padding: {
+            top: { [key in InputSizeV2]: CSSObject['padding'] }
+            right: { [key in InputSizeV2]: CSSObject['padding'] }
+            bottom: { [key in InputSizeV2]: CSSObject['padding'] }
+            left: { [key in InputSizeV2]: CSSObject['padding'] }
+        }
+        borderRadius: CSSObject['borderRadius']
+        boxShadow: CSSObject['boxShadow']
+        border: { [key in InputStateV2]: CSSObject['border'] }
+        color: { [key in InputStateV2]: CSSObject['color'] }
+        backgroundColor: { [key in InputStateV2]: CSSObject['backgroundColor'] }
+    }
+    bottomContainer: InputFooterV2Tokens
+}
+```
+
+Theme selection: **`getTextAreaV2Tokens`** in **`TextAreaV2.tokens.ts`** (light/dark in **`TextAreaV2.light.tokens.ts`** / **`TextAreaV2.dark.tokens.ts`**). The responsive map type is **`ResponsiveTextAreaV2Tokens`**.
+
+**Registration**: Component key **`TEXT_AREA_V2`** is wired in theme initialization alongside other Inputs V2 components.
+
+## Design decisions
+
+### 1. Error as `{ show, message? }` (aligned with TextInputV2)
+
+**Decision**: Use **`error?: { show: boolean; message?: string }`**, default **`{ show: false, message: '' }`**.
+
+**Rationale**: Consistent with **`TextInputV2`** and **`InputFooterV2`**, which consume **`error.show`** and **`errorMessage`** separately in the current implementation.
+
+### 2. No slots
+
+**Decision**: No left/right slots.
+
+**Rationale**: Multiline fields prioritize content width; avoids slot measurement for padding.
+
+### 3. `InputSizeV2` on the field
+
+**Decision**: Optional **`size`** (default **`MD`**) selects padding, **body line height** (**`inputContainer.lineHeight[size]`**), and placeholder typography from **`inputContainer.padding`** and **`placeholder`** maps. Label row and footer use **`SM`** in the current component.
+
+**Rationale**: Allows density tuning while keeping label/footer typography aligned with other inputs.
+
+### 4. Small viewport: static labels off, floating label + padding
+
+**Decision**: When **`isSmallScreen`**, **`InputLabelsV2`** is not rendered. If **`label`** is set, **`FloatingLabelsV2`** is shown. Placeholder is **`''`**. When the user focuses or the value is non-empty, top padding increases by adding the current base top padding again (that is, the top padding is token-driven and effectively doubles for the active size), and bottom padding goes to **0** to make room for the floated label.
+
+**Rationale**: Saves vertical space; floating label reuses **`TextInputV2`** floating patterns.
+
+### 5. Stable ids and `aria-describedby`
+
+**Decision**: **`generateAccessibilityIds(textareaId)`** produces **`hintId`** / **`errorId`**. **`aria-describedby`** includes the hint id when **`hintText`** is set and **`!error.show`**; includes the error id when **`error.show`** and **`error.message`**.
+
+**Rationale**: Matches footer visibility and WCAG description patterns.
+
+### 6. `aria-invalid`
+
+**Decision**: **`aria-invalid={error.show ? 'true' : 'false'}`**.
+
+**Rationale**: Explicit true/false for assistive tech.
+
+### 7. Ref forwarding
+
+**Decision**: **`setExternalRef`** from **`InputsV2/utils/utils.ts`**.
+
+**Rationale**: Same as **`TextInputV2`** for callback and object refs.
+
+### 8. `onKeyDown` composition
+
+**Decision**: Destructure **`onKeyDown`** from **`rest`**, run **`omitTextAreaV2PrivateProps`** then **`filterBlockedProps`** on the remainder, invoke consumer **`onKeyDown`** from the textarea **`onKeyDown`** handler (after **`stopPropagation`** — see below).
+
+**Rationale**: Keeps component-only props and blocked styling off the native element while allowing key handlers.
+
+### 9. `stopPropagation` on focus, blur, and keydown
+
+**Decision**: **`onFocus`**, **`onBlur`**, and **`onKeyDown`** on **`PrimitiveTextarea`** call **`e.stopPropagation()`** before updating internal focus state or invoking **`onFocus`** / **`onBlur`** / **`restOnKeyDown`**.
+
+**Rationale**: Prevents focus and keyboard interaction from bubbling to parent interactive regions (e.g. dismissible overlays, accordion headers) while still running consumer handlers on the textarea.
+
+### 10. Error overrides hover and focus surfaces
+
+**Decision**: When **`error.show`**, border and background token keys stay on **error** for default, hover, and focus.
+
+**Rationale**: Validation state remains visible until cleared.
+
+### 11. Shared focus ring and transition
+
+**Decision**: **`FOCUS_RING_STYLES`** (box shadow + focus background tint) and **`TRANSITION`** from **`TextInputV2/utils`**.
+
+**Rationale**: Visual parity with single-line inputs.
+
+### 12. Blocking `className`, `style`, and component-only rest props
+
+**Decision**: Spread **`filterBlockedProps(omitTextAreaV2PrivateProps(restWithoutKeyDown))`** onto **`PrimitiveTextarea`**. The component sets **`style={{ lineHeight: … }}`** from **`inputContainer.lineHeight`** (via **`addPxToValue` / `toPixels`**) in addition to styled-system props (**`minHeight`**, padding, etc.).
+
+**Rationale**: **`omitTextAreaV2PrivateProps`** (see **`TextAreaV2/utils.ts`**) prevents **`label`**, **`error`**, **`size`**, **`cols`**, and related keys from leaking onto **`<textarea>`**; **`filterBlockedProps`** removes **`className`** / **`style`** from **`rest`** so ad hoc styles do not fight tokens. Field line height and minimum height stay aligned with **`rows`** and **`TEXT_AREA_V2`** tokens.
+
+### 13. No `cols` on the public API
+
+**Decision**: **`cols`** is excluded from **`TextAreaV2Props`** ( **`Omit<…, 'cols'>`** ) and stripped in **`omitTextAreaV2PrivateProps`**.
+
+**Rationale**: Width is controlled by layout and **`width: 100%`** on the field; avoiding **`cols`** keeps behavior aligned with the design system and prevents legacy HTML width hints from conflicting with CSS.
+
+### 14. `rows` and minimum height from tokens
+
+**Decision**: Forward **`rows={rows}`** to the native element. Compute **`minHeight`** with **`getTextAreaV2MinHeightFromRows`**: vertical padding (from **`getTextAreaInputPadding`**, in px) plus **`max(1, floor(rows))`** times the token line height in px.
+
+**Rationale**: Keeps the visible box height consistent with the design line-height scale and the **`rows`** hint for browsers and assistive tech; avoids a fixed **`height`** that would ignore padding and **`rows`**.
+
+## Testing
+
+- **Unit tests**: `packages/blend/__tests__/components/TextAreaV2/TextAreaV2.test.tsx` — mocks **`useBreakpoints`** for stable **`lg`** / **`sm`** coverage (placeholder, floating label, **`aria-describedby`**, **`keydown`** bubbling), **`omitTextAreaV2PrivateProps`**, **`getTextAreaV2MinHeightFromRows`**, **`cols`** not on the DOM, and **`rows`** forwarded to the textarea
+- **Accessibility**: `packages/blend/__tests__/components/TextAreaV2/TextAreaV2.accessibility.test.tsx` — same breakpoint mocking; axe-core, label association, small-screen cases, **`helpIconText`**, no **`cols`**, and native **`rows`** where asserted
+
+## Related
+
+- **Labels / footer**: `InputLabelsV2`, `InputFooterV2`, `FloatingLabelsV2` under `packages/blend/lib/components/InputsV2/utils/…`
+- **Legacy `TextArea` (non-V2)**: separate component under `Inputs/TextArea` — prefer **`TextAreaV2`** for Inputs V2 tokens

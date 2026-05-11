@@ -18,6 +18,14 @@ export const getTabsV2DarkTokens = (
                     [TabsV2Variant.PILLS]: 'transparent',
                 },
                 borderRadius: {
+                    [TabsV2Size.SM]: {
+                        [TabsV2Variant.UNDERLINE]:
+                            foundationToken.border.radius[0],
+                        [TabsV2Variant.BOXED]: foundationToken.border.radius[8],
+                        [TabsV2Variant.FLOATING]:
+                            foundationToken.border.radius[0],
+                        [TabsV2Variant.PILLS]: foundationToken.border.radius[0],
+                    },
                     [TabsV2Size.MD]: {
                         [TabsV2Variant.UNDERLINE]:
                             foundationToken.border.radius[0],
@@ -36,6 +44,32 @@ export const getTabsV2DarkTokens = (
                     },
                 },
                 padding: {
+                    [TabsV2Size.SM]: {
+                        [TabsV2Variant.UNDERLINE]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[0],
+                            bottom: foundationToken.unit[0],
+                            left: foundationToken.unit[0],
+                        },
+                        [TabsV2Variant.BOXED]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                        [TabsV2Variant.FLOATING]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                        [TabsV2Variant.PILLS]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                    },
                     [TabsV2Size.MD]: {
                         [TabsV2Variant.UNDERLINE]: {
                             top: foundationToken.unit[8],
@@ -135,6 +169,16 @@ export const getTabsV2DarkTokens = (
                         },
                     },
                     borderRadius: {
+                        [TabsV2Size.SM]: {
+                            [TabsV2Variant.UNDERLINE]:
+                                foundationToken.border.radius[0],
+                            [TabsV2Variant.BOXED]:
+                                foundationToken.border.radius[8],
+                            [TabsV2Variant.FLOATING]:
+                                foundationToken.border.radius[8],
+                            [TabsV2Variant.PILLS]:
+                                foundationToken.border.radius[28],
+                        },
                         [TabsV2Size.MD]: {
                             [TabsV2Variant.UNDERLINE]:
                                 foundationToken.border.radius[0],
@@ -163,6 +207,32 @@ export const getTabsV2DarkTokens = (
                         [TabsV2Variant.PILLS]: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[700]}`,
                     },
                     padding: {
+                        [TabsV2Size.SM]: {
+                            [TabsV2Variant.UNDERLINE]: {
+                                top: foundationToken.unit[2],
+                                right: foundationToken.unit[8],
+                                bottom: foundationToken.unit[8],
+                                left: foundationToken.unit[8],
+                            },
+                            [TabsV2Variant.BOXED]: {
+                                top: foundationToken.unit[6],
+                                right: foundationToken.unit[12],
+                                bottom: foundationToken.unit[6],
+                                left: foundationToken.unit[12],
+                            },
+                            [TabsV2Variant.FLOATING]: {
+                                top: foundationToken.unit[6],
+                                right: foundationToken.unit[12],
+                                bottom: foundationToken.unit[6],
+                                left: foundationToken.unit[12],
+                            },
+                            [TabsV2Variant.PILLS]: {
+                                top: foundationToken.unit[6],
+                                right: foundationToken.unit[12],
+                                bottom: foundationToken.unit[6],
+                                left: foundationToken.unit[12],
+                            },
+                        },
                         [TabsV2Size.MD]: {
                             [TabsV2Variant.UNDERLINE]: {
                                 top: foundationToken.unit[2],
@@ -244,12 +314,15 @@ export const getTabsV2DarkTokens = (
                             },
                         },
                         fontSize: {
+                            [TabsV2Size.SM]:
+                                foundationToken.font.size.body.md.fontSize,
                             [TabsV2Size.MD]:
                                 foundationToken.font.size.body.md.fontSize,
                             [TabsV2Size.LG]:
                                 foundationToken.font.size.body.md.fontSize,
                         },
                         fontWeight: {
+                            [TabsV2Size.SM]: foundationToken.font.weight[500],
                             [TabsV2Size.MD]: foundationToken.font.weight[500],
                             [TabsV2Size.LG]: foundationToken.font.weight[500],
                         },
@@ -280,6 +353,14 @@ export const getTabsV2DarkTokens = (
                     [TabsV2Variant.PILLS]: 'transparent',
                 },
                 borderRadius: {
+                    [TabsV2Size.SM]: {
+                        [TabsV2Variant.UNDERLINE]:
+                            foundationToken.border.radius[0],
+                        [TabsV2Variant.BOXED]: foundationToken.border.radius[8],
+                        [TabsV2Variant.FLOATING]:
+                            foundationToken.border.radius[0],
+                        [TabsV2Variant.PILLS]: foundationToken.border.radius[0],
+                    },
                     [TabsV2Size.MD]: {
                         [TabsV2Variant.UNDERLINE]:
                             foundationToken.border.radius[0],
@@ -298,6 +379,32 @@ export const getTabsV2DarkTokens = (
                     },
                 },
                 padding: {
+                    [TabsV2Size.SM]: {
+                        [TabsV2Variant.UNDERLINE]: {
+                            top: foundationToken.unit[4],
+                            right: foundationToken.unit[0],
+                            bottom: foundationToken.unit[0],
+                            left: foundationToken.unit[0],
+                        },
+                        [TabsV2Variant.BOXED]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                        [TabsV2Variant.FLOATING]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                        [TabsV2Variant.PILLS]: {
+                            top: foundationToken.unit[2],
+                            right: foundationToken.unit[4],
+                            bottom: foundationToken.unit[2],
+                            left: foundationToken.unit[4],
+                        },
+                    },
                     [TabsV2Size.MD]: {
                         [TabsV2Variant.UNDERLINE]: {
                             top: foundationToken.unit[8],
@@ -397,6 +504,16 @@ export const getTabsV2DarkTokens = (
                         },
                     },
                     borderRadius: {
+                        [TabsV2Size.SM]: {
+                            [TabsV2Variant.UNDERLINE]:
+                                foundationToken.border.radius[0],
+                            [TabsV2Variant.BOXED]:
+                                foundationToken.border.radius[8],
+                            [TabsV2Variant.FLOATING]:
+                                foundationToken.border.radius[8],
+                            [TabsV2Variant.PILLS]:
+                                foundationToken.border.radius[28],
+                        },
                         [TabsV2Size.MD]: {
                             [TabsV2Variant.UNDERLINE]:
                                 foundationToken.border.radius[0],
@@ -425,6 +542,32 @@ export const getTabsV2DarkTokens = (
                         [TabsV2Variant.PILLS]: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[700]}`,
                     },
                     padding: {
+                        [TabsV2Size.SM]: {
+                            [TabsV2Variant.UNDERLINE]: {
+                                top: foundationToken.unit[2],
+                                right: foundationToken.unit[8],
+                                bottom: foundationToken.unit[8],
+                                left: foundationToken.unit[8],
+                            },
+                            [TabsV2Variant.BOXED]: {
+                                top: foundationToken.unit[6],
+                                right: foundationToken.unit[12],
+                                bottom: foundationToken.unit[6],
+                                left: foundationToken.unit[12],
+                            },
+                            [TabsV2Variant.FLOATING]: {
+                                top: foundationToken.unit[6],
+                                right: foundationToken.unit[12],
+                                bottom: foundationToken.unit[6],
+                                left: foundationToken.unit[12],
+                            },
+                            [TabsV2Variant.PILLS]: {
+                                top: foundationToken.unit[6],
+                                right: foundationToken.unit[12],
+                                bottom: foundationToken.unit[6],
+                                left: foundationToken.unit[12],
+                            },
+                        },
                         [TabsV2Size.MD]: {
                             [TabsV2Variant.UNDERLINE]: {
                                 top: foundationToken.unit[2],
@@ -506,12 +649,15 @@ export const getTabsV2DarkTokens = (
                             },
                         },
                         fontSize: {
+                            [TabsV2Size.SM]:
+                                foundationToken.font.size.body.md.fontSize,
                             [TabsV2Size.MD]:
                                 foundationToken.font.size.body.md.fontSize,
                             [TabsV2Size.LG]:
                                 foundationToken.font.size.body.md.fontSize,
                         },
                         fontWeight: {
+                            [TabsV2Size.SM]: foundationToken.font.weight[500],
                             [TabsV2Size.MD]: foundationToken.font.weight[500],
                             [TabsV2Size.LG]: foundationToken.font.weight[500],
                         },

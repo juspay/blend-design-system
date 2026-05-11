@@ -3,9 +3,9 @@ import { create } from '@storybook/theming/create'
 
 const theme = create({
     base: 'light',
-    brandTitle: 'Blend Design System',
-    brandUrl: 'https://your-docs-site.web.app',
-    brandImage: undefined, // Add your logo URL here if you have one
+    brandTitle:
+        '<div style="display: flex; align-items: center; gap: 10px;"><img src="/icon.png" style="height: 12px; width: auto;" /><span style="font-size: 16px; font-weight: 600;">Blend</span></div>',
+    brandUrl: 'https://blend.juspay.design/',
     brandTarget: '_self',
 
     colorPrimary: '#3b82f6',
@@ -18,8 +18,10 @@ const theme = create({
     appBorderRadius: 8,
 
     // Typography
-    fontBase: '"Inter", "Helvetica Neue", Helvetica, Arial, sans-serif',
-    fontCode: 'Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    fontBase:
+        '"Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    fontCode:
+        '"Geist Mono", ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace',
 
     // Text colors
     textColor: '#1f2937',

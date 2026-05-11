@@ -23,6 +23,7 @@ const variantOptions = [
 ]
 
 const sizeOptions = [
+    { value: TabsV2Size.SM, label: 'SM' },
     { value: TabsV2Size.MD, label: 'MD' },
     { value: TabsV2Size.LG, label: 'LG' },
 ]

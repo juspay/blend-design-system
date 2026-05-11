@@ -181,3 +181,8 @@ export { getMobileNavigationTokens } from './components/Sidebar/SidebarMobile/mo
 export { default as FOUNDATION_THEME } from './tokens/theme.token'
 export type { FoundationTokenType } from './tokens/theme.token'
 export { Theme } from './context/theme.enum'
+
+// Additional V2 exports (kept explicit to avoid duplicate re-exports)
+export * from './components/Timeline'
+export * from './components/PopoverV2'
+export * from './components/StepperV2'

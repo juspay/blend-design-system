@@ -53,17 +53,15 @@ const getStartDateInput = () => {
     return inputs[0]
 }
 
+// Match grid days only (weekday + en-US long date). The trigger’s label can contain "May 1" etc. and must not be treated as a day cell.
 const getCalendarDayCells = () => {
     return screen.getAllByRole('button').filter((button) => {
         const ariaLabel = button.getAttribute('aria-label')
         return (
-            ariaLabel &&
-            (/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday).*\d{1,2}, \d{4}/i.test(
+            !!ariaLabel &&
+            /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday).*\d{1,2}, \d{4}/.test(
                 ariaLabel
-            ) ||
-                /january|february|march|april|may|june|july|august|september|october|november|december/i.test(
-                    ariaLabel
-                ))
+            )
         )
     })
 }
@@ -200,10 +198,7 @@ describe('DateRangePicker Accessibility', () => {
             await user.click(trigger)
 
             await waitFor(() => {
-                const calendarCells = screen.getAllByRole('button', {
-                    name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-                })
-                expect(calendarCells.length).toBeGreaterThan(0)
+                expect(getCalendarDayCells().length).toBeGreaterThan(0)
             })
         })
     })
@@ -422,15 +417,10 @@ describe('DateRangePicker Accessibility', () => {
             await user.click(trigger)
 
             await waitFor(() => {
-                const calendarCells = screen.getAllByRole('button', {
-                    name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-                })
-                expect(calendarCells.length).toBeGreaterThan(0)
+                expect(getCalendarDayCells().length).toBeGreaterThan(0)
             })
 
-            const calendarCells = screen.getAllByRole('button', {
-                name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-            })
+            const calendarCells = getCalendarDayCells()
 
             if (calendarCells.length > 0) {
                 const firstCell = calendarCells[0]
@@ -468,15 +458,10 @@ describe('DateRangePicker Accessibility', () => {
             await user.click(trigger)
 
             await waitFor(() => {
-                const calendarCells = screen.getAllByRole('button', {
-                    name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-                })
-                expect(calendarCells.length).toBeGreaterThan(0)
+                expect(getCalendarDayCells().length).toBeGreaterThan(0)
             })
 
-            const calendarCells = screen.getAllByRole('button', {
-                name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-            })
+            const calendarCells = getCalendarDayCells()
 
             if (calendarCells.length > 0) {
                 const firstCell = calendarCells[0]
@@ -514,15 +499,10 @@ describe('DateRangePicker Accessibility', () => {
             await user.click(trigger)
 
             await waitFor(() => {
-                const calendarCells = screen.getAllByRole('button', {
-                    name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-                })
-                expect(calendarCells.length).toBeGreaterThan(0)
+                expect(getCalendarDayCells().length).toBeGreaterThan(0)
             })
 
-            const calendarCells = screen.getAllByRole('button', {
-                name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-            })
+            const calendarCells = getCalendarDayCells()
 
             const disabledCells = calendarCells.filter(
                 (cell) => cell.getAttribute('aria-disabled') === 'true'
@@ -914,15 +894,10 @@ describe('DateRangePicker Accessibility', () => {
             await user.click(trigger)
 
             await waitFor(() => {
-                const calendarCells = screen.getAllByRole('button', {
-                    name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-                })
-                expect(calendarCells.length).toBeGreaterThan(0)
+                expect(getCalendarDayCells().length).toBeGreaterThan(0)
             })
 
-            const calendarCells = screen.getAllByRole('button', {
-                name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-            })
+            const calendarCells = getCalendarDayCells()
 
             if (calendarCells.length > 0) {
                 const cell = calendarCells[0]
@@ -1009,15 +984,10 @@ describe('DateRangePicker Accessibility', () => {
             await user.click(trigger)
 
             await waitFor(() => {
-                const calendarCells = screen.getAllByRole('button', {
-                    name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-                })
-                expect(calendarCells.length).toBeGreaterThan(0)
+                expect(getCalendarDayCells().length).toBeGreaterThan(0)
             })
 
-            const calendarCells = screen.getAllByRole('button', {
-                name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-            })
+            const calendarCells = getCalendarDayCells()
 
             if (calendarCells.length > 0) {
                 const cell = calendarCells[0]
@@ -1040,10 +1010,7 @@ describe('DateRangePicker Accessibility', () => {
             await user.click(trigger)
 
             await waitFor(() => {
-                const calendarCells = screen.getAllByRole('button', {
-                    name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-                })
-                expect(calendarCells.length).toBeGreaterThan(0)
+                expect(getCalendarDayCells().length).toBeGreaterThan(0)
             })
 
             const calendarCells = getCalendarDayCells()
@@ -1074,15 +1041,12 @@ describe('DateRangePicker Accessibility', () => {
             await user.click(trigger)
 
             await waitFor(() => {
-                const calendarCells = screen.getAllByRole('button', {
-                    name: /january|february|march|april|may|june|july|august|september|october|november|december/i,
-                })
-                expect(calendarCells.length).toBeGreaterThan(0)
+                expect(getCalendarDayCells().length).toBeGreaterThan(0)
             })
 
-            const disabledCells = screen.getAllByRole('button', {
-                name: /disabled/i,
-            })
+            const disabledCells = getCalendarDayCells().filter(
+                (cell) => cell.getAttribute('aria-disabled') === 'true'
+            )
 
             if (disabledCells.length > 0) {
                 const disabledCell = disabledCells[0]

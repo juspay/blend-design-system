@@ -1,11 +1,17 @@
 import type { Preview } from '@storybook/react'
 import React from 'react'
-import './fonts.css'
 import './global.css'
+import {
+    useOf,
+    Title,
+    Primary,
+    Description,
+    Controls,
+    Stories,
+} from '@storybook/blocks'
 
 const preview: Preview = {
     parameters: {
-        actions: { argTypesRegex: '^on[A-Z].*' },
         controls: {
             matchers: {
                 color: /(background|color)$/i,
@@ -20,8 +26,33 @@ const preview: Preview = {
             },
         },
         docs: {
-            description: {
-                component: 'Blend Design System Components',
+            page: () => {
+                const CustomDocsPage = () => {
+                    const resolvedOf = useOf('meta')
+                    const subtitle =
+                        resolvedOf.type === 'meta'
+                            ? resolvedOf.csfFile.meta?.parameters?.docsSubtitle
+                            : undefined
+
+                    return (
+                        <>
+                            <Title />
+
+                            {subtitle && (
+                                <div className="text-gray-600 font-manrope tracking-wide leading-7">
+                                    {subtitle}
+                                </div>
+                            )}
+
+                            <Primary />
+                            <Controls />
+                            <Description />
+                            <Stories includePrimary={false} title="Use Cases" />
+                        </>
+                    )
+                }
+
+                return <CustomDocsPage />
             },
         },
         a11y: {
@@ -132,7 +163,7 @@ const preview: Preview = {
     },
     decorators: [
         (Story) => (
-            <div style={{ padding: '20px' }}>
+            <div className="p-5">
                 <Story />
             </div>
         ),

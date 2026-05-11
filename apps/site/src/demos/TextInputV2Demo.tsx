@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { TextInputV2 } from '../../../../packages/blend/lib/components/InputsV2/TextInputV2'
+import {
+    TextInputV2,
+    DropdownPosition,
+} from '../../../../packages/blend/lib/components/InputsV2/TextInputV2'
 import { TextInput } from '../../../../packages/blend/lib/main'
-import { addSnackbar } from '../../../../packages/blend/lib/components/Snackbar'
 import { InputSizeV2 } from '../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 import Switch from '../../../../packages/blend/lib/components/Switch/Switch'
 import SingleSelect from '../../../../packages/blend/lib/components/SingleSelect/SingleSelect'
@@ -13,6 +15,27 @@ const sizeOptions = [
     { value: InputSizeV2.SM, label: 'Small' },
     { value: InputSizeV2.MD, label: 'Medium' },
     { value: InputSizeV2.LG, label: 'Large' },
+]
+
+const selectDemoItems = [
+    {
+        items: [
+            { value: 'us', label: 'US +1' },
+            { value: 'uk', label: 'UK +44' },
+            { value: 'in', label: 'IN +91' },
+        ],
+    },
+]
+
+const rightSelectDemoItems = [
+    {
+        items: [
+            { value: 'px', label: 'px' },
+            { value: 'rem', label: 'rem' },
+            { value: 'pct', label: '%' },
+            { value: 'length', label: 'length' },
+        ],
+    },
 ]
 
 const TextInputV2Demo = () => {
@@ -30,6 +53,10 @@ const TextInputV2Demo = () => {
     const [helpIconText, setHelpIconText] = useState('Help tooltip text')
     const [showLeftSlot, setShowLeftSlot] = useState(false)
     const [showRightSlot, setShowRightSlot] = useState(false)
+    const [showInlineSelect, setShowInlineSelect] = useState(false)
+    const [selectValue, setSelectValue] = useState('us')
+    const [showInlineSelectRight, setShowInlineSelectRight] = useState(false)
+    const [rightSelectValue, setRightSelectValue] = useState('px')
     const [showLabel, setShowLabel] = useState(true)
     const [showSubLabel, setShowSubLabel] = useState(true)
     const [showHintText, setShowHintText] = useState(true)
@@ -148,6 +175,20 @@ const TextInputV2Demo = () => {
                             onChange={() => setShowHelpIcon(!showHelpIcon)}
                         />
                         <Switch
+                            label="Inline select (left)"
+                            checked={showInlineSelect}
+                            onChange={() =>
+                                setShowInlineSelect(!showInlineSelect)
+                            }
+                        />
+                        <Switch
+                            label="Inline select (right)"
+                            checked={showInlineSelectRight}
+                            onChange={() =>
+                                setShowInlineSelectRight(!showInlineSelectRight)
+                            }
+                        />
+                        <Switch
                             label="Left Slot (Icon)"
                             checked={showLeftSlot}
                             onChange={() => setShowLeftSlot(!showLeftSlot)}
@@ -168,6 +209,16 @@ const TextInputV2Demo = () => {
                     }`}
                 >
                     <div className="w-full max-w-md">
+                        {(showInlineSelect || showInlineSelectRight) &&
+                            (showLeftSlot || showRightSlot) && (
+                                <p
+                                    className="text-sm mb-2 text-amber-600 dark:text-amber-400"
+                                    role="status"
+                                >
+                                    Any inline select hides both left and right
+                                    icon slots in TextInputV2.
+                                </p>
+                            )}
                         <TextInputV2
                             ref={ref}
                             label={showLabel ? label : undefined}
@@ -185,18 +236,61 @@ const TextInputV2Demo = () => {
                                     : { show: false, message: '' }
                             }
                             helpIconText={
-                                showHelpIcon
-                                    ? {
-                                          text: helpIconText,
-                                          onClick: () =>
-                                              addSnackbar({
-                                                  header: 'Help icon clicked!',
-                                              }),
-                                      }
+                                showHelpIcon ? helpIconText : undefined
+                            }
+                            dropdown={
+                                showInlineSelect || showInlineSelectRight
+                                    ? [
+                                          ...(showInlineSelect
+                                              ? [
+                                                    {
+                                                        position:
+                                                            DropdownPosition.LEFT,
+                                                        items: selectDemoItems,
+                                                        selected: selectValue,
+                                                        onSelect: (v: string) =>
+                                                            setSelectValue(v),
+                                                        placeholder: 'Code',
+                                                        'aria-label':
+                                                            'Phone country code',
+                                                        search: {
+                                                            show: true,
+                                                            placeholder:
+                                                                'Search',
+                                                        },
+                                                    },
+                                                ]
+                                              : []),
+                                          ...(showInlineSelectRight
+                                              ? [
+                                                    {
+                                                        position:
+                                                            DropdownPosition.RIGHT,
+                                                        items: rightSelectDemoItems,
+                                                        selected:
+                                                            rightSelectValue,
+                                                        onSelect: (v: string) =>
+                                                            setRightSelectValue(
+                                                                v
+                                                            ),
+                                                        placeholder: 'Unit',
+                                                        'aria-label':
+                                                            'Unit of measure',
+                                                        search: {
+                                                            show: true,
+                                                            placeholder:
+                                                                'Search',
+                                                        },
+                                                    },
+                                                ]
+                                              : []),
+                                      ]
                                     : undefined
                             }
                             leftSlot={
-                                showLeftSlot
+                                showLeftSlot &&
+                                !showInlineSelect &&
+                                !showInlineSelectRight
                                     ? {
                                           slot: <Search size={16} />,
                                           maxHeight: '100%',
@@ -204,7 +298,9 @@ const TextInputV2Demo = () => {
                                     : undefined
                             }
                             rightSlot={
-                                showRightSlot
+                                showRightSlot &&
+                                !showInlineSelect &&
+                                !showInlineSelectRight
                                     ? {
                                           slot: (
                                               <X aria-label="Clear" size={16} />

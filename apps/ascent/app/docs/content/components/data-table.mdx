@@ -1055,6 +1055,20 @@ function CompactTable() {
         ],
         [
             {
+                content: 'rowSelectionConfig',
+                hintText:
+                    'Optional configuration object for customizing row selection behavior. Contains isDisabled function to control which rows cannot be selected, and disabledText function to provide tooltip text when hovering over disabled checkboxes. When isDisabled returns true for a row, its checkbox is disabled, click events are ignored, and it is excluded from "Select All" functionality. The disabledText function receives the same row and index parameters and should return the tooltip message to display.',
+            },
+            {
+                content:
+                    '{ isDisabled?: (row: T, index: number) => boolean; disabledText?: (row: T, index: number) => string }',
+                hintText:
+                    'Configuration object with isDisabled and disabledText functions',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'showBulkActionBar',
                 hintText:
                     'When true (default), the bulk action bar is shown when rows are selected, with Export, Deselect all, and custom actions. When false, the bulk action bar is hidden while checkbox selection remains available. Use when you need selection state (e.g. via onRowSelectionChange) but do not want to show the bulk actions UI.',
