@@ -136,7 +136,8 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
     columnFields:
         | Array<keyof T>
         | Array<{ field: keyof T; showTotal?: boolean }>,
-    valueConfigs: PivotValueConfig<T>[]
+    valueConfigs: PivotValueConfig<T>[],
+    fieldLabelByKey: Record<string, string> = {}
 ): { columns: PivotPreviewColumn[]; rows: PivotPreviewRow[] } => {
     if (!valueConfigs.length) return { columns: [], rows: [] }
 
@@ -203,8 +204,11 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
     const orderedColumnKeys = Array.from(columnKeySet).sort((a, b) =>
         a.localeCompare(b)
     )
+    const getFieldLabel = (key: keyof T): string =>
+        fieldLabelByKey[String(key)] || String(key)
+
     const rowLabel = normalizedRowFields.length
-        ? normalizedRowFields.map((field) => String(field)).join(' / ')
+        ? normalizedRowFields.map((field) => getFieldLabel(field)).join(' / ')
         : 'All Rows'
 
     const previewColumns: PivotPreviewColumn[] = [
@@ -212,13 +216,13 @@ export const buildPivotPreview = <T extends Record<string, unknown>>(
         ...orderedColumnKeys.flatMap((columnKey) =>
             valueConfigs.map((valueConfig, valueIndex) => ({
                 key: `${columnKey}__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`,
-                label: `${truncatePivotLabel(columnKey)} | ${valueConfig.aggregation}(${String(valueConfig.field)})`,
+                label: `${truncatePivotLabel(columnKey)} | ${valueConfig.aggregation}(${getFieldLabel(valueConfig.field)})`,
             }))
         ),
         ...(shouldShowColumnTotals
             ? valueConfigs.map((valueConfig, valueIndex) => ({
                   key: `__columnTotal__${String(valueConfig.field)}__${valueConfig.aggregation}__valueIndex_${valueIndex}`,
-                  label: `Total | ${valueConfig.aggregation}(${String(valueConfig.field)})`,
+                  label: `Total | ${valueConfig.aggregation}(${getFieldLabel(valueConfig.field)})`,
               }))
             : []),
     ]

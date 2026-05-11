@@ -21,6 +21,8 @@ import {
 } from '../../SingleSelect/types'
 import { Checkbox } from '../../Checkbox/Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
+import { TruncatedTextWithTooltipV2 } from '../../common/TruncatedTextWithTooltipV2'
+import { TooltipV2Align, TooltipV2Side } from '../../TooltipV2/tooltipV2.types'
 import { ColumnDefinition, PivotAggregationType, ColumnType } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
 import { downloadCSV } from '../utils'
@@ -149,6 +151,14 @@ const PivotTableModal = forwardRef<
             return supportedAggregationsByField.get(field) || []
         }
 
+        const getDefaultAggregationForField = (field: string) => {
+            const supported = getSupportedAggregations(field)
+            if (supported.includes(PivotAggregationType.SUM)) {
+                return PivotAggregationType.SUM
+            }
+            return supported[0]
+        }
+
         // Add field handlers (Sheets-style)
         const addRowField = (field: string) => {
             if (!field || rowFields.some((f) => f.field === field)) return
@@ -200,9 +210,8 @@ const PivotTableModal = forwardRef<
 
         const addValueField = (field: string) => {
             if (!field) return
-            const supported = getSupportedAggregations(field)
-            if (!supported.length) return
-            const aggregation = supported[0]
+            const aggregation = getDefaultAggregationForField(field)
+            if (!aggregation) return
             // allow duplicates by (field, aggregation), but prevent exact duplicates
             if (
                 valueConfigs.some(
@@ -294,23 +303,25 @@ const PivotTableModal = forwardRef<
                     return prev
                 }
 
-                const supported = getSupportedAggregations(nextField)
-                if (!supported.length) return prev
+                const defaultAggregation =
+                    getDefaultAggregationForField(nextField)
+                if (!defaultAggregation) return prev
 
                 return prev.map((config, i) => {
                     if (i !== index) return config
-                    const nextAggregation = supported.includes(
+                    const supported = getSupportedAggregations(nextField)
+                    const resolvedAggregation = supported.includes(
                         config.aggregation
                     )
                         ? config.aggregation
-                        : supported[0]
+                        : defaultAggregation
                     // prevent creating an exact duplicate (field + aggregation) pair
                     if (
                         prev.some(
                             (other, j) =>
                                 j !== index &&
                                 String(other.field) === nextField &&
-                                other.aggregation === nextAggregation
+                                other.aggregation === resolvedAggregation
                         )
                     ) {
                         return config
@@ -318,7 +329,7 @@ const PivotTableModal = forwardRef<
                     return {
                         ...config,
                         field: nextField as keyof Record<string, unknown>,
-                        aggregation: nextAggregation,
+                        aggregation: resolvedAggregation,
                     }
                 })
             })
@@ -386,9 +397,12 @@ const PivotTableModal = forwardRef<
                     field: f.field as keyof Record<string, unknown>,
                     showTotal: f.showTotal,
                 })),
-                valueConfigs
+                valueConfigs,
+                Object.fromEntries(
+                    fieldOptions.map((opt) => [opt.key, opt.label])
+                )
             )
-        }, [data, rowFields, columnFields, valueConfigs])
+        }, [data, rowFields, columnFields, valueConfigs, fieldOptions])
         const effectivePreviewColumns = effectivePreview.columns
         const effectivePreviewRows = effectivePreview.rows
 
@@ -421,6 +435,14 @@ const PivotTableModal = forwardRef<
 
         const valueAddOptions = useMemo(() => fieldOptions, [fieldOptions])
 
+        const fieldLabelByKey = useMemo(() => {
+            return new Map(fieldOptions.map((opt) => [opt.key, opt.label]))
+        }, [fieldOptions])
+
+        const getFieldLabel = (fieldKey: string) => {
+            return fieldLabelByKey.get(fieldKey) || fieldKey
+        }
+
         // Render field config card
         const renderFieldConfig = (
             field: PivotFieldConfig,
@@ -450,18 +472,22 @@ const PivotTableModal = forwardRef<
                         marginBottom: showAggSelector
                             ? FOUNDATION_THEME.unit[8]
                             : '0',
+                        gap: FOUNDATION_THEME.unit[8],
                     }}
                 >
-                    <PrimitiveText
-                        style={{
-                            fontSize:
-                                FOUNDATION_THEME.font.size.body.sm.fontSize,
-                            fontWeight: FOUNDATION_THEME.font.weight[500],
-                            color: pivot.text.fieldLabel.color,
-                        }}
-                    >
-                        {field.field}
-                    </PrimitiveText>
+                    <Block style={{ flex: 1, minWidth: 0 }}>
+                        <TruncatedTextWithTooltipV2
+                            text={getFieldLabel(field.field)}
+                            side={TooltipV2Side.TOP}
+                            align={TooltipV2Align.START}
+                            style={{
+                                fontSize:
+                                    FOUNDATION_THEME.font.size.body.sm.fontSize,
+                                fontWeight: FOUNDATION_THEME.font.weight[500],
+                                color: pivot.text.fieldLabel.color,
+                            }}
+                        />
+                    </Block>
                     <button
                         type="button"
                         style={removeButtonStyle}
