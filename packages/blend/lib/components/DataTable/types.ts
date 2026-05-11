@@ -414,6 +414,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onRowCancel?: (rowId: unknown) => void
     onRowClick?: (row: T, index: number) => void
     onFieldChange?: (rowId: unknown, fieldName: keyof T, value: unknown) => void
+    onHeaderChange?: (field: keyof T, newHeader: string) => void
 
     enableRowExpansion?: boolean
     renderExpandedRow?: (expandedData: {

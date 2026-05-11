@@ -65,4 +65,5 @@ export type PivotFieldConfig = {
     field: string
     showTotal: boolean
     aggregation?: PivotAggregationType
+    header?: string
 }

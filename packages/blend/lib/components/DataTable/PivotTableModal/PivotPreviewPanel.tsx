@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useState, useCallback, useEffect } from 'react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import Button from '../../Button/Button'
@@ -7,6 +7,7 @@ import DataTable from '../DataTable'
 import { NoScrollbar } from './pivotModal.styled'
 import { PivotTableIllustration } from './PivotTableIllustration'
 import type { PivotPreviewPanelProps } from './types'
+import type { ColumnDefinition } from '../types'
 
 const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
     (
@@ -15,12 +16,34 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
             tableToken,
             showExport,
             previewRows,
-            previewTableColumns,
+            previewTableColumns: initialColumns,
             onExport,
             hasValues,
         },
         ref
     ) => {
+        const [previewTableColumns, setPreviewTableColumns] =
+            useState<ColumnDefinition<Record<string, unknown>>[]>(
+                initialColumns
+            )
+
+        useEffect(() => {
+            setPreviewTableColumns(initialColumns)
+        }, [initialColumns])
+
+        const handleHeaderChange = useCallback(
+            (field: keyof Record<string, unknown>, newHeader: string) => {
+                setPreviewTableColumns((prev) =>
+                    prev.map((col) =>
+                        col.field === field
+                            ? { ...col, header: newHeader }
+                            : col
+                    )
+                )
+            },
+            []
+        )
+
         const hasPreviewGrid =
             previewTableColumns.length > 0 &&
             previewRows &&
@@ -119,7 +142,8 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
                                 enableColumnReordering={false}
                                 enableRowExpansion={false}
                                 enableRowSelection={false}
-                                enableInlineEdit={false}
+                                enableInlineEdit={true}
+                                onHeaderChange={handleHeaderChange}
                                 showHeader
                                 showToolbar={false}
                                 showFooter={false}
