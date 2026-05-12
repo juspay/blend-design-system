@@ -1,0 +1,277 @@
+---
+version: 2
+title: Text Input
+description: The TextInputV2 component provides a text input field with label, validation, slots, and dropdown support.
+category: components
+tags:
+    - text-input
+    - component
+    - input
+    - form
+    - field
+RepoFolderName: TextInputV2
+StorybookLink: components-inputs-textinputv2--docs
+---
+
+<TextInputV2Preview />
+
+## Usage
+
+```tsx
+import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [value, setValue] = useState('')
+
+    return (
+        <TextInputV2
+            label="Email Address"
+            placeholder="Enter your email"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            size={InputSizeV2.MD}
+            hintText="We'll never share your email"
+        />
+    )
+}
+```
+
+## With Dropdown
+
+```tsx
+import { TextInputV2, DropdownPosition } from '@juspay/blend-design-system'
+;<TextInputV2
+    label="Country"
+    placeholder="Select or type"
+    value={value}
+    onChange={handleChange}
+    dropdown={{
+        position: DropdownPosition.LEFT,
+        items: [
+            {
+                groupLabel: 'Regions',
+                items: [
+                    { label: 'North America', value: 'na' },
+                    { label: 'Europe', value: 'eu' },
+                ],
+            },
+        ],
+        selected: selectedRegion,
+        onSelect: setSelectedRegion,
+    }}
+/>
+```
+
+## With Error State
+
+```tsx
+import { TextInputV2 } from '@juspay/blend-design-system'
+;<TextInputV2
+    label="Username"
+    placeholder="Enter username"
+    value={username}
+    onChange={handleChange}
+    error={{
+        show: username.length < 3,
+        message: 'Username must be at least 3 characters',
+    }}
+/>
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Required. Current value of the input field.',
+            },
+            {
+                content: 'string',
+                hintText: 'Input value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback fired when input value changes.',
+            },
+            {
+                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'Change event handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Field label displayed above the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText:
+                    'Secondary label text displayed below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text shown when input is empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting input height and text sizing.',
+            },
+            {
+                content: 'InputSizeV2',
+                hintText: 'Enum for input size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper description',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconText',
+                hintText: 'Tooltip text for the help icon.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Error state configuration.',
+            },
+            {
+                content: '{ show: boolean; message?: string }',
+                hintText: 'Error display settings',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'Element displayed at the start of the input.',
+            },
+            {
+                content:
+                    '{ slot: ReactElement; maxHeight?: CSSObject["maxHeight"] }',
+                hintText: 'Left slot configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Element displayed at the end of the input.',
+            },
+            {
+                content:
+                    '{ slot: ReactElement; maxHeight?: CSSObject["maxHeight"] }',
+                hintText: 'Right slot configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'dropdown',
+                hintText:
+                    'Embedded SingleSelectV2 configuration for dropdown input.',
+            },
+            {
+                content: 'TextInputV2Dropdown | TextInputV2Dropdown[]',
+                hintText: 'Dropdown props with position',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the TextInputV2 component using the following tokens:
+
+```tsx
+export type TextInputV2TokensType = {
+    container: {
+        gap: CSSObject['gap']
+    }
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    subLabel: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    input: {
+        height: {
+            [key in InputSizeV2]: CSSObject['height']
+        }
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        border: {
+            default: CSSObject['border']
+            hover: CSSObject['border']
+            focus: CSSObject['border']
+            error: CSSObject['border']
+            disabled: CSSObject['border']
+        }
+        background: {
+            default: CSSObject['background']
+            disabled: CSSObject['background']
+        }
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    hintText: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    errorText: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    slot: {
+        gap: CSSObject['gap']
+    }
+}
+```

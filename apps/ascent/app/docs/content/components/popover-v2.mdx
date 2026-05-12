@@ -1,0 +1,383 @@
+---
+version: 2
+title: Popover
+description: The PopoverV2 component displays rich content in a floating panel triggered by user interaction, with header, footer, and action buttons support.
+category: components
+tags:
+    - popover
+    - component
+    - overlay
+    - popup
+    - floating
+RepoFolderName: PopoverV2
+StorybookLink: components-popover-popoverv2--docs
+---
+
+<PopoverV2Preview />
+
+## Usage
+
+```tsx
+import {
+    PopoverV2,
+    PopoverV2Size,
+    PopoverV2Side,
+    PopoverV2Align,
+    ButtonType,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <PopoverV2
+            heading="Popover Title"
+            description="This is a helpful description."
+            trigger={
+                <Button text="Open Popover" buttonType={ButtonType.PRIMARY} />
+            }
+            size={PopoverV2Size.MD}
+            side={PopoverV2Side.BOTTOM}
+            align={PopoverV2Align.CENTER}
+            primaryAction={{
+                text: 'Confirm',
+                buttonType: ButtonType.PRIMARY,
+                onClick: () => console.log('Confirmed'),
+            }}
+            secondaryAction={{
+                text: 'Cancel',
+                buttonType: ButtonType.SECONDARY,
+                onClick: () => console.log('Cancelled'),
+            }}
+        >
+            <div>Additional content goes here</div>
+        </PopoverV2>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'trigger',
+                hintText:
+                    'Required. Element that opens the popover when clicked.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Trigger element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText:
+                    'Required. Content displayed inside the popover body.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Popover body content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'heading',
+                hintText: 'Title text displayed in the popover header.',
+            },
+            {
+                content: 'string',
+                hintText: 'Header title',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText: 'Subtitle or description text in the header.',
+            },
+            {
+                content: 'string',
+                hintText: 'Header description',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showCloseButton',
+                hintText: 'When true, displays a close button in the header.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows close button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'open',
+                hintText: 'Controlled open state of the popover.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true opens the popover',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText: 'Callback fired when popover open state changes.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText: 'Open state change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'asModal',
+                hintText: 'When true, renders as a modal dialog with backdrop.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true renders as modal',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'primaryAction',
+                hintText:
+                    'Configuration for the primary action button in footer.',
+            },
+            {
+                content: 'PopoverV2ActionType',
+                hintText:
+                    'Button props excluding buttonGroupPosition and subType',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryAction',
+                hintText:
+                    'Configuration for the secondary action button in footer.',
+            },
+            {
+                content: 'PopoverV2ActionType',
+                hintText:
+                    'Button props excluding buttonGroupPosition and subType',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Predefined width size for the popover.',
+            },
+            {
+                content: 'PopoverV2Size',
+                hintText: 'Enum for popover width',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'side',
+                hintText: 'Edge of the trigger where popover appears.',
+            },
+            {
+                content: 'PopoverV2Side',
+                hintText: 'Enum for popover position',
+            },
+            { content: 'TOP, RIGHT, BOTTOM, LEFT' },
+        ],
+        [
+            {
+                content: 'align',
+                hintText: 'Alignment of the popover relative to the trigger.',
+            },
+            {
+                content: 'PopoverV2Align',
+                hintText: 'Enum for alignment',
+            },
+            { content: 'START, CENTER, END' },
+        ],
+        [
+            {
+                content: 'sideOffset',
+                hintText: 'Distance between trigger and popover in pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Pixel offset',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alignOffset',
+                hintText: 'Offset along the alignment axis in pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Pixel offset',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'useDrawerOnMobile',
+                hintText: 'When true, renders as a drawer on mobile devices.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true uses drawer on mobile',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'avoidCollisions',
+                hintText:
+                    'When true, popover repositions to avoid viewport edges.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables collision avoidance',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Configuration for skeleton loading state.',
+            },
+            {
+                content: 'PopoverV2SkeletonProps',
+                hintText: 'Object with show, variant, and bodySkeletonProps',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText: 'Custom width for the popover.',
+            },
+            {
+                content: 'number',
+                hintText: 'Width in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText: 'Minimum width constraint for the popover.',
+            },
+            {
+                content: 'number',
+                hintText: 'Min width in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width constraint for the popover.',
+            },
+            {
+                content: 'number',
+                hintText: 'Max width in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'height',
+                hintText: 'Custom height for the popover.',
+            },
+            {
+                content: 'number',
+                hintText: 'Height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minHeight',
+                hintText: 'Minimum height constraint for the popover.',
+            },
+            {
+                content: 'number',
+                hintText: 'Min height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxHeight',
+                hintText: 'Maximum height constraint for the popover.',
+            },
+            {
+                content: 'number',
+                hintText: 'Max height in pixels',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the PopoverV2 component using the following tokens:
+
+```tsx
+export type PopoverV2TokensType = {
+    content: {
+        background: CSSObject['background']
+        borderRadius: CSSObject['borderRadius']
+        border: CSSObject['border']
+        boxShadow: CSSObject['boxShadow']
+        padding: CSSObject['padding']
+    }
+    header: {
+        padding: CSSObject['padding']
+        borderBottom: CSSObject['borderBottom']
+        gap: CSSObject['gap']
+    }
+    heading: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    description: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    body: {
+        padding: CSSObject['padding']
+    }
+    footer: {
+        padding: CSSObject['padding']
+        borderTop: CSSObject['borderTop']
+        gap: CSSObject['gap']
+    }
+    closeButton: {
+        color: CSSObject['color']
+        size: CSSObject['width']
+    }
+    sizes: {
+        sm: CSSObject['width']
+        md: CSSObject['width']
+        lg: CSSObject['width']
+    }
+}
+```

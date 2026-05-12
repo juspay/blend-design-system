@@ -1,6 +1,6 @@
 ---
 title: Button Group
-description: The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning for cohesive action interfaces.
+description: The ButtonGroup component is a container that groups multiple Button components together with flexible layout options for cohesive action interfaces.
 category: components
 tags:
     - button-group
@@ -10,6 +10,7 @@ tags:
     - actions
 RepoFolderName: ButtonGroup
 StorybookLink: components-button-buttonv2--docs
+version: 1
 ---
 
 <ButtonGroupPreview />
@@ -26,7 +27,7 @@ import {
 
 function MyComponent() {
     return (
-        <ButtonGroup stacked={false}>
+        <ButtonGroup>
             <Button
                 text="Cancel"
                 buttonType={ButtonType.SECONDARY}
@@ -52,7 +53,7 @@ function MyComponent() {
             {
                 content: 'stacked',
                 hintText:
-                    'When true, buttons are arranged vertically in a stacked layout. When false, buttons are arranged horizontally in a row. Horizontal layout is useful for action buttons side-by-side, while stacked layout is better for mobile views or when vertical space is available. Defaults to false (horizontal layout).',
+                    'When true, buttons are arranged vertically in a stacked layout. When false, buttons are arranged horizontally in a row. Defaults to false (horizontal layout).',
             },
             {
                 content: 'boolean',
@@ -65,7 +66,7 @@ function MyComponent() {
             {
                 content: 'children',
                 hintText:
-                    'Required Button components to be grouped together. Can be a single Button element or an array of Button elements. The ButtonGroup provides consistent spacing, border radius handling (for connected buttons), and layout management for all child buttons.',
+                    'Required Button components to be grouped together. The ButtonGroup provides consistent spacing and layout management for all child buttons.',
             },
             {
                 content:

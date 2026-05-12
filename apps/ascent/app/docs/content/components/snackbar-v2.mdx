@@ -1,0 +1,301 @@
+---
+version: 2
+title: Snackbar
+description: The SnackbarV2 component provides toast notifications for displaying temporary messages with various severity levels and positions.
+category: components
+tags:
+    - snackbar
+    - component
+    - notification
+    - toast
+    - feedback
+RepoFolderName: SnackbarV2
+StorybookLink: components-snackbar-snackbarv2--docs
+---
+
+<SnackbarV2Preview />
+
+## Usage
+
+```tsx
+import {
+    SnackbarV2,
+    SnackbarV2Position,
+    SnackbarV2Variant,
+} from '@juspay/blend-design-system'
+
+function App() {
+    return (
+        <SnackbarV2
+            position={SnackbarV2Position.TOP_RIGHT}
+            dismissOnClickAway={true}
+        />
+    )
+}
+
+// Show a toast
+import { toast } from '@juspay/blend-design-system'
+
+toast({
+    header: 'Success!',
+    description: 'Your changes have been saved.',
+    variant: SnackbarV2Variant.SUCCESS,
+    duration: 5000,
+})
+```
+
+## Toast Options
+
+```tsx
+toast({
+    header: 'Warning',
+    description: 'Please review your input.',
+    variant: SnackbarV2Variant.WARNING,
+    duration: 4000,
+    position: SnackbarV2Position.BOTTOM_CENTER,
+    actionButton: {
+        label: 'Undo',
+        onClick: () => console.log('Undo clicked'),
+        autoDismiss: false,
+    },
+    onClose: () => console.log('Toast closed'),
+})
+```
+
+## API Reference
+
+### SnackbarV2 Container Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'position',
+                hintText: 'Default position for all toasts in this container.',
+            },
+            {
+                content: 'SnackbarV2Position',
+                hintText: 'Enum for toast position',
+            },
+            {
+                content:
+                    'TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, BOTTOM_CENTER',
+            },
+        ],
+        [
+            {
+                content: 'dismissOnClickAway',
+                hintText: 'When true, clicking outside dismisses the toast.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables click-away dismissal',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width for toast notifications.',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### Toast Options
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'header',
+                hintText: 'Required. Main title of the toast notification.',
+            },
+            {
+                content: 'string',
+                hintText: 'Toast title text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText: 'Secondary message content.',
+            },
+            {
+                content: 'string',
+                hintText: 'Toast description text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'Visual style indicating message severity.',
+            },
+            {
+                content: 'SnackbarV2Variant',
+                hintText: 'Enum for toast type',
+            },
+            { content: 'INFO, SUCCESS, WARNING, ERROR' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText: 'Custom icon or element to display.',
+            },
+            {
+                content: 'ReactElement',
+                hintText: 'Custom icon element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'duration',
+                hintText:
+                    'Time in milliseconds before auto-dismiss. Set to Infinity to disable.',
+            },
+            {
+                content: 'number',
+                hintText: 'Duration in ms',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'position',
+                hintText: 'Override default position for this toast.',
+            },
+            {
+                content: 'SnackbarV2Position',
+                hintText: 'Position enum',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actionButton',
+                hintText: 'Action button configuration.',
+            },
+            {
+                content: 'SnackbarV2Action',
+                hintText: 'label, onClick, autoDismiss',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClose',
+                hintText: 'Callback fired when toast closes.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Close handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width for this specific toast.',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText: 'Fixed width for this toast.',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText: 'Minimum width for this toast.',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS min-width value',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the SnackbarV2 component using the following tokens:
+
+```tsx
+export type SnackbarV2TokensType = {
+    container: {
+        padding: CSSObject['padding']
+        gap: CSSObject['gap']
+    }
+    toast: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        border: CSSObject['border']
+        boxShadow: CSSObject['boxShadow']
+        gap: CSSObject['gap']
+        minWidth: CSSObject['minWidth']
+        maxWidth: CSSObject['maxWidth']
+    }
+    icon: {
+        size: CSSObject['width']
+        color: {
+            [key in SnackbarV2Variant]: CSSObject['color']
+        }
+    }
+    content: {
+        gap: CSSObject['gap']
+    }
+    header: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    description: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    closeButton: {
+        color: CSSObject['color']
+        size: CSSObject['width']
+    }
+    actionButton: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            default: CSSObject['color']
+            hover: CSSObject['color']
+        }
+    }
+    variants: {
+        [key in SnackbarV2Variant]: {
+            background: CSSObject['background']
+            borderColor: CSSObject['borderColor']
+        }
+    }
+}
+```

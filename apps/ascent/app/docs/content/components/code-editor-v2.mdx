@@ -1,0 +1,371 @@
+---
+version: 2
+title: Code Editor
+description: The CodeEditorV2 component provides a Monaco Editor integration with syntax highlighting, diff mode, and customizable themes.
+category: components
+tags:
+    - code-editor
+    - component
+    - editor
+    - monaco
+    - code
+RepoFolderName: CodeEditorV2
+StorybookLink: components-codeeditor-codeeditorv2--docs
+---
+
+<CodeEditorV2Preview />
+
+## Usage
+
+```tsx
+import {
+    CodeEditorV2,
+    CodeEditorV2Variant,
+    MonacoTheme,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [code, setCode] = useState('const x = 1;')
+
+    return (
+        <CodeEditorV2
+            value={code}
+            onChange={setCode}
+            language="typescript"
+            showLineNumbers={true}
+            header={{
+                showHeader: true,
+                title: 'main.ts',
+                showCopyButton: true,
+            }}
+        />
+    )
+}
+```
+
+## Diff Mode Usage
+
+```tsx
+import { CodeEditorV2, CodeEditorV2Variant } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <CodeEditorV2
+            variant={CodeEditorV2Variant.DIFF}
+            value="const newValue = 2;"
+            originalValue="const oldValue = 1;"
+            language="typescript"
+            renderSideBySide={true}
+            isDiffUnchangedCollapsed={true}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Required. Current content of the editor.',
+            },
+            {
+                content: 'string',
+                hintText: 'Editor content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback fired when editor content changes.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Change handler function',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText:
+                    'Editor display mode. DEFAULT shows standard editor, NO_GUTTER hides line numbers, DIFF enables diff comparison.',
+            },
+            {
+                content: 'CodeEditorV2Variant',
+                hintText: 'Enum for editor variant',
+            },
+            { content: 'DEFAULT, NO_GUTTER, DIFF' },
+        ],
+        [
+            {
+                content: 'showLineNumbers',
+                hintText: 'Whether to display line numbers in the gutter.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows line numbers',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'language',
+                hintText: 'Programming language for syntax highlighting.',
+            },
+            {
+                content: 'SupportedLanguage',
+                hintText: 'One of the supported languages',
+            },
+            {
+                content:
+                    'javascript, typescript, jsx, tsx, json, css, html, markdown, yaml, python, rust, haskell',
+            },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text shown when editor is empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'readOnly',
+                hintText: 'When true, editor content cannot be modified.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true makes content read-only',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText:
+                    'When true, editor is visually disabled and non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the editor',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'header',
+                hintText:
+                    'Configuration for the editor header with title and actions.',
+            },
+            {
+                content: 'object',
+                hintText:
+                    'showHeader, title, leftSlot, rightSlot, showCopyButton',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'autoFocus',
+                hintText: 'When true, focuses the editor on mount.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true auto-focuses editor',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFocus',
+                hintText: 'Callback fired when editor receives focus.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Focus handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onBlur',
+                hintText: 'Callback fired when editor loses focus.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Blur handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'originalValue',
+                hintText:
+                    'For diff mode: the original/left-side source to compare against.',
+            },
+            {
+                content: 'string',
+                hintText: 'Original content for comparison',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'renderSideBySide',
+                hintText:
+                    'For diff mode: when true, shows two columns. When false, shows inline diff.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true for side-by-side, false for inline',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isDiffUnchangedCollapsed',
+                hintText:
+                    'For diff mode: when true, hides unchanged regions with expand controls.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true collapses unchanged sections',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'diffContextLines',
+                hintText:
+                    'For diff mode: lines shown around edits when collapsed. Defaults to 3.',
+            },
+            {
+                content: 'number',
+                hintText: 'Number of context lines',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'diffExpandChunk',
+                hintText:
+                    'For diff mode: lines revealed per expand action. Defaults to 20.',
+            },
+            {
+                content: 'number',
+                hintText: 'Lines per expand',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText: 'Custom width for the editor container.',
+            },
+            {
+                content: 'CSSObject["width"]',
+                hintText: 'CSS width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'height',
+                hintText: 'Custom height for the editor container.',
+            },
+            {
+                content: 'CSSObject["height"]',
+                hintText: 'CSS height value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width constraint for the editor.',
+            },
+            {
+                content: 'CSSObject["maxWidth"]',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText: 'Minimum width constraint for the editor.',
+            },
+            {
+                content: 'CSSObject["minWidth"]',
+                hintText: 'CSS min-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxHeight',
+                hintText: 'Maximum height constraint for the editor.',
+            },
+            {
+                content: 'CSSObject["maxHeight"]',
+                hintText: 'CSS max-height value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minHeight',
+                hintText: 'Minimum height constraint for the editor.',
+            },
+            {
+                content: 'CSSObject["minHeight"]',
+                hintText: 'CSS min-height value',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the CodeEditorV2 component using the following tokens:
+
+```tsx
+export type CodeEditorV2Tokens = {
+    container: {
+        borderRadius: CSSObject['borderRadius']
+        border: CSSObject['border']
+        background: CSSObject['background']
+    }
+    header: {
+        padding: CSSObject['padding']
+        background: CSSObject['background']
+        borderBottom: CSSObject['borderBottom']
+        title: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: CSSObject['color']
+        }
+    }
+    editor: {
+        fontFamily: CSSObject['fontFamily']
+        fontSize: CSSObject['fontSize']
+        lineHeight: CSSObject['lineHeight']
+    }
+    copyButton: {
+        color: CSSObject['color']
+        hoverColor: CSSObject['color']
+    }
+}
+```

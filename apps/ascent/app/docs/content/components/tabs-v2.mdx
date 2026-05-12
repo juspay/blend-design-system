@@ -1,0 +1,418 @@
+---
+version: 2
+title: Tabs
+description: The TabsV2 component organizes content into tabbed sections with multiple visual variants and sticky header support.
+category: components
+tags:
+    - tabs
+    - component
+    - navigation
+    - content-switcher
+    - panels
+RepoFolderName: TabsV2
+StorybookLink: components-tabs-tabsv2--docs
+---
+
+<TabsV2Preview />
+
+## Usage
+
+```tsx
+import {
+    TabsV2,
+    TabsV2List,
+    TabsV2Trigger,
+    TabsV2Content,
+    TabsV2Variant,
+    TabsV2Size,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <TabsV2
+            defaultValue="tab1"
+            variant={TabsV2Variant.BOXED}
+            size={TabsV2Size.MD}
+        >
+            <TabsV2List>
+                <TabsV2Trigger value="tab1">Overview</TabsV2Trigger>
+                <TabsV2Trigger value="tab2">Details</TabsV2Trigger>
+                <TabsV2Trigger value="tab3">Settings</TabsV2Trigger>
+            </TabsV2List>
+            <TabsV2Content value="tab1">Overview content</TabsV2Content>
+            <TabsV2Content value="tab2">Details content</TabsV2Content>
+            <TabsV2Content value="tab3">Settings content</TabsV2Content>
+        </TabsV2>
+    )
+}
+```
+
+## With Tab Items
+
+```tsx
+import { TabsV2, TabsV2Variant } from '@juspay/blend-design-system'
+
+const tabItems = [
+    {
+        value: 'dashboard',
+        label: 'Dashboard',
+        content: <DashboardView />,
+        leftSlot: <ChartIcon />,
+    },
+    {
+        value: 'users',
+        label: 'Users',
+        content: <UsersView />,
+        rightSlot: <UserCountBadge />,
+    },
+]
+
+<TabsV2 variant={TabsV2Variant.FLOATING} expanded={true}>
+    {tabItems.map((item) => (
+        <TabsV2.Tab key={item.value} {...item} />
+    ))}
+</TabsV2>
+```
+
+## API Reference
+
+### TabsV2 Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'variant',
+                hintText: 'Visual style of the tab list.',
+            },
+            {
+                content: 'TabsV2Variant',
+                hintText: 'Enum for tab style',
+            },
+            { content: 'BOXED, FLOATING, UNDERLINE, PILLS' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting tab height and text sizing.',
+            },
+            {
+                content: 'TabsV2Size',
+                hintText: 'Enum for component size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'expanded',
+                hintText: 'When true, tabs stretch to fill available width.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true expands tabs',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'fitContent',
+                hintText:
+                    'When true, tab width fits content instead of being equal.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true fits tab width to content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, all tabs are disabled.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables all tabs',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showSkeleton',
+                hintText: 'When true, displays skeleton loading state.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows skeleton',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeletonVariant',
+                hintText: 'Animation style for skeleton loading.',
+            },
+            {
+                content: 'SkeletonVariant',
+                hintText: 'Enum for skeleton style',
+            },
+            { content: 'PULSE, SHIMMER' },
+        ],
+        [
+            {
+                content: 'stickyHeader',
+                hintText: 'When true, tab list sticks to top on scroll.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables sticky header',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'offsetTop',
+                hintText: 'Top offset for sticky header positioning.',
+            },
+            {
+                content: 'number',
+                hintText: 'Offset in pixels',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### TabsV2Trigger Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Required. Unique identifier for the tab.',
+            },
+            {
+                content: 'string',
+                hintText: 'Tab value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'Tab label text.',
+            },
+            {
+                content: 'string | number',
+                hintText: 'Label content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'Element displayed before the label.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Left side element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Element displayed after the label.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Right side element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, tab cannot be selected.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the tab',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'closable',
+                hintText: 'When true, shows close button on the tab.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows close affordance',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClose',
+                hintText: 'Callback fired when close button is clicked.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Close handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'newItem',
+                hintText: 'When true, highlights tab as newly added.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows new indicator',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showSkeleton',
+                hintText: 'When true, displays skeleton for this tab.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows skeleton',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### TabsV2TabItem
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Required. Unique identifier.',
+            },
+            {
+                content: 'string',
+                hintText: 'Tab value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Required. Display text for the tab.',
+            },
+            {
+                content: 'string',
+                hintText: 'Tab label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'content',
+                hintText: 'Required. Content displayed when tab is active.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Tab panel content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'Disables this specific tab.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the tab',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showSkeleton',
+                hintText: 'Shows skeleton for this tab.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows skeleton',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the TabsV2 component using the following tokens:
+
+```tsx
+export type TabsV2TokensType = {
+    list: {
+        gap: CSSObject['gap']
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        background: CSSObject['background']
+    }
+    trigger: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
+        colors: {
+            default: CSSObject['color']
+            hover: CSSObject['color']
+            active: CSSObject['color']
+            disabled: CSSObject['color']
+        }
+        backgrounds: {
+            default: CSSObject['background']
+            hover: CSSObject['background']
+            active: CSSObject['background']
+        }
+        borders: {
+            default: CSSObject['border']
+            active: CSSObject['border']
+        }
+    }
+    variants: {
+        boxed: {
+            listBackground: CSSObject['background']
+            triggerActiveBackground: CSSObject['background']
+        }
+        floating: {
+            listBackground: CSSObject['background']
+            shadow: CSSObject['boxShadow']
+        }
+        underline: {
+            borderBottom: CSSObject['borderBottom']
+            activeBorder: CSSObject['borderBottom']
+        }
+        pills: {
+            borderRadius: CSSObject['borderRadius']
+        }
+    }
+    content: {
+        padding: CSSObject['padding']
+    }
+}
+```

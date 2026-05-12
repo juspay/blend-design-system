@@ -1,0 +1,207 @@
+---
+version: 2
+title: Tag
+description: The TagV2 component displays labels, statuses, or categories with various colors, sizes, and styles.
+category: components
+tags:
+    - tag
+    - component
+    - label
+    - badge
+    - status
+RepoFolderName: TagV2
+StorybookLink: components-tags-tagv2--docs
+---
+
+<TagV2Preview />
+
+## Usage
+
+```tsx
+import {
+    TagV2,
+    TagV2Size,
+    TagV2Type,
+    TagV2Color,
+    TagV2SubType,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <TagV2
+            text="Active"
+            size={TagV2Size.MD}
+            type={TagV2Type.SUBTLE}
+            color={TagV2Color.SUCCESS}
+            subType={TagV2SubType.ROUNDED}
+        />
+    )
+}
+```
+
+## With Slots
+
+```tsx
+import { TagV2, TagV2Color } from '@juspay/blend-design-system'
+;<TagV2
+    text="Notification"
+    color={TagV2Color.PRIMARY}
+    leftSlot={{
+        slot: <BellIcon />,
+        maxHeight: '16px',
+    }}
+    rightSlot={{
+        slot: <CloseButton />,
+        maxHeight: '14px',
+    }}
+/>
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'text',
+                hintText: 'Required. Display text content of the tag.',
+            },
+            {
+                content: 'string',
+                hintText: 'Tag text content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Controls the padding and text sizing of the tag.',
+            },
+            {
+                content: 'TagV2Size',
+                hintText: 'Enum for tag size',
+            },
+            { content: 'XS, SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'type',
+                hintText: 'Visual fill style of the tag.',
+            },
+            {
+                content: 'TagV2Type',
+                hintText: 'Enum for tag style',
+            },
+            { content: 'NO_FILL, ATTENTIVE, SUBTLE' },
+        ],
+        [
+            {
+                content: 'subType',
+                hintText: 'Border radius style of the tag.',
+            },
+            {
+                content: 'TagV2SubType',
+                hintText: 'Enum for border radius',
+            },
+            { content: 'ROUNDED, SQUARICAL' },
+        ],
+        [
+            {
+                content: 'color',
+                hintText: 'Color theme affecting background and text colors.',
+            },
+            {
+                content: 'TagV2Color',
+                hintText: 'Enum for color theme',
+            },
+            { content: 'NEUTRAL, PRIMARY, SUCCESS, ERROR, WARNING, PURPLE' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'Element displayed before the text.',
+            },
+            {
+                content:
+                    '{ slot: ReactElement; maxHeight?: CSSObject["maxHeight"] }',
+                hintText: 'Left slot with optional max height',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Element displayed after the text.',
+            },
+            {
+                content:
+                    '{ slot: ReactElement; maxHeight?: CSSObject["maxHeight"] }',
+                hintText: 'Right slot with optional max height',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Configuration for skeleton loading state.',
+            },
+            {
+                content:
+                    '{ showSkeleton?: boolean; skeletonVariant?: SkeletonVariant }',
+                hintText: 'Skeleton configuration object',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'tagGroupPosition',
+                hintText:
+                    'Position within a TagGroup for border radius adjustments.',
+            },
+            {
+                content: "'center' | 'left' | 'right'",
+                hintText: 'Position in group',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the TagV2 component using the following tokens:
+
+```tsx
+export type TagV2TokensType = {
+    container: {
+        padding: {
+            [key in TagV2Size]: CSSObject['padding']
+        }
+        borderRadius: {
+            [key in TagV2SubType]: CSSObject['borderRadius']
+        }
+        gap: CSSObject['gap']
+        fontSize: {
+            [key in TagV2Size]: CSSObject['fontSize']
+        }
+        fontWeight: CSSObject['fontWeight']
+    }
+    variants: {
+        [key in TagV2Type]: {
+            [key in TagV2Color]: {
+                background: CSSObject['background']
+                color: CSSObject['color']
+                border: CSSObject['border']
+            }
+        }
+    }
+    slot: {
+        maxHeight: {
+            [key in TagV2Size]: CSSObject['maxHeight']
+        }
+    }
+}
+```

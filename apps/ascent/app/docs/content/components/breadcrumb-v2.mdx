@@ -1,0 +1,270 @@
+---
+version: 2
+title: Breadcrumb
+description: The BreadcrumbV2 component displays a navigation trail showing the user's current location within a hierarchy.
+category: components
+tags:
+    - breadcrumb
+    - component
+    - navigation
+    - hierarchy
+    - path
+RepoFolderName: BreadcrumbV2
+StorybookLink: components-breadcrumb-breadcrumbv2--docs
+---
+
+<BreadcrumbV2Preview />
+
+## Usage
+
+```tsx
+import { BreadcrumbV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const items = [
+        { label: 'Home', href: '/' },
+        { label: 'Products', href: '/products' },
+        { label: 'Category', href: '/products/category' },
+        { label: 'Item', href: '/products/category/item' },
+    ]
+
+    return <BreadcrumbV2 items={items} maxItems={3} />
+}
+```
+
+## Compound Component Usage
+
+```tsx
+import { BreadcrumbV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <BreadcrumbV2>
+            <BreadcrumbV2.Item href="/">Home</BreadcrumbV2.Item>
+            <BreadcrumbV2.Separator>/</BreadcrumbV2.Separator>
+            <BreadcrumbV2.Item href="/products">Products</BreadcrumbV2.Item>
+            <BreadcrumbV2.Separator>/</BreadcrumbV2.Separator>
+            <BreadcrumbV2.Page>Current Page</BreadcrumbV2.Page>
+        </BreadcrumbV2>
+    )
+}
+```
+
+## API Reference
+
+### BreadcrumbV2 Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'children',
+                hintText:
+                    'Compound components for custom breadcrumb construction.',
+            },
+            {
+                content: 'ReactNode',
+                hintText:
+                    'BreadcrumbV2.Item, BreadcrumbV2.Separator, BreadcrumbV2.Page, BreadcrumbV2.Icon',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'items',
+                hintText:
+                    'Array of breadcrumb items for declarative configuration. Each item has label, href, and optional slots.',
+            },
+            {
+                content: 'BreadcrumbV2ItemType[]',
+                hintText: 'Array of breadcrumb item objects',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxItems',
+                hintText:
+                    'Maximum number of items to show before collapsing. When exceeded, shows first + ellipsis + trailing items.',
+            },
+            {
+                content: 'number',
+                hintText: 'Integer >= 1, values below 1 disable overflow',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### BreadcrumbV2ItemType
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'id',
+                hintText:
+                    'Stable unique id for React list keys when href may repeat.',
+            },
+            {
+                content: 'string | number',
+                hintText: 'Unique identifier',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Display text for the breadcrumb item.',
+            },
+            {
+                content: 'string',
+                hintText: 'Item text content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'href',
+                hintText: 'Destination URL for navigation.',
+            },
+            {
+                content: 'string',
+                hintText: 'URL path',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText:
+                    'Optional icon or element displayed before the label.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Element for the left side',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Optional element displayed after the label.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Element for the right side',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText:
+                    'Handler for custom navigation (SPA/client routing). Prevents default when provided.',
+            },
+            {
+                content: '(event: MouseEvent) => void',
+                hintText: 'Click handler function',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### Compound Components
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'BreadcrumbV2.Item',
+                hintText: 'Individual link item in the breadcrumb trail.',
+            },
+            {
+                content: 'Component',
+                hintText: 'Props: href, onClick, isActive, children',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'BreadcrumbV2.Page',
+                hintText: 'Current page indicator (non-clickable).',
+            },
+            {
+                content: 'Component',
+                hintText: 'Props: children',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'BreadcrumbV2.Separator',
+                hintText: 'Separator between breadcrumb items.',
+            },
+            {
+                content: 'Component',
+                hintText: 'Props: children (optional, defaults to /)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'BreadcrumbV2.Icon',
+                hintText: 'Wrapper for icons in breadcrumb items.',
+            },
+            {
+                content: 'Component',
+                hintText: 'Props: children',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the BreadcrumbV2 component using the following tokens:
+
+```tsx
+export type BreadcrumbV2TokensType = {
+    container: {
+        display: CSSObject['display']
+        alignItems: CSSObject['alignItems']
+        gap: CSSObject['gap']
+    }
+    item: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: {
+            default: CSSObject['color']
+            hover: CSSObject['color']
+            active: CSSObject['color']
+        }
+        textDecoration: CSSObject['textDecoration']
+    }
+    separator: {
+        color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        margin: CSSObject['margin']
+    }
+    currentPage: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    ellipsis: {
+        color: CSSObject['color']
+    }
+}
+```

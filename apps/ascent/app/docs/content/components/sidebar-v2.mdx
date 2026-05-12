@@ -1,0 +1,430 @@
+---
+version: 2
+title: Sidebar
+description: The SidebarV2 component provides application navigation with directory structure, secondary sidebar support, and collapsible states.
+category: components
+tags:
+    - sidebar
+    - component
+    - navigation
+    - layout
+    - directory
+RepoFolderName: SidebarV2
+StorybookLink: components-sidebar-sidevarv2--docs
+---
+
+<SidebarV2Preview />
+
+## Usage
+
+```tsx
+import { SidebarV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const directoryData = [
+        {
+            id: 'home',
+            label: 'Home',
+            icon: <HomeIcon />,
+            href: '/',
+        },
+        {
+            id: 'settings',
+            label: 'Settings',
+            icon: <SettingsIcon />,
+            children: [
+                { id: 'profile', label: 'Profile', href: '/settings/profile' },
+                {
+                    id: 'security',
+                    label: 'Security',
+                    href: '/settings/security',
+                },
+            ],
+        },
+    ]
+
+    const secondaryItems = [
+        { label: 'Overview', value: 'overview', icon: <ChartIcon /> },
+        { label: 'Analytics', value: 'analytics', icon: <GraphIcon /> },
+    ]
+
+    return (
+        <SidebarV2
+            data={directoryData}
+            secondarySidebar={{
+                items: secondaryItems,
+                selected: 'overview',
+                onSelect: (value) => console.log(value),
+            }}
+            isExpanded={true}
+            onExpandedChange={(expanded) => console.log(expanded)}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'data',
+                hintText:
+                    'Navigation structure for the primary sidebar. Array of directory items with nested children support.',
+            },
+            {
+                content: 'DirectoryData[] | null',
+                hintText: 'Navigation tree structure',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondarySidebar',
+                hintText:
+                    'Configuration for the secondary sidebar rail with selectable items.',
+            },
+            {
+                content: 'SecondarySidebarInfo',
+                hintText:
+                    'Object with items, selected, onSelect, buttonProps, footerSlot',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'topbar',
+                hintText:
+                    'Top navigation bar content displayed above the sidebar.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Topbar component or content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'footer',
+                hintText:
+                    'Footer content displayed at the bottom of the sidebar.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Footer component or content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sidebarTopSlot',
+                hintText:
+                    'Custom content slot at the top of the sidebar panel.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Top slot content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'merchantInfo',
+                hintText:
+                    'Merchant information displayed in the sidebar header.',
+            },
+            {
+                content: 'MerchantInfo',
+                hintText: 'Object with merchant details',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightActions',
+                hintText:
+                    'Action elements displayed in the right side of header.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Right side actions',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isExpanded',
+                hintText: 'Controlled expanded state of the sidebar.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true expands the sidebar',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onExpandedChange',
+                hintText: 'Callback fired when sidebar expanded state changes.',
+            },
+            {
+                content: '(isExpanded: boolean) => void',
+                hintText: 'Expansion change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'defaultIsExpanded',
+                hintText: 'Initial expanded state for uncontrolled usage.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Default expansion state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSidebarStateChange',
+                hintText:
+                    'Callback fired when sidebar state changes (collapsed/expanded/intermediate).',
+            },
+            {
+                content: '(state: SidebarV2StateChangeType) => void',
+                hintText: 'State change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'activeItem',
+                hintText: 'Currently active/selected item value.',
+            },
+            {
+                content: 'string | null',
+                hintText: 'Active item identifier',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onActiveItemChange',
+                hintText: 'Callback fired when active item changes.',
+            },
+            {
+                content: '(item: string | null) => void',
+                hintText: 'Active item change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'defaultActiveItem',
+                hintText: 'Initially active item for uncontrolled usage.',
+            },
+            {
+                content: 'string | null',
+                hintText: 'Default active item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableTopbarAutoHide',
+                hintText: 'When true, topbar automatically hides on scroll.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables auto-hide',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isTopbarVisible',
+                hintText: 'Controlled visibility state of the topbar.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows topbar',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'defaultIsTopbarVisible',
+                hintText: 'Initial topbar visibility for uncontrolled usage.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Default visibility state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onTopbarVisibilityChange',
+                hintText: 'Callback fired when topbar visibility changes.',
+            },
+            {
+                content: '(isVisible: boolean) => void',
+                hintText: 'Visibility change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showMobilePrimaryActionButton',
+                hintText: 'When true, shows primary action button on mobile.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows mobile action button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'mobilePrimaryActionButtonProps',
+                hintText: 'Props for the mobile primary action button.',
+            },
+            {
+                content: 'ButtonHTMLAttributes',
+                hintText: 'Standard button props excluding type',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'height',
+                hintText: 'Custom height for the sidebar container.',
+            },
+            {
+                content: 'string',
+                hintText: 'CSS height value',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## SecondarySidebarInfo
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'items',
+                hintText: 'Array of items for the secondary sidebar rail.',
+            },
+            {
+                content: 'SecondarySidebarItem[]',
+                hintText: 'Array with label, value, and icon',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'selected',
+                hintText: 'Currently selected item value.',
+            },
+            {
+                content: 'string',
+                hintText: 'Selected item value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSelect',
+                hintText: 'Callback fired when an item is selected.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Selection handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'buttonProps',
+                hintText: 'Additional props for sidebar buttons.',
+            },
+            {
+                content: 'ButtonHTMLAttributes',
+                hintText: 'Standard button props',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'footerSlot',
+                hintText:
+                    'Content pinned at the bottom of the rail (settings, help, profile).',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Bottom slot content',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the SidebarV2 component using the following tokens:
+
+```tsx
+export type SidebarV2TokensType = {
+    container: {
+        background: CSSObject['background']
+        borderRight: CSSObject['borderRight']
+        width: {
+            collapsed: CSSObject['width']
+            expanded: CSSObject['width']
+        }
+    }
+    secondaryRail: {
+        background: CSSObject['background']
+        borderRight: CSSObject['borderRight']
+        width: CSSObject['width']
+    }
+    item: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        gap: CSSObject['gap']
+        fontSize: CSSObject['fontSize']
+        color: {
+            default: CSSObject['color']
+            hover: CSSObject['color']
+            active: CSSObject['color']
+        }
+        background: {
+            default: CSSObject['background']
+            hover: CSSObject['background']
+            active: CSSObject['background']
+        }
+    }
+    collapseButton: {
+        size: CSSObject['width']
+        background: CSSObject['background']
+        border: CSSObject['border']
+        color: CSSObject['color']
+    }
+    topbar: {
+        height: CSSObject['height']
+        background: CSSObject['background']
+        borderBottom: CSSObject['borderBottom']
+        padding: CSSObject['padding']
+    }
+}
+```

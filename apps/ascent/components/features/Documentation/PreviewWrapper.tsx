@@ -59,6 +59,41 @@ const previewComponents = {
     KeyValuePairPreview: dyn(() => import('./Previews/KeyValuePairPreview')),
     StepperPreview: dyn(() => import('./Previews/StepperPreview')),
     ChatInputPreview: dyn(() => import('./Previews/ChatInputPreview')),
+    // V2 Previews
+    AccordionV2Preview: dyn(() => import('./Previews/AccordionV2Preview')),
+    AlertV2Preview: dyn(() => import('./Previews/AlertV2Preview')),
+    AvatarV2Preview: dyn(() => import('./Previews/AvatarV2Preview')),
+    BreadcrumbV2Preview: dyn(() => import('./Previews/BreadcrumbV2Preview')),
+    ChartsV2Preview: dyn(() => import('./Previews/ChartsV2Preview')),
+    CodeEditorV2Preview: dyn(() => import('./Previews/CodeEditorV2Preview')),
+    DrawerV2Preview: dyn(() => import('./Previews/DrawerV2Preview')),
+    KeyValuePairV2Preview: dyn(
+        () => import('./Previews/KeyValuePairV2Preview')
+    ),
+    MenuV2Preview: dyn(() => import('./Previews/MenuV2Preview')),
+    MultiSelectV2Preview: dyn(() => import('./Previews/MultiSelectV2Preview')),
+    PopoverV2Preview: dyn(() => import('./Previews/PopoverV2Preview')),
+    ProgressBarV2Preview: dyn(() => import('./Previews/ProgressBarV2Preview')),
+    SidebarV2Preview: dyn(() => import('./Previews/SidebarV2Preview')),
+    SingleSelectV2Preview: dyn(
+        () => import('./Previews/SingleSelectV2Preview')
+    ),
+    SnackbarV2Preview: dyn(() => import('./Previews/SnackbarV2Preview')),
+    StatCardV2Preview: dyn(() => import('./Previews/StatCardV2Preview')),
+    StepperV2Preview: dyn(() => import('./Previews/StepperV2Preview')),
+    TabsV2Preview: dyn(() => import('./Previews/TabsV2Preview')),
+    TagV2Preview: dyn(() => import('./Previews/TagV2Preview')),
+    TagGroupV2Preview: dyn(() => import('./Previews/TagGroupV2Preview')),
+    TooltipV2Preview: dyn(() => import('./Previews/TooltipV2Preview')),
+    TextInputV2Preview: dyn(() => import('./Previews/TextInputV2Preview')),
+    TextAreaV2Preview: dyn(() => import('./Previews/TextAreaV2Preview')),
+    NumberInputV2Preview: dyn(() => import('./Previews/NumberInputV2Preview')),
+    SearchInputV2Preview: dyn(() => import('./Previews/SearchInputV2Preview')),
+    ChatInputV2Preview: dyn(() => import('./Previews/ChatInputV2Preview')),
+    OTPInputV2Preview: dyn(() => import('./Previews/OTPInputV2Preview')),
+    MultiValueInputV2Preview: dyn(
+        () => import('./Previews/MultiValueInputV2Preview')
+    ),
 }
 
 interface PreviewWrapperProps {

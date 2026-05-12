@@ -1,0 +1,199 @@
+---
+version: 2
+title: Multi Value Input
+description: The MultiValueInputV2 component allows entering multiple values as tags with input validation.
+category: components
+tags:
+    - multi-value-input
+    - component
+    - input
+    - tags
+    - tokens
+RepoFolderName: MultiValueInputV2
+StorybookLink: components-inputs-multivalueinputv2--docs
+---
+
+<MultiValueInputV2Preview />
+
+## Usage
+
+```tsx
+import { MultiValueInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [values, setValues] = useState(['tag1', 'tag2'])
+
+    return (
+        <MultiValueInputV2
+            label="Tags"
+            placeholder="Add tags..."
+            values={values}
+            onChange={setValues}
+            size={InputSizeV2.MD}
+            separator=","
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'values',
+                hintText: 'Required. Array of current tag values.',
+            },
+            {
+                content: 'string[]',
+                hintText: 'Array of values',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Required. Callback fired when values change.',
+            },
+            {
+                content: '(values: string[]) => void',
+                hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Field label displayed above the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text when empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting tag and input sizing.',
+            },
+            {
+                content: 'InputSizeV2',
+                hintText: 'Enum for input size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'separator',
+                hintText: 'Character(s) that trigger new tag creation.',
+            },
+            {
+                content: 'string | string[]',
+                hintText: 'Separator character(s)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxValues',
+                hintText: 'Maximum number of allowed values.',
+            },
+            {
+                content: 'number',
+                hintText: 'Maximum value count',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'validate',
+                hintText: 'Function to validate new values before adding.',
+            },
+            {
+                content: '(value: string) => boolean | string',
+                hintText: 'Validation function (return true or error message)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, input is non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Error state configuration.',
+            },
+            {
+                content: '{ show: boolean; message?: string }',
+                hintText: 'Error display settings',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the MultiValueInputV2 component using the following tokens:
+
+```tsx
+export type MultiValueInputV2TokensType = {
+    container: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        border: {
+            default: CSSObject['border']
+            focus: CSSObject['border']
+            error: CSSObject['border']
+            disabled: CSSObject['border']
+        }
+        background: {
+            default: CSSObject['background']
+            disabled: CSSObject['background']
+        }
+        gap: CSSObject['gap']
+    }
+    tag: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        background: CSSObject['background']
+        color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        gap: CSSObject['gap']
+        removeButton: {
+            color: CSSObject['color']
+            hoverColor: CSSObject['color']
+            size: CSSObject['width']
+        }
+    }
+    input: {
+        minWidth: CSSObject['minWidth']
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+}
+```

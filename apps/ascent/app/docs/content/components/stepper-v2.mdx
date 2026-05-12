@@ -1,0 +1,392 @@
+---
+version: 2
+title: Stepper
+description: The StepperV2 component displays progress through a sequence of steps with support for substeps and horizontal or vertical layouts.
+category: components
+tags:
+    - stepper
+    - component
+    - progress
+    - wizard
+    - steps
+RepoFolderName: StepperV2
+StorybookLink: components-stepper-stepperv2--docs
+---
+
+<StepperV2Preview />
+
+## Usage
+
+```tsx
+import {
+    StepperV2,
+    StepperV2StepStatus,
+    StepperV2Type,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const steps = [
+        {
+            id: 1,
+            title: 'Personal Info',
+            status: StepperV2StepStatus.COMPLETED,
+        },
+        {
+            id: 2,
+            title: 'Account Details',
+            status: StepperV2StepStatus.CURRENT,
+        },
+        {
+            id: 3,
+            title: 'Review',
+            status: StepperV2StepStatus.PENDING,
+        },
+    ]
+
+    return (
+        <StepperV2
+            steps={steps}
+            stepperType={StepperV2Type.HORIZONTAL}
+            clickable={true}
+            onStepClick={(index) => console.log('Clicked step:', index)}
+        />
+    )
+}
+```
+
+## With Substeps
+
+```tsx
+import {
+    StepperV2,
+    StepperV2StepStatus,
+} from '@juspay/blend-design-system'
+
+const steps = [
+    {
+        id: 1,
+        title: 'Setup',
+        status: StepperV2StepStatus.COMPLETED,
+        substeps: [
+            { id: 11, title: 'Configure', status: StepperV2StepStatus.COMPLETED },
+            { id: 12, title: 'Verify', status: StepperV2StepStatus.COMPLETED },
+        ],
+        isExpandable: true,
+    },
+    {
+        id: 2,
+        title: 'Deploy',
+        status: StepperV2StepStatus.CURRENT,
+    },
+]
+
+<StepperV2
+    steps={steps}
+    onSubstepClick={(stepId, substepIndex) => console.log(stepId, substepIndex)}
+/>
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'steps',
+                hintText:
+                    'Required. Array of step objects defining the stepper flow.',
+            },
+            {
+                content: 'StepperV2Step[]',
+                hintText: 'Array of step configurations',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'stepperType',
+                hintText: 'Layout orientation of the stepper.',
+            },
+            {
+                content: 'StepperV2Type',
+                hintText: 'Enum for layout type',
+            },
+            { content: 'HORIZONTAL, VERTICAL' },
+        ],
+        [
+            {
+                content: 'clickable',
+                hintText: 'When true, steps can be clicked to navigate.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables step clicking',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onStepClick',
+                hintText:
+                    'Callback fired when a step is clicked (requires clickable=true).',
+            },
+            {
+                content: '(stepIndex: number) => void',
+                hintText: 'Step click handler with 0-based index',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSubstepClick',
+                hintText:
+                    'Callback fired when a substep is clicked. Receives step id and 1-based substep index.',
+            },
+            {
+                content: '(stepId: number, substepIndex: number) => void',
+                hintText: 'Substep click handler',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## StepperV2Step
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'id',
+                hintText: 'Required. Unique identifier for the step.',
+            },
+            {
+                content: 'number',
+                hintText: 'Unique step id',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'title',
+                hintText: 'Required. Display title for the step.',
+            },
+            {
+                content: 'string',
+                hintText: 'Step title text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'status',
+                hintText: 'Current status of the step affecting visual state.',
+            },
+            {
+                content: 'StepperV2StepStatus',
+                hintText: 'Enum for step status',
+            },
+            {
+                content:
+                    'DEFAULT, COMPLETED, CURRENT, PENDING, DISABLED, SKIPPED',
+            },
+        ],
+        [
+            {
+                content: 'description',
+                hintText:
+                    'Additional description text displayed below the title.',
+            },
+            {
+                content: 'string',
+                hintText: 'Step description',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'icon',
+                hintText:
+                    'Custom icon element to display instead of step number.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Custom icon element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, step cannot be clicked.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the step',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'substeps',
+                hintText: 'Array of substeps nested under this step.',
+            },
+            {
+                content: 'SubStep[]',
+                hintText: 'Array of substep objects',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isExpandable',
+                hintText: 'When true, substeps can be expanded/collapsed.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables expansion',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isExpanded',
+                hintText: 'Controlled expanded state of substeps.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true expands substeps',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## SubStep
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'id',
+                hintText: 'Required. Unique identifier for the substep.',
+            },
+            {
+                content: 'number',
+                hintText: 'Unique substep id',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'title',
+                hintText: 'Required. Display title for the substep.',
+            },
+            {
+                content: 'string',
+                hintText: 'Substep title text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'status',
+                hintText: 'Current status of the substep.',
+            },
+            {
+                content: 'StepperV2StepStatus',
+                hintText: 'Enum for substep status',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, substep cannot be clicked.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the substep',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the StepperV2 component using the following tokens:
+
+```tsx
+export type StepperV2TokensType = {
+    container: {
+        gap: CSSObject['gap']
+    }
+    step: {
+        gap: CSSObject['gap']
+    }
+    indicator: {
+        sizes: {
+            [key in StepperV2Type]: CSSObject['width']
+        }
+        borderRadius: CSSObject['borderRadius']
+        border: CSSObject['border']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        colors: {
+            default: CSSObject['color']
+            completed: CSSObject['color']
+            current: CSSObject['color']
+            pending: CSSObject['color']
+            disabled: CSSObject['color']
+        }
+        backgrounds: {
+            default: CSSObject['background']
+            completed: CSSObject['background']
+            current: CSSObject['background']
+            pending: CSSObject['background']
+            disabled: CSSObject['background']
+        }
+    }
+    title: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        colors: {
+            default: CSSObject['color']
+            completed: CSSObject['color']
+            current: CSSObject['color']
+            pending: CSSObject['color']
+            disabled: CSSObject['color']
+        }
+    }
+    description: {
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    connector: {
+        thickness: CSSObject['height']
+        color: {
+            default: CSSObject['background']
+            completed: CSSObject['background']
+        }
+    }
+    substep: {
+        padding: CSSObject['padding']
+        fontSize: CSSObject['fontSize']
+        colors: {
+            default: CSSObject['color']
+            completed: CSSObject['color']
+            current: CSSObject['color']
+        }
+    }
+}
+```
