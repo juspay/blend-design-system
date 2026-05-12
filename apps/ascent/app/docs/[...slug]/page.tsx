@@ -17,27 +17,22 @@ import {
     CATEGORY_ORDER,
     ComponentCategory,
 } from '@/lib/docs/componentRegistry'
+import { DocsVersionProvider } from '../utils/DocsVersionContext'
 
-// Generate static params for all MDX files
 export async function generateStaticParams() {
     const contentDir = path.join(process.cwd(), 'app', 'docs', 'content')
     const paths: { slug: string[] }[] = []
 
     const scanDirectory = (dir: string, basePath: string[] = []) => {
         const entries = fs.readdirSync(dir, { withFileTypes: true })
-
         for (const entry of entries) {
             const fullPath = path.join(dir, entry.name)
-
             if (entry.isDirectory()) {
-                // Recursively scan subdirectories
                 scanDirectory(fullPath, [...basePath, entry.name])
             } else if (entry.name.endsWith('.mdx')) {
                 if (entry.name === 'page.mdx') {
-                    // For page.mdx files, use the directory path
                     paths.push({ slug: basePath })
                 } else {
-                    // For other MDX files, add the filename without extension
                     const fileName = entry.name.replace('.mdx', '')
                     paths.push({ slug: [...basePath, fileName] })
                 }
@@ -46,11 +41,9 @@ export async function generateStaticParams() {
     }
 
     scanDirectory(contentDir)
-
     return paths
 }
 
-// Generate metadata for the page
 export async function generateMetadata({
     params,
 }: {
@@ -81,28 +74,21 @@ export async function generateMetadata({
         source: fileContent,
         options: {
             parseFrontmatter: true,
-            mdxOptions: {
-                remarkPlugins: [],
-                rehypePlugins: [],
-            },
+            mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
         },
         components: useMDXComponents(),
     })
 
     const metadata = frontmatter as PageMetadata
-
     return {
         title: metadata?.title || 'Untitled',
         description: metadata?.description || '',
     }
 }
 
-// Build sidebar items with component categories
 function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
     return fileBasedItems.map((item) => {
-        // If this is the components folder, organize by category
         if (item.slug === 'components' && item.children) {
-            // Group component files by category from registry
             const componentsByCategory: Record<ComponentCategory, DocItem[]> = {
                 'Form Input': [],
                 Selection: [],
@@ -115,24 +101,18 @@ function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
                 Others: [],
             }
 
-            // Map each component file to its category
             item.children.forEach((child) => {
-                // Strip -v2 suffix for registry lookup (v1 and v2 share same registry entry)
                 const baseSlug = child.slug.replace(/-v2$/, '')
                 const registryEntry = COMPONENT_REGISTRY.find(
                     (c) => c.slug === baseSlug
                 )
                 if (registryEntry) {
-                    const category = registryEntry.category
-                    // Keep the name from frontmatter (already cleaned in scanDirectory)
-                    componentsByCategory[category].push(child)
+                    componentsByCategory[registryEntry.category].push(child)
                 } else {
-                    // Component not in registry goes to Others
                     componentsByCategory['Others'].push(child)
                 }
             })
 
-            // Build category sections
             const categoryChildren: DocItem[] = CATEGORY_ORDER.filter(
                 (cat) => componentsByCategory[cat].length > 0
             ).map((category) => ({
@@ -144,13 +124,9 @@ function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
                 ),
             }))
 
-            return {
-                ...item,
-                children: categoryChildren,
-            }
+            return { ...item, children: categoryChildren }
         }
 
-        // Recursively process children
         if (item.children) {
             return {
                 ...item,
@@ -160,6 +136,19 @@ function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
 
         return item
     })
+}
+
+function extractVersionedSlugs(items: DocItem[]): Set<string> {
+    const versionedSlugs = new Set<string>()
+    const walk = (items: DocItem[]) => {
+        for (const item of items) {
+            if (item.version === 2)
+                versionedSlugs.add(item.slug.replace(/-v2$/i, ''))
+            if (item.children) walk(item.children)
+        }
+    }
+    walk(items)
+    return versionedSlugs
 }
 
 const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
@@ -185,10 +174,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
         source: fileContent,
         options: {
             parseFrontmatter: true,
-            mdxOptions: {
-                remarkPlugins: [],
-                rehypePlugins: [],
-            },
+            mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
         },
         components: useMDXComponents(),
     })
@@ -198,6 +184,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
         path.join(process.cwd(), 'app', 'docs', 'content')
     )
     const sidebarItems = buildSidebarItemsWithCategories(fileBasedItems)
+    const versionedSlugs = extractVersionedSlugs(fileBasedItems)
 
     const metadata: PageMetadata = {
         title: (frontmatter as PageMetadata)?.title || 'Untitled',
@@ -207,7 +194,6 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
         ...(frontmatter as PageMetadata),
     }
 
-    // Generate breadcrumb items based on the current path
     const breadcrumbItems = generateBreadcrumbItems(
         slugArray,
         metadata.title || 'Untitled'
@@ -222,43 +208,47 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
     }
 
     return (
-        <SharedLayout
-            baseRoute="/docs"
-            contentPath="app/docs/content"
-            sidebarItems={sidebarItems}
-            headings={headings}
-        >
-            <div className="flex w-full">
-                <aside
-                    className="hidden lg:block w-56 max-w-56 shrink-0 transition-none"
-                    style={asideStyle}
-                >
-                    <Sidebar items={sidebarItems} baseRoute="/docs" />
-                </aside>
-                <div className="flex-1 min-w-0">
-                    <DocsPage
-                        metadata={metadata}
-                        content={content}
-                        breadcrumbItems={breadcrumbItems}
-                        rawMarkdown={fileContent}
-                        mobileTrigger={
-                            <MobileSidebarTrigger sidebarItems={sidebarItems} />
-                        }
-                    />
-                </div>
-                <aside
-                    className="w-56 max-w-56 shrink-0 hidden xl:block transition-none"
-                    style={asideStyle}
-                >
-                    <div className="px-5 py-3">
-                        <span className="text-xs text-nav-section-text-foreground font-semibold uppercase tracking-wider">
-                            On this page
-                        </span>
+        <DocsVersionProvider value={versionedSlugs}>
+            <SharedLayout
+                baseRoute="/docs"
+                contentPath="app/docs/content"
+                sidebarItems={sidebarItems}
+                headings={headings}
+            >
+                <div className="flex w-full">
+                    <aside
+                        className="hidden lg:block w-56 max-w-56 shrink-0 transition-none"
+                        style={asideStyle}
+                    >
+                        <Sidebar items={sidebarItems} baseRoute="/docs" />
+                    </aside>
+                    <div className="flex-1 min-w-0">
+                        <DocsPage
+                            metadata={metadata}
+                            content={content}
+                            breadcrumbItems={breadcrumbItems}
+                            rawMarkdown={fileContent}
+                            mobileTrigger={
+                                <MobileSidebarTrigger
+                                    sidebarItems={sidebarItems}
+                                />
+                            }
+                        />
                     </div>
-                    <TableOfContents items={headings} className="py-4" />
-                </aside>
-            </div>
-        </SharedLayout>
+                    <aside
+                        className="w-56 max-w-56 shrink-0 hidden xl:block transition-none"
+                        style={asideStyle}
+                    >
+                        <div className="px-5 py-3">
+                            <span className="text-xs text-nav-section-text-foreground font-semibold uppercase tracking-wider">
+                                On this page
+                            </span>
+                        </div>
+                        <TableOfContents items={headings} className="py-4" />
+                    </aside>
+                </div>
+            </SharedLayout>
+        </DocsVersionProvider>
     )
 }
 
