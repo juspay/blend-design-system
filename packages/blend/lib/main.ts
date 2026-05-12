@@ -71,24 +71,56 @@ export { BreadcrumbV2 } from './components/BreadcrumbV2'
 export {
     AvatarV2,
     AvatarV2Size,
+    AvatarV2Shape,
+    AvatarV2Status,
+    AvatarV2StatusPosition,
+    AvatarV2Variant,
     type AvatarV2Props,
 } from './components/AvatarV2'
-export { TooltipV2, type TooltipV2Props } from './components/TooltipV2'
+export {
+    TooltipV2,
+    TooltipV2Side,
+    TooltipV2Align,
+    TooltipV2Size,
+    TooltipV2SlotDirection,
+    type TooltipV2Props,
+} from './components/TooltipV2'
 export {
     ProgressBarV2,
+    ProgressBarV2Variant,
+    ProgressBarV2Size,
+    ProgressBarV2Appearance,
     type ProgressBarV2Props,
 } from './components/ProgressBarV2'
 export {
     StatCardV2,
+    StatCardV2Variant,
     StatCardV2ChangeType,
     StatCardV2ArrowDirection,
     type StatCardV2Props,
 } from './components/StatCardV2'
-export { AccordionV2, AccordionV2Item } from './components/AccordionV2'
+export { TagGroupV2, type TagGroupV2Props } from './components/TagGroupV2'
+export { SnackbarV2, addSnackbarV2, StyledToast } from './components/SnackbarV2'
+export {
+    SidebarV2,
+    SidebarV2Panel,
+    type SidebarV2Props,
+    type SidebarV2StateChangeType,
+    type SecondarySidebarInfo,
+    type SecondarySidebarItem,
+    SidebarV2StateChange,
+    type SidebarV2PanelProps,
+} from './components/SidebarV2'
+export {
+    AccordionV2,
+    AccordionV2Item,
+    AccordionV2Type,
+} from './components/AccordionV2'
 export {
     TextInputV2,
     type TextInputV2Props,
 } from './components/InputsV2/TextInputV2'
+export { InputSizeV2, InputStateV2 } from './components/InputsV2/inputV2.types'
 export {
     DrawerV2,
     DrawerV2Body,
@@ -142,6 +174,72 @@ export {
     ChartContainerV2,
     ChartHeaderV2,
 } from './components/ChartsV2'
+export {
+    ChatInputV2,
+    MobileChatInputV2,
+    type ChatInputV2Props,
+    type AttachedFile,
+    type TopQuery,
+} from './components/InputsV2/ChatInputV2'
+export { CodeEditorV2, type CodeEditorV2Props } from './components/CodeEditorV2'
+export {
+    KeyValuePairV2,
+    KeyValuePairV2Size,
+    KeyValuePairV2StateType,
+    type KeyValuePairV2PropTypes,
+    type TextOverflowMode,
+} from './components/KeyValuePairV2'
+export {
+    MenuV2,
+    MenuV2Content,
+    MenuV2Item,
+    MenuV2SubMenu,
+} from './components/MenuV2'
+export {
+    MultiSelectV2,
+    MultiSelectV2Skeleton,
+    MultiSelectV2Menu,
+    MultiSelectV2MenuHeader,
+    MultiSelectV2MenuSearch,
+    MultiSelectV2MenuVirtualList,
+    MultiSelectV2MenuItems,
+    MultiSelectV2MenuActions,
+    MultiSelectV2Trigger,
+    MobileMultiSelectV2,
+    MultiSelectV2SelectionTagType,
+    type MultiSelectV2Props,
+} from './components/MultiSelectV2'
+export {
+    SingleSelectV2,
+    MobileSingleSelectV2,
+    SingleSelectV2Trigger,
+    SingleSelectV2Menu,
+    SingleSelectV2List,
+    SingleSelectV2VirtualList,
+    SingleSelectV2Search,
+    SingleSelectV2Skeleton,
+    type SingleSelectV2Props,
+} from './components/SingleSelectV2'
+export {
+    MultiValueInputV2,
+    type MultiValueInputV2Props,
+} from './components/InputsV2/MultiValueInputV2'
+export {
+    NumberInputV2,
+    type NumberInputV2Props,
+} from './components/InputsV2/NumberInputV2'
+export {
+    OTPInputV2,
+    type OTPInputV2Props,
+} from './components/InputsV2/OTPInputV2'
+export {
+    SearchInputV2,
+    type SearchInputV2Props,
+} from './components/InputsV2/SearchInputV2'
+export {
+    TextAreaV2,
+    type TextAreaV2Props,
+} from './components/InputsV2/TextAreaV2'
 
 // ---------------------------------------------------------------------------
 // Token Factory Exports (for Token Studio engine)

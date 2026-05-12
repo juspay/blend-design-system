@@ -1,4 +1,41 @@
 {
+    "accordion-v2": {
+        "title": "Accordion",
+        "description": "The AccordionV2 component is a vertically collapsing container for organizing content into expandable sections with flexible layout options.",
+        "path": "components/accordion-v2",
+        "slug": "accordion-v2",
+        "category": "components",
+        "tags": ["accordion", "component", "collapse", "expand", "content"],
+        "content": "Usage\n\n\n\nAPI Reference\n\nAccordionV2 Props\n\n void',\n                hintText: 'Function called when expansion changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Custom width for the accordion container.',\n            },\n            {\n                content: 'CSSObject[\"width\"]',\n                hintText: 'CSS width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText:\n                    'Maximum width constraint for the accordion container.',\n            },\n            {\n                content: 'CSSObject[\"maxWidth\"]',\n                hintText: 'CSS max-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText:\n                    'Minimum width constraint for the accordion container.',\n            },\n            {\n                content: 'CSSObject[\"minWidth\"]',\n                hintText: 'CSS min-width value',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nAccordionV2Item Props\n\n\n\nComponent Tokens\n\nYou can style the AccordionV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\nAccordionV2 Props\n\n void',\n                hintText: 'Function called when expansion changes',\n            },\n            { co...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "AccordionV2 Props",
+                "level": 3,
+                "id": "accordionv2-props"
+            },
+            {
+                "title": "AccordionV2Item Props",
+                "level": 3,
+                "id": "accordionv2item-props"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "accordion": {
         "title": "Accordion",
         "description": "The Accordion component creates collapsible content sections that can expand and collapse, helping to organize information hierarchically and save screen space.",
@@ -46,6 +83,33 @@
                 "title": "Example Usage",
                 "level": 3,
                 "id": "example-usage"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "alert-v2": {
+        "title": "Alert",
+        "description": "The AlertV2 component displays contextual feedback messages with various severity levels and styling options.",
+        "path": "components/alert-v2",
+        "slug": "alert-v2",
+        "category": "components",
+        "tags": ["alert", "component", "notification", "feedback", "message"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void }',\n                hintText: 'Close button visibility and handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Custom width for the alert container.',\n            },\n            {\n                content: 'CSSObject[\"width\"]',\n                hintText: 'CSS width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width constraint for the alert.',\n            },\n            {\n                content: 'CSSObject[\"maxWidth\"]',\n                hintText: 'CSS max-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width constraint for the alert.',\n            },\n            {\n                content: 'CSSObject[\"minWidth\"]',\n                hintText: 'CSS min-width value',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the AlertV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void }',\n                hintText: 'Close button visibility and handler',\n            },\n            { content: '' },...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
             },
             {
                 "title": "Component Tokens",
@@ -116,6 +180,33 @@
             }
         ]
     },
+    "avatar-v2": {
+        "title": "Avatar",
+        "description": "The AvatarV2 component displays user profile images, initials, or icons with status indicators and flexible sizing options.",
+        "path": "components/avatar-v2",
+        "slug": "avatar-v2",
+        "category": "components",
+        "tags": ["avatar", "component", "profile", "user", "image"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Error handler function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onImageLoad',\n                hintText:\n                    'Callback fired when the avatar image successfully loads.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Success handler function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Custom width overriding the size preset.',\n            },\n            {\n                content: 'CSSObject[\"width\"]',\n                hintText: 'CSS width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'height',\n                hintText: 'Custom height overriding the size preset.',\n            },\n            {\n                content: 'CSSObject[\"height\"]',\n                hintText: 'CSS height value',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the AvatarV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Error handler function',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "avatar": {
         "title": "Avatar",
         "description": "The Avatar component displays user profile images, initials, or fallback icons with various sizes and styling options for user identification and personalization.",
@@ -135,6 +226,53 @@
                 "title": "API Reference",
                 "level": 2,
                 "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "breadcrumb-v2": {
+        "title": "Breadcrumb",
+        "description": "The BreadcrumbV2 component displays a navigation trail showing the user's current location within a hierarchy.",
+        "path": "components/breadcrumb-v2",
+        "slug": "breadcrumb-v2",
+        "category": "components",
+        "tags": ["breadcrumb", "component", "navigation", "hierarchy", "path"],
+        "content": "Usage\n\n\n\nCompound Component Usage\n\n\n\nAPI Reference\n\nBreadcrumbV2 Props\n\n= 1, values below 1 disable overflow',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nBreadcrumbV2ItemType\n\n void',\n                hintText: 'Click handler function',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nCompound Components\n\n\n\nComponent Tokens\n\nYou can style the BreadcrumbV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nCompound Component Usage\n\n\n\nAPI Reference\n\nBreadcrumbV2 Props\n\n= 1, values below 1 disable overflow',\n            },\n            { content: '...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "Compound Component Usage",
+                "level": 2,
+                "id": "compound-component-usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "BreadcrumbV2 Props",
+                "level": 3,
+                "id": "breadcrumbv2-props"
+            },
+            {
+                "title": "BreadcrumbV2ItemType",
+                "level": 3,
+                "id": "breadcrumbv2itemtype"
+            },
+            {
+                "title": "Compound Components",
+                "level": 3,
+                "id": "compound-components"
             },
             {
                 "title": "Component Tokens",
@@ -190,9 +328,36 @@
             }
         ]
     },
-    "button-group": {
+    "button-group-v2": {
         "title": "Button Group",
         "description": "The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning for cohesive action interfaces.",
+        "path": "components/button-group-v2",
+        "slug": "button-group-v2",
+        "category": "components",
+        "tags": ["button-group", "component", "layout", "container", "actions"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n | ReactElement[]',\n                hintText:\n                    'Single Button element or array of Button elements to group',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the ButtonGroup component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n | ReactElement[]',\n                hintText:\n                    'Single Button element or array of Button elements to group'...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "button-group": {
+        "title": "Button Group",
+        "description": "The ButtonGroup component is a container that groups multiple Button components together with flexible layout options for cohesive action interfaces.",
         "path": "components/button-group",
         "slug": "button-group",
         "category": "components",
@@ -263,6 +428,43 @@
                 "title": "API Reference",
                 "level": 2,
                 "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "charts-v2": {
+        "title": "Charts",
+        "description": "The ChartsV2 component provides a Highcharts-powered visualization wrapper with skeleton loading and empty state handling.",
+        "path": "components/charts-v2",
+        "slug": "charts-v2",
+        "category": "components",
+        "tags": ["charts", "component", "visualization", "data", "graph"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Function called with chart instance',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'constructorType',\n                hintText:\n                    'Highcharts constructor type for different chart types.',\n            },\n            {\n                content: '\"chart\" | \"stockChart\" | \"mapChart\" | \"ganttChart\"',\n                hintText: 'Constructor type string',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'containerProps',\n                hintText: 'Additional props passed to the chart container div.',\n            },\n            {\n                content: 'HTMLAttributes',\n                hintText: 'Standard div element props',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nChartV2Container\n\nA wrapper component for chart layouts:\n\n\n\nChartV2Legend\n\nCustom legend component for chart interactivity:\n\n\n\nComponent Tokens\n\nYou can style the ChartsV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Function called with chart instance',\n            },\n            { content: '' },\n        ]...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "ChartV2Container",
+                "level": 2,
+                "id": "chartv2container"
+            },
+            {
+                "title": "ChartV2Legend",
+                "level": 2,
+                "id": "chartv2legend"
             },
             {
                 "title": "Component Tokens",
@@ -365,6 +567,33 @@
             }
         ]
     },
+    "chat-input-v2": {
+        "title": "Chat Input",
+        "description": "The ChatInputV2 component provides a specialized input for chat interfaces with send button and attachment support.",
+        "path": "components/chat-input-v2",
+        "slug": "chat-input-v2",
+        "category": "components",
+        "tags": ["chat-input", "component", "input", "chat", "message"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onSend',\n                hintText:\n                    'Callback fired when message is sent (Enter or send button).',\n            },\n            {\n                content: '(value: string) => void',\n                hintText: 'Send handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text when empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size affecting input height.',\n            },\n            {\n                content: 'InputSizeV2',\n                hintText: 'Enum for input size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'When true, input is non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables the input',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'loading',\n                hintText: 'When true, shows loading state.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows loading state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showAttachment',\n                hintText: 'When true, shows attachment button.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows attachment button',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onAttachment',\n                hintText: 'Callback fired when attachment button is clicked.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Attachment handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'sendButtonDisabled',\n                hintText: 'When true, disables the send button.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables send button',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the ChatInputV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "chatinput": {
         "title": "Chat Input",
         "description": "The ChatInput component provides a rich text input interface for chat applications with file attachments, voice recording, auto-resize functionality, top queries suggestions, and comprehensive keyboard navigation.",
@@ -421,6 +650,38 @@
                 "title": "Usage",
                 "level": 2,
                 "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "code-editor-v2": {
+        "title": "Code Editor",
+        "description": "The CodeEditorV2 component provides a Monaco Editor integration with syntax highlighting, diff mode, and customizable themes.",
+        "path": "components/code-editor-v2",
+        "slug": "code-editor-v2",
+        "category": "components",
+        "tags": ["code-editor", "component", "editor", "monaco", "code"],
+        "content": "Usage\n\n\n\nDiff Mode Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'variant',\n                hintText:\n                    'Editor display mode. DEFAULT shows standard editor, NO_GUTTER hides line numbers, DIFF enables diff comparison.',\n            },\n            {\n                content: 'CodeEditorV2Variant',\n                hintText: 'Enum for editor variant',\n            },\n            { content: 'DEFAULT, NO_GUTTER, DIFF' },\n        ],\n        [\n            {\n                content: 'showLineNumbers',\n                hintText: 'Whether to display line numbers in the gutter.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows line numbers',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'language',\n                hintText: 'Programming language for syntax highlighting.',\n            },\n            {\n                content: 'SupportedLanguage',\n                hintText: 'One of the supported languages',\n            },\n            {\n                content:\n                    'javascript, typescript, jsx, tsx, json, css, html, markdown, yaml, python, rust, haskell',\n            },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text shown when editor is empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'readOnly',\n                hintText: 'When true, editor content cannot be modified.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true makes content read-only',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'When true, editor is visually disabled and non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables the editor',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'header',\n                hintText:\n                    'Configuration for the editor header with title and actions.',\n            },\n            {\n                content: 'object',\n                hintText:\n                    'showHeader, title, leftSlot, rightSlot, showCopyButton',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'autoFocus',\n                hintText: 'When true, focuses the editor on mount.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true auto-focuses editor',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFocus',\n                hintText: 'Callback fired when editor receives focus.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Focus handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onBlur',\n                hintText: 'Callback fired when editor loses focus.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Blur handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'originalValue',\n                hintText:\n                    'For diff mode: the original/left-side source to compare against.',\n            },\n            {\n                content: 'string',\n                hintText: 'Original content for comparison',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'renderSideBySide',\n                hintText:\n                    'For diff mode: when true, shows two columns. When false, shows inline diff.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true for side-by-side, false for inline',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'isDiffUnchangedCollapsed',\n                hintText:\n                    'For diff mode: when true, hides unchanged regions with expand controls.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true collapses unchanged sections',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'diffContextLines',\n                hintText:\n                    'For diff mode: lines shown around edits when collapsed. Defaults to 3.',\n            },\n            {\n                content: 'number',\n                hintText: 'Number of context lines',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'diffExpandChunk',\n                hintText:\n                    'For diff mode: lines revealed per expand action. Defaults to 20.',\n            },\n            {\n                content: 'number',\n                hintText: 'Lines per expand',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Custom width for the editor container.',\n            },\n            {\n                content: 'CSSObject[\"width\"]',\n                hintText: 'CSS width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'height',\n                hintText: 'Custom height for the editor container.',\n            },\n            {\n                content: 'CSSObject[\"height\"]',\n                hintText: 'CSS height value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"maxWidth\"]',\n                hintText: 'CSS max-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"minWidth\"]',\n                hintText: 'CSS min-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxHeight',\n                hintText: 'Maximum height constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"maxHeight\"]',\n                hintText: 'CSS max-height value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minHeight',\n                hintText: 'Minimum height constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"minHeight\"]',\n                hintText: 'CSS min-height value',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the CodeEditorV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nDiff Mode Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler function',\n            },\n            { content: '' },...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "Diff Mode Usage",
+                "level": 2,
+                "id": "diff-mode-usage"
             },
             {
                 "title": "API Reference",
@@ -590,6 +851,33 @@
             }
         ]
     },
+    "drawer-v2": {
+        "title": "Drawer",
+        "description": "The DrawerV2 component provides a sliding panel for displaying content from the edge of the screen.",
+        "path": "components/drawer-v2",
+        "slug": "drawer-v2",
+        "category": "components",
+        "tags": ["drawer", "component", "panel", "slide", "overlay"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'State change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'direction',\n                hintText: 'Edge of the screen from which the drawer slides.',\n            },\n            {\n                content: 'string',\n                hintText: 'Slide direction',\n            },\n            { content: 'left, right, top, bottom' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText:\n                    'Width or height of the drawer depending on direction.',\n            },\n            {\n                content: 'string | number',\n                hintText: 'CSS dimension value',\n            },\n            { content: 'sm, md, lg, xl, or custom value' },\n        ],\n        [\n            {\n                content: 'children',\n                hintText: 'Content displayed inside the drawer panel.',\n            },\n            {\n                content: 'ReactNode',\n                hintText: 'Drawer content',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the DrawerV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'State change handler',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "drawer": {
         "title": "Drawer",
         "description": "The Drawer component provides slide-out panels that appear from any side of the screen, offering flexible layout options for forms, navigation, detailed views, and contextual actions.",
@@ -664,6 +952,39 @@
             }
         ]
     },
+    "key-value-pair-v2": {
+        "title": "Key Value Pair",
+        "description": "The KeyValuePairV2 component displays labeled data in horizontal or vertical layouts with responsive text handling.",
+        "path": "components/key-value-pair-v2",
+        "slug": "key-value-pair-v2",
+        "category": "components",
+        "tags": [
+            "key-value-pair",
+            "component",
+            "data-display",
+            "label",
+            "value"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the KeyValuePairV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the KeyValuePairV2 component using the following tokens:",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "keyvaluepair": {
         "title": "Key Value Pair",
         "description": "The KeyValuePair component displays key-value pairs in a structured layout with support for vertical and horizontal orientations, text overflow handling, and customizable slots.",
@@ -689,6 +1010,38 @@
                 "title": "API Reference",
                 "level": 2,
                 "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "menu-v2": {
+        "title": "Menu",
+        "description": "The MenuV2 component provides a dropdown menu with items, groups, search functionality, and virtual scrolling for large lists.",
+        "path": "components/menu-v2",
+        "slug": "menu-v2",
+        "category": "components",
+        "tags": ["menu", "component", "dropdown", "actions", "navigation"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Open state change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'asModal',\n                hintText: 'When true, renders as a modal on mobile devices.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true uses modal on mobile',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'alignment',\n                hintText:\n                    'Horizontal alignment of the menu relative to trigger.',\n            },\n            {\n                content: 'MenuV2Alignment',\n                hintText: 'Enum for horizontal alignment',\n            },\n            { content: 'START, CENTER, END' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'Edge of the trigger where the menu appears.',\n            },\n            {\n                content: 'MenuV2Side',\n                hintText: 'Enum for menu position',\n            },\n            { content: 'TOP, LEFT, RIGHT, BOTTOM' },\n        ],\n        [\n            {\n                content: 'sideOffset',\n                hintText: 'Distance between trigger and menu in pixels.',\n            },\n            {\n                content: 'number',\n                hintText: 'Pixel offset value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'alignOffset',\n                hintText: 'Offset along the alignment axis in pixels.',\n            },\n            {\n                content: 'number',\n                hintText: 'Pixel offset value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'collisionBoundaryRef',\n                hintText:\n                    'Element(s) to use as collision boundary for positioning.',\n            },\n            {\n                content: 'HTMLElement | HTMLElement[] | null',\n                hintText: 'Boundary element(s)',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'triggerProps',\n                hintText: 'Additional props passed to the trigger button.',\n            },\n            {\n                content: 'ButtonHTMLAttributes',\n                hintText: 'Standard button attributes',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nMenu Item Types\n\n void',\n                hintText: 'Click handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subMenu',\n                hintText: 'Nested submenu items for hierarchical navigation.',\n            },\n            {\n                content: 'MenuV2ItemType[]',\n                hintText: 'Array of submenu items',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'tooltip',\n                hintText: 'Tooltip content shown on hover.',\n            },\n            {\n                content: 'string | ReactNode',\n                hintText: 'Tooltip text or element',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the MenuV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Open state change handler',\n            },\n            { content: '' },\n        ],...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Menu Item Types",
+                "level": 2,
+                "id": "menu-item-types"
             },
             {
                 "title": "Component Tokens",
@@ -758,6 +1111,33 @@
             }
         ]
     },
+    "multi-select-v2": {
+        "title": "Multi Select",
+        "description": "The MultiSelectV2 component allows users to select multiple options from a dropdown menu with search, groups, and virtualization support.",
+        "path": "components/multi-select-v2",
+        "slug": "multi-select-v2",
+        "category": "components",
+        "tags": ["multi-select", "component", "selection", "dropdown", "form"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Selection change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'items',\n                hintText: 'Grouped options available for selection.',\n            },\n            {\n                content: 'MultiSelectV2GroupType[]',\n                hintText: 'Array of groups with items',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Field label displayed above the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subLabel',\n                hintText:\n                    'Secondary label text displayed below the main label.',\n            },\n            {\n                content: 'string',\n                hintText: 'Secondary label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText:\n                    'Placeholder text shown when no options are selected.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'hintText',\n                hintText: 'Helper text displayed below the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Helper description',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'helpIconText',\n                hintText: 'Tooltip text for the help icon.',\n            },\n            {\n                content: 'string',\n                hintText: 'Help tooltip content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText: 'When true, displays a required indicator.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true marks field as required',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'selectionTagType',\n                hintText: 'Display format for selected items in the input.',\n            },\n            {\n                content: 'MultiSelectV2SelectionTagType',\n                hintText: 'Enum for tag display type',\n            },\n            { content: 'COUNT, TEXT' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText:\n                    'Size variant affecting input height and text sizing.',\n            },\n            {\n                content: 'MultiSelectV2Size',\n                hintText: 'Enum for component size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'variant',\n                hintText: 'Visual style of the select input.',\n            },\n            {\n                content: 'MultiSelectV2Variant',\n                hintText: 'Enum for visual style',\n            },\n            { content: 'CONTAINER, NO_CONTAINER' },\n        ],\n        [\n            {\n                content: 'search',\n                hintText: 'Configuration for search functionality in dropdown.',\n            },\n            {\n                content: 'MultiSelectV2SearchConfig',\n                hintText: 'Object with show and placeholder',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableSelectAll',\n                hintText: 'When true, shows a \"Select All\" option in the menu.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables select all',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'selectAllText',\n                hintText: 'Label text for the select all option.',\n            },\n            {\n                content: 'string',\n                hintText: 'Custom select all label',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxSelections',\n                hintText: 'Maximum number of items that can be selected.',\n            },\n            {\n                content: 'number',\n                hintText: 'Maximum selection count',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText:\n                    'Custom element displayed alongside the selected values.',\n            },\n            {\n                content: 'ReactNode',\n                hintText: 'Additional slot content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Error state configuration.',\n            },\n            {\n                content: 'MultiSelectV2ErrorState',\n                hintText: 'Object with show and message',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showActionButtons',\n                hintText:\n                    'When true, shows Apply/Cancel buttons in the dropdown.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows action buttons',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'primaryAction',\n                hintText:\n                    'Configuration for the primary action button (Apply).',\n            },\n            {\n                content: 'object',\n                hintText: 'text, onClick, disabled, loading',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondaryAction',\n                hintText:\n                    'Configuration for the secondary action button (Cancel).',\n            },\n            {\n                content: 'object',\n                hintText: 'text, onClick, disabled, loading',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableVirtualization',\n                hintText: 'When true, uses virtual rendering for large lists.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables virtualization',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'virtualListItemHeight',\n                hintText: 'Height of each virtualized item in pixels.',\n            },\n            {\n                content: 'number',\n                hintText: 'Item height in px',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onEndReached',\n                hintText:\n                    'Callback fired when scrolling reaches the end of list.',\n            },\n            {\n                content: '() => void',\n                hintText: 'End reached handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'hasMore',\n                hintText:\n                    'For infinite scroll: indicates more items are available.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true indicates more items available',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'allowCustomValue',\n                hintText:\n                    'When true, allows users to enter values not in the list.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables custom values',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showClearButton',\n                hintText: 'When true, shows a button to clear all selections.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows clear button',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the MultiSelectV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Selection change handler',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "multi-select": {
         "title": "Multi Select",
         "description": "The MultiSelect component allows users to select multiple options from a list, with search functionality, selection management, and customizable display options including count badges and text display.",
@@ -781,6 +1161,33 @@
         ],
         "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with the toggled item value when selection changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.items',\n                hintText:\n                    'Required array of MultiSelectMenuGroupType objects that define the selectable options. Each group can contain multiple items organized under an optional label. Groups can be separated with visual separators. Each MultiSelectMenuGroupType contains: groupLabel (optional), items (required array), and showSeparator (optional). Defaults to empty array.',\n            },\n            {\n                content: 'MultiSelectMenuGroupType[]',\n                hintText:\n                    'Array of menu group objects defining selectable options',\n            },\n            {\n                content:\n                    'MultiSelectMenuGroupType: see MultiSelectMenuGroupType props below',\n            },\n        ],\n        [\n            {\n                content: 'MultiSelect.size',\n                hintText:\n                    'Optional MultiSelectMenuSize enum value that determines the size variant of the select field. Affects padding, height, font size, and overall dimensions. Common values include SMALL, MEDIUM, LARGE. Defaults to MEDIUM.',\n            },\n            {\n                content: 'MultiSelectMenuSize',\n                hintText:\n                    'Enum that determines the size variant of the select field',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.variant',\n                hintText:\n                    'Optional MultiSelectVariant enum value that determines the visual styling approach. CONTAINER creates a container-style input with border and background, OUTLINED creates an outlined style. Affects the overall appearance and styling of the trigger. Defaults to CONTAINER.',\n            },\n            {\n                content: 'MultiSelectVariant',\n                hintText: 'Enum that determines the visual variant styling',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.selectionTagType',\n                hintText:\n                    'Optional MultiSelectSelectionTagType enum value that determines how selected items are displayed in the trigger. COUNT shows a badge with the number of selected items, TEXT shows the actual selected item labels. Defaults to COUNT.',\n            },\n            {\n                content: 'MultiSelectSelectionTagType',\n                hintText: 'Enum that determines how selections are displayed',\n            },\n            { content: 'COUNT, TEXT' },\n        ],\n        [\n            {\n                content: 'MultiSelect.required',\n                hintText:\n                    'When true, marks the field as required and displays an asterisk (*) next to the label. Useful for form validation. Required fields should have validation logic to ensure selections are made. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true marks field as required, false allows optional selection',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.disabled',\n                hintText:\n                    \"When true, disables the select field, making it non-interactive and visually muted. Users cannot open the dropdown or make selections. Disabled fields show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.\",\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true disables select field, false allows normal interaction',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.helpIconHintText',\n                hintText:\n                    'Optional tooltip text string displayed when hovering over the help icon next to the label. Provides additional context or guidance about the select field. Should be concise and helpful. If not provided, no help icon is shown.',\n            },\n            {\n                content: 'string',\n                hintText: 'Tooltip text shown when hovering over the help icon',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.hintText',\n                hintText:\n                    'Optional helper text string displayed below the select field. Provides guidance, examples, or additional information about the selection. Styled with smaller, lighter text. Useful for clarifying complex selection requirements or providing examples.',\n            },\n            {\n                content: 'string',\n                hintText: 'Helper text shown below the select field',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.enableSearch',\n                hintText:\n                    'When true, displays a search input at the top of the dropdown menu that allows users to filter options by typing. The search filters items in real-time as the user types. Useful for menus with many items. Defaults to true.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows search input, false hides search functionality',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.searchPlaceholder',\n                hintText:\n                    'Optional placeholder text string displayed in the search input when it\\'s empty. Provides guidance to users about what they can search for. Should be concise and descriptive. Defaults to \"Search options...\".',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder text shown when search input is empty',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.enableSelectAll',\n                hintText:\n                    'When true, displays a \"Select All\" option at the top of the dropdown menu that allows users to select or deselect all items at once. Useful for menus with many items. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows select all option, false hides select all',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.selectAllText',\n                hintText:\n                    'Optional text string displayed for the select all option. Should be concise and action-oriented. Defaults to \"Select All\".',\n            },\n            {\n                content: 'string',\n                hintText: 'Text displayed for the select all option',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.slot',\n                hintText:\n                    \"Optional React element displayed inside the trigger button, typically before the selection display. Commonly used for icons (from lucide-react or other icon libraries) that visually represent the select field's purpose. The slot maintains proper spacing and alignment.\",\n            },\n            {\n                content: 'React.ReactNode',\n                hintText:\n                    'React element (typically an icon) displayed in the trigger',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.name',\n                hintText:\n                    'Optional name attribute string for the select field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',\n            },\n            {\n                content: 'string',\n                hintText:\n                    'Name attribute for form identification and submission',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.customTrigger',\n                hintText:\n                    'Optional custom React element that completely replaces the default trigger button. Provides full control over the trigger appearance and behavior. When provided, the default trigger with label, placeholder, and selection display is not rendered. Useful for custom designs.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText:\n                    'Custom React element that replaces the default trigger',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.useDrawerOnMobile',\n                hintText:\n                    'When true, renders the dropdown as a full-screen drawer on mobile devices (typically screen width ',\n                hintText:\n                    'Single element, array of elements, or null for collision boundaries',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.minMenuWidth',\n                hintText:\n                    'Optional minimum width in pixels for the dropdown menu. The menu will not shrink below this width, ensuring readability of menu items. Useful for preventing menus from becoming too narrow.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive number representing minimum menu width in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.maxMenuWidth',\n                hintText:\n                    'Optional maximum width in pixels for the dropdown menu. The menu will not grow beyond this width, preventing it from becoming too wide. Useful for maintaining consistent menu sizing.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive number representing maximum menu width in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.maxMenuHeight',\n                hintText:\n                    'Optional maximum height in pixels for the dropdown menu. When the menu content exceeds this height, a scrollbar appears. Useful for controlling the vertical space taken by the menu.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive number representing maximum menu height in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.inline',\n                hintText:\n                    'When true, renders the select field inline without a fixed height, allowing it to grow with content. When false, the select has a fixed height. Useful for dynamic content. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true renders inline without fixed height, false uses fixed height',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.onBlur',\n                hintText:\n                    'Optional callback function invoked when the select field loses focus. Receives no parameters. Useful for validation, cleanup, or tracking user interaction.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Function called when select loses focus',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.onFocus',\n                hintText:\n                    'Optional callback function invoked when the select field gains focus. Receives no parameters. Useful for tracking user interaction or showing additional UI.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Function called when select gains focus',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.error',\n                hintText:\n                    'When true, displays the select field in an error state with red border and error styling. Should be used with errorMessage to provide feedback. Useful for form validation. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows error state, false shows normal state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.errorMessage',\n                hintText:\n                    'Optional error message string displayed below the select field when error is true. Should clearly explain what went wrong and how to fix it. Styled with error colors. Useful for form validation feedback.',\n            },\n            {\n                content: 'string',\n                hintText: 'Error message text displayed when error is true',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.showActionButtons',\n                hintText:\n                    'When true, displays action buttons (primary and/or secondary) in the dropdown footer. Buttons allow users to confirm or cancel selections. Useful for multi-step selection workflows. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows action buttons in footer, false hides action buttons',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.primaryAction',\n                hintText:\n                    'Optional object that configures the primary action button displayed in the dropdown footer. Contains: text (required button label), onClick (required callback receiving selectedValues array), disabled (optional boolean), and loading (optional boolean). Only shown when showActionButtons is true.',\n            },\n            {\n                content:\n                    '{ text: string, onClick: (selectedValues: string[]) => void, disabled?: boolean, loading?: boolean }',\n                hintText: 'Object with button configuration properties',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.secondaryAction',\n                hintText:\n                    'Optional object that configures the secondary action button displayed in the dropdown footer. Contains: text (required button label), onClick (required callback), disabled (optional boolean), and loading (optional boolean). Only shown when showActionButtons is true.',\n            },\n            {\n                content:\n                    '{ text: string, onClick: () => void, disabled?: boolean, loading?: boolean }',\n                hintText: 'Object with button configuration properties',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.showItemDividers',\n                hintText:\n                    'When true, displays visual divider lines between menu items. Dividers help visually separate items and create hierarchy. Useful for long lists or grouped items. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows dividers between items, false hides dividers',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.showHeaderBorder',\n                hintText:\n                    'When true, displays a border line below the dropdown header (search input and select all area). Creates visual separation between header and content. Useful for visual hierarchy. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows border below header, false hides border',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.height',\n                hintText:\n                    'Optional height in pixels for the select field. When provided, sets a fixed height for the trigger button. If not provided, height adapts to size variant and content. Useful for precise layout control.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive number representing select field height in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.maxSelections',\n                hintText:\n                    'Optional maximum number of items that can be selected. When the limit is reached, users cannot select additional items. Useful for enforcing business rules or API constraints. If not provided, unlimited selections are allowed.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive integer representing maximum number of selections',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.fullWidth',\n                hintText:\n                    'When true, the select field takes the full width of its container. When false, the select field only takes as much width as needed. Useful for form layouts. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true takes full width, false takes only needed width',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.enableVirtualization',\n                hintText:\n                    'When true, enables virtual scrolling for large item lists. Virtual scrolling only renders visible items plus an overscan buffer, improving performance for menus with hundreds or thousands of items. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true enables virtual scrolling, false uses standard rendering',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.virtualListItemHeight',\n                hintText:\n                    'Optional height in pixels for each virtualized list item. Required when enableVirtualization is true. Should match the actual height of your menu items for accurate scrolling. Defaults to 48 pixels.',\n            },\n            {\n                content: 'number',\n                hintText: 'Positive number representing item height in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.virtualListOverscan',\n                hintText:\n                    'Optional number of items to render outside the visible area when using virtual scrolling. Higher values provide smoother scrolling but use more memory. Lower values are more memory-efficient. Defaults to 5 items.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive integer representing number of items to render outside viewport',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.itemsToRender',\n                hintText:\n                    'Optional number of items to render initially when using virtualization or infinite scroll. Useful for controlling initial render performance. If not provided, all visible items plus overscan are rendered.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive integer representing initial number of items to render',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.onEndReached',\n                hintText:\n                    'Optional callback function invoked when the virtual list reaches the end (or within endReachedThreshold). Useful for infinite scrolling or lazy loading. Receives no parameters. Use with hasMore to control loading.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Function called when list reaches the end',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.endReachedThreshold',\n                hintText:\n                    'Optional distance in pixels from the end of the list to trigger onEndReached. Allows pre-loading before the user reaches the absolute end. Useful for smooth infinite scrolling. If not provided, triggers at the exact end.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive number representing distance in pixels from end',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.hasMore',\n                hintText:\n                    'Optional boolean indicating whether there are more items to load. Used with onEndReached for infinite scrolling. When true and onEndReached is called, the loadingComponent is shown. If not provided, infinite scroll is not used.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true indicates more items available, false indicates all items loaded',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.loadingComponent',\n                hintText:\n                    'Optional React element displayed at the bottom of the list while loading more items (when hasMore is true and onEndReached is called). Typically a spinner or loading indicator. Useful for providing visual feedback during infinite scroll.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText:\n                    'React element (typically a loading indicator) shown while loading',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.skeleton',\n                hintText:\n                    'Optional skeleton loading configuration object. Controls the appearance and behavior of skeleton loading states while data is being fetched. The skeleton provides visual feedback to users during loading. Contains count (number of skeleton items to show), show (boolean to toggle skeleton visibility), and variant (visual style: \"pulse\" or \"wave\").',\n            },\n            {\n                content:\n                    '{ count?: number, show?: boolean, variant?: SkeletonVariant }',\n                hintText: 'object',\n            },\n            {\n                content:\n                    'count: number of skeleton items, show: boolean to display skeleton, variant: \"pulse\" | \"wave\"',\n            },\n            {\n                content: '{ count: 3, show: false, variant: \"pulse\" }',\n            },\n        ],\n        [\n            {\n                content: 'MultiSelect.maxTriggerWidth',\n                hintText:\n                    'Optional maximum width constraint for the trigger button in pixels. Prevents the trigger from growing beyond this width even if the content is longer. Useful for maintaining consistent layouts and preventing the select from becoming too wide. Text that exceeds this width will be truncated with ellipsis.',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.minTriggerWidth',\n                hintText:\n                    'Optional minimum width constraint for the trigger button in pixels. Ensures the trigger maintains at least this width even if the content is shorter. Useful for maintaining consistent button sizes across multiple select fields or ensuring adequate click target area.',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.allowCustomValue',\n                hintText:\n                    'When true, allows users to enter custom values that are not in the predefined items list. Enables a special menu option that lets users specify their own value. Useful for scenarios where the list cannot cover all possible options. Defaults to false.',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'MultiSelect.customValueLabel',\n                hintText:\n                    'Optional label text for the custom value option in the dropdown menu. This text appears as the label for the menu item that allows users to enter their own custom value. Only visible when allowCustomValue is true. Defaults to \"Specify\".',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n            { content: '\"Specify\"' },\n        ],\n        [\n            {\n                content: 'MultiSelect.showClearButton',\n                hintText:\n                    'Optional boolean that controls the visibility of the X icon (clear button) beside the multi-select trigger. When true, the clear button is shown when items are selected. When false, the clear button is hidden. If not provided, defaults to showing the clear button when variant=CONTAINER and items are selected. Useful for analytics filters where API calls should only happen on explicit actions (Apply/Reset buttons).',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n            { content: 'undefined (defaults based on variant and selection)' },\n        ],\n        [\n            {\n                content: 'MultiSelect.onClearAllClick',\n                hintText:\n                    \"Optional callback function invoked when the X icon (clear button) is clicked. Provides a separate callback from onChange, allowing you to handle clear actions differently (e.g., making API calls). If not provided, clicking the clear button calls onChange('') to clear selections. Useful for analytics filters where clearing should trigger API calls.\",\n            },\n            {\n                content: '() => void',\n                hintText: 'Function called when clear button is clicked',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.onOpenChange',\n                hintText:\n                    'Optional callback function invoked when the dropdown menu or mobile drawer opens or closes. Receives a boolean indicating the new open state. Useful for resetting internal state when the menu is dismissed without applying changes.',\n            },\n            {\n                content: '(open: boolean) => void',\n                hintText:\n                    'Function called with boolean open state when menu visibility changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelect.multiSelectGroupPosition',\n                hintText:\n                    'Optional positioning string for when MultiSelect is used within a button group. Controls border radius adjustments for proper visual grouping. \"left\" for the leftmost item, \"right\" for the rightmost item, \"center\" for middle items. If not provided, uses default border radius.',\n            },\n            {\n                content: \"'center' | 'left' | 'right'\",\n                hintText:\n                    'String indicating position within a button group for border radius adjustments',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuGroupType.groupLabel',\n                hintText:\n                    'Optional string label displayed above the menu items in this group. Provides a heading or category name for organizing related items (e.g., \"Frontend\", \"Backend\", \"Tools\"). The label is styled distinctly from menu items.',\n            },\n            {\n                content: 'string',\n                hintText: 'Group heading text displayed above menu items',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuGroupType.items',\n                hintText:\n                    'Required array of MultiSelectMenuItemType objects that define the individual selectable items within this group. Each item represents a selectable option with its own label, value, and styling. The items are displayed in order within the group.',\n            },\n            {\n                content: 'MultiSelectMenuItemType[]',\n                hintText:\n                    'Array of menu item objects defining selectable options in this group',\n            },\n            {\n                content:\n                    'MultiSelectMenuItemType: see MultiSelectMenuItemType props below',\n            },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuGroupType.showSeparator',\n                hintText:\n                    'When true, displays a visual separator line after this menu group. Separators help visually distinguish different groups of menu items. Useful for grouping related options. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows separator after group, false shows no separator',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.label',\n                hintText:\n                    'Required string representing the main text label displayed for the menu item. This is the primary text users see. Should be concise and descriptive, clearly identifying the option (e.g., \"React\", \"Node.js\", \"Python\").',\n            },\n            {\n                content: 'string',\n                hintText: 'Primary text label displayed for the menu item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.value',\n                hintText:\n                    \"Required unique string value identifier for the menu item. This value is used to track selections and must be unique within the items array. It's returned in the selectedValues array and passed to onChange. Should match the value used in your data.\",\n            },\n            {\n                content: 'string',\n                hintText: 'Unique value identifier for the menu item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.checked',\n                hintText:\n                    'Optional boolean that controls whether the item appears checked. When true, the item shows a checked state. When false or undefined, the checked state is determined by whether the value is in selectedValues. Useful for controlled state.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows checked state, false shows unchecked state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.subLabel',\n                hintText:\n                    'Optional string representing secondary text displayed below the main label. Provides additional context, description, or clarification about the menu item. Styled with smaller, lighter text. Useful for explaining options.',\n            },\n            {\n                content: 'string',\n                hintText:\n                    'Secondary descriptive text shown below the main label',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.slot1',\n                hintText:\n                    'Optional React element displayed in the first content slot, typically before the label. Commonly used for icons (from lucide-react or other icon libraries) that visually represent the menu item. The slot maintains proper spacing.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText:\n                    'React element (typically an icon) displayed in the first slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.slot2',\n                hintText:\n                    'Optional React element displayed in the second content slot. Can be used for additional icons, badges, indicators, or other visual elements that complement the menu item. Useful for status indicators or additional actions.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText: 'React element displayed in the second slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.slot3',\n                hintText:\n                    'Optional React element displayed in the third content slot. Provides additional flexibility for custom content placement. Can be used for icons, badges, or other visual elements as needed.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText: 'React element displayed in the third slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.slot4',\n                hintText:\n                    'Optional React element displayed in the fourth content slot, typically for trailing elements. Provides maximum flexibility for custom content placement. Can be used for icons, badges, shortcuts, or other visual elements.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText: 'React element displayed in the fourth slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.disabled',\n                hintText:\n                    \"When true, disables the menu item, making it non-selectable and visually muted. Disabled items show reduced opacity and cannot be selected. Useful for preventing selection when prerequisites aren't met. Defaults to false.\",\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true disables menu item, false allows normal interaction',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.alwaysSelected',\n                hintText:\n                    'When true, the item is always selected and cannot be deselected by the user. The item remains checked regardless of user interaction. Useful for required default selections or mandatory options. If not provided, items can be toggled normally.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true makes item always selected, false allows normal toggling',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.onClick',\n                hintText:\n                    'Optional custom click handler function for the menu item. Invoked when the item is clicked, in addition to the default selection behavior. Receives no parameters. Useful for custom actions or side effects when selecting an item.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Function called when menu item is clicked',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.subMenu',\n                hintText:\n                    'Optional array of MultiSelectMenuItemType objects that create a nested submenu. When provided, clicking the menu item opens a submenu with these items. Supports nested menus for hierarchical navigation. The submenu appears to the side of the parent menu item.',\n            },\n            {\n                content: 'MultiSelectMenuItemType[]',\n                hintText:\n                    'Recursive array of MultiSelectMenuItemType objects for nested submenu',\n            },\n            {\n                content: 'Recursive: MultiSelectMenuItemType[]',\n            },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.tooltip',\n                hintText:\n                    \"Optional tooltip content that appears when users hover over the menu item. Can be a string (simple text) or a React element (for rich content). Useful for providing additional information, shortcuts, or explanations that don't fit in the label.\",\n            },\n            {\n                content: 'string | React.ReactNode',\n                hintText: 'String text or React element for tooltip content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.tooltipProps',\n                hintText:\n                    'Optional object with additional configuration properties for the tooltip component. Allows customization of tooltip positioning (side, align), size, arrow visibility, delay duration, and offset. Useful for fine-tuning tooltip appearance and behavior.',\n            },\n            {\n                content:\n                    '{ side?: TooltipSide, align?: TooltipAlign, size?: TooltipSize, showArrow?: boolean, delayDuration?: number, offset?: number }',\n                hintText:\n                    'Object with optional tooltip configuration properties',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MultiSelectMenuItemType.disableTruncation',\n                hintText:\n                    'When true, disables text truncation for long labels, allowing them to wrap or overflow. When false, long labels are truncated with ellipsis. Useful for items with very long labels that need full visibility. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true disables truncation, false truncates long labels',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the MultiSelect component using the following tokens:",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with the toggled item value when selection changes',...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "multi-value-input-v2": {
+        "title": "Multi Value Input",
+        "description": "The MultiValueInputV2 component allows entering multiple values as tags with input validation.",
+        "path": "components/multi-value-input-v2",
+        "slug": "multi-value-input-v2",
+        "category": "components",
+        "tags": ["multi-value-input", "component", "input", "tags", "tokens"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Field label displayed above the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text when empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size affecting tag and input sizing.',\n            },\n            {\n                content: 'InputSizeV2',\n                hintText: 'Enum for input size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'separator',\n                hintText: 'Character(s) that trigger new tag creation.',\n            },\n            {\n                content: 'string | string[]',\n                hintText: 'Separator character(s)',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxValues',\n                hintText: 'Maximum number of allowed values.',\n            },\n            {\n                content: 'number',\n                hintText: 'Maximum value count',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'validate',\n                hintText: 'Function to validate new values before adding.',\n            },\n            {\n                content: '(value: string) => boolean | string',\n                hintText: 'Validation function (return true or error message)',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'When true, input is non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables the input',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Error state configuration.',\n            },\n            {\n                content: '{ show: boolean; message?: string }',\n                hintText: 'Error display settings',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the MultiValueInputV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [...",
         "sections": [
             {
                 "title": "Usage",
@@ -837,6 +1244,33 @@
             }
         ]
     },
+    "number-input-v2": {
+        "title": "Number Input",
+        "description": "The NumberInputV2 component provides a numeric input field with increment/decrement controls and validation.",
+        "path": "components/number-input-v2",
+        "slug": "number-input-v2",
+        "category": "components",
+        "tags": ["number-input", "component", "input", "form", "numeric"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler with numeric value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text when empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Field label displayed above the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subLabel',\n                hintText: 'Secondary label text below the main label.',\n            },\n            {\n                content: 'string',\n                hintText: 'Secondary label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size affecting input height and text sizing.',\n            },\n            {\n                content: 'InputSizeV2',\n                hintText: 'Enum for input size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'min',\n                hintText: 'Minimum allowed value.',\n            },\n            {\n                content: 'number',\n                hintText: 'Minimum value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'max',\n                hintText: 'Maximum allowed value.',\n            },\n            {\n                content: 'number',\n                hintText: 'Maximum value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'step',\n                hintText: 'Increment/decrement step size.',\n            },\n            {\n                content: 'number',\n                hintText: 'Step value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'hintText',\n                hintText: 'Helper text displayed below the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Helper description',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'helpIconText',\n                hintText: 'Tooltip text for the help icon.',\n            },\n            {\n                content: 'string',\n                hintText: 'Help tooltip content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText: 'When true, displays a required indicator.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true marks field as required',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'When true, input is non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables the input',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Error state configuration.',\n            },\n            {\n                content: '{ show: boolean; message?: string }',\n                hintText: 'Error display settings',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'leftSlot',\n                hintText: 'Element displayed at the start of the input.',\n            },\n            {\n                content: 'ReactElement',\n                hintText: 'Left slot element',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'rightSlot',\n                hintText: 'Element displayed at the end of the input.',\n            },\n            {\n                content: 'ReactElement',\n                hintText: 'Right slot element',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the NumberInputV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler with numeric value',\n            },\n            { content: '' },\n        ],...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "numberinput": {
         "title": "NumberInput",
         "description": "The NumberInput component provides a specialized input field for numeric values with built-in increment/decrement controls, validation, and support for min/max constraints and step intervals.",
@@ -857,6 +1291,33 @@
         ],
         "content": "Usage\n\n\n\nAPI Reference\n\n as a parameter. Use event.target.value to get the new string value, then convert to number if needed. Update your state in this handler.',\n            },\n            {\n                content: '(e: React.ChangeEvent) => void',\n                hintText:\n                    'Function called with change event when value changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.min',\n                hintText:\n                    'Optional minimum allowed numeric value. Users cannot enter values below this limit. The stepper buttons and input validation enforce this constraint. Useful for preventing invalid ranges (e.g., negative quantities).',\n            },\n            {\n                content: 'number',\n                hintText: 'Number representing the minimum allowed value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.max',\n                hintText:\n                    'Optional maximum allowed numeric value. Users cannot enter values above this limit. The stepper buttons and input validation enforce this constraint. Useful for preventing invalid ranges (e.g., stock limits).',\n            },\n            {\n                content: 'number',\n                hintText: 'Number representing the maximum allowed value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.step',\n                hintText:\n                    'Optional increment/decrement step value used by the stepper buttons and arrow keys. When users click the up/down buttons or press arrow keys, the value changes by this amount. Defaults to 1 if not provided.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive number representing the step increment/decrement',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.label',\n                hintText:\n                    'Optional primary label string displayed above the input field. Provides context and description of what users should input. Should be concise and descriptive. The label is styled prominently and appears above the sublabel (if provided).',\n            },\n            {\n                content: 'string',\n                hintText: 'Primary label text displayed above the input field',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.sublabel',\n                hintText:\n                    \"Optional secondary label string displayed below the main label. Provides additional context, instructions, or clarification about the input field's purpose. Styled with smaller, lighter text than the label. Useful for explaining complex input requirements.\",\n            },\n            {\n                content: 'string',\n                hintText:\n                    'Secondary descriptive text shown below the main label',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.placeholder',\n                hintText:\n                    'Optional placeholder text string displayed in the input field when it\\'s empty or when value is undefined. Provides guidance to users about what they can input. Should be concise and action-oriented (e.g., \"Enter quantity\").',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder text shown when input is empty',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.size',\n                hintText:\n                    'Optional NumberInputSize enum value that determines the size variant of the input field. Affects padding, height, font size, and overall dimensions. MEDIUM is the default size, LARGE provides a prominent input with floating label on mobile. Defaults to MEDIUM.',\n            },\n            {\n                content: 'NumberInputSize',\n                hintText:\n                    'Enum that determines the size variant of the input field',\n            },\n            { content: 'MEDIUM, LARGE' },\n        ],\n        [\n            {\n                content: 'NumberInput.error',\n                hintText:\n                    'When true, displays the input field in an error state with red border and error styling. Should be used with errorMessage to provide feedback. Useful for form validation. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows error state, false shows normal state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.errorMessage',\n                hintText:\n                    'Optional error message string displayed below the input field when error is true. Should clearly explain what went wrong and how to fix it. Styled with error colors. Useful for form validation feedback.',\n            },\n            {\n                content: 'string',\n                hintText: 'Error message text displayed when error is true',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.hintText',\n                hintText:\n                    'Optional helper text string displayed below the input field. Provides guidance, examples, or additional information about the input. Styled with smaller, lighter text. Useful for clarifying complex input requirements or providing examples.',\n            },\n            {\n                content: 'string',\n                hintText: 'Helper text shown below the input field',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.helpIconHintText',\n                hintText:\n                    'Optional tooltip text string displayed when hovering over the help icon next to the label. Provides additional context or guidance about the input field. Should be concise and helpful. If not provided, no help icon is shown.',\n            },\n            {\n                content: 'string',\n                hintText: 'Tooltip text shown when hovering over the help icon',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.disabled',\n                hintText:\n                    \"When true, disables the input field, making it non-interactive and visually muted. Users cannot type, use stepper buttons, or change the value. Disabled fields show reduced opacity. Useful for preventing interaction when prerequisites aren't met. Defaults to false.\",\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true disables input field, false allows normal interaction',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.required',\n                hintText:\n                    'When true, marks the input field as required and displays an asterisk (*) next to the label. Useful for form validation. Required fields should have validation logic to ensure values are provided. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true marks field as required, false allows optional input',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.name',\n                hintText:\n                    'Optional name attribute string for the input field. Used for form identification, form submission, and accessibility. Should be unique within the form. Useful for form libraries and native form handling.',\n            },\n            {\n                content: 'string',\n                hintText:\n                    'Name attribute for form identification and submission',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.onFocus',\n                hintText:\n                    'Optional callback function invoked when the input field receives focus. Receives a React.FocusEvent as a parameter. Useful for tracking user interaction or showing additional UI.',\n            },\n            {\n                content: '(e: React.FocusEvent) => void',\n                hintText:\n                    'Function called with focus event when input gains focus',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.onBlur',\n                hintText:\n                    'Optional callback function invoked when the input field loses focus. Receives a React.FocusEvent as a parameter. Useful for validation, cleanup, or tracking user interaction.',\n            },\n            {\n                content: '(e: React.FocusEvent) => void',\n                hintText:\n                    'Function called with focus event when input loses focus',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'NumberInput.preventNegative',\n                hintText:\n                    'When true, prevents the input from accepting negative values. The down stepper button is disabled at 0, and negative values cannot be entered via keyboard. Useful for quantities, counts, and other non-negative numeric values. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true prevents negative values, false allows negative values',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the NumberInput component using the following tokens:",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n as a parameter. Use event.target.value to get the new string value, then convert to number if needed. Update your state in th...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "otp-input-v2": {
+        "title": "OTP Input",
+        "description": "The OTPInputV2 component provides a one-time password input with separate fields for each digit.",
+        "path": "components/otp-input-v2",
+        "slug": "otp-input-v2",
+        "category": "components",
+        "tags": ["otp-input", "component", "input", "verification", "code"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onComplete',\n                hintText: 'Callback fired when all digits are entered.',\n            },\n            {\n                content: '(value: string) => void',\n                hintText: 'Completion handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size affecting input box dimensions.',\n            },\n            {\n                content: 'InputSizeV2',\n                hintText: 'Enum for input size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'When true, all inputs are non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables all inputs',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'masked',\n                hintText: 'When true, masks entered digits (password style).',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true masks input',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'autoFocus',\n                hintText: 'When true, focuses first input on mount.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true auto-focuses',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'When true, shows error styling.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows error state',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the OTPInputV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [...",
         "sections": [
             {
                 "title": "Usage",
@@ -913,6 +1374,33 @@
             }
         ]
     },
+    "popover-v2": {
+        "title": "Popover",
+        "description": "The PopoverV2 component displays rich content in a floating panel triggered by user interaction, with header, footer, and action buttons support.",
+        "path": "components/popover-v2",
+        "slug": "popover-v2",
+        "category": "components",
+        "tags": ["popover", "component", "overlay", "popup", "floating"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Open state change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'asModal',\n                hintText: 'When true, renders as a modal dialog with backdrop.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true renders as modal',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'primaryAction',\n                hintText:\n                    'Configuration for the primary action button in footer.',\n            },\n            {\n                content: 'PopoverV2ActionType',\n                hintText:\n                    'Button props excluding buttonGroupPosition and subType',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondaryAction',\n                hintText:\n                    'Configuration for the secondary action button in footer.',\n            },\n            {\n                content: 'PopoverV2ActionType',\n                hintText:\n                    'Button props excluding buttonGroupPosition and subType',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Predefined width size for the popover.',\n            },\n            {\n                content: 'PopoverV2Size',\n                hintText: 'Enum for popover width',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'Edge of the trigger where popover appears.',\n            },\n            {\n                content: 'PopoverV2Side',\n                hintText: 'Enum for popover position',\n            },\n            { content: 'TOP, RIGHT, BOTTOM, LEFT' },\n        ],\n        [\n            {\n                content: 'align',\n                hintText: 'Alignment of the popover relative to the trigger.',\n            },\n            {\n                content: 'PopoverV2Align',\n                hintText: 'Enum for alignment',\n            },\n            { content: 'START, CENTER, END' },\n        ],\n        [\n            {\n                content: 'sideOffset',\n                hintText: 'Distance between trigger and popover in pixels.',\n            },\n            {\n                content: 'number',\n                hintText: 'Pixel offset',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'alignOffset',\n                hintText: 'Offset along the alignment axis in pixels.',\n            },\n            {\n                content: 'number',\n                hintText: 'Pixel offset',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'useDrawerOnMobile',\n                hintText: 'When true, renders as a drawer on mobile devices.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true uses drawer on mobile',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'avoidCollisions',\n                hintText:\n                    'When true, popover repositions to avoid viewport edges.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables collision avoidance',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'skeleton',\n                hintText: 'Configuration for skeleton loading state.',\n            },\n            {\n                content: 'PopoverV2SkeletonProps',\n                hintText: 'Object with show, variant, and bodySkeletonProps',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Custom width for the popover.',\n            },\n            {\n                content: 'number',\n                hintText: 'Width in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width constraint for the popover.',\n            },\n            {\n                content: 'number',\n                hintText: 'Min width in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width constraint for the popover.',\n            },\n            {\n                content: 'number',\n                hintText: 'Max width in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'height',\n                hintText: 'Custom height for the popover.',\n            },\n            {\n                content: 'number',\n                hintText: 'Height in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minHeight',\n                hintText: 'Minimum height constraint for the popover.',\n            },\n            {\n                content: 'number',\n                hintText: 'Min height in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxHeight',\n                hintText: 'Maximum height constraint for the popover.',\n            },\n            {\n                content: 'number',\n                hintText: 'Max height in pixels',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the PopoverV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Open state change handler',\n            },\n            { content: '' },\n        ],...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "popover": {
         "title": "Popover",
         "description": "The Popover component displays floating content that appears when triggered by a user action, providing contextual information, forms, or actions without navigating away from the current page.",
@@ -938,6 +1426,44 @@
                 "title": "Usage",
                 "level": 2,
                 "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "progress-bar-v2": {
+        "title": "Progress Bar",
+        "description": "The ProgressBarV2 component displays progress indicators in linear or circular formats with solid or segmented appearances.",
+        "path": "components/progress-bar-v2",
+        "slug": "progress-bar-v2",
+        "category": "components",
+        "tags": [
+            "progress-bar",
+            "component",
+            "progress",
+            "loading",
+            "indicator"
+        ],
+        "content": "Usage\n\n\n\nCircular Progress\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the ProgressBarV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nCircular Progress\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the ProgressBarV2 component using the following tokens:",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "Circular Progress",
+                "level": 2,
+                "id": "circular-progress"
             },
             {
                 "title": "API Reference",
@@ -1035,6 +1561,33 @@
             }
         ]
     },
+    "search-input-v2": {
+        "title": "Search Input",
+        "description": "The SearchInputV2 component provides a specialized input for search queries with clear button and submit handling.",
+        "path": "components/search-input-v2",
+        "slug": "search-input-v2",
+        "category": "components",
+        "tags": ["search-input", "component", "input", "search", "form"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onSearch',\n                hintText:\n                    'Callback fired when search is submitted (Enter key).',\n            },\n            {\n                content: '(value: string) => void',\n                hintText: 'Search submit handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text when empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size affecting input height.',\n            },\n            {\n                content: 'InputSizeV2',\n                hintText: 'Enum for input size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'clearable',\n                hintText: 'When true, shows clear button when input has value.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows clear button',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'When true, input is non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables the input',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'loading',\n                hintText: 'When true, shows loading indicator.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows loading state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'autoFocus',\n                hintText: 'When true, focuses input on mount.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true auto-focuses',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the SearchInputV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "searchinput": {
         "title": "SearchInput",
         "description": "The SearchInput component provides a specialized input field for search functionality, featuring customizable left and right slots for icons, error states, and a clean minimalist design with underline borders.",
@@ -1073,6 +1626,38 @@
             }
         ]
     },
+    "sidebar-v2": {
+        "title": "Sidebar",
+        "description": "The SidebarV2 component provides application navigation with directory structure, secondary sidebar support, and collapsible states.",
+        "path": "components/sidebar-v2",
+        "slug": "sidebar-v2",
+        "category": "components",
+        "tags": ["sidebar", "component", "navigation", "layout", "directory"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Expansion change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'defaultIsExpanded',\n                hintText: 'Initial expanded state for uncontrolled usage.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Default expansion state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onSidebarStateChange',\n                hintText:\n                    'Callback fired when sidebar state changes (collapsed/expanded/intermediate).',\n            },\n            {\n                content: '(state: SidebarV2StateChangeType) => void',\n                hintText: 'State change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'activeItem',\n                hintText: 'Currently active/selected item value.',\n            },\n            {\n                content: 'string | null',\n                hintText: 'Active item identifier',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onActiveItemChange',\n                hintText: 'Callback fired when active item changes.',\n            },\n            {\n                content: '(item: string | null) => void',\n                hintText: 'Active item change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'defaultActiveItem',\n                hintText: 'Initially active item for uncontrolled usage.',\n            },\n            {\n                content: 'string | null',\n                hintText: 'Default active item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableTopbarAutoHide',\n                hintText: 'When true, topbar automatically hides on scroll.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables auto-hide',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'isTopbarVisible',\n                hintText: 'Controlled visibility state of the topbar.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows topbar',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'defaultIsTopbarVisible',\n                hintText: 'Initial topbar visibility for uncontrolled usage.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Default visibility state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onTopbarVisibilityChange',\n                hintText: 'Callback fired when topbar visibility changes.',\n            },\n            {\n                content: '(isVisible: boolean) => void',\n                hintText: 'Visibility change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showMobilePrimaryActionButton',\n                hintText: 'When true, shows primary action button on mobile.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows mobile action button',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'mobilePrimaryActionButtonProps',\n                hintText: 'Props for the mobile primary action button.',\n            },\n            {\n                content: 'ButtonHTMLAttributes',\n                hintText: 'Standard button props excluding type',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'height',\n                hintText: 'Custom height for the sidebar container.',\n            },\n            {\n                content: 'string',\n                hintText: 'CSS height value',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nSecondarySidebarInfo\n\n void',\n                hintText: 'Selection handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'buttonProps',\n                hintText: 'Additional props for sidebar buttons.',\n            },\n            {\n                content: 'ButtonHTMLAttributes',\n                hintText: 'Standard button props',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'footerSlot',\n                hintText:\n                    'Content pinned at the bottom of the rail (settings, help, profile).',\n            },\n            {\n                content: 'ReactNode',\n                hintText: 'Bottom slot content',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the SidebarV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Expansion change handler',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "SecondarySidebarInfo",
+                "level": 2,
+                "id": "secondarysidebarinfo"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "sidebar": {
         "title": "Sidebar",
         "description": "The Sidebar component provides a comprehensive navigation layout with collapsible sidebar, directory navigation, and integrated topbar, featuring merchant selection, keyboard shortcuts, and responsive design for complex application layouts.",
@@ -1091,6 +1676,33 @@
         ],
         "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with new expanded state when sidebar state changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Sidebar.defaultIsExpanded',\n                hintText:\n                    \"Optional boolean that sets the initial expanded state for uncontrolled usage. When provided, determines the sidebar's initial state. When true, the sidebar starts expanded. When false, it starts collapsed. Only used when isExpanded is not provided. Defaults to true.\",\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true sets initial expanded state, false sets initial collapsed state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Sidebar.isTopbarVisible',\n                hintText:\n                    'Optional boolean that controls whether the topbar is visible (controlled mode). When true, the topbar is shown. When false, the topbar is hidden. Use this with onTopbarVisibilityChange for controlled state management. When combined with enableTopbarAutoHide, this prop takes precedence and allows parent components to manage topbar visibility state.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows topbar, false hides topbar',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Sidebar.onTopbarVisibilityChange',\n                hintText:\n                    'Optional callback function invoked when the topbar visibility should change. Receives a boolean indicating the new visibility state. Required when using controlled mode (providing isTopbarVisible prop). Use this to update your isTopbarVisible state. Also called in uncontrolled mode for visibility change notifications when enableTopbarAutoHide triggers auto-hide behavior.',\n            },\n            {\n                content: '(isVisible: boolean) => void',\n                hintText:\n                    'Function called with new visibility state when topbar visibility changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Sidebar.defaultIsTopbarVisible',\n                hintText:\n                    'Optional boolean that sets the initial topbar visibility for uncontrolled usage. When provided, determines whether the topbar is initially visible. When true, the topbar starts visible. When false, it starts hidden. Only used when isTopbarVisible is not provided. Defaults to true.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true sets initial visible state, false sets initial hidden state',\n            },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'Sidebar.disableIntermediateState',\n                hintText:\n                    'When true, disables the intermediate state that appears on hover. When false or undefined, hovering over the collapsed sidebar will temporarily show it in an intermediate/expanded state. The intermediate state allows users to see the sidebar content without fully expanding it. When disabled, the sidebar can only be expanded by clicking the toggle button or using the keyboard shortcut. Useful for preventing accidental expansion on hover or when you want more explicit user control over sidebar visibility. Defaults to false (intermediate state enabled).',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true disables intermediate state on hover, false enables it',\n            },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'Sidebar.iconOnlyMode',\n                hintText:\n                    'When true, shows only icons (52px width) with tooltips on hover. In this mode: directory items show only their icons, tooltips appear on hover showing the item label, sections render as horizontal dividers, merchant switcher moves to topbar, and intermediate/hover state expansion is disabled. The toggle button appears at the top of the icon-only panel. Clicking the toggle button expands to full sidebar view (or hides the sidebar if hideOnIconOnlyToggle is true). Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true enables icon-only mode (52px width), false uses normal sidebar',\n            },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'Sidebar.hideOnIconOnlyToggle',\n                hintText:\n                    'When true, clicking the toggle button in icon-only mode will completely hide the sidebar. When false, clicking the toggle button will expand to full sidebar view with tenant panel (if provided) and directory. Only applies when iconOnlyMode is true. Defaults to false (expands to full sidebar).',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true hides sidebar on toggle, false expands to full sidebar',\n            },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'Sidebar.showPrimaryActionButton',\n                hintText:\n                    'Optional boolean that controls whether to show a primary action button in the mobile navigation. When true, displays a primary action button (typically for CTA actions like \"Create\", \"Add\", etc.) in the mobile navigation drawer. The button appearance and behavior are controlled by primaryActionButtonProps. Useful for providing quick access to primary actions on mobile devices.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows primary action button in mobile nav, false hides it',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Sidebar.primaryActionButtonProps',\n                hintText:\n                    'Optional object containing HTML button attributes for the primary action button in mobile navigation. Extends standard button props (onClick, disabled, className, etc.) except for type. Use this to configure the primary action button behavior, styling, and event handlers. Only applies when showPrimaryActionButton is true. Common use cases include onClick for navigation, className for styling, and children for button content.',\n            },\n            {\n                content:\n                    'Omit, \"type\">',\n                hintText:\n                    'Standard HTML button attributes excluding type property',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'DirectoryData.id',\n                hintText:\n                    'Required unique identifier string for the navigation item. Used internally for tracking selection, navigation, and rendering. Must be unique within the data array. The ID is used to determine which navigation item is active or selected.',\n            },\n            {\n                content: 'string',\n                hintText: 'Unique identifier for the navigation item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'DirectoryData.label',\n                hintText:\n                    'Required display text string for the navigation item. This is the text users see in the sidebar navigation. Should be concise and descriptive, clearly identifying the navigation destination (e.g., \"Dashboard\", \"Projects\", \"Settings\").',\n            },\n            {\n                content: 'string',\n                hintText: 'Display text for the navigation item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'DirectoryData.href',\n                hintText:\n                    'Required URL or route string for navigation. When the navigation item is clicked, the application navigates to this URL. Can be an absolute URL, relative path, or route identifier depending on your routing setup.',\n            },\n            {\n                content: 'string',\n                hintText: 'URL or route for navigation',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'DirectoryData.icon',\n                hintText:\n                    'Optional React element (typically an icon from lucide-react or other icon libraries) displayed next to the navigation item label. Icons help users quickly identify navigation items. The icon is visible both when expanded and collapsed, making it useful for collapsed sidebar state.',\n            },\n            {\n                content: 'ReactNode',\n                hintText:\n                    'React element (typically an icon) displayed with the navigation item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'DirectoryData.children',\n                hintText:\n                    'Optional array of DirectoryData objects that create nested navigation items (sub-menu). When provided, the navigation item becomes expandable and shows child items when clicked. Supports nested navigation for hierarchical structures. The children appear indented below the parent item.',\n            },\n            {\n                content: 'DirectoryData[]',\n                hintText:\n                    'Recursive array of DirectoryData objects for nested navigation',\n            },\n            {\n                content: 'Recursive: DirectoryData[]',\n            },\n        ],\n        [\n            {\n                content: 'LeftPanelInfo.items',\n                hintText:\n                    'Required array of LeftPanelItem objects that define the selectable items in the left panel. Each item represents an option (typically a merchant, tenant, or context) that users can select. The items are displayed as a vertical list with icons and labels.',\n            },\n            {\n                content: 'LeftPanelItem[]',\n                hintText:\n                    'Array of panel item objects defining selectable options',\n            },\n            {\n                content: 'LeftPanelItem: see LeftPanelItem props below',\n            },\n        ],\n        [\n            {\n                content: 'LeftPanelInfo.selected',\n                hintText:\n                    'Required string representing the currently selected item identifier. Should match the value prop of one of the items in the items array. The selected item is highlighted visually. Use this for controlled state management of the left panel selection.',\n            },\n            {\n                content: 'string',\n                hintText: 'Value string of the currently selected panel item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'LeftPanelInfo.onSelect',\n                hintText:\n                    \"Required callback function invoked when a panel item is selected. Receives the selected item's value string as a parameter. Use this to update your selected state and perform any necessary actions when the selection changes (e.g., switching context, reloading data).\",\n            },\n            {\n                content: '(value: string) => void',\n                hintText:\n                    'Function called with selected item value when selection changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'LeftPanelInfo.tenantSlot1',\n                hintText:\n                    'Optional React element displayed as the first slot above the tenant footer. The slot is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding custom actions or controls that should be positioned above the footer, such as help buttons, notifications, or quick actions.',\n            },\n            {\n                content: 'ReactNode',\n                hintText: 'React element displayed as first tenant slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'LeftPanelInfo.tenantSlot2',\n                hintText:\n                    'Optional React element displayed as the second slot above the tenant footer (and below tenantSlot1 if provided). The slot is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding secondary actions or controls above the footer, providing additional functionality alongside tenantSlot1.',\n            },\n            {\n                content: 'ReactNode',\n                hintText: 'React element displayed as second tenant slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'LeftPanelInfo.tenantFooter',\n                hintText:\n                    'Optional React element displayed at the bottom of the tenant panel. The footer is rendered with fixed dimensions of 36x36 pixels (same as tenant panel items) and is centered within its container. Useful for adding actions or information that should always be accessible at the bottom of the tenant panel, such as settings, help, or additional options.',\n            },\n            {\n                content: 'ReactNode',\n                hintText: 'React element displayed in the tenant panel footer',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'LeftPanelItem.label',\n                hintText:\n                    'Required display text string for the panel item. This is the text users see for each selectable option. Should be concise and descriptive, clearly identifying the option (e.g., \"Merchant A\", \"Tenant 1\", \"Organization X\").',\n            },\n            {\n                content: 'string',\n                hintText: 'Display text for the panel item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'LeftPanelItem.icon',\n                hintText:\n                    'Required React element (typically an icon from lucide-react or other icon libraries) displayed next to the panel item label. Icons help users quickly identify different options. The icon is always visible and provides visual differentiation between items.',\n            },\n            {\n                content: 'ReactNode',\n                hintText:\n                    'React element (typically an icon) displayed with the panel item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'LeftPanelItem.value',\n                hintText:\n                    'Optional custom value string for selection. When provided, this value is used for selection tracking instead of the label. If not provided, the label is used as the value. Useful when you need a different identifier than the display label (e.g., IDs, codes).',\n            },\n            {\n                content: 'string',\n                hintText: 'Custom value identifier for the panel item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'LeftPanelItem.showInPanel',\n                hintText:\n                    'Optional boolean that controls whether the item appears directly in the panel or in the overflow menu (three-dot menu). When true, the item is displayed in the main panel. When false or undefined (default), the item appears only in the overflow menu. The selected item is always visible in the panel, regardless of this setting. Useful for managing panel clutter by relegating less frequently used options to the overflow menu.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows item in panel, false/undefined shows in overflow menu',\n            },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'Sidebar.onSidebarStateChange',\n                hintText:\n                    'Optional callback function invoked whenever the sidebar layout state changes. Receives the current sidebar layout state, which can be \"collapsed\", \"expanded\", or \"intermediate\". Useful for tracking sidebar behavior, syncing layout changes with parent components, analytics, or adjusting surrounding content based on sidebar state.',\n            },\n            {\n                content:\n                    '(state: \"collapsed\" | \"expanded\" | \"intermediate\") => void',\n                hintText:\n                    'Function called with the current sidebar layout state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Sidebar.activeItem',\n                hintText:\n                    'Optional string value representing the currently active/selected navigation item ID. When provided, the component works in controlled mode, highlighting the item with this ID in the directory navigation. Use this with onActiveItemChange for controlled state management. If not provided, the component manages active state internally based on defaultActiveItem.',\n            },\n            {\n                content: 'string | null',\n                hintText: 'ID of the currently active directory item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Sidebar.onActiveItemChange',\n                hintText:\n                    'Optional callback function invoked when the active navigation item changes. Receives the ID of the newly selected item as a parameter. Required when using controlled mode (providing activeItem prop). Use this to update your activeItem state when users click on navigation items.',\n            },\n            {\n                content: '(item: string | null) => void',\n                hintText:\n                    'Function called with new active item ID when selection changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Sidebar.defaultActiveItem',\n                hintText:\n                    'Optional string value that sets the initial active navigation item for uncontrolled usage. When provided, the item with this ID is initially highlighted. Only used when activeItem is not provided. If not provided, no item is initially active.',\n            },\n            {\n                content: 'string | null',\n                hintText: 'Initial active item ID for uncontrolled mode',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the Sidebar component using the following tokens:",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with new expanded state when sidebar state changes',...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "single-select-v2": {
+        "title": "Single Select",
+        "description": "The SingleSelectV2 component allows users to select a single option from a dropdown menu with search, grouping, and virtualization support.",
+        "path": "components/single-select-v2",
+        "slug": "single-select-v2",
+        "category": "components",
+        "tags": ["single-select", "component", "selection", "dropdown", "form"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Selection change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'items',\n                hintText: 'Grouped options available for selection.',\n            },\n            {\n                content: 'SingleSelectV2GroupType[]',\n                hintText: 'Array of groups with items',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText:\n                    'Required. Placeholder text shown when no option is selected.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Field label displayed above the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subLabel',\n                hintText:\n                    'Secondary label text displayed below the main label.',\n            },\n            {\n                content: 'string',\n                hintText: 'Secondary label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'hintText',\n                hintText: 'Helper text displayed below the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Helper description',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'helpIconText',\n                hintText: 'Tooltip text for the help icon.',\n            },\n            {\n                content: 'string',\n                hintText: 'Help tooltip content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText: 'When true, displays a required indicator.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true marks field as required',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText:\n                    'Size variant affecting input height and text sizing.',\n            },\n            {\n                content: 'SingleSelectV2Size',\n                hintText: 'Enum for component size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'variant',\n                hintText: 'Visual style of the select input.',\n            },\n            {\n                content: 'SingleSelectV2Variant',\n                hintText: 'Enum for visual style',\n            },\n            { content: 'CONTAINER, NO_CONTAINER' },\n        ],\n        [\n            {\n                content: 'search',\n                hintText: 'Configuration for search functionality in dropdown.',\n            },\n            {\n                content: 'SingleSelectV2SearchConfig',\n                hintText: 'Object with show and placeholder',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText:\n                    'Custom element displayed in the trigger alongside value.',\n            },\n            {\n                content: 'ReactNode',\n                hintText: 'Additional slot content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'customTrigger',\n                hintText:\n                    'Completely custom trigger element replacing default.',\n            },\n            {\n                content: 'ReactElement',\n                hintText: 'Custom trigger component',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'open',\n                hintText: 'Controlled open state of the dropdown.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true opens the dropdown',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onOpenChange',\n                hintText: 'Callback fired when dropdown open state changes.',\n            },\n            {\n                content: '(open: boolean) => void',\n                hintText: 'Open state change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'usePanelOnMobile',\n                hintText: 'When true, renders as a bottom panel on mobile.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true uses panel on mobile',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'menuPosition',\n                hintText: 'Positioning configuration for the dropdown menu.',\n            },\n            {\n                content: 'SingleSelectV2MenuPosition',\n                hintText: 'alignment, side, sideOffset, alignOffset',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'menuDimensions',\n                hintText: 'Size constraints for the dropdown menu.',\n            },\n            {\n                content: 'SingleSelectV2MenuDimensions',\n                hintText: 'minWidth, maxWidth, maxHeight',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'triggerDimensions',\n                hintText: 'Size constraints for the trigger element.',\n            },\n            {\n                content: 'SingleSelectV2TriggerDimensions',\n                hintText: 'minWidth, maxWidth, width',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'inline',\n                hintText:\n                    'When true, renders in inline mode for compact layouts.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables inline mode',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Error state configuration.',\n            },\n            {\n                content: 'SingleSelectV2ErrorState',\n                hintText: 'Object with show and message',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'enableVirtualization',\n                hintText: 'When true, uses virtual rendering for large lists.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables virtualization',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'virtualListItemHeight',\n                hintText: 'Height of each virtualized item in pixels.',\n            },\n            {\n                content: 'number',\n                hintText: 'Item height in px',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onEndReached',\n                hintText:\n                    'Callback fired when scrolling reaches the end of list.',\n            },\n            {\n                content: '() => void',\n                hintText: 'End reached handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'hasMore',\n                hintText:\n                    'For infinite scroll: indicates more items are available.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true indicates more items available',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'allowCustomValue',\n                hintText:\n                    'When true, allows users to enter values not in the list.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables custom values',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'customValueLabel',\n                hintText: 'Label for custom value option.',\n            },\n            {\n                content: 'string',\n                hintText: 'Custom value label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'skeleton',\n                hintText: 'Configuration for skeleton loading state.',\n            },\n            {\n                content: 'SingleSelectV2SkeletonProps',\n                hintText: 'Object with show, variant, and count',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the SingleSelectV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Selection change handler',\n            },\n            { content: '' },\n        ],\n        [...",
         "sections": [
             {
                 "title": "Usage",
@@ -1183,6 +1795,48 @@
             }
         ]
     },
+    "snackbar-v2": {
+        "title": "Snackbar",
+        "description": "The SnackbarV2 component provides toast notifications for displaying temporary messages with various severity levels and positions.",
+        "path": "components/snackbar-v2",
+        "slug": "snackbar-v2",
+        "category": "components",
+        "tags": ["snackbar", "component", "notification", "toast", "feedback"],
+        "content": "Usage\n\n\n\nToast Options\n\n\n\nAPI Reference\n\nSnackbarV2 Container Props\n\n\n\nToast Options\n\n void',\n                hintText: 'Close handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width for this specific toast.',\n            },\n            {\n                content: 'string | number',\n                hintText: 'CSS max-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Fixed width for this toast.',\n            },\n            {\n                content: 'string | number',\n                hintText: 'CSS width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width for this toast.',\n            },\n            {\n                content: 'string | number',\n                hintText: 'CSS min-width value',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the SnackbarV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nToast Options\n\n\n\nAPI Reference\n\nSnackbarV2 Container Props\n\n\n\nToast Options\n\n void',\n                hintText: 'Close handler',\n            }...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "Toast Options",
+                "level": 2,
+                "id": "toast-options"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "SnackbarV2 Container Props",
+                "level": 3,
+                "id": "snackbarv2-container-props"
+            },
+            {
+                "title": "Toast Options",
+                "level": 3,
+                "id": "toast-options"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "snackbar": {
         "title": "Snackbar",
         "description": "The Snackbar component displays brief, non-intrusive notifications to users about the result of an action, appearing temporarily at the bottom or top of the screen.",
@@ -1237,6 +1891,54 @@
             }
         ]
     },
+    "stat-card-v2": {
+        "title": "Stat Card",
+        "description": "The StatCardV2 component displays statistics with optional charts, progress bars, and trend indicators in a card format.",
+        "path": "components/stat-card-v2",
+        "slug": "stat-card-v2",
+        "category": "components",
+        "tags": [
+            "stat-card",
+            "component",
+            "data-display",
+            "metrics",
+            "dashboard"
+        ],
+        "content": "Usage\n\n\n\nWith Chart\n\n\n\nWith Progress\n\n\n\nAPI Reference\n\n\n\nChange Configuration\n\n\n\nComponent Tokens\n\nYou can style the StatCardV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nWith Chart\n\n\n\nWith Progress\n\n\n\nAPI Reference\n\n\n\nChange Configuration\n\n\n\nComponent Tokens\n\nYou can style the StatCardV2 component using the fo...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "With Chart",
+                "level": 2,
+                "id": "with-chart"
+            },
+            {
+                "title": "With Progress",
+                "level": 2,
+                "id": "with-progress"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Change Configuration",
+                "level": 2,
+                "id": "change-configuration"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "stat-card": {
         "title": "Stat Card",
         "description": "The StatCard component displays key metrics and statistics in a card format, with support for icons, trends, and various styling options for dashboard and analytics interfaces.",
@@ -1256,6 +1958,48 @@
                 "title": "API Reference",
                 "level": 2,
                 "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "stepper-v2": {
+        "title": "Stepper",
+        "description": "The StepperV2 component displays progress through a sequence of steps with support for substeps and horizontal or vertical layouts.",
+        "path": "components/stepper-v2",
+        "slug": "stepper-v2",
+        "category": "components",
+        "tags": ["stepper", "component", "progress", "wizard", "steps"],
+        "content": "Usage\n\n\n\nWith Substeps\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Step click handler with 0-based index',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onSubstepClick',\n                hintText:\n                    'Callback fired when a substep is clicked. Receives step id and 1-based substep index.',\n            },\n            {\n                content: '(stepId: number, substepIndex: number) => void',\n                hintText: 'Substep click handler',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nStepperV2Step\n\n\n\nSubStep\n\n\n\nComponent Tokens\n\nYou can style the StepperV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nWith Substeps\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Step click handler with 0-based index',\n            },\n            { conte...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "With Substeps",
+                "level": 2,
+                "id": "with-substeps"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "StepperV2Step",
+                "level": 2,
+                "id": "stepperv2step"
+            },
+            {
+                "title": "SubStep",
+                "level": 2,
+                "id": "substep"
             },
             {
                 "title": "Component Tokens",
@@ -1335,6 +2079,59 @@
             }
         ]
     },
+    "tabs-v2": {
+        "title": "Tabs",
+        "description": "The TabsV2 component organizes content into tabbed sections with multiple visual variants and sticky header support.",
+        "path": "components/tabs-v2",
+        "slug": "tabs-v2",
+        "category": "components",
+        "tags": [
+            "tabs",
+            "component",
+            "navigation",
+            "content-switcher",
+            "panels"
+        ],
+        "content": "Usage\n\n\n\nWith Tab Items\n\n\n\nAPI Reference\n\nTabsV2 Props\n\n\n\nTabsV2Trigger Props\n\n void',\n                hintText: 'Close handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'newItem',\n                hintText: 'When true, highlights tab as newly added.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows new indicator',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showSkeleton',\n                hintText: 'When true, displays skeleton for this tab.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows skeleton',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nTabsV2TabItem\n\n\n\nComponent Tokens\n\nYou can style the TabsV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nWith Tab Items\n\n\n\nAPI Reference\n\nTabsV2 Props\n\n\n\nTabsV2Trigger Props\n\n void',\n                hintText: 'Close handler',\n            },...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "With Tab Items",
+                "level": 2,
+                "id": "with-tab-items"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "TabsV2 Props",
+                "level": 3,
+                "id": "tabsv2-props"
+            },
+            {
+                "title": "TabsV2Trigger Props",
+                "level": 3,
+                "id": "tabsv2trigger-props"
+            },
+            {
+                "title": "TabsV2TabItem",
+                "level": 3,
+                "id": "tabsv2tabitem"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "tabs": {
         "title": "Tabs",
         "description": "The Tabs component provides a way to organize content into multiple sections that can be switched between, with support for different styles and configurations.",
@@ -1362,6 +2159,70 @@
             }
         ]
     },
+    "tag-group-v2": {
+        "title": "Tag Group",
+        "description": "The TagGroupV2 component groups multiple TagV2 components with flexible layout options.",
+        "path": "components/tag-group-v2",
+        "slug": "tag-group-v2",
+        "category": "components",
+        "tags": ["tag-group", "component", "layout", "container", "tags"],
+        "content": "Usage\n\n\n\nStacked Layout\n\n\n\nAPI Reference\n\n | ReactElement[]',\n                hintText: 'TagV2 elements',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'stacked',\n                hintText:\n                    'When true, tags are arranged vertically. When false, arranged horizontally.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true stacks vertically, false arranges horizontally',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'gap',\n                hintText: 'Spacing between tags.',\n            },\n            {\n                content: 'string | number',\n                hintText: 'CSS gap value or number in pixels',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the TagGroupV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nStacked Layout\n\n\n\nAPI Reference\n\n | ReactElement[]',\n                hintText: 'TagV2 elements',\n            },\n            { content: '' },...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "Stacked Layout",
+                "level": 2,
+                "id": "stacked-layout"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "tag-v2": {
+        "title": "Tag",
+        "description": "The TagV2 component displays labels, statuses, or categories with various colors, sizes, and styles.",
+        "path": "components/tag-v2",
+        "slug": "tag-v2",
+        "category": "components",
+        "tags": ["tag", "component", "label", "badge", "status"],
+        "content": "Usage\n\n\n\nWith Slots\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the TagV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nWith Slots\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the TagV2 component using the following tokens:",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "With Slots",
+                "level": 2,
+                "id": "with-slots"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "tag": {
         "title": "Tag",
         "description": "The Tag component is a versatile UI element used for displaying labels, categories, and status indicators with multiple variants, colors, and interactive options.",
@@ -1376,6 +2237,70 @@
                 "title": "Usage",
                 "level": 2,
                 "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "text-area-v2": {
+        "title": "Textarea",
+        "description": "The TextAreaV2 component provides a multi-line text input with label, validation, and resize controls.",
+        "path": "components/text-area-v2",
+        "slug": "text-area-v2",
+        "category": "components",
+        "tags": ["textarea", "component", "input", "form", "multiline"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change event handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Required. Placeholder text when empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Field label displayed above the textarea.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'sublabel',\n                hintText:\n                    'Secondary label text displayed below the main label.',\n            },\n            {\n                content: 'string',\n                hintText: 'Secondary label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size affecting padding and text sizing.',\n            },\n            {\n                content: 'InputSizeV2',\n                hintText: 'Enum for textarea size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'rows',\n                hintText: 'Number of visible text rows.',\n            },\n            {\n                content: 'number',\n                hintText: 'Row count',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'resize',\n                hintText:\n                    'Controls whether textarea is resizable and in which directions.',\n            },\n            {\n                content: 'string',\n                hintText: 'CSS resize value',\n            },\n            { content: 'none, both, horizontal, vertical, block, inline' },\n        ],\n        [\n            {\n                content: 'hintText',\n                hintText: 'Helper text displayed below the textarea.',\n            },\n            {\n                content: 'string',\n                hintText: 'Helper description',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'helpIconText',\n                hintText: 'Tooltip text for the help icon.',\n            },\n            {\n                content: 'string',\n                hintText: 'Help tooltip content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText: 'When true, displays a required indicator.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true marks field as required',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'When true, textarea is non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables the textarea',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'autoFocus',\n                hintText: 'When true, focuses textarea on mount.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true auto-focuses',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Error state configuration.',\n            },\n            {\n                content: '{ show: boolean; message?: string }',\n                hintText: 'Error display settings',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFocus',\n                hintText: 'Callback fired when textarea receives focus.',\n            },\n            {\n                content: '(e: FocusEvent) => void',\n                hintText: 'Focus handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onBlur',\n                hintText: 'Callback fired when textarea loses focus.',\n            },\n            {\n                content: '(e: FocusEvent) => void',\n                hintText: 'Blur handler',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the TextAreaV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change event handler',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "text-input-v2": {
+        "title": "Text Input",
+        "description": "The TextInputV2 component provides a text input field with label, validation, slots, and dropdown support.",
+        "path": "components/text-input-v2",
+        "slug": "text-input-v2",
+        "category": "components",
+        "tags": ["text-input", "component", "input", "form", "field"],
+        "content": "Usage\n\n\n\nWith Dropdown\n\n\n\nWith Error State\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change event handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Field label displayed above the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subLabel',\n                hintText:\n                    'Secondary label text displayed below the main label.',\n            },\n            {\n                content: 'string',\n                hintText: 'Secondary label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text shown when input is empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size affecting input height and text sizing.',\n            },\n            {\n                content: 'InputSizeV2',\n                hintText: 'Enum for input size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'hintText',\n                hintText: 'Helper text displayed below the input.',\n            },\n            {\n                content: 'string',\n                hintText: 'Helper description',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'helpIconText',\n                hintText: 'Tooltip text for the help icon.',\n            },\n            {\n                content: 'string',\n                hintText: 'Help tooltip content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Error state configuration.',\n            },\n            {\n                content: '{ show: boolean; message?: string }',\n                hintText: 'Error display settings',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'leftSlot',\n                hintText: 'Element displayed at the start of the input.',\n            },\n            {\n                content:\n                    '{ slot: ReactElement; maxHeight?: CSSObject[\"maxHeight\"] }',\n                hintText: 'Left slot configuration',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'rightSlot',\n                hintText: 'Element displayed at the end of the input.',\n            },\n            {\n                content:\n                    '{ slot: ReactElement; maxHeight?: CSSObject[\"maxHeight\"] }',\n                hintText: 'Right slot configuration',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'dropdown',\n                hintText:\n                    'Embedded SingleSelectV2 configuration for dropdown input.',\n            },\n            {\n                content: 'TextInputV2Dropdown | TextInputV2Dropdown[]',\n                hintText: 'Dropdown props with position',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the TextInputV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nWith Dropdown\n\n\n\nWith Error State\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change event handler',\n            },...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "With Dropdown",
+                "level": 2,
+                "id": "with-dropdown"
+            },
+            {
+                "title": "With Error State",
+                "level": 2,
+                "id": "with-error-state"
             },
             {
                 "title": "API Reference",
@@ -1450,6 +2375,38 @@
                 "title": "Usage",
                 "level": 2,
                 "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "tooltip-v2": {
+        "title": "Tooltip",
+        "description": "The TooltipV2 component displays informative text when users hover over or focus on an element.",
+        "path": "components/tooltip-v2",
+        "slug": "tooltip-v2",
+        "category": "components",
+        "tags": ["tooltip", "component", "overlay", "help", "info"],
+        "content": "Usage\n\n\n\nWith Slot\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Open state change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'side',\n                hintText: 'Position of the tooltip relative to the trigger.',\n            },\n            {\n                content: 'TooltipV2Side',\n                hintText: 'Enum for tooltip position',\n            },\n            { content: 'TOP, RIGHT, BOTTOM, LEFT' },\n        ],\n        [\n            {\n                content: 'align',\n                hintText: 'Alignment of the tooltip along the trigger edge.',\n            },\n            {\n                content: 'TooltipV2Align',\n                hintText: 'Enum for alignment',\n            },\n            { content: 'START, CENTER, END' },\n        ],\n        [\n            {\n                content: 'showArrow',\n                hintText:\n                    'When true, displays an arrow pointing to the trigger.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows the arrow',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Preset size affecting padding and max-width.',\n            },\n            {\n                content: 'TooltipV2Size',\n                hintText: 'Enum for tooltip size',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText:\n                    'Additional element displayed in the tooltip content.',\n            },\n            {\n                content: 'ReactNode',\n                hintText: 'Slot element',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slotDirection',\n                hintText: 'Position of the slot relative to the content.',\n            },\n            {\n                content: 'TooltipV2SlotDirection',\n                hintText: 'Enum for slot position',\n            },\n            { content: 'LEFT, RIGHT' },\n        ],\n        [\n            {\n                content: 'delayDuration',\n                hintText: 'Delay in milliseconds before showing the tooltip.',\n            },\n            {\n                content: 'number',\n                hintText: 'Delay in ms',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'offset',\n                hintText: 'Distance between trigger and tooltip in pixels.',\n            },\n            {\n                content: 'number',\n                hintText: 'Offset in px',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width constraint for the tooltip.',\n            },\n            {\n                content: 'string',\n                hintText: 'CSS max-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'fullWidth',\n                hintText:\n                    'When true, tooltip stretches to match trigger width.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true makes tooltip full-width',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disableInteractive',\n                hintText: 'When true, prevents hovering on tooltip content.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables tooltip interactivity',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the TooltipV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nWith Slot\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Open state change handler',\n            },\n            { content: '' },...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "With Slot",
+                "level": 2,
+                "id": "with-slot"
             },
             {
                 "title": "API Reference",
