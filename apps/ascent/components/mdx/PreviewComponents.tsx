@@ -54,6 +54,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'AccordionV2',
     'AlertV2',
     'AvatarV2',
+    'Badge',
     'BreadcrumbV2',
     'ChartsV2',
     'CodeEditorV2',

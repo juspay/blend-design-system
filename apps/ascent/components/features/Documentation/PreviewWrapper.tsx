@@ -62,6 +62,7 @@ const previewComponents = {
     // V2 Previews
     AccordionV2Preview: dyn(() => import('./Previews/AccordionV2Preview')),
     AlertV2Preview: dyn(() => import('./Previews/AlertV2Preview')),
+    BadgePreview: dyn(() => import('./Previews/BadgePreview')),
     AvatarV2Preview: dyn(() => import('./Previews/AvatarV2Preview')),
     BreadcrumbV2Preview: dyn(() => import('./Previews/BreadcrumbV2Preview')),
     ChartsV2Preview: dyn(() => import('./Previews/ChartsV2Preview')),

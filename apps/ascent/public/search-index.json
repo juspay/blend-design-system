@@ -234,6 +234,40 @@
             }
         ]
     },
+    "badge": {
+        "title": "Badge",
+        "description": "The Badge component displays numerical counts, status indicators, or labels as overlays on other elements or as standalone indicators.",
+        "path": "components/badge",
+        "slug": "badge",
+        "category": "components",
+        "tags": [
+            "badge",
+            "component",
+            "notification",
+            "indicator",
+            "count",
+            "status"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the Badge component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the Badge component using the following tokens:",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "breadcrumb-v2": {
         "title": "Breadcrumb",
         "description": "The BreadcrumbV2 component displays a navigation trail showing the user's current location within a hierarchy.",
