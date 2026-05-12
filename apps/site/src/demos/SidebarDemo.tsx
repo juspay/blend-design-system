@@ -147,6 +147,7 @@ import SearchInputV2Demo from './SearchInputV2Demo'
 import BadgeDemo from './BadgeDemo'
 import ChatInputV2Demo from './ChatInputV2Demo'
 import StepperV2Demo from './StepperV2Demo'
+import SliderV2Demo from './SliderV2Demo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponent] = useState<
@@ -249,7 +250,8 @@ const SidebarDemo = () => {
         | 'searchInputV2'
         | 'chatInputV2'
         | 'stepperV2'
-    >('stepperV2')
+        | 'sliderV2'
+    >('sliderV2')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -620,6 +622,8 @@ const SidebarDemo = () => {
                 return <BadgeDemo />
             case 'stepperV2':
                 return <StepperV2Demo />
+            case 'sliderV2':
+                return <SliderV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -1281,6 +1285,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'stepperV2',
                     onClick: () => setActiveComponent('stepperV2'),
+                },
+                {
+                    label: 'Slider V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'sliderV2',
+                    onClick: () => setActiveComponent('sliderV2'),
                 },
             ],
         },

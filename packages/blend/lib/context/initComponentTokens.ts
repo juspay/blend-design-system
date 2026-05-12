@@ -80,6 +80,7 @@ import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
