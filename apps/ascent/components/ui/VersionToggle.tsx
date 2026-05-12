@@ -1,5 +1,6 @@
 'use client'
 import { usePathname, useRouter } from 'next/navigation'
+import { motion } from 'motion/react'
 import { cn } from '@/lib/utils/cn'
 import { useDocsVersion, type Version } from '@/lib/hooks/useDocsVersion'
 import { useVersionedSlugs } from '@/app/docs/utils/DocsVersionContext'
@@ -23,7 +24,6 @@ export default function VersionToggle({ className }: { className?: string }) {
         const baseSlug = slugMatch[1].replace(/-v2$/i, '')
         const targetSlug = newVersion === '2' ? `${baseSlug}-v2` : baseSlug
 
-        // Only navigate if the target slug actually exists
         if (!allComponentSlugs.has(targetSlug)) return
 
         router.push(pathname.replace(slugMatch[1], targetSlug))
@@ -34,7 +34,7 @@ export default function VersionToggle({ className }: { className?: string }) {
             role="group"
             aria-label="Docs version"
             className={cn(
-                'flex items-center border border-border overflow-hidden h-8 py-0.5 px-1',
+                'relative flex items-center gap-0.5 border border-border h-8 py-0.75 px-1 rounded-xl',
                 className
             )}
         >
@@ -45,13 +45,25 @@ export default function VersionToggle({ className }: { className?: string }) {
                     aria-pressed={version === v}
                     aria-label={`Switch to version ${v}`}
                     className={cn(
-                        'px-2.5 py-1 text-xs font-medium transition-colors',
+                        'relative px-2.5 py-1 text-xs font-medium rounded-lg text-shadow-2xs/5 transition-colors',
                         version === v
-                            ? 'bg-primary text-primary-foreground'
+                            ? 'text-primary-foreground'
                             : 'bg-background text-muted-foreground hover:text-foreground hover:bg-muted'
                     )}
                 >
-                    V{v}
+                    {version === v && (
+                        <motion.div
+                            layoutId="activeVersion"
+                            initial={false}
+                            transition={{
+                                type: 'spring',
+                                stiffness: 400,
+                                damping: 30,
+                            }}
+                            className="absolute inset-0 bg-primary/90 border-[0.25px] border-primary rounded-lg z-10"
+                        />
+                    )}
+                    <span className="relative z-10">V{v}</span>
                 </button>
             ))}
         </div>
