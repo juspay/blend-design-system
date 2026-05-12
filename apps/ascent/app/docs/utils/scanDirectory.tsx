@@ -9,15 +9,17 @@ export interface DocItem {
     children?: DocItem[]
     showInSidebar?: boolean
     version?: number
+    category?: string
 }
 
 interface FrontmatterData {
     title?: string
     version?: number
+    category?: string
 }
 
 /**
- * Extract title and version from MDX frontmatter using gray-matter.
+ * Extract title, version, and category from MDX frontmatter using gray-matter.
  */
 function extractFrontmatter(filePath: string): FrontmatterData {
     try {
@@ -26,10 +28,12 @@ function extractFrontmatter(filePath: string): FrontmatterData {
         return {
             title: typeof data.title === 'string' ? data.title : undefined,
             version: typeof data.version === 'number' ? data.version : 1,
+            category:
+                typeof data.category === 'string' ? data.category : 'Others',
         }
     } catch (err) {
         console.warn(`Could not read frontmatter from ${filePath}:`, err)
-        return { version: 1 }
+        return { version: 1, category: 'Others' }
     }
 }
 
@@ -130,7 +134,8 @@ const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
             ) {
                 // Skip page.mdx files as they're handled by the catch-all route
                 const slug = entry.name.replace(/\.mdx$/, '')
-                const { title, version } = extractFrontmatter(fullPath)
+                const { title, version, category } =
+                    extractFrontmatter(fullPath)
                 // Use title from frontmatter (strip V2 suffix), fallback to slug
                 const cleanTitle = title?.replace(/\s*[Vv]2\s*$/, '') ?? slug
                 items.push({
@@ -138,6 +143,7 @@ const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
                     name: cleanTitle,
                     path: relativePath.replace(/\.mdx$/, ''),
                     version,
+                    category,
                 })
             }
         }

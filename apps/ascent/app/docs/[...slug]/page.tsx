@@ -12,11 +12,6 @@ import { scanDirectory, DocItem } from '../utils'
 import TableOfContents from '@/components/Navigation/TableOfContents'
 import { DocsPage, Sidebar } from '@/components/docs'
 import { MobileSidebarTrigger } from './PageClient'
-import {
-    COMPONENT_REGISTRY,
-    CATEGORY_ORDER,
-    ComponentCategory,
-} from '@/lib/docs/componentRegistry'
 import { DocsVersionProvider } from '../utils/DocsVersionContext'
 
 export async function generateStaticParams() {
@@ -89,40 +84,30 @@ export async function generateMetadata({
 function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
     return fileBasedItems.map((item) => {
         if (item.slug === 'components' && item.children) {
-            const componentsByCategory: Record<ComponentCategory, DocItem[]> = {
-                'Form Input': [],
-                Selection: [],
-                Actions: [],
-                Navigation: [],
-                Feedback: [],
-                Layout: [],
-                Data: [],
-                Display: [],
-                Others: [],
-            }
+            // Group components by category from MDX frontmatter
+            const componentsByCategory: Record<string, DocItem[]> = {}
 
             item.children.forEach((child) => {
-                const baseSlug = child.slug.replace(/-v2$/, '')
-                const registryEntry = COMPONENT_REGISTRY.find(
-                    (c) => c.slug === baseSlug
-                )
-                if (registryEntry) {
-                    componentsByCategory[registryEntry.category].push(child)
-                } else {
-                    componentsByCategory['Others'].push(child)
+                const category = child.category || 'Others'
+                if (!componentsByCategory[category]) {
+                    componentsByCategory[category] = []
                 }
+                componentsByCategory[category].push(child)
             })
 
-            const categoryChildren: DocItem[] = CATEGORY_ORDER.filter(
-                (cat) => componentsByCategory[cat].length > 0
-            ).map((category) => ({
-                slug: category.toLowerCase().replace(/\s+/g, '-'),
-                name: category,
-                path: `${item.path}/category/${category.toLowerCase().replace(/\s+/g, '-')}`,
-                children: componentsByCategory[category].sort((a, b) =>
-                    a.name.localeCompare(b.name)
-                ),
-            }))
+            // Build category sections dynamically, sorted alphabetically
+            const categoryChildren: DocItem[] = Object.entries(
+                componentsByCategory
+            )
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([category, children]) => ({
+                    slug: category.toLowerCase().replace(/\s+/g, '-'),
+                    name: category,
+                    path: `${item.path}/category/${category.toLowerCase().replace(/\s+/g, '-')}`,
+                    children: children.sort((a, b) =>
+                        a.name.localeCompare(b.name)
+                    ),
+                }))
 
             return { ...item, children: categoryChildren }
         }
