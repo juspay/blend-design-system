@@ -138,17 +138,17 @@ function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
     })
 }
 
-function extractVersionedSlugs(items: DocItem[]): Set<string> {
-    const versionedSlugs = new Set<string>()
+// Track every component slug that exists
+function extractAllComponentSlugs(items: DocItem[]): Set<string> {
+    const allSlugs = new Set<string>()
     const walk = (items: DocItem[]) => {
         for (const item of items) {
-            if (item.version === 2)
-                versionedSlugs.add(item.slug.replace(/-v2$/i, ''))
+            allSlugs.add(item.slug)
             if (item.children) walk(item.children)
         }
     }
     walk(items)
-    return versionedSlugs
+    return allSlugs
 }
 
 const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
@@ -184,7 +184,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
         path.join(process.cwd(), 'app', 'docs', 'content')
     )
     const sidebarItems = buildSidebarItemsWithCategories(fileBasedItems)
-    const versionedSlugs = extractVersionedSlugs(fileBasedItems)
+    const allComponentSlugs = extractAllComponentSlugs(fileBasedItems)
 
     const metadata: PageMetadata = {
         title: (frontmatter as PageMetadata)?.title || 'Untitled',
@@ -208,7 +208,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
     }
 
     return (
-        <DocsVersionProvider value={versionedSlugs}>
+        <DocsVersionProvider value={allComponentSlugs}>
             <SharedLayout
                 baseRoute="/docs"
                 contentPath="app/docs/content"

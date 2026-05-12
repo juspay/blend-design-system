@@ -10,7 +10,7 @@ export default function VersionToggle({ className }: { className?: string }) {
     const pathname = usePathname()
     const router = useRouter()
     const [version, setVersion] = useDocsVersion()
-    const versionedSlugs = useVersionedSlugs()
+    const allComponentSlugs = useVersionedSlugs()
 
     if (!pathname?.startsWith('/docs')) return null
 
@@ -21,9 +21,11 @@ export default function VersionToggle({ className }: { className?: string }) {
         if (!slugMatch) return
 
         const baseSlug = slugMatch[1].replace(/-v2$/i, '')
-        if (newVersion === '2' && !versionedSlugs.has(baseSlug)) return
-
         const targetSlug = newVersion === '2' ? `${baseSlug}-v2` : baseSlug
+
+        // Only navigate if the target slug actually exists
+        if (!allComponentSlugs.has(targetSlug)) return
+
         router.push(pathname.replace(slugMatch[1], targetSlug))
     }
 
