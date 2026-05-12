@@ -3,7 +3,6 @@ import {
     ProgressBarV2,
     ProgressBarV2Size,
     ProgressBarV2Variant,
-    ProgressBarV2Appearance,
 } from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'

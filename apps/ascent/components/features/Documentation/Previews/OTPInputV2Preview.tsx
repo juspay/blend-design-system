@@ -1,10 +1,12 @@
 'use client'
-import { OTPInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
 import React, { useState } from 'react'
+import { OTPInputV2 } from '@juspay/blend-design-system'
+
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const OTPInputV2Preview = () => {
-    const tsCode = `import { OTPInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+    const tsCode = `import { OTPInputV2 } from '@juspay/blend-design-system'
 import { useState } from 'react'
 
 function MyComponent() {
@@ -15,15 +17,11 @@ function MyComponent() {
             length={6}
             value={otp}
             onChange={setOtp}
-            size={InputSizeV2.MD}
-            onComplete={(value) => console.log('OTP entered:', value)}
         />
     )
 }`
 
-    const reCode = `type inputSizeV2 = [#sm | #md | #lg]
-
-@react.component
+    const reCode = `@react.component
 let make = () => {
   let (otp, setOtp) = React.useState(() => "")
 
@@ -31,8 +29,6 @@ let make = () => {
     length={6}
     value={otp}
     onChange={setOtp}
-    size=#md
-    onComplete={value => Console.log(value)}
   />
 }`
 
@@ -41,9 +37,7 @@ external make: (
   ~length: int,
   ~value: string,
   ~onChange: string => unit,
-  ~size: [#sm | #md | #lg]=?,
   ~masked: bool=?,
-  ~onComplete: string => unit=?,
   ~autoFocus: bool=?,
 ) => React.element = "OTPInputV2"`
 
@@ -55,13 +49,7 @@ external make: (
             rescript={reCode}
             rescriptBinding={bindingCode}
         >
-            <OTPInputV2
-                length={6}
-                value={otp}
-                onChange={setOtp}
-                size={InputSizeV2.MD}
-                onComplete={(value) => console.log('OTP entered:', value)}
-            />
+            <OTPInputV2 length={6} value={otp} onChange={setOtp} />
         </ComponentPreview>
     )
 }

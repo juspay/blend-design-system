@@ -3,8 +3,7 @@ import {
     SnackbarV2,
     Button,
     ButtonType,
-    toast,
-    SnackbarV2Variant,
+    addSnackbarV2,
 } from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
@@ -12,7 +11,7 @@ import ComponentPreview from '@/components/features/Documentation/Previews/Compo
 const SnackbarV2Preview = () => {
     const tsCode = `import {
     SnackbarV2,
-    toast,
+    addSnackbarV2,
     SnackbarV2Variant
 } from '@juspay/blend-design-system'
 
@@ -26,7 +25,7 @@ function App() {
 }
 
 // Show toast
-toast({
+addSnackbarV2({
     header: 'Success!',
     description: 'Changes saved.',
     variant: SnackbarV2Variant.SUCCESS,
@@ -51,10 +50,9 @@ external toast: (
 ) => unit = "toast"`
 
     const showToast = () => {
-        toast({
+        addSnackbarV2({
             header: 'Success!',
             description: 'Your changes have been saved successfully.',
-            variant: SnackbarV2Variant.SUCCESS,
         })
     }
 

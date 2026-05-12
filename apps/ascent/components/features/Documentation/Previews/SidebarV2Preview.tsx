@@ -1,11 +1,7 @@
 'use client'
-import {
-    SidebarV2,
-    Home,
-    Settings,
-    ChartBar,
-} from '@juspay/blend-design-system'
+import { SidebarV2 } from '@juspay/blend-design-system'
 import React from 'react'
+import { Home, ChartBar, Settings } from 'lucide-react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SidebarV2Preview = () => {

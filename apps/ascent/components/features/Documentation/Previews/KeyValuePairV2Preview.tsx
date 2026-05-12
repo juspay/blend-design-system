@@ -1,9 +1,5 @@
 'use client'
-import {
-    KeyValuePairV2,
-    KeyValuePairV2Size,
-    KeyValuePairV2StateType,
-} from '@juspay/blend-design-system'
+import { KeyValuePairV2, KeyValuePairV2Size } from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
@@ -74,13 +70,11 @@ external make: (
                     keyString="Email Address"
                     value="user@example.com"
                     size={KeyValuePairV2Size.MD}
-                    keyValuePairState={KeyValuePairV2StateType.HORIZONTAL}
                 />
                 <KeyValuePairV2
                     keyString="Status"
                     value="Active"
                     size={KeyValuePairV2Size.MD}
-                    keyValuePairState={KeyValuePairV2StateType.VERTICAL}
                 />
             </div>
         </ComponentPreview>

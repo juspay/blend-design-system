@@ -1,6 +1,8 @@
 'use client'
-import { NumberInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
 import React, { useState } from 'react'
+import { NumberInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const NumberInputV2Preview = () => {
@@ -12,9 +14,9 @@ function MyComponent() {
 
     return (
         <NumberInputV2
-            label="Quantity"
+            label={{ text: 'Quantity' }}
             value={value}
-            onChange={setValue}
+            onChange={(e) => setValue(Number(e.target.value))}
             min={0}
             max={100}
             step={1}
@@ -30,9 +32,15 @@ let make = () => {
   let (value, setValue) = React.useState(() => 0)
 
   <NumberInputV2Binding
-    label="Quantity"
+    label={"text": "Quantity"}
     value={value}
-    onChange={setValue}
+    onChange={e =>
+      setValue(
+        Belt.Int.fromString(
+          ReactEvent.Form.target(e)["value"],
+        )->Belt.Option.getWithDefault(0),
+      )
+    }
     min={0}
     max={100}
     step={1}
@@ -43,8 +51,8 @@ let make = () => {
     const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~value: int,
-  ~onChange: int => unit,
-  ~label: string=?,
+  ~onChange: ReactEvent.Form.t => unit,
+  ~label: {"text": string, "subtext": string}=?,
   ~size: [#sm | #md | #lg]=?,
   ~min: int=?,
   ~max: int=?,
@@ -63,9 +71,9 @@ external make: (
         >
             <div className="w-full max-w-sm">
                 <NumberInputV2
-                    label="Quantity"
+                    label={{ text: 'Quantity' }}
                     value={value}
-                    onChange={setValue}
+                    onChange={(e) => setValue(Number(e.target.value))}
                     min={0}
                     max={100}
                     step={1}

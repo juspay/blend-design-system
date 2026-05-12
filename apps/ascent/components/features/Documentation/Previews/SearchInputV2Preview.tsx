@@ -1,10 +1,12 @@
 'use client'
-import { SearchInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
 import React, { useState } from 'react'
+import { SearchInputV2 } from '@juspay/blend-design-system'
+
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SearchInputV2Preview = () => {
-    const tsCode = `import { SearchInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+    const tsCode = `import { SearchInputV2 } from '@juspay/blend-design-system'
 import { useState } from 'react'
 
 function MyComponent() {
@@ -15,26 +17,20 @@ function MyComponent() {
             placeholder="Search products..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onSearch={(value) => console.log('Searching:', value)}
-            size={InputSizeV2.MD}
-            clearable={true}
         />
     )
 }`
 
-    const reCode = `type inputSizeV2 = [#sm | #md | #lg]
-
-@react.component
+    const reCode = `@react.component
 let make = () => {
   let (query, setQuery) = React.useState(() => "")
 
   <SearchInputV2Binding
     placeholder="Search products..."
     value={query}
-    onChange={e => setQuery(ReactEvent.Form.target(e)["value"])}
-    onSearch={value => Console.log(value)}
-    size=#md
-    clearable={true}
+    onChange={e =>
+      setQuery(ReactEvent.Form.target(e)["value"])
+    }
   />
 }`
 
@@ -42,10 +38,7 @@ let make = () => {
 external make: (
   ~value: string,
   ~onChange: ReactEvent.Form.t => unit,
-  ~onSearch: string => unit=?,
   ~placeholder: string=?,
-  ~size: [#sm | #md | #lg]=?,
-  ~clearable: bool=?,
   ~loading: bool=?,
 ) => React.element = "SearchInputV2"`
 
@@ -62,9 +55,6 @@ external make: (
                     placeholder="Search products..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    onSearch={(value) => console.log('Searching:', value)}
-                    size={InputSizeV2.MD}
-                    clearable={true}
                 />
             </div>
         </ComponentPreview>

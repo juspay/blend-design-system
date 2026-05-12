@@ -1,6 +1,5 @@
 'use client'
 import { ChartV2 } from '@juspay/blend-design-system'
-import Highcharts from 'highcharts'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
@@ -73,11 +72,7 @@ external make: (
             rescriptBinding={bindingCode}
         >
             <div className="w-full max-w-md">
-                <ChartV2
-                    highcharts={Highcharts}
-                    options={options}
-                    skeleton={{ show: false }}
-                />
+                <ChartV2 options={options} skeleton={{ show: false }} />
             </div>
         </ComponentPreview>
     )

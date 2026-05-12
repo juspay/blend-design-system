@@ -1,10 +1,8 @@
-'use client'
-import { ChatInputV2, InputSizeV2 } from '@juspay/blend-design-system'
-import React, { useState } from 'react'
+import { ChatInputV2 } from '@juspay/blend-design-system'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const ChatInputV2Preview = () => {
-    const tsCode = `import { ChatInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+    const tsCode = `import { ChatInputV2 } from '@juspay/blend-design-system'
 import { useState } from 'react'
 
 function MyComponent() {
@@ -16,15 +14,12 @@ function MyComponent() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onSend={(value) => console.log('Sending:', value)}
-            size={InputSizeV2.MD}
             showAttachment={true}
         />
     )
 }`
 
-    const reCode = `type inputSizeV2 = [#sm | #md | #lg]
-
-@react.component
+    const reCode = `@react.component
 let make = () => {
   let (message, setMessage) = React.useState(() => "")
 
@@ -33,7 +28,6 @@ let make = () => {
     value={message}
     onChange={e => setMessage(ReactEvent.Form.target(e)["value"])}
     onSend={value => Console.log(value)}
-    size=#md
     showAttachment={true}
   />
 }`
@@ -44,12 +38,11 @@ external make: (
   ~onChange: ReactEvent.Form.t => unit,
   ~onSend: string => unit=?,
   ~placeholder: string=?,
-  ~size: [#sm | #md | #lg]=?,
   ~showAttachment: bool=?,
   ~disabled: bool=?,
 ) => React.element = "ChatInputV2"`
 
-    const [message, setMessage] = useState('')
+    const message = 'hello'
 
     return (
         <ComponentPreview
@@ -61,10 +54,7 @@ external make: (
                 <ChatInputV2
                     placeholder="Type a message..."
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onSend={(value) => console.log('Sending:', value)}
-                    size={InputSizeV2.MD}
-                    showAttachment={true}
+                    onChange={() => console.log(message)}
                 />
             </div>
         </ComponentPreview>

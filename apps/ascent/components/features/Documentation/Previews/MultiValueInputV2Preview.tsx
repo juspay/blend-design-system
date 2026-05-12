@@ -1,6 +1,8 @@
 'use client'
-import { MultiValueInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
 import React, { useState } from 'react'
+import { MultiValueInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const MultiValueInputV2Preview = () => {
@@ -8,16 +10,15 @@ const MultiValueInputV2Preview = () => {
 import { useState } from 'react'
 
 function MyComponent() {
-    const [values, setValues] = useState(['react', 'typescript'])
+    const [value, setValue] = useState('react,typescript')
 
     return (
         <MultiValueInputV2
             label="Tags"
             placeholder="Add tags..."
-            values={values}
-            onChange={setValues}
+            value={value}
+            onChange={setValue}
             size={InputSizeV2.MD}
-            separator=','
         />
     )
 }`
@@ -26,22 +27,21 @@ function MyComponent() {
 
 @react.component
 let make = () => {
-  let (values, setValues) = React.useState(() => ["react", "typescript"])
+  let (value, setValue) = React.useState(() => "react,typescript")
 
   <MultiValueInputV2Binding
     label="Tags"
     placeholder="Add tags..."
-    values={values}
-    onChange={setValues}
+    value={value}
+    onChange={setValue}
     size=#md
-    separator=","
   />
 }`
 
     const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
-  ~values: array<string>,
-  ~onChange: array<string> => unit,
+  ~value: string,
+  ~onChange: string => unit,
   ~label: string=?,
   ~placeholder: string=?,
   ~size: [#sm | #md | #lg]=?,
@@ -49,7 +49,7 @@ external make: (
   ~maxValues: int=?,
 ) => React.element = "MultiValueInputV2"`
 
-    const [values, setValues] = useState(['react', 'typescript'])
+    const [value, setValue] = useState('react,typescript')
 
     return (
         <ComponentPreview
@@ -61,10 +61,9 @@ external make: (
                 <MultiValueInputV2
                     label="Tags"
                     placeholder="Add tags..."
-                    values={values}
-                    onChange={setValues}
+                    value={value}
+                    onChange={setValue}
                     size={InputSizeV2.MD}
-                    separator=","
                 />
             </div>
         </ComponentPreview>
