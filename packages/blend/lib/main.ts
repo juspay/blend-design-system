@@ -50,7 +50,9 @@ export * from './components/VirtualList'
 // ---------------------------------------------------------------------------
 export * from './context'
 export * from './tokens'
+export { FOUNDATION_THEME } from './tokens'
 export type { FoundationTokenType } from './tokens/theme.token'
+export { Theme } from './context'
 
 // ---------------------------------------------------------------------------
 // V2 components (namespaced to avoid conflicts with V1)
