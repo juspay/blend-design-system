@@ -117,6 +117,7 @@ const DataTable = forwardRef(
             showSettings = false,
             showFooter = true,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableRowExpansion = false,
             enableRowSelection = false,
             rowSelectionConfig,
@@ -1246,7 +1247,8 @@ const DataTable = forwardRef(
             effectiveVisibleColumns.length +
             (enableRowSelection ? 1 : 0) +
             (enableRowExpansion ? 1 : 0) +
-            ((enableInlineEdit || rowActions) &&
+            (showActionsColumn &&
+            (enableInlineEdit || rowActions) &&
             !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
                 ? 1
                 : 0) +
@@ -1667,6 +1669,9 @@ const DataTable = forwardRef(
                                             selectAll={selectAll}
                                             sortConfig={sortConfig}
                                             enableInlineEdit={enableInlineEdit}
+                                            showActionsColumn={
+                                                showActionsColumn
+                                            }
                                             enableColumnManager={
                                                 effectiveEnableColumnManager
                                             }
@@ -1791,6 +1796,9 @@ const DataTable = forwardRef(
                                                 expandedRows={expandedRows}
                                                 enableInlineEdit={
                                                     enableInlineEdit
+                                                }
+                                                showActionsColumn={
+                                                    showActionsColumn
                                                 }
                                                 enableColumnManager={
                                                     effectiveEnableColumnManager

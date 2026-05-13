@@ -310,11 +310,17 @@ const PivotTableModal = forwardRef<
                 return prev.map((config, i) => {
                     if (i !== index) return config
                     const supported = getSupportedAggregations(nextField)
-                    const resolvedAggregation = supported.includes(
-                        config.aggregation
-                    )
-                        ? config.aggregation
-                        : defaultAggregation
+                    let resolvedAggregation: PivotAggregationType
+                    if (supported.includes(PivotAggregationType.SUM)) {
+                        resolvedAggregation = PivotAggregationType.SUM
+                    } else {
+                        resolvedAggregation = supported.includes(
+                            config.aggregation
+                        )
+                            ? config.aggregation
+                            : defaultAggregation
+                    }
+
                     // prevent creating an exact duplicate (field + aggregation) pair
                     if (
                         prev.some(

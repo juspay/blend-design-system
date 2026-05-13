@@ -143,6 +143,7 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
                                 enableRowExpansion={false}
                                 enableRowSelection={false}
                                 enableInlineEdit={true}
+                                showActionsColumn={false}
                                 onHeaderChange={handleHeaderChange}
                                 showHeader
                                 showToolbar={false}

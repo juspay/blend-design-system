@@ -47,9 +47,6 @@ import {
     Trash2,
     Info,
     FileText,
-    Eye,
-    Edit3,
-    MoreHorizontal,
     Filter,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
@@ -2236,123 +2233,6 @@ const DataTableDemo = () => {
             },
             minWidth: '180px',
             maxWidth: '250px',
-        },
-        {
-            field: 'action',
-            header: 'Actions',
-            headerSubtext: 'Quick Actions & Operations',
-            type: ColumnType.REACT_ELEMENT,
-            isSortable: false,
-            renderCell: (_value: unknown, row: UserRow) => {
-                return (
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                        }}
-                    >
-                        <button
-                            onClick={() => {
-                                const userName = (row.name as AvatarColumnProps)
-                                    .label
-                                alert(`Viewing details for: ${userName}`)
-                            }}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '6px',
-                                border: '1px solid #e5e7eb',
-                                backgroundColor: '#ffffff',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#f9fafb'
-                                e.currentTarget.style.borderColor = '#d1d5db'
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#ffffff'
-                                e.currentTarget.style.borderColor = '#e5e7eb'
-                            }}
-                            title="View Details"
-                        >
-                            <Eye size={16} color="#374151" />
-                        </button>
-                        <button
-                            onClick={() => {
-                                const userName = (row.name as AvatarColumnProps)
-                                    .label
-                                alert(`Editing user: ${userName}`)
-                            }}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '6px',
-                                border: '1px solid #e5e7eb',
-                                backgroundColor: '#ffffff',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#eff6ff'
-                                e.currentTarget.style.borderColor = '#3b82f6'
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#ffffff'
-                                e.currentTarget.style.borderColor = '#e5e7eb'
-                            }}
-                            title="Edit User"
-                        >
-                            <Edit3 size={16} color="#2563eb" />
-                        </button>
-                        <button
-                            onClick={() => {
-                                const userName = (row.name as AvatarColumnProps)
-                                    .label
-                                alert(`More options for: ${userName}`)
-                            }}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '6px',
-                                border: '1px solid #e5e7eb',
-                                backgroundColor: '#ffffff',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#f3f4f6'
-                                e.currentTarget.style.borderColor = '#9ca3af'
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#ffffff'
-                                e.currentTarget.style.borderColor = '#e5e7eb'
-                            }}
-                            title="More Options"
-                        >
-                            <MoreHorizontal size={16} color="#6b7280" />
-                        </button>
-                    </div>
-                )
-            },
-            minWidth: '140px',
-            maxWidth: '180px',
         },
     ]
 

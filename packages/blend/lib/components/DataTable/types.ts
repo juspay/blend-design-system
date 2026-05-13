@@ -410,6 +410,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     headerSlot2?: ReactNode
 
     enableInlineEdit?: boolean
+    showActionsColumn?: boolean
     onRowSave?: (rowId: unknown, updatedRow: T) => void
     onRowCancel?: (rowId: unknown) => void
     onRowClick?: (row: T, index: number) => void

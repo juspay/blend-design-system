@@ -205,6 +205,7 @@ const TableHeader = forwardRef<
             selectAll,
             sortConfig,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableColumnManager = true,
             enableColumnReordering = false,
             showSkeleton = false,
@@ -820,6 +821,7 @@ const TableHeader = forwardRef<
                         const isLastColumn =
                             !enableColumnManager &&
                             !(
+                                showActionsColumn &&
                                 (enableInlineEdit || rowActions) &&
                                 !(
                                     mobileConfig?.isMobile &&
@@ -1877,7 +1879,8 @@ const TableHeader = forwardRef<
                         )
                     })}
 
-                    {(enableInlineEdit || rowActions) &&
+                    {showActionsColumn &&
+                        (enableInlineEdit || rowActions) &&
                         !(
                             mobileConfig?.isMobile &&
                             mobileConfig?.enableColumnOverflow
