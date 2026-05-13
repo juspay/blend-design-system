@@ -2,51 +2,61 @@ import { patchResizeObserver } from './pollyfills/resizeObserverPollyfill'
 
 patchResizeObserver()
 
-export * from './components/Button'
-export * from './components/ButtonGroup'
-export * from './components/Tabs'
-export * from './components/SplitTag'
+// ---------------------------------------------------------------------------
+// V1 components
+// ---------------------------------------------------------------------------
+export * from './components/Accordion'
 export * from './components/Alert'
-export * from './components/Tags'
-export * from './components/Breadcrumb'
 export * from './components/Avatar'
 export * from './components/AvatarGroup'
-export * from './components/Modal'
-export * from './components/Tooltip'
-export * from './components/Accordion'
-export * from './components/Snackbar'
-export * from './components/Popover'
-export * from './components/Checkbox'
-export * from './components/Radio'
-export * from './components/Switch'
-export * from './components/Snackbar'
-export * from './components/Charts'
-export * from './components/DateRangePicker'
-export * from './components/StatCard'
+export * from './components/Breadcrumb'
+export * from './components/Button'
+export * from './components/ButtonGroup'
 export * from './components/Card'
-export * from './components/Inputs'
-export * from './components/Menu'
-export * from './components/DataTable'
-export * from './components/Sidebar'
-export * from './components/Directory'
-export * from './components/MultiSelect'
-export * from './components/SingleSelect'
-export * from './components/Slider'
-export * from './components/ProgressBar'
-export * from './components/Drawer'
-export * from './components/Stepper'
-export * from './components/Skeleton'
-export * from './components/KeyValuePair'
-export * from './components/VirtualList'
-export * from './components/Upload'
+export * from './components/Charts'
 export * from './components/ChatInput'
+export * from './components/Checkbox'
 export * from './components/CodeBlock'
 export * from './components/CodeEditor'
+export * from './components/DataTable'
+export * from './components/DateRangePicker'
+export * from './components/Directory'
+export * from './components/Drawer'
+export * from './components/Inputs'
+export * from './components/KeyValuePair'
+export * from './components/Menu'
+export * from './components/Modal'
+export * from './components/MultiSelect'
+export * from './components/Popover'
+export * from './components/ProgressBar'
+export * from './components/Radio'
+export * from './components/Sidebar'
+export * from './components/Skeleton'
+export * from './components/SingleSelect'
+export * from './components/Slider'
+export * from './components/Snackbar'
+export * from './components/SplitTag'
+export * from './components/StatCard'
+export * from './components/Stepper'
+export * from './components/Switch'
+export * from './components/Tabs'
+export * from './components/Tags'
+export * from './components/Tooltip'
+export * from './components/Upload'
+export * from './components/VirtualList'
 
+// ---------------------------------------------------------------------------
+// Core exports
+// ---------------------------------------------------------------------------
 export * from './context'
 export * from './tokens'
+export { default as FOUNDATION_THEME } from './tokens/theme.token'
+export type { FoundationTokenType } from './tokens/theme.token'
+export { Theme } from './context/theme.enum'
 
-//V2 Components - Namespaced to avoid conflicts with V1
+// ---------------------------------------------------------------------------
+// V2 components (namespaced to avoid conflicts with V1)
+// ---------------------------------------------------------------------------
 export {
     ButtonV2,
     ButtonV2Type,
@@ -144,7 +154,135 @@ export {
 } from './components/ChartsV2'
 
 // ---------------------------------------------------------------------------
-// Token Factory Exports (for Token Studio engine)
+// Additional V2 component exports
+// ---------------------------------------------------------------------------
+export * from './components/ButtonV2/ButtonGroupV2'
+export * from './components/common/TruncatedTextWithTooltipV2'
+export * from './components/PopoverV2'
+export * from './components/SidebarV2'
+export * from './components/SnackbarV2'
+export * from './components/StepperV2'
+export * from './components/TagGroupV2'
+export * from './components/Timeline'
+export * from './components/TopbarV2'
+export * from './components/SelectV2'
+export * from './components/InputsV2/MultiValueInputV2'
+export * from './components/InputsV2/NumberInputV2'
+export * from './components/InputsV2/OTPInputV2'
+export * from './components/InputsV2/SearchInputV2'
+
+// ---------------------------------------------------------------------------
+// V2 exports that must stay explicit to avoid name collisions with V1 exports
+// ---------------------------------------------------------------------------
+export {
+    MenuV2,
+    MenuV2Content,
+    MenuV2Item,
+    MenuV2SubMenu,
+} from './components/MenuV2'
+export {
+    MenuV2Alignment,
+    MenuV2Side,
+    MenuV2ItemVariant,
+    MenuV2ItemActionType,
+    type MenuV2ItemTooltipProps,
+    type MenuV2ItemLabel,
+    type MenuV2ItemType,
+    type MenuV2GroupType,
+    type MenuV2VirtualScrollingConfig,
+    type MenuV2Dimensions,
+    type MenuV2Props,
+} from './components/MenuV2/menuV2.types'
+export * from './components/MenuV2/menuV2.tokens'
+
+export {
+    SingleSelectV2,
+    MobileSingleSelectV2,
+    SingleSelectV2Trigger,
+    SingleSelectV2Menu,
+    SingleSelectV2List,
+    SingleSelectV2VirtualList,
+    SingleSelectV2Search,
+    SingleSelectV2Skeleton,
+} from './components/SingleSelectV2'
+export {
+    SingleSelectV2Alignment,
+    SingleSelectV2Variant,
+    SingleSelectV2Size,
+    SingleSelectV2Side,
+    type SingleSelectV2SkeletonProps,
+    type SingleSelectV2ItemType,
+    type SingleSelectV2GroupType,
+    type SingleSelectV2MenuProps,
+    type SingleSelectV2Props,
+} from './components/SingleSelectV2/singleSelectV2.types'
+export * from './components/SingleSelectV2/singleSelectV2.tokens'
+
+export {
+    MultiSelectV2,
+    MultiSelectV2Skeleton,
+    MultiSelectV2Menu,
+    MultiSelectV2MenuHeader,
+    MultiSelectV2MenuSearch,
+    MultiSelectV2MenuVirtualList,
+    MultiSelectV2MenuItems,
+    MultiSelectV2MenuActions,
+    MultiSelectV2Trigger,
+    MobileMultiSelectV2,
+} from './components/MultiSelectV2'
+export {
+    MultiSelectV2Alignment,
+    MultiSelectV2Variant,
+    MultiSelectV2Size,
+    MultiSelectV2Side,
+    MultiSelectV2SelectionTagType,
+    type MultiSelectV2SkeletonProps,
+    type MultiSelectV2ItemType,
+    type MultiSelectV2GroupType,
+    type FlattenedMultiSelectV2Item,
+    type MultiSelectV2MenuProps,
+    type MultiSelectV2Props,
+} from './components/MultiSelectV2/multiSelectV2.types'
+export * from './components/MultiSelectV2/multiSelectV2.tokens'
+
+export { default as KeyValuePairV2 } from './components/KeyValuePairV2/KeyValuePairV2'
+export {
+    KeyValuePairV2StateType,
+    KeyValuePairV2Size,
+    type KeyValuePairV2PropTypes,
+    type TextOverflowMode as KeyValuePairV2TextOverflowMode,
+} from './components/KeyValuePairV2/keyValuePairV2.types'
+export * from './components/KeyValuePairV2/keyValuePairV2.tokens'
+
+export { CodeEditorV2 } from './components/CodeEditorV2'
+export {
+    CodeEditorV2Variant,
+    MonacoTheme,
+    type CodeEditorV2Props,
+    type CodeEditorV2HeaderProps,
+    type CodeEditorV2Dimensions,
+    type MonacoEditorWrapperDimensions,
+    type MonacoEditorWrapperProps,
+    type DiffLine as CodeEditorV2DiffLine,
+    type DiffLineType as CodeEditorV2DiffLineType,
+    type SupportedLanguage as CodeEditorV2SupportedLanguage,
+} from './components/CodeEditorV2/codeEditorV2.types'
+export * from './components/CodeEditorV2/codeEditorV2.tokens'
+
+export {
+    ChatInputV2,
+    MobileChatInputV2,
+} from './components/InputsV2/ChatInputV2'
+export {
+    type ChatInputV2Props,
+    type MobileChatInputV2Props,
+    type AttachedFile as ChatInputV2AttachedFile,
+    type TopQuery as ChatInputV2TopQuery,
+} from './components/InputsV2/ChatInputV2/ChatInputV2.types'
+export * from './components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+
+// ---------------------------------------------------------------------------
+// Token factory exports (for Token Studio engine)
 // ---------------------------------------------------------------------------
 // These functions are the bridge between foundation tokens and component tokens.
 // The token engine calls them with a brand-modified FoundationTokenType to produce
@@ -176,13 +314,3 @@ export { getTooltipV2Tokens } from './components/TooltipV2/tooltipV2.tokens'
 export { getTopbarTokens } from './components/Topbar/topbar.tokens'
 export { getSidebarTokens } from './components/Sidebar/sidebar.tokens'
 export { getMobileNavigationTokens } from './components/Sidebar/SidebarMobile/mobile.tokens'
-
-// Foundation token type export (for token engine)
-export { default as FOUNDATION_THEME } from './tokens/theme.token'
-export type { FoundationTokenType } from './tokens/theme.token'
-export { Theme } from './context/theme.enum'
-
-// Additional V2 exports (kept explicit to avoid duplicate re-exports)
-export * from './components/Timeline'
-export * from './components/PopoverV2'
-export * from './components/StepperV2'
