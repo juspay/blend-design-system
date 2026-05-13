@@ -54,9 +54,6 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
         const isMobile = innerWidth < BREAKPOINTS.lg
         const tokens = useComponentToken('TOPBARV2') as ResponsiveTopbarV2Tokens
         const topBarToken = isMobile ? tokens.sm : tokens.lg
-        const selectedMerchant = merchantInfo?.items.find(
-            (m) => m.value === merchantInfo.selected
-        )
 
         if (!isVisible) return null
 
