@@ -319,3 +319,9 @@ export { getMobileNavigationV2Tokens } from './components/SidebarV2/SidebarV2Mob
 export { getTopbarTokens } from './components/Topbar/topbar.tokens'
 export { getSidebarTokens } from './components/Sidebar/sidebar.tokens'
 export { getMobileNavigationTokens } from './components/Sidebar/SidebarMobile/mobile.tokens'
+
+// Additional V2 exports (kept explicit to avoid duplicate re-exports)
+export * from './components/Timeline'
+export * from './components/PopoverV2'
+export * from './components/SidebarV2'
+export * from './components/StepperV2'
