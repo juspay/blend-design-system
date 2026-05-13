@@ -3147,6 +3147,16 @@
                     "llmContext": "Sets the triggerConfig of the component"
                 },
                 {
+                    "propName": "popoverConfig",
+                    "propType": "DateRangePickerPopoverConfig",
+                    "typeDefinition": "DateRangePickerPopoverConfig",
+                    "propDescription": "Sets the popoverConfig of the component",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Sets the popoverConfig of the component"
+                },
+                {
                     "propName": "maxMenuHeight",
                     "propType": "number",
                     "typeDefinition": "number",
