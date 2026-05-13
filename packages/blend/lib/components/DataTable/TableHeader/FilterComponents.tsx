@@ -44,6 +44,9 @@ import MobileFilterDrawer from './MobileFilterDrawer'
 import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import { VirtualListItem } from '../../VirtualList'
+import DateRangePicker from '../../DateRangePicker/DateRangePicker'
+import { DateRange } from '../../DateRangePicker/types'
+import { parseDateLike, toLocalDateString } from '../utils'
 
 const FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT = 40
 const FILTER_VIRTUAL_LIST_MAX_HEIGHT = 220
@@ -1220,6 +1223,117 @@ export const SliderFilter: React.FC<{
     )
 }
 
+export const DateFilter: React.FC<{
+    column: ColumnDefinition<Record<string, unknown>>
+    fieldKey: string
+    tableToken: TableTokenType
+    filterState: FilterState
+    onColumnFilter?: ColumnFilterHandler
+}> = ({ column, fieldKey, tableToken, filterState, onColumnFilter }) => {
+    const selectedValue = filterState.columnSelectedValues[fieldKey]
+    const selectedRange = Array.isArray(selectedValue)
+        ? selectedValue
+        : typeof selectedValue === 'string' && selectedValue
+          ? [selectedValue, selectedValue]
+          : []
+
+    const pickerValue: DateRange | undefined = (() => {
+        if (selectedRange.length === 0 || !selectedRange[0]) return undefined
+        const start = parseDateLike(selectedRange[0])
+        if (!start) return undefined
+        const end = parseDateLike(selectedRange[1] || selectedRange[0]) || start
+        return { startDate: start, endDate: end }
+    })()
+    const hasActiveDateRange = selectedRange.length > 0
+
+    return (
+        <Block display="flex" flexDirection="column">
+            <DateRangePicker
+                value={pickerValue}
+                onChange={(range) => {
+                    const start = toLocalDateString(range.startDate)
+                    const end = toLocalDateString(
+                        range.endDate || range.startDate
+                    )
+                    onColumnFilter?.(
+                        String(column.field),
+                        FilterType.DATE,
+                        [start, end],
+                        'range'
+                    )
+                }}
+                showDateTimePicker={false}
+                showDateInput={false}
+                showPresets={false}
+                allowSingleDateSelection={false}
+                useDrawerOnMobile={false}
+                popoverConfig={{
+                    side: 'right',
+                    align: 'start',
+                    sideOffset: 10,
+                }}
+                triggerConfig={{
+                    style: { width: '100%' },
+                    renderTrigger: ({ onClick }) => (
+                        <MenuItem
+                            icon={
+                                <FunnelSimpleIcon
+                                    size={FOUNDATION_THEME.unit[16]}
+                                    color={
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.iconColor
+                                    }
+                                    weight="bold"
+                                />
+                            }
+                            label="Filter"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                onClick()
+                            }}
+                            trailingIcon={
+                                <ChevronRight
+                                    size={FOUNDATION_THEME.unit[16]}
+                                    color={
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.iconColor
+                                    }
+                                />
+                            }
+                            tableToken={tableToken}
+                            style={{ width: '100%' }}
+                        />
+                    ),
+                }}
+            />
+            {hasActiveDateRange && (
+                <MenuItem
+                    icon={
+                        <TrashSimpleIcon
+                            size={FOUNDATION_THEME.unit[16]}
+                            color={FOUNDATION_THEME.colors.red[600]}
+                            weight="bold"
+                        />
+                    }
+                    label="Clear Filter"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onColumnFilter?.(
+                            String(column.field),
+                            FilterType.DATE,
+                            [],
+                            'range'
+                        )
+                    }}
+                    isDestructive
+                    tableToken={tableToken}
+                    style={{ width: '100%' }}
+                />
+            )}
+        </Block>
+    )
+}
+
 export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     column,
     data,
@@ -1360,8 +1474,18 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                 />
             )}
 
-            {/* Filter — nested popover */}
-            {hasFiltering && (
+            {/* Filter — direct for date range, nested for others */}
+            {hasFiltering && columnConfig.filterComponent === 'dateRange' && (
+                <DateFilter
+                    column={column}
+                    fieldKey={fieldKey}
+                    tableToken={tableToken}
+                    filterState={filterState}
+                    onColumnFilter={onColumnFilter}
+                />
+            )}
+
+            {hasFiltering && columnConfig.filterComponent !== 'dateRange' && (
                 <Popover
                     trigger={
                         <MenuItem

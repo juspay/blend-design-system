@@ -43,7 +43,7 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
 
         const open = controlledOpen ?? internalOpen
 
-        useDropdownInteractionLock(open)
+        useDropdownInteractionLock(asModal && open)
 
         const handleOpenChange = useCallback(
             (nextOpen: boolean) => {

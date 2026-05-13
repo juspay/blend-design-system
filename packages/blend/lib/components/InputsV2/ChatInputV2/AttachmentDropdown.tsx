@@ -1,0 +1,64 @@
+import Block from '../../Primitives/Block/Block'
+import { InputStateV2 } from '../inputV2.types'
+import ChatInputTagV2 from './ChatInputTagV2'
+import { ChatInputV2TokensType } from './ChatInputV2.tokens'
+import { AttachedFile } from './ChatInputV2.types'
+import { truncateFileNameForTag } from './utils'
+
+type AttachmentDropdownV2Props = {
+    id?: string
+    files: AttachedFile[]
+    onFileRemove: (fileId: string) => void
+    tokens: ChatInputV2TokensType
+    onFileClick: (file: AttachedFile) => void
+}
+
+const AttachmentDropdownV2 = ({
+    id,
+    files,
+    onFileRemove,
+    onFileClick,
+    tokens,
+}: AttachmentDropdownV2Props) => {
+    return (
+        <Block
+            id={id}
+            backgroundColor={
+                tokens.container.attachedFilesContainer.overflowMenu
+                    .backgroundColor[InputStateV2.DEFAULT]
+            }
+            borderRadius={
+                tokens.container.attachedFilesContainer.overflowMenu
+                    .borderRadius
+            }
+            padding={
+                tokens.container.attachedFilesContainer.overflowMenu.padding
+            }
+            display="flex"
+            flexDirection="column"
+            gap={tokens.container.attachedFilesContainer.overflowMenu.gap}
+            position="absolute"
+            zIndex={1000}
+            top={tokens.container.attachedFilesContainer.overflowMenu.top}
+            right={tokens.container.attachedFilesContainer.overflowMenu.right}
+            maxHeight={
+                tokens.container.attachedFilesContainer.overflowMenu.maxHeight
+            }
+            overflowY="auto"
+        >
+            {files &&
+                files.map((file) => (
+                    <ChatInputTagV2
+                        file={file}
+                        key={file.id}
+                        text={truncateFileNameForTag(file.name)}
+                        tokens={tokens.container.tagContainer}
+                        onRemove={() => onFileRemove(file.id)}
+                        onFileClick={() => onFileClick(file)}
+                    />
+                ))}
+        </Block>
+    )
+}
+
+export default AttachmentDropdownV2

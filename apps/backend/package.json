@@ -1,0 +1,56 @@
+{
+    "name": "@blend-design/justbackend",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Blend Token Studio API - Express backend with clean architecture",
+    "type": "module",
+    "main": "dist/server.js",
+    "scripts": {
+        "dev": "tsx watch src/server.ts",
+        "build": "tsc && tsc-alias",
+        "start": "node dist/server.js",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint src/**/*.ts",
+        "db:generate": "prisma generate",
+        "db:migrate": "prisma migrate dev",
+        "db:deploy": "prisma migrate deploy",
+        "db:studio": "prisma studio",
+        "db:seed": "tsx prisma/seed.ts"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.2.1",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.2",
+        "express-rate-limit": "^8.5.1",
+        "google-auth-library": "^9.15.1",
+        "helmet": "^8.0.0",
+        "jsonwebtoken": "^9.0.2",
+        "multer": "^1.4.5-lts.1",
+        "pg": "^8.13.1",
+        "pino": "^9.6.0",
+        "pino-pretty": "^13.0.0",
+        "prisma": "^6.2.1",
+        "swagger-jsdoc": "^6.2.8",
+        "swagger-ui-express": "^5.0.1",
+        "zod": "^3.24.1"
+    },
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.8",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^4.17.21",
+        "@types/jsonwebtoken": "^9.0.7",
+        "@types/multer": "^1.4.12",
+        "@types/node": "^20",
+        "@types/pg": "^8.11.10",
+        "@types/swagger-jsdoc": "^6.0.4",
+        "@types/swagger-ui-express": "^4.1.7",
+        "tsc-alias": "^1.8.10",
+        "tsx": "^4.19.2",
+        "typescript": "~5.8.3"
+    },
+    "engines": {
+        "node": ">=20.0.0"
+    }
+}

@@ -39,6 +39,11 @@ import {
     Settings,
     Download,
     Trash2,
+    Info,
+    FileText,
+    Eye,
+    Edit3,
+    MoreHorizontal,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
@@ -46,6 +51,25 @@ import {
     TooltipAlign,
     TooltipSide,
 } from '../../../../packages/blend/lib/components/Tooltip/types'
+
+const isDateOnlyString = (value: string): boolean =>
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+
+const parseDateOnlyLocal = (dateOnly: string): Date => {
+    const [y, m, d] = dateOnly.split('-').map((p) => Number(p))
+    return new Date(y, (m || 1) - 1, d || 1)
+}
+
+const parseDateLike = (value: unknown): Date | null => {
+    if (value instanceof Date) return isNaN(value.getTime()) ? null : value
+    if (typeof value !== 'string') return null
+    const trimmed = value.trim()
+    if (!trimmed) return null
+    const parsed = isDateOnlyString(trimmed)
+        ? parseDateOnlyLocal(trimmed)
+        : new Date(trimmed)
+    return isNaN(parsed.getTime()) ? null : parsed
+}
 
 const SimpleDataTableExample = () => {
     // Modal state for table demo
@@ -454,7 +478,8 @@ const SimpleDataTableExample = () => {
             isEditable: false,
             renderCell: (value: unknown): React.ReactNode => {
                 const dateValue = value as DateColumnProps
-                const date = new Date(dateValue.date)
+                const date = parseDateLike(dateValue.date)
+                if (!date) return '-'
                 return (
                     <span>
                         {date.toLocaleDateString('en-US', {
@@ -517,7 +542,7 @@ const SimpleDataTableExample = () => {
                         <span>{selectedOption.label}</span>
                     </div>
                 ) : (
-                    // @ts-expect-error
+                    // @ts-expect-error selectedValue can be non-renderable type in demo data
                     <span>{dropdownValue.selectedValue}</span>
                 )
             },
@@ -1633,6 +1658,12 @@ const DataTableDemo = () => {
         growthRate: string
         delta_revenue: number
         delta_growthRate: number
+        metadata: {
+            createdAt: string
+            lastModified: string
+            version: string
+        }
+        action: string
     }
 
     // Generate larger dataset for server-side demo
@@ -1662,50 +1693,46 @@ const DataTableDemo = () => {
 
         const statuses = ['Active', 'Inactive', 'Pending', 'Suspended']
 
+        const joinDates = [
+            '2014-08-01',
+            '2015-09-01',
+            '2016-03-01',
+            '2017-11-01',
+            '2018-07-01',
+            '2019-01-01',
+            '2020-04-01',
+            '2021-06-01',
+            '2022-10-01',
+            '2023-02-01',
+            '2020-05-01',
+            '2021-12-01',
+            '2022-03-01',
+            '2023-08-01',
+            '2019-11-01',
+        ]
+
+        const formatJoinMonth = (dateString: string) => {
+            const parsed = parseDateLike(dateString)
+            if (!parsed) return '-'
+            return parsed.toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric',
+            })
+        }
+
         return Array.from({ length: count }, (_, index) => {
             const userName = names[index % names.length]
             const userStatus = statuses[index % statuses.length]
+            const joinDate = joinDates[index % joinDates.length]
 
             return {
                 id: index + 1,
                 name: {
                     label: userName,
-                    sublabel: [
-                        'August 2014',
-                        'September 2015',
-                        'March 2016',
-                        'November 2017',
-                        'July 2018',
-                        'January 2019',
-                        'April 2020',
-                        'June 2021',
-                        'October 2022',
-                        'February 2023',
-                        'May 2020',
-                        'December 2021',
-                        'March 2022',
-                        'August 2023',
-                        'November 2019',
-                    ][index % 15],
+                    sublabel: formatJoinMonth(joinDate),
                     imageUrl: `https://randomuser.me/api/portraits/${index % 2 ? 'men' : 'women'}/${index % 70}.jpg`,
                 } as AvatarColumnProps,
-                joinDate: [
-                    'August 2014',
-                    'September 2015',
-                    'March 2016',
-                    'November 2017',
-                    'July 2018',
-                    'January 2019',
-                    'April 2020',
-                    'June 2021',
-                    'October 2022',
-                    'February 2023',
-                    'May 2020',
-                    'December 2021',
-                    'March 2022',
-                    'August 2023',
-                    'November 2019',
-                ][index % 15],
+                joinDate,
                 number: `${300 + index}`,
                 gateway: [
                     'Gateway A',
@@ -1851,6 +1878,44 @@ const DataTableDemo = () => {
                     1.25, -0.87, 1.52, 2.21, -0.58, 0.93, 1.46, -0.74, 3.12,
                     1.89, 1.13, 2.57, -0.68, 1.95, 1.34,
                 ][index % 15],
+                metadata: {
+                    createdAt: [
+                        '2024-01-15',
+                        '2024-02-20',
+                        '2024-03-10',
+                        '2024-04-05',
+                        '2024-05-12',
+                        '2024-06-18',
+                        '2024-07-22',
+                        '2024-08-30',
+                        '2024-09-14',
+                        '2024-10-08',
+                        '2024-11-25',
+                        '2024-12-01',
+                        '2023-11-15',
+                        '2023-12-20',
+                        '2024-01-08',
+                    ][index % 15],
+                    lastModified: [
+                        '2024-12-01',
+                        '2024-11-28',
+                        '2024-11-25',
+                        '2024-11-20',
+                        '2024-11-15',
+                        '2024-11-10',
+                        '2024-11-05',
+                        '2024-11-01',
+                        '2024-10-28',
+                        '2024-10-25',
+                        '2024-10-20',
+                        '2024-10-15',
+                        '2024-10-10',
+                        '2024-10-05',
+                        '2024-10-01',
+                    ][index % 15],
+                    version: `v${1 + (index % 5)}.${index % 10}`,
+                },
+                action: `action-${index + 1}`,
             }
         })
     }
@@ -1911,6 +1976,25 @@ const DataTableDemo = () => {
             isEditable: true,
             minWidth: '150px',
             maxWidth: '250px',
+        },
+        {
+            field: 'joinDate',
+            header: 'Join Date',
+            headerSubtext: 'Date user joined',
+            type: ColumnType.DATE,
+            isSortable: true,
+            isEditable: false,
+            renderCell: (value: unknown): React.ReactNode => {
+                const parsedDate = parseDateLike(String(value))
+                if (!parsedDate) return '-'
+                return parsedDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                })
+            },
+            minWidth: '130px',
+            maxWidth: '170px',
         },
         {
             field: 'role',
@@ -2089,6 +2173,211 @@ const DataTableDemo = () => {
                 prefix: '$',
                 suffix: '',
                 decimalPlaces: 0,
+            },
+            minWidth: '140px',
+            maxWidth: '180px',
+        },
+        {
+            field: 'metadata',
+            header: 'Metadata',
+            headerSubtext: 'Created, Modified & Version Info',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (value: unknown) => {
+                const metadata = value as {
+                    createdAt: string
+                    lastModified: string
+                    version: string
+                }
+                return (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '12px',
+                                    color: '#374151',
+                                }}
+                            >
+                                <FileText size={14} color="#6b7280" />
+                                <span>
+                                    Created:{' '}
+                                    {new Date(
+                                        metadata.createdAt
+                                    ).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '12px',
+                                    color: '#6b7280',
+                                }}
+                            >
+                                <Info size={14} color="#9ca3af" />
+                                <span>
+                                    Modified:{' '}
+                                    {new Date(
+                                        metadata.lastModified
+                                    ).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        backgroundColor: '#f3f4f6',
+                                        padding: '2px 6px',
+                                        borderRadius: '4px',
+                                    }}
+                                >
+                                    {metadata.version}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )
+            },
+            minWidth: '180px',
+            maxWidth: '250px',
+        },
+        {
+            field: 'action',
+            header: 'Actions',
+            headerSubtext: 'Quick Actions & Operations',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (_value: unknown, row: UserRow) => {
+                return (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                        }}
+                    >
+                        <button
+                            onClick={() => {
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
+                                alert(`Viewing details for: ${userName}`)
+                            }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                border: '1px solid #e5e7eb',
+                                backgroundColor: '#ffffff',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#f9fafb'
+                                e.currentTarget.style.borderColor = '#d1d5db'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#ffffff'
+                                e.currentTarget.style.borderColor = '#e5e7eb'
+                            }}
+                            title="View Details"
+                        >
+                            <Eye size={16} color="#374151" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
+                                alert(`Editing user: ${userName}`)
+                            }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                border: '1px solid #e5e7eb',
+                                backgroundColor: '#ffffff',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#eff6ff'
+                                e.currentTarget.style.borderColor = '#3b82f6'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#ffffff'
+                                e.currentTarget.style.borderColor = '#e5e7eb'
+                            }}
+                            title="Edit User"
+                        >
+                            <Edit3 size={16} color="#2563eb" />
+                        </button>
+                        <button
+                            onClick={() => {
+                                const userName = (row.name as AvatarColumnProps)
+                                    .label
+                                alert(`More options for: ${userName}`)
+                            }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '6px',
+                                border: '1px solid #e5e7eb',
+                                backgroundColor: '#ffffff',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#f3f4f6'
+                                e.currentTarget.style.borderColor = '#9ca3af'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                    '#ffffff'
+                                e.currentTarget.style.borderColor = '#e5e7eb'
+                            }}
+                            title="More Options"
+                        >
+                            <MoreHorizontal size={16} color="#6b7280" />
+                        </button>
+                    </div>
+                )
             },
             minWidth: '140px',
             maxWidth: '180px',
@@ -2517,7 +2806,12 @@ const DataTableDemo = () => {
                 `Last login: ${statusText === 'Active' ? '2 hours ago' : '1 week ago'}`,
                 `Profile updated: ${user.role === 'Admin' ? '1 day ago' : '3 days ago'}`,
                 `Password changed: ${user.gateway === 'Gateway A' ? '1 week ago' : '2 weeks ago'}`,
-                `Role assigned: ${user.joinDate}`,
+                `Role assigned: ${
+                    parseDateLike(user.joinDate)?.toLocaleDateString('en-US', {
+                        month: 'short',
+                        year: 'numeric',
+                    }) || '-'
+                }`,
             ]
             return activities
         }
@@ -2672,7 +2966,12 @@ const DataTableDemo = () => {
                             </div>
                             <div>
                                 <strong>Member Since:</strong>{' '}
-                                {userRow.joinDate}
+                                {parseDateLike(
+                                    userRow.joinDate
+                                )?.toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    year: 'numeric',
+                                }) || '-'}
                             </div>
                         </div>
                     </div>
@@ -2926,7 +3225,8 @@ const DataTableDemo = () => {
         }
 
         // Priority 3: Recently joined users - New members (2023+)
-        const joinYear = parseInt(userData.joinDate.split(' ')[1] || '2020')
+        const joinYear =
+            parseDateLike(userData.joinDate)?.getFullYear() ?? Number.NaN
         if (joinYear >= 2023) {
             return {
                 backgroundColor: '#f0fdf4', // Light green background
@@ -3317,6 +3617,12 @@ const DataTableDemo = () => {
                 enableInlineEdit
                 enableRowExpansion
                 enableRowSelection={enableRowSelection}
+                rowSelectionConfig={{
+                    isDisabled: (row, _index) =>
+                        (row as UserRow).status.text === 'Inactive',
+                    disabledText: (row, _index) =>
+                        `User ${(row as UserRow).status.text} - Cannot be selected`,
+                }}
                 enableColumnManager={enableColumnManager}
                 columnManagerMaxSelections={9}
                 columnManagerAlwaysSelected={['name', 'email']}

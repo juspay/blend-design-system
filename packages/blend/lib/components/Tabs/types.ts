@@ -10,6 +10,7 @@ export enum TabsVariant {
 }
 
 export enum TabsSize {
+    SM = 'sm',
     MD = 'md',
     LG = 'lg',
 }

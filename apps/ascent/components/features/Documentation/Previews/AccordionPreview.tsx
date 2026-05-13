@@ -31,7 +31,7 @@ function MyComponent() {
                     title="What is Blend Design System?"
                 >
                     <div className="p-4">
-                        <p className="text-gray-700">
+                        <p className="text-foreground font-manrope">
                             Blend is a comprehensive design system that provides
                             a collection of reusable components, guided by clear
                             standards, that can be assembled together to build
@@ -41,7 +41,7 @@ function MyComponent() {
                 </AccordionItem>
                 <AccordionItem value="item-2" title="How to get started?">
                     <div className="p-4">
-                        <p className="text-gray-700">
+                        <p className="text-foreground font-manrope">
                             To get started with Blend, install the package and
                             import the components you need. The system includes
                             comprehensive documentation and examples for each
@@ -54,7 +54,7 @@ function MyComponent() {
                     title="What components are available?"
                 >
                     <div className="p-4">
-                        <p className="text-gray-700">
+                        <p className="text-foreground font-manrope">
                             Blend includes a wide range of components including
                             buttons, forms, navigation, data display, feedback,
                             and layout components. Each component is fully

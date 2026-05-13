@@ -446,7 +446,7 @@ A Figma plugin syncs variable values bidirectionally:
 ## 8. CLI Design
 
 ```bash
-npx blend-token-studio@latest
+npx blend-studio@latest
 ```
 
 ### Commands

@@ -114,39 +114,18 @@ function MyComponent() {
                             </DrawerHeader>
 
                             <DrawerBody>
-                                <div style={{ padding: '0 0 16px 0' }}>
-                                    <p
-                                        style={{
-                                            marginBottom: '16px',
-                                            color: '#6b7280',
-                                        }}
-                                    >
+                                <div className="pb-4">
+                                    <p className="mb-4 text-muted-foreground">
                                         This is the main content area of the
                                         drawer. You can place any content here.
                                     </p>
-                                    <div
-                                        style={{
-                                            display: 'grid',
-                                            gridTemplateColumns: '1fr 1fr',
-                                            gap: '12px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                padding: '12px',
-                                                backgroundColor: '#f3f4f6',
-                                                borderRadius: '6px',
-                                            }}
-                                        >
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="p-3 bg-surface rounded-md">
                                             Option 1
                                         </div>
-                                        <div
-                                            style={{
-                                                padding: '12px',
-                                                backgroundColor: '#f3f4f6',
-                                                borderRadius: '6px',
-                                            }}
-                                        >
+
+                                        <div className="p-3 bg-surface rounded-md">
                                             Option 2
                                         </div>
                                     </div>

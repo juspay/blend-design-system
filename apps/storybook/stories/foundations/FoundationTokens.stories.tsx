@@ -9,10 +9,12 @@ const meta: Meta = {
     title: 'Foundations/Design Tokens',
     parameters: {
         layout: 'padded',
+        docsSubtitle:
+            'Foundation tokens are the core design values that power the Blend Design System.',
         docs: {
             description: {
                 component: `
-# Foundation Design Tokens
+## What are Design Tokens?
 
 Foundation tokens are the core design values that power the Blend Design System. These tokens ensure consistency across all components and provide a centralized way to manage design decisions.
 
@@ -38,7 +40,7 @@ import { foundationToken } from '@juspay/blend-design-system'
 // Using color tokens
 backgroundColor: foundationToken.colors.primary[500]
 
-// Using spacing tokens  
+// Using spacing tokens
 padding: foundationToken.spacing[16]
 
 // Using typography tokens
@@ -57,81 +59,29 @@ type Story = StoryObj
 // Color Palette showcase
 export const ColorPalette: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <h2
-                style={{
-                    fontSize: '24px',
-                    fontWeight: 600,
-                    marginBottom: '8px',
-                }}
-            >
-                Color Palette
-            </h2>
+        <div className="flex flex-col gap-8">
+            <h2 className="text-2xl font-semibold mb-2">Color Palette</h2>
 
             {Object.entries(tokens.colors).map(([colorName, shades]) => (
-                <div key={colorName} style={{ marginBottom: '24px' }}>
-                    <h3
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 500,
-                            marginBottom: '12px',
-                            textTransform: 'capitalize',
-                            color: '#374151',
-                        }}
-                    >
+                <div key={colorName} className="mb-6">
+                    <h3 className="text-lg font-medium mb-3 capitalize text-gray-700">
                         {colorName}
                     </h3>
 
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns:
-                                'repeat(auto-fill, minmax(120px, 1fr))',
-                            gap: '8px',
-                            marginBottom: '16px',
-                        }}
-                    >
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2 mb-4">
                         {Object.entries(shades).map(([shade, value]) => (
                             <div
                                 key={shade}
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    padding: '8px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#ffffff',
-                                }}
+                                className="flex flex-col items-center p-2 border border-gray-200 rounded-lg bg-white"
                             >
                                 <div
-                                    style={{
-                                        width: '80px',
-                                        height: '40px',
-                                        backgroundColor: value,
-                                        borderRadius: '4px',
-                                        border: '1px solid #e5e7eb',
-                                        marginBottom: '8px',
-                                    }}
+                                    className="w-20 h-10 rounded border border-gray-200 mb-2"
+                                    style={{ backgroundColor: value }}
                                 />
-                                <div
-                                    style={{
-                                        fontSize: '12px',
-                                        fontWeight: 500,
-                                        color: '#374151',
-                                        textAlign: 'center',
-                                    }}
-                                >
+                                <div className="text-xs font-medium text-gray-700 text-center">
                                     {shade}
                                 </div>
-                                <div
-                                    style={{
-                                        fontSize: '10px',
-                                        color: '#6b7280',
-                                        fontFamily: 'monospace',
-                                        textAlign: 'center',
-                                    }}
-                                >
+                                <div className="text-[10px] text-gray-500 font-mono text-center">
                                     {value}
                                 </div>
                             </div>
@@ -146,77 +96,30 @@ export const ColorPalette: Story = {
 // Typography System
 export const TypographySystem: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <h2
-                style={{
-                    fontSize: '24px',
-                    fontWeight: 600,
-                    marginBottom: '8px',
-                }}
-            >
-                Typography System
-            </h2>
+        <div className="flex flex-col gap-8">
+            <h2 className="text-2xl font-semibold mb-2">Typography System</h2>
 
             {/* Font Families */}
-            <div style={{ marginBottom: '24px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: 500,
-                        marginBottom: '12px',
-                        color: '#374151',
-                    }}
-                >
+            <div className="mb-6">
+                <h3 className="text-lg font-medium mb-3 text-gray-700">
                     Font Families
                 </h3>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                    }}
-                >
+                <div className="flex flex-col gap-3">
                     {Object.entries(tokens.font.family).map(
                         ([familyName, familyValue]) => (
                             <div
                                 key={familyName}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '24px',
-                                    padding: '16px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#ffffff',
-                                }}
+                                className="flex items-center gap-6 p-4 border border-gray-200 rounded-lg bg-white"
                             >
-                                <div
-                                    style={{
-                                        minWidth: '100px',
-                                        fontSize: '14px',
-                                        fontWeight: 500,
-                                        color: '#374151',
-                                        textTransform: 'capitalize',
-                                    }}
-                                >
+                                <div className="min-w-[100px] text-sm font-medium text-gray-700 capitalize">
                                     {familyName}
                                 </div>
-                                <div
-                                    style={{
-                                        fontSize: '12px',
-                                        color: '#6b7280',
-                                        fontFamily: 'monospace',
-                                        minWidth: '200px',
-                                    }}
-                                >
+                                <div className="text-xs text-gray-500 font-mono min-w-[200px]">
                                     {familyValue}
                                 </div>
                                 <div
-                                    style={{
-                                        fontSize: '18px',
-                                        fontFamily: familyValue,
-                                        color: '#111827',
-                                    }}
+                                    className="text-lg text-gray-900"
+                                    style={{ fontFamily: familyValue }}
                                 >
                                     The quick brown fox jumps over the lazy dog
                                 </div>
@@ -227,64 +130,26 @@ export const TypographySystem: Story = {
             </div>
 
             {/* Font Weights */}
-            <div style={{ marginBottom: '24px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: 500,
-                        marginBottom: '12px',
-                        color: '#374151',
-                    }}
-                >
+            <div className="mb-6">
+                <h3 className="text-lg font-medium mb-3 text-gray-700">
                     Font Weights
                 </h3>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                    }}
-                >
+                <div className="flex flex-col gap-3">
                     {Object.entries(tokens.font.weight).map(
                         ([weightName, weightValue]) => (
                             <div
                                 key={weightName}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '24px',
-                                    padding: '16px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#ffffff',
-                                }}
+                                className="flex items-center gap-6 p-4 border border-gray-200 rounded-lg bg-white"
                             >
-                                <div
-                                    style={{
-                                        minWidth: '80px',
-                                        fontSize: '14px',
-                                        fontWeight: 500,
-                                        color: '#374151',
-                                    }}
-                                >
+                                <div className="min-w-[80px] text-sm font-medium text-gray-700">
                                     {weightName}
                                 </div>
-                                <div
-                                    style={{
-                                        fontSize: '12px',
-                                        color: '#6b7280',
-                                        fontFamily: 'monospace',
-                                        minWidth: '60px',
-                                    }}
-                                >
+                                <div className="text-xs text-gray-500 font-mono min-w-[60px]">
                                     {weightValue}
                                 </div>
                                 <div
-                                    style={{
-                                        fontSize: '18px',
-                                        fontWeight: weightValue,
-                                        color: '#111827',
-                                    }}
+                                    className="text-lg text-gray-900"
+                                    style={{ fontWeight: weightValue }}
                                 >
                                     The quick brown fox jumps over the lazy dog
                                 </div>
@@ -295,64 +160,27 @@ export const TypographySystem: Story = {
             </div>
 
             {/* Letter Spacing */}
-            <div style={{ marginBottom: '32px' }}>
-                <h3
-                    style={{
-                        fontSize: '18px',
-                        fontWeight: 500,
-                        marginBottom: '12px',
-                        color: '#374151',
-                    }}
-                >
+            <div className="mb-8">
+                <h3 className="text-lg font-medium mb-3 text-gray-700">
                     Letter Spacing
                 </h3>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '12px',
-                    }}
-                >
+                <div className="flex flex-col gap-3">
                     {Object.entries(tokens.font.letterSpacing).map(
                         ([spacingName, spacingValue]) => (
                             <div
                                 key={spacingName}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '24px',
-                                    padding: '16px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#ffffff',
-                                }}
+                                className="flex items-center gap-6 p-4 border border-gray-200 rounded-lg bg-white"
                             >
-                                <div
-                                    style={{
-                                        minWidth: '120px',
-                                        fontSize: '14px',
-                                        fontWeight: 500,
-                                        color: '#374151',
-                                        textTransform: 'capitalize',
-                                    }}
-                                >
+                                <div className="min-w-[120px] text-sm font-medium text-gray-700 capitalize">
                                     {spacingName}
                                 </div>
-                                <div
-                                    style={{
-                                        fontSize: '12px',
-                                        color: '#6b7280',
-                                        fontFamily: 'monospace',
-                                        minWidth: '60px',
-                                    }}
-                                >
+                                <div className="text-xs text-gray-500 font-mono min-w-[60px]">
                                     {spacingValue}px
                                 </div>
                                 <div
+                                    className="text-lg text-gray-900"
                                     style={{
-                                        fontSize: '18px',
                                         letterSpacing: `${spacingValue}px`,
-                                        color: '#111827',
                                     }}
                                 >
                                     The quick brown fox jumps over the lazy dog
@@ -364,95 +192,44 @@ export const TypographySystem: Story = {
             </div>
 
             {/* Typography Scales */}
-            <div style={{ marginBottom: '40px' }}>
-                <h3
-                    style={{
-                        fontSize: '20px',
-                        fontWeight: 600,
-                        marginBottom: '16px',
-                        color: '#111827',
-                    }}
-                >
+            <div className="mb-10">
+                <h3 className="text-xl font-semibold mb-4 text-gray-900">
                     Typography Scales
                 </h3>
 
                 {/* Display Scale */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h4
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 500,
-                            marginBottom: '12px',
-                            color: '#374151',
-                        }}
-                    >
+                <div className="mb-8">
+                    <h4 className="text-lg font-medium mb-3 text-gray-700">
                         Display Scale
                     </h4>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '16px',
-                        }}
-                    >
+                    <p className="text-sm text-gray-500 mb-4">
                         Used for large marketing headers, hero sections, and
                         prominent displays
                     </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
+                    <div className="flex flex-col gap-4">
                         {Object.entries(tokens.font.size.display).map(
                             ([sizeName, sizeProps]) => (
                                 <div
                                     key={sizeName}
-                                    style={{
-                                        padding: '20px',
-                                        border: '1px solid #e5e7eb',
-                                        borderRadius: '8px',
-                                        backgroundColor: '#ffffff',
-                                    }}
+                                    className="p-5 border border-gray-200 rounded-lg bg-white"
                                 >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'baseline',
-                                            gap: '16px',
-                                            marginBottom: '8px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                fontSize: '12px',
-                                                fontWeight: 500,
-                                                color: '#374151',
-                                                minWidth: '80px',
-                                            }}
-                                        >
+                                    <div className="flex items-baseline gap-4 mb-2">
+                                        <div className="text-xs font-medium text-gray-700 min-w-[80px]">
                                             display.{sizeName}
                                         </div>
-                                        <div
-                                            style={{
-                                                fontSize: '10px',
-                                                color: '#6b7280',
-                                                fontFamily: 'monospace',
-                                            }}
-                                        >
+                                        <div className="text-[10px] text-gray-500 font-mono">
                                             {sizeProps.fontSize}px /{' '}
                                             {sizeProps.lineHeight}px
                                         </div>
                                     </div>
                                     <div
+                                        className="text-gray-900"
                                         style={{
                                             fontSize: `${sizeProps.fontSize}px`,
                                             lineHeight: `${sizeProps.lineHeight}px`,
                                             letterSpacing: `${sizeProps.letterSpacing}px`,
                                             fontFamily:
                                                 tokens.font.family.display,
-                                            color: '#111827',
                                         }}
                                     >
                                         Display Heading
@@ -464,75 +241,32 @@ export const TypographySystem: Story = {
                 </div>
 
                 {/* Heading Scale */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h4
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 500,
-                            marginBottom: '12px',
-                            color: '#374151',
-                        }}
-                    >
+                <div className="mb-8">
+                    <h4 className="text-lg font-medium mb-3 text-gray-700">
                         Heading Scale
                     </h4>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '16px',
-                        }}
-                    >
+                    <p className="text-sm text-gray-500 mb-4">
                         Used for section headers, page titles, and content
                         hierarchy
                     </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
+                    <div className="flex flex-col gap-4">
                         {Object.entries(tokens.font.size.heading).map(
                             ([sizeName, sizeProps]) => (
                                 <div
                                     key={sizeName}
-                                    style={{
-                                        padding: '16px',
-                                        border: '1px solid #e5e7eb',
-                                        borderRadius: '8px',
-                                        backgroundColor: '#ffffff',
-                                    }}
+                                    className="p-4 border border-gray-200 rounded-lg bg-white"
                                 >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'baseline',
-                                            gap: '16px',
-                                            marginBottom: '8px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                fontSize: '12px',
-                                                fontWeight: 500,
-                                                color: '#374151',
-                                                minWidth: '80px',
-                                            }}
-                                        >
+                                    <div className="flex items-baseline gap-4 mb-2">
+                                        <div className="text-xs font-medium text-gray-700 min-w-[80px]">
                                             heading.{sizeName}
                                         </div>
-                                        <div
-                                            style={{
-                                                fontSize: '10px',
-                                                color: '#6b7280',
-                                                fontFamily: 'monospace',
-                                            }}
-                                        >
+                                        <div className="text-[10px] text-gray-500 font-mono">
                                             {sizeProps.fontSize}px /{' '}
                                             {sizeProps.lineHeight}px
                                         </div>
                                     </div>
                                     <div
+                                        className="text-gray-900"
                                         style={{
                                             fontSize: `${sizeProps.fontSize}px`,
                                             lineHeight: `${sizeProps.lineHeight}px`,
@@ -540,7 +274,6 @@ export const TypographySystem: Story = {
                                             fontFamily:
                                                 tokens.font.family.heading,
                                             fontWeight: tokens.font.weight[600],
-                                            color: '#111827',
                                         }}
                                     >
                                         Section Heading
@@ -552,80 +285,36 @@ export const TypographySystem: Story = {
                 </div>
 
                 {/* Body Scale */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h4
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 500,
-                            marginBottom: '12px',
-                            color: '#374151',
-                        }}
-                    >
+                <div className="mb-8">
+                    <h4 className="text-lg font-medium mb-3 text-gray-700">
                         Body Scale
                     </h4>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '16px',
-                        }}
-                    >
+                    <p className="text-sm text-gray-500 mb-4">
                         Used for body text, descriptions, and readable content
                     </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
+                    <div className="flex flex-col gap-4">
                         {Object.entries(tokens.font.size.body).map(
                             ([sizeName, sizeProps]) => (
                                 <div
                                     key={sizeName}
-                                    style={{
-                                        padding: '16px',
-                                        border: '1px solid #e5e7eb',
-                                        borderRadius: '8px',
-                                        backgroundColor: '#ffffff',
-                                    }}
+                                    className="p-4 border border-gray-200 rounded-lg bg-white"
                                 >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'baseline',
-                                            gap: '16px',
-                                            marginBottom: '8px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                fontSize: '12px',
-                                                fontWeight: 500,
-                                                color: '#374151',
-                                                minWidth: '60px',
-                                            }}
-                                        >
+                                    <div className="flex items-baseline gap-4 mb-2">
+                                        <div className="text-xs font-medium text-gray-700 min-w-[60px]">
                                             body.{sizeName}
                                         </div>
-                                        <div
-                                            style={{
-                                                fontSize: '10px',
-                                                color: '#6b7280',
-                                                fontFamily: 'monospace',
-                                            }}
-                                        >
+                                        <div className="text-[10px] text-gray-500 font-mono">
                                             {sizeProps.fontSize}px /{' '}
                                             {sizeProps.lineHeight}px
                                         </div>
                                     </div>
                                     <div
+                                        className="text-gray-900"
                                         style={{
                                             fontSize: `${sizeProps.fontSize}px`,
                                             lineHeight: `${sizeProps.lineHeight}px`,
                                             letterSpacing: `${sizeProps.letterSpacing}px`,
                                             fontFamily: tokens.font.family.body,
-                                            color: '#111827',
                                         }}
                                     >
                                         Lorem ipsum dolor sit amet, consectetur
@@ -640,85 +329,37 @@ export const TypographySystem: Story = {
                 </div>
 
                 {/* Code Scale */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h4
-                        style={{
-                            fontSize: '18px',
-                            fontWeight: 500,
-                            marginBottom: '12px',
-                            color: '#374151',
-                        }}
-                    >
+                <div className="mb-8">
+                    <h4 className="text-lg font-medium mb-3 text-gray-700">
                         Code Scale
                     </h4>
-                    <p
-                        style={{
-                            fontSize: '14px',
-                            color: '#6b7280',
-                            marginBottom: '16px',
-                        }}
-                    >
+                    <p className="text-sm text-gray-500 mb-4">
                         Used for code blocks, technical documentation, and
                         monospace content
                     </p>
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px',
-                        }}
-                    >
+                    <div className="flex flex-col gap-4">
                         {Object.entries(tokens.font.size.code).map(
                             ([sizeName, sizeProps]) => (
                                 <div
                                     key={sizeName}
-                                    style={{
-                                        padding: '16px',
-                                        border: '1px solid #e5e7eb',
-                                        borderRadius: '8px',
-                                        backgroundColor: '#f8fafc',
-                                    }}
+                                    className="p-4 border border-gray-200 rounded-lg bg-slate-50"
                                 >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'baseline',
-                                            gap: '16px',
-                                            marginBottom: '8px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                fontSize: '12px',
-                                                fontWeight: 500,
-                                                color: '#374151',
-                                                minWidth: '60px',
-                                            }}
-                                        >
+                                    <div className="flex items-baseline gap-4 mb-2">
+                                        <div className="text-xs font-medium text-gray-700 min-w-[60px]">
                                             code.{sizeName}
                                         </div>
-                                        <div
-                                            style={{
-                                                fontSize: '10px',
-                                                color: '#6b7280',
-                                                fontFamily: 'monospace',
-                                            }}
-                                        >
+                                        <div className="text-[10px] text-gray-500 font-mono">
                                             {sizeProps.fontSize}px /{' '}
                                             {sizeProps.lineHeight}px
                                         </div>
                                     </div>
                                     <div
+                                        className="text-gray-800 bg-slate-100 px-3 py-2 rounded border border-slate-200"
                                         style={{
                                             fontSize: `${sizeProps.fontSize}px`,
                                             lineHeight: `${sizeProps.lineHeight}px`,
                                             letterSpacing: `${sizeProps.letterSpacing}px`,
                                             fontFamily: tokens.font.family.mono,
-                                            color: '#1f2937',
-                                            backgroundColor: '#f1f5f9',
-                                            padding: '8px 12px',
-                                            borderRadius: '4px',
-                                            border: '1px solid #e2e8f0',
                                         }}
                                     >
                                         const greeting = "Hello, World!";{'\n'}
@@ -737,64 +378,28 @@ export const TypographySystem: Story = {
 // Unit Scale (Spacing)
 export const UnitScale: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <h2
-                style={{
-                    fontSize: '24px',
-                    fontWeight: 600,
-                    marginBottom: '8px',
-                }}
-            >
+        <div className="flex flex-col gap-6">
+            <h2 className="text-2xl font-semibold mb-2">
                 Unit Scale (Spacing)
             </h2>
 
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                }}
-            >
+            <div className="flex flex-col gap-3">
                 {Object.entries(tokens.unit).map(([unitName, unitValue]) => (
                     <div
                         key={unitName}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '24px',
-                            padding: '12px 16px',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '8px',
-                            backgroundColor: '#ffffff',
-                        }}
+                        className="flex items-center gap-6 px-4 py-3 border border-gray-200 rounded-lg bg-white"
                     >
-                        <div
-                            style={{
-                                minWidth: '80px',
-                                fontSize: '14px',
-                                fontWeight: 500,
-                                color: '#374151',
-                            }}
-                        >
+                        <div className="min-w-[80px] text-sm font-medium text-gray-700">
                             {unitName}
                         </div>
-                        <div
-                            style={{
-                                fontSize: '12px',
-                                color: '#6b7280',
-                                fontFamily: 'monospace',
-                                minWidth: '60px',
-                            }}
-                        >
+                        <div className="text-xs text-gray-500 font-mono min-w-[60px]">
                             {unitValue}
                         </div>
                         <div
+                            className="h-6 bg-blue-500 rounded-sm"
                             style={{
-                                height: '24px',
-                                backgroundColor: '#3b82f6',
                                 width:
                                     unitValue === 'auto' ? '100px' : unitValue,
-                                borderRadius: '2px',
                                 minWidth: '2px',
                             }}
                         />
@@ -808,56 +413,21 @@ export const UnitScale: Story = {
 // Shadow Scale
 export const ShadowScale: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <h2
-                style={{
-                    fontSize: '24px',
-                    fontWeight: 600,
-                    marginBottom: '8px',
-                }}
-            >
-                Shadow Scale
-            </h2>
+        <div className="flex flex-col gap-6">
+            <h2 className="text-2xl font-semibold mb-2">Shadow Scale</h2>
 
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns:
-                        'repeat(auto-fill, minmax(180px, 1fr))',
-                    gap: '20px',
-                }}
-            >
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-5">
                 {Object.entries(tokens.shadows).map(
                     ([shadowName, shadowValue]) => (
                         <div
                             key={shadowName}
-                            style={{
-                                padding: '24px',
-                                backgroundColor: '#ffffff',
-                                borderRadius: '8px',
-                                boxShadow: shadowValue,
-                                textAlign: 'center',
-                            }}
+                            className="p-6 bg-white rounded-lg text-center"
+                            style={{ boxShadow: shadowValue }}
                         >
-                            <div
-                                style={{
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    color: '#374151',
-                                    marginBottom: '8px',
-                                }}
-                            >
+                            <div className="text-sm font-medium text-gray-700 mb-2">
                                 {shadowName}
                             </div>
-                            <div
-                                style={{
-                                    fontSize: '11px',
-                                    color: '#6b7280',
-                                    fontFamily: 'monospace',
-                                    wordBreak: 'break-all',
-                                    lineHeight: '1.4',
-                                }}
-                            >
+                            <div className="text-[11px] text-gray-500 font-mono break-all leading-snug">
                                 {shadowValue}
                             </div>
                         </div>
@@ -871,54 +441,21 @@ export const ShadowScale: Story = {
 // Border Radius Scale
 export const BorderRadiusScale: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <h2
-                style={{
-                    fontSize: '24px',
-                    fontWeight: 600,
-                    marginBottom: '8px',
-                }}
-            >
-                Border Radius Scale
-            </h2>
+        <div className="flex flex-col gap-6">
+            <h2 className="text-2xl font-semibold mb-2">Border Radius Scale</h2>
 
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns:
-                        'repeat(auto-fill, minmax(150px, 1fr))',
-                    gap: '16px',
-                }}
-            >
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
                 {Object.entries(tokens.border.radius).map(
                     ([radiusName, radiusValue]) => (
                         <div
                             key={radiusName}
-                            style={{
-                                padding: '20px',
-                                backgroundColor: '#f3f4f6',
-                                border: '2px solid #3b82f6',
-                                borderRadius: radiusValue,
-                                textAlign: 'center',
-                            }}
+                            className="p-5 bg-gray-100 border-2 border-blue-500 text-center"
+                            style={{ borderRadius: radiusValue }}
                         >
-                            <div
-                                style={{
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    color: '#374151',
-                                    marginBottom: '4px',
-                                }}
-                            >
+                            <div className="text-sm font-medium text-gray-700 mb-1">
                                 {radiusName}
                             </div>
-                            <div
-                                style={{
-                                    fontSize: '12px',
-                                    color: '#6b7280',
-                                    fontFamily: 'monospace',
-                                }}
-                            >
+                            <div className="text-xs text-gray-500 font-mono">
                                 {radiusValue}
                             </div>
                         </div>
@@ -932,70 +469,24 @@ export const BorderRadiusScale: Story = {
 // Opacity Scale
 export const OpacityScale: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <h2
-                style={{
-                    fontSize: '24px',
-                    fontWeight: 600,
-                    marginBottom: '8px',
-                }}
-            >
-                Opacity Scale
-            </h2>
+        <div className="flex flex-col gap-6">
+            <h2 className="text-2xl font-semibold mb-2">Opacity Scale</h2>
 
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns:
-                        'repeat(auto-fill, minmax(120px, 1fr))',
-                    gap: '16px',
-                }}
-            >
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-4">
                 {Object.entries(tokens.opacity).map(
                     ([opacityName, opacityValue]) => (
                         <div
                             key={opacityName}
-                            style={{
-                                position: 'relative',
-                                padding: '20px',
-                                backgroundColor: '#f3f4f6',
-                                borderRadius: '8px',
-                                textAlign: 'center',
-                                overflow: 'hidden',
-                            }}
+                            className="relative p-5 bg-gray-100 rounded-lg text-center overflow-hidden"
                         >
                             <div
-                                style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    backgroundColor: '#3b82f6',
-                                    opacity: opacityValue,
-                                }}
+                                className="absolute inset-0 bg-blue-500"
+                                style={{ opacity: opacityValue }}
                             />
-                            <div
-                                style={{
-                                    position: 'relative',
-                                    zIndex: 1,
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    color: '#374151',
-                                    marginBottom: '4px',
-                                }}
-                            >
+                            <div className="relative z-10 text-sm font-medium text-gray-700 mb-1">
                                 {opacityName}
                             </div>
-                            <div
-                                style={{
-                                    position: 'relative',
-                                    zIndex: 1,
-                                    fontSize: '12px',
-                                    color: '#6b7280',
-                                    fontFamily: 'monospace',
-                                }}
-                            >
+                            <div className="relative z-10 text-xs text-gray-500 font-mono">
                                 {opacityValue}
                             </div>
                         </div>
@@ -1009,54 +500,21 @@ export const OpacityScale: Story = {
 // Border Width Scale
 export const BorderWidthScale: Story = {
     render: () => (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <h2
-                style={{
-                    fontSize: '24px',
-                    fontWeight: 600,
-                    marginBottom: '8px',
-                }}
-            >
-                Border Width Scale
-            </h2>
+        <div className="flex flex-col gap-6">
+            <h2 className="text-2xl font-semibold mb-2">Border Width Scale</h2>
 
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns:
-                        'repeat(auto-fill, minmax(150px, 1fr))',
-                    gap: '16px',
-                }}
-            >
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
                 {Object.entries(tokens.border.width).map(
                     ([widthName, widthValue]) => (
                         <div
                             key={widthName}
-                            style={{
-                                padding: '20px',
-                                backgroundColor: '#ffffff',
-                                border: `${widthValue} solid #3b82f6`,
-                                borderRadius: '8px',
-                                textAlign: 'center',
-                            }}
+                            className="p-5 bg-white rounded-lg text-center"
+                            style={{ border: `${widthValue} solid #3b82f6` }}
                         >
-                            <div
-                                style={{
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    color: '#374151',
-                                    marginBottom: '4px',
-                                }}
-                            >
+                            <div className="text-sm font-medium text-gray-700 mb-1">
                                 {widthName}
                             </div>
-                            <div
-                                style={{
-                                    fontSize: '12px',
-                                    color: '#6b7280',
-                                    fontFamily: 'monospace',
-                                }}
-                            >
+                            <div className="text-xs text-gray-500 font-mono">
                                 {widthValue}
                             </div>
                         </div>

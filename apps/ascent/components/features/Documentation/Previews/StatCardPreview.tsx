@@ -6,7 +6,7 @@ import {
 } from '@juspay/blend-design-system'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
-import { DollarSign } from 'lucide-react'
+import { CurrencyDollarIcon } from '@phosphor-icons/react/dist/ssr'
 
 const StatCardPreview = () => {
     const tsCode = `import { StatCard, StatCardVariant, ChangeType } from "@juspay/blend-design-system";
@@ -142,7 +142,7 @@ external make: (
                     title="Total Revenue"
                     value="$12,345"
                     subtitle="Last 30 days"
-                    titleIcon={<DollarSign size={20} />}
+                    titleIcon={<CurrencyDollarIcon size={20} />}
                     variant={StatCardVariant.LINE}
                     chartData={chartData}
                     change={{ value: 12.5, valueType: ChangeType.INCREASE }}

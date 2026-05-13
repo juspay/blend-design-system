@@ -41,6 +41,9 @@ import {
     DrawerContent,
     DrawerBody,
 } from '../../Drawer'
+import DateRangePicker from '../../DateRangePicker/DateRangePicker'
+import { DateRange } from '../../DateRangePicker/types'
+import { parseDateLike, toLocalDateString } from '../utils'
 
 type MobileFilterDrawerProps = {
     column: ColumnDefinition<Record<string, unknown>>
@@ -514,12 +517,18 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                                             .columnSelectedValues[
                                                             fieldKey
                                                         ]
-                                                    const isSelected =
+                                                    const currentSelected =
                                                         Array.isArray(
                                                             selectedValues
-                                                        ) &&
-                                                        selectedValues[0] ===
-                                                            item.value
+                                                        )
+                                                            ? selectedValues[0]
+                                                            : typeof selectedValues ===
+                                                                'string'
+                                                              ? selectedValues
+                                                              : ''
+                                                    const isSelected =
+                                                        currentSelected ===
+                                                        item.value
 
                                                     return (
                                                         <div
@@ -596,6 +605,141 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
 
                                 {columnConfig.filterComponent === 'slider' && (
                                     <SliderFilter />
+                                )}
+
+                                {columnConfig.filterComponent ===
+                                    'dateRange' && (
+                                    <Block
+                                        display="flex"
+                                        flexDirection="column"
+                                        padding="14px 20px"
+                                    >
+                                        {(() => {
+                                            const selectedValue =
+                                                filterState
+                                                    .columnSelectedValues[
+                                                    fieldKey
+                                                ]
+                                            const selectedRange = Array.isArray(
+                                                selectedValue
+                                            )
+                                                ? selectedValue
+                                                : typeof selectedValue ===
+                                                        'string' &&
+                                                    selectedValue
+                                                  ? [
+                                                        selectedValue,
+                                                        selectedValue,
+                                                    ]
+                                                  : []
+                                            const hasActiveDateRange =
+                                                selectedRange.length > 0 &&
+                                                Boolean(selectedRange[0])
+
+                                            return hasActiveDateRange ? (
+                                                <Block
+                                                    display="flex"
+                                                    justifyContent="flex-end"
+                                                    paddingBottom="8px"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        style={{
+                                                            background:
+                                                                'transparent',
+                                                            border: 'none',
+                                                            padding: 0,
+                                                            cursor: 'pointer',
+                                                        }}
+                                                        onClick={() => {
+                                                            onColumnFilter?.(
+                                                                fieldKey,
+                                                                FilterType.DATE,
+                                                                [],
+                                                                'range'
+                                                            )
+                                                            handleCloseFilterDrawer()
+                                                        }}
+                                                    >
+                                                        <PrimitiveText
+                                                            style={{
+                                                                fontSize: 12,
+                                                                fontWeight: 600,
+                                                                color: FOUNDATION_THEME
+                                                                    .colors
+                                                                    .red[600],
+                                                            }}
+                                                        >
+                                                            Clear Filter
+                                                        </PrimitiveText>
+                                                    </button>
+                                                </Block>
+                                            ) : null
+                                        })()}
+                                        <DateRangePicker
+                                            value={(():
+                                                | DateRange
+                                                | undefined => {
+                                                const selectedValue =
+                                                    filterState
+                                                        .columnSelectedValues[
+                                                        fieldKey
+                                                    ]
+                                                const selectedRange =
+                                                    Array.isArray(selectedValue)
+                                                        ? selectedValue
+                                                        : typeof selectedValue ===
+                                                                'string' &&
+                                                            selectedValue
+                                                          ? [
+                                                                selectedValue,
+                                                                selectedValue,
+                                                            ]
+                                                          : []
+                                                if (
+                                                    selectedRange.length ===
+                                                        0 ||
+                                                    !selectedRange[0]
+                                                ) {
+                                                    return undefined
+                                                }
+
+                                                const start = parseDateLike(
+                                                    selectedRange[0]
+                                                )
+                                                if (!start) return undefined
+                                                const end =
+                                                    parseDateLike(
+                                                        selectedRange[1] ||
+                                                            selectedRange[0]
+                                                    ) || start
+
+                                                return {
+                                                    startDate: start,
+                                                    endDate: end,
+                                                }
+                                            })()}
+                                            onChange={(range) => {
+                                                const start = toLocalDateString(
+                                                    range.startDate
+                                                )
+                                                const end = toLocalDateString(
+                                                    range.endDate ||
+                                                        range.startDate
+                                                )
+                                                onColumnFilter?.(
+                                                    fieldKey,
+                                                    FilterType.DATE,
+                                                    [start, end],
+                                                    'range'
+                                                )
+                                            }}
+                                            showDateTimePicker={false}
+                                            showPresets={false}
+                                            allowSingleDateSelection={false}
+                                            useDrawerOnMobile={false}
+                                        />
+                                    </Block>
                                 )}
 
                                 {!columnConfig.filterComponent && (
