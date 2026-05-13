@@ -389,6 +389,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             size = DateRangePickerSize.MEDIUM,
             formatConfig,
             triggerConfig,
+            popoverConfig,
             maxMenuHeight = 250,
             showPreset = false,
             timezone,
@@ -1200,9 +1201,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         setIsOpen(open)
                     }}
                     trigger={renderTrigger()}
-                    side="bottom"
-                    align="start"
-                    sideOffset={4}
+                    side={popoverConfig?.side || 'bottom'}
+                    align={popoverConfig?.align || 'start'}
+                    sideOffset={popoverConfig?.sideOffset ?? 4}
                     shadow="sm"
                 >
                     <Block

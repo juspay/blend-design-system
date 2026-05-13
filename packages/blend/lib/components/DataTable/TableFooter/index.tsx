@@ -12,6 +12,7 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
             currentPage,
             pageSize,
             totalRows,
+            visibleRows = 0,
             isLoading,
             showSkeleton,
             onPageChange,
@@ -42,6 +43,7 @@ const TableFooter = forwardRef<HTMLDivElement, TableFooterProps>(
                     currentPage={currentPage}
                     pageSize={pageSize}
                     totalRows={totalRows}
+                    visibleRows={visibleRows}
                     pageSizeOptions={
                         pagination.pageSizeOptions || [10, 20, 50, 100]
                     }

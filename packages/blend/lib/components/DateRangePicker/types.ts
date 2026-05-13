@@ -131,6 +131,12 @@ export type TriggerConfig = {
     }) => ReactNode
 }
 
+export type DateRangePickerPopoverConfig = {
+    side?: 'top' | 'right' | 'bottom' | 'left'
+    align?: 'start' | 'center' | 'end'
+    sideOffset?: number
+}
+
 /**
  * Date validation result
  */
@@ -326,6 +332,7 @@ export type DateRangePickerProps = {
     size?: DateRangePickerSize
     formatConfig?: DateFormatConfig
     triggerConfig?: TriggerConfig
+    popoverConfig?: DateRangePickerPopoverConfig
     maxMenuHeight?: number
     showPreset?: boolean
     /**
