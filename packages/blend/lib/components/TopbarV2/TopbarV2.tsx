@@ -346,7 +346,7 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
                 minHeight={topBarToken.height}
             >
                 {!isExpanded && sidebarTopSlot}
-                {!isExpanded && (merchantInfo || topbar || children) && (
+                {!isExpanded && sidebarTopSlot && (topbar || children) && (
                     <Seperator
                         width={String(topBarToken.separator.width)}
                         color={String(topBarToken.separator.color)}
