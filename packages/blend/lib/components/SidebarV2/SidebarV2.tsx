@@ -287,7 +287,11 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                         aria-expanded={isExpanded}
                         display={isSmallScreen ? 'none' : 'flex'}
                         backgroundColor={tokens.container.backgroundColor}
-                        borderRight={tokens.container.borderRight}
+                        borderRight={
+                            data && data.length > 0
+                                ? tokens.container.borderRight
+                                : 'none'
+                        }
                         height="100%"
                         position="relative"
                     >
@@ -300,25 +304,27 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                             />
                         )}
 
-                        <SidebarV2Panel
-                            sidebarTopSlot={sidebarTopSlot}
-                            merchantInfo={merchantInfo}
-                            isExpanded={isExpanded}
-                            isScrolled={isScrolled}
-                            sidebarCollapseKey={sidebarCollapseKey}
-                            onToggle={toggleSidebar}
-                            sidebarNavId={sidebarNavId}
-                            data={safeDirectory}
-                            idPrefix={`${baseId}-`}
-                            activeItem={activeItem}
-                            onActiveItemChange={onActiveItemChange}
-                            defaultActiveItem={defaultActiveItem}
-                            iconOnlyMode={iconOnlyMode}
-                            footer={footer}
-                            setIsHovering={setIsHovering}
-                            sidebarState={sidebarStatus}
-                            tokens={tokens}
-                        />
+                        {data && data.length > 0 && (
+                            <SidebarV2Panel
+                                sidebarTopSlot={sidebarTopSlot}
+                                merchantInfo={merchantInfo}
+                                isExpanded={isExpanded}
+                                isScrolled={isScrolled}
+                                sidebarCollapseKey={sidebarCollapseKey}
+                                onToggle={toggleSidebar}
+                                sidebarNavId={sidebarNavId}
+                                data={safeDirectory}
+                                idPrefix={`${baseId}-`}
+                                activeItem={activeItem}
+                                onActiveItemChange={onActiveItemChange}
+                                defaultActiveItem={defaultActiveItem}
+                                iconOnlyMode={iconOnlyMode}
+                                footer={footer}
+                                setIsHovering={setIsHovering}
+                                sidebarState={sidebarStatus}
+                                tokens={tokens}
+                            />
+                        )}
 
                         {!isExpanded && (
                             <Block
@@ -400,32 +406,36 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 : undefined
                         }
                     >
-                        <Block
-                            position="sticky"
-                            top="0"
-                            zIndex={tokens.header.zIndex}
-                            style={getTopbarV2Styles(
-                                enableTopbarAutoHide,
-                                showTopbar,
-                                topbarTokens?.[isSmallScreen ? 'sm' : 'lg']
-                                    ?.height
-                            )}
-                        >
-                            <TopbarV2
-                                isExpanded={isExpanded}
-                                onToggleExpansion={toggleSidebar}
-                                showToggleButton={showToggleButton}
-                                sidebarTopSlot={sidebarTopSlot}
-                                topbar={topbar}
-                                secondarySidebar={secondarySidebar}
-                                merchantInfo={merchantInfo}
-                                rightActions={rightActions}
-                                isVisible={isTopbarVisible}
-                                ariaControls={sidebarNavId}
-                                onVisibilityChange={onTopbarVisibilityChange}
-                                defaultIsVisible={defaultIsTopbarVisible}
-                            />
-                        </Block>
+                        {topbar && (
+                            <Block
+                                position="sticky"
+                                top="0"
+                                zIndex={tokens.header.zIndex}
+                                style={getTopbarV2Styles(
+                                    enableTopbarAutoHide,
+                                    showTopbar,
+                                    topbarTokens?.[isSmallScreen ? 'sm' : 'lg']
+                                        ?.height
+                                )}
+                            >
+                                <TopbarV2
+                                    isExpanded={isExpanded}
+                                    onToggleExpansion={toggleSidebar}
+                                    showToggleButton={showToggleButton}
+                                    sidebarTopSlot={sidebarTopSlot}
+                                    topbar={topbar}
+                                    secondarySidebar={secondarySidebar}
+                                    merchantInfo={merchantInfo}
+                                    rightActions={rightActions}
+                                    isVisible={isTopbarVisible}
+                                    ariaControls={sidebarNavId}
+                                    onVisibilityChange={
+                                        onTopbarVisibilityChange
+                                    }
+                                    defaultIsVisible={defaultIsTopbarVisible}
+                                />
+                            </Block>
+                        )}
 
                         <Block
                             display="flex"
