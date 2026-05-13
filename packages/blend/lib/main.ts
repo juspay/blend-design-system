@@ -50,9 +50,7 @@ export * from './components/VirtualList'
 // ---------------------------------------------------------------------------
 export * from './context'
 export * from './tokens'
-export { default as FOUNDATION_THEME } from './tokens/theme.token'
 export type { FoundationTokenType } from './tokens/theme.token'
-export { Theme } from './context/theme.enum'
 
 // ---------------------------------------------------------------------------
 // V2 components (namespaced to avoid conflicts with V1)
@@ -160,7 +158,6 @@ export * from './components/ButtonV2/ButtonGroupV2'
 export * from './components/common/TruncatedTextWithTooltipV2'
 export * from './components/PopoverV2'
 export * from './components/SidebarV2'
-export * from './components/SnackbarV2'
 export * from './components/StepperV2'
 export * from './components/TagGroupV2'
 export * from './components/Timeline'
@@ -170,6 +167,10 @@ export * from './components/InputsV2/MultiValueInputV2'
 export * from './components/InputsV2/NumberInputV2'
 export * from './components/InputsV2/OTPInputV2'
 export * from './components/InputsV2/SearchInputV2'
+
+export { SnackbarV2, addSnackbarV2 } from './components/SnackbarV2'
+export * from './components/SnackbarV2/snackbarV2.tokens'
+export * from './components/SnackbarV2/snackbarV2.types'
 
 // ---------------------------------------------------------------------------
 // V2 exports that must stay explicit to avoid name collisions with V1 exports
@@ -311,6 +312,8 @@ export { getTagV2Tokens } from './components/TagV2/tagV2.tokens'
 export { getTextInputV2Tokens } from './components/InputsV2/TextInputV2/TextInputV2.tokens'
 export { getTimelineTokens } from './components/Timeline/timeline.token'
 export { getTooltipV2Tokens } from './components/TooltipV2/tooltipV2.tokens'
+export { getSidebarV2Tokens } from './components/SidebarV2/sidebarV2.tokens'
+export { getMobileNavigationV2Tokens } from './components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 export { getTopbarTokens } from './components/Topbar/topbar.tokens'
 export { getSidebarTokens } from './components/Sidebar/sidebar.tokens'
 export { getMobileNavigationTokens } from './components/Sidebar/SidebarMobile/mobile.tokens'
