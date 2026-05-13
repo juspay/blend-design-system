@@ -50,6 +50,11 @@ const SidebarV2Header = ({
             helpIconText=""
             required={false}
             placeholder="Select Merchant"
+            aria-label={`Select merchant: ${
+                merchantInfo.items.find(
+                    (item) => item.value === merchantInfo.selected
+                )?.label ?? 'Select Merchant'
+            }`}
             variant={SingleSelectV2Variant.NO_CONTAINER}
             size={SingleSelectV2Size.SM}
             items={[
