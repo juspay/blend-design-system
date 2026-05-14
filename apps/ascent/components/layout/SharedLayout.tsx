@@ -5,6 +5,7 @@ import { TOCItem } from '../Navigation/TableOfContents'
 import { DynamicSnackbar } from '../ui/DynamicSnackBar'
 import { CommandSearch } from '../ui/CommandSearch'
 import { Navbar } from '../Navigation'
+import { cn } from '@/lib'
 
 export interface SharedLayoutProps {
     baseRoute: string
@@ -15,6 +16,8 @@ export interface SharedLayoutProps {
     showSidebar?: boolean
     headings?: TOCItem[]
     showFooter?: boolean
+    showSideBorder?: boolean
+    fullWidth?: boolean
 }
 
 const SharedLayout = ({
@@ -22,6 +25,8 @@ const SharedLayout = ({
     children,
     className = '',
     showFooter = false,
+    showSideBorder = true,
+    fullWidth = false,
 }: SharedLayoutProps) => {
     return (
         <GlobalKeyboardNavigationProvider>
@@ -29,8 +34,19 @@ const SharedLayout = ({
                 <div className="w-full">
                     <Navbar />
                     <div className="border-t border-border w-full">
-                        <div className="flex justify-center items-start lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto w-full">
-                            <main className="flex-1 min-w-0 border-x border-border">
+                        <div
+                            className={cn(
+                                'flex justify-center items-start mx-auto w-full',
+                                !fullWidth &&
+                                    'lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360'
+                            )}
+                        >
+                            <main
+                                className={cn(
+                                    'flex-1 min-w-0',
+                                    showSideBorder && 'border-x border-border'
+                                )}
+                            >
                                 {children}
                             </main>
                         </div>

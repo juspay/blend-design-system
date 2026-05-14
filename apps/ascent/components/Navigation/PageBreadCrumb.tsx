@@ -22,7 +22,7 @@ export const PageBreadcrumb = ({
             aria-label="Breadcrumb"
             style={style}
         >
-            <div className="flex items-center justify-between gap-3 min-w-0">
+            <div className="flex items-center justify-between gap-3 min-w-0 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto">
                 <ol className="flex items-center text-sm min-w-0 overflow-hidden">
                     {items.map((item, index) => (
                         <li

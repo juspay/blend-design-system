@@ -1,0 +1,18 @@
+import React from 'react'
+import { AsideStyle, PageBreadcrumb, SharedLayout } from '@/components'
+import Showcase from '@/components/showcase/Showcase'
+
+function page() {
+    const breadcrumbItems = [
+        { label: 'Home', href: '/' },
+        { label: 'Showcase', href: '/showcase' },
+    ]
+    return (
+        <SharedLayout fullWidth showSideBorder={false} baseRoute="/showcase">
+            <PageBreadcrumb items={breadcrumbItems} style={AsideStyle} />
+            <Showcase />
+        </SharedLayout>
+    )
+}
+
+export default page
