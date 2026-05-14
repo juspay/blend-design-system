@@ -1,0 +1,231 @@
+---
+version: 2
+title: Radio
+description: The RadioV2 component allows users to select a single option from a group with support for labels, sub-labels, and comprehensive accessibility features.
+category: Selection
+tags:
+    - radio
+    - component
+    - form
+    - input
+    - selection
+    - control
+RepoFolderName: RadioV2
+StorybookLink: components-selectorv2-radiov2--docs
+---
+
+<RadioV2Preview />
+
+## Usage
+
+```tsx
+import { RadioV2, SelectorV2Size } from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [selected, setSelected] = useState('option1')
+
+    return (
+        <RadioV2
+            checked={selected === 'option1'}
+            onCheckedChange={() => setSelected('option1')}
+            size={SelectorV2Size.MD}
+            label="Standard Shipping"
+            subLabel="Delivery in 5-7 business days"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'checked',
+                hintText:
+                    'Whether the radio button is selected. Use with a group of radio buttons for single selection.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Selected state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onCheckedChange',
+                hintText:
+                    'Callback invoked when the radio button is selected. Use to update the selected state in a controlled group.',
+            },
+            {
+                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Controls the dimensions of the radio indicator. SM is compact, MD is standard, LG is large.',
+            },
+            {
+                content: 'SelectorV2Size',
+                hintText: 'Enum for radio sizes',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText:
+                    'Primary label text displayed next to the radio button.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText:
+                    'Secondary descriptive text displayed below the label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Sub-label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText:
+                    'When true, marks the radio button as required with a visual indicator.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Required state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText:
+                    'When true, displays the radio button in an error state with error styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Error state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText:
+                    'When true, disables the radio button interaction and applies disabled styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Disabled state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    'Optional custom element displayed after the label. Configurable with maxHeight.',
+            },
+            {
+                content: '{ slot: ReactElement; maxHeight?: string | number }',
+                hintText: 'Slot configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxLength',
+                hintText:
+                    'Character limits for truncating label and subLabel with ellipsis.',
+            },
+            {
+                content: '{ label?: number; subLabel?: number }',
+                hintText: 'Max length configuration',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the RadioV2 component using the following tokens:
+
+```tsx
+export type RadioV2TokensType = {
+    gap: CSSObject['gap']
+    group: {
+        gap: CSSObject['gap']
+    }
+    radio: {
+        indicator: {
+            [key in RadioV2IndicatorState]: {
+                backgroundColor: {
+                    [key in SelectorV2InteractionState]: CSSObject['backgroundColor']
+                }
+                borderColor: {
+                    [key in SelectorV2InteractionState]: CSSObject['borderColor']
+                }
+            }
+        }
+        activeIndicator: {
+            active: {
+                backgroundColor: {
+                    [key in Exclude<
+                        SelectorV2InteractionState,
+                        'hover' | 'error'
+                    >]: CSSObject['backgroundColor']
+                }
+            }
+        }
+        height: { [key in SelectorV2Size]: CSSObject['height'] }
+        borderWidth: {
+            [key in RadioV2IndicatorState]: {
+                [key in SelectorV2InteractionState]: number
+            }
+        }
+    }
+    content: {
+        gap: CSSObject['gap']
+        label: {
+            gap: CSSObject['gap']
+            color: { [key in SelectorV2InteractionState]: CSSObject['color'] }
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
+            slot: {
+                maxHeight: { [key in SelectorV2Size]: CSSObject['maxHeight'] }
+            }
+        }
+        subLabel: {
+            color: { [key in SelectorV2InteractionState]: CSSObject['color'] }
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
+        }
+        required: {
+            color: CSSObject['color']
+        }
+    }
+}
+```

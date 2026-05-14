@@ -1,0 +1,229 @@
+---
+version: 2
+title: Checkbox
+description: The CheckboxV2 component allows users to select one or more options with support for indeterminate states, labels, sub-labels, and comprehensive accessibility features.
+category: Selection
+tags:
+    - checkbox
+    - component
+    - form
+    - input
+    - selection
+    - control
+RepoFolderName: CheckboxV2
+StorybookLink: components-selectorv2-checkboxv2--docs
+---
+
+<CheckboxV2Preview />
+
+## Usage
+
+```tsx
+import { CheckboxV2, SelectorV2Size } from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [checked, setChecked] = useState(false)
+
+    return (
+        <CheckboxV2
+            checked={checked}
+            onCheckedChange={setChecked}
+            size={SelectorV2Size.MD}
+            label="Accept terms and conditions"
+            subLabel="You must agree to continue"
+            required={true}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'checked',
+                hintText:
+                    'Controlled checked state. Can be true (checked), false (unchecked), or "indeterminate" for partial selection states.',
+            },
+            {
+                content: "boolean | 'indeterminate'",
+                hintText: 'Checkbox state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onCheckedChange',
+                hintText:
+                    'Callback invoked when the checked state changes. Receives the new state value.',
+            },
+            {
+                content: "(checked: boolean | 'indeterminate') => void",
+                hintText: 'State change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Controls the dimensions of the checkbox indicator. SM is compact, MD is standard, LG is large.',
+            },
+            {
+                content: 'SelectorV2Size',
+                hintText: 'Enum for checkbox sizes',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Primary label text displayed next to the checkbox.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText:
+                    'Secondary descriptive text displayed below the label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Sub-label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText:
+                    'When true, marks the checkbox as required with a visual indicator.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Required state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText:
+                    'When true, displays the checkbox in an error state with error styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Error state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText:
+                    'When true, disables the checkbox interaction and applies disabled styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Disabled state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    'Optional custom element displayed after the label. Configurable with maxHeight.',
+            },
+            {
+                content: '{ slot: ReactElement; maxHeight?: string | number }',
+                hintText: 'Slot configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxLength',
+                hintText:
+                    'Character limits for truncating label and subLabel with ellipsis.',
+            },
+            {
+                content: '{ label?: number; subLabel?: number }',
+                hintText: 'Max length configuration',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the CheckboxV2 component using the following tokens:
+
+```tsx
+export type CheckboxV2TokensType = {
+    gap: CSSObject['gap']
+    checkbox: {
+        height: { [key in SelectorV2Size]: CSSObject['height'] }
+        width: { [key in SelectorV2Size]: CSSObject['width'] }
+        opacity: CSSObject['opacity']
+        backgroundColor: {
+            [key in CheckboxV2CheckedState]?: {
+                [key in SelectorV2InteractionState]?: CSSObject['backgroundColor']
+            }
+        }
+        borderRadius: { [key in SelectorV2Size]: CSSObject['borderRadius'] }
+        border: {
+            [key in CheckboxV2CheckedState]?: {
+                [key in SelectorV2InteractionState]?: CSSObject['border']
+            }
+        }
+        outline: CSSObject['outline']
+        outlineOffset: CSSObject['outlineOffset']
+        boxShadow: CSSObject['boxShadow']
+        icon: {
+            color: {
+                [key in CheckboxV2CheckedState]?: {
+                    [key in SelectorV2InteractionState]?: CSSObject['color']
+                }
+            }
+            width: { [key in SelectorV2Size]: CSSObject['width'] }
+            height: { [key in SelectorV2Size]: CSSObject['height'] }
+            strokeWidth: { [key in SelectorV2Size]: CSSObject['strokeWidth'] }
+        }
+    }
+    content: {
+        gap: CSSObject['gap']
+        label: {
+            gap: CSSObject['gap']
+            color: { [key in SelectorV2InteractionState]: CSSObject['color'] }
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
+            slot: {
+                maxHeight: { [key in SelectorV2Size]: CSSObject['maxHeight'] }
+            }
+        }
+        subLabel: {
+            color: { [key in SelectorV2InteractionState]: CSSObject['color'] }
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
+        }
+        required: {
+            color: CSSObject['color']
+        }
+    }
+}
+```

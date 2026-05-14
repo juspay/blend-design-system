@@ -416,6 +416,33 @@
             }
         ]
     },
+    "button-v2": {
+        "title": "Button",
+        "description": "The ButtonV2 component is a versatile UI element for user interactions, featuring multiple variants, sizes, and states with enhanced styling flexibility.",
+        "path": "components/button-v2",
+        "slug": "button-v2",
+        "category": "Actions",
+        "tags": ["button", "component", "interaction", "action", "primary"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Click handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText:\n                    'Optional fixed width value. Accepts CSS width values or number (pixels).',\n            },\n            {\n                content: 'string | number',\n                hintText: 'CSS width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'fullWidth',\n                hintText:\n                    'When true, the button expands to fill 100% of its container width.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Full width mode',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'buttonGroupPosition',\n                hintText:\n                    'Controls border radius when used within a ButtonGroup. Used automatically by ButtonGroupV2.',\n            },\n            {\n                content: \"'center' | 'left' | 'right'\",\n                hintText: 'Position within button group',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the ButtonV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Click handler',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "button": {
         "title": "Button",
         "description": "The Button component is a fundamental UI element used for user interactions, supporting multiple variants, sizes, and states.",
@@ -645,6 +672,40 @@
         ],
         "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with new input value when it changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onAttachFiles',\n                hintText:\n                    'Optional callback function invoked when files are selected via the attach button. Receives an array of native File objects. Use this to handle file uploads, validation, or conversion to AttachedFile format for the attachedFiles prop.',\n            },\n            {\n                content: '(files: File[]) => void',\n                hintText: 'Function called with array of selected files',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFileRemove',\n                hintText:\n                    'Optional callback function invoked when a user removes an attached file (via remove button or overflow menu). Receives the fileId string of the removed file. Use this to update your attachedFiles array.',\n            },\n            {\n                content: '(fileId: string) => void',\n                hintText:\n                    'Function called with the ID of the file being removed',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFileClick',\n                hintText:\n                    'Optional callback function invoked when a user clicks on an attached file. Receives the AttachedFile object. Use this to open file previews, download files, or navigate to file details.',\n            },\n            {\n                content: '(file: AttachedFile) => void',\n                hintText: 'Function called with the clicked file object',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText:\n                    'Optional placeholder text displayed in the input field when it\\'s empty. Provides guidance to users about what to type. Should be concise and actionable. Defaults to \"Type a message...\".',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder text shown when input is empty',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'When true, disables the entire chat input, making it non-interactive. Disabled inputs cannot be typed in, and all buttons (attach, voice, send) are disabled. Useful for preventing input during loading states or when user actions are not allowed. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true disables all interactions, false allows normal interaction',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxLength',\n                hintText:\n                    'Optional maximum character length for the message input. When provided, the input enforces this limit and prevents typing beyond it. Useful for API constraints or database field limits. If not provided, no length restriction is applied.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive integer representing maximum allowed characters',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'autoResize',\n                hintText:\n                    'When true, the textarea automatically adjusts its height based on content, growing vertically as the user types. When false, the textarea maintains a fixed height with scrolling. Provides a better UX for longer messages. Defaults to true.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true enables auto-resizing, false uses fixed height with scroll',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'attachedFiles',\n                hintText:\n                    'Optional array of AttachedFile objects representing files currently attached to the message. Each file should have id, name, type, and optionally size, url, and preview properties. Files are displayed as tags with overflow handling when many are attached. Defaults to empty array.',\n            },\n            {\n                content: 'AttachedFile[]',\n                hintText:\n                    'Array of objects with id, name, type, and optional file metadata',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'topQueries',\n                hintText:\n                    'Optional array of TopQuery objects representing suggested queries or frequently asked questions. Displayed in a collapsible section below the input. Each query should have id and text properties. Useful for quick replies or common questions. Defaults to empty array.',\n            },\n            {\n                content: 'TopQuery[]',\n                hintText:\n                    'Array of objects with id and text properties for query suggestions',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onTopQuerySelect',\n                hintText:\n                    'Optional callback function invoked when a user clicks on a top query suggestion. Receives the selected TopQuery object. Use this to populate the input with the query text or trigger related actions.',\n            },\n            {\n                content: '(query: TopQuery) => void',\n                hintText: 'Function called with the selected query object',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'topQueriesMaxHeight',\n                hintText:\n                    'Maximum height in pixels for the top queries container before scrolling. When the queries list exceeds this height, a scrollbar appears. Useful for limiting the vertical space taken by suggestions. Defaults to 200 pixels.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive number representing maximum height in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'attachButtonIcon',\n                hintText:\n                    'Optional custom React element (typically an icon) to replace the default attach file button icon. Allows branding customization or using different icon libraries. If not provided, uses default Paperclip icon.',\n            },\n            {\n                content: 'ReactNode',\n                hintText:\n                    'Any React element (icon, image, etc.) for the attach button',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot1',\n                hintText:\n                    'Optional React element displayed in the actions toolbar next to the attach button. Useful for adding custom action buttons like send, emoji picker, or other controls. Rendered inside the bottom actions area.',\n            },\n            {\n                content: 'ReactNode',\n                hintText:\n                    'Any React element (button, icon, etc.) to display in the actions toolbar',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot2',\n                hintText:\n                    'Optional React element displayed above the textarea when there are attached files or when provided. Useful for displaying file upload progress, additional inputs, or custom content that should appear before the message input area.',\n            },\n            {\n                content: 'ReactNode',\n                hintText:\n                    'Any React element to display above the textarea input',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'overflowMenuProps',\n                hintText:\n                    'Optional partial MenuProps object for customizing the overflow menu that appears when many files are attached. Allows styling, positioning, and behavior customization of the menu component used to display hidden files.',\n            },\n            {\n                content: 'Partial',\n                hintText:\n                    'Partial Menu component props for overflow menu customization',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'aria-label',\n                hintText:\n                    'Optional ARIA label string for accessibility. Provides an accessible name for the chat input component when the visible label is not sufficient. Important for screen reader users.',\n            },\n            {\n                content: 'string',\n                hintText: 'Accessible label text for screen readers',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'aria-describedby',\n                hintText:\n                    'Optional ARIA describedby string for accessibility. References the ID of an element that provides additional descriptive information about the chat input. Helps screen reader users understand context or requirements.',\n            },\n            {\n                content: 'string',\n                hintText: 'ID of element providing additional description',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the ChatInput component using the following tokens:",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with new input value when it changes',\n            },...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "checkbox-v2": {
+        "title": "Checkbox",
+        "description": "The CheckboxV2 component allows users to select one or more options with support for indeterminate states, labels, sub-labels, and comprehensive accessibility features.",
+        "path": "components/checkbox-v2",
+        "slug": "checkbox-v2",
+        "category": "Selection",
+        "tags": [
+            "checkbox",
+            "component",
+            "form",
+            "input",
+            "selection",
+            "control"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void\",\n                hintText: 'State change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText:\n                    'Controls the dimensions of the checkbox indicator. SM is compact, MD is standard, LG is large.',\n            },\n            {\n                content: 'SelectorV2Size',\n                hintText: 'Enum for checkbox sizes',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Primary label text displayed next to the checkbox.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subLabel',\n                hintText:\n                    'Secondary descriptive text displayed below the label.',\n            },\n            {\n                content: 'string',\n                hintText: 'Sub-label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText:\n                    'When true, marks the checkbox as required with a visual indicator.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Required state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText:\n                    'When true, displays the checkbox in an error state with error styling.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Error state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'When true, disables the checkbox interaction and applies disabled styling.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Disabled state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText:\n                    'Optional custom element displayed after the label. Configurable with maxHeight.',\n            },\n            {\n                content: '{ slot: ReactElement; maxHeight?: string | number }',\n                hintText: 'Slot configuration',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxLength',\n                hintText:\n                    'Character limits for truncating label and subLabel with ellipsis.',\n            },\n            {\n                content: '{ label?: number; subLabel?: number }',\n                hintText: 'Max length configuration',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the CheckboxV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void\",\n                hintText: 'State change handler',\n            },\n            { content: '' },\n        ],\n        [...",
         "sections": [
             {
                 "title": "Usage",
@@ -1547,6 +1608,33 @@
             }
         ]
     },
+    "radio-v2": {
+        "title": "Radio",
+        "description": "The RadioV2 component allows users to select a single option from a group with support for labels, sub-labels, and comprehensive accessibility features.",
+        "path": "components/radio-v2",
+        "slug": "radio-v2",
+        "category": "Selection",
+        "tags": ["radio", "component", "form", "input", "selection", "control"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText:\n                    'Controls the dimensions of the radio indicator. SM is compact, MD is standard, LG is large.',\n            },\n            {\n                content: 'SelectorV2Size',\n                hintText: 'Enum for radio sizes',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText:\n                    'Primary label text displayed next to the radio button.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subLabel',\n                hintText:\n                    'Secondary descriptive text displayed below the label.',\n            },\n            {\n                content: 'string',\n                hintText: 'Sub-label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText:\n                    'When true, marks the radio button as required with a visual indicator.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Required state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText:\n                    'When true, displays the radio button in an error state with error styling.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Error state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'When true, disables the radio button interaction and applies disabled styling.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Disabled state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText:\n                    'Optional custom element displayed after the label. Configurable with maxHeight.',\n            },\n            {\n                content: '{ slot: ReactElement; maxHeight?: string | number }',\n                hintText: 'Slot configuration',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxLength',\n                hintText:\n                    'Character limits for truncating label and subLabel with ellipsis.',\n            },\n            {\n                content: '{ label?: number; subLabel?: number }',\n                hintText: 'Max length configuration',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the RadioV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "radio": {
         "title": "Radio",
         "description": "The Radio component allows users to select a single option from a group of mutually exclusive choices, with proper form integration and accessibility support.",
@@ -2058,6 +2146,41 @@
         ],
         "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with step index when step is clicked',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Stepper.onSubstepClick',\n                hintText:\n                    'Optional callback function invoked when a substep is clicked. Receives the step ID (number) and substep index (0-based) as parameters. Only called when clickable is true and the step has substeps. Use this to navigate to a specific substep or perform actions when a substep is selected. The function is not called for disabled substeps.',\n            },\n            {\n                content: '(stepId: number, substepIndex: number) => void',\n                hintText:\n                    'Function called with step ID and substep index when substep is clicked',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Stepper.clickable',\n                hintText:\n                    'When true, makes steps clickable and interactive. Users can click on steps to navigate or trigger actions. When false, steps are display-only and non-interactive. Clickable steps show hover effects and cursor pointer. Only enabled steps can be clicked. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true enables step clicking, false makes steps display-only',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Stepper.stepperType',\n                hintText:\n                    'Optional StepperType enum value that determines the layout orientation of the stepper. HORIZONTAL displays steps in a horizontal row (left to right), VERTICAL displays steps in a vertical column (top to bottom). Horizontal is useful for wizards and forms, vertical is useful for timelines and processes. Defaults to HORIZONTAL.',\n            },\n            {\n                content: 'StepperType',\n                hintText:\n                    'Enum that determines the layout orientation of the stepper',\n            },\n            { content: 'HORIZONTAL, VERTICAL' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the Stepper component using the following tokens:",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with step index when step is clicked',\n            },...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "switch-v2": {
+        "title": "Switch",
+        "description": "The SwitchV2 component provides a toggle control for binary on/off states with support for labels, sub-labels, and comprehensive accessibility features.",
+        "path": "components/switch-v2",
+        "slug": "switch-v2",
+        "category": "Selection",
+        "tags": [
+            "switch",
+            "toggle",
+            "component",
+            "form",
+            "input",
+            "selection",
+            "control"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'State change handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText:\n                    'Controls the dimensions of the switch. SM is compact, MD is standard, LG is large.',\n            },\n            {\n                content: 'SelectorV2Size',\n                hintText: 'Enum for switch sizes',\n            },\n            { content: 'SM, MD, LG' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Primary label text displayed next to the switch.',\n            },\n            {\n                content: 'string',\n                hintText: 'Label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'subLabel',\n                hintText:\n                    'Secondary descriptive text displayed below the label.',\n            },\n            {\n                content: 'string',\n                hintText: 'Sub-label text',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText:\n                    'When true, marks the switch as required with a visual indicator.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Required state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText:\n                    'When true, displays the switch in an error state with error styling.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Error state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'When true, disables the switch interaction and applies disabled styling.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'Disabled state',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'slot',\n                hintText:\n                    'Optional custom element displayed after the label. Configurable with maxHeight.',\n            },\n            {\n                content: '{ slot: ReactElement; maxHeight?: string | number }',\n                hintText: 'Slot configuration',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxLength',\n                hintText:\n                    'Character limits for truncating label and subLabel with ellipsis.',\n            },\n            {\n                content: '{ label?: number; subLabel?: number }',\n                hintText: 'Max length configuration',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the SwitchV2 component using the following tokens:",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'State change handler',\n            },\n            { content: '' },\n        ],\n        [...",
         "sections": [
             {
                 "title": "Usage",

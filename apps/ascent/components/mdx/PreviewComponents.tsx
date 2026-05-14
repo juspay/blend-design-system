@@ -80,6 +80,11 @@ const PREVIEW_COMPONENT_NAMES = [
     'ChatInputV2',
     'OTPInputV2',
     'MultiValueInputV2',
+    'ButtonV2',
+    'SelectV2',
+    'CheckboxV2',
+    'RadioV2',
+    'SwitchV2',
 ] as const
 
 // Generate all preview components programmatically
@@ -134,3 +139,7 @@ export const UploadPreview = PreviewComponents.UploadPreview
 export const KeyValuePairPreview = PreviewComponents.KeyValuePairPreview
 export const StepperPreview = PreviewComponents.StepperPreview
 export const ChatInputPreview = PreviewComponents.ChatInputPreview
+export const ButtonV2Preview = PreviewComponents.ButtonV2Preview
+export const CheckboxV2Preview = PreviewComponents.CheckboxV2Preview
+export const RadioV2Preview = PreviewComponents.RadioV2Preview
+export const SwitchV2Preview = PreviewComponents.SwitchV2Preview
