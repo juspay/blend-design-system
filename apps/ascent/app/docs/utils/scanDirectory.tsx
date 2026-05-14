@@ -18,9 +18,12 @@ interface FrontmatterData {
     category?: string
 }
 
-/**
- * Extract title, version, and category from MDX frontmatter using gray-matter.
- */
+interface DirectoryConfig {
+    order?: string[]
+}
+
+//Frontmatter
+
 function extractFrontmatter(filePath: string): FrontmatterData {
     try {
         const content = fs.readFileSync(filePath, 'utf8')
@@ -37,9 +40,7 @@ function extractFrontmatter(filePath: string): FrontmatterData {
     }
 }
 
-interface DirectoryConfig {
-    order?: string[]
-}
+// Config
 
 const readConfig = (dirPath: string): DirectoryConfig | null => {
     const configPath = path.join(dirPath, 'config.json')
@@ -54,12 +55,13 @@ const readConfig = (dirPath: string): DirectoryConfig | null => {
     return null
 }
 
+// Sorting
+
 const sortItemsByConfig = (
     items: DocItem[],
     config: DirectoryConfig | null
 ): DocItem[] => {
     if (!config?.order) {
-        // Default sorting: directories first, then files, alphabetically
         return items.sort((a, b) => {
             const aIsDir = a.children !== undefined
             const bIsDir = b.children !== undefined
@@ -69,12 +71,10 @@ const sortItemsByConfig = (
         })
     }
 
-    // Create a map for quick lookup (use slug as key since config uses slugs)
     const itemMap = new Map(items.map((item) => [item.slug, item]))
     const orderedItems: DocItem[] = []
     const remainingItems: DocItem[] = []
 
-    // Add items in the specified order
     for (const slug of config.order) {
         const item = itemMap.get(slug)
         if (item) {
@@ -83,14 +83,12 @@ const sortItemsByConfig = (
         }
     }
 
-    // Add remaining items that weren't in the order array
     for (const item of items) {
         if (itemMap.has(item.slug)) {
             remainingItems.push(item)
         }
     }
 
-    // Sort remaining items (directories first, then files, alphabetically)
     remainingItems.sort((a, b) => {
         const aIsDir = a.children !== undefined
         const bIsDir = b.children !== undefined
@@ -102,6 +100,8 @@ const sortItemsByConfig = (
     return [...orderedItems, ...remainingItems]
 }
 
+// Scanner
+
 const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
     const items: DocItem[] = []
     const config = readConfig(dirPath)
@@ -110,17 +110,13 @@ const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
         const entries = fs.readdirSync(dirPath, { withFileTypes: true })
 
         for (const entry of entries) {
-            // Skip config.json files
             if (entry.name === 'config.json') continue
-
-            // Skip files with names enclosed in brackets like (inputs).mdx
             if (entry.name.match(/^\(.*\)\.mdx$/)) continue
 
             const fullPath = path.join(dirPath, entry.name)
             const relativePath = path.join(basePath, entry.name)
 
             if (entry.isDirectory()) {
-                // Recursively scan subdirectories
                 const children = scanDirectory(fullPath, relativePath)
                 items.push({
                     slug: entry.name,
@@ -132,11 +128,10 @@ const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
                 entry.name.endsWith('.mdx') &&
                 entry.name !== 'page.mdx'
             ) {
-                // Skip page.mdx files as they're handled by the catch-all route
                 const slug = entry.name.replace(/\.mdx$/, '')
                 const { title, version, category } =
                     extractFrontmatter(fullPath)
-                // Use title from frontmatter (strip V2 suffix), fallback to slug
+                // Strip "V2" suffix from title so v1/v2 peers share the same name
                 const cleanTitle = title?.replace(/\s*[Vv]2\s*$/, '') ?? slug
                 items.push({
                     slug,
@@ -152,6 +147,38 @@ const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
     }
 
     return sortItemsByConfig(items, config)
+}
+
+//  Version Peer Map
+
+export function buildVersionPeerMap(items: DocItem[]): Map<string, string> {
+    const map = new Map<string, string>()
+
+    function walk(children: DocItem[]): void {
+        const byName = new Map<string, DocItem[]>()
+
+        for (const item of children) {
+            if (item.children?.length) {
+                walk(item.children)
+            }
+
+            // Normalize
+            const normalizedName = item.name.toLowerCase().replace(/\s+/g, '')
+            const group = byName.get(normalizedName) ?? []
+            group.push(item)
+            byName.set(normalizedName, group)
+        }
+
+        for (const [, peers] of byName) {
+            if (peers.length === 2) {
+                const [a, b] = peers
+                map.set(a.slug, b.slug)
+                map.set(b.slug, a.slug)
+            }
+        }
+    }
+    walk(items)
+    return map
 }
 
 export default scanDirectory

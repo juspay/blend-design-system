@@ -11,9 +11,15 @@ function isValidVersion(v: string | null): v is Version {
     return v === '1' || v === '2'
 }
 
+function inferVersionFromUrl(): Version {
+    if (typeof window === 'undefined') return DEFAULT_VERSION
+    return window.location.pathname.match(/-v2(\/|$)/i) ? '2' : DEFAULT_VERSION
+}
+
 function getSnapshot(): Version {
     const stored = localStorage.getItem(VERSION_STORAGE_KEY)
-    return isValidVersion(stored) ? stored : DEFAULT_VERSION
+    if (isValidVersion(stored)) return stored
+    return inferVersionFromUrl()
 }
 
 // Server always renders the default — no localStorage on the server
@@ -22,13 +28,15 @@ function getServerSnapshot(): Version {
 }
 
 function subscribe(callback: () => void): () => void {
-    // 'storage' fires in OTHER tabs when localStorage changes
-    window.addEventListener('storage', callback)
-    // Custom event fires in the SAME tab when we call setVersion
+    const handleStorage = (e: StorageEvent) => {
+        if (e.key === VERSION_STORAGE_KEY) callback()
+    }
+
+    window.addEventListener('storage', handleStorage)
     window.addEventListener('docs-version-change', callback)
 
     return () => {
-        window.removeEventListener('storage', callback)
+        window.removeEventListener('storage', handleStorage)
         window.removeEventListener('docs-version-change', callback)
     }
 }

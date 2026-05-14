@@ -8,22 +8,24 @@ import { extractHeadings } from '../utils/toc'
 import { generateBreadcrumbItems } from '../utils/generateBreadcrumbs'
 import { Metadata } from 'next'
 import { SharedLayout } from '@/components/layout'
-import { scanDirectory, DocItem } from '../utils'
+import { scanDirectory, buildVersionPeerMap, DocItem } from '../utils'
 import TableOfContents from '@/components/Navigation/TableOfContents'
 import { DocsPage, Sidebar } from '@/components/docs'
 import { MobileSidebarTrigger } from './PageClient'
 import { DocsVersionProvider } from '../utils/DocsVersionContext'
 
+//Static Params
+
 export async function generateStaticParams() {
     const contentDir = path.join(process.cwd(), 'app', 'docs', 'content')
     const paths: { slug: string[] }[] = []
 
-    const scanDirectory = (dir: string, basePath: string[] = []) => {
+    const scanDir = (dir: string, basePath: string[] = []) => {
         const entries = fs.readdirSync(dir, { withFileTypes: true })
         for (const entry of entries) {
             const fullPath = path.join(dir, entry.name)
             if (entry.isDirectory()) {
-                scanDirectory(fullPath, [...basePath, entry.name])
+                scanDir(fullPath, [...basePath, entry.name])
             } else if (entry.name.endsWith('.mdx')) {
                 if (entry.name === 'page.mdx') {
                     paths.push({ slug: basePath })
@@ -35,9 +37,11 @@ export async function generateStaticParams() {
         }
     }
 
-    scanDirectory(contentDir)
+    scanDir(contentDir)
     return paths
 }
+
+// Metadata
 
 export async function generateMetadata({
     params,
@@ -81,10 +85,11 @@ export async function generateMetadata({
     }
 }
 
+//Sidebar Builder
+
 function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
     return fileBasedItems.map((item) => {
         if (item.slug === 'components' && item.children) {
-            // Group components by category from MDX frontmatter
             const componentsByCategory: Record<string, DocItem[]> = {}
 
             item.children.forEach((child) => {
@@ -95,7 +100,6 @@ function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
                 componentsByCategory[category].push(child)
             })
 
-            // Build category sections dynamically, sorted alphabetically
             const categoryChildren: DocItem[] = Object.entries(
                 componentsByCategory
             )
@@ -123,18 +127,7 @@ function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
     })
 }
 
-// Track every component slug that exists
-function extractAllComponentSlugs(items: DocItem[]): Set<string> {
-    const allSlugs = new Set<string>()
-    const walk = (items: DocItem[]) => {
-        for (const item of items) {
-            allSlugs.add(item.slug)
-            if (item.children) walk(item.children)
-        }
-    }
-    walk(items)
-    return allSlugs
-}
+// Page
 
 const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
     const resolvedParams = await params
@@ -165,11 +158,16 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
     })
 
     const headings = extractHeadings(fileContent)
+
+    // Scan the raw file tree — used as the source of truth for both
     const fileBasedItems = scanDirectory(
         path.join(process.cwd(), 'app', 'docs', 'content')
     )
+
     const sidebarItems = buildSidebarItemsWithCategories(fileBasedItems)
-    const allComponentSlugs = extractAllComponentSlugs(fileBasedItems)
+
+    // Build the peer map from the raw scan (before category grouping).
+    const versionPeerMap = buildVersionPeerMap(fileBasedItems)
 
     const metadata: PageMetadata = {
         title: (frontmatter as PageMetadata)?.title || 'Untitled',
@@ -193,7 +191,8 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
     }
 
     return (
-        <DocsVersionProvider value={allComponentSlugs}>
+        // DocsVersionProvider wraps SharedLayout so that Navbar and Sidebar both receive the same peer map via context
+        <DocsVersionProvider value={versionPeerMap}>
             <SharedLayout
                 baseRoute="/docs"
                 contentPath="app/docs/content"

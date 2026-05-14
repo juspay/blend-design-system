@@ -1,46 +1,78 @@
 'use client'
+
+import { useCallback, useId, useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
 import { cn } from '@/lib/utils/cn'
 import { useDocsVersion, type Version } from '@/lib/hooks/useDocsVersion'
-import { useVersionedSlugs } from '@/app/docs/utils/DocsVersionContext'
+import { useVersionPeerMap } from '@/app/docs/utils/DocsVersionContext'
 
 const VERSIONS = ['1', '2'] as const satisfies readonly Version[]
 
-export default function VersionToggle({ className }: { className?: string }) {
+interface VersionToggleProps {
+    className?: string
+}
+
+//Skeleton
+function VersionToggleSkeleton({ className }: { className?: string }) {
+    return (
+        <div
+            aria-hidden
+            className={cn(
+                'h-8 w-18 border border-border rounded-xl',
+                className
+            )}
+        />
+    )
+}
+
+export default function VersionToggle({ className }: VersionToggleProps) {
     const pathname = usePathname()
     const router = useRouter()
     const [version, setVersion] = useDocsVersion()
-    const allComponentSlugs = useVersionedSlugs()
+    const peerMap = useVersionPeerMap()
+    const layoutId = useId()
+    const [mounted, setMounted] = useState(false)
 
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    const handleVersionChange = useCallback(
+        (newVersion: Version) => {
+            setVersion(newVersion)
+            // Only attempt navigation if we're on a component page
+            const slugMatch = pathname.match(/^\/docs\/components\/([^/]+)/)
+            if (!slugMatch) return
+
+            const currentSlug = slugMatch[1]
+            // Look up the peer slug from the map — works for any naming scheme
+            const targetSlug = peerMap.get(currentSlug)
+            if (!targetSlug) return // no peer exists for this component, stay put
+
+            router.push(pathname.replace(currentSlug, targetSlug))
+        },
+        [pathname, peerMap, setVersion, router]
+    )
+
+    // Only show on docs pages
     if (!pathname?.startsWith('/docs')) return null
 
-    function handleVersionChange(newVersion: Version) {
-        setVersion(newVersion)
-
-        const slugMatch = pathname.match(/^\/docs\/components\/([^/]+)/)
-        if (!slugMatch) return
-
-        const baseSlug = slugMatch[1].replace(/-v2$/i, '')
-        const targetSlug = newVersion === '2' ? `${baseSlug}-v2` : baseSlug
-
-        if (!allComponentSlugs.has(targetSlug)) return
-
-        router.push(pathname.replace(slugMatch[1], targetSlug))
-    }
+    if (!mounted) return <VersionToggleSkeleton className={className} />
 
     return (
         <div
             role="group"
             aria-label="Docs version"
             className={cn(
-                'relative flex items-center gap-0.5 border border-border h-8 py-0.75 px-1 rounded-xl',
+                'relative flex items-center gap-0.5 border border-border h-8 py-1 px-1 rounded-xl',
                 className
             )}
         >
             {VERSIONS.map((v) => (
                 <button
                     key={v}
+                    type="button"
                     onClick={() => handleVersionChange(v)}
                     aria-pressed={version === v}
                     aria-label={`Switch to version ${v}`}
@@ -53,7 +85,7 @@ export default function VersionToggle({ className }: { className?: string }) {
                 >
                     {version === v && (
                         <motion.div
-                            layoutId="activeVersion"
+                            layoutId={`activeVersion-${layoutId}`}
                             initial={false}
                             transition={{
                                 type: 'spring',
