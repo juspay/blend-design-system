@@ -2054,6 +2054,7 @@ const DataTable = forwardRef(
                             currentPage={currentPage}
                             pageSize={pageSize}
                             totalRows={totalRows}
+                            visibleRows={currentData.length}
                             isLoading={isLoading}
                             showSkeleton={showSkeleton}
                             hasData={currentData.length > 0}

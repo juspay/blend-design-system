@@ -4,9 +4,9 @@
 
 `SidebarV2` is the V2 sidebar layout component for the Blend design system. It composes:
 
-- **Primary sidebar**: directory navigation rendered from `DirectoryData[]`
-- **Optional secondary sidebar rail**: `secondarySidebar` (tenant / top-level switcher)
-- **Topbar**: via `TopbarV2` integration (auto-hide optional)
+- **Primary sidebar**: directory navigation from `data` (`DirectoryData[]`). The primary directory panel is mounted only when `data` is non-null and has at least one entry.
+- **Optional secondary sidebar rail**: `secondarySidebar` (tenant / top-level switcher). When the sidebar is expanded, the rail can still render even if `data` is null or empty.
+- **Topbar**: `TopbarV2` is mounted only when `topbar` is provided (sticky region above main content). Auto-hide and visibility props apply in that case.
 - **Mobile navigation dock** (small screens): derived from `NavbarItem.showOnMobile`
 
 `SidebarV2` is token-driven (via `SIDEBARV2`, `MOBILE_NAVIGATION_V2`, `DIRECTORY`, `TOPBARV2`, `TOOLTIPV2`) and supports controlled/uncontrolled state for expansion and active navigation selection.
@@ -16,21 +16,25 @@
 ## Requirements
 
 - **Navigation data**: pass `data?: DirectoryData[] | null`
-    - `null`/`undefined` is safe and renders an empty navigation.
+    - `null`, `undefined`, or `[]` is safe: the **primary directory panel is omitted** (no empty tree placeholder). The outer sidebar shell still renders; optional `secondarySidebar` can appear when expanded.
+    - With at least one section in `data`, the directory renders as usual.
 - **Secondary rail (optional)**: pass `secondarySidebar?: SecondarySidebarInfo`
     - Rail items render from `secondarySidebar.items`
     - Bottom actions render via `secondarySidebar.footerSlot`
+    - Optional `buttonProps` on the rail config apply to rail item triggers where supported.
 - **Mobile**:
     - Mobile dock items are derived from `NavbarItem.showOnMobile === true`
-    - Optional `showPrimaryActionButton` and `primaryActionButtonProps`
+    - Optional `showMobilePrimaryActionButton` and `mobilePrimaryActionButtonProps`
 - **Expand/collapse**:
     - Uncontrolled: `defaultIsExpanded`
     - Controlled: `isExpanded` + `onExpandedChange`
+    - On small viewports, expanded desktop chrome is collapsed (controlled callers receive `onExpandedChange(false)`).
 - **Active item selection**:
     - Uncontrolled: `defaultActiveItem`
     - Controlled: `activeItem` + `onActiveItemChange`
 - **Topbar**:
-    - Slot: `topbar?: ReactNode`
+    - Slot: `topbar?: ReactNode` — when omitted, no sticky `TopbarV2` wrapper is rendered.
+    - `rightActions?: ReactNode` — passed through to `TopbarV2` when `topbar` is set (layout follows `TopbarV2` breakpoints).
     - Auto-hide: `enableTopbarAutoHide?: boolean`
     - Controlled visibility: `isTopbarVisible` + `onTopbarVisibilityChange`
 
@@ -40,13 +44,14 @@
 
 ```
 ┌───────────────────────────────────────────────────────────────────────┐
-│ TopbarV2 (sticky)                                                     │
+│ TopbarV2 (sticky) — only when `topbar` is passed                     │
 ├───────────────────────────────────────────────────────────────────────┤
 │ ┌───────────────┐ ┌───────────────────────────────────────────────┐   │
-│ │ SecondaryRail │ │ PrimarySidebar (Directory)                     │   │
-│ │ (optional)    │ │ - Sections                                     │   │
-│ │ - items       │ │ - Items (single-line truncate + tooltip on hover)│  │
-│ │ - footerSlot  │ │ - Nested items (collapsible)                   │   │
+│ │ SecondaryRail │ │ Primary sidebar (Directory) when `data` has   │   │
+│ │ (optional)    │ │ items                                          │   │
+│ │ - items       │ │ - Sections                                     │   │
+│ │ - footerSlot  │ │ - Items (truncate + tooltip on hover)        │   │
+│ │               │ │ - Nested items (collapsible)                   │   │
 │ └───────────────┘ └───────────────────────────────────────────────┘   │
 │                                                                       │
 │ Main content (children)                                               │
@@ -70,7 +75,7 @@ Source: `packages/blend/lib/components/SidebarV2/types.ts`
 
 ### Navigation
 
-- `data?: DirectoryData[] | null`
+- `data?: DirectoryData[] | null` — if missing, null, or empty, the directory panel is not rendered.
 - `secondarySidebar?: SecondarySidebarInfo`
 
 ### Expand / collapse
@@ -83,8 +88,8 @@ Source: `packages/blend/lib/components/SidebarV2/types.ts`
 
 ### Mobile dock
 
-- `showPrimaryActionButton?: boolean`
-- `primaryActionButtonProps?: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>`
+- `showMobilePrimaryActionButton?: boolean`
+- `mobilePrimaryActionButtonProps?: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>`
 
 ### Active item
 
@@ -94,9 +99,9 @@ Source: `packages/blend/lib/components/SidebarV2/types.ts`
 
 ### Topbar
 
-- `topbar?: ReactNode`
+- `topbar?: ReactNode` — required for any sticky top bar; without it, `rightActions` and top-level `TopbarV2` are not mounted.
 - `merchantInfo?: MerchantInfo`
-- `rightActions?: ReactNode`
+- `rightActions?: ReactNode` — only applies when `topbar` is set.
 - `enableTopbarAutoHide?: boolean`
 - `defaultIsTopbarVisible?: boolean` (default: `true`)
 - `isTopbarVisible?: boolean`
@@ -104,18 +109,20 @@ Source: `packages/blend/lib/components/SidebarV2/types.ts`
 
 ---
 
-## Types (Data Model)
+## Types
+
+### Directory (`DirectoryData`, `NavbarItem`)
 
 Source: `packages/blend/lib/components/Directory/types.ts`
 
-### `DirectoryData`
+#### `DirectoryData`
 
 - `label?: string`
 - `items?: NavbarItem[]`
 - `isCollapsible?: boolean`
 - `defaultOpen?: boolean`
 
-### `NavbarItem`
+#### `NavbarItem`
 
 - `label: string`
 - `leftSlot?: ReactNode`
@@ -126,26 +133,36 @@ Source: `packages/blend/lib/components/Directory/types.ts`
 - `items?: NavbarItem[]` (nested children)
 - `showOnMobile?: boolean` (controls inclusion in mobile dock)
 
+### Secondary rail (`SecondarySidebarInfo`)
+
+Source: `packages/blend/lib/components/SidebarV2/types.ts`
+
+- `items: SecondarySidebarItem[]` (`label`, `value`, `icon`)
+- `selected: string`
+- `onSelect: (value: string) => void`
+- `buttonProps?: ButtonHTMLAttributes<HTMLButtonElement>`
+- `footerSlot?: ReactNode`
+
 ---
 
 ## Behavior
 
 ### Desktop
 
-- **Expanded**: primary sidebar renders full directory content.
-- **Collapsed (icon-only)**: primary sidebar becomes icon-only; tooltips show labels on hover.
+- **Expanded**: when `data` has items, the primary sidebar renders full directory content. With no directory data, only optional chrome (for example the secondary rail) may show when expanded.
+- **Collapsed (icon-only)**: when directory data exists, the primary sidebar becomes icon-only; tooltips show labels on hover.
 - **Intermediate (hover preview)**: when collapsed, hovering can temporarily show an intermediate preview state (reported via `onSidebarStateChange('intermediate')`).
 
 ### Mobile / small screens
 
-- Sidebar auto-collapses and renders a **floating mobile navigation dock** when there are items with `showOnMobile: true`.
-- The dock supports an optional primary action button and an overflow (“More”) expansion for additional items.
+- The desktop sidebar column is hidden; the layout uses main content plus a **floating mobile navigation dock** when there are items with `showOnMobile: true` (derived from flattened directory data).
+- The dock supports an optional primary action (`showMobilePrimaryActionButton` / `mobilePrimaryActionButtonProps`) and an overflow (“More”) expansion for additional items.
 
 ---
 
 ## Accessibility
 
-- **Keyboard shortcut**: `sidebarCollapseKey` toggles expansion when focus is not in an input/textarea/contenteditable element.
+- **Keyboard shortcut**: `sidebarCollapseKey` toggles expansion on **non-small** viewports when focus is not in an input, textarea, or `contenteditable` element (disabled on small screens where the desktop rail is hidden).
 - **ARIA**:
     - Sidebar exposes an accessible label for navigation regions.
     - Toggle buttons use `aria-label`, `aria-expanded`, and `aria-controls` where applicable.
@@ -191,7 +208,12 @@ const data: DirectoryData[] = [
 
 export function AppLayout() {
     return (
-        <SidebarV2 data={data} sidebarCollapseKey="/">
+        <SidebarV2
+            data={data}
+            sidebarCollapseKey="/"
+            topbar={<span>Page title</span>}
+            rightActions={<button type="button">Save</button>}
+        >
             <div>Page content</div>
         </SidebarV2>
     )

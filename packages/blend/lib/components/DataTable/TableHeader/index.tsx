@@ -297,10 +297,10 @@ const TableHeader = forwardRef<
 
         const extractFilterValues = (
             filters: typeof columnFilters
-        ): Record<string, string[] | { min: number; max: number }> => {
+        ): Record<string, string | string[] | { min: number; max: number }> => {
             const values: Record<
                 string,
-                string[] | { min: number; max: number }
+                string | string[] | { min: number; max: number }
             > = {}
 
             filters.forEach((filter) => {
@@ -321,7 +321,7 @@ const TableHeader = forwardRef<
                 ) {
                     values[filter.field] = filter.value
                 } else if (typeof filter.value === 'string') {
-                    values[filter.field] = [filter.value]
+                    values[filter.field] = filter.value
                 }
             })
 
@@ -775,6 +775,9 @@ const TableHeader = forwardRef<
 
                             if (Array.isArray(selectedValues)) {
                                 return selectedValues.length > 0
+                            }
+                            if (typeof selectedValues === 'string') {
+                                return selectedValues.trim() !== ''
                             }
                             if (
                                 typeof selectedValues === 'object' &&

@@ -5,6 +5,7 @@ export type TableFooterProps = {
     currentPage: number
     pageSize: number
     totalRows: number
+    visibleRows?: number
     isLoading?: boolean
     showSkeleton?: boolean
     hasData?: boolean
