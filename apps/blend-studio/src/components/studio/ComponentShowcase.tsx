@@ -38,7 +38,11 @@ import {
     GearSixIcon,
     WarningOctagonIcon,
 } from '@phosphor-icons/react'
-import { StatCardV2 } from '@juspay/blend-design-system'
+import {
+    StatCardV2,
+    StatCardV2Variant,
+    StatCardV2ChangeType,
+} from '@juspay/blend-design-system'
 
 interface ComponentShowcaseProps {
     theme?: 'light' | 'dark'
@@ -345,44 +349,50 @@ export const ComponentShowcase = forwardRef<
                         </div>
                     </PreviewCard>
 
-                    {/* <StatCardV2
-                 title={"title"}
-                 subtitle={"subtitle"}
-                 actionIcon={
-                    <GearSixIcon size={16} />
-                }
-                helpIconText={"helpText"}
-                value={"23%"}
-                variant={StatCardV2Variant.CHART}
-                options={{
-                                      tooltip: {
-                                          backgroundColor: '#181B25',
-                                          borderColor: '#181B25',
-                                          borderRadius: 8,
-                                          shadow: false,
-                                          useHTML: true,
-                                          style: {
-                                              color: '#FFFFFF',
-                                              fontSize: '10px',
-                                              fontWeight: '500',
-                                              lineHeight: '14px',
-                                          },
-                                          pointFormat:
-                                              'Value: <b>{point.y}%</b>',
-                                      },
-                                      series: [
-                                           {
-                                                  data: [
-                                                      9, 11, 13, 10, 12, 15, 18,
-                                                      17, 19, 21, 22,
-                                                  ],
-                                                  type: 'line',
-                                                  color: '#00A63E',
-                                              }
-                                         
-                                      ],
-                                  }}
-                /> */}
+                    <StatCardV2
+                        title={'title'}
+                        subtitle={'subtitle'}
+                        actionIcon={<GearSixIcon size={16} />}
+                        helpIconText={'helpText'}
+                        value={'23%'}
+                        variant={StatCardV2Variant.CHART}
+                        // options={
+                        //     {
+                        //               tooltip: {
+                        //                   backgroundColor: '#181B25',
+                        //                   borderColor: '#181B25',
+                        //                   borderRadius: 8,
+                        //                   shadow: false,
+                        //                   useHTML: true,
+                        //                   style: {
+                        //                       color: '#FFFFFF',
+                        //                       fontSize: '10px',
+                        //                       fontWeight: '500',
+                        //                       lineHeight: '14px',
+                        //                   },
+                        //                   pointFormat:
+                        //                       'Value: <b>{point.y}%</b>',
+                        //               },
+                        //               series: [
+                        //                   (() => {
+                        //                       const isIncrease = true
+
+                        //                       const baseColor = isIncrease
+                        //                           ? '#00A63E'
+                        //                           : '#F04438'
+                        //                       return {
+                        //                           data: [
+                        //                               9, 11, 13, 10, 12, 15, 18,
+                        //                               17, 19, 21, 22,
+                        //                           ],
+                        //                           type: 'line',
+                        //                           color: baseColor,
+                        //                       }
+                        //                   })(),
+                        //               ],
+                        //           }
+                        // }
+                    />
 
                     <PreviewCard
                         className={cardClassName}

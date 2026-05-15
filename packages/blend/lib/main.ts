@@ -90,8 +90,10 @@ export {
 } from './components/ProgressBarV2'
 export {
     StatCardV2,
+    StatCardV2Variant,
     StatCardV2ChangeType,
     StatCardV2ArrowDirection,
+    StatCardV2Alignment,
     type StatCardV2Props,
 } from './components/StatCardV2'
 export { AccordionV2, AccordionV2Item } from './components/AccordionV2'
