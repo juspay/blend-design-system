@@ -2,6 +2,7 @@
 export {
     default as scanDirectory,
     buildVersionPeerMap,
+    buildSidebarItemsWithCategories,
     type DocItem,
 } from './scanDirectory'
 export { getFileContent, type PageMetadata } from './getFileContent'

@@ -30,15 +30,16 @@ let make = () => {
   let items = [
     {label: "Home", href: "/"},
     {label: "Products", href: "/products"},
-    {label: "Laptops", href: "/products/laptops"}
+    {label: "Electronics", href: "/products/electronics"},
+    {label: "Laptops", href: "/products/electronics/laptops"}
   ]
 
-  <BreadcrumbV2Binding items={items} maxItems={3} />
+  <BreadcrumbV2 items={items} maxItems={3} />
 }`
 
     const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
-  ~items: array<{id?: string, label: string, href: string}>=?,
+  ~items: array<{id?: string, label: string, href: string, leftSlot?: React.element, rightSlot?: React.element, onClick?: ReactEvent.Mouse.t => unit}>=?,
   ~maxItems: int=?,
   ~children: React.element=?,
 ) => React.element = "BreadcrumbV2"`

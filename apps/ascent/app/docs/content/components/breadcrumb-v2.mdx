@@ -41,10 +41,13 @@ function MyComponent() {
     return (
         <BreadcrumbV2>
             <BreadcrumbV2.Item href="/">Home</BreadcrumbV2.Item>
-            <BreadcrumbV2.Separator>/</BreadcrumbV2.Separator>
             <BreadcrumbV2.Item href="/products">Products</BreadcrumbV2.Item>
-            <BreadcrumbV2.Separator>/</BreadcrumbV2.Separator>
-            <BreadcrumbV2.Page>Current Page</BreadcrumbV2.Page>
+            <BreadcrumbV2.Item href="/products/category">
+                Category
+            </BreadcrumbV2.Item>
+            <BreadcrumbV2.Item href="/products/category/item">
+                Current Page
+            </BreadcrumbV2.Item>
         </BreadcrumbV2>
     )
 }
@@ -238,32 +241,24 @@ You can style the BreadcrumbV2 component using the following tokens:
 
 ```tsx
 export type BreadcrumbV2TokensType = {
-    container: {
-        display: CSSObject['display']
-        alignItems: CSSObject['alignItems']
-        gap: CSSObject['gap']
-    }
+    gap: CSSObject['gap']
     item: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: {
-            default: CSSObject['color']
-            hover: CSSObject['color']
-            active: CSSObject['color']
+        padding: CSSObject['padding']
+        gap: CSSObject['gap']
+        text: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [key in BreadcrumbV2State]: CSSObject['color']
+            }
         }
-        textDecoration: CSSObject['textDecoration']
-    }
-    separator: {
-        color: CSSObject['color']
-        fontSize: CSSObject['fontSize']
-        margin: CSSObject['margin']
-    }
-    currentPage: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
     }
     ellipsis: {
+        color: CSSObject['color']
+        borderRadius: CSSObject['borderRadius']
+        size: number
+    }
+    separator: {
         color: CSSObject['color']
     }
 }

@@ -51,8 +51,8 @@ external make: (
   ~required: bool=?,
   ~error: bool=?,
   ~disabled: bool=?,
-  ~slot: {slot: React.element, maxHeight: string}=?,
-  ~maxLength: {label: int, subLabel: int}=?,
+  ~slot: {slot: React.element, maxHeight?: string}=?,
+  ~maxLength: {label?: int, subLabel?: int}=?,
 ) => React.element = "SwitchV2"`
 
     return (

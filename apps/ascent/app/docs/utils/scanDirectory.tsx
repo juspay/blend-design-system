@@ -181,4 +181,46 @@ export function buildVersionPeerMap(items: DocItem[]): Map<string, string> {
     return map
 }
 
+// Category builder for sidebar
+
+export function buildSidebarItemsWithCategories(items: DocItem[]): DocItem[] {
+    return items.map((item) => {
+        if (item.slug === 'components' && item.children) {
+            const componentsByCategory: Record<string, DocItem[]> = {}
+
+            item.children.forEach((child) => {
+                const category = child.category || 'Others'
+                if (!componentsByCategory[category]) {
+                    componentsByCategory[category] = []
+                }
+                componentsByCategory[category].push(child)
+            })
+
+            const categoryChildren: DocItem[] = Object.entries(
+                componentsByCategory
+            )
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([category, children]) => ({
+                    slug: category.toLowerCase().replace(/\s+/g, '-'),
+                    name: category,
+                    path: `${item.path}/category/${category.toLowerCase().replace(/\s+/g, '-')}`,
+                    children: children.sort((a, b) =>
+                        a.name.localeCompare(b.name)
+                    ),
+                }))
+
+            return { ...item, children: categoryChildren }
+        }
+
+        if (item.children) {
+            return {
+                ...item,
+                children: buildSidebarItemsWithCategories(item.children),
+            }
+        }
+
+        return item
+    })
+}
+
 export default scanDirectory

@@ -329,6 +329,18 @@ function MyComponent() {
         ],
         [
             {
+                content: 'virtualListOverscan',
+                hintText:
+                    'Number of items to render outside the visible viewport.',
+            },
+            {
+                content: 'number',
+                hintText: 'Extra items to render for smoother scrolling',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'onEndReached',
                 hintText:
                     'Callback fired when scrolling reaches the end of list.',
@@ -348,6 +360,30 @@ function MyComponent() {
             {
                 content: 'boolean',
                 hintText: 'true indicates more items available',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'loadingComponent',
+                hintText:
+                    'Custom loading UI shown during infinite scroll loading.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Custom spinner or loading indicator',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'endReachedThreshold',
+                hintText:
+                    'Pixel threshold before end of list to trigger onEndReached.',
+            },
+            {
+                content: 'number',
+                hintText: 'Pixel offset from bottom of list',
             },
             { content: '' },
         ],

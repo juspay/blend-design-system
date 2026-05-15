@@ -32,7 +32,7 @@ function MyComponent() {
 let make = () => {
   let (checked, setChecked) = React.useState(() => false)
 
-  <CheckboxV2Binding
+  <CheckboxV2
     checked={checked}
     onCheckedChange={newChecked => setChecked(_ => newChecked)}
     size=#md

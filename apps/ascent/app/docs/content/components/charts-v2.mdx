@@ -143,18 +143,18 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
-## ChartV2Container
+## ChartContainerV2
 
 A wrapper component for chart layouts:
 
 ```tsx
-import { ChartV2Container, ChartV2Header } from '@juspay/blend-design-system'
-;<ChartV2Container>
-    <ChartV2Header>
+import { ChartContainerV2, ChartHeaderV2 } from '@juspay/blend-design-system'
+;<ChartContainerV2>
+    <ChartHeaderV2>
         <h3>Sales Overview</h3>
-    </ChartV2Header>
+    </ChartHeaderV2>
     <ChartV2 options={options} />
-</ChartV2Container>
+</ChartContainerV2>
 ```
 
 ## ChartV2Legend
@@ -171,6 +171,26 @@ import { ChartV2Legend } from '@juspay/blend-design-system'
     ]}
     layout="horizontal"
 />
+```
+
+## ChartV2Fullscreen
+
+Wrapper component for fullscreen chart functionality:
+
+```tsx
+import { ChartV2Fullscreen, ChartV2 } from '@juspay/blend-design-system'
+;<ChartV2Fullscreen>
+    <ChartV2 options={options} />
+</ChartV2Fullscreen>
+```
+
+## ChartV2Skeleton
+
+Standalone skeleton loader for chart loading states:
+
+```tsx
+import { ChartV2Skeleton } from '@juspay/blend-design-system'
+;<ChartV2Skeleton show={true} variant="rectangular" height={300} />
 ```
 
 ## Component Tokens

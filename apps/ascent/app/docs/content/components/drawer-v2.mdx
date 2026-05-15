@@ -18,22 +18,35 @@ StorybookLink: components-drawer-drawerv2--docs
 ## Usage
 
 ```tsx
-import { DrawerV2 } from '@juspay/blend-design-system'
+import {
+    DrawerV2,
+    DrawerV2Content,
+    DrawerV2Overlay,
+    DrawerV2Portal,
+    DrawerV2Title,
+    DrawerV2Trigger,
+    ButtonV2,
+    ButtonV2Type,
+} from '@juspay/blend-design-system'
 
 function MyComponent() {
-    const [open, setOpen] = useState(false)
-
     return (
-        <DrawerV2
-            open={open}
-            onOpenChange={setOpen}
-            direction="right"
-            size="md"
-        >
-            <div>
-                <h2>Drawer Content</h2>
-                <p>Your content here</p>
-            </div>
+        <DrawerV2>
+            <DrawerV2Trigger asChild>
+                <ButtonV2
+                    text="Open Drawer"
+                    buttonType={ButtonV2Type.PRIMARY}
+                />
+            </DrawerV2Trigger>
+            <DrawerV2Portal>
+                <DrawerV2Overlay />
+                <DrawerV2Content>
+                    <DrawerV2Title>Drawer Title</DrawerV2Title>
+                    <div>
+                        <p>Your content here</p>
+                    </div>
+                </DrawerV2Content>
+            </DrawerV2Portal>
         </DrawerV2>
     )
 }

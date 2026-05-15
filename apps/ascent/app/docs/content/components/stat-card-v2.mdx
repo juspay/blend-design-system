@@ -93,7 +93,7 @@ import { StatCardV2, StatCardV2Variant } from '@juspay/blend-design-system'
                 content: 'StatCardV2Variant',
                 hintText: 'Enum for card type',
             },
-            { content: 'CHART, PROGRESS_BAR, NUMBER' },
+            { content: 'chart, progress, number' },
         ],
         [
             {
@@ -282,7 +282,7 @@ import { StatCardV2, StatCardV2Variant } from '@juspay/blend-design-system'
                 content: 'StatCardV2ChangeType',
                 hintText: 'Enum for change direction',
             },
-            { content: 'INCREASE, DECREASE' },
+            { content: 'increase, decrease' },
         ],
         [
             {
@@ -293,7 +293,7 @@ import { StatCardV2, StatCardV2Variant } from '@juspay/blend-design-system'
                 content: 'StatCardV2ArrowDirection',
                 hintText: 'Enum for arrow direction',
             },
-            { content: 'UP, DOWN' },
+            { content: 'up, down' },
         ],
         [
             {
@@ -340,46 +340,75 @@ You can style the StatCardV2 component using the following tokens:
 
 ```tsx
 export type StatCardV2TokensType = {
-    container: {
-        padding: CSSObject['padding']
-        borderRadius: CSSObject['borderRadius']
-        border: CSSObject['border']
-        background: CSSObject['background']
-        boxShadow: CSSObject['boxShadow']
-    }
-    header: {
+    height: CSSObject['height']
+    width: CSSObject['width']
+    maxWidth: CSSObject['maxWidth']
+    minWidth: CSSObject['minWidth']
+    paddingTop: CSSObject['paddingTop']
+    paddingBottom: CSSObject['paddingBottom']
+    paddingLeft: CSSObject['paddingLeft']
+    paddingRight: CSSObject['paddingRight']
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    backgroundColor: CSSObject['backgroundColor']
+    boxShadow: CSSObject['boxShadow']
+    topContainer: {
         gap: CSSObject['gap']
-        marginBottom: CSSObject['marginBottom']
-    }
-    title: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-    }
-    value: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-    }
-    subtitle: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    change: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        gap: CSSObject['gap']
-        colors: {
-            increase: CSSObject['color']
-            decrease: CSSObject['color']
+        dataContainer: {
+            gap: CSSObject['gap']
+            titleContainer: {
+                gap: CSSObject['gap']
+                title: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                    lineHeight: CSSObject['lineHeight']
+                }
+                helpIcon: {
+                    width: CSSObject['width']
+                    height: CSSObject['height']
+                    color: {
+                        default: CSSObject['color']
+                        hover: CSSObject['color']
+                    }
+                }
+            }
+            statsContainer: {
+                gap: CSSObject['gap']
+                value: {
+                    [key in StatCardV2Variant]: {
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                        color: CSSObject['color']
+                        lineHeight: CSSObject['lineHeight']
+                    }
+                }
+                changeContainer: {
+                    gap: CSSObject['gap']
+                    change: {
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                        color: {
+                            [key in StatCardV2ChangeType]: CSSObject['color']
+                        }
+                        lineHeight: CSSObject['lineHeight']
+                    }
+                    arrow: {
+                        width: CSSObject['width']
+                        height: CSSObject['height']
+                        color: {
+                            [key in StatCardV2ChangeType]: CSSObject['color']
+                        }
+                    }
+                }
+            }
+            subtitle: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+                lineHeight: CSSObject['lineHeight']
+            }
         }
-    }
-    chart: {
-        height: CSSObject['height']
-        marginTop: CSSObject['marginTop']
-    }
-    progressBar: {
-        marginTop: CSSObject['marginTop']
     }
 }
 ```

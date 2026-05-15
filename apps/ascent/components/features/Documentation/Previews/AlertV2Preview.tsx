@@ -51,9 +51,12 @@ external make: (
   ~subType: [#subtle | #noFill]=?,
   ~heading: string=?,
   ~description: string=?,
-  ~slot: {slot: React.element, maxHeight: string}=?,
-  ~actions: {position: [#bottom | #right], primaryAction: {text: string, onClick: unit => unit}}=?,
-  ~closeButton: {show: bool, onClick: unit => unit}=?,
+  ~slot: {slot: React.element, maxHeight?: string}=?,
+  ~actions: {position?: [#bottom | #right], primaryAction?: {text: string, onClick: ReactEvent.Mouse.t => unit}, secondaryAction?: {text: string, onClick: ReactEvent.Mouse.t => unit}}=?,
+  ~closeButton: {show?: bool, onClick?: ReactEvent.Mouse.t => unit}=?,
+  ~width: string=?,
+  ~maxWidth: string=?,
+  ~minWidth: string=?,
 ) => React.element = "AlertV2"`
 
     return (

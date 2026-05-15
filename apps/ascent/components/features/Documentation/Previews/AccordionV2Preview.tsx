@@ -17,13 +17,13 @@ function MyComponent() {
             defaultValue="item-1"
         >
             <AccordionV2Item value="item-1" title="Getting Started">
-                Learn the basics of using our platform.
+                <div className="p-2">Learn the basics of using our platform.</div>
             </AccordionV2Item>
             <AccordionV2Item value="item-2" title="Advanced Features">
-                Explore advanced capabilities and settings.
+                <div className="p-2">Explore advanced capabilities and settings.</div>
             </AccordionV2Item>
             <AccordionV2Item value="item-3" title="API Reference">
-                Complete API documentation for developers.
+                <div className="p-2">Complete API documentation for developers.</div>
             </AccordionV2Item>
         </AccordionV2>
     )
@@ -50,6 +50,9 @@ external accordionV2: (
   ~value: string=?,
   ~isMultiple: bool=?,
   ~onValueChange: string => unit=?,
+  ~width: string=?,
+  ~maxWidth: string=?,
+  ~minWidth: string=?,
   ~children: React.element,
 ) => React.element = "AccordionV2"
 
@@ -60,7 +63,9 @@ external accordionV2Item: (
   ~subtext: string=?,
   ~leftSlot: React.element=?,
   ~rightSlot: React.element=?,
+  ~subtextSlot: React.element=?,
   ~isDisabled: bool=?,
+  ~chevronPosition: [#left | #right]=?,
   ~children: React.element,
 ) => React.element = "AccordionV2Item"`
 
@@ -76,13 +81,19 @@ external accordionV2Item: (
                     defaultValue="item-1"
                 >
                     <AccordionV2Item value="item-1" title="Getting Started">
-                        Learn the basics of using our platform.
+                        <div className="p-2">
+                            Learn the basics of using our platform.
+                        </div>
                     </AccordionV2Item>
                     <AccordionV2Item value="item-2" title="Advanced Features">
-                        Explore advanced capabilities and settings.
+                        <div className="p-2">
+                            Explore advanced capabilities and settings.
+                        </div>
                     </AccordionV2Item>
                     <AccordionV2Item value="item-3" title="API Reference">
-                        Complete API documentation for developers.
+                        <div className="p-2">
+                            Complete API documentation for developers.
+                        </div>
                     </AccordionV2Item>
                 </AccordionV2>
             </div>

@@ -46,10 +46,18 @@ external make: (
   ~onChange: ReactEvent.Form.t => unit,
   ~placeholder: string,
   ~label: string=?,
+  ~sublabel: string=?,
   ~size: [#sm | #md | #lg]=?,
   ~rows: int=?,
   ~resize: [#none | #both | #horizontal | #vertical | #block | #inline]=?,
   ~error: {show: bool, message?: string}=?,
+  ~disabled: bool=?,
+  ~autoFocus: bool=?,
+  ~required: bool=?,
+  ~hintText: string=?,
+  ~helpIconText: string=?,
+  ~onFocus: ReactEvent.Focus.t => unit=?,
+  ~onBlur: ReactEvent.Focus.t => unit=?,
 ) => React.element = "TextAreaV2"`
 
     const [value, setValue] = useState('')

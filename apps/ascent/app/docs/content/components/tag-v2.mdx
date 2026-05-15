@@ -174,31 +174,54 @@ You can style the TagV2 component using the following tokens:
 
 ```tsx
 export type TagV2TokensType = {
-    container: {
-        padding: {
-            [key in TagV2Size]: CSSObject['padding']
+    border: {
+        [key in TagV2Type]: {
+            [key in TagV2Color]: CSSObject['border']
         }
-        borderRadius: {
+    }
+    borderRadius: {
+        [key in TagV2Size]: {
             [key in TagV2SubType]: CSSObject['borderRadius']
         }
-        gap: CSSObject['gap']
+    }
+    backgroundColor: {
+        [key in TagV2Type]: {
+            [key in TagV2Color]: CSSObject['backgroundColor']
+        }
+    }
+    height: {
+        [key in TagV2Size]: CSSObject['height']
+    }
+    padding: {
+        [key in TagV2PaddingDirection]: {
+            [key in TagV2Size]: CSSObject['padding']
+        }
+    }
+    gap: CSSObject['gap']
+    leftSlot: {
+        maxHeight: {
+            [key in TagV2Size]: CSSObject['maxHeight']
+        }
+    }
+    rightSlot: {
+        maxHeight: {
+            [key in TagV2Size]: CSSObject['maxHeight']
+        }
+    }
+    text: {
+        color: {
+            [key in TagV2Type]: {
+                [key in TagV2Color]: CSSObject['color']
+            }
+        }
         fontSize: {
             [key in TagV2Size]: CSSObject['fontSize']
         }
-        fontWeight: CSSObject['fontWeight']
-    }
-    variants: {
-        [key in TagV2Type]: {
-            [key in TagV2Color]: {
-                background: CSSObject['background']
-                color: CSSObject['color']
-                border: CSSObject['border']
-            }
+        fontWeight: {
+            [key in TagV2Size]: CSSObject['fontWeight']
         }
-    }
-    slot: {
-        maxHeight: {
-            [key in TagV2Size]: CSSObject['maxHeight']
+        lineHeight: {
+            [key in TagV2Size]: CSSObject['lineHeight']
         }
     }
 }

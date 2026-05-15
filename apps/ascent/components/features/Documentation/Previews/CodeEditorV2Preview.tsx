@@ -47,7 +47,22 @@ external make: (
   ~placeholder: string=?,
   ~readOnly: bool=?,
   ~disabled: bool=?,
-  ~header: {showHeader?: bool, title?: string, showCopyButton?: bool}=?,
+  ~header: {showHeader?: bool, title?: string, leftSlot?: React.element, rightSlot?: React.element, showCopyButton?: bool}=?,
+  ~autoFocus: bool=?,
+  ~onFocus: unit => unit=?,
+  ~onBlur: unit => unit=?,
+  ~diff: bool=?,
+  ~originalValue: string=?,
+  ~renderSideBySide: bool=?,
+  ~isDiffUnchangedCollapsed: bool=?,
+  ~diffContextLines: int=?,
+  ~diffExpandChunk: int=?,
+  ~width: string=?,
+  ~maxWidth: string=?,
+  ~minWidth: string=?,
+  ~height: string=?,
+  ~maxHeight: string=?,
+  ~minHeight: string=?,
 ) => React.element = "CodeEditorV2"`
 
     const [code, setCode] = useState('const greeting = "Hello World";')

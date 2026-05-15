@@ -148,7 +148,18 @@ import { TextInputV2 } from '@juspay/blend-design-system'
                 content: 'InputSizeV2',
                 hintText: 'Enum for input size',
             },
-            { content: 'SM, MD, LG' },
+            { content: 'sm, md, lg' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, the input is non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the input',
+            },
+            { content: '' },
         ],
         [
             {
@@ -231,48 +242,130 @@ You can style the TextInputV2 component using the following tokens:
 
 ```tsx
 export type TextInputV2TokensType = {
-    container: {
-        gap: CSSObject['gap']
-    }
-    label: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-    }
-    subLabel: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    input: {
-        height: {
-            [key in InputSizeV2]: CSSObject['height']
+    gap: CSSObject['gap']
+    topContainer: {
+        label: {
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
         }
-        padding: CSSObject['padding']
-        borderRadius: CSSObject['borderRadius']
+        subLabel: {
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+        }
+        required: {
+            color: CSSObject['color']
+        }
+        helpIcon: {
+            width: {
+                [key in InputSizeV2]: CSSObject['width']
+            }
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+        }
+    }
+    inputContainer: {
+        gap: CSSObject['gap']
+        placeholder: {
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+        }
+        inputText: {
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+        }
+        borderRadius: {
+            [key in InputSizeV2]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        padding: {
+            top: {
+                [key in InputSizeV2]: CSSObject['padding']
+            }
+            right: {
+                [key in InputSizeV2]: CSSObject['padding']
+            }
+            bottom: {
+                [key in InputSizeV2]: CSSObject['padding']
+            }
+            left: {
+                [key in InputSizeV2]: CSSObject['padding']
+            }
+        }
         border: {
-            default: CSSObject['border']
-            hover: CSSObject['border']
-            focus: CSSObject['border']
-            error: CSSObject['border']
-            disabled: CSSObject['border']
+            [key in InputStateV2]: CSSObject['border']
         }
-        background: {
-            default: CSSObject['background']
-            disabled: CSSObject['background']
+        backgroundColor: {
+            [key in InputStateV2]: CSSObject['backgroundColor']
         }
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
     }
-    hintText: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    errorText: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    slot: {
-        gap: CSSObject['gap']
+    bottomContainer: {
+        hintText: {
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+        }
+        errorMessage: {
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+            color: CSSObject['color']
+        }
     }
 }
 ```

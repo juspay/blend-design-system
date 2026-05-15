@@ -32,7 +32,7 @@ function MyComponent() {
 let make = () => {
   let (selected, setSelected) = React.useState(() => "option1")
 
-  <RadioV2Binding
+  <RadioV2
     checked={selected === "option1"}
     onCheckedChange={_ => setSelected(_ => "option1")}
     size=#md

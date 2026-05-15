@@ -164,15 +164,51 @@ function MyComponent() {
         ],
         [
             {
-                content: 'fullWidth',
+                content: 'minWidth',
                 hintText:
-                    'When true, the button expands to fill 100% of its container width.',
+                    'Optional minimum width value. Accepts CSS width values or number (pixels).',
             },
             {
-                content: 'boolean',
-                hintText: 'Full width mode',
+                content: 'string | number',
+                hintText: 'CSS min-width value',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText:
+                    'Optional maximum width value. Accepts CSS width values or number (pixels).',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Configuration for skeleton loading state.',
+            },
+            {
+                content:
+                    '{ showSkeleton?: boolean; skeletonVariant?: SkeletonVariant }',
+                hintText: 'Skeleton configuration object',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'state',
+                hintText:
+                    'Override the visual state of the button (for controlled styling).',
+            },
+            {
+                content: 'ButtonV2State',
+                hintText: 'Enum for button state',
+            },
+            { content: 'DEFAULT, HOVER, ACTIVE, DISABLED' },
         ],
         [
             {

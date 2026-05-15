@@ -56,6 +56,15 @@ external make: (
   ~secondaryAction: React.element=?,
   ~onSecondaryActionClick: unit => unit=?,
   ~disabled: bool=?,
+  ~topContent: React.element=?,
+  ~topQueries: array<{id: string, text: string}>=?,
+  ~onTopQuerySelect: {id: string, text: string} => unit=?,
+  ~topQueriesMaxHeight: int=?,
+  ~textareaMaxHeight: int=?,
+  ~attachedFiles: array<{id: string, name: string, type: string}>=?,
+  ~onAttachFiles: array<File.t> => unit=?,
+  ~onFileRemove: string => unit=?,
+  ~onFileClick: {id: string, name: string, type: string} => unit=?,
 ) => React.element = "ChatInputV2"`
 
     const message = 'hello'

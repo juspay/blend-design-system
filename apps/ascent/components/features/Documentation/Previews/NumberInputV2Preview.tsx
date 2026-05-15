@@ -32,7 +32,7 @@ let make = () => {
   let (value, setValue) = React.useState(() => 0)
 
   <NumberInputV2Binding
-    label={"text": "Quantity"}
+    label={{"text": "Quantity"}}
     value={value}
     onChange={e =>
       setValue(
@@ -52,13 +52,22 @@ let make = () => {
 external make: (
   ~value: int,
   ~onChange: ReactEvent.Form.t => unit,
-  ~label: {"text": string, "subtext": string}=?,
+  ~label: {"text": string, "subtext"?: string}=?,
   ~size: [#sm | #md | #lg]=?,
   ~min: int=?,
   ~max: int=?,
   ~step: int=?,
   ~placeholder: string=?,
   ~error: {show: bool, message?: string}=?,
+  ~slot: {left?: React.element, right?: React.element}=?,
+  ~unit: string=?,
+  ~unitDirection: [#left | #right]=?,
+  ~preventNegative: bool=?,
+  ~name: string=?,
+  ~onBlur: ReactEvent.Focus.t => unit=?,
+  ~onFocus: ReactEvent.Focus.t => unit=?,
+  ~helpIconText: string=?,
+  ~hintText: string=?,
 ) => React.element = "NumberInputV2"`
 
     const [value, setValue] = useState(0)

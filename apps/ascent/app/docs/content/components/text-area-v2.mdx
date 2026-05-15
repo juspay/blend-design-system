@@ -232,46 +232,32 @@ You can style the TextAreaV2 component using the following tokens:
 
 ```tsx
 export type TextAreaV2TokensType = {
-    container: {
+    gap: CSSObject['gap']
+    topContainer: InputLabelsV2Tokens
+    inputContainer: {
         gap: CSSObject['gap']
-    }
-    label: {
+        placeholder: {
+            transition: CSSObject['transition']
+            color: { [key in InputStateV2]: CSSObject['color'] }
+            fontSize: { [key in InputSizeV2]: CSSObject['fontSize'] }
+            fontWeight: { [key in InputSizeV2]: CSSObject['fontWeight'] }
+            lineHeight: { [key in InputSizeV2]: CSSObject['lineHeight'] }
+        }
+        lineHeight: { [key in InputSizeV2]: CSSObject['lineHeight'] }
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-    }
-    sublabel: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    textarea: {
         padding: {
-            [key in InputSizeV2]: CSSObject['padding']
+            top: { [key in InputSizeV2]: CSSObject['padding'] }
+            right: { [key in InputSizeV2]: CSSObject['padding'] }
+            bottom: { [key in InputSizeV2]: CSSObject['padding'] }
+            left: { [key in InputSizeV2]: CSSObject['padding'] }
         }
         borderRadius: CSSObject['borderRadius']
-        border: {
-            default: CSSObject['border']
-            hover: CSSObject['border']
-            focus: CSSObject['border']
-            error: CSSObject['border']
-            disabled: CSSObject['border']
-        }
-        background: {
-            default: CSSObject['background']
-            disabled: CSSObject['background']
-        }
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-        lineHeight: CSSObject['lineHeight']
-        resize: CSSObject['resize']
+        boxShadow: CSSObject['boxShadow']
+        border: { [key in InputStateV2]: CSSObject['border'] }
+        color: { [key in InputStateV2]: CSSObject['color'] }
+        backgroundColor: { [key in InputStateV2]: CSSObject['backgroundColor'] }
     }
-    hintText: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    errorText: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
+    bottomContainer: InputFooterV2Tokens
 }
 ```

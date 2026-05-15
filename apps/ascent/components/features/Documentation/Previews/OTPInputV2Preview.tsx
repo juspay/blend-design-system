@@ -37,8 +37,13 @@ external make: (
   ~length: int,
   ~value: string,
   ~onChange: string => unit,
-  ~masked: bool=?,
+  ~label: string=?,
+  ~sublabel: string=?,
   ~autoFocus: bool=?,
+  ~disabled: bool=?,
+  ~error: bool=?,
+  ~errorMessage: string=?,
+  ~hintText: string=?,
 ) => React.element = "OTPInputV2"`
 
     const [otp, setOtp] = useState('')
@@ -49,7 +54,14 @@ external make: (
             rescript={reCode}
             rescriptBinding={bindingCode}
         >
-            <OTPInputV2 length={6} value={otp} onChange={setOtp} />
+            <OTPInputV2
+                length={6}
+                value={otp}
+                onChange={setOtp}
+                label="Verification Code"
+                sublabel="Enter the 6-digit code"
+                hintText="Check your email for the code"
+            />
         </ComponentPreview>
     )
 }

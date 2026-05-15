@@ -170,47 +170,67 @@ You can style the AlertV2 component using the following tokens:
 
 ```tsx
 export type AlertV2TokensType = {
-    container: {
-        padding: CSSObject['padding']
-        borderRadius: CSSObject['borderRadius']
+    width: CSSObject['width']
+    maxWidth: CSSObject['maxWidth']
+    minWidth: CSSObject['minWidth']
+    border: {
+        [key in AlertV2Type]: {
+            [key in AlertV2SubType]: CSSObject['color']
+        }
+    }
+    borderRadius: CSSObject['borderRadius']
+    backgroundColor: {
+        [key in AlertV2Type]: {
+            [key in AlertV2SubType]: CSSObject['color']
+        }
+    }
+    padding: {
+        [key in AlertV2PaddingDirection]: CSSObject['padding']
+    }
+    gap: { [key in AlertV2ActionPosition]: CSSObject['gap'] }
+    slot: {
+        maxHeight: CSSObject['maxHeight']
+    }
+    mainContainer: {
         gap: CSSObject['gap']
-        border: {
-            [key in AlertV2Type]: {
-                [key in AlertV2SubType]: CSSObject['border']
+        content: {
+            gap: { [key in AlertV2ActionPosition]: CSSObject['gap'] }
+            textContainer: {
+                gap: CSSObject['gap']
+                heading: {
+                    color: { [key in AlertV2Type]: CSSObject['color'] }
+                    fontWeight: CSSObject['fontWeight']
+                    fontSize: CSSObject['fontSize']
+                    lineHeight: CSSObject['lineHeight']
+                }
+                description: {
+                    color: { [key in AlertV2Type]: CSSObject['color'] }
+                    fontWeight: CSSObject['fontWeight']
+                    fontSize: CSSObject['fontSize']
+                    lineHeight: CSSObject['lineHeight']
+                }
+            }
+            actionContainer: {
+                gap: CSSObject['gap']
+                primaryAction: {
+                    color: { [key in AlertV2Type]: CSSObject['color'] }
+                    fontWeight: CSSObject['fontWeight']
+                    fontSize: CSSObject['fontSize']
+                    lineHeight: CSSObject['lineHeight']
+                }
+                secondaryAction: {
+                    color: { [key in AlertV2Type]: CSSObject['color'] }
+                    fontWeight: CSSObject['fontWeight']
+                    fontSize: CSSObject['fontSize']
+                    lineHeight: CSSObject['lineHeight']
+                }
             }
         }
-        background: {
-            [key in AlertV2Type]: {
-                [key in AlertV2SubType]: CSSObject['background']
-            }
+        closeButton: {
+            color: { [key in AlertV2Type]: CSSObject['color'] }
+            height: CSSObject['height']
+            width: CSSObject['width']
         }
-    }
-    icon: {
-        color: {
-            [key in AlertV2Type]: CSSObject['color']
-        }
-        size: CSSObject['width']
-    }
-    heading: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: {
-            [key in AlertV2Type]: CSSObject['color']
-        }
-    }
-    description: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: {
-            [key in AlertV2Type]: CSSObject['color']
-        }
-    }
-    actions: {
-        gap: CSSObject['gap']
-    }
-    closeButton: {
-        color: CSSObject['color']
-        size: CSSObject['width']
     }
 }
 ```

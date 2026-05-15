@@ -198,23 +198,79 @@ function MyComponent() {
         ],
         [
             {
-                content: 'leftSlot',
-                hintText: 'Element displayed at the start of the input.',
+                content: 'slot',
+                hintText:
+                    'Elements displayed at the start and/or end of the input.',
             },
             {
-                content: 'ReactElement',
-                hintText: 'Left slot element',
+                content: '{ left?: ReactNode; right?: ReactNode }',
+                hintText: 'Slot configuration object',
             },
             { content: '' },
         ],
         [
             {
-                content: 'rightSlot',
-                hintText: 'Element displayed at the end of the input.',
+                content: 'unit',
+                hintText: 'Unit label displayed with the input value.',
             },
             {
-                content: 'ReactElement',
-                hintText: 'Right slot element',
+                content: 'string',
+                hintText: 'Unit text (e.g., "kg", "px")',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'unitDirection',
+                hintText: 'Position of the unit label relative to the input.',
+            },
+            {
+                content: 'NumberInputV2Direction',
+                hintText: 'LEFT or RIGHT',
+            },
+            { content: 'RIGHT' },
+        ],
+        [
+            {
+                content: 'preventNegative',
+                hintText: 'When true, prevents entering negative values.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true prevents negative values',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'Name attribute for the input element.',
+            },
+            {
+                content: 'string',
+                hintText: 'Input name',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onBlur',
+                hintText: 'Callback fired when input loses focus.',
+            },
+            {
+                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                hintText: 'Blur handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFocus',
+                hintText: 'Callback fired when input gains focus.',
+            },
+            {
+                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                hintText: 'Focus handler',
             },
             { content: '' },
         ],
@@ -230,55 +286,90 @@ You can style the NumberInputV2 component using the following tokens:
 
 ```tsx
 export type NumberInputV2TokensType = {
-    container: {
-        gap: CSSObject['gap']
-    }
-    label: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-    }
-    subLabel: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    input: {
-        height: {
-            [key in InputSizeV2]: CSSObject['height']
+    gap: CSSObject['gap']
+    topContainer: InputLabelsV2Tokens
+    inputContainer: {
+        placeholder: {
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
         }
-        padding: CSSObject['padding']
-        borderRadius: CSSObject['borderRadius']
+        fontSize: {
+            [key in InputSizeV2]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in InputSizeV2]: CSSObject['fontWeight']
+        }
+        color: {
+            [key in InputStateV2]: CSSObject['color']
+        }
+        borderRadius: {
+            [key in InputSizeV2]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        paddingTop: { [key in InputSizeV2]: CSSObject['paddingTop'] }
+        paddingRight: { [key in InputSizeV2]: CSSObject['paddingRight'] }
+        paddingBottom: { [key in InputSizeV2]: CSSObject['paddingBottom'] }
+        paddingLeft: { [key in InputSizeV2]: CSSObject['paddingLeft'] }
         border: {
-            default: CSSObject['border']
-            hover: CSSObject['border']
-            focus: CSSObject['border']
-            error: CSSObject['border']
-            disabled: CSSObject['border']
+            [key in InputStateV2]: CSSObject['border']
         }
-        background: {
-            default: CSSObject['background']
-            disabled: CSSObject['background']
+        lineHeight: {
+            [key in InputSizeV2]: CSSObject['lineHeight']
         }
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    controls: {
-        gap: CSSObject['gap']
-        button: {
-            size: CSSObject['width']
-            borderRadius: CSSObject['borderRadius']
-            border: CSSObject['border']
-            background: CSSObject['background']
-            color: CSSObject['color']
+        backgroundColor: {
+            [key in InputStateV2]: CSSObject['backgroundColor']
+        }
+        stepperButton: {
+            width: {
+                [key in InputSizeV2]: CSSObject['width']
+            }
+            backgroundColor: {
+                [key in InputStateV2]: CSSObject['backgroundColor']
+            }
+            icon: {
+                color: {
+                    [key in InputStateV2]: CSSObject['color']
+                }
+                width: {
+                    [key in InputSizeV2]: CSSObject['width']
+                }
+            }
+        }
+        slot: {
+            left: {
+                width: { [key in InputSizeV2]: CSSObject['width'] }
+                height: { [key in InputSizeV2]: CSSObject['height'] }
+                margin: { [key in InputSizeV2]: CSSObject['margin'] }
+            }
+            right: {
+                width: { [key in InputSizeV2]: CSSObject['width'] }
+                height: { [key in InputSizeV2]: CSSObject['height'] }
+                margin: { [key in InputSizeV2]: CSSObject['margin'] }
+            }
         }
     }
-    hintText: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
+    unit: {
+        fontSize: { [key in InputSizeV2]: CSSObject['fontSize'] }
+        fontWeight: { [key in InputSizeV2]: CSSObject['fontWeight'] }
+        paddingTop: { [key in InputSizeV2]: CSSObject['paddingTop'] }
+        paddingRight: { [key in InputSizeV2]: CSSObject['paddingRight'] }
+        paddingBottom: { [key in InputSizeV2]: CSSObject['paddingBottom'] }
+        paddingLeft: { [key in InputSizeV2]: CSSObject['paddingLeft'] }
+        borderRadius: { [key in InputSizeV2]: CSSObject['borderRadius'] }
+        border: { [key in InputStateV2]: CSSObject['border'] }
+        color: { [key in InputStateV2]: CSSObject['color'] }
     }
-    errorText: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
+    floatingLabels: FloatingLabelsV2Tokens
+    bottomContainer: InputFooterV2Tokens
 }
 ```

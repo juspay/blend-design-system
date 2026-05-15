@@ -139,6 +139,18 @@ function MyComponent() {
         ],
         [
             {
+                content: 'disabled',
+                hintText:
+                    'When true, disables the switch interaction and applies disabled styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Disabled state',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'slot',
                 hintText:
                     'Optional custom element displayed after the label. Configurable with maxHeight.',
@@ -185,7 +197,7 @@ export type SwitchV2TokensType = {
         thumb: {
             backgroundColor: CSSObject['backgroundColor']
             border: CSSObject['border']
-            width: CSSObject['width']
+            width: { [key in SelectorV2Size]: CSSObject['width'] }
             height: { [key in SelectorV2Size]: CSSObject['height'] }
             outline: CSSObject['outline']
         }
@@ -195,8 +207,8 @@ export type SwitchV2TokensType = {
         label: {
             gap: CSSObject['gap']
             color: { [key in SelectorV2InteractionState]: CSSObject['color'] }
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
+            fontSize: { [key in SelectorV2Size]: CSSObject['fontSize'] }
+            fontWeight: { [key in SelectorV2Size]: CSSObject['fontWeight'] }
             lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
             slot: {
                 maxHeight: { [key in SelectorV2Size]: CSSObject['maxHeight'] }
@@ -204,8 +216,8 @@ export type SwitchV2TokensType = {
         }
         subLabel: {
             color: { [key in SelectorV2InteractionState]: CSSObject['color'] }
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
+            fontSize: { [key in SelectorV2Size]: CSSObject['fontSize'] }
+            fontWeight: { [key in SelectorV2Size]: CSSObject['fontWeight'] }
             lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
         }
         required: {

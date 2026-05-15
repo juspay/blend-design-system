@@ -96,6 +96,7 @@ const previewComponents = {
         () => import('./Previews/MultiValueInputV2Preview')
     ),
     ButtonV2Preview: dyn(() => import('./Previews/ButtonV2Preview')),
+    ButtonGroupV2Preview: dyn(() => import('./Previews/ButtonGroupV2Preview')),
     CheckboxV2Preview: dyn(() => import('./Previews/CheckboxV2Preview')),
     RadioV2Preview: dyn(() => import('./Previews/RadioV2Preview')),
     SwitchV2Preview: dyn(() => import('./Previews/SwitchV2Preview')),

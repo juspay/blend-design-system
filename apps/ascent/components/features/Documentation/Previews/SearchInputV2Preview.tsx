@@ -39,7 +39,15 @@ external make: (
   ~value: string,
   ~onChange: ReactEvent.Form.t => unit,
   ~placeholder: string=?,
-  ~loading: bool=?,
+  ~allowClear: bool=?,
+  ~onClear: unit => unit=?,
+  ~clearIcon: React.element=?,
+  ~leftSlot: React.element=?,
+  ~rightSlot: React.element=?,
+  ~error: bool=?,
+  ~disabled: bool=?,
+  ~onFocus: ReactEvent.Focus.t => unit=?,
+  ~onBlur: ReactEvent.Focus.t => unit=?,
 ) => React.element = "SearchInputV2"`
 
     const [query, setQuery] = useState('')

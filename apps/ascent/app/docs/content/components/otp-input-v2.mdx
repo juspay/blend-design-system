@@ -132,6 +132,39 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'helpIconHintText',
+                hintText: 'Tooltip text for the help icon next to the label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help icon tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper text content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'form',
+                hintText: 'Form ID to associate with the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Form identifier',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
@@ -144,31 +177,27 @@ You can style the OTPInputV2 component using the following tokens:
 
 ```tsx
 export type OTPInputV2TokensType = {
-    container: {
+    gap: CSSObject['gap']
+    topContainer: InputLabelsV2Tokens
+    inputContainer: {
         gap: CSSObject['gap']
+        input: {
+            height: CSSObject['height']
+            width: CSSObject['width']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+            borderRadius: CSSObject['borderRadius']
+            border: {
+                [key in InputStateV2]: CSSObject['border']
+            }
+            backgroundColor: {
+                [key in InputStateV2]: CSSObject['backgroundColor']
+            }
+        }
     }
-    input: {
-        width: {
-            [key in InputSizeV2]: CSSObject['width']
-        }
-        height: {
-            [key in InputSizeV2]: CSSObject['height']
-        }
-        borderRadius: CSSObject['borderRadius']
-        border: {
-            default: CSSObject['border']
-            focus: CSSObject['border']
-            error: CSSObject['border']
-            disabled: CSSObject['border']
-        }
-        background: {
-            default: CSSObject['background']
-            disabled: CSSObject['background']
-        }
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        textAlign: CSSObject['textAlign']
-        color: CSSObject['color']
-    }
+    bottomContainer: InputFooterV2Tokens
 }
 ```

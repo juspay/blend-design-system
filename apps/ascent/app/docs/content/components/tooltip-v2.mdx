@@ -112,7 +112,7 @@ import { TooltipV2, TooltipV2SlotDirection } from '@juspay/blend-design-system'
                 content: 'TooltipV2Side',
                 hintText: 'Enum for tooltip position',
             },
-            { content: 'TOP, RIGHT, BOTTOM, LEFT' },
+            { content: 'top, right, bottom, left' },
         ],
         [
             {
@@ -123,7 +123,7 @@ import { TooltipV2, TooltipV2SlotDirection } from '@juspay/blend-design-system'
                 content: 'TooltipV2Align',
                 hintText: 'Enum for alignment',
             },
-            { content: 'START, CENTER, END' },
+            { content: 'start, center, end' },
         ],
         [
             {
@@ -146,7 +146,7 @@ import { TooltipV2, TooltipV2SlotDirection } from '@juspay/blend-design-system'
                 content: 'TooltipV2Size',
                 hintText: 'Enum for tooltip size',
             },
-            { content: 'SM, MD, LG' },
+            { content: 'sm, md, lg' },
         ],
         [
             {
@@ -169,7 +169,7 @@ import { TooltipV2, TooltipV2SlotDirection } from '@juspay/blend-design-system'
                 content: 'TooltipV2SlotDirection',
                 hintText: 'Enum for slot position',
             },
-            { content: 'LEFT, RIGHT' },
+            { content: 'left, right' },
         ],
         [
             {
@@ -239,30 +239,31 @@ You can style the TooltipV2 component using the following tokens:
 
 ```tsx
 export type TooltipV2TokensType = {
-    content: {
-        padding: {
-            [key in TooltipV2Size]: CSSObject['padding']
-        }
-        borderRadius: CSSObject['borderRadius']
-        background: CSSObject['background']
-        boxShadow: CSSObject['boxShadow']
-        maxWidth: {
-            [key in TooltipV2Size]: CSSObject['maxWidth']
-        }
+    background: CSSObject['backgroundColor']
+    borderRadius: {
+        [key in TooltipV2Size]: CSSObject['borderRadius']
+    }
+    maxWidth: {
+        [key in TooltipV2Size]: CSSObject['maxWidth']
+    }
+    padding: {
+        [key in TooltipV2Size]: CSSObject['padding']
+    }
+    gap: {
+        [key in TooltipV2Size]: CSSObject['gap']
     }
     text: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
         color: CSSObject['color']
-        lineHeight: CSSObject['lineHeight']
+        fontWeight: {
+            [key in TooltipV2Size]: CSSObject['fontWeight']
+        }
+        fontSize: {
+            [key in TooltipV2Size]: CSSObject['fontSize']
+        }
+        lineHeight: {
+            [key in TooltipV2Size]: CSSObject['lineHeight']
+        }
     }
-    arrow: {
-        size: CSSObject['width']
-        height: CSSObject['height']
-        background: CSSObject['background']
-    }
-    slot: {
-        gap: CSSObject['gap']
-    }
+    zIndex: CSSObject['zIndex']
 }
 ```

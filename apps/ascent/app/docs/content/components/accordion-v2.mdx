@@ -278,45 +278,63 @@ You can style the AccordionV2 component using the following tokens:
 
 ```tsx
 export type AccordionV2TokensType = {
-    container: {
-        background: CSSObject['background']
-        borderRadius: CSSObject['borderRadius']
-        border: CSSObject['border']
+    gap: {
+        [key in AccordionV2Type]: CSSObject['gap']
     }
-    item: {
-        header: {
-            padding: CSSObject['padding']
-            gap: CSSObject['gap']
-            background: {
-                default: CSSObject['background']
-                hover: CSSObject['background']
-                active: CSSObject['background']
-                disabled: CSSObject['background']
-            }
-            border: {
-                default: CSSObject['border']
-                hover: CSSObject['border']
-                active: CSSObject['border']
-            }
-        }
+    borderRadius: {
+        [key in AccordionV2Type]: CSSObject['borderRadius']
+    }
+    trigger: {
         content: {
-            padding: CSSObject['padding']
-            background: CSSObject['background']
+            gap: CSSObject['gap']
         }
-        title: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
+        backgroundColor: {
+            [key in AccordionV2Type]: {
+                [key in AccordionV2State]: CSSObject['backgroundColor']
+            }
         }
-        subtext: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            color: CSSObject['color']
+        border: {
+            [key in AccordionV2Type]: {
+                [key in AccordionV2State]: CSSObject['border']
+            }
+        }
+        padding: {
+            [key in AccordionV2Type]: CSSObject['padding']
+        }
+        text: {
+            gap: CSSObject['gap']
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
+                color: {
+                    [key in AccordionV2State]: CSSObject['color']
+                }
+            }
+            subtext: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
+                gap: CSSObject['gap']
+                color: {
+                    [key in AccordionV2State]: CSSObject['color']
+                }
+            }
+        }
+        slot: {
+            height: CSSObject['height']
+        }
+    }
+    separator: {
+        color: {
+            [key in AccordionV2Type]: CSSObject['color']
         }
     }
     chevron: {
-        color: CSSObject['color']
-        size: CSSObject['width']
+        height: CSSObject['height']
+        color: {
+            [key in AccordionV2State]: CSSObject['color']
+        }
     }
 }
 ```

@@ -81,6 +81,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'OTPInputV2',
     'MultiValueInputV2',
     'ButtonV2',
+    'ButtonGroupV2',
     'SelectV2',
     'CheckboxV2',
     'RadioV2',

@@ -76,8 +76,8 @@ external make: (
   ~selectedValues: array<string>,
   ~onChange: string | array<string> => unit,
   ~items: array<'a>,
-  ~label: string=?,
-  ~placeholder: string=?,
+  ~label: string,
+  ~placeholder: string,
   ~selectionTagType: [#count | #text]=?,
   ~enableSelectAll: bool=?,
 ) => React.element = "MultiSelectV2"`

@@ -181,7 +181,7 @@ function MyComponent() {
                 content: 'MenuV2Alignment',
                 hintText: 'Enum for horizontal alignment',
             },
-            { content: 'START, CENTER, END' },
+            { content: 'start, center, end' },
         ],
         [
             {
@@ -192,7 +192,7 @@ function MyComponent() {
                 content: 'MenuV2Side',
                 hintText: 'Enum for menu position',
             },
-            { content: 'TOP, LEFT, RIGHT, BOTTOM' },
+            { content: 'top, left, right, bottom' },
         ],
         [
             {
@@ -284,6 +284,17 @@ function MyComponent() {
         ],
         [
             {
+                content: 'id',
+                hintText: 'Unique identifier for the menu item.',
+            },
+            {
+                content: 'string',
+                hintText: 'Item identifier',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'variant',
                 hintText: 'Visual style of the menu item.',
             },
@@ -291,7 +302,7 @@ function MyComponent() {
                 content: 'MenuV2ItemVariant',
                 hintText: 'Enum for item style',
             },
-            { content: 'DEFAULT, ACTION' },
+            { content: 'default, action' },
         ],
         [
             {
@@ -302,7 +313,7 @@ function MyComponent() {
                 content: 'MenuV2ItemActionType',
                 hintText: 'Enum for action type',
             },
-            { content: 'PRIMARY, DANGER' },
+            { content: 'primary, danger' },
         ],
         [
             {
@@ -348,6 +359,39 @@ function MyComponent() {
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'tooltipProps',
+                hintText: 'Configuration for item tooltip behavior.',
+            },
+            {
+                content: 'MenuV2ItemTooltipProps',
+                hintText: 'side, align, size, showArrow, delayDuration, offset',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableSubMenuSearch',
+                hintText: 'When true, enables search within submenu.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables submenu search',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subMenuSearchPlaceholder',
+                hintText: 'Placeholder text for submenu search input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Search placeholder text',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
@@ -360,53 +404,94 @@ You can style the MenuV2 component using the following tokens:
 
 ```tsx
 export type MenuV2TokensType = {
-    content: {
-        background: CSSObject['background']
-        borderRadius: CSSObject['borderRadius']
-        border: CSSObject['border']
-        boxShadow: CSSObject['boxShadow']
-        padding: CSSObject['padding']
-        minWidth: CSSObject['minWidth']
+    backgroundColor: CSSObject['backgroundColor']
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    boxShadow: CSSObject['boxShadow']
+    zIndex: CSSObject['zIndex']
+    minWidth: CSSObject['minWidth']
+    maxWidth: CSSObject['maxWidth']
+    paddingTop: CSSObject['paddingTop']
+    paddingRight: CSSObject['paddingRight']
+    paddingBottom: CSSObject['paddingBottom']
+    paddingLeft: CSSObject['paddingLeft']
+    searchIcon: {
+        width: CSSObject['width']
     }
     group: {
         label: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
+            lineHeight: CSSObject['lineHeight']
             color: CSSObject['color']
-            padding: CSSObject['padding']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+            marginTop: CSSObject['marginTop']
+            marginRight: CSSObject['marginRight']
+            marginBottom: CSSObject['marginBottom']
+            marginLeft: CSSObject['marginLeft']
         }
-        separator: {
-            borderTop: CSSObject['borderTop']
-            margin: CSSObject['margin']
-        }
-    }
-    item: {
-        padding: CSSObject['padding']
-        borderRadius: CSSObject['borderRadius']
-        gap: CSSObject['gap']
-        fontSize: CSSObject['fontSize']
-        color: {
-            default: CSSObject['color']
-            hover: CSSObject['color']
-            disabled: CSSObject['color']
-        }
-        background: {
-            default: CSSObject['background']
-            hover: CSSObject['background']
-            active: CSSObject['background']
-        }
-    }
-    subLabel: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    search: {
-        padding: CSSObject['padding']
-        input: {
+        item: {
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+            marginTop: CSSObject['marginTop']
+            marginRight: CSSObject['marginRight']
+            marginBottom: CSSObject['marginBottom']
+            marginLeft: CSSObject['marginLeft']
+            gap: CSSObject['gap']
             borderRadius: CSSObject['borderRadius']
-            border: CSSObject['border']
-            padding: CSSObject['padding']
+            backgroundColor: {
+                [key in MenuV2ItemVariant]: {
+                    [key in MenuV2ItemActionType]: {
+                        [key in MenuV2ItemStates]: CSSObject['backgroundColor']
+                    }
+                }
+            }
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
+                color: {
+                    [key in MenuV2ItemVariant]: {
+                        [key in MenuV2ItemActionType]: {
+                            [key in MenuV2ItemStates]: CSSObject['color']
+                        }
+                    }
+                }
+                subText: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                    color: {
+                        [key in MenuV2ItemVariant]: {
+                            [key in MenuV2ItemActionType]: {
+                                [key in MenuV2ItemStates]: CSSObject['color']
+                            }
+                        }
+                    }
+                }
+                leftSlot: {
+                    maxWidth: CSSObject['maxWidth']
+                    maxHeight: CSSObject['maxHeight']
+                }
+                rightChevron: {
+                    color: CSSObject['color']
+                    width: CSSObject['width']
+                }
+            }
         }
+    }
+    separator: {
+        color: CSSObject['color']
+        height: CSSObject['height']
+        marginTop: CSSObject['marginTop']
+        marginRight: CSSObject['marginRight']
+        marginBottom: CSSObject['marginBottom']
+        marginLeft: CSSObject['marginLeft']
     }
 }
 ```

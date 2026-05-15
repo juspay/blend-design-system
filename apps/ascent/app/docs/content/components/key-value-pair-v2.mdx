@@ -30,7 +30,7 @@ function MyComponent() {
             keyString="Email Address"
             value="user@example.com"
             size={KeyValuePairV2Size.MD}
-            keyValuePairState={KeyValuePairV2StateType.HORIZONTAL}
+            keyValuePairState={KeyValuePairV2StateType.horizontal}
         />
     )
 }
@@ -83,7 +83,7 @@ function MyComponent() {
                 content: 'KeyValuePairV2StateType',
                 hintText: 'Enum for layout orientation',
             },
-            { content: 'HORIZONTAL, VERTICAL' },
+            { content: 'horizontal, vertical' },
         ],
         [
             {
@@ -153,29 +153,23 @@ You can style the KeyValuePairV2 component using the following tokens:
 
 ```tsx
 export type KeyValuePairV2TokensType = {
-    container: {
-        gap: CSSObject['gap']
-    }
-    horizontal: {
-        flexDirection: CSSObject['flexDirection']
-        alignItems: CSSObject['alignItems']
-    }
-    vertical: {
-        flexDirection: CSSObject['flexDirection']
+    gap: {
+        vertical: CSSObject['gap']
+        horizontal: CSSObject['gap']
     }
     key: {
-        fontSize: {
-            [key in KeyValuePairV2Size]: CSSObject['fontSize']
-        }
-        fontWeight: CSSObject['fontWeight']
         color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
     }
     value: {
+        color: CSSObject['color']
         fontSize: {
             [key in KeyValuePairV2Size]: CSSObject['fontSize']
         }
         fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
+        gap: CSSObject['gap']
     }
 }
 ```

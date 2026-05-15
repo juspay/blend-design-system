@@ -234,43 +234,64 @@ You can style the AvatarV2 component using the following tokens:
 
 ```tsx
 export type AvatarV2TokensType = {
-    sizes: {
-        [key in AvatarV2Size]: {
-            width: CSSObject['width']
-            height: CSSObject['height']
-        }
-    }
-    shapes: {
-        [key in AvatarV2Shape]: CSSObject['borderRadius']
-    }
-    fallback: {
+    gap: CSSObject['gap']
+    container: {
         backgroundColor: CSSObject['backgroundColor']
-        textColor: CSSObject['color']
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-    }
-    status: {
-        sizes: {
+        width: {
             [key in AvatarV2Size]: CSSObject['width']
         }
-        colors: {
-            [key in AvatarV2Status]: CSSObject['backgroundColor']
+        height: {
+            [key in AvatarV2Size]: CSSObject['height']
         }
-        positions: {
-            [key in AvatarV2StatusPosition]: {
-                top?: CSSObject['top']
-                bottom?: CSSObject['bottom']
-                left?: CSSObject['left']
-                right?: CSSObject['right']
+        borderRadius: {
+            [key in AvatarV2Shape]: CSSObject['borderRadius']
+        }
+        image: {
+            border: CSSObject['border']
+        }
+        fallbackText: {
+            border: CSSObject['border']
+            fontSize: {
+                [key in AvatarV2Size]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in AvatarV2Size]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in AvatarV2Size]: CSSObject['lineHeight']
+            }
+            color: CSSObject['color']
+        }
+        status: {
+            width: {
+                [key in AvatarV2Size]: CSSObject['width']
+            }
+            height: {
+                [key in AvatarV2Size]: CSSObject['height']
+            }
+            border: {
+                [key in AvatarV2Size]: CSSObject['border']
+            }
+            borderRadius: CSSObject['borderRadius']
+            backgroundColor: {
+                [key in AvatarV2Status]: CSSObject['backgroundColor']
+            }
+            boxShadow: CSSObject['boxShadow']
+            position: {
+                [key in AvatarV2Shape]: {
+                    [key in AvatarV2Size]: {
+                        top?: CSSObject['top']
+                        right?: CSSObject['right']
+                        bottom?: CSSObject['bottom']
+                        left?: CSSObject['left']
+                    }
+                }
             }
         }
-        border: CSSObject['border']
     }
-    image: {
-        objectFit: CSSObject['objectFit']
-    }
-    disabled: {
-        opacity: CSSObject['opacity']
+    slot: {
+        height: CSSObject['height']
+        width: CSSObject['width']
     }
 }
 ```

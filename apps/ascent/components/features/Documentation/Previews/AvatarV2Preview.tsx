@@ -57,7 +57,7 @@ external make: (
   ~fallbackText: string=?,
   ~size: [#sm | #regular | #md | #lg | #xl]=?,
   ~shape: [#circular | #rounded]=?,
-  ~status: {type: [#none | #online | #offline | #away | #busy], position: [#topRight | #bottomRight | #topLeft | #bottomLeft]}=?,
+  ~status: {type: [#none | #online | #offline | #away | #busy], position?: [#topRight | #bottomRight | #topLeft | #bottomLeft]}=?,
   ~disabled: bool=?,
 ) => React.element = "AvatarV2"`
 

@@ -248,53 +248,60 @@ You can style the SnackbarV2 component using the following tokens:
 
 ```tsx
 export type SnackbarV2TokensType = {
-    container: {
-        padding: CSSObject['padding']
-        gap: CSSObject['gap']
-    }
-    toast: {
-        padding: CSSObject['padding']
-        borderRadius: CSSObject['borderRadius']
-        border: CSSObject['border']
-        boxShadow: CSSObject['boxShadow']
-        gap: CSSObject['gap']
-        minWidth: CSSObject['minWidth']
-        maxWidth: CSSObject['maxWidth']
-    }
-    icon: {
-        size: CSSObject['width']
+    width: CSSObject['width']
+    maxWidth: CSSObject['maxWidth']
+    minWidth: CSSObject['minWidth']
+    backgroundColor: CSSObject['backgroundColor']
+    borderRadius: CSSObject['borderRadius']
+    padding: CSSObject['padding']
+    boxShadow: CSSObject['boxShadow']
+    gap: CSSObject['gap']
+    slot: {
+        height: CSSObject['height']
+        width: CSSObject['width']
         color: {
             [key in SnackbarV2Variant]: CSSObject['color']
         }
     }
-    content: {
+    mainContainer: {
         gap: CSSObject['gap']
-    }
-    header: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: CSSObject['color']
-    }
-    description: {
-        fontSize: CSSObject['fontSize']
-        color: CSSObject['color']
-    }
-    closeButton: {
-        color: CSSObject['color']
-        size: CSSObject['width']
-    }
-    actionButton: {
-        fontSize: CSSObject['fontSize']
-        fontWeight: CSSObject['fontWeight']
-        color: {
-            default: CSSObject['color']
-            hover: CSSObject['color']
+        content: {
+            gap: CSSObject['gap']
+            textContainer: {
+                gap: CSSObject['gap']
+                header: {
+                    color: {
+                        [key in SnackbarV2Variant]: CSSObject['color']
+                    }
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                }
+                description: {
+                    color: {
+                        [key in SnackbarV2Variant]: CSSObject['color']
+                    }
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                }
+            }
+            actionContainer: {
+                primaryAction: {
+                    color: {
+                        [key in SnackbarV2Variant]: CSSObject['color']
+                    }
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                }
+            }
         }
-    }
-    variants: {
-        [key in SnackbarV2Variant]: {
-            background: CSSObject['background']
-            borderColor: CSSObject['borderColor']
+        closeButton: {
+            height: CSSObject['height']
+            color: {
+                [key in SnackbarV2Variant]: CSSObject['color']
+            }
         }
     }
 }

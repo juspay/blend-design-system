@@ -41,14 +41,23 @@ let make = () => {
 external make: (
   ~position: [#"top-left" | #"top-right" | #"bottom-left" | #"bottom-right" | #"top-center" | #"bottom-center"]=?,
   ~dismissOnClickAway: bool=?,
+  ~maxWidth: string=?,
 ) => React.element = "SnackbarV2"
 
 @module("@juspay/blend-design-system")
-external toast: (
+external addSnackbarV2: (
   ~header: string,
   ~description: string=?,
   ~variant: [#info | #success | #warning | #error]=?,
-) => unit = "toast"`
+  ~slot: React.element=?,
+  ~duration: int=?,
+  ~position: [#"top-left" | #"top-right" | #"bottom-left" | #"bottom-right" | #"top-center" | #"bottom-center"]=?,
+  ~actionButton: {label: string, onClick: unit => unit, autoDismiss?: bool}=?,
+  ~onClose: unit => unit=?,
+  ~maxWidth: string=?,
+  ~minWidth: string=?,
+  ~width: string=?,
+) => unit = "addSnackbarV2"`
 
     const showToast = () => {
         addSnackbarV2({

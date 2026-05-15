@@ -62,9 +62,12 @@ external make: (
   ~text: string,
   ~size: [#xs | #sm | #md | #lg]=?,
   ~type_: [#noFill | #attentive | #subtle]=?,
+  ~subType: [#rounded | #squarical]=?,
   ~color: [#neutral | #primary | #success | #error | #warning | #purple]=?,
   ~leftSlot: {slot: React.element, maxHeight?: string}=?,
   ~rightSlot: {slot: React.element, maxHeight?: string}=?,
+  ~skeleton: {showSkeleton?: bool, skeletonVariant?: [#pulse | #wave]}=?,
+  ~tagGroupPosition: [#center | #left | #right]=?,
 ) => React.element = "TagV2"`
 
     return (

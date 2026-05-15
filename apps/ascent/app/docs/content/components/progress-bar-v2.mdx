@@ -102,7 +102,7 @@ import {
                 content: 'ProgressBarV2Variant',
                 hintText: 'Enum for progress style',
             },
-            { content: 'LINEAR, CIRCULAR' },
+            { content: 'linear, circular' },
         ],
         [
             {
@@ -113,7 +113,7 @@ import {
                 content: 'ProgressBarV2Appearance',
                 hintText: 'Enum for fill style',
             },
-            { content: 'SOLID, SEGMENTED' },
+            { content: 'solid, segmented' },
         ],
         [
             {
@@ -124,7 +124,7 @@ import {
                 content: 'ProgressBarV2Size',
                 hintText: 'Enum for component size',
             },
-            { content: 'SM, MD, LG' },
+            { content: 'sm, md, lg' },
         ],
         [
             {
@@ -150,44 +150,56 @@ You can style the ProgressBarV2 component using the following tokens:
 ```tsx
 export type ProgressBarV2TokenType = {
     linear: {
-        track: {
-            height: {
-                [key in ProgressBarV2Size]: CSSObject['height']
-            }
-            background: CSSObject['background']
-            borderRadius: CSSObject['borderRadius']
+        height: {
+            [key in ProgressBarV2Size]: CSSObject['height']
         }
         fill: {
-            background: CSSObject['background']
-            borderRadius: CSSObject['borderRadius']
-            transition: CSSObject['transition']
+            backgroundColor: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundColor']
+            }
+            borderRadius: {
+                [key in ProgressBarV2Appearance]: CSSObject['borderRadius']
+            }
         }
-        segmented: {
-            gap: CSSObject['gap']
-            segmentWidth: CSSObject['width']
-            segmentBorderRadius: CSSObject['borderRadius']
+        empty: {
+            backgroundColor: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundColor']
+            }
+            backgroundImage: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundImage']
+            }
+            backgroundSize: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundSize']
+            }
         }
+        borderRadius: {
+            [key in ProgressBarV2Appearance]: CSSObject['borderRadius']
+        }
+        gap: CSSObject['gap']
     }
     circular: {
-        sizes: {
+        size: {
             [key in ProgressBarV2Size]: CSSObject['width']
         }
-        track: {
-            stroke: CSSObject['stroke']
-            strokeWidth: CSSObject['strokeWidth']
+        strokeWidth: {
+            [key in ProgressBarV2Size]: number
         }
-        fill: {
-            stroke: CSSObject['stroke']
-            strokeWidth: CSSObject['strokeWidth']
-            strokeLinecap: CSSObject['strokeLinecap']
-            transition: CSSObject['transition']
+        stroke: {
+            [key in ProgressBarV2Appearance]: CSSObject['stroke']
         }
+        background: {
+            [key in ProgressBarV2Appearance]: CSSObject['stroke']
+        }
+        dashArray: {
+            [key in ProgressBarV2Appearance]: string
+        }
+        motion: string
     }
     label: {
         fontSize: CSSObject['fontSize']
         fontWeight: CSSObject['fontWeight']
         color: CSSObject['color']
-        margin: CSSObject['margin']
     }
+    transition: string
 }
 ```
