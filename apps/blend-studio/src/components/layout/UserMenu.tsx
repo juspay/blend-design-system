@@ -17,6 +17,7 @@ import {
     ButtonV2,
     ButtonV2Type,
     ButtonV2Size,
+    ButtonV2SubType,
     ButtonType,
     ButtonSubType,
 } from '@juspay/blend-design-system'
@@ -27,12 +28,16 @@ interface UserMenuProps {
     showAdminToggle?: boolean
     onAdminToggle?: () => void
     isAdminMode?: boolean
+    compact?: boolean
+    menuPlacement?: 'bottom-right' | 'top-left'
 }
 
 export function UserMenu({
     showAdminToggle = false,
     onAdminToggle,
     isAdminMode = false,
+    compact = false,
+    menuPlacement = 'bottom-right',
 }: UserMenuProps) {
     const { user, logout } = useBackendAuth()
     const { isAdmin } = usePermissions()
@@ -199,13 +204,24 @@ export function UserMenu({
         onAdminToggle?.()
     }
 
+    const menuPositionClass =
+        menuPlacement === 'top-left'
+            ? 'left-0 bottom-full mb-1'
+            : 'right-0 top-full mt-1'
+
     if (!user) {
         return (
             <ButtonV2
                 buttonType={ButtonV2Type.SECONDARY}
                 size={ButtonV2Size.SMALL}
                 leftSlot={{ slot: <User className="w-4 h-4" /> }}
-                text="Sign In"
+                subType={
+                    compact
+                        ? ButtonV2SubType.ICON_ONLY
+                        : ButtonV2SubType.DEFAULT
+                }
+                text={compact ? undefined : 'Sign In'}
+                aria-label="Sign in"
                 onClick={() =>
                     navigate({ to: '/login', search: { from: undefined } })
                 }
@@ -218,42 +234,61 @@ export function UserMenu({
 
     return (
         <div className="relative" ref={menuRef}>
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                aria-expanded={isOpen}
-                aria-haspopup="true"
-            >
-                {user.photoUrl ? (
-                    <img
-                        src={user.photoUrl}
-                        alt={user.displayName || 'User'}
-                        className="w-8 h-8 rounded-full object-cover border border-gray-200"
-                    />
-                ) : (
-                    <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${roleDisplay.avatarBg}`}
-                    >
-                        {initials}
-                    </div>
-                )}
-
-                <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-gray-900 truncate max-w-[120px]">
-                        {user.displayName || user.email.split('@')[0]}
-                    </p>
-                    <p className="text-xs text-gray-500">{roleDisplay.label}</p>
-                </div>
-
-                <CaretDown
-                    className={`w-4 h-4 text-gray-400 transition-transform ${
-                        isOpen ? 'rotate-180' : ''
-                    }`}
+            {compact ? (
+                <ButtonV2
+                    buttonType={ButtonV2Type.SECONDARY}
+                    size={ButtonV2Size.SMALL}
+                    subType={ButtonV2SubType.ICON_ONLY}
+                    leftSlot={{
+                        slot: <User className="w-4 h-4" weight="fill" />,
+                    }}
+                    aria-label="User menu"
+                    aria-expanded={isOpen}
+                    aria-haspopup="true"
+                    onClick={() => setIsOpen(!isOpen)}
                 />
-            </button>
+            ) : (
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                    aria-expanded={isOpen}
+                    aria-haspopup="true"
+                >
+                    {user.photoUrl ? (
+                        <img
+                            src={user.photoUrl}
+                            alt={user.displayName || 'User'}
+                            className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                        />
+                    ) : (
+                        <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${roleDisplay.avatarBg}`}
+                        >
+                            {initials}
+                        </div>
+                    )}
+
+                    <div className="hidden sm:block text-left">
+                        <p className="text-sm font-medium text-gray-900 truncate max-w-[120px]">
+                            {user.displayName || user.email.split('@')[0]}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                            {roleDisplay.label}
+                        </p>
+                    </div>
+
+                    <CaretDown
+                        className={`w-4 h-4 text-gray-400 transition-transform ${
+                            isOpen ? 'rotate-180' : ''
+                        }`}
+                    />
+                </button>
+            )}
 
             {isOpen && (
-                <div className="absolute right-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                <div
+                    className={`absolute ${menuPositionClass} w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-[999] overflow-hidden`}
+                >
                     <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
                         <div className="flex items-center gap-3">
                             {user.photoUrl ? (

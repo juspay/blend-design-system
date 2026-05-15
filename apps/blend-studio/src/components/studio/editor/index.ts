@@ -13,6 +13,7 @@ export type {
     DiffPanelProps,
     HistoryPanelProps,
     ExportPanelProps,
+    ColorGroupKey,
 } from './types'
 
 // Tabs
@@ -23,6 +24,8 @@ export { ShadowsTab } from './ShadowsTab'
 export { DarkModeTab } from './DarkModeTab'
 export { ComponentOverridesTab } from './ComponentOverridesTab'
 export { JsonTab } from './JsonTab'
+export { ToggleButton } from './ToggleButton'
+export type { ToggleButtonProps } from './ToggleButton'
 
 // Panels
 export { DiffPanel } from './DiffPanel'

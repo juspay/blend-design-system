@@ -9,16 +9,40 @@
  * and renders a live preview via ThemeProvider.
  */
 
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import {
+    createFileRoute,
+    Link,
+    useLocation,
+    useNavigate,
+} from '@tanstack/react-router'
 import { RequireAuth } from '@/components/auth/RequireAuth'
-import { ThemeProvider } from '@juspay/blend-design-system'
+import {
+    ButtonType,
+    ButtonV2,
+    ButtonV2SubType,
+    ButtonV2Type,
+    MenuV2,
+    MenuV2Alignment,
+    MenuV2ItemActionType,
+    MenuV2ItemVariant,
+    MenuV2Side,
+    TagV2,
+    TagV2Color,
+    TagV2Size,
+    ThemeProvider,
+} from '@juspay/blend-design-system'
 import {
     TabsV2,
     TabsV2List,
     TabsV2Trigger,
     TabsV2Variant,
 } from '@juspay/blend-design-system'
-import { Panel, Group, Separator } from 'react-resizable-panels'
+import {
+    Panel,
+    Group,
+    Separator,
+    type PanelImperativeHandle,
+} from 'react-resizable-panels'
 import {
     resolveBrandTokens,
     diffBrandConfigs,
@@ -56,9 +80,18 @@ import {
     TokenAnalyticsPanel,
     type EditorTabId,
     type EditorPanelId,
+    type ColorGroupKey,
 } from '@/components/studio/editor'
+import { ToggleButton } from '@/components/studio/editor/ToggleButton'
 import { UserMenu } from '@/components/layout/UserMenu'
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
+import {
+    useState,
+    useMemo,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+} from 'react'
 import {
     ArrowLeft,
     Sun,
@@ -83,8 +116,19 @@ import {
     GitDiff,
     ShieldCheck,
     ChartBar,
+    LaptopIcon,
+    DeviceMobileSpeakerIcon,
+    MoonStarsIcon,
+    SidebarIcon,
+    PlayIcon,
+    SlidersIcon,
+    DownloadIcon,
+    UploadIcon,
+    BoxArrowUpIcon,
+    CheckCircleIcon,
+    TelevisionIcon,
 } from '@phosphor-icons/react'
-
+import { SidebarV2 } from '../../../../../packages/blend/lib/components/SidebarV2'
 export const Route = createFileRoute('/studio/editor/$branchId')({
     component: EditorPage,
 })
@@ -119,8 +163,22 @@ const EDITOR_TABS: TabConfig[] = [
     { id: 'json', icon: Code, label: 'JSON' },
 ]
 
+/** Tab switcher items aligned with `EDITOR_TABS` (e.g. secondary rail / panel). */
+const tenants = EDITOR_TABS.map(({ id, icon: Icon, label }) => ({
+    label,
+    value: id,
+    showInPanel: true,
+    icon: <Icon className="h-4 w-4" aria-hidden />,
+}))
+
 /** Auto-save debounce interval in milliseconds. */
 const AUTO_SAVE_DELAY_MS = 1_000
+
+const EDITOR_LEFT_PANEL_ID = 'editor-left-panel'
+const EDITOR_RIGHT_PANEL_ID = 'editor-right-panel'
+
+/** Flex transition when opening/closing the left panel via the toggle (not drag). */
+const LEFT_PANEL_TOGGLE_MS = 280
 
 // ---------------------------------------------------------------------------
 // Main Editor Page
@@ -129,6 +187,7 @@ const AUTO_SAVE_DELAY_MS = 1_000
 function EditorPage() {
     const { branchId } = Route.useParams()
     const navigate = useNavigate()
+    const location = useLocation()
     const [activePanel, setActivePanel] = useState<EditorPanelId>('preview')
     const shouldLoadHistoryData = activePanel === 'history'
 
@@ -156,12 +215,47 @@ function EditorPage() {
     const [saving, setSaving] = useState(false)
     const [saveSuccess, setSaveSuccess] = useState(false)
     const [activeTab, setActiveTab] = useState<EditorTabId>('colors')
+    const [activeColorGroup, setActiveColorGroup] =
+        useState<ColorGroupKey>('primary')
     const [showPublishModal, setShowPublishModal] = useState(false)
     const [showImportWizard, setShowImportWizard] = useState(false)
     const [selectedComponent, setSelectedComponent] = useState<string | null>(
         null
     )
+    const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false)
     const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const leftPanelRef = useRef<PanelImperativeHandle | null>(null)
+    const leftPanelOuterElRef = useRef<HTMLDivElement | null>(null)
+
+    const leftPanelElementRef = useCallback((node: HTMLDivElement | null) => {
+        leftPanelOuterElRef.current = node
+    }, [])
+
+    useLayoutEffect(() => {
+        const el = leftPanelOuterElRef.current
+        const panel = leftPanelRef.current
+        if (!el || !panel) return
+
+        el.style.transitionProperty = 'flex-grow, flex-basis, flex-shrink'
+        el.style.transitionDuration = `${LEFT_PANEL_TOGGLE_MS}ms`
+        el.style.transitionTimingFunction = 'cubic-bezier(0.22, 1, 0.36, 1)'
+
+        if (isLeftPanelOpen) {
+            panel.expand()
+        } else {
+            panel.collapse()
+        }
+
+        const clearId = window.setTimeout(() => {
+            el.style.transitionProperty = ''
+            el.style.transitionDuration = ''
+            el.style.transitionTimingFunction = ''
+        }, LEFT_PANEL_TOGGLE_MS + 50)
+
+        return () => {
+            window.clearTimeout(clearId)
+        }
+    }, [isLeftPanelOpen])
 
     // Sync brand from branch on load
     useEffect(() => {
@@ -202,14 +296,43 @@ function EditorPage() {
         }
     }, [brand])
 
+    const previewBrand = useMemo(() => {
+        if (
+            !debouncedBrand ||
+            activeTab !== 'colors' ||
+            activeColorGroup === 'primary'
+        ) {
+            return debouncedBrand
+        }
+
+        const activeColorScale = debouncedBrand.colors?.[activeColorGroup]
+        if (!activeColorScale) return debouncedBrand
+
+        const buttonOverride = debouncedBrand.componentOverrides?.BUTTONV2 ?? {}
+
+        return {
+            ...debouncedBrand,
+            componentOverrides: {
+                ...debouncedBrand.componentOverrides,
+                BUTTONV2: {
+                    ...buttonOverride,
+                    colors: {
+                        ...buttonOverride.colors,
+                        primary: activeColorScale,
+                    },
+                },
+            },
+        }
+    }, [activeColorGroup, activeTab, debouncedBrand])
+
     const componentTokens = useMemo(() => {
-        if (!debouncedBrand) return null
+        if (!previewBrand) return null
         try {
-            return resolveBrandTokens(debouncedBrand, previewTheme)
+            return resolveBrandTokens(previewBrand, previewTheme)
         } catch {
             return null
         }
-    }, [debouncedBrand, previewTheme])
+    }, [previewBrand, previewTheme])
 
     const diffs = useMemo<TokenDiff[]>(() => {
         if (!brand) return []
@@ -330,7 +453,7 @@ function EditorPage() {
         <RequireAuth>
             <div className="h-screen flex flex-col overflow-hidden bg-white">
                 {/* Top Bar */}
-                <EditorHeader
+                {/* <EditorHeader
                     branchId={branchId}
                     branchName={branch.name}
                     latestVersion={branch.latestVersion}
@@ -342,106 +465,432 @@ function EditorPage() {
                     publishLoading={publishLoading}
                     onPublish={() => setShowPublishModal(true)}
                     validation={validation}
-                />
-
-                {/* Body: Three Panel Layout */}
-                <div className="flex-1 flex overflow-hidden">
-                    <EditorToolRail
+                /> */}
+                <SidebarV2
+                    secondarySidebar={{
+                        items: tenants,
+                        selected: activeTab,
+                        onSelect: (value) => {
+                            setActiveTab(value as EditorTabId)
+                        },
+                        footerSlot: (
+                            <div className="flex flex-col items-center gap-4">
+                                <UserMenu compact menuPlacement="top-left" />
+                            </div>
+                        ),
+                    }}
+                    // topbar={<EditorTopbar />}
+                >
+                    {/* Body: Three Panel Layout */}
+                    <div className="flex-1 flex overflow-hidden flex-col">
+                        {/* <EditorToolRail
                         activeTab={activeTab}
                         onTabChange={setActiveTab}
-                    />
-                    <Group orientation="horizontal" style={{ height: '100%' }}>
-                        {/* Left Panel: Editor Tabs (30%) */}
-                        <Panel minSize={22} defaultSize={29}>
-                            <div className="h-full bg-white flex flex-col overflow-hidden">
-                                {/* Tab triggers — not inside Radix TabsV2Content to avoid scroll interference */}
-                                <div className="shrink-0 border-b border-gray-200 bg-white px-3">
-                                    <TabsV2
-                                        value={activeTab}
-                                        onValueChange={(v: string) =>
-                                            setActiveTab(v as EditorTabId)
-                                        }
-                                        variant={TabsV2Variant.UNDERLINE}
-                                    >
-                                        <TabsV2List>
-                                            {EDITOR_TABS.map(
-                                                ({ id, icon: Icon, label }) => (
-                                                    <TabsV2Trigger
-                                                        key={id}
-                                                        value={id}
-                                                        leftSlot={
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                        }
-                                                    >
-                                                        {label}
-                                                    </TabsV2Trigger>
-                                                )
-                                            )}
-                                        </TabsV2List>
-                                    </TabsV2>
-                                </div>
+                    /> */}
 
-                                {/* Tab content — isolated scroll container, no Radix Content wrapper */}
-                                <div className="flex-1 overflow-y-auto">
-                                    <div className="px-5 py-4">
-                                        {activeTab === 'colors' && (
-                                            <ColorsTab
-                                                brand={brand}
-                                                onChange={handleBrandChange}
-                                            />
-                                        )}
-                                        {activeTab === 'typography' && (
-                                            <TypographyTab
-                                                brand={brand}
-                                                onChange={handleBrandChange}
-                                            />
-                                        )}
-                                        {activeTab === 'radius' && (
-                                            <RadiusTab
-                                                brand={brand}
-                                                onChange={handleBrandChange}
-                                            />
-                                        )}
-                                        {activeTab === 'shadows' && (
-                                            <ShadowsTab
-                                                brand={brand}
-                                                onChange={handleBrandChange}
-                                            />
-                                        )}
-                                        {activeTab === 'darkmode' && (
-                                            <DarkModeTab
-                                                brand={brand}
-                                                onChange={handleBrandChange}
-                                            />
-                                        )}
-                                        {activeTab === 'components' && (
-                                            <ComponentOverridesTab
-                                                brand={brand}
-                                                onChange={handleBrandChange}
-                                                onSelectComponent={
-                                                    setSelectedComponent
-                                                }
-                                                resolvedTokens={componentTokens}
-                                            />
-                                        )}
-                                        {activeTab === 'json' && (
-                                            <JsonTab
-                                                brand={brand}
-                                                onChange={handleBrandChange}
-                                            />
-                                        )}
+                        <Group
+                            orientation="horizontal"
+                            style={{ height: '100%' }}
+                            defaultLayout={{
+                                [EDITOR_LEFT_PANEL_ID]: 0,
+                                [EDITOR_RIGHT_PANEL_ID]: 100,
+                            }}
+                        >
+                            {/* Left Panel: Editor Tabs (collapsible; animated toggle) */}
+                            <Panel
+                                id={EDITOR_LEFT_PANEL_ID}
+                                panelRef={leftPanelRef}
+                                elementRef={leftPanelElementRef}
+                                collapsible
+                                collapsedSize={0}
+                                minSize={400}
+                                defaultSize={29}
+                                className="min-h-0 flex flex-col"
+                            >
+                                <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
+                                    {/* Tab content: flex column fills panel height; inner scroll gets a bounded flex child */}
+                                    <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between px-4">
+                                        <div className="flex items-center gap-2">
+                                            <GitBranch className="w-4 h-4 text-gray-400" />
+                                            <span className="truncate text-sm font-semibold text-gray-900">
+                                                {branch.name}
+                                            </span>
+                                            <span className="hidden max-w-[180px] truncate text-xs font-mono text-gray-400 lg:inline">
+                                                {branch.id}
+                                            </span>
+                                            {hasChanges && (
+                                                <TagV2
+                                                    text={'Unsaved'}
+                                                    size={TagV2Size.SM}
+                                                    color={TagV2Color.WARNING}
+                                                />
+                                            )}
+                                        </div>
+                                        <TagV2
+                                            text={
+                                                diffs.length > 0
+                                                    ? ` ${diffs.length} Changes`
+                                                    : ''
+                                            }
+                                            size={TagV2Size.SM}
+                                            color={TagV2Color.WARNING}
+                                        />
+                                    </div>
+                                    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+                                        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+                                            <div className="flex min-h-full flex-1 flex-col">
+                                                {activeTab === 'colors' && (
+                                                    <ColorsTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                        activeGroup={
+                                                            activeColorGroup
+                                                        }
+                                                        onActiveGroupChange={
+                                                            setActiveColorGroup
+                                                        }
+                                                    />
+                                                )}
+                                                {activeTab === 'typography' && (
+                                                    <TypographyTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {activeTab === 'radius' && (
+                                                    <RadiusTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {activeTab === 'shadows' && (
+                                                    <ShadowsTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {activeTab === 'darkmode' && (
+                                                    <DarkModeTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                                {activeTab === 'components' && (
+                                                    <ComponentOverridesTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                        onSelectComponent={
+                                                            setSelectedComponent
+                                                        }
+                                                        resolvedTokens={
+                                                            componentTokens
+                                                        }
+                                                    />
+                                                )}
+                                                {activeTab === 'json' && (
+                                                    <JsonTab
+                                                        brand={brand}
+                                                        onChange={
+                                                            handleBrandChange
+                                                        }
+                                                    />
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </Panel>
+                            </Panel>
 
-                        <Separator className="w-px bg-gray-200 hover:bg-blue-400 transition-colors cursor-col-resize" />
+                            <Separator className="w-px bg-gray-200 hover:bg-blue-400 transition-colors cursor-col-resize" />
 
-                        {/* Right Panel: Preview (70%) */}
-                        <Panel minSize={38} defaultSize={71}>
-                            <div className="h-full flex flex-col overflow-hidden bg-[#f8fafc]">
-                                {/* Panel switcher */}
-                                <div className="flex items-center justify-between gap-4 px-5 py-3 bg-white border-b border-gray-200 shrink-0">
+                            {/* Right Panel: Preview (70%) */}
+                            <Panel
+                                id={EDITOR_RIGHT_PANEL_ID}
+                                minSize={38}
+                                defaultSize={71}
+                            >
+                                <div className="h-full flex flex-col overflow-hidden bg-[#f8fafc]">
+                                    <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between">
+                                        <div className="flex items-center px-4 gap-2 h-[34px]">
+                                            <ToggleButton
+                                                noConatiner={true}
+                                                icon={
+                                                    <SidebarIcon className="h-3.5 w-3.5" />
+                                                }
+                                                title="Light preview"
+                                                onClick={() =>
+                                                    setIsLeftPanelOpen(
+                                                        !isLeftPanelOpen
+                                                    )
+                                                }
+                                                selected={true}
+                                            />
+                                            <div className="flex items-center rounded-lg bg-[#F5F7FA] p-0.5">
+                                                <ToggleButton
+                                                    icon={
+                                                        <LaptopIcon
+                                                            className="h-3.5 w-3.5"
+                                                            weight={
+                                                                true
+                                                                    ? 'fill'
+                                                                    : 'regular'
+                                                            }
+                                                        />
+                                                    }
+                                                    title="Light preview"
+                                                    onClick={() => {}}
+                                                    selected={true}
+                                                />
+                                                <ToggleButton
+                                                    icon={
+                                                        <DeviceMobileSpeakerIcon
+                                                            className="h-3.5 w-3.5"
+                                                            weight={
+                                                                false
+                                                                    ? 'fill'
+                                                                    : 'regular'
+                                                            }
+                                                        />
+                                                    }
+                                                    title="Dark preview"
+                                                    onClick={() => {}}
+                                                    selected={false}
+                                                />
+                                            </div>
+                                            <div className="flex items-center rounded-lg bg-gray-100 p-0.5">
+                                                <ToggleButton
+                                                    icon={
+                                                        <Sun
+                                                            className="h-3.5 w-3.5"
+                                                            weight={
+                                                                previewTheme ===
+                                                                'light'
+                                                                    ? 'fill'
+                                                                    : 'regular'
+                                                            }
+                                                        />
+                                                    }
+                                                    title="Light preview"
+                                                    onClick={() =>
+                                                        setPreviewTheme('light')
+                                                    }
+                                                    selected={
+                                                        previewTheme === 'light'
+                                                    }
+                                                />
+                                                <ToggleButton
+                                                    icon={
+                                                        <MoonStarsIcon
+                                                            className="h-3.5 w-3.5"
+                                                            weight={
+                                                                previewTheme ===
+                                                                'dark'
+                                                                    ? 'fill'
+                                                                    : 'regular'
+                                                            }
+                                                        />
+                                                    }
+                                                    title="Dark preview"
+                                                    onClick={() =>
+                                                        setPreviewTheme('dark')
+                                                    }
+                                                    selected={
+                                                        previewTheme === 'dark'
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center px-4 gap-2">
+                                            <MenuV2
+                                                trigger={
+                                                    <ButtonV2
+                                                        buttonType={
+                                                            ButtonV2Type.SECONDARY
+                                                        }
+                                                        leftSlot={{
+                                                            slot: (
+                                                                <SlidersIcon
+                                                                    className="h-3.5 w-3.5"
+                                                                    weight="fill"
+                                                                />
+                                                            ),
+                                                        }}
+                                                        subType={
+                                                            ButtonV2SubType.ICON_ONLY
+                                                        }
+                                                    />
+                                                }
+                                                items={[
+                                                    {
+                                                        label: 'DATA',
+                                                        showSeparator: true,
+                                                        items: [
+                                                            {
+                                                                label: {
+                                                                    text: 'Import',
+                                                                    leftSlot: (
+                                                                        <DownloadIcon
+                                                                            className="h-3.5 w-3.5"
+                                                                            weight="fill"
+                                                                        />
+                                                                    ),
+                                                                },
+
+                                                                actionType:
+                                                                    MenuV2ItemActionType.PRIMARY,
+                                                                onClick: () =>
+                                                                    setShowImportWizard(
+                                                                        true
+                                                                    ),
+                                                            },
+                                                            {
+                                                                label: {
+                                                                    text: 'Export',
+                                                                    leftSlot: (
+                                                                        <UploadIcon
+                                                                            className="h-3.5 w-3.5"
+                                                                            weight="fill"
+                                                                        />
+                                                                    ),
+                                                                },
+
+                                                                actionType:
+                                                                    MenuV2ItemActionType.PRIMARY,
+                                                                onClick: () =>
+                                                                    console.log(
+                                                                        'Create new clicked'
+                                                                    ),
+                                                            },
+                                                            {
+                                                                label: {
+                                                                    text: 'Multi Export',
+                                                                    leftSlot: (
+                                                                        <BoxArrowUpIcon
+                                                                            className="h-3.5 w-3.5"
+                                                                            weight="fill"
+                                                                        />
+                                                                    ),
+                                                                },
+
+                                                                actionType:
+                                                                    MenuV2ItemActionType.PRIMARY,
+                                                                onClick: () =>
+                                                                    console.log(
+                                                                        'Create new clicked'
+                                                                    ),
+                                                            },
+                                                        ],
+                                                    },
+                                                    {
+                                                        label: 'AUDIT',
+                                                        showSeparator: true,
+                                                        items: [
+                                                            {
+                                                                label: {
+                                                                    text: 'Check Accessibility',
+                                                                    leftSlot: (
+                                                                        <CheckCircleIcon
+                                                                            className="h-3.5 w-3.5"
+                                                                            weight="fill"
+                                                                        />
+                                                                    ),
+                                                                },
+
+                                                                actionType:
+                                                                    MenuV2ItemActionType.PRIMARY,
+                                                                onClick: () =>
+                                                                    console.log(
+                                                                        'Create new clicked'
+                                                                    ),
+                                                            },
+                                                            {
+                                                                label: {
+                                                                    text: 'Analytics',
+                                                                    leftSlot: (
+                                                                        <TelevisionIcon
+                                                                            className="h-3.5 w-3.5"
+                                                                            weight="fill"
+                                                                        />
+                                                                    ),
+                                                                },
+
+                                                                actionType:
+                                                                    MenuV2ItemActionType.PRIMARY,
+                                                                onClick: () =>
+                                                                    console.log(
+                                                                        'Create new clicked'
+                                                                    ),
+                                                            },
+                                                        ],
+                                                    },
+                                                ]}
+                                                alignment={
+                                                    MenuV2Alignment.START
+                                                }
+                                                side={MenuV2Side.BOTTOM}
+                                                onOpenChange={(e) => {
+                                                    console.log({ e })
+                                                }}
+                                            />
+                                            <ButtonV2
+                                                onClick={() => {
+                                                    navigate({
+                                                        to: '/studio/preview/$branchId',
+                                                        params: { branchId },
+                                                        search: {
+                                                            from: location.href,
+                                                        },
+                                                    })
+                                                }}
+                                                buttonType={
+                                                    ButtonV2Type.SECONDARY
+                                                }
+                                                leftSlot={{
+                                                    slot: (
+                                                        <PlayIcon
+                                                            className="h-3.5 w-3.5"
+                                                            weight="fill"
+                                                        />
+                                                    ),
+                                                }}
+                                                subType={
+                                                    ButtonV2SubType.ICON_ONLY
+                                                }
+                                            />
+                                            <ButtonV2
+                                                text="Save"
+                                                onClick={() => handleSave()}
+                                                buttonType={
+                                                    ButtonV2Type.SECONDARY
+                                                }
+                                                loading={saving}
+                                                disabled={saving || !hasChanges}
+                                            />
+                                            <ButtonV2
+                                                text="Publish"
+                                                onClick={() =>
+                                                    setShowPublishModal(true)
+                                                }
+                                                buttonType={
+                                                    ButtonV2Type.PRIMARY
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                    {/* Panel switcher */}
+                                    {/* <div className="flex items-center justify-between gap-4 px-5 py-3 bg-white border-b border-gray-200 shrink-0">
                                     <TabsV2
                                         value={activePanel}
                                         onValueChange={(v: string) =>
@@ -466,117 +915,146 @@ function EditorPage() {
                                         </TabsV2List>
                                     </TabsV2>
 
-                                    {/* Preview theme toggle */}
                                     {activePanel === 'preview' && (
                                         <div className="flex items-center gap-2">
                                             <span className="text-xs text-gray-400">
                                                 Preview:
                                             </span>
-                                            <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
-                                                <button
+                                            <div className="flex items-center rounded-lg bg-gray-100 p-0.5">
+                                                <ToggleButton
+                                                    icon={
+                                                        <Sun
+                                                            className="h-3.5 w-3.5"
+                                                            weight={
+                                                                previewTheme ===
+                                                                'light'
+                                                                    ? 'fill'
+                                                                    : 'regular'
+                                                            }
+                                                        />
+                                                    }
+                                                    title="Light preview"
                                                     onClick={() =>
                                                         setPreviewTheme('light')
                                                     }
-                                                    className={`p-1.5 rounded transition-colors ${
+                                                    selected={
                                                         previewTheme === 'light'
-                                                            ? 'bg-white shadow-sm text-yellow-500'
-                                                            : 'text-gray-400 hover:text-gray-600'
-                                                    }`}
-                                                    title="Light preview"
-                                                >
-                                                    <Sun className="w-3.5 h-3.5" />
-                                                </button>
-                                                <button
+                                                    }
+                                                />
+                                                <ToggleButton
+                                                    icon={
+                                                        <MoonStarsIcon
+                                                            className="h-3.5 w-3.5"
+                                                            weight={
+                                                                previewTheme ===
+                                                                'dark'
+                                                                    ? 'fill'
+                                                                    : 'regular'
+                                                            }
+                                                        />
+                                                    }
+                                                    title="Dark preview"
                                                     onClick={() =>
                                                         setPreviewTheme('dark')
                                                     }
-                                                    className={`p-1.5 rounded transition-colors ${
+                                                    selected={
                                                         previewTheme === 'dark'
-                                                            ? 'bg-white shadow-sm text-blue-500'
-                                                            : 'text-gray-400 hover:text-gray-600'
-                                                    }`}
-                                                    title="Dark preview"
-                                                >
-                                                    <Moon className="w-3.5 h-3.5" />
-                                                </button>
+                                                    }
+                                                />
                                             </div>
                                         </div>
                                     )}
-                                </div>
+                                </div> */}
 
-                                {/* Panel content */}
-                                <div className="flex-1 overflow-y-auto">
-                                    {activePanel === 'preview' &&
-                                        componentTokens && (
-                                            <ThemeProvider
-                                                theme={previewTheme}
-                                                componentTokens={
-                                                    componentTokens
-                                                }
-                                            >
-                                                <div
-                                                    className={`min-h-full ${
-                                                        previewTheme === 'dark'
-                                                            ? 'bg-gray-900'
-                                                            : 'bg-gray-50'
-                                                    } p-8`}
+                                    {/* Panel content */}
+                                    <div className="flex-1 overflow-y-auto">
+                                        {activePanel === 'preview' &&
+                                            componentTokens && (
+                                                <ThemeProvider
+                                                    theme={previewTheme}
+                                                    componentTokens={
+                                                        componentTokens
+                                                    }
                                                 >
-                                                    {activeTab ===
-                                                        'components' &&
-                                                    selectedComponent ? (
-                                                        <SingleComponentShowcase
-                                                            componentKey={
-                                                                selectedComponent
-                                                            }
-                                                            theme={previewTheme}
-                                                        />
-                                                    ) : (
-                                                        <ComponentShowcase
-                                                            theme={previewTheme}
-                                                        />
-                                                    )}
+                                                    <div
+                                                        className={`min-h-full ${
+                                                            previewTheme ===
+                                                            'dark'
+                                                                ? 'bg-gray-900'
+                                                                : 'bg-gray-50'
+                                                        } p-8`}
+                                                    >
+                                                        {activeTab ===
+                                                            'components' &&
+                                                        selectedComponent ? (
+                                                            <SingleComponentShowcase
+                                                                componentKey={
+                                                                    selectedComponent
+                                                                }
+                                                                theme={
+                                                                    previewTheme
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            <ComponentShowcase
+                                                                theme={
+                                                                    previewTheme
+                                                                }
+                                                                activeColorGroup={
+                                                                    activeTab ===
+                                                                    'colors'
+                                                                        ? activeColorGroup
+                                                                        : undefined
+                                                                }
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </ThemeProvider>
+                                            )}
+                                        {activePanel === 'preview' &&
+                                            !componentTokens && (
+                                                <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                                                    Resolving tokens...
                                                 </div>
-                                            </ThemeProvider>
+                                            )}
+                                        {activePanel === 'diff' && (
+                                            <DiffPanel diffs={diffs} />
                                         )}
-                                    {activePanel === 'preview' &&
-                                        !componentTokens && (
-                                            <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-                                                Resolving tokens...
-                                            </div>
+                                        {activePanel === 'history' && (
+                                            <HistoryPanel
+                                                versions={versions}
+                                                snapshots={snapshots}
+                                                onRestore={
+                                                    handleRestoreSnapshot
+                                                }
+                                            />
                                         )}
-                                    {activePanel === 'diff' && (
-                                        <DiffPanel diffs={diffs} />
-                                    )}
-                                    {activePanel === 'history' && (
-                                        <HistoryPanel
-                                            versions={versions}
-                                            snapshots={snapshots}
-                                            onRestore={handleRestoreSnapshot}
-                                        />
-                                    )}
-                                    {activePanel === 'export' && (
-                                        <ExportPanel
-                                            brand={brand}
-                                            branchId={branchId}
-                                        />
-                                    )}
-                                    {activePanel === 'accessibility' && (
-                                        <AccessibilityPanel brand={brand} />
-                                    )}
-                                    {activePanel === 'multi-export' && (
-                                        <MultiExportPanel
-                                            brand={brand}
-                                            branchId={branchId}
-                                        />
-                                    )}
-                                    {activePanel === 'analytics' && (
-                                        <TokenAnalyticsPanel brand={brand} />
-                                    )}
+                                        {activePanel === 'export' && (
+                                            <ExportPanel
+                                                brand={brand}
+                                                branchId={branchId}
+                                            />
+                                        )}
+                                        {activePanel === 'accessibility' && (
+                                            <AccessibilityPanel brand={brand} />
+                                        )}
+                                        {activePanel === 'multi-export' && (
+                                            <MultiExportPanel
+                                                brand={brand}
+                                                branchId={branchId}
+                                            />
+                                        )}
+                                        {activePanel === 'analytics' && (
+                                            <TokenAnalyticsPanel
+                                                brand={brand}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        </Panel>
-                    </Group>
-                </div>
+                            </Panel>
+                        </Group>
+                    </div>
+                </SidebarV2>
 
                 {/* Import Wizard Modal */}
                 {showImportWizard && (
@@ -725,14 +1203,14 @@ function EditorHeader({
             </div>
 
             <div className="flex shrink-0 items-center gap-2">
-                <Link
+                {/* <Link
                     to="/studio/preview/$branchId"
                     params={{ branchId }}
                     className="hidden items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors lg:inline-flex"
                 >
                     <Eye className="w-4 h-4" />
                     Preview
-                </Link>
+                </Link> */}
 
                 <button
                     onClick={onImport}
@@ -821,7 +1299,7 @@ function PublishModal({
     }
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999] p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
