@@ -40,24 +40,21 @@ export default function VersionToggle({ className }: VersionToggleProps) {
 
     const handleVersionChange = useCallback(
         (newVersion: Version) => {
+            if (newVersion === version) return
             setVersion(newVersion)
-            // Only attempt navigation if we're on a component page
             const slugMatch = pathname.match(/^\/docs\/components\/([^/]+)/)
             if (!slugMatch) return
 
             const currentSlug = slugMatch[1]
-            // Look up the peer slug from the map — works for any naming scheme
             const targetSlug = peerMap.get(currentSlug)
-            if (!targetSlug) return // no peer exists for this component, stay put
+            if (!targetSlug) return
 
             router.push(pathname.replace(currentSlug, targetSlug))
         },
-        [pathname, peerMap, setVersion, router]
+        [pathname, peerMap, setVersion, router, version]
     )
 
-    // Only show on docs pages
     if (!pathname?.startsWith('/docs')) return null
-
     if (!mounted) return <VersionToggleSkeleton className={className} />
 
     return (
@@ -69,6 +66,27 @@ export default function VersionToggle({ className }: VersionToggleProps) {
                 className
             )}
         >
+            {/* Sliding indicator layer — sits behind buttons, animates via layoutId */}
+            <div className="absolute inset-1 flex gap-0.5 pointer-events-none">
+                {VERSIONS.map((v) =>
+                    version === v ? (
+                        <motion.div
+                            key={v}
+                            layoutId={`activeVersion-${layoutId}`}
+                            initial={false}
+                            transition={{
+                                type: 'spring',
+                                stiffness: 400,
+                                damping: 30,
+                            }}
+                            className="flex-1 bg-primary/90 border-[0.25px] border-primary rounded-lg"
+                        />
+                    ) : (
+                        <div key={v} className="flex-1" />
+                    )
+                )}
+            </div>
+
             {VERSIONS.map((v) => (
                 <button
                     key={v}
@@ -77,24 +95,12 @@ export default function VersionToggle({ className }: VersionToggleProps) {
                     aria-pressed={version === v}
                     aria-label={`Switch to version ${v}`}
                     className={cn(
-                        'relative px-2.5 py-1 text-xs font-medium rounded-lg text-shadow-2xs/5 transition-colors',
+                        'relative flex-1 px-2.5 py-1 text-xs font-medium rounded-lg text-shadow-2xs/5 transition-colors z-20',
                         version === v
                             ? 'text-primary-foreground'
-                            : 'bg-background text-muted-foreground hover:text-foreground hover:bg-muted'
+                            : 'text-muted-foreground hover:text-foreground'
                     )}
                 >
-                    {version === v && (
-                        <motion.div
-                            layoutId={`activeVersion-${layoutId}`}
-                            initial={false}
-                            transition={{
-                                type: 'spring',
-                                stiffness: 400,
-                                damping: 30,
-                            }}
-                            className="absolute inset-0 bg-primary/90 border-[0.25px] border-primary rounded-lg z-10"
-                        />
-                    )}
                     <span className="relative z-10">V{v}</span>
                 </button>
             ))}
