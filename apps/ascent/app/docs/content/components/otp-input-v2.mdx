@@ -18,20 +18,13 @@ StorybookLink: components-inputs-otpinputv2--docs
 ## Usage
 
 ```tsx
-import { OTPInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+import { OTPInputV2 } from '@juspay/blend-design-system'
+import { useState } from 'react'
 
 function MyComponent() {
     const [otp, setOtp] = useState('')
 
-    return (
-        <OTPInputV2
-            length={6}
-            value={otp}
-            onChange={setOtp}
-            size={InputSizeV2.MD}
-            onComplete={(value) => console.log('OTP entered:', value)}
-        />
-    )
+    return <OTPInputV2 length={6} value={otp} onChange={setOtp} />
 }
 ```
 
@@ -74,45 +67,12 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onComplete',
-                hintText: 'Callback fired when all digits are entered.',
-            },
-            {
-                content: '(value: string) => void',
-                hintText: 'Completion handler',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'size',
-                hintText: 'Size affecting input box dimensions.',
-            },
-            {
-                content: 'InputSizeV2',
-                hintText: 'Enum for input size',
-            },
-            { content: 'SM, MD, LG' },
-        ],
-        [
-            {
                 content: 'disabled',
                 hintText: 'When true, all inputs are non-interactive.',
             },
             {
                 content: 'boolean',
                 hintText: 'true disables all inputs',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'masked',
-                hintText: 'When true, masks entered digits (password style).',
-            },
-            {
-                content: 'boolean',
-                hintText: 'true masks input',
             },
             { content: '' },
         ],
@@ -135,6 +95,40 @@ function MyComponent() {
             {
                 content: 'boolean',
                 hintText: 'true shows error state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'errorMessage',
+                hintText: 'Error message text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Error message text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Field label displayed above the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sublabel',
+                hintText:
+                    'Secondary label text displayed below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary label text',
             },
             { content: '' },
         ],

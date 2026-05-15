@@ -1,20 +1,29 @@
+'use client'
 import { ChatInputV2 } from '@juspay/blend-design-system'
+import { PaperPlaneRight } from '@phosphor-icons/react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const ChatInputV2Preview = () => {
     const tsCode = `import { ChatInputV2 } from '@juspay/blend-design-system'
+import { PaperPlaneRight } from '@phosphor-icons/react'
 import { useState } from 'react'
 
 function MyComponent() {
     const [message, setMessage] = useState('')
 
+    const handleSend = () => {
+        console.log('Sending:', message)
+        setMessage('')
+    }
+
     return (
         <ChatInputV2
             placeholder="Type a message..."
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onSend={(value) => console.log('Sending:', value)}
-            showAttachment={true}
+            onChange={setMessage}
+            onEnter={handleSend}
+            secondaryAction={<PaperPlaneRight size={16} />}
+            onSecondaryActionClick={handleSend}
         />
     )
 }`
@@ -23,22 +32,29 @@ function MyComponent() {
 let make = () => {
   let (message, setMessage) = React.useState(() => "")
 
+  let handleSend = () => {
+    Console.log(message)
+    setMessage(_ => "")
+  }
+
   <ChatInputV2Binding
     placeholder="Type a message..."
     value={message}
-    onChange={e => setMessage(ReactEvent.Form.target(e)["value"])}
-    onSend={value => Console.log(value)}
-    showAttachment={true}
+    onChange={setMessage}
+    onEnter={handleSend}
+    secondaryAction={<PaperPlaneRight size={16} />}
+    onSecondaryActionClick={handleSend}
   />
 }`
 
     const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~value: string,
-  ~onChange: ReactEvent.Form.t => unit,
-  ~onSend: string => unit=?,
+  ~onChange: string => unit,
   ~placeholder: string=?,
-  ~showAttachment: bool=?,
+  ~onEnter: unit => unit=?,
+  ~secondaryAction: React.element=?,
+  ~onSecondaryActionClick: unit => unit=?,
   ~disabled: bool=?,
 ) => React.element = "ChatInputV2"`
 
@@ -54,7 +70,12 @@ external make: (
                 <ChatInputV2
                     placeholder="Type a message..."
                     value={message}
-                    onChange={() => console.log(message)}
+                    onChange={(value) => console.log('Changed:', value)}
+                    onEnter={() => console.log('Sending:', message)}
+                    secondaryAction={<PaperPlaneRight size={16} />}
+                    onSecondaryActionClick={() =>
+                        console.log('Sending:', message)
+                    }
                 />
             </div>
         </ComponentPreview>

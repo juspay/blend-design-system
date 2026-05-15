@@ -8,7 +8,7 @@ import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const AlertV2Preview = () => {
-    const tsCode = `import { AlertV2, AlertV2Type, AlertV2SubType } from '@juspay/blend-design-system'
+    const tsCode = `import { AlertV2, AlertV2Type, AlertV2SubType, AlertV2ActionPosition } from '@juspay/blend-design-system'
 
 function MyComponent() {
     return (

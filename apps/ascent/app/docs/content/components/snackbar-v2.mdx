@@ -34,9 +34,9 @@ function App() {
 }
 
 // Show a toast
-import { toast } from '@juspay/blend-design-system'
+import { addSnackbarV2 } from '@juspay/blend-design-system'
 
-toast({
+addSnackbarV2({
     header: 'Success!',
     description: 'Your changes have been saved.',
     variant: SnackbarV2Variant.SUCCESS,

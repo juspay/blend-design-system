@@ -19,15 +19,16 @@ StorybookLink: components-inputs-numberinputv2--docs
 
 ```tsx
 import { NumberInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+import { useState } from 'react'
 
 function MyComponent() {
-    const [value, setValue] = useState(0)
+    const [value, setValue] = useState<number | null>(0)
 
     return (
         <NumberInputV2
-            label="Quantity"
+            label={{ text: 'Quantity' }}
             value={value}
-            onChange={setValue}
+            onChange={(e) => setValue(Number(e.target.value))}
             min={0}
             max={100}
             step={1}
@@ -58,8 +59,8 @@ function MyComponent() {
                 hintText: 'Required. Callback fired when value changes.',
             },
             {
-                content: '(value: number) => void',
-                hintText: 'Change handler with numeric value',
+                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'Change event handler',
             },
             { content: '' },
         ],
@@ -80,8 +81,8 @@ function MyComponent() {
                 hintText: 'Field label displayed above the input.',
             },
             {
-                content: 'string',
-                hintText: 'Label text',
+                content: '{ text: string; subtext?: string }',
+                hintText: 'Label object with text and optional subtext',
             },
             { content: '' },
         ],

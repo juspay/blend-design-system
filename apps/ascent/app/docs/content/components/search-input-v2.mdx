@@ -18,7 +18,7 @@ StorybookLink: components-inputs-searchinputv2--docs
 ## Usage
 
 ```tsx
-import { SearchInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+import { SearchInputV2 } from '@juspay/blend-design-system'
 
 function MyComponent() {
     const [query, setQuery] = useState('')
@@ -28,9 +28,7 @@ function MyComponent() {
             placeholder="Search products..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onSearch={(value) => console.log('Searching:', value)}
-            size={InputSizeV2.MD}
-            clearable={true}
+            allowClear={true}
         />
     )
 }
@@ -64,13 +62,56 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onSearch',
-                hintText:
-                    'Callback fired when search is submitted (Enter key).',
+                content: 'allowClear',
+                hintText: 'When true, shows clear button when input has value.',
             },
             {
-                content: '(value: string) => void',
-                hintText: 'Search submit handler',
+                content: 'boolean',
+                hintText: 'true shows clear button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClear',
+                hintText: 'Callback fired when clear button is clicked.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Clear handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'Custom element to display on the left side.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Left slot element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Custom element to display on the right side.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Right slot element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'When true, applies error styling to the input.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state',
             },
             { content: '' },
         ],
@@ -82,28 +123,6 @@ function MyComponent() {
             {
                 content: 'string',
                 hintText: 'Placeholder content',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'size',
-                hintText: 'Size affecting input height.',
-            },
-            {
-                content: 'InputSizeV2',
-                hintText: 'Enum for input size',
-            },
-            { content: 'SM, MD, LG' },
-        ],
-        [
-            {
-                content: 'clearable',
-                hintText: 'When true, shows clear button when input has value.',
-            },
-            {
-                content: 'boolean',
-                hintText: 'true shows clear button',
             },
             { content: '' },
         ],

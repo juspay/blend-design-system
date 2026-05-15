@@ -12,13 +12,14 @@ const SnackbarV2Preview = () => {
     const tsCode = `import {
     SnackbarV2,
     addSnackbarV2,
-    SnackbarV2Variant
+    SnackbarV2Variant,
+    SnackbarV2Position
 } from '@juspay/blend-design-system'
 
 function App() {
     return (
         <SnackbarV2
-            position="top-right"
+            position={SnackbarV2Position.TOP_RIGHT}
             dismissOnClickAway={true}
         />
     )

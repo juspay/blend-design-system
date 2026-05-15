@@ -19,18 +19,20 @@ StorybookLink: components-inputs-multivalueinputv2--docs
 
 ```tsx
 import { MultiValueInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+import { useState } from 'react'
 
 function MyComponent() {
-    const [values, setValues] = useState(['tag1', 'tag2'])
+    const [value, setValue] = useState('')
 
     return (
         <MultiValueInputV2
             label="Tags"
             placeholder="Add tags..."
-            values={values}
-            onChange={setValues}
+            value={value}
+            onChange={setValue}
             size={InputSizeV2.MD}
-            separator=","
+            onTagAdd={(tag) => console.log('Added:', tag)}
+            onTagRemove={(tag) => console.log('Removed:', tag)}
         />
     )
 }
@@ -42,23 +44,45 @@ function MyComponent() {
     data={[
         [
             {
-                content: 'values',
-                hintText: 'Required. Array of current tag values.',
+                content: 'value',
+                hintText: 'Current input value.',
             },
             {
-                content: 'string[]',
-                hintText: 'Array of values',
+                content: 'string',
+                hintText: 'Input value',
             },
             { content: '' },
         ],
         [
             {
                 content: 'onChange',
-                hintText: 'Required. Callback fired when values change.',
+                hintText: 'Callback fired when input value changes.',
             },
             {
-                content: '(values: string[]) => void',
+                content: '(value: string) => void',
                 hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onTagAdd',
+                hintText: 'Callback fired when a tag is added.',
+            },
+            {
+                content: '(tag: string) => void',
+                hintText: 'Tag add handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onTagRemove',
+                hintText: 'Callback fired when a tag is removed.',
+            },
+            {
+                content: '(tag: string) => void',
+                hintText: 'Tag remove handler',
             },
             { content: '' },
         ],
@@ -94,39 +118,6 @@ function MyComponent() {
                 hintText: 'Enum for input size',
             },
             { content: 'SM, MD, LG' },
-        ],
-        [
-            {
-                content: 'separator',
-                hintText: 'Character(s) that trigger new tag creation.',
-            },
-            {
-                content: 'string | string[]',
-                hintText: 'Separator character(s)',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'maxValues',
-                hintText: 'Maximum number of allowed values.',
-            },
-            {
-                content: 'number',
-                hintText: 'Maximum value count',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'validate',
-                hintText: 'Function to validate new values before adding.',
-            },
-            {
-                content: '(value: string) => boolean | string',
-                hintText: 'Validation function (return true or error message)',
-            },
-            { content: '' },
         ],
         [
             {
