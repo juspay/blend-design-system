@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import { fn } from '@storybook/test'
 import { expect, userEvent, within } from '@storybook/test'
-import { Home, Settings, HelpCircle, Users, Plus, Bell } from 'lucide-react'
+import { Home, Settings, HelpCircle, Users, Bell } from 'lucide-react'
 import { SidebarV2 } from '../../../../../packages/blend/lib/components/SidebarV2'
 import type {
     SecondarySidebarInfo,
@@ -15,7 +15,12 @@ import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../.storybook/a11y.config'
-import { Button } from '../../../../../packages/blend/lib/components/Button'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from '../../../../../packages/blend/lib/components/Button'
 
 const sampleData: DirectoryData[] = [
     {
@@ -85,7 +90,8 @@ SidebarV2 provides a token-driven, responsive sidebar layout with optional secon
 - Controlled/uncontrolled expand state
 - Optional secondary sidebar rail via \`secondarySidebar\`
 - Mobile navigation dock derived from \`DirectoryData[].items[].showOnMobile\`
-- Safe handling of \`data={null}\` (renders empty nav)
+- \`data\` may be \`null\` or \`[]\`: directory panel is omitted; optional \`secondarySidebar\` can still render when expanded
+- Sticky \`TopbarV2\` (and \`rightActions\`) mount only when \`topbar\` is provided
 - Single-line truncation with TooltipV2 for long labels
 - Full keyboard navigation support
 - Accessible by default
@@ -98,6 +104,7 @@ import { SidebarV2 } from '@juspay/blend-design-system';
 
 <SidebarV2
   data={directoryData}
+  topbar={<PageTitle />}
   secondarySidebar={secondarySidebarConfig}
 >
   <MainContent />
@@ -112,8 +119,12 @@ import { SidebarV2 } from '@juspay/blend-design-system';
         data: sampleData,
         sidebarCollapseKey: '/',
         defaultIsExpanded: true,
-        showPrimaryActionButton: true,
-        primaryActionButtonProps: { onClick: fn(), 'aria-label': 'Create' },
+        showMobilePrimaryActionButton: true,
+        mobilePrimaryActionButtonProps: {
+            onClick: fn(),
+            'aria-label': 'Create',
+        },
+        onExpandedChange: fn(),
         onSidebarStateChange: fn(),
     } satisfies Partial<SidebarV2Props>,
     argTypes: {
@@ -137,6 +148,16 @@ import { SidebarV2 } from '@juspay/blend-design-system';
         onExpandedChange: {
             action: 'expanded-change',
             description: 'Called when expanded state changes.',
+        },
+        topbar: {
+            control: false,
+            description:
+                'When set, mounts sticky TopbarV2 above main content. Required for rightActions to appear.',
+        },
+        rightActions: {
+            control: false,
+            description:
+                'Slot passed to TopbarV2. Only renders when `topbar` is also provided.',
         },
     },
     decorators: [
@@ -182,7 +203,7 @@ export const ControlledExpanded: Story = {
     args: {
         secondarySidebar: buildSecondarySidebar('tenant-a', fn()),
     },
-    render: (args) => {
+    render: function ControlledExpandedRender(args) {
         const [isExpanded, setIsExpanded] = useState(true)
         return (
             <SidebarV2
@@ -213,6 +234,72 @@ export const NullData: Story = {
             <div style={{ padding: 16 }}>Main content</div>
         </SidebarV2>
     ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'With `data={null}`, the directory panel is omitted (no nav tree). A secondary rail can still be used when the sidebar is expanded.',
+            },
+        },
+    },
+}
+
+export const EmptyDirectoryArray: Story = {
+    args: {
+        data: [],
+        secondarySidebar: buildSecondarySidebar('tenant-a', fn()),
+    },
+    render: (args) => (
+        <SidebarV2 {...args}>
+            <div style={{ padding: 16 }}>Main content</div>
+        </SidebarV2>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Same as null data: empty `data` array skips the primary directory panel while optional chrome (e.g. secondary rail) can remain.',
+            },
+        },
+    },
+}
+
+export const WithTopbar: Story = {
+    args: {
+        secondarySidebar: buildSecondarySidebar('tenant-a', fn()),
+        topbar: (
+            <span style={{ fontWeight: 600, fontSize: 14 }}>Page title</span>
+        ),
+        rightActions: (
+            <>
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    subType={ButtonSubType.ICON_ONLY}
+                    leadingIcon={<Bell size={18} aria-hidden />}
+                    aria-label="Notifications"
+                />
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    size={ButtonSize.SMALL}
+                    text="Save"
+                />
+            </>
+        ),
+    },
+    render: (args) => (
+        <SidebarV2 {...args}>
+            <div style={{ padding: 16 }}>
+                Main content — topbar and right actions mount only when{' '}
+                <code>topbar</code> is set.
+            </div>
+        </SidebarV2>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: '`topbar` enables the sticky header region. Pass `rightActions` for actions in the top bar (layout follows TopbarV2 breakpoints).',
+            },
+        },
+    },
 }
 
 export const Visual: Story = {
@@ -410,7 +497,10 @@ export const Interactive: Story = {
                 {...args}
                 data={interactiveData}
                 isExpanded={isExpanded}
-                onExpandedChange={setIsExpanded}
+                onExpandedChange={(next) => {
+                    args.onExpandedChange?.(next)
+                    setIsExpanded(next)
+                }}
                 activeItem={activeItem}
                 onActiveItemChange={setActiveItem}
             >
@@ -432,7 +522,7 @@ export const Interactive: Story = {
                         <p>Active Item: {activeItem || 'None'}</p>
                     </div>
                     <Button
-                        style={{ marginTop: 16 }}
+                        // style={{ marginTop: 16 }}
                         onClick={() => setIsExpanded(!isExpanded)}
                     >
                         Toggle Sidebar
