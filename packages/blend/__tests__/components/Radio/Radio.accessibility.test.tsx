@@ -265,6 +265,32 @@ describe('Radio Accessibility', () => {
             expect(radio).toHaveProperty('checked', false)
         })
 
+        it('does not pass both checked and defaultChecked to the input', () => {
+            const consoleError = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {})
+
+            render(
+                <Radio
+                    value="controlled"
+                    checked={false}
+                    defaultChecked
+                    onChange={() => {}}
+                >
+                    Controlled radio
+                </Radio>
+            )
+
+            const radio = screen.getByRole('radio', {
+                name: 'Controlled radio',
+            })
+
+            expect(radio).not.toBeChecked()
+            expect(consoleError).not.toHaveBeenCalled()
+
+            consoleError.mockRestore()
+        })
+
         it('announces disabled state - state programmatically determinable (WCAG 4.1.2)', () => {
             const props = RadioTestFactory.disabled()
             render(<Radio {...props} />)

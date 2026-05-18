@@ -16,7 +16,7 @@ import { getTruncatedText } from '../../global-utils/GlobalUtils'
 export const Radio = ({
     id,
     checked,
-    defaultChecked = false,
+    defaultChecked,
     onChange,
     disabled = false,
     required = false,
@@ -45,12 +45,20 @@ export const Radio = ({
         subtextId && customAriaDescribedBy
             ? `${customAriaDescribedBy} ${subtextId}`
             : subtextId || customAriaDescribedBy
+    const isControlled = checked !== undefined
+    const checkedProps = isControlled
+        ? { checked }
+        : { defaultChecked: defaultChecked ?? false }
 
     return (
         <Block
             data-radio={children ?? 'radio'}
             data-status={disabled ? 'disabled' : 'enabled'}
-            data-state={checked ? 'checked' : 'unchecked'}
+            data-state={
+                (isControlled ? checked : defaultChecked)
+                    ? 'checked'
+                    : 'unchecked'
+            }
             data-id={value ?? ''}
             display="flex"
             alignItems={subtext ? 'flex-start' : 'center'}
@@ -60,14 +68,13 @@ export const Radio = ({
                 type="radio"
                 id={uniqueId}
                 name={name}
-                checked={checked}
-                defaultChecked={defaultChecked}
+                {...checkedProps}
                 disabled={disabled}
                 required={required}
+                readOnly={isControlled && !onChange ? true : undefined}
                 onChange={onChange}
                 size={size}
                 $isDisabled={disabled}
-                $isChecked={checked || false}
                 $error={error}
                 $tokens={radioTokens}
                 style={getErrorShakeStyle(shouldShake)}
