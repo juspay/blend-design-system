@@ -11,7 +11,7 @@ import type { ButtonTokensType } from './button.tokens'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
-const StyledButtonText = styled(Text)`
+const StyledButtonText = styled.span`
     display: flex;
     align-items: center;
     justify-content: center;
