@@ -13,8 +13,6 @@ import {
     ButtonV2,
     ButtonV2Size,
     ButtonV2Type,
-    StatCardV2,
-    StatCardV2Variant,
     TagV2,
     TagV2Color,
     TagV2Type,
@@ -26,7 +24,6 @@ import {
     WarningDiamondIcon,
     LightningIcon,
     CurrencyCircleDollarIcon,
-    GearSixIcon,
     WarningOctagonIcon,
 } from '@phosphor-icons/react'
 
