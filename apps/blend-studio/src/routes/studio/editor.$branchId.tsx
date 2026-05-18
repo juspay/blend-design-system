@@ -3,7 +3,7 @@
  *
  * Main editor screen for customizing brand tokens. Split into two panels:
  * - Left: Editor tabs (Colors, Typography, Radius, Shadows, JSON)
- * - Right: Preview/Diff/History/Export panels
+ * - Right: Live preview
  *
  * The editor resolves brand config into component tokens using the token engine
  * and renders a live preview via ThemeProvider.
@@ -11,31 +11,22 @@
 
 import {
     createFileRoute,
-    Link,
     useLocation,
     useNavigate,
 } from '@tanstack/react-router'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 import {
-    ButtonType,
     ButtonV2,
     ButtonV2SubType,
     ButtonV2Type,
     MenuV2,
     MenuV2Alignment,
     MenuV2ItemActionType,
-    MenuV2ItemVariant,
     MenuV2Side,
     TagV2,
     TagV2Color,
     TagV2Size,
     ThemeProvider,
-} from '@juspay/blend-design-system'
-import {
-    TabsV2,
-    TabsV2List,
-    TabsV2Trigger,
-    TabsV2Variant,
 } from '@juspay/blend-design-system'
 import {
     Panel,
@@ -46,18 +37,14 @@ import {
 import {
     resolveBrandTokens,
     diffBrandConfigs,
-    validateBrandConfig,
     PRESET_BLEND_DEFAULT,
     type BrandConfig,
     type TokenDiff,
-    type ValidationResult,
 } from '@juspay/blend-design-system/tokens'
 import {
     useBranchWithMock,
     usePublishVersionWithMock,
     useCreateSnapshotWithMock,
-    useVersionsWithMock,
-    useSnapshotsWithMock,
     incrementVersion,
     validateVersion,
 } from '@/frontend/hooks/use-studio'
@@ -71,15 +58,8 @@ import {
     DarkModeTab,
     ComponentOverridesTab,
     JsonTab,
-    DiffPanel,
-    HistoryPanel,
-    ExportPanel,
-    AccessibilityPanel,
-    MultiExportPanel,
     ImportWizard,
-    TokenAnalyticsPanel,
     type EditorTabId,
-    type EditorPanelId,
     type ColorGroupKey,
 } from '@/components/studio/editor'
 import { ToggleButton } from '@/components/studio/editor/ToggleButton'
@@ -93,29 +73,19 @@ import {
     useRef,
 } from 'react'
 import {
-    ArrowLeft,
     Sun,
     Moon,
-    FloppyDisk,
     Play,
-    ClockCounterClockwise,
     Spinner,
-    Download,
-    Eye,
     Code,
     TextAa,
     Sliders,
-    CheckCircle,
     WarningCircle,
     X,
     GitBranch,
-    Upload,
     Repeat,
     Palette,
     Stack,
-    GitDiff,
-    ShieldCheck,
-    ChartBar,
     LaptopIcon,
     DeviceMobileSpeakerIcon,
     MoonStarsIcon,
@@ -123,10 +93,6 @@ import {
     PlayIcon,
     SlidersIcon,
     DownloadIcon,
-    UploadIcon,
-    BoxArrowUpIcon,
-    CheckCircleIcon,
-    TelevisionIcon,
 } from '@phosphor-icons/react'
 import { SidebarV2 } from '../../../../../packages/blend/lib/components/SidebarV2'
 export const Route = createFileRoute('/studio/editor/$branchId')({
@@ -139,12 +105,6 @@ export const Route = createFileRoute('/studio/editor/$branchId')({
 
 interface TabConfig {
     id: EditorTabId
-    icon: React.ComponentType<{ className?: string }>
-    label: string
-}
-
-interface PanelConfig {
-    id: EditorPanelId
     icon: React.ComponentType<{ className?: string }>
     label: string
 }
@@ -188,8 +148,6 @@ function EditorPage() {
     const { branchId } = Route.useParams()
     const navigate = useNavigate()
     const location = useLocation()
-    const [activePanel, setActivePanel] = useState<EditorPanelId>('preview')
-    const shouldLoadHistoryData = activePanel === 'history'
 
     // Data hooks
     const {
@@ -201,19 +159,12 @@ function EditorPage() {
     const { publishVersion, loading: publishLoading } =
         usePublishVersionWithMock(branchId)
     const { createSnapshot } = useCreateSnapshotWithMock(branchId)
-    const { versions } = useVersionsWithMock(branchId, {
-        enabled: shouldLoadHistoryData,
-    })
-    const { snapshots } = useSnapshotsWithMock(branchId, {
-        enabled: shouldLoadHistoryData,
-    })
 
     // Editor state
     const [previewTheme, setPreviewTheme] = useState<'light' | 'dark'>('light')
     const [brand, setBrand] = useState<BrandConfig | null>(null)
     const [hasChanges, setHasChanges] = useState(false)
     const [saving, setSaving] = useState(false)
-    const [saveSuccess, setSaveSuccess] = useState(false)
     const [activeTab, setActiveTab] = useState<EditorTabId>('colors')
     const [activeColorGroup, setActiveColorGroup] =
         useState<ColorGroupKey>('primary')
@@ -316,33 +267,6 @@ function EditorPage() {
         }
     }, [brand])
 
-    const validation = useMemo<ValidationResult | null>(() => {
-        if (!brand) return null
-        try {
-            return validateBrandConfig(brand)
-        } catch {
-            return null
-        }
-    }, [brand])
-
-    // Build panel config with dynamic diff count
-    const editorPanels: PanelConfig[] = useMemo(
-        () => [
-            { id: 'preview', icon: Eye, label: 'Preview' },
-            {
-                id: 'diff',
-                icon: GitDiff,
-                label: `Diff${diffs.length > 0 ? ` (${diffs.length})` : ''}`,
-            },
-            { id: 'history', icon: ClockCounterClockwise, label: 'History' },
-            { id: 'export', icon: Download, label: 'Export' },
-            { id: 'accessibility', icon: ShieldCheck, label: 'A11y' },
-            { id: 'multi-export', icon: Repeat, label: 'Multi-Export' },
-            { id: 'analytics', icon: ChartBar, label: 'Analytics' },
-        ],
-        [diffs.length]
-    )
-
     // Handlers
     const handleBrandChange = useCallback(
         (updater: (prev: BrandConfig) => BrandConfig) => {
@@ -391,19 +315,12 @@ function EditorPage() {
             await updateBranch(branchId, { brandConfig: brand })
             await createSnapshot(brand, 'Manual save', false)
             setHasChanges(false)
-            setSaveSuccess(true)
-            setTimeout(() => setSaveSuccess(false), 2000)
         } catch (err) {
             console.error('Save failed:', err)
         } finally {
             setSaving(false)
         }
     }, [brand, branchId, updateBranch, createSnapshot])
-
-    const handleRestoreSnapshot = useCallback((snapshotBrand: BrandConfig) => {
-        setBrand(snapshotBrand)
-        setHasChanges(true)
-    }, [])
 
     // Loading state
     if (branchLoading) {
@@ -425,20 +342,6 @@ function EditorPage() {
     return (
         <RequireAuth>
             <div className="h-screen flex flex-col overflow-hidden bg-white">
-                {/* Top Bar */}
-                {/* <EditorHeader
-                    branchId={branchId}
-                    branchName={branch.name}
-                    latestVersion={branch.latestVersion}
-                    hasChanges={hasChanges}
-                    saveSuccess={saveSuccess}
-                    saving={saving}
-                    onSave={handleSave}
-                    onImport={() => setShowImportWizard(true)}
-                    publishLoading={publishLoading}
-                    onPublish={() => setShowPublishModal(true)}
-                    validation={validation}
-                /> */}
                 <SidebarV2
                     secondarySidebar={{
                         items: tenants,
@@ -452,15 +355,8 @@ function EditorPage() {
                             </div>
                         ),
                     }}
-                    // topbar={<EditorTopbar />}
                 >
-                    {/* Body: Three Panel Layout */}
                     <div className="flex-1 flex overflow-hidden flex-col">
-                        {/* <EditorToolRail
-                        activeTab={activeTab}
-                        onTabChange={setActiveTab}
-                    /> */}
-
                         <Group
                             orientation="horizontal"
                             style={{ height: '100%' }}
@@ -469,7 +365,6 @@ function EditorPage() {
                                 [EDITOR_RIGHT_PANEL_ID]: 100,
                             }}
                         >
-                            {/* Left Panel: Editor Tabs (collapsible; animated toggle) */}
                             <Panel
                                 id={EDITOR_LEFT_PANEL_ID}
                                 panelRef={leftPanelRef}
@@ -481,7 +376,6 @@ function EditorPage() {
                                 className="min-h-0 flex flex-col"
                             >
                                 <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
-                                    {/* Tab content: flex column fills panel height; inner scroll gets a bounded flex child */}
                                     <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between px-4">
                                         <div className="flex items-center gap-2">
                                             <GitBranch className="w-4 h-4 text-gray-400" />
@@ -586,9 +480,10 @@ function EditorPage() {
                                 </div>
                             </Panel>
 
-                            <Separator className="w-px bg-gray-200 hover:bg-blue-400 transition-colors cursor-col-resize" />
+                            {isLeftPanelOpen && (
+                                <Separator className="w-px bg-gray-200 hover:bg-blue-400 transition-colors cursor-col-resize" />
+                            )}
 
-                            {/* Right Panel: Preview (70%) */}
                             <Panel
                                 id={EDITOR_RIGHT_PANEL_ID}
                                 minSize={38}
@@ -728,84 +623,6 @@ function EditorPage() {
                                                                         true
                                                                     ),
                                                             },
-                                                            {
-                                                                label: {
-                                                                    text: 'Export',
-                                                                    leftSlot: (
-                                                                        <UploadIcon
-                                                                            className="h-3.5 w-3.5"
-                                                                            weight="fill"
-                                                                        />
-                                                                    ),
-                                                                },
-
-                                                                actionType:
-                                                                    MenuV2ItemActionType.PRIMARY,
-                                                                onClick: () =>
-                                                                    console.log(
-                                                                        'Create new clicked'
-                                                                    ),
-                                                            },
-                                                            {
-                                                                label: {
-                                                                    text: 'Multi Export',
-                                                                    leftSlot: (
-                                                                        <BoxArrowUpIcon
-                                                                            className="h-3.5 w-3.5"
-                                                                            weight="fill"
-                                                                        />
-                                                                    ),
-                                                                },
-
-                                                                actionType:
-                                                                    MenuV2ItemActionType.PRIMARY,
-                                                                onClick: () =>
-                                                                    console.log(
-                                                                        'Create new clicked'
-                                                                    ),
-                                                            },
-                                                        ],
-                                                    },
-                                                    {
-                                                        label: 'AUDIT',
-                                                        showSeparator: true,
-                                                        items: [
-                                                            {
-                                                                label: {
-                                                                    text: 'Check Accessibility',
-                                                                    leftSlot: (
-                                                                        <CheckCircleIcon
-                                                                            className="h-3.5 w-3.5"
-                                                                            weight="fill"
-                                                                        />
-                                                                    ),
-                                                                },
-
-                                                                actionType:
-                                                                    MenuV2ItemActionType.PRIMARY,
-                                                                onClick: () =>
-                                                                    console.log(
-                                                                        'Create new clicked'
-                                                                    ),
-                                                            },
-                                                            {
-                                                                label: {
-                                                                    text: 'Analytics',
-                                                                    leftSlot: (
-                                                                        <TelevisionIcon
-                                                                            className="h-3.5 w-3.5"
-                                                                            weight="fill"
-                                                                        />
-                                                                    ),
-                                                                },
-
-                                                                actionType:
-                                                                    MenuV2ItemActionType.PRIMARY,
-                                                                onClick: () =>
-                                                                    console.log(
-                                                                        'Create new clicked'
-                                                                    ),
-                                                            },
                                                         ],
                                                     },
                                                 ]}
@@ -813,9 +630,6 @@ function EditorPage() {
                                                     MenuV2Alignment.START
                                                 }
                                                 side={MenuV2Side.BOTTOM}
-                                                onOpenChange={(e) => {
-                                                    console.log({ e })
-                                                }}
                                             />
                                             <ButtonV2
                                                 onClick={() => {
@@ -862,159 +676,41 @@ function EditorPage() {
                                             />
                                         </div>
                                     </div>
-                                    {/* Panel switcher */}
-                                    {/* <div className="flex items-center justify-between gap-4 px-5 py-3 bg-white border-b border-gray-200 shrink-0">
-                                    <TabsV2
-                                        value={activePanel}
-                                        onValueChange={(v: string) =>
-                                            setActivePanel(v as EditorPanelId)
-                                        }
-                                        variant={TabsV2Variant.PILLS}
-                                    >
-                                        <TabsV2List>
-                                            {editorPanels.map(
-                                                ({ id, icon: Icon, label }) => (
-                                                    <TabsV2Trigger
-                                                        key={id}
-                                                        value={id}
-                                                        leftSlot={
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                        }
-                                                    >
-                                                        {label}
-                                                    </TabsV2Trigger>
-                                                )
-                                            )}
-                                        </TabsV2List>
-                                    </TabsV2>
-
-                                    {activePanel === 'preview' && (
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-gray-400">
-                                                Preview:
-                                            </span>
-                                            <div className="flex items-center rounded-lg bg-gray-100 p-0.5">
-                                                <ToggleButton
-                                                    icon={
-                                                        <Sun
-                                                            className="h-3.5 w-3.5"
-                                                            weight={
-                                                                previewTheme ===
-                                                                'light'
-                                                                    ? 'fill'
-                                                                    : 'regular'
-                                                            }
-                                                        />
-                                                    }
-                                                    title="Light preview"
-                                                    onClick={() =>
-                                                        setPreviewTheme('light')
-                                                    }
-                                                    selected={
-                                                        previewTheme === 'light'
-                                                    }
-                                                />
-                                                <ToggleButton
-                                                    icon={
-                                                        <MoonStarsIcon
-                                                            className="h-3.5 w-3.5"
-                                                            weight={
-                                                                previewTheme ===
-                                                                'dark'
-                                                                    ? 'fill'
-                                                                    : 'regular'
-                                                            }
-                                                        />
-                                                    }
-                                                    title="Dark preview"
-                                                    onClick={() =>
-                                                        setPreviewTheme('dark')
-                                                    }
-                                                    selected={
-                                                        previewTheme === 'dark'
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-                                </div> */}
-
-                                    {/* Panel content */}
                                     <div className="flex-1 overflow-y-auto">
-                                        {activePanel === 'preview' &&
-                                            componentTokens && (
-                                                <ThemeProvider
-                                                    theme={previewTheme}
-                                                    componentTokens={
-                                                        componentTokens
-                                                    }
-                                                >
-                                                    <div
-                                                        className={`min-h-full ${
-                                                            previewTheme ===
-                                                            'dark'
-                                                                ? 'bg-gray-900'
-                                                                : 'bg-gray-50'
-                                                        } p-8`}
-                                                    >
-                                                        {activeTab ===
-                                                            'components' &&
-                                                        selectedComponent ? (
-                                                            <SingleComponentShowcase
-                                                                componentKey={
-                                                                    selectedComponent
-                                                                }
-                                                                theme={
-                                                                    previewTheme
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            <ComponentShowcase
-                                                                theme={
-                                                                    previewTheme
-                                                                }
-                                                            />
-                                                        )}
-                                                    </div>
-                                                </ThemeProvider>
-                                            )}
-                                        {activePanel === 'preview' &&
-                                            !componentTokens && (
-                                                <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-                                                    Resolving tokens...
-                                                </div>
-                                            )}
-                                        {activePanel === 'diff' && (
-                                            <DiffPanel diffs={diffs} />
-                                        )}
-                                        {activePanel === 'history' && (
-                                            <HistoryPanel
-                                                versions={versions}
-                                                snapshots={snapshots}
-                                                onRestore={
-                                                    handleRestoreSnapshot
+                                        {componentTokens ? (
+                                            <ThemeProvider
+                                                theme={previewTheme}
+                                                componentTokens={
+                                                    componentTokens
                                                 }
-                                            />
-                                        )}
-                                        {activePanel === 'export' && (
-                                            <ExportPanel
-                                                brand={brand}
-                                                branchId={branchId}
-                                            />
-                                        )}
-                                        {activePanel === 'accessibility' && (
-                                            <AccessibilityPanel brand={brand} />
-                                        )}
-                                        {activePanel === 'multi-export' && (
-                                            <MultiExportPanel
-                                                brand={brand}
-                                                branchId={branchId}
-                                            />
-                                        )}
-                                        {activePanel === 'analytics' && (
-                                            <TokenAnalyticsPanel
-                                                brand={brand}
-                                            />
+                                            >
+                                                <div
+                                                    className={`min-h-full ${
+                                                        previewTheme === 'dark'
+                                                            ? 'bg-gray-900'
+                                                            : 'bg-gray-50'
+                                                    } p-8`}
+                                                >
+                                                    {activeTab ===
+                                                        'components' &&
+                                                    selectedComponent ? (
+                                                        <SingleComponentShowcase
+                                                            componentKey={
+                                                                selectedComponent
+                                                            }
+                                                            theme={previewTheme}
+                                                        />
+                                                    ) : (
+                                                        <ComponentShowcase
+                                                            theme={previewTheme}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </ThemeProvider>
+                                        ) : (
+                                            <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                                                Resolving tokens...
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -1023,7 +719,6 @@ function EditorPage() {
                     </div>
                 </SidebarV2>
 
-                {/* Import Wizard Modal */}
                 {showImportWizard && (
                     <ImportWizard
                         onImport={handleImportTokens}
@@ -1031,7 +726,6 @@ function EditorPage() {
                     />
                 )}
 
-                {/* Publish Modal */}
                 {showPublishModal && (
                     <PublishModal
                         latestVersion={branch.latestVersion}
@@ -1059,167 +753,6 @@ function EditorPage() {
                 )}
             </div>
         </RequireAuth>
-    )
-}
-
-// ---------------------------------------------------------------------------
-// Editor Header
-// ---------------------------------------------------------------------------
-
-interface EditorToolRailProps {
-    activeTab: EditorTabId
-    onTabChange: (tab: EditorTabId) => void
-}
-
-function EditorToolRail({ activeTab, onTabChange }: EditorToolRailProps) {
-    return (
-        <nav
-            className="hidden w-12 shrink-0 flex-col items-center gap-3 bg-white px-2 py-4 md:flex"
-            aria-label="Editor tools"
-        >
-            {EDITOR_TABS.map(({ id, icon: Icon, label }) => (
-                <button
-                    key={id}
-                    type="button"
-                    onClick={() => onTabChange(id)}
-                    className={`grid h-8 w-8 place-items-center rounded-lg transition-colors ${
-                        activeTab === id
-                            ? 'bg-blue-50 text-blue-600'
-                            : 'text-gray-400 hover:bg-gray-50 hover:text-gray-700'
-                    }`}
-                    aria-label={label}
-                    aria-current={activeTab === id ? 'page' : undefined}
-                    title={label}
-                >
-                    <Icon className="h-4 w-4" />
-                </button>
-            ))}
-        </nav>
-    )
-}
-
-interface EditorHeaderProps {
-    branchId: string
-    branchName: string
-    latestVersion: string | null | undefined
-    hasChanges: boolean
-    saveSuccess: boolean
-    saving: boolean
-    onSave: () => void
-    onImport: () => void
-    publishLoading: boolean
-    onPublish: () => void
-    validation: ValidationResult | null
-}
-
-function EditorHeader({
-    branchId,
-    branchName,
-    latestVersion,
-    hasChanges,
-    saveSuccess,
-    saving,
-    onSave,
-    onImport,
-    publishLoading,
-    onPublish,
-    validation,
-}: EditorHeaderProps) {
-    return (
-        <header className="flex items-center justify-between gap-4 px-4 py-2.5 bg-white border-b border-gray-200 shrink-0">
-            <div className="flex min-w-0 items-center gap-3">
-                <Link
-                    to="/studio"
-                    className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
-                    aria-label="Back to Studio"
-                >
-                    <ArrowLeft className="w-5 h-5" />
-                </Link>
-                <div className="w-px h-5 bg-gray-200" />
-                <div className="flex min-w-0 items-center gap-2">
-                    <GitBranch className="w-4 h-4 text-gray-400" />
-                    <span className="truncate text-sm font-semibold text-gray-900">
-                        {branchName}
-                    </span>
-                    <span className="hidden max-w-[180px] truncate text-xs font-mono text-gray-400 lg:inline">
-                        {branchId}
-                    </span>
-                    {hasChanges && (
-                        <span className="px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">
-                            Unsaved
-                        </span>
-                    )}
-                    {saveSuccess && (
-                        <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                            <CheckCircle className="w-3 h-3" /> Saved
-                        </span>
-                    )}
-                </div>
-                {latestVersion && (
-                    <span className="px-2 py-0.5 text-xs font-mono bg-blue-50 text-blue-700 rounded-full">
-                        v{latestVersion}
-                    </span>
-                )}
-                {validation && !validation.valid && (
-                    <span className="flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded-full">
-                        <WarningCircle className="w-3 h-3" />
-                        {validation.errors.length} error
-                        {validation.errors.length !== 1 ? 's' : ''}
-                    </span>
-                )}
-            </div>
-
-            <div className="flex shrink-0 items-center gap-2">
-                {/* <Link
-                    to="/studio/preview/$branchId"
-                    params={{ branchId }}
-                    className="hidden items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors lg:inline-flex"
-                >
-                    <Eye className="w-4 h-4" />
-                    Preview
-                </Link> */}
-
-                <button
-                    onClick={onImport}
-                    className="hidden items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-700 border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors lg:inline-flex"
-                    title="Import tokens from CSS, Tailwind, Figma, etc."
-                >
-                    <Upload className="w-4 h-4" />
-                    Import
-                </button>
-
-                <button
-                    onClick={onSave}
-                    disabled={saving || !hasChanges}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 transition-colors"
-                >
-                    {saving ? (
-                        <Spinner className="w-4 h-4 animate-spin" />
-                    ) : (
-                        <FloppyDisk className="w-4 h-4" />
-                    )}
-                    Save
-                </button>
-
-                <button
-                    onClick={onPublish}
-                    disabled={
-                        publishLoading ||
-                        (validation ? !validation.valid : false)
-                    }
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-40 transition-colors"
-                >
-                    {publishLoading ? (
-                        <Spinner className="w-4 h-4 animate-spin" />
-                    ) : (
-                        <Play className="w-4 h-4" />
-                    )}
-                    Publish
-                </button>
-
-                <UserMenu />
-            </div>
-        </header>
     )
 }
 
@@ -1268,7 +801,6 @@ function PublishModal({
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999] p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-                {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
                     <div>
                         <h2 className="text-lg font-semibold text-gray-900">
@@ -1286,9 +818,7 @@ function PublishModal({
                     </button>
                 </div>
 
-                {/* Body */}
                 <div className="p-6 space-y-4">
-                    {/* Version input */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Version
@@ -1339,7 +869,6 @@ function PublishModal({
                         )}
                     </div>
 
-                    {/* Changelog */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Changelog
@@ -1353,7 +882,6 @@ function PublishModal({
                         />
                     </div>
 
-                    {/* Flags */}
                     <div className="flex gap-4">
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input
@@ -1384,7 +912,6 @@ function PublishModal({
                     </div>
                 </div>
 
-                {/* Footer */}
                 <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
                     <button
                         onClick={onClose}

@@ -12,22 +12,14 @@ import { forwardRef, type ReactNode } from 'react'
 import {
     ButtonV2,
     ButtonV2Size,
-    ButtonV2SubType,
     ButtonV2Type,
-    RadioV2,
+    StatCardV2,
+    StatCardV2Variant,
     TagV2,
     TagV2Color,
     TagV2Type,
-    TextInputV2,
 } from '@juspay/blend-design-system'
 import {
-    ArrowRight,
-    ChartLineUp,
-    Info,
-    Lightning,
-    MegaphoneSimple,
-    Plus,
-    Sparkle,
     BellSlashIcon,
     ArrowCircleDownIcon,
     RecycleIcon,
@@ -37,11 +29,6 @@ import {
     GearSixIcon,
     WarningOctagonIcon,
 } from '@phosphor-icons/react'
-import {
-    StatCardV2,
-    StatCardV2Variant,
-    StatCardV2ChangeType,
-} from '@juspay/blend-design-system'
 
 interface ComponentShowcaseProps {
     theme?: 'light' | 'dark'
@@ -158,7 +145,6 @@ export const ComponentShowcase = forwardRef<
                             className="block h-auto w-full"
                         />
                     }
-                    // icon={<Sparkle className="h-4 w-4 text-emerald-500" />}
                     title="Node Configuration"
                     eyebrow={
                         <TagV2
@@ -272,92 +258,14 @@ export const ComponentShowcase = forwardRef<
                     </div>
                 </PreviewCard>
 
-                <PreviewCard
-                    className={`min-h-[236px] ${cardClassName}`}
-                    icon={<ChartLineUp className="h-4 w-4 text-emerald-500" />}
-                    title="Authorization Rate"
-                    eyebrow={
-                        <TagV2
-                            text="Stat"
-                            color={TagV2Color.PRIMARY}
-                            type={TagV2Type.SUBTLE}
-                        />
-                    }
-                    description="A metric surface for checking text hierarchy and success colour contrast."
-                    mutedTextClassName={mutedTextClassName}
-                >
-                    <div className="mt-auto">
-                        <div className="flex items-end gap-3">
-                            <strong className="text-3xl font-semibold tracking-[-0.04em]">
-                                83.24%
-                            </strong>
-                            <span className="pb-1 text-xs font-semibold text-emerald-600">
-                                +23.45%
-                            </span>
-                        </div>
-                        <div className="mt-4 h-16 rounded-xl bg-gradient-to-b from-emerald-100 to-transparent">
-                            <svg
-                                viewBox="0 0 280 72"
-                                className="h-full w-full text-emerald-500"
-                                aria-hidden="true"
-                            >
-                                <polyline
-                                    points="0,58 28,54 56,54 84,32 112,50 140,38 168,43 196,28 224,34 252,48 280,66"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="3"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                        </div>
-                    </div>
-                </PreviewCard>
-
-                <StatCardV2
+                {/* <StatCardV2
                     title={'title'}
                     subtitle={'subtitle'}
                     actionIcon={<GearSixIcon size={16} />}
                     helpIconText={'helpText'}
                     value={'23%'}
                     variant={StatCardV2Variant.CHART}
-                    // options={
-                    //     {
-                    //               tooltip: {
-                    //                   backgroundColor: '#181B25',
-                    //                   borderColor: '#181B25',
-                    //                   borderRadius: 8,
-                    //                   shadow: false,
-                    //                   useHTML: true,
-                    //                   style: {
-                    //                       color: '#FFFFFF',
-                    //                       fontSize: '10px',
-                    //                       fontWeight: '500',
-                    //                       lineHeight: '14px',
-                    //                   },
-                    //                   pointFormat:
-                    //                       'Value: <b>{point.y}%</b>',
-                    //               },
-                    //               series: [
-                    //                   (() => {
-                    //                       const isIncrease = true
-
-                    //                       const baseColor = isIncrease
-                    //                           ? '#00A63E'
-                    //                           : '#F04438'
-                    //                       return {
-                    //                           data: [
-                    //                               9, 11, 13, 10, 12, 15, 18,
-                    //                               17, 19, 21, 22,
-                    //                           ],
-                    //                           type: 'line',
-                    //                           color: baseColor,
-                    //                       }
-                    //                   })(),
-                    //               ],
-                    //           }
-                    // }
-                />
+                /> */}
 
                 <PreviewCard
                     className={cardClassName}
@@ -456,7 +364,3 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
 )
 
 PreviewCard.displayName = 'PreviewCard'
-
-const RadioDot = () => (
-    <span className="inline-block h-3 w-3 rounded-full border-2 border-current" />
-)
