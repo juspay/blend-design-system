@@ -6,6 +6,8 @@ import {
     ButtonV2Size,
     ButtonV2Type,
 } from '../../../../../packages/blend/lib/components/ButtonV2'
+import { TextInputV2 } from '../../../../../packages/blend/lib/components/InputsV2/TextInputV2'
+import { InputSizeV2 } from '../../../../../packages/blend/lib/components/InputsV2/inputV2.types'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -332,16 +334,8 @@ export function ColorPaletteGenerator({
                                                           : 'border-gray-100 bg-white'
                                                 }`}
                                             >
-                                                <div className="relative">
-                                                    <span
-                                                        className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 rounded "
-                                                        style={{
-                                                            backgroundColor:
-                                                                color,
-                                                        }}
-                                                    />
-                                                    <Eyedropper className="pointer-events-none absolute left-6 top-1/2 h-3 w-3 -translate-y-1/2 text-gray-300" />
-                                                    <input
+                                                <div className="relative min-w-0">
+                                                    <TextInputV2
                                                         type="text"
                                                         value={color}
                                                         onChange={(e) =>
@@ -350,8 +344,23 @@ export function ColorPaletteGenerator({
                                                                 e.target.value
                                                             )
                                                         }
+                                                        size={InputSizeV2.SM}
                                                         spellCheck={false}
-                                                        className="h-8 w-full rounded-md border border-gray-100 bg-white pl-10 pr-2 font-mono text-xs text-gray-700 outline-none transition-shadow focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+                                                        aria-label={`${shade} hex value`}
+                                                        leftSlot={{
+                                                            slot: (
+                                                                <span className="flex items-center gap-1">
+                                                                    <span
+                                                                        className="h-3 w-3 rounded"
+                                                                        style={{
+                                                                            backgroundColor:
+                                                                                color,
+                                                                        }}
+                                                                    />
+                                                                    <Eyedropper className="h-3 w-3 text-gray-300" />
+                                                                </span>
+                                                            ),
+                                                        }}
                                                     />
                                                     <input
                                                         type="color"
@@ -371,8 +380,7 @@ export function ColorPaletteGenerator({
                                                     />
                                                 </div>
 
-                                                <button
-                                                    type="button"
+                                                <div
                                                     onClick={() =>
                                                         isOverridden
                                                             ? handleResetShade(
@@ -394,7 +402,7 @@ export function ColorPaletteGenerator({
                                                     }
                                                 >
                                                     {isBase ? 'Base' : shade}
-                                                </button>
+                                                </div>
                                             </div>
                                         )
                                     })}

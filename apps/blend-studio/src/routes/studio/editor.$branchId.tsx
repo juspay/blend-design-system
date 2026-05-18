@@ -296,34 +296,7 @@ function EditorPage() {
         }
     }, [brand])
 
-    const previewBrand = useMemo(() => {
-        if (
-            !debouncedBrand ||
-            activeTab !== 'colors' ||
-            activeColorGroup === 'primary'
-        ) {
-            return debouncedBrand
-        }
-
-        const activeColorScale = debouncedBrand.colors?.[activeColorGroup]
-        if (!activeColorScale) return debouncedBrand
-
-        const buttonOverride = debouncedBrand.componentOverrides?.BUTTONV2 ?? {}
-
-        return {
-            ...debouncedBrand,
-            componentOverrides: {
-                ...debouncedBrand.componentOverrides,
-                BUTTONV2: {
-                    ...buttonOverride,
-                    colors: {
-                        ...buttonOverride.colors,
-                        primary: activeColorScale,
-                    },
-                },
-            },
-        }
-    }, [activeColorGroup, activeTab, debouncedBrand])
+    const previewBrand = debouncedBrand
 
     const componentTokens = useMemo(() => {
         if (!previewBrand) return null
@@ -999,12 +972,6 @@ function EditorPage() {
                                                             <ComponentShowcase
                                                                 theme={
                                                                     previewTheme
-                                                                }
-                                                                activeColorGroup={
-                                                                    activeTab ===
-                                                                    'colors'
-                                                                        ? activeColorGroup
-                                                                        : undefined
                                                                 }
                                                             />
                                                         )}
