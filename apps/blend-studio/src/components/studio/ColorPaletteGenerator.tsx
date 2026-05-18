@@ -206,22 +206,29 @@ export function ColorPaletteGenerator({
                             Base Value HEX
                         </h3>
                         <div className="relative pt-[12px] px-[16px]">
-                            <span
-                                className="pointer-events-none absolute left-7 top-[61%] h-3 w-3 -translate-y-1/2 rounded border border-gray-200"
-                                style={{
-                                    backgroundColor:
-                                        normaliseHex(baseHexInput) ?? '#3B82F6',
-                                }}
-                            />
-                            <input
+                            <TextInputV2
                                 type="text"
                                 value={baseHexInput}
                                 onChange={(e) =>
                                     handleBaseColorChange(e.target.value)
                                 }
+                                size={InputSizeV2.MD}
                                 spellCheck={false}
-                                className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-8 pr-3 font-mono text-sm text-gray-800 shadow-sm transition-shadow focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                                 placeholder="#3B82F6"
+                                aria-label="Base hex value"
+                                leftSlot={{
+                                    slot: (
+                                        <span
+                                            className="h-3 w-3 rounded border border-gray-200"
+                                            style={{
+                                                backgroundColor:
+                                                    normaliseHex(
+                                                        baseHexInput
+                                                    ) ?? '#3B82F6',
+                                            }}
+                                        />
+                                    ),
+                                }}
                             />
                             <input
                                 type="color"
@@ -229,7 +236,7 @@ export function ColorPaletteGenerator({
                                 onChange={(e) =>
                                     handleBaseColorChange(e.target.value)
                                 }
-                                className="absolute inset-y-0 left-0 h-full w-8 cursor-pointer opacity-0"
+                                className="absolute bottom-0 left-4 top-3 z-10 w-10 cursor-pointer opacity-0"
                                 aria-label="Pick base colour"
                             />
                         </div>
@@ -265,7 +272,7 @@ export function ColorPaletteGenerator({
                     <div className="flex justify-center px-[16px]">
                         <ButtonV2
                             buttonType={ButtonV2Type.SECONDARY}
-                            size={ButtonV2Size.LARGE}
+                            size={ButtonV2Size.MEDIUM}
                             onClick={handleGenerateRandom}
                             text="Generate Random"
                             leftSlot={{
@@ -322,17 +329,7 @@ export function ColorPaletteGenerator({
                                                               }ms`
                                                             : '0ms',
                                                 }}
-                                                className={`grid min-w-0 grid-cols-[minmax(0,1fr)_42px] items-center rounded-lg  px-2 py-1.5 transition-[opacity,transform,background-color] duration-300 ease-out motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none ${
-                                                    overrideListReveal
-                                                        ? 'translate-y-0 opacity-100'
-                                                        : 'translate-y-1.5 opacity-0'
-                                                } ${
-                                                    isBase
-                                                        ? 'border-blue-200 bg-blue-50/50'
-                                                        : isOverridden
-                                                          ? 'border-amber-200 bg-amber-50/30'
-                                                          : 'border-gray-100 bg-white'
-                                                }`}
+                                                className={`grid min-w-0 grid-cols-[minmax(0,1fr)_42px] items-center rounded-lg  px-2 py-1.5 transition-[opacity,transform,background-color] duration-300 ease-out motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none`}
                                             >
                                                 <div className="relative min-w-0">
                                                     <TextInputV2
