@@ -1424,6 +1424,7 @@ const BranchCard = memo(function BranchCard({
                         <Link
                             to="/studio/preview/$branchId"
                             params={{ branchId: branch.id }}
+                            search={{ from: undefined }}
                             onClick={(e) => e.stopPropagation()}
                             className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
                             title="Preview"

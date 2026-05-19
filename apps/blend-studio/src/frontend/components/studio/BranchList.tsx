@@ -137,6 +137,7 @@ function BranchCard({ branch }: { branch: Branch }) {
                     <Link
                         to="/studio/preview/$branchId"
                         params={{ branchId: branch.brandId }}
+                        search={{ from: undefined }}
                         onClick={(e) => e.stopPropagation()}
                         className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
                         title="Preview"
