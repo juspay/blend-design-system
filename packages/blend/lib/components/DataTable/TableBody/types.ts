@@ -4,6 +4,7 @@ import type { SkeletonVariant } from '../../Skeleton/skeleton.tokens'
 
 export type TableBodyProps<T extends Record<string, unknown>> = {
     currentData: T[]
+    dataVersion?: number | string
     visibleColumns: ColumnDefinition<T>[]
     idField: string
     tableTitle?: string

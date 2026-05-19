@@ -537,6 +537,7 @@ const TableBody = forwardRef<
     (
         {
             currentData,
+            dataVersion,
             visibleColumns,
             idField,
             tableTitle,
@@ -640,10 +641,16 @@ const TableBody = forwardRef<
                 skeletonVariant: variant,
             }
         }
-        const tbodyKey =
-            currentData.length > 0
-                ? `tbody-${currentData.length}-${String(currentData[0][idField])}-${String(currentData[currentData.length - 1][idField])}`
-                : 'tbody-empty'
+        const tbodyKey = useMemo(() => {
+            if (dataVersion !== undefined) return `tbody-${String(dataVersion)}`
+
+            const len = currentData.length
+            if (len === 0) return 'tbody-empty'
+
+            const firstId = String(currentData[0][idField])
+            const lastId = String(currentData[len - 1][idField])
+            return `tbody-${len}-${firstId}-${lastId}`
+        }, [currentData, dataVersion, idField])
 
         return (
             <motion.tbody
