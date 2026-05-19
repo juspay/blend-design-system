@@ -140,6 +140,9 @@ const EDITOR_RIGHT_PANEL_ID = 'editor-right-panel'
 /** Flex transition when opening/closing the left panel via the toggle (not drag). */
 const LEFT_PANEL_TOGGLE_MS = 280
 
+const LEFT_PANEL_MIN_PX = 400
+const LEFT_PANEL_MAX_PX = 900
+
 // ---------------------------------------------------------------------------
 // Main Editor Page
 // ---------------------------------------------------------------------------
@@ -166,6 +169,7 @@ function EditorPage() {
     const [hasChanges, setHasChanges] = useState(false)
     const [saving, setSaving] = useState(false)
     const [activeTab, setActiveTab] = useState<EditorTabId>('colors')
+    const [isMobile, setIsMobile] = useState(false)
     const [activeColorGroup, setActiveColorGroup] =
         useState<ColorGroupKey>('primary')
     const [showPublishModal, setShowPublishModal] = useState(false)
@@ -182,6 +186,22 @@ function EditorPage() {
         leftPanelOuterElRef.current = node
     }, [])
 
+    const clampLeftPanelSize = useCallback(() => {
+        const panel = leftPanelRef.current
+        if (!panel || !isLeftPanelOpen) return
+
+        const { inPixels } = panel.getSize()
+        if (inPixels < LEFT_PANEL_MIN_PX) {
+            panel.resize(LEFT_PANEL_MIN_PX)
+        } else if (inPixels > LEFT_PANEL_MAX_PX) {
+            panel.resize(LEFT_PANEL_MAX_PX)
+        }
+    }, [isLeftPanelOpen])
+
+    const handleLeftPanelResize = useCallback(() => {
+        clampLeftPanelSize()
+    }, [clampLeftPanelSize])
+
     useLayoutEffect(() => {
         const el = leftPanelOuterElRef.current
         const panel = leftPanelRef.current
@@ -192,9 +212,15 @@ function EditorPage() {
         el.style.transitionTimingFunction = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
         if (isLeftPanelOpen) {
-            panel.expand()
+            const { inPixels } = panel.getSize()
+            panel.resize(
+                Math.min(
+                    LEFT_PANEL_MAX_PX,
+                    Math.max(LEFT_PANEL_MIN_PX, inPixels || LEFT_PANEL_MIN_PX)
+                )
+            )
         } else {
-            panel.collapse()
+            panel.resize(0)
         }
 
         const clearId = window.setTimeout(() => {
@@ -364,15 +390,21 @@ function EditorPage() {
                                 [EDITOR_LEFT_PANEL_ID]: 0,
                                 [EDITOR_RIGHT_PANEL_ID]: 100,
                             }}
+                            onLayoutChanged={clampLeftPanelSize}
                         >
                             <Panel
                                 id={EDITOR_LEFT_PANEL_ID}
                                 panelRef={leftPanelRef}
                                 elementRef={leftPanelElementRef}
-                                collapsible
-                                collapsedSize={0}
-                                minSize={400}
+                                minSize={
+                                    isLeftPanelOpen ? LEFT_PANEL_MIN_PX : 0
+                                }
+                                maxSize={
+                                    isLeftPanelOpen ? LEFT_PANEL_MAX_PX : 0
+                                }
                                 defaultSize={29}
+                                groupResizeBehavior="preserve-pixel-size"
+                                onResize={handleLeftPanelResize}
                                 className="min-h-0 flex flex-col"
                             >
                                 <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
@@ -518,8 +550,10 @@ function EditorPage() {
                                                         />
                                                     }
                                                     title="Light preview"
-                                                    onClick={() => {}}
-                                                    selected={true}
+                                                    onClick={() => {
+                                                        setIsMobile(false)
+                                                    }}
+                                                    selected={!isMobile}
                                                 />
                                                 <ToggleButton
                                                     icon={
@@ -533,8 +567,10 @@ function EditorPage() {
                                                         />
                                                     }
                                                     title="Dark preview"
-                                                    onClick={() => {}}
-                                                    selected={false}
+                                                    onClick={() => {
+                                                        setIsMobile(true)
+                                                    }}
+                                                    selected={isMobile}
                                                 />
                                             </div>
                                             <div className="flex items-center rounded-lg bg-gray-100 p-0.5">
@@ -702,6 +738,7 @@ function EditorPage() {
                                                         />
                                                     ) : (
                                                         <ComponentShowcase
+                                                            isMobile={isMobile}
                                                             theme={previewTheme}
                                                         />
                                                     )}
