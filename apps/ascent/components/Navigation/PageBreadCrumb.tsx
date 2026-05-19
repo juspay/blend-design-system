@@ -7,11 +7,13 @@ export const PageBreadcrumb = ({
     className,
     style,
     mobileTrigger,
+    rightSection,
 }: {
     items: Array<{ label: string; href: string }>
     className?: string
     style?: React.CSSProperties
     mobileTrigger?: React.ReactNode
+    rightSection?: React.ReactNode
 }) => {
     return (
         <nav
@@ -22,7 +24,7 @@ export const PageBreadcrumb = ({
             aria-label="Breadcrumb"
             style={style}
         >
-            <div className="flex items-center justify-between gap-3 min-w-0 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto">
+            <div className="h-5 flex items-center justify-between gap-3 min-w-0 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto">
                 <ol className="flex items-center text-sm min-w-0 overflow-hidden">
                     {items.map((item, index) => (
                         <li
@@ -62,8 +64,13 @@ export const PageBreadcrumb = ({
                         </li>
                     ))}
                 </ol>
-                {mobileTrigger && (
-                    <div className="lg:hidden shrink-0">{mobileTrigger}</div>
+                {(rightSection || mobileTrigger) && (
+                    <div className="flex items-center gap-2 shrink-0">
+                        {rightSection}
+                        {mobileTrigger && (
+                            <div className="lg:hidden">{mobileTrigger}</div>
+                        )}
+                    </div>
                 )}
             </div>
         </nav>

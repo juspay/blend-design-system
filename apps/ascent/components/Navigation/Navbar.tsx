@@ -1,9 +1,19 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { XIcon, ListIcon } from '@phosphor-icons/react/dist/ssr'
+import {
+    XIcon,
+    ListIcon,
+    CaretDownIcon,
+    ClockCounterClockwiseIcon,
+    NotepadIcon,
+    LayoutIcon,
+    BookOpenIcon,
+    SquaresFourIcon,
+} from '@phosphor-icons/react/dist/ssr'
 import { Drawer } from 'vaul'
+import { motion, AnimatePresence } from 'motion/react'
 import { GitHubIcon, FigmaIcon } from '../../icons'
 import {
     EXTERNAL_LINKS,
@@ -13,21 +23,72 @@ import {
 import { cn } from '@/lib/utils/cn'
 import ThemeToggle from '../ui/ThemeToggle/ThemeToggle'
 
+const PRIMARY_NAV_LABELS = ['Docs', 'Storybook']
+const MORE_NAV_LABELS = ['Blogs', 'Changelog', 'Showcase']
+const MOBILE_NAV_LABELS = [
+    'Docs',
+    'Storybook',
+    'Blogs',
+    'Changelog',
+    'Showcase',
+]
+
+const MORE_META: Record<string, { icon: React.ReactNode; desc: string }> = {
+    Docs: {
+        icon: <BookOpenIcon className="h-4.5 w-4.5" />,
+        desc: 'Documentation',
+    },
+    Storybook: {
+        icon: <SquaresFourIcon className="h-4.5 w-4.5" />,
+        desc: 'Component library',
+    },
+    Blogs: {
+        icon: <NotepadIcon className="h-4.5 w-4.5" />,
+        desc: 'Guides & updates',
+    },
+    Changelog: {
+        icon: <ClockCounterClockwiseIcon className="h-4.5 w-4.5" />,
+        desc: "What's new",
+    },
+    Showcase: {
+        icon: <LayoutIcon className="h-4.5 w-4.5" />,
+        desc: 'Built with Blend',
+    },
+}
+
 export default function Navbar() {
     const pathname = usePathname()
-    const [isOpen, setIsOpen] = useState(false)
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+    const [moreOpen, setMoreOpen] = useState(false)
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const navLinks = HEADER_NAV_LINKS.filter(
-        (link) =>
-            link.label === 'Docs' ||
-            link.label === 'Blogs' ||
-            link.label === 'Changelog' ||
-            link.label === 'Storybook'
+    const primaryLinks = HEADER_NAV_LINKS.filter((l) =>
+        PRIMARY_NAV_LABELS.includes(l.label)
     )
+    const moreLinks = HEADER_NAV_LINKS.filter((l) =>
+        MORE_NAV_LABELS.includes(l.label)
+    )
+    const mobileLinks = HEADER_NAV_LINKS.filter((l) =>
+        MOBILE_NAV_LABELS.includes(l.label)
+    )
+
+    const isMoreActive = moreLinks.some(
+        (l) => pathname === l.href || pathname.startsWith(l.href + '/')
+    )
+
+    const handleMouseEnter = useCallback(() => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+        setMoreOpen(true)
+    }, [])
+
+    const handleMouseLeave = useCallback(() => {
+        timeoutRef.current = setTimeout(() => setMoreOpen(false), 120)
+    }, [])
 
     return (
         <header className="lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto relative z-100">
             <div className="mx-auto px-4 sm:px-6.25 py-5 h-15 flex items-center justify-between border-x border-border">
+                {/* Logo */}
                 <Link
                     href={ROUTES.home}
                     className="flex items-center font-semibold text-foreground"
@@ -39,11 +100,10 @@ export default function Navbar() {
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex items-center gap-4">
                     <nav className="flex items-center gap-3">
-                        {HEADER_NAV_LINKS.map((link) => {
+                        {primaryLinks.map((link) => {
                             const isActive =
                                 pathname === link.href ||
                                 pathname.startsWith(link.href + '/')
-
                             return (
                                 <Link
                                     key={link.href}
@@ -67,6 +127,166 @@ export default function Navbar() {
                                 </Link>
                             )
                         })}
+
+                        {/* More — hover-triggered dropdown */}
+                        <div
+                            className="relative"
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                        >
+                            <button
+                                className={cn(
+                                    'flex items-center gap-1 text-sm transition-colors p-1 select-none cursor-default',
+                                    isMoreActive || moreOpen
+                                        ? 'text-primary'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                )}
+                                aria-expanded={moreOpen}
+                                aria-haspopup="true"
+                                tabIndex={0}
+                                onFocus={() => setMoreOpen(true)}
+                                onBlur={() =>
+                                    setTimeout(() => setMoreOpen(false), 150)
+                                }
+                            >
+                                More
+                                <motion.span
+                                    animate={{ rotate: moreOpen ? 180 : 0 }}
+                                    transition={{
+                                        duration: 0.22,
+                                        ease: [0.4, 0, 0.2, 1],
+                                    }}
+                                    className="flex items-center"
+                                >
+                                    <CaretDownIcon size={12} weight="bold" />
+                                </motion.span>
+                            </button>
+
+                            <AnimatePresence>
+                                {moreOpen && (
+                                    <motion.div
+                                        key="more-dropdown"
+                                        initial={{
+                                            opacity: 0,
+                                            y: -10,
+                                            scale: 0.95,
+                                            filter: 'blur(30px)',
+                                        }}
+                                        animate={{
+                                            opacity: 1,
+                                            y: 0,
+                                            scale: 1,
+                                            filter: 'blur(0px)',
+                                        }}
+                                        exit={{
+                                            opacity: 0,
+                                            y: -6,
+                                            scale: 0.97,
+                                            filter: 'blur(50px)',
+                                        }}
+                                        transition={{
+                                            duration: 0.4,
+                                            ease: [0.16, 1, 0.3, 1],
+                                        }}
+                                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3.5 w-60 origin-top"
+                                    >
+                                        {/* Arrow pointer */}
+                                        {/* <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-background border-l border-t border-border rotate-45 z-10" /> */}
+
+                                        <div className="relative bg-background backdrop-blur-xl border border-border shadow-xl shadow-black/5 overflow-hidden mt-0.5">
+                                            {moreLinks.map((link, i) => {
+                                                const isActive =
+                                                    pathname === link.href ||
+                                                    pathname.startsWith(
+                                                        link.href + '/'
+                                                    )
+                                                const meta =
+                                                    MORE_META[link.label]
+
+                                                return (
+                                                    <motion.div
+                                                        key={link.href}
+                                                        initial={{
+                                                            opacity: 0,
+                                                            y: 5,
+                                                        }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                            y: 0,
+                                                        }}
+                                                        transition={{
+                                                            delay: i * 0.045,
+                                                            duration: 0.18,
+                                                            ease: [
+                                                                0.16, 1, 0.3, 1,
+                                                            ],
+                                                        }}
+                                                        className="border-b border-border/60 last:border-b-0"
+                                                    >
+                                                        <Link
+                                                            href={link.href}
+                                                            target={
+                                                                link.external
+                                                                    ? '_blank'
+                                                                    : undefined
+                                                            }
+                                                            rel={
+                                                                link.external
+                                                                    ? 'noopener noreferrer'
+                                                                    : undefined
+                                                            }
+                                                            onClick={() =>
+                                                                setMoreOpen(
+                                                                    false
+                                                                )
+                                                            }
+                                                            className={cn(
+                                                                'group flex items-center gap-3 px-3.5 py-3 transition-all duration-150',
+                                                                isActive
+                                                                    ? 'bg-primary/5 text-primary'
+                                                                    : 'text-foreground hover:bg-muted/60'
+                                                            )}
+                                                        >
+                                                            {meta?.icon && (
+                                                                <span
+                                                                    className={cn(
+                                                                        'shrink-0 w-9 h-9 flex items-center justify-center bg-secondary/50 border border-dotted border-border/60 transition-colors duration-150',
+                                                                        isActive
+                                                                            ? 'text-primary'
+                                                                            : 'text-muted-foreground group-hover:text-foreground'
+                                                                    )}
+                                                                >
+                                                                    {meta.icon}
+                                                                </span>
+                                                            )}
+                                                            <span className="flex flex-col gap-1.5 min-w-0">
+                                                                <span className="text-sm font-medium leading-none tracking-wide text-foreground/90">
+                                                                    {link.label}
+                                                                </span>
+                                                                {meta?.desc && (
+                                                                    <span
+                                                                        className={cn(
+                                                                            'text-xs tracking-wide leading-none',
+                                                                            isActive
+                                                                                ? 'text-primary/60'
+                                                                                : 'text-muted-foreground'
+                                                                        )}
+                                                                    >
+                                                                        {
+                                                                            meta.desc
+                                                                        }
+                                                                    </span>
+                                                                )}
+                                                            </span>
+                                                        </Link>
+                                                    </motion.div>
+                                                )
+                                            })}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </nav>
 
                     <div className="flex items-center border border-border px-1.5 py-0.5">
@@ -118,9 +338,10 @@ export default function Navbar() {
                         </Link>
                     </div>
                     <ThemeToggle />
+
                     <Drawer.Root
-                        open={isOpen}
-                        onOpenChange={setIsOpen}
+                        open={isDrawerOpen}
+                        onOpenChange={setIsDrawerOpen}
                         direction="right"
                     >
                         <Drawer.Trigger asChild>
@@ -149,12 +370,13 @@ export default function Navbar() {
                                         </Drawer.Close>
                                     </div>
                                     <nav className="flex flex-col p-4 gap-1">
-                                        {navLinks.map((link) => {
+                                        {mobileLinks.map((link) => {
                                             const isActive =
                                                 pathname === link.href ||
                                                 pathname.startsWith(
                                                     link.href + '/'
                                                 )
+                                            const meta = MORE_META[link.label]
 
                                             return (
                                                 <Link
@@ -171,16 +393,37 @@ export default function Navbar() {
                                                             : undefined
                                                     }
                                                     onClick={() =>
-                                                        setIsOpen(false)
+                                                        setIsDrawerOpen(false)
                                                     }
                                                     className={cn(
-                                                        'text-sm transition-colors p-3 rounded-md',
+                                                        'flex items-center gap-3 text-sm transition-colors p-3 rounded-md',
                                                         isActive
                                                             ? 'text-primary bg-primary/5'
                                                             : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                                     )}
                                                 >
-                                                    {link.label}
+                                                    {meta?.icon && (
+                                                        <span
+                                                            className={cn(
+                                                                'shrink-0 w-7 h-7 flex items-center justify-center border',
+                                                                isActive
+                                                                    ? 'bg-primary/10 border-primary/20 text-primary'
+                                                                    : 'bg-muted border-border text-muted-foreground'
+                                                            )}
+                                                        >
+                                                            {meta.icon}
+                                                        </span>
+                                                    )}
+                                                    <span className="flex flex-col gap-0.5">
+                                                        <span className="font-medium text-foreground">
+                                                            {link.label}
+                                                        </span>
+                                                        {meta?.desc && (
+                                                            <span className="text-xs text-muted-foreground">
+                                                                {meta.desc}
+                                                            </span>
+                                                        )}
+                                                    </span>
                                                 </Link>
                                             )
                                         })}
