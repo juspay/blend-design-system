@@ -13,6 +13,10 @@ import {
     ButtonV2,
     ButtonV2Size,
     ButtonV2Type,
+    StatCardV2,
+    StatCardV2ArrowDirection,
+    StatCardV2ChangeType,
+    StatCardV2Variant,
     TagV2,
     TagV2Color,
     TagV2Type,
@@ -25,6 +29,7 @@ import {
     LightningIcon,
     CurrencyCircleDollarIcon,
     WarningOctagonIcon,
+    GearSixIcon,
 } from '@phosphor-icons/react'
 
 interface ComponentShowcaseProps {
@@ -62,7 +67,7 @@ export const ComponentShowcase = forwardRef<
             )} ${className}`}
         >
             <div className="mx-auto grid max-w-[1120px] grid-cols-1 gap-7 p-2 sm:grid-cols-2">
-                <div className="rounded-[12px] border bg-white">
+                <div className="rounded-[12px] border bg-white shadow-sm">
                     <div className="border-b px-[16px] py-[12px] flex justify-between items-center">
                         <div className="flex flex-row items-center gap-2">
                             <img
@@ -95,7 +100,7 @@ export const ComponentShowcase = forwardRef<
                                         <WarningOctagonIcon className="h-3.5 w-3.5" />
                                     ),
                                 }}
-                                color={TagV2Color.PRIMARY}
+                                color={TagV2Color.PURPLE}
                                 type={TagV2Type.SUBTLE}
                             />
                             <div className="flex gap-2">
@@ -255,14 +260,45 @@ export const ComponentShowcase = forwardRef<
                     </div>
                 </PreviewCard>
 
-                {/* <StatCardV2
-                    title={'title'}
-                    subtitle={'subtitle'}
-                    actionIcon={<GearSixIcon size={16} />}
-                    helpIconText={'helpText'}
-                    value={'23%'}
-                    variant={StatCardV2Variant.CHART}
-                /> */}
+                <div className="w-full">
+                    <StatCardV2
+                        title={'Authorization Rate'}
+                        actionIcon={<GearSixIcon size={16} />}
+                        helpIconText={'helpText'}
+                        value={'83.24%'}
+                        variant={StatCardV2Variant.CHART}
+                        change={{
+                            value: '23.45%',
+                            changeType: StatCardV2ChangeType.INCREASE,
+                            arrowDirection: StatCardV2ArrowDirection.UP,
+                        }}
+                        maxWidth="100%"
+                        options={{
+                            series: [
+                                {
+                                    data: [
+                                        9, 11, 13, 10, 12, 15, 18, 17, 19, 21,
+                                        22,
+                                    ],
+                                    type: 'area',
+                                    color: '#00A63E',
+                                    fillColor: {
+                                        linearGradient: {
+                                            x1: 0,
+                                            y1: 0,
+                                            x2: 0,
+                                            y2: 1,
+                                        },
+                                        stops: [
+                                            [0, 'rgba(123, 241, 168, 0.40)'],
+                                            [1, 'rgba(123, 241, 168, 0.00)'],
+                                        ],
+                                    },
+                                },
+                            ],
+                        }}
+                    />
+                </div>
 
                 <PreviewCard
                     className={cardClassName}
@@ -278,7 +314,7 @@ export const ComponentShowcase = forwardRef<
                 >
                     <div className="flex flex-col justify-center">
                         <div className="flex justify-center items-center gap-2 ">
-                            <h3 className="text-sm font-semibold tracking-[-0.01em]">
+                            <h3 className="text-sm font-semibold">
                                 Cost-Effective Processing
                             </h3>
                             <TagV2
@@ -333,31 +369,47 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
             media,
         }: PreviewCardProps,
         ref
-    ) => (
-        <article
-            ref={ref}
-            className={`flex min-h-[184px] flex-col overflow-hidden rounded-2xl border shadow-sm ${className}`}
-        >
-            {media ? media : null}
-            <div className="flex flex-1 flex-col gap-4 p-4">
-                <div className="shrink-0">
-                    <div className="flex items-start justify-between gap-3">
-                        <div className="flex min-w-0 flex-wrap items-center gap-2">
-                            {icon}
-                            <h3 className="text-sm font-semibold tracking-[-0.01em]">
-                                {title}
-                            </h3>
-                            {eyebrow}
+    ) => {
+        const hasHeaderContent = Boolean(
+            title || description || icon || eyebrow
+        )
+
+        return (
+            <article
+                ref={ref}
+                className={`flex min-h-[184px] flex-col overflow-hidden rounded-2xl border shadow-sm ${className}`}
+            >
+                {media}
+                <div className="flex flex-1 flex-col gap-4 p-4">
+                    {hasHeaderContent && (
+                        <div className="shrink-0">
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                                    {icon}
+                                    {title && (
+                                        <h3 className="text-sm font-semibold tracking-[-0.01em]">
+                                            {title}
+                                        </h3>
+                                    )}
+                                    {eyebrow}
+                                </div>
+                            </div>
+                            {description && (
+                                <p
+                                    className={`text-xs leading-5 ${mutedTextClassName}`}
+                                >
+                                    {description}
+                                </p>
+                            )}
                         </div>
+                    )}
+                    <div className="flex min-h-0 flex-1 flex-col">
+                        {children}
                     </div>
-                    <p className={`text-xs leading-5 ${mutedTextClassName}`}>
-                        {description}
-                    </p>
                 </div>
-                <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-            </div>
-        </article>
-    )
+            </article>
+        )
+    }
 )
 
 PreviewCard.displayName = 'PreviewCard'
