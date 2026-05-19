@@ -44,11 +44,4 @@ export default defineConfig(({ mode }) => ({
         sourcemap: process.env.NODE_ENV !== 'production',
         minify: 'esbuild',
     },
-    optimizeDeps: {
-        include: [
-            '@juspay/blend-design-system',
-            '@juspay/blend-design-system/node',
-            '@juspay/blend-design-system/tokens',
-        ],
-    },
 }))
