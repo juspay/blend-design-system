@@ -30,19 +30,11 @@ import {
     Separator,
     type PanelImperativeHandle,
 } from 'react-resizable-panels'
-import {
-    resolveBrandTokens,
-    diffBrandConfigs,
-    PRESET_BLEND_DEFAULT,
-    type BrandConfig,
-    type TokenDiff,
-} from '@juspay/blend-design-system/tokens'
+import { type BrandConfig } from '@juspay/blend-design-system/tokens'
 import {
     useBranchWithMock,
     usePublishVersionWithMock,
     useCreateSnapshotWithMock,
-    incrementVersion,
-    validateVersion,
 } from '@/frontend/hooks/use-studio'
 import { ComponentShowcase } from '@/components/studio/ComponentShowcase'
 import { SingleComponentShowcase } from '@/components/studio/SingleComponentShowcase'
@@ -55,6 +47,9 @@ import {
     ComponentOverridesTab,
     JsonTab,
     ImportWizard,
+    PublishModal,
+    EditorLoadingScreen,
+    EditorErrorScreen,
     type EditorTabId,
     type ColorGroupKey,
 } from '@/components/studio/editor'
@@ -71,13 +66,9 @@ import {
 import {
     Sun,
     Moon,
-    Play,
-    Spinner,
     Code,
     TextAa,
     Sliders,
-    WarningCircle,
-    X,
     GitBranch,
     Repeat,
     Palette,
@@ -92,6 +83,20 @@ import {
 } from '@phosphor-icons/react'
 import { SidebarV2 } from '@juspay/blend-design-system'
 import { getCurrentReturnPath } from '@/lib/return-path'
+import {
+    AUTO_SAVE_DELAY_MS,
+    TOKEN_RESOLVE_DEBOUNCE_MS,
+    EDITOR_LEFT_PANEL_ID,
+    EDITOR_RIGHT_PANEL_ID,
+    LEFT_PANEL_TOGGLE_MS,
+    LEFT_PANEL_MIN_SIZE,
+    LEFT_PANEL_MAX_SIZE,
+    applyLeftPanelToggleTransition,
+    computeBrandDiffs,
+    mergeImportedBrandConfig,
+    getPreviewSurfaceClassName,
+    resolveComponentTokens,
+} from '@/utils'
 export const Route = createFileRoute('/studio/editor/$branchId')({
     component: EditorPage,
 })
@@ -127,18 +132,6 @@ const sidebarItems = EDITOR_TABS.map(({ id, icon: Icon, label }) => ({
     showInPanel: true,
     icon: <Icon className="h-4 w-4" aria-hidden />,
 }))
-
-/** Auto-save debounce interval in milliseconds. */
-const AUTO_SAVE_DELAY_MS = 1_000
-
-const EDITOR_LEFT_PANEL_ID = 'editor-left-panel'
-const EDITOR_RIGHT_PANEL_ID = 'editor-right-panel'
-
-/** Flex transition when opening/closing the left panel via the toggle (not drag). */
-const LEFT_PANEL_TOGGLE_MS = 280
-
-const LEFT_PANEL_MIN_PX = '23'
-const LEFT_PANEL_MAX_PX = '55'
 
 // ---------------------------------------------------------------------------
 // Main Editor Page
@@ -184,22 +177,8 @@ function EditorPage() {
 
     useLayoutEffect(() => {
         const el = leftPanelOuterElRef.current
-        const panel = leftPanelRef.current
-        if (!el || !panel) return
-
-        el.style.transitionProperty = 'flex-grow, flex-basis, flex-shrink'
-        el.style.transitionDuration = `${LEFT_PANEL_TOGGLE_MS}ms`
-        el.style.transitionTimingFunction = 'cubic-bezier(0.22, 1, 0.36, 1)'
-
-        const clearId = window.setTimeout(() => {
-            el.style.transitionProperty = ''
-            el.style.transitionDuration = ''
-            el.style.transitionTimingFunction = ''
-        }, LEFT_PANEL_TOGGLE_MS + 50)
-
-        return () => {
-            window.clearTimeout(clearId)
-        }
+        if (!el) return
+        return applyLeftPanelToggleTransition(el, LEFT_PANEL_TOGGLE_MS)
     }, [isLeftPanelOpen])
 
     // Sync brand from branch on load
@@ -235,7 +214,7 @@ function EditorPage() {
         if (resolveTimer.current) clearTimeout(resolveTimer.current)
         resolveTimer.current = setTimeout(() => {
             setDebouncedBrand(brand)
-        }, 200)
+        }, TOKEN_RESOLVE_DEBOUNCE_MS)
         return () => {
             if (resolveTimer.current) clearTimeout(resolveTimer.current)
         }
@@ -243,23 +222,15 @@ function EditorPage() {
 
     const previewBrand = debouncedBrand
 
-    const componentTokens = useMemo(() => {
-        if (!previewBrand) return null
-        try {
-            return resolveBrandTokens(previewBrand, previewTheme)
-        } catch {
-            return null
-        }
-    }, [previewBrand, previewTheme])
+    const componentTokens = useMemo(
+        () =>
+            previewBrand
+                ? resolveComponentTokens(previewBrand, previewTheme)
+                : null,
+        [previewBrand, previewTheme]
+    )
 
-    const diffs = useMemo<TokenDiff[]>(() => {
-        if (!brand) return []
-        try {
-            return diffBrandConfigs(PRESET_BLEND_DEFAULT, brand)
-        } catch {
-            return []
-        }
-    }, [brand])
+    const diffs = useMemo(() => computeBrandDiffs(brand), [brand])
 
     // Handlers
     const handleBrandChange = useCallback(
@@ -277,27 +248,8 @@ function EditorPage() {
     const handleImportTokens = useCallback((imported: Partial<BrandConfig>) => {
         setBrand((prev) => {
             if (!prev) return prev
-            const updated = { ...prev }
-            if (imported.colors) {
-                updated.colors = {
-                    ...updated.colors,
-                    ...imported.colors,
-                }
-            }
-            if (imported.radius) {
-                updated.radius = { ...updated.radius, ...imported.radius }
-            }
-            if (imported.shadows) {
-                updated.shadows = {
-                    ...updated.shadows,
-                    ...imported.shadows,
-                }
-            }
-            if (imported.font) {
-                updated.font = { ...updated.font, ...imported.font }
-            }
             setHasChanges(true)
-            return updated
+            return mergeImportedBrandConfig(prev, imported)
         })
         setShowImportWizard(false)
     }, [])
@@ -318,13 +270,13 @@ function EditorPage() {
 
     // Loading state
     if (branchLoading) {
-        return <LoadingScreen message="Loading branch..." />
+        return <EditorLoadingScreen message="Loading branch..." />
     }
 
     // Error state
     if (branchError || !branch) {
         return (
-            <ErrorScreen
+            <EditorErrorScreen
                 message={branchError || 'Branch not found'}
                 onBack={() => navigate({ to: '/studio' })}
             />
@@ -364,12 +316,12 @@ function EditorPage() {
                                 panelRef={leftPanelRef}
                                 elementRef={leftPanelElementRef}
                                 minSize={
-                                    isLeftPanelOpen ? LEFT_PANEL_MIN_PX : 0
+                                    isLeftPanelOpen ? LEFT_PANEL_MIN_SIZE : 0
                                 }
                                 maxSize={
-                                    isLeftPanelOpen ? LEFT_PANEL_MAX_PX : 0
+                                    isLeftPanelOpen ? LEFT_PANEL_MAX_SIZE : 0
                                 }
-                                defaultSize={LEFT_PANEL_MIN_PX}
+                                defaultSize={LEFT_PANEL_MIN_SIZE}
                                 groupResizeBehavior="preserve-pixel-size"
                                 className="min-h-0 flex flex-col"
                             >
@@ -691,11 +643,7 @@ function EditorPage() {
                                                 }
                                             >
                                                 <div
-                                                    className={`min-h-full ${
-                                                        previewTheme === 'dark'
-                                                            ? 'bg-gray-900'
-                                                            : 'bg-gray-50'
-                                                    } p-8`}
+                                                    className={`min-h-full p-8 ${getPreviewSurfaceClassName(previewTheme)}`}
                                                 >
                                                     {activeTab ===
                                                         'components' &&
@@ -760,228 +708,5 @@ function EditorPage() {
                 )}
             </div>
         </RequireAuth>
-    )
-}
-
-// ---------------------------------------------------------------------------
-// Publish Modal
-// ---------------------------------------------------------------------------
-
-interface PublishModalProps {
-    latestVersion: string | null | undefined
-    onClose: () => void
-    onPublish: (
-        version: string,
-        changelog: string,
-        isBreaking: boolean,
-        isPrerelease: boolean
-    ) => Promise<void>
-    loading: boolean
-}
-
-function PublishModal({
-    latestVersion,
-    onClose,
-    onPublish,
-    loading,
-}: PublishModalProps) {
-    const suggested = latestVersion
-        ? incrementVersion(latestVersion, 'patch')
-        : '1.0.0'
-    const [version, setVersion] = useState(suggested)
-    const [changelog, setChangelog] = useState('')
-    const [isBreaking, setIsBreaking] = useState(false)
-    const [isPrerelease, setIsPrerelease] = useState(false)
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const vValid = validateVersion(version)
-
-    const handlePublish = async () => {
-        if (loading || isSubmitting || !vValid.valid) return
-        setIsSubmitting(true)
-        try {
-            await onPublish(version, changelog, isBreaking, isPrerelease)
-        } finally {
-            setIsSubmitting(false)
-        }
-    }
-
-    return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999] p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-                <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                    <div>
-                        <h2 className="text-lg font-semibold text-gray-900">
-                            Publish Version
-                        </h2>
-                        <p className="text-sm text-gray-500 mt-0.5">
-                            Make this token branch available to teams
-                        </p>
-                    </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                <div className="p-6 space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Version
-                        </label>
-                        <input
-                            type="text"
-                            value={version}
-                            onChange={(e) => setVersion(e.target.value)}
-                            placeholder="1.0.0"
-                            className={`w-full px-3 py-2 text-sm font-mono border rounded-lg focus:outline-none focus:ring-2 ${
-                                vValid.valid
-                                    ? 'border-gray-300 focus:ring-blue-500'
-                                    : 'border-red-300 focus:ring-red-400'
-                            }`}
-                        />
-                        {!vValid.valid && (
-                            <p className="text-xs text-red-500 mt-1">
-                                {vValid.error}
-                            </p>
-                        )}
-
-                        {latestVersion && (
-                            <div className="flex gap-2 mt-2">
-                                {(['patch', 'minor', 'major'] as const).map(
-                                    (bump) => (
-                                        <button
-                                            key={bump}
-                                            onClick={() =>
-                                                setVersion(
-                                                    incrementVersion(
-                                                        latestVersion,
-                                                        bump
-                                                    )
-                                                )
-                                            }
-                                            className="px-2 py-1 text-xs bg-gray-100 rounded-lg hover:bg-gray-200 text-gray-600 capitalize"
-                                        >
-                                            {bump} (
-                                            {incrementVersion(
-                                                latestVersion,
-                                                bump
-                                            )}
-                                            )
-                                        </button>
-                                    )
-                                )}
-                            </div>
-                        )}
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Changelog
-                        </label>
-                        <textarea
-                            value={changelog}
-                            onChange={(e) => setChangelog(e.target.value)}
-                            placeholder="What's changed in this version?"
-                            rows={3}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                        />
-                    </div>
-
-                    <div className="flex gap-4">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={isBreaking}
-                                onChange={(e) =>
-                                    setIsBreaking(e.target.checked)
-                                }
-                                className="w-4 h-4 rounded text-red-600"
-                            />
-                            <span className="text-sm text-gray-700">
-                                Breaking change
-                            </span>
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={isPrerelease}
-                                onChange={(e) =>
-                                    setIsPrerelease(e.target.checked)
-                                }
-                                className="w-4 h-4 rounded text-purple-600"
-                            />
-                            <span className="text-sm text-gray-700">
-                                Pre-release
-                            </span>
-                        </label>
-                    </div>
-                </div>
-
-                <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
-                    <button
-                        onClick={onClose}
-                        disabled={loading || isSubmitting}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={handlePublish}
-                        disabled={loading || isSubmitting || !vValid.valid}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                    >
-                        {loading || isSubmitting ? (
-                            <Spinner className="w-4 h-4 animate-spin" />
-                        ) : (
-                            <Play className="w-4 h-4" />
-                        )}
-                        Publish v{version}
-                    </button>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-// ---------------------------------------------------------------------------
-// Loading & Error Screens
-// ---------------------------------------------------------------------------
-
-function LoadingScreen({ message }: { message: string }) {
-    return (
-        <div className="h-screen flex items-center justify-center bg-gray-50">
-            <div className="flex flex-col items-center gap-3">
-                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                <p className="text-sm text-gray-500">{message}</p>
-            </div>
-        </div>
-    )
-}
-
-function ErrorScreen({
-    message,
-    onBack,
-}: {
-    message: string
-    onBack: () => void
-}) {
-    return (
-        <div className="h-screen flex items-center justify-center bg-gray-50">
-            <div className="text-center">
-                <WarningCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
-                <p className="font-medium text-gray-900 mb-1">
-                    Failed to load branch
-                </p>
-                <p className="text-sm text-gray-500 mb-4">{message}</p>
-                <button
-                    onClick={onBack}
-                    className="text-sm text-blue-600 hover:underline"
-                >
-                    Back to Studio
-                </button>
-            </div>
-        </div>
     )
 }

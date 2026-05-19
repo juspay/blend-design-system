@@ -1,6 +1,5 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowsClockwise, Eyedropper, XIcon } from '@phosphor-icons/react'
-import { generateColorScale } from '@juspay/blend-design-system/tokens'
 import {
     ButtonV2,
     ButtonV2Size,
@@ -8,26 +7,15 @@ import {
     TextInputV2,
     InputSizeV2,
 } from '@juspay/blend-design-system'
-
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-const SHADE_KEYS = [
-    '50',
-    '100',
-    '200',
-    '300',
-    '400',
-    '500',
-    '600',
-    '700',
-    '800',
-    '900',
-    '950',
-] as const
-
-type ShadeKey = (typeof SHADE_KEYS)[number]
+import {
+    SHADE_KEYS,
+    type ShadeKey,
+    normaliseHex,
+    isLightColor,
+    mergeColorScaleFromBase,
+    generateRandomColorScale,
+    resetShadeInScale,
+} from '@/components/utils'
 
 // ---------------------------------------------------------------------------
 // Props
@@ -39,37 +27,6 @@ interface ColorPaletteGeneratorProps {
     onChange: (shades: Record<string, string>) => void
     /** Which shade to treat as the "base" for generation (defaults to "500") */
     baseShade?: string
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/** Normalise a hex string to uppercase 6-char form, or return null. */
-function normaliseHex(raw: string): string | null {
-    let hex = raw.trim()
-    if (!hex.startsWith('#')) hex = `#${hex}`
-    if (/^#[0-9A-Fa-f]{3}$/.test(hex)) {
-        const [, r, g, b] = hex
-        hex = `#${r}${r}${g}${g}${b}${b}`
-    }
-    if (/^#[0-9A-Fa-f]{6}$/.test(hex)) return hex.toUpperCase()
-    return null
-}
-
-/** Determine whether a colour is "light" (needs dark text) or "dark". */
-function isLightColor(hex: string): boolean {
-    const clean = hex.replace('#', '')
-    const r = parseInt(clean.slice(0, 2), 16)
-    const g = parseInt(clean.slice(2, 4), 16)
-    const b = parseInt(clean.slice(4, 6), 16)
-    // Perceived luminance
-    return r * 0.299 + g * 0.587 + b * 0.114 > 160
-}
-
-function generateRandomHex(): string {
-    const value = Math.floor(Math.random() * 0xffffff)
-    return `#${value.toString(16).padStart(6, '0').toUpperCase()}`
 }
 
 // ---------------------------------------------------------------------------
@@ -122,43 +79,13 @@ export function ColorPaletteGenerator({
     }, [value, baseShade])
 
     // ------------------------------------------------------------------
-    // Generation
-    // ------------------------------------------------------------------
-
-    const regenerateFromBase = useCallback(
-        (
-            hex: string,
-            currentOverrides: Set<ShadeKey>,
-            currentValues: Record<string, string>
-        ) => {
-            const n = normaliseHex(hex)
-            if (!n) return
-            const generated = generateColorScale(n) as Record<string, string>
-            // Preserve manually-overridden shades
-            const merged: Record<string, string> = {}
-            for (const key of SHADE_KEYS) {
-                if (currentOverrides.has(key) && currentValues[key]) {
-                    merged[key] = currentValues[key]
-                } else {
-                    merged[key] = generated[key] ?? n
-                }
-            }
-            onChange(merged)
-        },
-        [onChange]
-    )
-
-    // ------------------------------------------------------------------
     // Handlers
     // ------------------------------------------------------------------
 
     const handleBaseColorChange = (hex: string) => {
         setBaseHexInput(hex)
-        const n = normaliseHex(hex)
-        if (n) {
-            // Use latest state values to avoid stale closure
-            regenerateFromBase(n, overriddenShades, value)
-        }
+        const merged = mergeColorScaleFromBase(hex, overriddenShades, value)
+        if (merged) onChange(merged)
     }
 
     const handleShadeChange = (shade: ShadeKey, hex: string) => {
@@ -170,13 +97,9 @@ export function ColorPaletteGenerator({
 
     const handleGenerateRandom = () => {
         setOverriddenShades(new Set())
-        const randomBase = generateRandomHex()
-        setBaseHexInput(randomBase)
-        const generated = generateColorScale(randomBase) as Record<
-            string,
-            string
-        >
-        onChange(generated)
+        const { baseHex, scale } = generateRandomColorScale()
+        setBaseHexInput(baseHex)
+        onChange(scale)
     }
 
     const handleResetShade = (shade: ShadeKey) => {
@@ -185,12 +108,8 @@ export function ColorPaletteGenerator({
             next.delete(shade)
             return next
         })
-        // Use value from props (latest) instead of baseHexInput state
-        const base = normaliseHex(value[baseShade] || baseHexInput)
-        if (base) {
-            const generated = generateColorScale(base) as Record<string, string>
-            onChange({ ...value, [shade]: generated[shade] ?? base })
-        }
+        const updated = resetShadeInScale(shade, value, baseShade, baseHexInput)
+        if (updated) onChange(updated)
     }
 
     // ------------------------------------------------------------------
