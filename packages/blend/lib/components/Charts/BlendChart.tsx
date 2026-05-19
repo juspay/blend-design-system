@@ -1,6 +1,6 @@
 'use client'
 
-import HighchartsReact from 'highcharts-react-official'
+import { HighchartsReact } from 'highcharts-react-official'
 import Highcharts from 'highcharts'
 import 'highcharts/modules/xrange'
 import { forwardRef, useRef } from 'react'
