@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import {
     ColumnDefinition,
     SortDirection,
@@ -9,8 +9,14 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    PivotAggregationType,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
+import type { PivotTableConfig } from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/types'
+import {
+    buildPivotPreview,
+    normalizePivotValue,
+} from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/utils'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
 import { Tag } from '../../../../packages/blend/lib/components/Tags'
 import {
@@ -41,9 +47,7 @@ import {
     Trash2,
     Info,
     FileText,
-    Eye,
-    Edit3,
-    MoreHorizontal,
+    Filter,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
@@ -2265,123 +2269,6 @@ const DataTableDemo = () => {
             minWidth: '180px',
             maxWidth: '250px',
         },
-        {
-            field: 'action',
-            header: 'Actions',
-            headerSubtext: 'Quick Actions & Operations',
-            type: ColumnType.REACT_ELEMENT,
-            isSortable: false,
-            renderCell: (_value: unknown, row: UserRow) => {
-                return (
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                        }}
-                    >
-                        <button
-                            onClick={() => {
-                                const userName = (row.name as AvatarColumnProps)
-                                    .label
-                                alert(`Viewing details for: ${userName}`)
-                            }}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '6px',
-                                border: '1px solid #e5e7eb',
-                                backgroundColor: '#ffffff',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#f9fafb'
-                                e.currentTarget.style.borderColor = '#d1d5db'
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#ffffff'
-                                e.currentTarget.style.borderColor = '#e5e7eb'
-                            }}
-                            title="View Details"
-                        >
-                            <Eye size={16} color="#374151" />
-                        </button>
-                        <button
-                            onClick={() => {
-                                const userName = (row.name as AvatarColumnProps)
-                                    .label
-                                alert(`Editing user: ${userName}`)
-                            }}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '6px',
-                                border: '1px solid #e5e7eb',
-                                backgroundColor: '#ffffff',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#eff6ff'
-                                e.currentTarget.style.borderColor = '#3b82f6'
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#ffffff'
-                                e.currentTarget.style.borderColor = '#e5e7eb'
-                            }}
-                            title="Edit User"
-                        >
-                            <Edit3 size={16} color="#2563eb" />
-                        </button>
-                        <button
-                            onClick={() => {
-                                const userName = (row.name as AvatarColumnProps)
-                                    .label
-                                alert(`More options for: ${userName}`)
-                            }}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '6px',
-                                border: '1px solid #e5e7eb',
-                                backgroundColor: '#ffffff',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#f3f4f6'
-                                e.currentTarget.style.borderColor = '#9ca3af'
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                    '#ffffff'
-                                e.currentTarget.style.borderColor = '#e5e7eb'
-                            }}
-                            title="More Options"
-                        >
-                            <MoreHorizontal size={16} color="#6b7280" />
-                        </button>
-                    </div>
-                )
-            },
-            minWidth: '140px',
-            maxWidth: '180px',
-        },
     ]
 
     const [columns, setColumns] =
@@ -2393,6 +2280,48 @@ const DataTableDemo = () => {
         field: '',
         direction: SortDirection.NONE,
     })
+    const [pivotPreviewColumns, setPivotPreviewColumns] = useState<
+        Array<{ key: string; label: string }>
+    >([])
+    const [pivotPreviewRows, setPivotPreviewRows] = useState<
+        Array<Record<string, unknown> & { __pivotId: string }>
+    >([])
+
+    /**
+     * Generic pivot source adapter:
+     * - keeps numeric columns numeric for SUM/AVG/MIN/MAX
+     * - normalizes complex UI values (avatar/tag/multiselect objects) into readable strings
+     *
+     * Consumers can copy this pattern for API payloads before calling buildPivotPreview.
+     */
+    const pivotSourceData = useMemo(() => {
+        const parseNumeric = (value: unknown): number => {
+            if (typeof value === 'number') return value
+            const cleaned = normalizePivotValue(value)
+                .replace(/,/g, '')
+                .replace(/[^\d.-]/g, '')
+                .trim()
+            const parsed = Number(cleaned)
+            return Number.isFinite(parsed) ? parsed : 0
+        }
+
+        return (data as Record<string, unknown>[]).map((row) => {
+            const normalizedRow: Record<string, unknown> = {}
+
+            columns.forEach((column) => {
+                const field = String(column.field)
+                const rawValue = row[field]
+
+                if (column.type === ColumnType.NUMBER) {
+                    normalizedRow[field] = parseNumeric(rawValue)
+                } else {
+                    normalizedRow[field] = normalizePivotValue(rawValue)
+                }
+            })
+
+            return normalizedRow
+        })
+    }, [data, columns])
 
     // Simulate server-side API call
     const fetchServerData = async (
@@ -3048,105 +2977,6 @@ const DataTableDemo = () => {
                     </div>
                 </div>
 
-                {/* Demo: nested DataTable inside a single expanded row */}
-                {userRow.id === 1 &&
-                    (() => {
-                        type AuditRow = {
-                            id: string
-                            event: string
-                            value: string
-                            timestamp: string
-                        }
-
-                        const auditData: AuditRow[] = Array.from(
-                            { length: 18 },
-                            (_, i) => ({
-                                id: `audit-${i + 1}`,
-                                event: `Audit log #${i + 1}`,
-                                value:
-                                    userRow.role === 'Admin'
-                                        ? 'Privileged access'
-                                        : 'Standard access',
-                                timestamp: new Date(
-                                    Date.now() - i * 60 * 60 * 1000
-                                ).toLocaleString(),
-                            })
-                        )
-
-                        const auditColumns: ColumnDefinition<AuditRow>[] = [
-                            {
-                                field: 'event',
-                                header: 'Event',
-                                type: ColumnType.TEXT,
-                                minWidth: '180px',
-                            },
-                            {
-                                field: 'value',
-                                header: 'Value',
-                                type: ColumnType.TEXT,
-                                minWidth: '160px',
-                            },
-                            {
-                                field: 'timestamp',
-                                header: 'Timestamp',
-                                type: ColumnType.TEXT,
-                                minWidth: '220px',
-                            },
-                        ]
-
-                        return (
-                            <div
-                                style={{
-                                    marginTop: '16px',
-                                    padding: '16px',
-                                    backgroundColor: 'white',
-                                    borderRadius: '6px',
-                                    border: '1px solid #e5e7eb',
-                                }}
-                            >
-                                <strong
-                                    style={{
-                                        color: '#6b7280',
-                                        fontSize: '12px',
-                                        textTransform: 'uppercase',
-                                    }}
-                                >
-                                    Nested DataTable Demo
-                                </strong>
-                                <div style={{ marginTop: '12px' }}>
-                                    <DataTable
-                                        data={
-                                            auditData as unknown as Record<
-                                                string,
-                                                unknown
-                                            >[]
-                                        }
-                                        columns={
-                                            auditColumns as unknown as ColumnDefinition<
-                                                Record<string, unknown>
-                                            >[]
-                                        }
-                                        idField="id"
-                                        title="Audit log"
-                                        description=""
-                                        showHeader={false}
-                                        showToolbar={false}
-                                        showFooter={false}
-                                        enableSearch={false}
-                                        enableFiltering={false}
-                                        enableAdvancedFilter={false}
-                                        enableRowExpansion={false}
-                                        enableRowSelection={false}
-                                        enableColumnManager={false}
-                                        enableColumnReordering={false}
-                                        enableInlineEdit={false}
-                                        tableBodyHeight={180}
-                                    />
-                                </div>
-                            </div>
-                        )
-                    })()}
-
                 {userRow.role === 'Admin' && (
                     <div
                         style={{
@@ -3302,6 +3132,23 @@ const DataTableDemo = () => {
         //     api.selectUser(rowData.id, rowData) // rowData has all 10 fields
         // }
     }
+
+    const handlePivotConfigChange = useCallback(
+        (config: PivotTableConfig<Record<string, unknown>>) => {
+            const preview = buildPivotPreview(
+                pivotSourceData,
+                config.rows,
+                config.columns,
+                config.values
+            )
+            setPivotPreviewColumns(preview.columns)
+            setPivotPreviewRows(preview.rows)
+        },
+        [pivotSourceData]
+    )
+    // Change this to 1 | 2 | 3 to render the Pivot trigger
+    // in any DataTable header slot.
+    const pivotTriggerSlot: 1 | 2 | 3 = 3
 
     return (
         <div>
@@ -3564,7 +3411,34 @@ const DataTableDemo = () => {
                 )}
             </div>
 
-            {/* 
+            <div
+                style={{
+                    marginBottom: '16px',
+                    padding: '12px 16px',
+                    backgroundColor: '#f5f7fa',
+                    border: '1px solid #e1e4ea',
+                    borderRadius: '8px',
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        marginBottom: '6px',
+                    }}
+                >
+                    Pivot Quick Guide (ready-to-use pattern)
+                </div>
+                <div style={{ fontSize: '13px', color: '#525866' }}>
+                    1) Use base-table columns as Rows/Columns/Values. <br />
+                    2) Filters are optional: they reduce source rows before
+                    aggregation (COUNT/SUM/AVG/etc.). <br />
+                    3) This demo normalizes complex cell values and keeps
+                    numeric columns numeric so pivot operations map correctly.
+                </div>
+            </div>
+
+            {/*
                 User Management Table - Demonstrating New Features:
                 
                 1. showExport: Set to false to hide the default Export button in BulkActionBar.
@@ -3616,6 +3490,32 @@ const DataTableDemo = () => {
                 columnFreeze={columnFreeze}
                 enableInlineEdit
                 enableRowExpansion
+                enablePivotTable
+                pivotTableConfig={{
+                    triggerSlot: pivotTriggerSlot,
+                    triggerButton: (
+                        <Button
+                            text="Pivot"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Filter size={16} />}
+                            size={ButtonSize.SMALL}
+                        />
+                    ),
+                    title: 'Create Pivot Table',
+                    showExport: true,
+                    availableAggregations: [
+                        PivotAggregationType.COUNT,
+                        PivotAggregationType.SUM,
+                        PivotAggregationType.AVERAGE,
+                        PivotAggregationType.MEAN,
+                        PivotAggregationType.MEDIAN,
+                        PivotAggregationType.MIN,
+                        PivotAggregationType.MAX,
+                    ],
+                    previewColumns: pivotPreviewColumns,
+                    previewRows: pivotPreviewRows,
+                    onConfigChange: handlePivotConfigChange,
+                }}
                 enableRowSelection={enableRowSelection}
                 rowSelectionConfig={{
                     isDisabled: (row, _index) =>

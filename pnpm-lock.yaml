@@ -605,6 +605,9 @@ importers:
             '@dnd-kit/utilities':
                 specifier: ^3.2.2
                 version: 3.2.2(react@19.2.3)
+            '@emotion/is-prop-valid':
+                specifier: ^1.4.0
+                version: 1.4.0
             '@monaco-editor/react':
                 specifier: ^4.7.0
                 version: 4.7.0(monaco-editor@0.54.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)

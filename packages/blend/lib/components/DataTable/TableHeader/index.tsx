@@ -205,6 +205,7 @@ const TableHeader = forwardRef<
             selectAll,
             sortConfig,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableColumnManager = true,
             enableColumnReordering = false,
             showSkeleton = false,
@@ -438,8 +439,8 @@ const TableHeader = forwardRef<
             const handleScrollOrWheel = (e: Event) => {
                 if (!scrollCloseEnabled.current) return
 
-                const target = e.target as Element
-                if (target) {
+                const target = e.target
+                if (target && target instanceof Element) {
                     const popoverContent =
                         target.closest('[data-radix-popper-content-wrapper]') ||
                         target.closest('[role="dialog"]') ||
@@ -823,6 +824,7 @@ const TableHeader = forwardRef<
                         const isLastColumn =
                             !enableColumnManager &&
                             !(
+                                showActionsColumn &&
                                 (enableInlineEdit || rowActions) &&
                                 !(
                                     mobileConfig?.isMobile &&
@@ -1880,7 +1882,8 @@ const TableHeader = forwardRef<
                         )
                     })}
 
-                    {(enableInlineEdit || rowActions) &&
+                    {showActionsColumn &&
+                        (enableInlineEdit || rowActions) &&
                         !(
                             mobileConfig?.isMobile &&
                             mobileConfig?.enableColumnOverflow

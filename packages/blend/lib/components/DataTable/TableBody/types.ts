@@ -13,6 +13,7 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     editValues: Record<string, T>
     expandedRows: Record<string, boolean>
     enableInlineEdit?: boolean
+    showActionsColumn?: boolean
     enableColumnManager?: boolean
     enableRowExpansion?: boolean
     enableRowSelection?: boolean

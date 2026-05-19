@@ -35,6 +35,16 @@ export enum ColumnType {
     CUSTOM = 'custom',
 }
 
+export enum PivotAggregationType {
+    SUM = 'sum',
+    COUNT = 'count',
+    AVERAGE = 'average',
+    MEAN = 'mean',
+    MEDIAN = 'median',
+    MIN = 'min',
+    MAX = 'max',
+}
+
 export type AvatarColumnProps = {
     src?: string
     alt?: string
@@ -400,10 +410,12 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     headerSlot2?: ReactNode
 
     enableInlineEdit?: boolean
+    showActionsColumn?: boolean
     onRowSave?: (rowId: unknown, updatedRow: T) => void
     onRowCancel?: (rowId: unknown) => void
     onRowClick?: (row: T, index: number) => void
     onFieldChange?: (rowId: unknown, fieldName: keyof T, value: unknown) => void
+    onHeaderChange?: (field: keyof T, newHeader: string) => void
 
     enableRowExpansion?: boolean
     renderExpandedRow?: (expandedData: {
@@ -444,4 +456,49 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     // Mobile configuration
     mobileColumnsToShow?: number
+
+    // Internal pivot modal configuration
+    enablePivotTable?: boolean
+    pivotTableConfig?: {
+        triggerButton?: ReactNode
+        triggerSlot?: 1 | 2 | 3
+        title?: string
+        description?: string
+        showExport?: boolean
+        initialConfig?: {
+            rows?: (keyof T)[]
+            columns?: (keyof T)[]
+            values?: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+        }
+        previewColumns?: Array<{
+            key: string
+            label: string
+        }>
+        previewRows?: Array<Record<string, unknown> & { __pivotId: string }>
+        /**
+         * Configure which aggregation operations are available in the Values section.
+         * If not provided, all operations will be shown.
+         * @example ['sum', 'count', 'average'] // Show only sum, count, and average
+         */
+        availableAggregations?: PivotAggregationType[]
+        onConfigChange?: (config: {
+            rows: (keyof T)[]
+            columns: (keyof T)[]
+            values: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+        }) => void
+        onExport?: (config: {
+            rows: (keyof T)[]
+            columns: (keyof T)[]
+            values: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+        }) => void
+    }
 }

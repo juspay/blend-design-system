@@ -546,6 +546,7 @@ const TableBody = forwardRef<
             editValues,
             expandedRows,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableColumnManager = true,
             enableRowExpansion = false,
             enableRowSelection = true,
@@ -584,6 +585,7 @@ const TableBody = forwardRef<
             if (enableRowExpansion) span += 1
             // Actions column - only on desktop or when not using mobile column overflow
             if (
+                showActionsColumn &&
                 (enableInlineEdit || rowActions) &&
                 !(mobileConfig?.isMobile && mobileConfig?.enableColumnOverflow)
             ) {
@@ -595,6 +597,7 @@ const TableBody = forwardRef<
             visibleColumns.length,
             enableRowSelection,
             enableRowExpansion,
+            showActionsColumn,
             enableInlineEdit,
             enableColumnManager,
             rowActions,
@@ -1297,7 +1300,8 @@ const TableBody = forwardRef<
                                           }
                                       )}
 
-                                      {(enableInlineEdit || rowActions) &&
+                                      {showActionsColumn &&
+                                          (enableInlineEdit || rowActions) &&
                                           !(
                                               mobileConfig?.isMobile &&
                                               mobileConfig?.enableColumnOverflow
