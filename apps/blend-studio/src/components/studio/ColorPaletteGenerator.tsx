@@ -5,9 +5,9 @@ import {
     ButtonV2,
     ButtonV2Size,
     ButtonV2Type,
-} from '../../../../../packages/blend/lib/components/ButtonV2'
-import { TextInputV2 } from '../../../../../packages/blend/lib/components/InputsV2/TextInputV2'
-import { InputSizeV2 } from '../../../../../packages/blend/lib/components/InputsV2/inputV2.types'
+    TextInputV2,
+    InputSizeV2,
+} from '@juspay/blend-design-system'
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -205,7 +205,10 @@ export function ColorPaletteGenerator({
                         <h3 className="mb-2 text-xs font-semibold text-gray-700 border-b py-[12px] px-[16px]">
                             Base Value HEX
                         </h3>
-                        <div className="relative pt-[12px] px-[16px]">
+                        <button
+                            type="button"
+                            className="relative pt-[12px] px-[16px]"
+                        >
                             <TextInputV2
                                 type="text"
                                 value={baseHexInput}
@@ -239,7 +242,7 @@ export function ColorPaletteGenerator({
                                 className="absolute bottom-0 left-4 top-3 z-10 w-10 cursor-pointer opacity-0"
                                 aria-label="Pick base colour"
                             />
-                        </div>
+                        </button>
                     </div>
 
                     <div className="flex gap-1 py-[12px] px-[16px]">
@@ -331,7 +334,10 @@ export function ColorPaletteGenerator({
                                                 }}
                                                 className={`grid min-w-0 grid-cols-[minmax(0,1fr)_42px] items-center rounded-lg  px-2 py-1.5 transition-[opacity,transform,background-color] duration-300 ease-out motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none`}
                                             >
-                                                <div className="relative min-w-0">
+                                                <button
+                                                    type="button"
+                                                    className="relative min-w-0"
+                                                >
                                                     <TextInputV2
                                                         type="text"
                                                         value={color}
@@ -375,7 +381,7 @@ export function ColorPaletteGenerator({
                                                         className="absolute inset-y-0 left-0 h-full w-8 cursor-pointer opacity-0"
                                                         aria-label={`Pick ${shade} colour`}
                                                     />
-                                                </div>
+                                                </button>
 
                                                 <div
                                                     onClick={() =>

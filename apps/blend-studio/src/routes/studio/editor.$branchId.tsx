@@ -9,11 +9,7 @@
  * and renders a live preview via ThemeProvider.
  */
 
-import {
-    createFileRoute,
-    useLocation,
-    useNavigate,
-} from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 import {
     ButtonV2,
@@ -94,7 +90,8 @@ import {
     SlidersIcon,
     DownloadIcon,
 } from '@phosphor-icons/react'
-import { SidebarV2 } from '../../../../../packages/blend/lib/components/SidebarV2'
+import { SidebarV2 } from '@juspay/blend-design-system'
+import { getCurrentReturnPath } from '@/lib/return-path'
 export const Route = createFileRoute('/studio/editor/$branchId')({
     component: EditorPage,
 })
@@ -124,7 +121,7 @@ const EDITOR_TABS: TabConfig[] = [
 ]
 
 /** Tab switcher items aligned with `EDITOR_TABS` (e.g. secondary rail / panel). */
-const tenants = EDITOR_TABS.map(({ id, icon: Icon, label }) => ({
+const sidebarItems = EDITOR_TABS.map(({ id, icon: Icon, label }) => ({
     label,
     value: id,
     showInPanel: true,
@@ -140,8 +137,8 @@ const EDITOR_RIGHT_PANEL_ID = 'editor-right-panel'
 /** Flex transition when opening/closing the left panel via the toggle (not drag). */
 const LEFT_PANEL_TOGGLE_MS = 280
 
-const LEFT_PANEL_MIN_PX = 400
-const LEFT_PANEL_MAX_PX = 900
+const LEFT_PANEL_MIN_PX = '23'
+const LEFT_PANEL_MAX_PX = '55'
 
 // ---------------------------------------------------------------------------
 // Main Editor Page
@@ -150,7 +147,6 @@ const LEFT_PANEL_MAX_PX = 900
 function EditorPage() {
     const { branchId } = Route.useParams()
     const navigate = useNavigate()
-    const location = useLocation()
 
     // Data hooks
     const {
@@ -186,22 +182,6 @@ function EditorPage() {
         leftPanelOuterElRef.current = node
     }, [])
 
-    const clampLeftPanelSize = useCallback(() => {
-        const panel = leftPanelRef.current
-        if (!panel || !isLeftPanelOpen) return
-
-        const { inPixels } = panel.getSize()
-        if (inPixels < LEFT_PANEL_MIN_PX) {
-            panel.resize(LEFT_PANEL_MIN_PX)
-        } else if (inPixels > LEFT_PANEL_MAX_PX) {
-            panel.resize(LEFT_PANEL_MAX_PX)
-        }
-    }, [isLeftPanelOpen])
-
-    const handleLeftPanelResize = useCallback(() => {
-        clampLeftPanelSize()
-    }, [clampLeftPanelSize])
-
     useLayoutEffect(() => {
         const el = leftPanelOuterElRef.current
         const panel = leftPanelRef.current
@@ -210,18 +190,6 @@ function EditorPage() {
         el.style.transitionProperty = 'flex-grow, flex-basis, flex-shrink'
         el.style.transitionDuration = `${LEFT_PANEL_TOGGLE_MS}ms`
         el.style.transitionTimingFunction = 'cubic-bezier(0.22, 1, 0.36, 1)'
-
-        if (isLeftPanelOpen) {
-            const { inPixels } = panel.getSize()
-            panel.resize(
-                Math.min(
-                    LEFT_PANEL_MAX_PX,
-                    Math.max(LEFT_PANEL_MIN_PX, inPixels || LEFT_PANEL_MIN_PX)
-                )
-            )
-        } else {
-            panel.resize(0)
-        }
 
         const clearId = window.setTimeout(() => {
             el.style.transitionProperty = ''
@@ -370,7 +338,7 @@ function EditorPage() {
             <div className="h-screen flex flex-col overflow-hidden bg-white">
                 <SidebarV2
                     secondarySidebar={{
-                        items: tenants,
+                        items: sidebarItems,
                         selected: activeTab,
                         onSelect: (value) => {
                             setActiveTab(value as EditorTabId)
@@ -390,7 +358,6 @@ function EditorPage() {
                                 [EDITOR_LEFT_PANEL_ID]: 0,
                                 [EDITOR_RIGHT_PANEL_ID]: 100,
                             }}
-                            onLayoutChanged={clampLeftPanelSize}
                         >
                             <Panel
                                 id={EDITOR_LEFT_PANEL_ID}
@@ -402,9 +369,8 @@ function EditorPage() {
                                 maxSize={
                                     isLeftPanelOpen ? LEFT_PANEL_MAX_PX : 0
                                 }
-                                defaultSize={29}
+                                defaultSize={LEFT_PANEL_MIN_PX}
                                 groupResizeBehavior="preserve-pixel-size"
-                                onResize={handleLeftPanelResize}
                                 className="min-h-0 flex flex-col"
                             >
                                 <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
@@ -425,15 +391,13 @@ function EditorPage() {
                                                 />
                                             )}
                                         </div>
-                                        <TagV2
-                                            text={
-                                                diffs.length > 0
-                                                    ? ` ${diffs.length} Changes`
-                                                    : ''
-                                            }
-                                            size={TagV2Size.SM}
-                                            color={TagV2Color.WARNING}
-                                        />
+                                        {diffs.length > 0 && (
+                                            <TagV2
+                                                text={`${diffs.length} Changes`}
+                                                size={TagV2Size.SM}
+                                                color={TagV2Color.WARNING}
+                                            />
+                                        )}
                                     </div>
                                     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                                         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
@@ -525,7 +489,7 @@ function EditorPage() {
                                     <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between">
                                         <div className="flex items-center px-4 gap-2 h-[34px]">
                                             <ToggleButton
-                                                noConatiner={true}
+                                                noContainer={true}
                                                 icon={
                                                     <SidebarIcon className="h-3.5 w-3.5" />
                                                 }
@@ -623,11 +587,14 @@ function EditorPage() {
                                                         buttonType={
                                                             ButtonV2Type.SECONDARY
                                                         }
+                                                        aria-label="Open data menu"
+                                                        title="Open data menu"
                                                         leftSlot={{
                                                             slot: (
                                                                 <SlidersIcon
                                                                     className="h-3.5 w-3.5"
                                                                     weight="fill"
+                                                                    aria-hidden
                                                                 />
                                                             ),
                                                         }}
@@ -673,18 +640,21 @@ function EditorPage() {
                                                         to: '/studio/preview/$branchId',
                                                         params: { branchId },
                                                         search: {
-                                                            from: location.href,
+                                                            from: getCurrentReturnPath(),
                                                         },
                                                     })
                                                 }}
                                                 buttonType={
                                                     ButtonV2Type.SECONDARY
                                                 }
+                                                aria-label="Open preview"
+                                                title="Open preview"
                                                 leftSlot={{
                                                     slot: (
                                                         <PlayIcon
                                                             className="h-3.5 w-3.5"
                                                             weight="fill"
+                                                            aria-hidden
                                                         />
                                                     ),
                                                 }}

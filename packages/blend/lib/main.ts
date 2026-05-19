@@ -101,6 +101,7 @@ export {
     TextInputV2,
     type TextInputV2Props,
 } from './components/InputsV2/TextInputV2'
+export { InputSizeV2 } from './components/InputsV2/inputV2.types'
 export {
     DrawerV2,
     DrawerV2Body,

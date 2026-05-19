@@ -83,7 +83,9 @@ export const ComponentShowcase = forwardRef<
                 )} ${className}`}
             >
                 <div className={getGridClassNames(isMobile)}>
-                    <div className="rounded-[12px] border bg-white shadow-sm">
+                    <div
+                        className={`rounded-[12px] border ${cardClassName} shadow-sm`}
+                    >
                         <div className="border-b px-[16px] py-[12px] flex justify-between items-center">
                             <div className="flex flex-row items-center gap-2">
                                 <img
@@ -150,9 +152,12 @@ export const ComponentShowcase = forwardRef<
                                 smart retries and fallback routing out of the
                                 box.
                             </p>
-                            <a href="/" className="text-xs text-blue-500">
+                            <button
+                                type="button"
+                                className="w-fit text-xs text-blue-500"
+                            >
                                 {'Read Details >'}
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <PreviewCard
@@ -405,7 +410,7 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
                 ref={ref}
                 className={`flex min-h-[184px] flex-col overflow-hidden rounded-2xl border shadow-sm ${className}`}
             >
-                {media}
+                {media ? media : null}
                 <div className="flex flex-1 flex-col gap-4 p-4">
                     {hasHeaderContent && (
                         <div className="shrink-0">
